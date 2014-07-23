@@ -73,24 +73,42 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>get-resources</id>
+                        <id>unpack-resources</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack</goal>
                         </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>alfresco-distribution</artifactId>
+                                    <version>${project.version}</version>
+                                    <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                                    <excludes>META-INF/**</excludes>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>alfresco-spring-encryptor</artifactId>
+                                    <version>${project.version}</version>
+                                    <outputDirectory>${project.build.outputDirectory}/bin</outputDirectory>
+                                    <destFileName>alfresco-spring-encryptor.jar</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <artifactItems>
-                        <artifactItem>
-                          <groupId>org.alfresco</groupId>
-                          <artifactId>alfresco-distribution</artifactId>
-                          <version>${project.version}</version>
-                          <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-                          <excludes>META-INF/**</excludes>
-                        </artifactItem>
-                    </artifactItems>
-                </configuration>
             </plugin>
 
             <plugin>
