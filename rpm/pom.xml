@@ -1,0 +1,202 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.alfresco</groupId>
+        <artifactId>alfresco-enterprise-packaging</artifactId>
+        <version>5.0.b-SNAPSHOT</version>
+    </parent>
+    <artifactId>alfresco-enterprise-rpms</artifactId>
+    <name>Alfresco Enterprise RPMs</name>
+    <packaging>pom</packaging>
+
+    <properties>
+        <buildNumber>0</buildNumber>
+        <artifacts.location>${project.build.directory}/artifacts</artifacts.location>
+        <install.location>/opt/tomcat7</install.location>
+    </properties>
+
+    <build>
+        <plugins>
+            <!-- Download artifacts -->
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.8</version>
+                <executions>
+                    <execution>
+                        <id>get-artifacts</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>alfresco-enterprise</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>war</type>
+                                    <destFileName>alfresco.war</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>share-enterprise</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>war</type>
+                                    <destFileName>share.war</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>alfresco-solr4</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>war</type>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>alfresco-solr4</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>config</classifier>
+                                    <type>zip</type>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${artifacts.location}</outputDirectory>
+                            <stripVersion>true</stripVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>get-version.properties</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>alfresco-enterprise</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>war</type>
+                                    <includes>WEB-INF/classes/alfresco/version.properties</includes>
+                                    <outputDirectory>${artifacts.location}</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Grab the version number in version.properties -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <version>1.0-alpha-2</version>
+                <executions>
+                    <execution>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>read-project-properties</goal>
+                        </goals>
+                        <configuration>
+                            <files>
+                                <file>${artifacts.location}/WEB-INF/classes/alfresco/version.properties</file>
+                            </files>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Create RPMs -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>rpm-maven-plugin</artifactId>
+                <version>2.1-alpha-4</version>
+
+                <!-- Common configuration for all RPMs -->
+                <configuration>
+                    <packager>alfresco</packager>
+                    <version>${version.major}.${version.minor}.${version.revision}${version.label}</version>
+                    <release>${buildNumber}</release>
+                    <description>Alfresco Enterprise ${version.major}.${version.minor}.${version.revision}${version.label} ${version.build} (${version.scmrevision})</description>
+                    <group>root</group>
+                    <copyright>Alfresco</copyright>
+                </configuration>
+
+                <executions>
+                    <!-- ALFRESCO -->
+                    <execution>
+                        <id>alfresco-rpm</id>
+                        <goals>
+                            <goal>rpm</goal>
+                        </goals>
+                        <configuration>
+                            <name>alfrescoenterprise-alfresco</name>
+                            <mappings>
+                               <mapping>
+                                   <directory>${install.location}/webapps</directory>
+                                   <sources>
+                                       <source>
+                                           <location>${artifacts.location}</location>
+                                           <includes>
+                                               <include>alfresco.war</include>
+                                           </includes>
+                                       </source>
+                                   </sources>
+                               </mapping>
+                            </mappings>
+                        </configuration>
+                    </execution>
+
+                    <!-- SHARE -->
+                    <execution>
+                        <id>share-rpm</id>
+                        <goals>
+                            <goal>rpm</goal>
+                        </goals>
+                        <configuration>
+                            <name>alfrescoenterprise-share</name>
+                            <mappings>
+                               <mapping>
+                                   <directory>${install.location}/webapps</directory>
+                                   <sources>
+                                       <source>
+                                           <location>${artifacts.location}</location>
+                                           <includes>
+                                               <include>share.war</include>
+                                           </includes>
+                                       </source>
+                                   </sources>
+                               </mapping>
+                            </mappings>
+                        </configuration>
+                    </execution>
+
+                    <!-- SOLR -->
+                    <execution>
+                        <id>solr-rpm</id>
+                        <goals>
+                            <goal>rpm</goal>
+                        </goals>
+                        <configuration>
+                            <name>alfrescoenterprise-solr</name>
+                            <mappings>
+                               <mapping>
+                                   <directory>${install.location}</directory>
+                                   <directoryIncluded>false</directoryIncluded>
+                                   <sources>
+                                       <source>
+                                           <location>${artifacts.location}</location>
+                                           <includes>
+                                               <include>alfresco-solr4.war</include>
+                                               <include>alfresco-solr4-config.zip</include>
+                                           </includes>
+                                       </source>
+                                   </sources>
+                               </mapping>
+                            </mappings>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
