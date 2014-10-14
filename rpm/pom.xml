@@ -48,13 +48,14 @@
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-solr4</artifactId>
                                     <version>${project.version}</version>
+                                    <classifier>ssl</classifier>
                                     <type>war</type>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-solr4</artifactId>
                                     <version>${project.version}</version>
-                                    <classifier>config</classifier>
+                                    <classifier>config-ssl</classifier>
                                     <type>zip</type>
                                 </artifactItem>
                             </artifactItems>
@@ -185,8 +186,8 @@
                                        <source>
                                            <location>${artifacts.location}</location>
                                            <includes>
-                                               <include>alfresco-solr4.war</include>
-                                               <include>alfresco-solr4-config.zip</include>
+                                               <include>alfresco-solr4-ssl.war</include>
+                                               <include>alfresco-solr4-config-ssl.zip</include>
                                            </includes>
                                        </source>
                                    </sources>
