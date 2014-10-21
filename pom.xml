@@ -17,6 +17,7 @@
 
     <modules>
         <module>distribution</module>
+        <module>ear</module>
         <module>installer</module>
     </modules>
 
