@@ -156,6 +156,24 @@
                             <excludes>alfresco-enterprise-${project.version}/solr4/,alfresco-enterprise-${project.version}/web-server/webapps/,alfresco-enterprise-${project.version}/web-server/shared/</excludes>
                         </configuration>
                     </execution>
+
+                    <execution>
+                        <id>get-vaadin</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.vaadin</groupId>
+                                    <artifactId>vaadin-application-server-class-loader-workaround</artifactId>
+                                    <version>1.0.1</version>
+                                </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>${project.build.directory}/dependency/alfresco-enterprise-${project.version}/web-server/lib</outputDirectory>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 
@@ -176,7 +194,7 @@
                             <appendAssemblyId>false</appendAssemblyId>
                         </configuration>
                     </execution>
-                    <!--
+
                     <execution>
                         <id>make-ear-zip</id>
                         <phase>package</phase>
@@ -190,7 +208,6 @@
                             <appendAssemblyId>false</appendAssemblyId>
                         </configuration>
                     </execution>
-                    -->
                 </executions>
             </plugin>
         </plugins>

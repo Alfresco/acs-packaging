@@ -8,39 +8,18 @@
 
     <fileSets>
         <fileSet>
-            <directory>src/main/launcher</directory>
-            <outputDirectory>classes</outputDirectory>
+            <directory>${project.build.directory}/dependency/alfresco-enterprise-${project.version}</directory>
+            <outputDirectory/>
         </fileSet>
     </fileSets>
+
     <files>
         <file>
-            <source>${project.build.directory}/${project.build.finalName}.jar</source>
-            <outputDirectory></outputDirectory>
-            <destName>file-transfer-receiver.jar</destName>
+            <source>${project.build.directory}/myfaces1_1-websphere-shared-lib-${project.version}.zip</source>
         </file>
         <file>
-            <source>${project.build.directory}/dependency/WEB-INF/classes/alfresco/version.properties</source>
-            <outputDirectory></outputDirectory>
+            <source>${project.build.directory}/alfresco-enterprise-ear-${project.version}.ear</source>
+            <destName>alfresco-enterprise-${project.version}.ear</destName>
         </file>
     </files>
-    <dependencySets>
-        <dependencySet>
-            <outputDirectory>lib</outputDirectory>
-            <includes>
-                <include>*:*:jar</include>
-            </includes>
-            <useStrictFiltering>true</useStrictFiltering>
-            <useProjectArtifact>false</useProjectArtifact>
-        </dependencySet>
-        <dependencySet>
-            <outputDirectory>webapps</outputDirectory>
-            <includes>
-                <include>*:*:war</include>
-            </includes>
-            <useStrictFiltering>true</useStrictFiltering>
-            <scope>provided</scope>
-            <outputFileNameMapping>file-transfer-receiver.war</outputFileNameMapping>
-        </dependencySet>
-    </dependencySets>
-
 </assembly>
