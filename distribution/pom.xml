@@ -77,6 +77,11 @@
             <version>${project.version}</version>
             <classifier>classes</classifier>
         </dependency>
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-enterprise-remote-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- 3rd party libs -->
         <dependency>
