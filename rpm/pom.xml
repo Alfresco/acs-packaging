@@ -15,6 +15,16 @@
         <install.location>/opt/tomcat7</install.location>
     </properties>
 
+    <dependencies>
+        <!-- Alfresco Enterprise war, to be modified with a web.xml without ssl -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>alfresco-enterprise</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+        </dependency>
+    </dependencies>
+
     <build>
         <plugins>
             <!-- Download artifacts -->
@@ -32,13 +42,6 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
-                                    <artifactId>alfresco-enterprise</artifactId>
-                                    <version>${project.version}</version>
-                                    <type>war</type>
-                                    <destFileName>alfresco.war</destFileName>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.alfresco</groupId>
                                     <artifactId>share-enterprise</artifactId>
                                     <version>${project.version}</version>
                                     <type>war</type>
@@ -48,14 +51,13 @@
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-solr4</artifactId>
                                     <version>${project.version}</version>
-                                    <classifier>ssl</classifier>
                                     <type>war</type>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-solr4</artifactId>
                                     <version>${project.version}</version>
-                                    <classifier>config-ssl</classifier>
+                                    <classifier>config</classifier>
                                     <type>zip</type>
                                 </artifactItem>
                             </artifactItems>
@@ -63,6 +65,7 @@
                             <stripVersion>true</stripVersion>
                         </configuration>
                     </execution>
+                    <!-- Extract version.properties and web.xml -->
                     <execution>
                         <id>get-version.properties</id>
                         <phase>generate-resources</phase>
@@ -76,7 +79,7 @@
                                     <artifactId>alfresco-enterprise</artifactId>
                                     <version>${project.version}</version>
                                     <type>war</type>
-                                    <includes>WEB-INF/classes/alfresco/version.properties</includes>
+                                    <includes>WEB-INF/classes/alfresco/version.properties,WEB-INF/web.xml</includes>
                                     <outputDirectory>${artifacts.location}</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
@@ -103,6 +106,53 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- Replaces web.xml commenting out the security-constraints -->
+            <plugin>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>replacer</artifactId>
+                <executions>
+                    <execution>
+                        <id>disable-securecomms</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <file>${artifacts.location}/WEB-INF/web.xml</file>
+                    <replacements>
+                        <replacement>
+                            <token><![CDATA[<!-- Toggle securecomms placeholder start -->]]></token>
+                            <value><![CDATA[<!-- Toggle securecomms placeholder start    ]]></value>
+                        </replacement>
+                        <replacement>
+                            <token><![CDATA[<!-- Toggle securecomms placeholder end -->]]></token>
+                            <value><![CDATA[     Toggle securecomms placeholder end --> ]]></value>
+                        </replacement>
+                    </replacements>
+                </configuration>
+            </plugin>
+
+            <!-- Recreate alfresco.war using the patched web.xml -->
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>repackage-war</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>war</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <webXml>${artifacts.location}/WEB-INF/web.xml</webXml>
+                    <warName>alfresco</warName>
+                    <attachClasses>false</attachClasses>
+                </configuration>
             </plugin>
 
             <!-- Create RPMs -->
@@ -135,7 +185,7 @@
                                    <directory>${install.location}/webapps</directory>
                                    <sources>
                                        <source>
-                                           <location>${artifacts.location}</location>
+                                           <location>${project.build.directory}</location>
                                            <includes>
                                                <include>alfresco.war</include>
                                            </includes>
@@ -186,8 +236,8 @@
                                        <source>
                                            <location>${artifacts.location}</location>
                                            <includes>
-                                               <include>alfresco-solr4-ssl.war</include>
-                                               <include>alfresco-solr4-config-ssl.zip</include>
+                                               <include>alfresco-solr4.war</include>
+                                               <include>alfresco-solr4-config.zip</include>
                                            </includes>
                                        </source>
                                    </sources>
