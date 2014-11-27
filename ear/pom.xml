@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-enterprise-packaging</artifactId>
-        <version>5.0</version>
+        <version>5.0.c</version>
     </parent>
     <packaging>pom</packaging>
 
