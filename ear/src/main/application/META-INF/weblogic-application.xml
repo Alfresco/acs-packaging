@@ -22,6 +22,7 @@
     <package-name>com.sun.faces.*</package-name>
     <package-name>com.sun.mail.*</package-name>
     <package-name>com.sun.tools.*</package-name>
+    <package-name>com.sun.xml.bind.*</package-name>
     <package-name>com.sun.xml.ws.*</package-name>
     <package-name>com.sun.xml.ws.api.*</package-name>
     <package-name>com.sun.xml.ws.developer.*</package-name> 
