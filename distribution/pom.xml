@@ -189,6 +189,14 @@
 
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.alfresco</groupId>
+                        <artifactId>alfresco-distribution</artifactId>
+                        <version>${project.version}</version>
+                        <classifier>assembly</classifier>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
                         <id>make-assembly</id>
@@ -200,9 +208,9 @@
                 </executions>
                 <configuration>
                     <appendAssemblyId>false</appendAssemblyId>
-                    <descriptors>
-                        <descriptor>../../../packaging/distribution/src/assembly/distribution.xml</descriptor>
-                    </descriptors>
+                    <descriptorRefs>
+                        <descriptorRef>distribution</descriptorRef>
+                    </descriptorRefs>
                 </configuration>
             </plugin>
         </plugins>
