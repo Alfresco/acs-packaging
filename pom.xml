@@ -1,0 +1,563 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.alfresco</groupId>
+        <artifactId>enterprise-overlay</artifactId>
+        <version>5.1-BF-SNAPSHOT</version>
+    </parent>
+    <artifactId>alfresco-platform-enterprise</artifactId>
+    <packaging>war</packaging>
+    <name>Alfresco Repository WAR Enterprise</name>
+    <description>Alfresco Enterprise Platform Repository WAR</description>
+
+    <properties>
+        <maven.tomcat.port>${tomcat.default.alfresco.port}</maven.tomcat.port>
+        <maven.tomcat.httpsPort>${tomcat.default.alfresco.ssl.port}</maven.tomcat.httpsPort>
+        <maven.tomcat.path>/alfresco</maven.tomcat.path>
+    </properties>
+
+
+    <dependencies>
+        <!-- Dependency on the Alfresco Community WAR -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>alfresco-platform</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>alfresco-enterprise-crypto</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>alfresco-enterprise-remote-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <!-- This is needed for compilation but it's provided -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>alfresco-platform</artifactId>
+            <version>${project.version}</version>
+            <classifier>classes</classifier>
+            <scope>provided</scope>
+        </dependency>
+        <!-- 'provided' dependencies, not packaged in war. Not transitive so need
+            to repeat them -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.portlet</groupId>
+            <artifactId>portlet-api</artifactId>
+            <version>2.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </dependency>
+      <dependency>
+         <groupId>org.alfresco.services</groupId>
+         <artifactId>alfresco-events-repo</artifactId>
+         <version>1.2.4</version>
+      </dependency>
+      <dependency>
+         <groupId>org.alfresco.services</groupId>
+         <artifactId>alfresco-events-repo-publishing</artifactId>
+         <version>1.2.4</version>
+      </dependency>
+      <dependency>
+         <groupId>org.alfresco.services</groupId>
+         <artifactId>alfresco-events-repo-activiti</artifactId>
+         <version>1.2.4</version>
+      </dependency>      
+    </dependencies>
+
+    <build>
+      <finalName>alfresco</finalName>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>com.google.code.maven-replacer-plugin</groupId>
+                                        <artifactId>replacer</artifactId>
+                                        <versionRange>1.5.0</versionRange>
+                                        <goals>
+                                            <goal>replace</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <execute>
+                                            <runOnIncremental>true</runOnIncremental>
+                                            <runOnConfiguration>true</runOnConfiguration>
+                                        </execute>
+                                    </action>
+                                    <comment>source: </comment>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <!-- Explicit overlay declaration -->
+                    <overlays>
+                        <overlay>
+                            <groupId>${project.groupId}</groupId>
+                            <artifactId>alfresco-platform</artifactId>
+                            <type>war</type>
+                        </overlay>
+                    </overlays>
+                </configuration>
+                <!-- This allows overlays to be prepared on the FS for minification and faster run -->
+                <executions>
+                    <execution>
+                        <id>prepare-exploded-war</id>
+                        <goals>
+                            <goal>exploded</goal>
+                        </goals>
+                        <phase>prepare-package</phase>
+                    </execution>
+                    <!-- Additional execution to generate a non-ssl war -->
+                    <execution>
+                        <id>nossl-war</id>
+                        <goals>
+                            <goal>war</goal>
+                        </goals>
+                        <configuration>
+                            <webXml>${project.build.directory}/nossl/web.xml</webXml>
+                            <classifier>nossl</classifier>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.google.code.maven-replacer-plugin</groupId>
+                <artifactId>replacer</artifactId>
+                <executions>
+                    <execution>
+                        <id>replace-version.properties</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                        <configuration>
+                            <file>${project.build.directory}/alfresco/WEB-INF/classes/alfresco/version.properties</file>
+                            <replacements>
+                                <replacement>
+                                    <token>Community</token>
+                                    <value>Enterprise</value>
+                                </replacement>
+                            </replacements>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>replace-web.xml</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                        <configuration>
+                            <file>${project.build.directory}/${project.build.finalName}/WEB-INF/web.xml</file>
+                            <replacements>
+                                <replacement>
+                                    <token><![CDATA[<!-- Enterprise context-param placeholder -->]]></token>
+                                    <value><![CDATA[<context-param><description>Vaadin production mode</description><param-name>productionMode</param-name><param-value>true</param-value></context-param>]]></value>
+                                </replacement>
+                                <replacement>
+                                    <token><![CDATA[<!-- Enterprise filter placeholder -->]]></token>
+                                    <value><![CDATA[<filter>
+      <filter-name>Office Services Authentication Filter</filter-name>
+      <filter-class>org.alfresco.repo.web.filter.beans.BeanProxyFilter</filter-class>
+      <init-param>
+         <param-name>beanName</param-name>
+         <param-value>AosAuthenticationFilter</param-value>
+      </init-param>
+   </filter>
+
+   <filter>
+      <filter-name>Office Services Filter</filter-name>
+      <filter-class>org.alfresco.enterprise.repo.officeservices.service.ServiceFilter</filter-class>
+   </filter>]]></value>
+                                </replacement>
+                                <replacement>
+                                    <token><![CDATA[<!-- Activiti Global Authentication Filter mapping placeholder -->]]></token>
+                                    <value><![CDATA[<filter-mapping>
+      <filter-name>Global Authentication Filter</filter-name>
+      <url-pattern>/activiti-admin/*</url-pattern>
+   </filter-mapping>
+
+   <filter-mapping>
+      <filter-name>Global Authentication Filter</filter-name>
+      <url-pattern>/VAADIN/*</url-pattern>
+   </filter-mapping>]]></value>
+                                </replacement>
+                                <replacement>
+                                    <token><![CDATA[<!-- Enterprise filter-mapping placeholder -->]]></token>
+                                    <value><![CDATA[<filter-mapping>
+      <filter-name>Office Services Authentication Filter</filter-name>
+      <url-pattern>/aos/*</url-pattern>
+   </filter-mapping>
+
+   <filter-mapping>
+      <filter-name>Office Services Authentication Filter</filter-name>
+      <url-pattern>/AosResponder_ServerRoot</url-pattern>
+      <dispatcher>FORWARD</dispatcher>
+   </filter-mapping>
+
+   <filter-mapping>
+      <filter-name>Office Services Authentication Filter</filter-name>
+      <url-pattern>/AosResponder_Context</url-pattern>
+      <dispatcher>FORWARD</dispatcher>
+   </filter-mapping>
+
+   <filter-mapping>
+      <filter-name>Office Services Filter</filter-name>
+      <url-pattern>/aos/*</url-pattern>
+   </filter-mapping>]]></value>
+                                </replacement>
+                                <replacement>
+                                    <token><![CDATA[<!-- Enterprise listener placeholder -->]]></token>
+                                    <value><![CDATA[<listener>
+      <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+   </listener>]]></value>
+                                </replacement>
+                                <replacement>
+                                    <token><![CDATA[<!-- Enterprise servlet placeholder -->]]></token>
+                                    <value><![CDATA[<servlet>
+      <servlet-name>Vaadin Application Servlet</servlet-name>
+      <servlet-class>org.activiti.explorer.servlet.ExplorerApplicationServlet</servlet-class>
+   </servlet>
+
+   <servlet>
+      <servlet-name>AosAuthorService</servlet-name>
+      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.AuthorService</servlet-class>
+      <load-on-startup>5</load-on-startup>
+   </servlet>
+
+   <servlet>
+      <servlet-name>AosBrowsingService</servlet-name>
+      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.BrowsingService</servlet-class>
+      <load-on-startup>5</load-on-startup>
+   </servlet>
+
+   <servlet>
+      <servlet-name>AosCopyService</servlet-name>
+      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.CopyService</servlet-class>
+      <load-on-startup>5</load-on-startup>
+   </servlet>
+
+   <servlet>
+      <servlet-name>AosDwsService</servlet-name>
+      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.DwsService</servlet-class>
+      <load-on-startup>5</load-on-startup>
+   </servlet>
+
+   <servlet>
+      <servlet-name>AosListsService</servlet-name>
+      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.ListsService</servlet-class>
+      <load-on-startup>5</load-on-startup>
+   </servlet>
+
+   <servlet>
+      <servlet-name>AosServiceDispatcher</servlet-name>
+      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.ServiceDispatcher</servlet-class>
+   </servlet>
+
+   <servlet>
+      <servlet-name>AosSiteDataService</servlet-name>
+      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.SiteDataService</servlet-class>
+      <load-on-startup>5</load-on-startup>
+   </servlet>
+
+   <servlet>
+      <servlet-name>AosVersionsService</servlet-name>
+      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.VersionsService</servlet-class>
+      <load-on-startup>5</load-on-startup>
+   </servlet>
+
+   <servlet>
+      <servlet-name>AosVtiInfService</servlet-name>
+      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.VtiInfService</servlet-class>
+      <load-on-startup>5</load-on-startup>
+   </servlet>
+
+   <servlet>
+      <servlet-name>AosWebsService</servlet-name>
+      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.WebsService</servlet-class>
+      <load-on-startup>5</load-on-startup>
+   </servlet>
+
+   <servlet>
+      <servlet-name>AosWebViewResourcesService</servlet-name>
+      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.WebViewResourcesService</servlet-class>
+      <load-on-startup>5</load-on-startup>
+   </servlet>
+
+   <servlet>
+      <servlet-name>AosWebdavService</servlet-name>
+      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.WebdavService</servlet-class>
+      <load-on-startup>5</load-on-startup>
+   </servlet>
+
+   <servlet>
+      <servlet-name>AosServerRootResponder</servlet-name>
+      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.ServerRootResponder</servlet-class>
+      <load-on-startup>5</load-on-startup>
+   </servlet>
+
+   <servlet>
+      <servlet-name>AosContextResponder</servlet-name>
+      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.ContextResponder</servlet-class>
+      <load-on-startup>5</load-on-startup>
+   </servlet>]]></value>
+                                </replacement>
+                                <replacement>
+                                    <token><![CDATA[<!-- Enterprise servlet-mapping placeholder -->]]></token>
+                                    <value><![CDATA[<servlet-mapping>
+      <servlet-name>Vaadin Application Servlet</servlet-name>
+      <url-pattern>/activiti-admin/*</url-pattern>
+   </servlet-mapping>
+
+   <servlet-mapping>
+      <servlet-name>Vaadin Application Servlet</servlet-name>
+      <url-pattern>/VAADIN/*</url-pattern>
+   </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AosServiceDispatcher</servlet-name>
+        <url-pattern>/aos/_vti_bin/shtml.dll/_vti_rpc</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AosAuthorService</servlet-name>
+        <url-pattern>/aos/_vti_bin/_vti_aut/author.dll</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AosBrowsingService</servlet-name>
+        <url-pattern>/aos/_vti_bin/owssvr.dll</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AosCopyService</servlet-name>
+        <url-pattern>/aos/_vti_bin/copy.asmx</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AosCopyService</servlet-name>
+        <url-pattern>/aos/_vti_bin/Copy.asmx</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AosDwsService</servlet-name>
+        <url-pattern>/aos/_vti_bin/dws.asmx</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AosListsService</servlet-name>
+        <url-pattern>/aos/_vti_bin/lists.asmx</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AosListsService</servlet-name>
+        <url-pattern>/aos/_vti_bin/Lists.asmx</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AosSiteDataService</servlet-name>
+        <url-pattern>/aos/_vti_bin/SiteData.asmx</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AosVersionsService</servlet-name>
+        <url-pattern>/aos/_vti_bin/versions.asmx</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AosVtiInfService</servlet-name>
+        <url-pattern>/aos/_vti_inf.html</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AosWebsService</servlet-name>
+        <url-pattern>/aos/_vti_bin/webs.asmx</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AosWebsService</servlet-name>
+        <url-pattern>/aos/_vti_bin/Webs.asmx</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AosServerRootResponder</servlet-name>
+        <url-pattern>/AosResponder_ServerRoot</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AosContextResponder</servlet-name>
+        <url-pattern>/AosResponder_Context</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AosWebViewResourcesService</servlet-name>
+        <url-pattern>/aos/_aos_resources/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AosWebdavService</servlet-name>
+        <url-pattern>/aos/*</url-pattern>
+    </servlet-mapping>]]></value>
+                                </replacement>
+                            </replacements>
+                        </configuration>
+                    </execution>
+                    <execution>
+                       <id>replace-index.jsp</id>
+                      <phase>prepare-package</phase>
+                      <goals>
+                         <goal>replace</goal>
+                      </goals>
+                      <configuration>
+                         <file>${project.build.directory}/${project.build.finalName}/index.jsp</file>
+                         <replacements>
+                            <replacement>
+                               <token><![CDATA[<!-- Enterprise index-jsp placeholder -->]]></token>
+                               <value><![CDATA[<%
+if(request.getMethod().equals("PROPFIND") || request.getMethod().equals("OPTIONS"))
+{
+    RequestDispatcher rd = application.getRequestDispatcher("/AosResponder_Context");
+    if(rd != null)
+    {
+        rd.forward(request, response);
+        return;
+    }
+}
+%>]]></value>
+                            </replacement>
+                         </replacements>
+                      </configuration>
+                    </execution>
+
+                    <!-- NonSSL war: Replaces web.xml where applicable, commenting out the security-constraints -->
+                    <execution>
+                        <id>disable-securecomms</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>replace</goal>
+                        </goals>
+                        <configuration>
+                            <file>${project.build.directory}/${project.build.finalName}/WEB-INF/web.xml</file>
+                            <outputFile>${project.build.directory}/nossl/web.xml</outputFile>
+                            <replacements>
+                                <replacement>
+                                    <token><![CDATA[<!-- Toggle securecomms placeholder start -->]]></token>
+                                    <value><![CDATA[<!-- ]]></value>
+                                </replacement>
+                                <replacement>
+                                    <token><![CDATA[<!-- Toggle securecomms placeholder end -->]]></token>
+                                    <value><![CDATA[--> ]]></value>
+                                </replacement>
+                            </replacements>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>run</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>run-exploded-webapp</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>run-war-only</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>pentaho</id>
+            <build>
+             <plugins>
+                <plugin>
+                   <artifactId>maven-dependency-plugin</artifactId>
+                   <executions>
+                      <execution>
+                         <id>fetch-amps-pentaho</id>
+                         <phase>prepare-package</phase>
+                         <goals>
+                            <goal>copy</goal>
+                         </goals>
+                         <configuration>
+                            <artifactItems>
+                               <artifactItem>
+                                  <groupId>org.alfresco.integrations</groupId>
+                                  <artifactId>pentaho-repo</artifactId>
+                                  <version>${alfresco.pentaho.version}</version>
+                                  <type>amp</type>
+                               </artifactItem>
+                            </artifactItems>
+                            <outputDirectory>target/pentaho-amps</outputDirectory>
+                         </configuration>
+                      </execution>
+                   </executions>
+                </plugin>
+                <!-- Apply amp files -->
+                <plugin>
+                   <groupId>org.alfresco.maven.plugin</groupId>
+                   <artifactId>alfresco-maven-plugin</artifactId>
+                   <configuration>
+                      <warLocation>${project.build.directory}/${project.build.finalName}</warLocation>
+                   </configuration>
+                   <executions>
+                      <execution>
+                         <id>install-amps</id>
+                         <phase>prepare-package</phase>
+                         <goals>
+                            <goal>install</goal>
+                         </goals>
+                         <configuration>
+                            <ampLocation>target/pentaho-amps</ampLocation>
+                         </configuration>
+                      </execution>
+                   </executions>
+                </plugin>
+             </plugins>
+            </build>
+         </profile>
+     </profiles>
+</project>
