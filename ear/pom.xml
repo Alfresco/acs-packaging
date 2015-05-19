@@ -175,7 +175,7 @@
                         <configuration>
                             <includeArtifactIds>alfresco-enterprise-distribution</includeArtifactIds>
                             <excludeTransitive>true</excludeTransitive>
-                            <excludes>alfresco-enterprise-${project.version}/solr4/,alfresco-enterprise-${project.version}/web-server/webapps/,alfresco-enterprise-${project.version}/web-server/shared/</excludes>
+                            <excludes>alfresco-enterprise-${project.version}/solr4/,alfresco-enterprise-${project.version}/web-server/webapps/</excludes>
                         </configuration>
                     </execution>
 

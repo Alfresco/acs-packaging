@@ -10,6 +10,13 @@
         <fileSet>
             <directory>${project.build.directory}/dependency/alfresco-enterprise-${project.version}</directory>
             <outputDirectory/>
+            <excludes>
+                <exclude>web-server/shared/**</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.build.directory}/dependency/alfresco-enterprise-${project.version}/web-server/shared/classes</directory>
+            <outputDirectory>web-server/classpath</outputDirectory>
         </fileSet>
     </fileSets>
 
