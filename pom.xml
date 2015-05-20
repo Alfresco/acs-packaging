@@ -197,7 +197,9 @@
                             <goal>replace</goal>
                         </goals>
                         <configuration>
+                            <!-- First set of replacements will be common to both SSL and non-SSL versions -->
                             <file>${project.build.directory}/${project.build.finalName}/WEB-INF/web.xml</file>
+                            <outputFile>${project.build.directory}/alfresco-ssl/WEB-INF/web.xml</outputFile>
                             <replacements>
                                 <replacement>
                                     <token><![CDATA[<!-- Enterprise context-param placeholder -->]]></token>
@@ -486,7 +488,11 @@ if(request.getMethod().equals("PROPFIND") || request.getMethod().equals("OPTIONS
                             <goal>replace</goal>
                         </goals>
                         <configuration>
-                            <file>${project.build.directory}/${project.build.finalName}/WEB-INF/web.xml</file>
+                            <!--
+                              After other replacements common to both SSL and non-SSL web.xml have taken
+                              place, perform replacements specific to non-SSL version.
+                            -->
+                            <file>${project.build.directory}/alfresco-ssl/WEB-INF/web.xml</file>
                             <outputFile>${project.build.directory}/${project.build.finalName}/WEB-INF/web.xml</outputFile>
                             <replacements>
                                 <replacement>
