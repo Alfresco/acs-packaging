@@ -69,18 +69,18 @@
                         <goals>
                             <goal>run</goal>
                         </goals>
+                        <configuration>
+                            <target>
+                                <copy file="target/dependency/WEB-INF/classes/alfresco/version.properties"
+                                    todir="${project.build.outputDirectory}" overwrite="true" />
+                                <zip destfile="${project.build.outputDirectory}/webapps/file-transfer-receiver.war"
+                                    update="true">
+                                    <zipfileset dir="${project.build.outputDirectory}" includes="version.properties" prefix="WEB-INF/classes"/>
+                                </zip>
+                            </target>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <target>
-                        <copy file="target/dependency/WEB-INF/classes/alfresco/version.properties"
-                            todir="${project.build.outputDirectory}" overwrite="true" />
-                        <zip destfile="${project.build.outputDirectory}/webapps/file-transfer-receiver.war"
-                            update="true">
-                            <zipfileset dir="${project.build.outputDirectory}" includes="version.properties" prefix="WEB-INF/classes"/>
-                        </zip>
-                    </target>
-                </configuration>
             </plugin>
 
             <plugin>
