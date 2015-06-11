@@ -19,6 +19,7 @@
         <module>file-transfer-receiver</module>
         <module>ear</module>
         <module>installer</module>
+        <module>share-po</module>
     </modules>
 
     <build>                  
