@@ -178,6 +178,7 @@
                         </goals>
                         <configuration>
                             <file>${project.build.directory}/alfresco/WEB-INF/classes/alfresco/version.properties</file>
+                            <outputFile>${project.build.outputDirectory}/alfresco/version.properties</outputFile>
                             <replacements>
                                 <replacement>
                                     <token>Community</token>
