@@ -42,7 +42,7 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
-                                    <artifactId>share-enterprise</artifactId>
+                                    <artifactId>share</artifactId>
                                     <version>${project.version}</version>
                                     <type>war</type>
                                     <destFileName>share.war</destFileName>

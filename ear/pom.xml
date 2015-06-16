@@ -19,7 +19,7 @@
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
-            <artifactId>share-enterprise</artifactId>
+            <artifactId>share</artifactId>
             <version>${project.version}</version>
             <type>war</type>
         </dependency>
@@ -158,7 +158,7 @@
                         </webModule>
                         <webModule>
                             <groupId>org.alfresco</groupId>
-                            <artifactId>share-enterprise</artifactId>
+                            <artifactId>share</artifactId>
                             <bundleFileName>share.war</bundleFileName>
                         </webModule>
                         <webModule>
