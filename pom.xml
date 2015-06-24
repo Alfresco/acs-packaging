@@ -20,6 +20,7 @@
         <module>ear</module>
         <module>installer</module>
         <module>share-po</module>
+        <module>update</module>
     </modules>
 
     <build>                  
