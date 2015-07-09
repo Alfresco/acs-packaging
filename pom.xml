@@ -37,36 +37,6 @@
             <artifactId>alfresco-enterprise-remote-api</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <!-- This is needed for compilation but it's provided -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>alfresco-platform</artifactId>
-            <version>${project.version}</version>
-            <classifier>classes</classifier>
-            <scope>provided</scope>
-        </dependency>
-        <!-- 'provided' dependencies, not packaged in war. Not transitive so need
-            to repeat them -->
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet.jsp</groupId>
-            <artifactId>jsp-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.portlet</groupId>
-            <artifactId>portlet-api</artifactId>
-            <version>2.0</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-        </dependency>
       <dependency>
          <groupId>org.alfresco.services</groupId>
          <artifactId>alfresco-events-repo</artifactId>
@@ -166,6 +136,7 @@
                     </execution>
                 </executions>
             </plugin>
+
             <plugin>
                 <groupId>com.google.code.maven-replacer-plugin</groupId>
                 <artifactId>replacer</artifactId>
@@ -457,7 +428,10 @@
                          <goal>replace</goal>
                       </goals>
                       <configuration>
-                         <file>${project.build.directory}/${project.build.finalName}/index.jsp</file>
+                         <includes>
+                             <include>${project.build.directory}/${project.build.finalName}/index.jsp</include>
+                             <include>${project.build.directory}/war/work/org.alfresco/alfresco-platform/index.jsp</include>
+                         </includes>
                          <replacements>
                             <replacement>
                                <token><![CDATA[<!-- Enterprise index-jsp placeholder -->]]></token>
