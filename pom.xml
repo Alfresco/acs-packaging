@@ -12,6 +12,7 @@
 
     <properties>
         <highest.basedir>${basedir}/../../..</highest.basedir>
+        <alfresco.package.name>alfresco-platform</alfresco.package.name>
     </properties>
 
     <modules>
