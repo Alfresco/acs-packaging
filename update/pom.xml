@@ -28,7 +28,7 @@
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>share</artifactId>
-            <version>${project.version}</version>
+            <version>${dependency.share.version}</version>
             <type>war</type>
         </dependency>
  

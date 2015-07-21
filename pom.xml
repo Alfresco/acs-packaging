@@ -12,6 +12,7 @@
 
     <properties>
         <highest.basedir>${basedir}/../../..</highest.basedir>
+		<dependency.update-tool.version>1.0-SNAPSHOT</dependency.update-tool.version>
         <alfresco.package.name>alfresco-platform</alfresco.package.name>
     </properties>
 

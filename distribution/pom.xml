@@ -35,6 +35,12 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-update-tool</artifactId>
+            <version>${dependency.update-tool.version}</version>
+        </dependency>
+
         <!-- JAR files, to extract alfresco/extension -->
         <dependency>
             <groupId>org.alfresco</groupId>
@@ -142,6 +148,13 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
+                                    <artifactId>alfresco-update-tool</artifactId>
+                                    <version>${dependency.update-tool.version}</version>
+                                    <outputDirectory>${project.build.outputDirectory}/bin</outputDirectory>
+                                    <destFileName>alfresco-update-tool.jar</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-enterprise-server-root</artifactId>
                                     <version>${project.version}</version>
                                     <type>war</type>
@@ -159,6 +172,24 @@
                             </artifactItems>
                         </configuration>
                     </execution>
+                    
+                    <execution>
+                        <id>extract-update-tool-distribution</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>alfresco-update-tool-distribution</artifactId>
+                                    <version>${dependency.update-tool.version}</version>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                    
                 </executions>
             </plugin>
 
