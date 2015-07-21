@@ -48,7 +48,7 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
-                                    <artifactId>alfresco-enterprise</artifactId>
+                                    <artifactId>alfresco-platform-enterprise</artifactId>
                                     <version>${project.version}</version>
                                     <type>war</type>
                                     <includes>WEB-INF/classes/alfresco/version.properties</includes>
