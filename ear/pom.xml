@@ -41,7 +41,7 @@
         <!-- Distribution zip -->
         <dependency>
             <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-enterprise-distribution</artifactId>
+            <artifactId>alfresco-platform-enterprise-distributionzip</artifactId>
             <version>${project.version}</version>
             <type>zip</type>
             <scope>provided</scope>
@@ -185,7 +185,7 @@
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>alfresco-enterprise-distribution</includeArtifactIds>
+                            <includeArtifactIds>alfresco-platform-enterprise-distributionzip</includeArtifactIds>
                             <excludeTransitive>true</excludeTransitive>
                             <excludes>alfresco-enterprise-${project.version}/solr4/,alfresco-enterprise-${project.version}/web-server/webapps/</excludes>
                         </configuration>
