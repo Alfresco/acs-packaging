@@ -1,4 +1,4 @@
-Alfresco Enterprise Edition ${project.version}
+Alfresco Platform Enterprise Edition ${project.version}
 ===============================
 
 For Enterprise subscribers, refer to http://support.alfresco.com for release notes and detailed information on this release.
