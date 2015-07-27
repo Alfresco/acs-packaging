@@ -112,28 +112,6 @@
                         <!-- Must be done before the replacer filter-copies web.xml into place -->
                         <phase>prepare-package</phase>
                     </execution>
-                    <!-- Additional execution to generate a non-ssl war -->
-                    <execution>
-                        <id>nossl-war</id>
-                        <goals>
-                            <goal>war</goal>
-                        </goals>
-                        <configuration>
-                            <webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
-                            <classifier>nossl</classifier>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>default-war</id>
-                        <goals>
-                            <goal>war</goal>
-                        </goals>
-                        <phase>package</phase>
-                        <configuration>
-                            <!-- Use the original, unfiltered web.xml -->
-                            <webappDirectory>${project.build.directory}/alfresco-ssl</webappDirectory>
-                        </configuration>
-                    </execution>
                 </executions>
             </plugin>
 
@@ -165,9 +143,9 @@
                             <goal>replace</goal>
                         </goals>
                         <configuration>
-                            <!-- First set of replacements will be common to both SSL and non-SSL versions -->
+                            <!-- Modify web.xml to add the Enterprise-specific bits -->
                             <file>${project.build.directory}/${project.build.finalName}/WEB-INF/web.xml</file>
-                            <outputFile>${project.build.directory}/alfresco-ssl/WEB-INF/web.xml</outputFile>
+                            <outputFile>${project.build.directory}/alfresco/WEB-INF/web.xml</outputFile>
                             <replacements>
                                 <replacement>
                                     <token><![CDATA[<!-- Enterprise context-param placeholder -->]]></token>
@@ -449,33 +427,6 @@ if(request.getMethod().equals("PROPFIND") || request.getMethod().equals("OPTIONS
                             </replacement>
                          </replacements>
                       </configuration>
-                    </execution>
-
-                    <!-- NonSSL war: Replaces web.xml where applicable, commenting out the security-constraints -->
-                    <execution>
-                        <id>disable-securecomms</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>replace</goal>
-                        </goals>
-                        <configuration>
-                            <!--
-                              After other replacements common to both SSL and non-SSL web.xml have taken
-                              place, perform replacements specific to non-SSL version.
-                            -->
-                            <file>${project.build.directory}/alfresco-ssl/WEB-INF/web.xml</file>
-                            <outputFile>${project.build.directory}/${project.build.finalName}/WEB-INF/web.xml</outputFile>
-                            <replacements>
-                                <replacement>
-                                    <token><![CDATA[<!-- Toggle securecomms placeholder start -->]]></token>
-                                    <value><![CDATA[<!-- ]]></value>
-                                </replacement>
-                                <replacement>
-                                    <token><![CDATA[<!-- Toggle securecomms placeholder end -->]]></token>
-                                    <value><![CDATA[--> ]]></value>
-                                </replacement>
-                            </replacements>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
