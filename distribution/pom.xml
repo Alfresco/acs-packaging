@@ -142,14 +142,6 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
-                                    <artifactId>alfresco-enterprise-server-root</artifactId>
-                                    <version>${project.version}</version>
-                                    <type>war</type>
-                                    <outputDirectory>${project.build.outputDirectory}/web-server/webapps</outputDirectory>
-                                    <destFileName>ROOT.war</destFileName>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-enterprise-vti-bin</artifactId>
                                     <version>${project.version}</version>
                                     <type>war</type>
