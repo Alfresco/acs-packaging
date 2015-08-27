@@ -12,7 +12,6 @@
 
     <properties>
         <highest.basedir>${basedir}/../../..</highest.basedir>
-        <dependency.update-tool.version>1.0-SNAPSHOT</dependency.update-tool.version>
         <alfresco.package.name>alfresco-platform-enterprise</alfresco.package.name>
         <alfresco.distribution.name>${alfresco.package.name}-distributionzip</alfresco.distribution.name>
     </properties>
