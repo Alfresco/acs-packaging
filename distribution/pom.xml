@@ -140,6 +140,14 @@
                                     <outputDirectory>${project.build.outputDirectory}/bin</outputDirectory>
                                     <destFileName>alfresco-spring-encryptor.jar</destFileName>
                                 </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>alfresco-enterprise-vti-bin</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>war</type>
+                                    <outputDirectory>${project.build.outputDirectory}/web-server/webapps</outputDirectory>
+                                    <destFileName>_vti_bin.war</destFileName>
+                                </artifactItem>
                             </artifactItems>
                         </configuration>
                     </execution>                    
