@@ -1,8 +1,4 @@
-Alfresco Platform Enterprise Edition ${project.version}
+Alfresco Platform Enterprise ${project.version}
 ===============================
 
-For Enterprise subscribers, refer to http://support.alfresco.com for release notes and detailed information on this release.
-
-For Community members, refer to the Alfresco wiki for more information on this release.
-
-
+See the Alfresco Support Portal (http://support.alfresco.com) for release notes and detailed information on this release.
