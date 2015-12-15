@@ -152,22 +152,6 @@
                                     <value><![CDATA[<context-param><description>Vaadin production mode</description><param-name>productionMode</param-name><param-value>true</param-value></context-param>]]></value>
                                 </replacement>
                                 <replacement>
-                                    <token><![CDATA[<!-- Enterprise filter placeholder -->]]></token>
-                                    <value><![CDATA[<filter>
-      <filter-name>Office Services Authentication Filter</filter-name>
-      <filter-class>org.alfresco.repo.web.filter.beans.BeanProxyFilter</filter-class>
-      <init-param>
-         <param-name>beanName</param-name>
-         <param-value>AosAuthenticationFilter</param-value>
-      </init-param>
-   </filter>
-
-   <filter>
-      <filter-name>Office Services Filter</filter-name>
-      <filter-class>org.alfresco.enterprise.repo.officeservices.service.ServiceFilter</filter-class>
-   </filter>]]></value>
-                                </replacement>
-                                <replacement>
                                     <token><![CDATA[<!-- Activiti Global Authentication Filter mapping placeholder -->]]></token>
                                     <value><![CDATA[<filter-mapping>
       <filter-name>Global Authentication Filter</filter-name>
@@ -177,30 +161,6 @@
    <filter-mapping>
       <filter-name>Global Authentication Filter</filter-name>
       <url-pattern>/VAADIN/*</url-pattern>
-   </filter-mapping>]]></value>
-                                </replacement>
-                                <replacement>
-                                    <token><![CDATA[<!-- Enterprise filter-mapping placeholder -->]]></token>
-                                    <value><![CDATA[<filter-mapping>
-      <filter-name>Office Services Authentication Filter</filter-name>
-      <url-pattern>/aos/*</url-pattern>
-   </filter-mapping>
-
-   <filter-mapping>
-      <filter-name>Office Services Authentication Filter</filter-name>
-      <url-pattern>/AosResponder_ServerRoot</url-pattern>
-      <dispatcher>FORWARD</dispatcher>
-   </filter-mapping>
-
-   <filter-mapping>
-      <filter-name>Office Services Authentication Filter</filter-name>
-      <url-pattern>/AosResponder_Context</url-pattern>
-      <dispatcher>FORWARD</dispatcher>
-   </filter-mapping>
-
-   <filter-mapping>
-      <filter-name>Office Services Filter</filter-name>
-      <url-pattern>/aos/*</url-pattern>
    </filter-mapping>]]></value>
                                 </replacement>
                                 <replacement>
@@ -214,89 +174,6 @@
                                     <value><![CDATA[<servlet>
       <servlet-name>Vaadin Application Servlet</servlet-name>
       <servlet-class>org.activiti.explorer.servlet.ExplorerApplicationServlet</servlet-class>
-   </servlet>
-
-   <servlet>
-      <servlet-name>AosAuthorService</servlet-name>
-      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.AuthorService</servlet-class>
-      <load-on-startup>5</load-on-startup>
-   </servlet>
-
-   <servlet>
-      <servlet-name>AosBrowsingService</servlet-name>
-      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.BrowsingService</servlet-class>
-      <load-on-startup>5</load-on-startup>
-   </servlet>
-
-   <servlet>
-      <servlet-name>AosCopyService</servlet-name>
-      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.CopyService</servlet-class>
-      <load-on-startup>5</load-on-startup>
-   </servlet>
-
-   <servlet>
-      <servlet-name>AosDwsService</servlet-name>
-      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.DwsService</servlet-class>
-      <load-on-startup>5</load-on-startup>
-   </servlet>
-
-   <servlet>
-      <servlet-name>AosListsService</servlet-name>
-      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.ListsService</servlet-class>
-      <load-on-startup>5</load-on-startup>
-   </servlet>
-
-   <servlet>
-      <servlet-name>AosServiceDispatcher</servlet-name>
-      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.ServiceDispatcher</servlet-class>
-   </servlet>
-
-   <servlet>
-      <servlet-name>AosSiteDataService</servlet-name>
-      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.SiteDataService</servlet-class>
-      <load-on-startup>5</load-on-startup>
-   </servlet>
-
-   <servlet>
-      <servlet-name>AosVersionsService</servlet-name>
-      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.VersionsService</servlet-class>
-      <load-on-startup>5</load-on-startup>
-   </servlet>
-
-   <servlet>
-      <servlet-name>AosVtiInfService</servlet-name>
-      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.VtiInfService</servlet-class>
-      <load-on-startup>5</load-on-startup>
-   </servlet>
-
-   <servlet>
-      <servlet-name>AosWebsService</servlet-name>
-      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.WebsService</servlet-class>
-      <load-on-startup>5</load-on-startup>
-   </servlet>
-
-   <servlet>
-      <servlet-name>AosWebViewResourcesService</servlet-name>
-      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.WebViewResourcesService</servlet-class>
-      <load-on-startup>5</load-on-startup>
-   </servlet>
-
-   <servlet>
-      <servlet-name>AosWebdavService</servlet-name>
-      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.WebdavService</servlet-class>
-      <load-on-startup>5</load-on-startup>
-   </servlet>
-
-   <servlet>
-      <servlet-name>AosServerRootResponder</servlet-name>
-      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.ServerRootResponder</servlet-class>
-      <load-on-startup>5</load-on-startup>
-   </servlet>
-
-   <servlet>
-      <servlet-name>AosContextResponder</servlet-name>
-      <servlet-class>org.alfresco.enterprise.repo.officeservices.service.ContextResponder</servlet-class>
-      <load-on-startup>5</load-on-startup>
    </servlet>]]></value>
                                 </replacement>
                                 <replacement>
@@ -309,124 +186,10 @@
    <servlet-mapping>
       <servlet-name>Vaadin Application Servlet</servlet-name>
       <url-pattern>/VAADIN/*</url-pattern>
-   </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>AosServiceDispatcher</servlet-name>
-        <url-pattern>/aos/_vti_bin/shtml.dll/_vti_rpc</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>AosAuthorService</servlet-name>
-        <url-pattern>/aos/_vti_bin/_vti_aut/author.dll</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>AosBrowsingService</servlet-name>
-        <url-pattern>/aos/_vti_bin/owssvr.dll</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>AosCopyService</servlet-name>
-        <url-pattern>/aos/_vti_bin/copy.asmx</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>AosCopyService</servlet-name>
-        <url-pattern>/aos/_vti_bin/Copy.asmx</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>AosDwsService</servlet-name>
-        <url-pattern>/aos/_vti_bin/dws.asmx</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>AosListsService</servlet-name>
-        <url-pattern>/aos/_vti_bin/lists.asmx</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>AosListsService</servlet-name>
-        <url-pattern>/aos/_vti_bin/Lists.asmx</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>AosSiteDataService</servlet-name>
-        <url-pattern>/aos/_vti_bin/SiteData.asmx</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>AosVersionsService</servlet-name>
-        <url-pattern>/aos/_vti_bin/versions.asmx</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>AosVtiInfService</servlet-name>
-        <url-pattern>/aos/_vti_inf.html</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>AosWebsService</servlet-name>
-        <url-pattern>/aos/_vti_bin/webs.asmx</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>AosWebsService</servlet-name>
-        <url-pattern>/aos/_vti_bin/Webs.asmx</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>AosServerRootResponder</servlet-name>
-        <url-pattern>/AosResponder_ServerRoot</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>AosContextResponder</servlet-name>
-        <url-pattern>/AosResponder_Context</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>AosWebViewResourcesService</servlet-name>
-        <url-pattern>/aos/_aos_resources/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>AosWebdavService</servlet-name>
-        <url-pattern>/aos/*</url-pattern>
-    </servlet-mapping>]]></value>
+   </servlet-mapping>]]></value>
                                 </replacement>
                             </replacements>
                         </configuration>
-                    </execution>
-                    <execution>
-                       <id>replace-index.jsp</id>
-                      <phase>prepare-package</phase>
-                      <goals>
-                         <goal>replace</goal>
-                      </goals>
-                      <configuration>
-                         <includes>
-                             <include>${project.build.directory}/${project.build.finalName}/index.jsp</include>
-                             <include>${project.build.directory}/war/work/org.alfresco/alfresco-platform/index.jsp</include>
-                         </includes>
-                         <replacements>
-                            <replacement>
-                               <token><![CDATA[<!-- Enterprise index-jsp placeholder -->]]></token>
-                               <value><![CDATA[<%
-if(request.getMethod().equals("PROPFIND") || request.getMethod().equals("OPTIONS"))
-{
-    RequestDispatcher rd = application.getRequestDispatcher("/AosResponder_Context");
-    if(rd != null)
-    {
-        rd.forward(request, response);
-        return;
-    }
-}
-%>]]></value>
-                            </replacement>
-                         </replacements>
-                      </configuration>
                     </execution>
                 </executions>
             </plugin>
