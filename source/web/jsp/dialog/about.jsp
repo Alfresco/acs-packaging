@@ -1,3 +1,14 @@
+<%--
+  #%L
+  Alfresco Platform WAR Enterprise
+  %%
+  Copyright (C) 2005 - 2016 Alfresco Software Limited
+  %%
+  License rights for this program may be obtained from Alfresco Software, Ltd.
+  pursuant to a written agreement and any use of this program without such an
+  agreement is prohibited.
+  #L%
+  --%>
 <%@ taglib uri="http://java.sun.com/jsf/html" prefix="h" %>
 <%@ taglib uri="http://java.sun.com/jsf/core" prefix="f" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
