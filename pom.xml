@@ -15,6 +15,7 @@
         <maven.tomcat.port>${tomcat.default.alfresco.port}</maven.tomcat.port>
         <maven.tomcat.httpsPort>${tomcat.default.alfresco.ssl.port}</maven.tomcat.httpsPort>
         <maven.tomcat.path>/alfresco</maven.tomcat.path>
+        <maven.tomcat.uriEncoding>UTF-8</maven.tomcat.uriEncoding>
         <runtime.parent.folder>${basedir}/../../..</runtime.parent.folder>
     </properties>
 
@@ -51,7 +52,7 @@
          <groupId>org.alfresco.services</groupId>
          <artifactId>alfresco-events-repo-activiti</artifactId>
          <version>1.2.5</version>
-      </dependency>      
+      </dependency>
     </dependencies>
 
     <build>
@@ -242,7 +243,7 @@
                             <asWebapp>true</asWebapp>
                             <contextFile>${runtime.tomcat.conf.folder}/solr-context.xml</contextFile>
                         </webapp>
-                    </webapps> 
+                    </webapps>
                 </configuration>
             </plugin>
         </plugins>
