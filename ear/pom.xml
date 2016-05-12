@@ -17,17 +17,10 @@
             <version>${project.version}</version>
             <type>war</type>
         </dependency>
-
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-server-root</artifactId>
             <version>${project.version}</version>
-            <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco.aos-module</groupId>
-            <artifactId>alfresco-vti-bin</artifactId>
-            <version>${alfresco.aos-module.version}</version>
             <type>war</type>
         </dependency>
 
@@ -166,11 +159,6 @@
                             <groupId>org.alfresco</groupId>
                             <artifactId>alfresco-server-root</artifactId>
                             <bundleFileName>ROOT.war</bundleFileName>
-                        </webModule>
-                        <webModule>
-                            <groupId>org.alfresco.aos-module</groupId>
-                            <artifactId>alfresco-vti-bin</artifactId>
-                            <bundleFileName>_vti_bin.war</bundleFileName>
                         </webModule>
                     </modules>
                 </configuration>
