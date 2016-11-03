@@ -22,6 +22,7 @@
 
 
     <dependencies>
+        
         <!-- Dependency on the Alfresco Community WAR -->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -102,6 +103,7 @@
                             <artifactId>alfresco-platform</artifactId>
                             <type>war</type>
                         </overlay>
+
                     </overlays>
                 </configuration>
                 <!-- This allows overlays to be prepared on the FS for minification and faster run -->
