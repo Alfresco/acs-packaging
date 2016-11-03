@@ -315,7 +315,7 @@
             <id>withShare</id>
             <dependencies>
                 <dependency>
-      	            <groupId>org.alfresco</groupId>
+                    <groupId>org.alfresco</groupId>
                     <artifactId>alfresco-share-services</artifactId>
                     <version>${runner.share.version}</version>
                     <type>amp</type>
