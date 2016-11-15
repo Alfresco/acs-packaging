@@ -103,8 +103,12 @@
                             <artifactId>alfresco-platform</artifactId>
                             <type>war</type>
                         </overlay>
-
                     </overlays>
+                    <archive>
+                        <manifestEntries>
+                            <DisableIBMJAXWSEngine>true</DisableIBMJAXWSEngine>
+                        </manifestEntries>
+                    </archive>
                 </configuration>
                 <!-- This allows overlays to be prepared on the FS for minification and faster run -->
                 <executions>
