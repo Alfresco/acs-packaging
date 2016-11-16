@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.alfresco</groupId>
@@ -18,11 +18,13 @@
         <maven.tomcat.uriEncoding>UTF-8</maven.tomcat.uriEncoding>
         <runtime.parent.folder>${basedir}/../../..</runtime.parent.folder>
         <runner.share.version>5.1.1</runner.share.version>
+        <runner.rm.version>2.6-SNAPSHOT</runner.rm.version>
+        <runner.saml.version>1.0-SNAPSHOT</runner.saml.version>
     </properties>
 
 
     <dependencies>
-        
+
         <!-- Dependency on the Alfresco Community WAR -->
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -40,25 +42,25 @@
             <artifactId>alfresco-enterprise-remote-api</artifactId>
             <version>${project.version}</version>
         </dependency>
-      <dependency>
-         <groupId>org.alfresco.services</groupId>
-         <artifactId>alfresco-events-repo</artifactId>
-         <version>1.2.6</version>
-      </dependency>
-      <dependency>
-         <groupId>org.alfresco.services</groupId>
-         <artifactId>alfresco-events-repo-publishing</artifactId>
-         <version>1.2.6</version>
-      </dependency>
-      <dependency>
-         <groupId>org.alfresco.services</groupId>
-         <artifactId>alfresco-events-repo-activiti</artifactId>
-         <version>1.2.6</version>
-      </dependency>
+        <dependency>
+            <groupId>org.alfresco.services</groupId>
+            <artifactId>alfresco-events-repo</artifactId>
+            <version>1.2.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco.services</groupId>
+            <artifactId>alfresco-events-repo-publishing</artifactId>
+            <version>1.2.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco.services</groupId>
+            <artifactId>alfresco-events-repo-activiti</artifactId>
+            <version>1.2.6</version>
+        </dependency>
     </dependencies>
 
     <build>
-      <finalName>alfresco</finalName>
+        <finalName>alfresco</finalName>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -257,7 +259,7 @@
                             <contextPath>/api-explorer</contextPath>
                             <type>war</type>
                             <asWebapp>true</asWebapp>
-                        </webapp>                        
+                        </webapp>
                     </webapps>
                 </configuration>
             </plugin>
@@ -268,51 +270,51 @@
         <profile>
             <id>pentaho</id>
             <build>
-             <plugins>
-                <plugin>
-                   <artifactId>maven-dependency-plugin</artifactId>
-                   <executions>
-                      <execution>
-                         <id>fetch-amps-pentaho</id>
-                         <phase>prepare-package</phase>
-                         <goals>
-                            <goal>copy</goal>
-                         </goals>
-                         <configuration>
-                            <artifactItems>
-                               <artifactItem>
-                                  <groupId>org.alfresco.integrations</groupId>
-                                  <artifactId>pentaho-repo</artifactId>
-                                  <version>${alfresco.pentaho.version}</version>
-                                  <type>amp</type>
-                               </artifactItem>
-                            </artifactItems>
-                            <outputDirectory>target/pentaho-amps</outputDirectory>
-                         </configuration>
-                      </execution>
-                   </executions>
-                </plugin>
-                <!-- Apply amp files -->
-                <plugin>
-                   <groupId>org.alfresco.maven.plugin</groupId>
-                   <artifactId>alfresco-maven-plugin</artifactId>
-                   <configuration>
-                      <warLocation>${project.build.directory}/${project.build.finalName}</warLocation>
-                   </configuration>
-                   <executions>
-                      <execution>
-                         <id>install-amps</id>
-                         <phase>prepare-package</phase>
-                         <goals>
-                            <goal>install</goal>
-                         </goals>
-                         <configuration>
-                            <ampLocation>target/pentaho-amps</ampLocation>
-                         </configuration>
-                      </execution>
-                   </executions>
-                </plugin>
-             </plugins>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>fetch-amps-pentaho</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.alfresco.integrations</groupId>
+                                            <artifactId>pentaho-repo</artifactId>
+                                            <version>${alfresco.pentaho.version}</version>
+                                            <type>amp</type>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <outputDirectory>target/pentaho-amps</outputDirectory>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Apply amp files -->
+                    <plugin>
+                        <groupId>org.alfresco.maven.plugin</groupId>
+                        <artifactId>alfresco-maven-plugin</artifactId>
+                        <configuration>
+                            <warLocation>${project.build.directory}/${project.build.finalName}</warLocation>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>install-amps</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>install</goal>
+                                </goals>
+                                <configuration>
+                                    <ampLocation>target/pentaho-amps</ampLocation>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
             </build>
         </profile>
         <profile>
@@ -330,7 +332,7 @@
                     <plugin>
                         <artifactId>maven-war-plugin</artifactId>
                         <configuration>
-                            <overlays>
+                            <overlays combine.children="append">
                                 <overlay>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-share-services</artifactId>
@@ -358,6 +360,59 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>withSaml</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.alfresco.saml</groupId>
+                    <artifactId>alfresco-saml-repo</artifactId>
+                    <version>${runner.saml.version}</version>
+                    <type>amp</type>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <configuration>
+                            <overlays combine.children="append">
+                                <overlay>
+                                    <groupId>org.alfresco.saml</groupId>
+                                    <artifactId>alfresco-saml-repo</artifactId>
+                                    <type>amp</type>
+                                </overlay>
+                            </overlays>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>withRm</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.alfresco</groupId>
+                    <artifactId>alfresco-rm-enterprise-repo</artifactId>
+                    <version>${runner.rm.version}</version>
+                    <type>amp</type>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-war-plugin</artifactId>
+                        <configuration>
+                            <overlays combine.children="append">
+                                <overlay>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>alfresco-rm-enterprise-repo</artifactId>
+                                    <type>amp</type>
+                                </overlay>
+                            </overlays>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
-
 </project>
