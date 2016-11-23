@@ -17,7 +17,7 @@
         <maven.tomcat.path>/alfresco</maven.tomcat.path>
         <maven.tomcat.uriEncoding>UTF-8</maven.tomcat.uriEncoding>
         <runtime.parent.folder>${basedir}/../../..</runtime.parent.folder>
-        <runner.share.version>5.1.1</runner.share.version>
+        <runner.share.version>5.2.1-SNAPSHOT</runner.share.version>
         <runner.rm.version>2.6-SNAPSHOT</runner.rm.version>
         <runner.saml.version>1.0-SNAPSHOT</runner.saml.version>
         <support.tools.version>1.11</support.tools.version>
