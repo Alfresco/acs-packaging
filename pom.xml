@@ -12,7 +12,7 @@
 
     <properties>
         <highest.basedir>${basedir}/../../..</highest.basedir>
-        <alfresco.package.name>alfresco-one-platform</alfresco.package.name>
+        <alfresco.package.name>alfresco-content-services-platform</alfresco.package.name>
         <alfresco.distribution.name>${alfresco.package.name}-distributionzip</alfresco.distribution.name>
     </properties>
 
