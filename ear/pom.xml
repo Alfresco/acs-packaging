@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>alfresco-one-platform-ear-distribution</artifactId>
+    <artifactId>alfresco-content-services-platform-ear-distribution</artifactId>
     <name>Alfresco Platform EAR Distribution</name>
     <parent>
         <groupId>org.alfresco</groupId>
@@ -28,7 +28,7 @@
         <!-- Distribution zip -->
         <dependency>
             <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-one-platform-distributionzip</artifactId>
+            <artifactId>alfresco-content-services-platform-distributionzip</artifactId>
             <version>${project.version}</version>
             <type>zip</type>
             <scope>provided</scope>
@@ -180,9 +180,9 @@
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>alfresco-one-platform-distributionzip</includeArtifactIds>
+                            <includeArtifactIds>alfresco-content-services-platform-distributionzip</includeArtifactIds>
                             <excludeTransitive>true</excludeTransitive>
-                            <excludes>alfresco-one-platform-distributionzip-${project.version}/solr4/,alfresco-one-platform-distributionzip-${project.version}/web-server/webapps/,alfresco-one-platform-distributionzip-${project.version}/modules/</excludes>
+                            <excludes>alfresco-content-services-platform-distributionzip-${project.version}/solr4/,alfresco-content-services-platform-distributionzip-${project.version}/web-server/webapps/,alfresco-content-services-platform-distributionzip-${project.version}/modules/</excludes>
                         </configuration>
                     </execution>
 
@@ -200,7 +200,7 @@
                                     <version>1.0.1</version>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${project.build.directory}/dependency/alfresco-one-platform-distributionzip-${project.version}/web-server/lib</outputDirectory>
+                            <outputDirectory>${project.build.directory}/dependency/alfresco-content-services-platform-distributionzip-${project.version}/web-server/lib</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
