@@ -12,7 +12,7 @@
     <name>Alfresco Enterprise File Transfer Receiver Distribution</name>
 
     <build>
-        <finalName>alfresco-enterprise-file-transfer-receiver-${project.version}</finalName>
+        <finalName>alfresco-content-services-file-transfer-receiver-${project.version}</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
