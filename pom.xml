@@ -46,17 +46,17 @@
         <dependency>
             <groupId>org.alfresco.services</groupId>
             <artifactId>alfresco-events-repo</artifactId>
-            <version>1.2.12</version>
+            <version>1.2.13</version>
         </dependency>
         <dependency>
             <groupId>org.alfresco.services</groupId>
             <artifactId>alfresco-events-repo-publishing</artifactId>
-            <version>1.2.12</version>
+            <version>1.2.13</version>
         </dependency>
         <dependency>
             <groupId>org.alfresco.services</groupId>
             <artifactId>alfresco-events-repo-activiti</artifactId>
-            <version>1.2.12</version>
+            <version>1.2.13</version>
         </dependency>
     </dependencies>
 
