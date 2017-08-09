@@ -19,7 +19,6 @@
     <modules>
         <module>distribution</module>
         <module>ear</module>
-        <module>file-transfer-receiver</module>
         <module>installer</module>
     </modules>
 
