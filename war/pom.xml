@@ -93,7 +93,6 @@
                         <overlay>
                             <groupId>org.alfresco</groupId>
                             <artifactId>alfresco-platform</artifactId>
-                            <version>${dependency.alfresco-platform.version}</version>
                             <type>war</type>
                         </overlay>
                     </overlays>
