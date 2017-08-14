@@ -1,36 +1,45 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.alfresco</groupId>
-        <artifactId>alfresco-enterprise-parent</artifactId>
-        <version>5.3-SNAPSHOT</version>
-    </parent>
     <artifactId>alfresco-enterprise-packaging</artifactId>
     <packaging>pom</packaging>
     <name>Alfresco Enterprise Packaging</name>
+    <version>5.3-SNAPSHOT</version>
+
+    <parent>
+        <groupId>org.alfresco</groupId>
+        <artifactId>alfresco-super-pom</artifactId>
+        <version>8</version>
+    </parent>
 
     <properties>
         <highest.basedir>${basedir}/../../..</highest.basedir>
         <alfresco.package.name>alfresco-content-services-platform</alfresco.package.name>
         <alfresco.distribution.name>${alfresco.package.name}-distributionzip</alfresco.distribution.name>
+        <installer.version.name>${project.version}</installer.version.name>
+
+        <dependency.alfresco-solr4.version>6.1</dependency.alfresco-solr4.version>
+        <dependency.alfresco-mmt.version>${project.version}</dependency.alfresco-mmt.version>
+        <dependency.alfresco-repository.version>6.1</dependency.alfresco-repository.version>
+        <dependency.alfresco-data-model.version>6.16</dependency.alfresco-data-model.version>
+        <dependency.alfresco-content-repository.version>${project.version}</dependency.alfresco-content-repository.version>
+        <dependency.alfresco-enterprise-remote-api.version>6.0</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-pdf-renderer.version>1.0</dependency.alfresco-pdf-renderer.version>
+        <dependency.alfresco-platform-community-distributionzip.version>${project.version}</dependency.alfresco-platform-community-distributionzip.version>
+        <dependency.alfresco-jlan.version>6.3</dependency.alfresco-jlan.version>
+        <dependency.alfresco-spring-encryptor.version>6.0</dependency.alfresco-spring-encryptor.version>
+        <dependency.alfresco-server-root.version>6.0</dependency.alfresco-server-root.version>
+        <dependency.alfresco-installer-resources>${project.version}</dependency.alfresco-installer-resources>
+        <alfresco.aos-module.version>1.1.6</alfresco.aos-module.version>
+
+        <dependency.postgresql.version>9.4.1212</dependency.postgresql.version>
     </properties>
 
     <modules>
         <module>distribution</module>
         <module>ear</module>
         <module>installer</module>
+        <module>war</module>
     </modules>
-
-    <build>
-        <!-- Switch back to Maven default -->
-        <sourceDirectory>src/main/java</sourceDirectory>
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-    </build>
 
 </project>
