@@ -52,11 +52,9 @@
     </properties>
 
     <modules>
-        <module>distribution</module>
+        <module>zip</module>
         <module>ear</module>
         <module>war</module>
     </modules>
-
-
 
 </project>
