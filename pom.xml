@@ -17,21 +17,20 @@
         <alfresco.distribution.name>${alfresco.package.name}-distributionzip</alfresco.distribution.name>
         <installer.version.name>${project.version}</installer.version.name>
 
-        <dependency.alfresco-solr4.version>6.1</dependency.alfresco-solr4.version>
+        <dependency.alfresco-solr4.version>6.2</dependency.alfresco-solr4.version>
         <dependency.alfresco-mmt.version>${project.version}</dependency.alfresco-mmt.version>
         <dependency.alfresco-repository.version>6.1</dependency.alfresco-repository.version>
         <dependency.alfresco-data-model.version>6.16</dependency.alfresco-data-model.version>
         <dependency.alfresco-content-repository.version>${project.version}</dependency.alfresco-content-repository.version>
         <dependency.alfresco-enterprise-remote-api.version>6.0</dependency.alfresco-enterprise-remote-api.version>
-        <dependency.alfresco-pdf-renderer.version>1.0</dependency.alfresco-pdf-renderer.version>
         <dependency.alfresco-platform-community-distributionzip.version>${project.version}</dependency.alfresco-platform-community-distributionzip.version>
-        <dependency.alfresco-platform.version>${project.version}</dependency.alfresco-platform.version>
         <dependency.alfresco-jlan.version>6.3</dependency.alfresco-jlan.version>
         <dependency.alfresco-spring-encryptor.version>6.0</dependency.alfresco-spring-encryptor.version>
         <dependency.alfresco-server-root.version>6.0</dependency.alfresco-server-root.version>
         <dependency.alfresco-installer-resources>${project.version}</dependency.alfresco-installer-resources>
         <alfresco.aos-module.version>1.1.6</alfresco.aos-module.version>
         <dependency.alfresco-enterprise-crypto.version>6.0</dependency.alfresco-enterprise-crypto.version>
+        <installer.alfresco-pdf-renderer.version>1.0</installer.alfresco-pdf-renderer.version>
 
         <dependency.postgresql.version>9.4.1212</dependency.postgresql.version>
     </properties>

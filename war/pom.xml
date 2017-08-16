@@ -18,8 +18,8 @@
         <!-- Dependency on the Alfresco Community WAR -->
         <dependency>
             <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-platform</artifactId>
-            <version>${dependency.alfresco-platform.version}</version>
+            <artifactId>alfresco-content-repository</artifactId>
+            <version>${dependency.alfresco-content-repository.version}</version>
             <type>war</type>
         </dependency>
         <dependency>
@@ -92,7 +92,7 @@
                     <overlays>
                         <overlay>
                             <groupId>org.alfresco</groupId>
-                            <artifactId>alfresco-platform</artifactId>
+                            <artifactId>alfresco-content-repository</artifactId>
                             <type>war</type>
                         </overlay>
                     </overlays>
