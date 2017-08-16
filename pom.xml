@@ -27,8 +27,6 @@
         <dependency.alfresco-jlan.version>6.3</dependency.alfresco-jlan.version>
         <dependency.alfresco-spring-encryptor.version>6.0</dependency.alfresco-spring-encryptor.version>
         <dependency.alfresco-server-root.version>6.0</dependency.alfresco-server-root.version>
-        <dependency.alfresco-installer-resources>${project.version}</dependency.alfresco-installer-resources>
-        <alfresco.aos-module.version>1.1.6</alfresco.aos-module.version>
         <dependency.alfresco-enterprise-crypto.version>6.0</dependency.alfresco-enterprise-crypto.version>
         <installer.alfresco-pdf-renderer.version>1.0</installer.alfresco-pdf-renderer.version>
 
