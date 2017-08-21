@@ -31,10 +31,6 @@
     </distributionManagement>
 
     <properties>
-        <alfresco.package.name>alfresco-content-services-platform</alfresco.package.name>
-        <alfresco.distribution.name>${alfresco.package.name}-distributionzip</alfresco.distribution.name>
-        <installer.version.name>${project.version}</installer.version.name>
-
         <dependency.alfresco-solr4.version>6.2</dependency.alfresco-solr4.version>
         <dependency.alfresco-mmt.version>${project.version}</dependency.alfresco-mmt.version>
         <dependency.alfresco-repository.version>6.1</dependency.alfresco-repository.version>
