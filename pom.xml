@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>alfresco-enterprise-packaging</artifactId>
+    <artifactId>acs-packaging</artifactId>
     <packaging>pom</packaging>
-    <name>Alfresco Enterprise Packaging</name>
+    <name>Alfresco Content Services Packaging</name>
     <version>5.3-SNAPSHOT</version>
 
     <parent>
@@ -13,9 +13,9 @@
     </parent>
 
     <scm>
-        <connection>scm:git:https://git.alfresco.com/Repository/alfresco-enterprise-packaging.git</connection>
-        <developerConnection>scm:git:https://git.alfresco.com/Repository/alfresco-enterprise-packaging.git</developerConnection>
-        <url>https://git.alfresco.com/Repository/alfresco-enterprise-packaging</url>
+        <connection>scm:git:https://git.alfresco.com/Repository/acs-packaging.git</connection>
+        <developerConnection>scm:git:https://git.alfresco.com/Repository/acs-packaging.git</developerConnection>
+        <url>https://git.alfresco.com/Repository/acs-packaging</url>
         <tag>HEAD</tag>
     </scm>
 
