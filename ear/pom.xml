@@ -30,7 +30,7 @@
         <!-- Distribution zip -->
         <dependency>
             <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-content-services-platform-distributionzip</artifactId>
+            <artifactId>alfresco-content-services-distribution</artifactId>
             <version>${project.version}</version>
             <type>zip</type>
             <scope>provided</scope>
@@ -194,9 +194,9 @@
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>alfresco-content-services-platform-distributionzip</includeArtifactIds>
+                            <includeArtifactIds>alfresco-content-services-distribution</includeArtifactIds>
                             <excludeTransitive>true</excludeTransitive>
-                            <excludes>alfresco-content-services-platform-distributionzip-${project.version}/solr4/,alfresco-content-services-platform-distributionzip-${project.version}/web-server/webapps/,alfresco-content-services-platform-distributionzip-${project.version}/modules/</excludes>
+                            <excludes>alfresco-content-services-distribution-${project.version}/solr4/,alfresco-content-services-distribution-${project.version}/web-server/webapps/,alfresco-content-services-distribution-${project.version}/modules/</excludes>
                         </configuration>
                     </execution>
 
@@ -214,7 +214,7 @@
                                     <version>1.0.1</version>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${project.build.directory}/dependency/alfresco-content-services-platform-distributionzip-${project.version}/web-server/lib</outputDirectory>
+                            <outputDirectory>${project.build.directory}/dependency/alfresco-content-services-distribution-${project.version}/web-server/lib</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
