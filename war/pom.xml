@@ -18,33 +18,27 @@
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>content-services-community</artifactId>
-            <version>${dependency.content-services-community.version}</version>
             <type>war</type>
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-enterprise-crypto</artifactId>
-            <version>${dependency.alfresco-enterprise-crypto.version}</version>
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-enterprise-remote-api</artifactId>
-            <version>${dependency.alfresco-enterprise-remote-api.version}</version>
         </dependency>
         <dependency>
             <groupId>org.alfresco.services</groupId>
             <artifactId>alfresco-events-repo</artifactId>
-            <version>1.2.14</version>
         </dependency>
         <dependency>
             <groupId>org.alfresco.services</groupId>
             <artifactId>alfresco-events-repo-publishing</artifactId>
-            <version>1.2.14</version>
         </dependency>
         <dependency>
             <groupId>org.alfresco.services</groupId>
             <artifactId>alfresco-events-repo-activiti</artifactId>
-            <version>1.2.14</version>
         </dependency>
     </dependencies>
 

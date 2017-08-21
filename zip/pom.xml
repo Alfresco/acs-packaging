@@ -21,42 +21,34 @@
             <type>war</type>
         </dependency>
 
-        <!-- Solr config -->
         <dependency>
             <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-solr4</artifactId>
-            <version>${dependency.alfresco-solr4.version}</version>
-            <classifier>config-ssl</classifier>
-            <type>zip</type>
+            <artifactId>alfresco-mmt</artifactId>
         </dependency>
 
         <dependency>
             <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-mmt</artifactId>
-            <version>${dependency.alfresco-mmt.version}</version>
+            <artifactId>alfresco-content-services-community-distribution</artifactId>
+            <classifier>assembly</classifier>
         </dependency>
 
         <!-- JAR files, to extract alfresco/extension -->
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-repository</artifactId>
-            <version>${dependency.alfresco-repository.version}</version>
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-data-model</artifactId>
-            <version>${dependency.alfresco-data-model.version}</version>
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>content-services-community</artifactId>
-            <version>${dependency.content-services-community.version}</version>
             <classifier>classes</classifier>
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-enterprise-remote-api</artifactId>
-            <version>${dependency.alfresco-enterprise-remote-api.version}</version>
         </dependency>
 
         <!-- 3rd party libs -->
@@ -70,22 +62,13 @@
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-pdf-renderer</artifactId>
-            <version>${installer.alfresco-pdf-renderer.version}</version>
             <classifier>linux</classifier>
             <type>tgz</type>
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-pdf-renderer</artifactId>
-            <version>${installer.alfresco-pdf-renderer.version}</version>
             <classifier>win64</classifier>
-            <type>tgz</type>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-pdf-renderer</artifactId>
-            <version>${installer.alfresco-pdf-renderer.version}</version>
-            <classifier>osx</classifier>
             <type>tgz</type>
         </dependency>
 
@@ -109,7 +92,6 @@
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-repository</artifactId>
-                                    <version>${dependency.alfresco-repository.version}</version>
                                     <includes>alfresco/keystore/**</includes>
                                 </artifactItem>
                             </artifactItems>
@@ -127,7 +109,6 @@
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-content-services-community-distribution</artifactId>
-                                    <version>${dependency.alfresco-content-services-community-distribution.version}</version>
                                     <outputDirectory>${project.build.outputDirectory}</outputDirectory>
                                     <excludes>META-INF/**</excludes>
                                 </artifactItem>
@@ -145,7 +126,6 @@
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-jlan-embed</artifactId>
-                                    <version>${dependency.alfresco-jlan.version}</version>
                                     <classifier>windll</classifier>
                                     <includes>*.dll</includes>
                                 </artifactItem>
@@ -163,7 +143,6 @@
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-spring-encryptor</artifactId>
-                                    <version>${dependency.alfresco-spring-encryptor.version}</version>
                                     <outputDirectory>${project.build.outputDirectory}/bin</outputDirectory>
                                     <destFileName>alfresco-spring-encryptor.jar</destFileName>
                                 </artifactItem>

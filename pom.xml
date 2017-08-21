@@ -42,6 +42,7 @@
         <dependency.alfresco-spring-encryptor.version>6.0</dependency.alfresco-spring-encryptor.version>
         <dependency.alfresco-server-root.version>6.0</dependency.alfresco-server-root.version>
         <dependency.alfresco-enterprise-crypto.version>6.0</dependency.alfresco-enterprise-crypto.version>
+        <dependency.alfresco-events-repo.version>1.2.14</dependency.alfresco-events-repo.version>
         <installer.alfresco-pdf-renderer.version>1.0</installer.alfresco-pdf-renderer.version>
 
         <dependency.postgresql.version>9.4.1212</dependency.postgresql.version>
@@ -52,5 +53,99 @@
         <module>ear</module>
         <module>war</module>
     </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-enterprise-crypto</artifactId>
+                <version>${dependency.alfresco-enterprise-crypto.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-enterprise-remote-api</artifactId>
+                <version>${dependency.alfresco-enterprise-remote-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.services</groupId>
+                <artifactId>alfresco-events-repo</artifactId>
+                <version>${dependency.alfresco-events-repo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.services</groupId>
+                <artifactId>alfresco-events-repo-publishing</artifactId>
+                <version>${dependency.alfresco-events-repo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.services</groupId>
+                <artifactId>alfresco-events-repo-activiti</artifactId>
+                <version>${dependency.alfresco-events-repo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-mmt</artifactId>
+                <version>${dependency.alfresco-mmt.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-repository</artifactId>
+                <version>${dependency.alfresco-repository.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-data-model</artifactId>
+                <version>${dependency.alfresco-data-model.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-pdf-renderer</artifactId>
+                <version>${installer.alfresco-pdf-renderer.version}</version>
+                <classifier>linux</classifier>
+                <type>tgz</type>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-pdf-renderer</artifactId>
+                <version>${installer.alfresco-pdf-renderer.version}</version>
+                <classifier>win64</classifier>
+                <type>tgz</type>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-jlan-embed</artifactId>
+                <version>${dependency.alfresco-jlan.version}</version>
+                <classifier>windll</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-spring-encryptor</artifactId>
+                <version>${dependency.alfresco-spring-encryptor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-content-services-community-distribution</artifactId>
+                <version>${dependency.alfresco-content-services-community-distribution.version}</version>
+                <classifier>assembly</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>content-services-community</artifactId>
+                <version>${dependency.alfresco-content-services-community-distribution.version}</version>
+                <classifier>classes</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>content-services-community</artifactId>
+                <version>${dependency.content-services-community.version}</version>
+                <type>war</type>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-server-root</artifactId>
+                <version>${dependency.alfresco-server-root.version}</version>
+                <type>war</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>
