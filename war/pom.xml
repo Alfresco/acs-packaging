@@ -1,10 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>alfresco-platform-enterprise</artifactId>
+    <artifactId>content-services</artifactId>
     <packaging>war</packaging>
-    <name>Alfresco Platform WAR Enterprise</name>
-    <description>Alfresco Enterprise Platform Repository WAR</description>
+    <name>Alfresco Content Services WAR</name>
 
     <parent>
         <groupId>org.alfresco</groupId>
@@ -18,8 +17,8 @@
         <!-- Dependency on the Alfresco Community WAR -->
         <dependency>
             <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-content-repository</artifactId>
-            <version>${dependency.alfresco-content-repository.version}</version>
+            <artifactId>content-services-community</artifactId>
+            <version>${dependency.content-services-community.version}</version>
             <type>war</type>
         </dependency>
         <dependency>
@@ -92,7 +91,7 @@
                     <overlays>
                         <overlay>
                             <groupId>org.alfresco</groupId>
-                            <artifactId>alfresco-content-repository</artifactId>
+                            <artifactId>content-services-community</artifactId>
                             <type>war</type>
                         </overlay>
                     </overlays>

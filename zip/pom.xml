@@ -16,7 +16,7 @@
         <!-- WAR files -->
         <dependency>
             <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-platform-enterprise</artifactId>
+            <artifactId>content-services</artifactId>
             <version>${project.version}</version>
             <type>war</type>
         </dependency>
@@ -49,8 +49,8 @@
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-content-repository</artifactId>
-            <version>${dependency.alfresco-content-repository.version}</version>
+            <artifactId>content-services-community</artifactId>
+            <version>${dependency.content-services-community.version}</version>
             <classifier>classes</classifier>
         </dependency>
         <dependency>
@@ -126,8 +126,8 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
-                                    <artifactId>alfresco-platform-community-distributionzip</artifactId>
-                                    <version>${dependency.alfresco-platform-community-distributionzip.version}</version>
+                                    <artifactId>alfresco-content-services-community-distribution</artifactId>
+                                    <version>${dependency.alfresco-content-services-community-distribution.version}</version>
                                     <outputDirectory>${project.build.outputDirectory}</outputDirectory>
                                     <excludes>META-INF/**</excludes>
                                 </artifactItem>
@@ -178,8 +178,8 @@
                 <dependencies>
                     <dependency>
                         <groupId>org.alfresco</groupId>
-                        <artifactId>alfresco-platform-community-distributionzip</artifactId>
-                        <version>${dependency.alfresco-platform-community-distributionzip.version}</version>
+                        <artifactId>alfresco-content-services-community-distribution</artifactId>
+                        <version>${dependency.alfresco-content-services-community-distribution.version}</version>
                         <classifier>assembly</classifier>
                     </dependency>
                 </dependencies>
