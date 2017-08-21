@@ -34,7 +34,7 @@
         <dependency.alfresco-solr4.version>6.2</dependency.alfresco-solr4.version>
         <dependency.alfresco-mmt.version>${project.version}</dependency.alfresco-mmt.version>
         <dependency.alfresco-repository.version>6.1</dependency.alfresco-repository.version>
-        <dependency.alfresco-data-model.version>6.16</dependency.alfresco-data-model.version>
+        <dependency.alfresco-data-model.version>6.17</dependency.alfresco-data-model.version>
         <dependency.content-services-community.version>${project.version}</dependency.content-services-community.version>
         <dependency.alfresco-enterprise-remote-api.version>6.0</dependency.alfresco-enterprise-remote-api.version>
         <dependency.alfresco-content-services-community-distribution.version>${project.version}</dependency.alfresco-content-services-community-distribution.version>
