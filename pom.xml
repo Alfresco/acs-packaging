@@ -33,9 +33,11 @@
     <properties>
         <dependency.alfresco-mmt.version>${project.version}</dependency.alfresco-mmt.version>
         <dependency.alfresco-repository.version>6.2</dependency.alfresco-repository.version>
+        <dependency.alfresco-remote-api.version>6.1</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>6.2</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-enterprise-remote-api.version>6.1</dependency.alfresco-enterprise-remote-api.version>
         <dependency.alfresco-data-model.version>6.17</dependency.alfresco-data-model.version>
         <dependency.content-services-community.version>${project.version}</dependency.content-services-community.version>
-        <dependency.alfresco-enterprise-remote-api.version>6.1</dependency.alfresco-enterprise-remote-api.version>
         <dependency.alfresco-content-services-community-distribution.version>${project.version}</dependency.alfresco-content-services-community-distribution.version>
         <dependency.alfresco-jlan.version>6.3</dependency.alfresco-jlan.version>
         <dependency.alfresco-spring-encryptor.version>6.0</dependency.alfresco-spring-encryptor.version>
@@ -61,11 +63,6 @@
                 <version>${dependency.alfresco-enterprise-crypto.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-enterprise-remote-api</artifactId>
-                <version>${dependency.alfresco-enterprise-remote-api.version}</version>
-            </dependency>
-            <dependency>
                 <groupId>org.alfresco.services</groupId>
                 <artifactId>alfresco-events-repo</artifactId>
                 <version>${dependency.alfresco-events-repo.version}</version>
@@ -89,6 +86,21 @@
                 <groupId>org.alfresco</groupId>
                 <artifactId>alfresco-repository</artifactId>
                 <version>${dependency.alfresco-repository.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-enterprise-repository</artifactId>
+                <version>${dependency.alfresco-enterprise-repository.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-remote-api</artifactId>
+                <version>${dependency.alfresco-remote-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-enterprise-remote-api</artifactId>
+                <version>${dependency.alfresco-enterprise-remote-api.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.alfresco</groupId>
