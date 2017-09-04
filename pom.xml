@@ -31,22 +31,14 @@
     </distributionManagement>
 
     <properties>
-        <dependency.alfresco-mmt.version>${project.version}</dependency.alfresco-mmt.version>
-        <dependency.alfresco-repository.version>6.2</dependency.alfresco-repository.version>
-        <dependency.alfresco-remote-api.version>6.1</dependency.alfresco-remote-api.version>
         <dependency.alfresco-enterprise-repository.version>6.2</dependency.alfresco-enterprise-repository.version>
         <dependency.alfresco-enterprise-remote-api.version>6.1</dependency.alfresco-enterprise-remote-api.version>
-        <dependency.alfresco-data-model.version>6.17</dependency.alfresco-data-model.version>
         <dependency.content-services-community.version>${project.version}</dependency.content-services-community.version>
         <dependency.alfresco-content-services-community-distribution.version>${project.version}</dependency.alfresco-content-services-community-distribution.version>
-        <dependency.alfresco-jlan.version>6.3</dependency.alfresco-jlan.version>
         <dependency.alfresco-spring-encryptor.version>6.0</dependency.alfresco-spring-encryptor.version>
-        <dependency.alfresco-server-root.version>6.0</dependency.alfresco-server-root.version>
         <dependency.alfresco-enterprise-crypto.version>6.0</dependency.alfresco-enterprise-crypto.version>
         <dependency.alfresco-events-repo.version>1.2.14</dependency.alfresco-events-repo.version>
-        <installer.alfresco-pdf-renderer.version>1.0</installer.alfresco-pdf-renderer.version>
 
-        <dependency.postgresql.version>9.4.1212</dependency.postgresql.version>
     </properties>
 
     <modules>
@@ -57,6 +49,14 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Import community packaging dependency management to avoid repetition -->
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>acs-community-packaging</artifactId>
+                <version>${project.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.alfresco</groupId>
                 <artifactId>alfresco-enterprise-crypto</artifactId>
@@ -79,53 +79,13 @@
             </dependency>
             <dependency>
                 <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-mmt</artifactId>
-                <version>${dependency.alfresco-mmt.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-repository</artifactId>
-                <version>${dependency.alfresco-repository.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
                 <artifactId>alfresco-enterprise-repository</artifactId>
                 <version>${dependency.alfresco-enterprise-repository.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-remote-api</artifactId>
-                <version>${dependency.alfresco-remote-api.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
                 <artifactId>alfresco-enterprise-remote-api</artifactId>
                 <version>${dependency.alfresco-enterprise-remote-api.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-data-model</artifactId>
-                <version>${dependency.alfresco-data-model.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-pdf-renderer</artifactId>
-                <version>${installer.alfresco-pdf-renderer.version}</version>
-                <classifier>linux</classifier>
-                <type>tgz</type>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-pdf-renderer</artifactId>
-                <version>${installer.alfresco-pdf-renderer.version}</version>
-                <classifier>win64</classifier>
-                <type>tgz</type>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-jlan-embed</artifactId>
-                <version>${dependency.alfresco-jlan.version}</version>
-                <classifier>windll</classifier>
             </dependency>
             <dependency>
                 <groupId>org.alfresco</groupId>
@@ -148,12 +108,6 @@
                 <groupId>org.alfresco</groupId>
                 <artifactId>content-services-community</artifactId>
                 <version>${dependency.content-services-community.version}</version>
-                <type>war</type>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-server-root</artifactId>
-                <version>${dependency.alfresco-server-root.version}</version>
                 <type>war</type>
             </dependency>
         </dependencies>

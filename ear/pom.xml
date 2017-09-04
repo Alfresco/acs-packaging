@@ -22,7 +22,6 @@
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-server-root</artifactId>
-            <type>war</type>
         </dependency>
 
         <!-- Provided dependencies, unpacked -->
