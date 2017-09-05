@@ -113,23 +113,6 @@
                 <artifactId>replacer</artifactId>
                 <executions>
                     <execution>
-                        <id>replace-version.properties</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>replace</goal>
-                        </goals>
-                        <configuration>
-                            <file>${project.build.directory}/alfresco/WEB-INF/classes/alfresco/version.properties</file>
-                            <outputFile>${project.build.outputDirectory}/alfresco/version.properties</outputFile>
-                            <replacements>
-                                <replacement>
-                                    <token>Community</token>
-                                    <value>Enterprise</value>
-                                </replacement>
-                            </replacements>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>replace-web.xml</id>
                         <phase>prepare-package</phase>
                         <goals>
