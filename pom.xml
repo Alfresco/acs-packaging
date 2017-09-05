@@ -31,10 +31,11 @@
     </distributionManagement>
 
     <properties>
+	    <dependency.acs-community-packagin.version>5.3-SNAPSHOT</dependency.acs-community-packagin.version>
         <dependency.alfresco-enterprise-repository.version>6.2</dependency.alfresco-enterprise-repository.version>
         <dependency.alfresco-enterprise-remote-api.version>6.1</dependency.alfresco-enterprise-remote-api.version>
-        <dependency.content-services-community.version>${project.version}</dependency.content-services-community.version>
-        <dependency.alfresco-content-services-community-distribution.version>${project.version}</dependency.alfresco-content-services-community-distribution.version>
+        <dependency.content-services-community.version>${dependency.acs-community-packagin.version}</dependency.content-services-community.version>
+        <dependency.alfresco-content-services-community-distribution.version>${dependency.acs-community-packagin.version}</dependency.alfresco-content-services-community-distribution.version>
         <dependency.alfresco-spring-encryptor.version>6.0</dependency.alfresco-spring-encryptor.version>
         <dependency.alfresco-enterprise-crypto.version>6.0</dependency.alfresco-enterprise-crypto.version>
         <dependency.alfresco-events-repo.version>1.2.14</dependency.alfresco-events-repo.version>
@@ -53,7 +54,7 @@
             <dependency>
                 <groupId>org.alfresco</groupId>
                 <artifactId>acs-community-packaging</artifactId>
-                <version>${project.version}</version>
+                <version>${dependency.acs-community-packagin.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
