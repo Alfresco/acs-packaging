@@ -1,6 +1,6 @@
 <%--
   #%L
-  Alfresco Platform WAR Enterprise
+  Alfresco Content Services WAR
   %%
   Copyright (C) 2005 - 2016 Alfresco Software Limited
   %%

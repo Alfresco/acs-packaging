@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>alfresco-enterprise-packaging</artifactId>
+    <artifactId>acs-packaging</artifactId>
     <packaging>pom</packaging>
-    <name>Alfresco Enterprise Packaging</name>
-    <version>5.3-SNAPSHOT</version>
+    <name>Alfresco Content Services Packaging</name>
+    <version>6.0-SNAPSHOT</version>
 
     <parent>
         <groupId>org.alfresco</groupId>
@@ -12,31 +12,106 @@
         <version>8</version>
     </parent>
 
+    <scm>
+        <connection>scm:git:https://git.alfresco.com/Repository/acs-packaging.git</connection>
+        <developerConnection>scm:git:https://git.alfresco.com/Repository/acs-packaging.git</developerConnection>
+        <url>https://git.alfresco.com/Repository/acs-packaging</url>
+        <tag>HEAD</tag>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>alfresco-internal</id>
+            <url>https://artifacts.alfresco.com/nexus/content/repositories/enterprise-releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>alfresco-internal-snapshots</id>
+            <url>https://artifacts.alfresco.com/nexus/content/repositories/enterprise-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <properties>
-        <alfresco.package.name>alfresco-content-services-platform</alfresco.package.name>
-        <alfresco.distribution.name>${alfresco.package.name}-distributionzip</alfresco.distribution.name>
-        <installer.version.name>${project.version}</installer.version.name>
-
-        <dependency.alfresco-solr4.version>6.2</dependency.alfresco-solr4.version>
-        <dependency.alfresco-mmt.version>${project.version}</dependency.alfresco-mmt.version>
-        <dependency.alfresco-repository.version>6.1</dependency.alfresco-repository.version>
-        <dependency.alfresco-data-model.version>6.16</dependency.alfresco-data-model.version>
-        <dependency.alfresco-content-repository.version>${project.version}</dependency.alfresco-content-repository.version>
-        <dependency.alfresco-enterprise-remote-api.version>6.0</dependency.alfresco-enterprise-remote-api.version>
-        <dependency.alfresco-platform-community-distributionzip.version>${project.version}</dependency.alfresco-platform-community-distributionzip.version>
-        <dependency.alfresco-jlan.version>6.3</dependency.alfresco-jlan.version>
+        <dependency.acs-community-packaging.version>6.0-SNAPSHOT</dependency.acs-community-packaging.version>
+        <dependency.alfresco-enterprise-repository.version>6.3</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-enterprise-remote-api.version>6.2</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.content-services-community.version>${dependency.acs-community-packaging.version}</dependency.content-services-community.version>
+        <dependency.alfresco-content-services-community-distribution.version>${dependency.acs-community-packaging.version}</dependency.alfresco-content-services-community-distribution.version>
         <dependency.alfresco-spring-encryptor.version>6.0</dependency.alfresco-spring-encryptor.version>
-        <dependency.alfresco-server-root.version>6.0</dependency.alfresco-server-root.version>
         <dependency.alfresco-enterprise-crypto.version>6.0</dependency.alfresco-enterprise-crypto.version>
-        <installer.alfresco-pdf-renderer.version>1.0</installer.alfresco-pdf-renderer.version>
+        <dependency.alfresco-events-repo.version>1.2.14</dependency.alfresco-events-repo.version>
 
-        <dependency.postgresql.version>9.4.1212</dependency.postgresql.version>
     </properties>
 
     <modules>
-        <module>distribution</module>
+        <module>zip</module>
         <module>ear</module>
         <module>war</module>
     </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Import community packaging dependency management to avoid repetition -->
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>acs-community-packaging</artifactId>
+                <version>${dependency.acs-community-packaging.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-enterprise-crypto</artifactId>
+                <version>${dependency.alfresco-enterprise-crypto.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.services</groupId>
+                <artifactId>alfresco-events-repo</artifactId>
+                <version>${dependency.alfresco-events-repo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.services</groupId>
+                <artifactId>alfresco-events-repo-publishing</artifactId>
+                <version>${dependency.alfresco-events-repo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.services</groupId>
+                <artifactId>alfresco-events-repo-activiti</artifactId>
+                <version>${dependency.alfresco-events-repo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-enterprise-repository</artifactId>
+                <version>${dependency.alfresco-enterprise-repository.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-enterprise-remote-api</artifactId>
+                <version>${dependency.alfresco-enterprise-remote-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-spring-encryptor</artifactId>
+                <version>${dependency.alfresco-spring-encryptor.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-content-services-community-distribution</artifactId>
+                <version>${dependency.alfresco-content-services-community-distribution.version}</version>
+                <classifier>assembly</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>content-services-community</artifactId>
+                <version>${dependency.alfresco-content-services-community-distribution.version}</version>
+                <classifier>classes</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>content-services-community</artifactId>
+                <version>${dependency.content-services-community.version}</version>
+                <type>war</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>

@@ -1,13 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>alfresco-content-services-platform-ear-distribution</artifactId>
-    <name>Alfresco Platform EAR Distribution</name>
+    <artifactId>alfresco-content-services-ear-distribution</artifactId>
+    <name>Alfresco Content Services EAR Distribution</name>
     <packaging>pom</packaging>
 
     <parent>
         <groupId>org.alfresco</groupId>
-        <artifactId>alfresco-enterprise-packaging</artifactId>
-        <version>5.3-SNAPSHOT</version>
+        <artifactId>acs-packaging</artifactId>
+        <version>6.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -15,14 +15,13 @@
         <!-- WARs to include in the EAR -->
         <dependency>
             <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-platform-enterprise</artifactId>
+            <artifactId>content-services</artifactId>
             <version>${project.version}</version>
             <type>war</type>
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-server-root</artifactId>
-            <version>${dependency.alfresco-server-root.version}</version>
             <type>war</type>
         </dependency>
 
@@ -30,7 +29,7 @@
         <!-- Distribution zip -->
         <dependency>
             <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-content-services-platform-distributionzip</artifactId>
+            <artifactId>alfresco-content-services-distribution</artifactId>
             <version>${project.version}</version>
             <type>zip</type>
             <scope>provided</scope>
@@ -154,7 +153,7 @@
     </dependencies>
 
     <build>
-        <finalName>${project.artifactId}-${installer.version.name}</finalName>
+        <finalName>${project.artifactId}-${project.version}</finalName>
         <plugins>
             <!-- Build EAR -->
             <plugin>
@@ -172,7 +171,7 @@
                     <modules>
                         <webModule>
                             <groupId>org.alfresco</groupId>
-                            <artifactId>alfresco-platform-enterprise</artifactId>
+                            <artifactId>content-services</artifactId>
                             <bundleFileName>alfresco.war</bundleFileName>
                         </webModule>
                         <webModule>
@@ -188,15 +187,15 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>unpack-platform-distribution</id>
+                        <id>unpack-distribution</id>
                         <phase>prepare-package</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>alfresco-content-services-platform-distributionzip</includeArtifactIds>
+                            <includeArtifactIds>alfresco-content-services-distribution</includeArtifactIds>
                             <excludeTransitive>true</excludeTransitive>
-                            <excludes>alfresco-content-services-platform-distributionzip-${project.version}/solr4/,alfresco-content-services-platform-distributionzip-${project.version}/web-server/webapps/,alfresco-content-services-platform-distributionzip-${project.version}/modules/</excludes>
+                            <excludes>alfresco-content-services-distribution-${project.version}/solr4/,alfresco-content-services-distribution-${project.version}/web-server/webapps/,alfresco-content-services-distribution-${project.version}/modules/</excludes>
                         </configuration>
                     </execution>
 
@@ -214,7 +213,7 @@
                                     <version>1.0.1</version>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${project.build.directory}/dependency/alfresco-content-services-platform-distributionzip-${project.version}/web-server/lib</outputDirectory>
+                            <outputDirectory>${project.build.directory}/dependency/alfresco-content-services-distribution-${project.version}/web-server/lib</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -233,7 +232,7 @@
                             <descriptors>
                                 <descriptor>src/assembly/myfaces-websphere.xml</descriptor>
                             </descriptors>
-                            <finalName>myfaces1_1-websphere-shared-lib-${installer.version.name}</finalName>
+                            <finalName>myfaces1_1-websphere-shared-lib-${project.version}</finalName>
                             <appendAssemblyId>false</appendAssemblyId>
                             <attach>false</attach>
                         </configuration>

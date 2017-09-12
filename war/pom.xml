@@ -1,56 +1,73 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>alfresco-platform-enterprise</artifactId>
+    <artifactId>content-services</artifactId>
     <packaging>war</packaging>
-    <name>Alfresco Platform WAR Enterprise</name>
-    <description>Alfresco Enterprise Platform Repository WAR</description>
+    <name>Alfresco Content Services WAR</name>
 
     <parent>
         <groupId>org.alfresco</groupId>
-        <artifactId>alfresco-enterprise-packaging</artifactId>
-        <version>5.3-SNAPSHOT</version>
+        <artifactId>acs-packaging</artifactId>
+        <version>6.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
+
+    <properties>
+        <build-number>0</build-number>
+        <build-key>BUILD-KEY</build-key>
+        <build-name>Build-Name</build-name>
+        <scm-path>local/development/workspace</scm-path>
+        <scm-revision>${buildNumber}</scm-revision>
+    </properties>
 
     <dependencies>
 
         <!-- Dependency on the Alfresco Community WAR -->
         <dependency>
             <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-content-repository</artifactId>
-            <version>${dependency.alfresco-content-repository.version}</version>
+            <artifactId>content-services-community</artifactId>
             <type>war</type>
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-enterprise-crypto</artifactId>
-            <version>${dependency.alfresco-enterprise-crypto.version}</version>
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-enterprise-remote-api</artifactId>
-            <version>${dependency.alfresco-enterprise-remote-api.version}</version>
         </dependency>
         <dependency>
             <groupId>org.alfresco.services</groupId>
             <artifactId>alfresco-events-repo</artifactId>
-            <version>1.2.14</version>
         </dependency>
         <dependency>
             <groupId>org.alfresco.services</groupId>
             <artifactId>alfresco-events-repo-publishing</artifactId>
-            <version>1.2.14</version>
         </dependency>
         <dependency>
             <groupId>org.alfresco.services</groupId>
             <artifactId>alfresco-events-repo-activiti</artifactId>
-            <version>1.2.14</version>
         </dependency>
     </dependencies>
 
     <build>
         <finalName>alfresco</finalName>
+        <resources>
+            <!-- Allow replacing variables inside version.properties -->
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>alfresco/version.properties</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>alfresco/version.properties</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -85,6 +102,23 @@
         </pluginManagement>
 
         <plugins>
+            <!-- Creates a scm revision and stores in ${buildNumber} variable -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <shortRevisionLength>8</shortRevisionLength>
+                </configuration>
+            </plugin>
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
@@ -92,7 +126,7 @@
                     <overlays>
                         <overlay>
                             <groupId>org.alfresco</groupId>
-                            <artifactId>alfresco-content-repository</artifactId>
+                            <artifactId>content-services-community</artifactId>
                             <type>war</type>
                         </overlay>
                     </overlays>
@@ -119,23 +153,6 @@
                 <groupId>com.google.code.maven-replacer-plugin</groupId>
                 <artifactId>replacer</artifactId>
                 <executions>
-                    <execution>
-                        <id>replace-version.properties</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>replace</goal>
-                        </goals>
-                        <configuration>
-                            <file>${project.build.directory}/alfresco/WEB-INF/classes/alfresco/version.properties</file>
-                            <outputFile>${project.build.outputDirectory}/alfresco/version.properties</outputFile>
-                            <replacements>
-                                <replacement>
-                                    <token>Community</token>
-                                    <value>Enterprise</value>
-                                </replacement>
-                            </replacements>
-                        </configuration>
-                    </execution>
                     <execution>
                         <id>replace-web.xml</id>
                         <phase>prepare-package</phase>
