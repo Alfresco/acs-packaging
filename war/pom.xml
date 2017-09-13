@@ -119,6 +119,25 @@
                     <shortRevisionLength>8</shortRevisionLength>
                 </configuration>
             </plugin>
+            <!-- populate version.properties with the correct version -->
+            <!-- Creates the following variables:
+                 parsedVersion.majorVersion
+                 parsedVersion.minorVersion
+                 parsedVersion.incrementalVersion
+             -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>parse-version</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
