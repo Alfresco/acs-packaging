@@ -4,7 +4,7 @@
     <artifactId>acs-packaging</artifactId>
     <packaging>pom</packaging>
     <name>Alfresco Content Services Packaging</name>
-    <version>6.0-SNAPSHOT</version>
+    <version>6.0.0-SNAPSHOT</version>
 
     <parent>
         <groupId>org.alfresco</groupId>
@@ -31,7 +31,7 @@
     </distributionManagement>
 
     <properties>
-        <dependency.acs-community-packaging.version>6.0-SNAPSHOT</dependency.acs-community-packaging.version>
+        <dependency.acs-community-packaging.version>6.0.a-SNAPSHOT</dependency.acs-community-packaging.version>
         <dependency.alfresco-enterprise-repository.version>6.3</dependency.alfresco-enterprise-repository.version>
         <dependency.alfresco-enterprise-remote-api.version>6.2</dependency.alfresco-enterprise-remote-api.version>
         <dependency.content-services-community.version>${dependency.acs-community-packaging.version}</dependency.content-services-community.version>
@@ -110,6 +110,17 @@
                 <artifactId>content-services-community</artifactId>
                 <version>${dependency.content-services-community.version}</version>
                 <type>war</type>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.ws.commons.axiom</groupId>
+                <artifactId>axiom-api</artifactId>
+                <version>1.2.19</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ws.commons.axiom</groupId>
+                <artifactId>axiom-impl</artifactId>
+                <version>1.2.18</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
