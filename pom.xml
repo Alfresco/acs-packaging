@@ -40,12 +40,16 @@
         <dependency.alfresco-enterprise-crypto.version>6.0</dependency.alfresco-enterprise-crypto.version>
         <dependency.alfresco-events-repo.version>1.2.14</dependency.alfresco-events-repo.version>
 
+        <dependency.db2-driver.version>4.19.26</dependency.db2-driver.version>
+        <dependency.ms-sql-server-driver.version>4.0</dependency.ms-sql-server-driver.version>
+        <dependency.oracle-driver.version>12.1.0.1.0</dependency.oracle-driver.version>
     </properties>
 
     <modules>
         <module>zip</module>
         <module>ear</module>
         <module>war</module>
+        <module>docker</module>
     </modules>
 
     <dependencyManagement>
