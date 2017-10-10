@@ -11,6 +11,13 @@
     <packaging>pom</packaging>
     <name>Alfresco Full Packaging</name>
 
+    <scm>
+        <connection>scm:git:https://git.alfresco.com/Repository/full-packaging.gitt</connection>
+        <developerConnection>scm:git:https://git.alfresco.com/Repository/full-packaging.git</developerConnection>
+        <url>https://git.alfresco.com/Repository/full-packaging.git</url>
+        <tag>HEAD</tag>
+    </scm>
+
     <properties>
         <!-- Full Community Packaging version -->
         <dependency.full-community-packaging.version>6.0.0-SNAPSHOT</dependency.full-community-packaging.version>
