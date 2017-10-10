@@ -9,6 +9,7 @@
 .idea/
 *.iml
 *.iws
+war/overlays
 
 # Mac
 .DS_Store
