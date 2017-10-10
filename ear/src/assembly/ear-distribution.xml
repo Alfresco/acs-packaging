@@ -29,8 +29,8 @@
             <source>${project.build.directory}/myfaces1_1-websphere-shared-lib-${project.version}.zip</source>
         </file>
         <file>
-            <source>${project.build.directory}/alfresco-content-services-full-ear-distribution-${project.version}.ear</source>
-            <destName>alfresco-content-services-${project.version}.ear</destName>
+            <source>${project.build.directory}/alfresco-content-services-full-ear-distribution-${installer.version.name}.ear</source>
+            <destName>alfresco-content-services-${installer.version.name}.ear</destName>
         </file>
     </files>
 </assembly>

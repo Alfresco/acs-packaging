@@ -3,71 +3,31 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.alfresco</groupId>
-        <artifactId>alfresco-super-pom</artifactId>
-        <version>6</version>
+        <artifactId>full-community-packaging</artifactId>
+        <version>6.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>alfresco-full-installation</artifactId>
-    <version>6.0-SNAPSHOT</version>
+    <artifactId>full-packaging</artifactId>
+    <version>6.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>Alfresco Full Installation</name>
+    <name>Alfresco Full Packaging</name>
 
     <properties>
-        <!-- Community Packaging version -->
-        <dependency.acs-community-packaging.version>6.0.b-SNAPSHOT</dependency.acs-community-packaging.version>
+        <!-- Full Community Packaging version -->
+        <dependency.full-community-packaging.version>6.0.0-SNAPSHOT</dependency.full-community-packaging.version>
 
         <!-- Enterprise Packaging version -->
         <dependency.acs-packaging.version>6.0.0-SNAPSHOT</dependency.acs-packaging.version>
 
-        <!-- Alfresco Share version -->
-        <alfresco.share.version>5.2.2-SNAPSHOT</alfresco.share.version>
-
-        <!-- Alfresco GoogleDocs integration version -->
-        <alfresco.googledocs.version>3.0.4.2</alfresco.googledocs.version>
-
-        <!-- Alfresco Office Services Module -->
-        <alfresco.aos-module.version>1.1.7</alfresco.aos-module.version>
-
-        <alfresco.solr.version>6.1</alfresco.solr.version>
-        <alfresco.solr4.version>6.5</alfresco.solr4.version>
-
-        <!-- Versions of binaries packaged in the installer -->
-        <installer.common.version>5.2-20170508</installer.common.version>
-        <installer.tomcat.version>7.0.59-alfresco-distribution</installer.tomcat.version>
-        <installer.java.version>1.8.0_111</installer.java.version>
-        <installer.postgresql.version>9.4.4-20151016</installer.postgresql.version>
-        <installer.libreoffice.version>5.2.1-alfresco</installer.libreoffice.version>
-        <installer.ghostscript.version>8.64</installer.ghostscript.version>
-        <installer.imagemagick.version>7.0.5</installer.imagemagick.version>
-        <installer.manager.version>1.0</installer.manager.version>
-        <installer.alfresco-pdf-renderer.version>1.0</installer.alfresco-pdf-renderer.version>
-
-        <!-- Build timestamp for installer file name -->
-        <installer.build.timestamp>${maven.build.timestamp}</installer.build.timestamp>
-        <maven.build.timestamp.format>yyyyMMdd</maven.build.timestamp.format>
-
-        <!-- Install builder version -->
-        <installer.installbuilder.version>15.10.1</installer.installbuilder.version>
-
-        <!-- 
-            Build number (Default value is used unless overridden by command line)
-            Default value: SNAPSHOT-0
-        -->
-        <installer.build.number>SNAPSHOT-0</installer.build.number>
-
-        <!-- 
-            Installer version that will be used in the final name.
-                - ${installer.build.timestamp}-${installer.build.number}    (SNAPSHOT version)
-        -->
-        <installer.version.name>${installer.build.timestamp}-${installer.build.number}</installer.version.name>
-
-        <alfresco.package.name>alfresco-community</alfresco.package.name>
-        <alfresco.distribution.name>${alfresco.package.name}-distribution</alfresco.distribution.name>
+        <!-- Override alfresco.package.name for the installer naming -->
+        <alfresco.package.name>alfresco-content-services-full</alfresco.package.name>
     </properties>
 
     <modules>
         <module>distribution</module>
-        <module>public-javadoc</module>
         <module>installer-resources</module>
+        <module>installer</module>
+        <module>war-for-ear</module>
+        <module>ear</module>
     </modules>
 
     <dependencyManagement>
@@ -80,45 +40,45 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>content-services</artifactId>
+                <version>${dependency.acs-packaging.version}</version>
+                <type>war</type>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-content-services-distribution</artifactId>
+                <version>${dependency.acs-packaging.version}</version>
+                <type>zip</type>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-installer-resources</artifactId>
+                <version>${dependency.full-community-packaging.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.integrations</groupId>
+                <artifactId>alfresco-googledocs-repo</artifactId>
+                <version>${alfresco.googledocs.version}</version>
+                <classifier>enterprise</classifier>
+                <type>amp</type>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.integrations</groupId>
+                <artifactId>alfresco-googledocs-share</artifactId>
+                <version>${alfresco.googledocs.version}</version>
+                <classifier>enterprise</classifier>
+                <type>amp</type>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
-    <profiles>
-        <profile>
-            <id>community</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>installer</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>enterprise</id>
-            <modules>
-                <module>enterprise-war-for-ear</module>
-                <module>ear</module>
-                <module>enterprise-distribution</module>
-                <module>enterprise-installer-resources</module>
-                <module>enterprise-installer</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>release</id>
-            <properties>
-                <maven.build.timestamp.format>yyyyMM</maven.build.timestamp.format>
-                <!-- 
-                Installer version that will be used in the final name.
-                    - ${installer.build.timestamp}-EA   (Early Access release version)
-                    - ${installer.build.timestamp}-LA   (Limited Access release version)
-                    - ${installer.build.timestamp}-GA   (General Availability release version)
-                -->
-                <installer.version.name>${installer.build.timestamp}${release.availability}</installer.version.name>
-            </properties>
-        </profile>
-    </profiles>
-
     <distributionManagement>
+        <repository>
+            <id>alfresco-internal</id>
+            <url>https://artifacts.alfresco.com/nexus/content/repositories/enterprise-releases</url>
+        </repository>
         <snapshotRepository>
             <id>alfresco-internal-snapshots</id>
             <url>https://artifacts.alfresco.com/nexus/content/repositories/internal-snapshots</url>

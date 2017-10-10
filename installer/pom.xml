@@ -3,36 +3,83 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.alfresco</groupId>
-        <artifactId>alfresco-full-installation</artifactId>
-        <version>6.0-SNAPSHOT</version>
+        <artifactId>full-packaging</artifactId>
+        <version>6.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>alfresco-content-services-community-full-installer</artifactId>
+    <artifactId>alfresco-content-services-full-installer</artifactId>
     <packaging>pom</packaging>
-    <name>Alfresco Content Services Community Full Installers</name>
+    <name>Alfresco Content Services Full Installers</name>
 
     <properties>
         <binaries.folder>${user.home}/binaries</binaries.folder>
         <bitrock.folder>${project.build.directory}/installbuilder</bitrock.folder>
         <signing.key.location>${binaries.folder}/build-classpath/code-signing</signing.key.location>
         <license.file.location>${binaries.folder}/build-classpath/license.xml</license.file.location>
-        <alfresco.package.name>alfresco-content-services-community-full</alfresco.package.name>
         <bitrock.arguments>
            project.version=${installer.version.name} 
-           project.fullName='Alfresco Community'
+           project.fullName='Alfresco Content Services'
            project.windowsSigningPkcs12File=${signing.key.location}/Alfresco-Software-Ltd.p12 
            project.windowsSigningPkcs12Password=${p12Password} 
-           alfresco_edition=community 
+           alfresco_edition=enterprise 
            alfresco_package='${alfresco.package.name}' 
+           alfrescogoogledocs_component_enabled=1 
+           alfrescosolr_component_enabled=1 
+           alfrescowcmqs_component_enabled=1 
            project.outputDirectory=${project.build.directory} 
         </bitrock.arguments>
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-installer-resources</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-content-services-installer-resources</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-content-services-full-distribution</artifactId>
+            <version>${project.version}</version>
+            <type>zip</type>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-solr1-distribution</artifactId>
+            <type>zip</type>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-wcmqs-distribution</artifactId>
+            <type>zip</type>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-wcmqs-web</artifactId>
+            <classifier>classes</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-wcmqs-client-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco.aos-module</groupId>
+            <artifactId>alfresco-aos-module-distributionzip</artifactId>
+            <type>zip</type>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco.integrations</groupId>
+            <artifactId>alfresco-googledocs-repo</artifactId>
+            <classifier>enterprise</classifier>
+            <type>amp</type>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco.integrations</groupId>
+            <artifactId>alfresco-googledocs-share</artifactId>
+            <classifier>enterprise</classifier>
+            <type>amp</type>
         </dependency>
 
         <!-- These binaries are extracted using tar, to preserve symlinks -->
@@ -41,7 +88,6 @@
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>installer-common</artifactId>
-            <version>${installer.common.version}</version>
             <classifier>linux</classifier>
             <type>tgz</type>
         </dependency>
@@ -50,14 +96,12 @@
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat</artifactId>
-            <version>${installer.tomcat.version}</version>
             <classifier>linux</classifier>
             <type>tgz</type>
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat</artifactId>
-            <version>${installer.tomcat.version}</version>
             <classifier>win64</classifier>
             <type>tgz</type>
         </dependency>
@@ -66,14 +110,12 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql-distribution</artifactId>
-            <version>${installer.postgresql.version}</version>
             <classifier>linux</classifier>
             <type>tgz</type>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql-distribution</artifactId>
-            <version>${installer.postgresql.version}</version>
             <classifier>win64</classifier>
             <type>tgz</type>
         </dependency>
@@ -82,14 +124,12 @@
         <dependency>
             <groupId>com.oracle.java</groupId>
             <artifactId>jre</artifactId>
-            <version>${installer.java.version}</version>
             <classifier>linux</classifier>
             <type>tgz</type>
         </dependency>
         <dependency>
             <groupId>com.oracle.java</groupId>
             <artifactId>jre</artifactId>
-            <version>${installer.java.version}</version>
             <classifier>win64</classifier>
             <type>tgz</type>
         </dependency>
@@ -98,78 +138,68 @@
         <dependency>
             <groupId>org.libreoffice</groupId>
             <artifactId>libreoffice-dist</artifactId>
-            <version>${installer.libreoffice.version}</version>
             <classifier>linux</classifier>
             <type>tgz</type>
         </dependency>
         <dependency>
             <groupId>org.libreoffice</groupId>
             <artifactId>libreoffice-dist</artifactId>
-            <version>${installer.libreoffice.version}</version>
             <classifier>windows</classifier>
             <type>tgz</type>
         </dependency>
 
         <!-- Alfresco Pdf Renderer -->
-		<dependency>
-			<groupId>org.alfresco</groupId>
-			<artifactId>alfresco-pdf-renderer</artifactId>
-			<version>${installer.alfresco-pdf-renderer.version}</version>
-			<classifier>linux</classifier>
-			<type>tgz</type>
-		</dependency>
-		<dependency>
-			<groupId>org.alfresco</groupId>
-			<artifactId>alfresco-pdf-renderer</artifactId>
-			<version>${installer.alfresco-pdf-renderer.version}</version>
-			<classifier>win64</classifier>
-			<type>tgz</type>
-		</dependency>
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-pdf-renderer</artifactId>
+            <classifier>linux</classifier>
+            <type>tgz</type>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-pdf-renderer</artifactId>
+            <classifier>win64</classifier>
+            <type>tgz</type>
+        </dependency>
 
-         <!-- ImageMagick -->
+        <!-- ImageMagick -->
         <dependency>
             <groupId>org.imagemagick</groupId>
             <artifactId>imagemagick-distribution</artifactId>
-            <version>${installer.imagemagick.version}</version>
             <classifier>linux</classifier>
             <type>tgz</type>
         </dependency>
         <dependency>
             <groupId>org.imagemagick</groupId>
             <artifactId>imagemagick-distribution</artifactId>
-            <version>${installer.imagemagick.version}</version>
             <classifier>win64</classifier>
             <type>tgz</type>
         </dependency>
-        
+
         <!-- Installbuilder -->
         <dependency>
             <groupId>com.bitnami</groupId>
             <artifactId>installbuilder</artifactId>
-            <version>${installer.installbuilder.version}</version>
             <classifier>linux</classifier>
             <type>tgz</type>
         </dependency>
         <dependency>
             <groupId>com.bitnami</groupId>
             <artifactId>installbuilder</artifactId>
-            <version>${installer.installbuilder.version}</version>
             <classifier>win</classifier>
             <type>tgz</type>
         </dependency>
-        
+
         <!-- Manager -->
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>manager</artifactId>
-            <version>${installer.manager.version}</version>
             <classifier>linux</classifier>
             <type>tgz</type>
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>manager</artifactId>
-            <version>${installer.manager.version}</version>
             <classifier>win64</classifier>
             <type>tgz</type>
         </dependency>
@@ -198,13 +228,16 @@
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-installer-resources</artifactId>
-                                    <version>${project.version}</version>
                                     <outputDirectory>${project.build.directory}/classes</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
-                                    <artifactId>alfresco-content-services-community-full-distribution</artifactId>
-                                    <version>${project.version}</version>
+                                    <artifactId>alfresco-content-services-installer-resources</artifactId>
+                                    <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>alfresco-content-services-full-distribution</artifactId>
                                     <type>zip</type>
                                     <outputDirectory>${project.build.directory}/distribution/${alfresco.distribution.name}-${installer.version.name}</outputDirectory>
                                 </artifactItem>
@@ -212,7 +245,6 @@
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-solr1-distribution</artifactId>
-                                    <version>${alfresco.solr.version}</version>
                                     <type>zip</type>
                                     <outputDirectory>${project.build.directory}/distribution/${alfresco.distribution.name}-${installer.version.name}/alf_data/solr</outputDirectory>
                                 </artifactItem>
@@ -220,7 +252,6 @@
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-wcmqs-distribution</artifactId>
-                                    <version>${alfresco.share.version}</version>
                                     <type>zip</type>
                                     <outputDirectory>${project.build.directory}/wcmqs</outputDirectory>
                                 </artifactItem>
@@ -228,7 +259,6 @@
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-wcmqs-web</artifactId>
-                                    <version>${alfresco.share.version}</version>
                                     <classifier>classes</classifier>
                                     <outputDirectory>${project.build.directory}/wcmqs</outputDirectory>
                                     <includes>alfresco/web-extension/**</includes>
@@ -237,7 +267,6 @@
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-wcmqs-client-api</artifactId>
-                                    <version>${alfresco.share.version}</version>
                                     <outputDirectory>${project.build.directory}/wcmqs</outputDirectory>
                                     <includes>alfresco/extension/**</includes>
                                 </artifactItem>
@@ -245,7 +274,6 @@
                                 <artifactItem>
                                     <groupId>org.alfresco.aos-module</groupId>
                                     <artifactId>alfresco-aos-module-distributionzip</artifactId>
-                                    <version>${alfresco.aos-module.version}</version>
                                     <type>zip</type>
                                     <outputDirectory>${project.build.directory}/distribution/aos-module</outputDirectory>
                                 </artifactItem>
@@ -263,37 +291,16 @@
                                 <artifactItem>
                                     <groupId>org.alfresco.integrations</groupId>
                                     <artifactId>alfresco-googledocs-repo</artifactId>
-                                    <version>${alfresco.googledocs.version}</version>
+                                    <classifier>enterprise</classifier>
                                     <type>amp</type>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.alfresco.integrations</groupId>
                                     <artifactId>alfresco-googledocs-share</artifactId>
-                                    <version>${alfresco.googledocs.version}</version>
+                                    <classifier>enterprise</classifier>
                                     <type>amp</type>
                                 </artifactItem>
                             </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <!-- Override local resources - alfresco-global.properties, etc. -->
-            <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>override-local-resources</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
-                            <overwrite>true</overwrite>
-                            <nonFilteredFileExtensions>
-                                <nonFilteredFileExtension>properties</nonFilteredFileExtension>
-                            </nonFilteredFileExtensions>
                         </configuration>
                     </execution>
                 </executions>
@@ -325,7 +332,9 @@
                         <configuration>
                             <workingDirectory>${project.build.directory}/classes/bitrock</workingDirectory>
                             <target>
-                                <ant antfile="${project.build.directory}/classes/build-installers.xml" />
+                                <ant antfile="${project.build.directory}/classes/build-installers.xml">
+                                    <property name="installer.version.name" value="${installer.version.name}" />
+                                </ant>
                             </target>
                         </configuration>
                     </execution>
