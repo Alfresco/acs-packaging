@@ -40,9 +40,12 @@
         <dependency.alfresco-enterprise-crypto.version>6.0</dependency.alfresco-enterprise-crypto.version>
         <dependency.alfresco-events-repo.version>1.2.14</dependency.alfresco-events-repo.version>
 
-        <dependency.db2-driver.version>4.19.26</dependency.db2-driver.version>
-        <dependency.ms-sql-server-driver.version>4.0</dependency.ms-sql-server-driver.version>
-        <dependency.oracle-driver.version>12.1.0.1.0</dependency.oracle-driver.version>
+        <dependency.postgresql.version>9.4.1212</dependency.postgresql.version>
+        <dependency.mysql.version>5.1.40</dependency.mysql.version>
+        <dependency.mariadb.version>2.0.1</dependency.mariadb.version>
+        <dependency.db2.version>4.19.26</dependency.db2.version>
+        <dependency.ms-sql-server.version>4.0</dependency.ms-sql-server.version>
+        <dependency.oracle.version>12.1.0.1.0</dependency.oracle.version>
     </properties>
 
     <modules>

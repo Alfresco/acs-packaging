@@ -36,17 +36,17 @@
         <dependency>
             <groupId>com.ibm.db2.jcc</groupId>
             <artifactId>db2jcc4</artifactId>
-            <version>${dependency.db2-driver.version}</version>
+            <version>${dependency.db2.version}</version>
         </dependency>
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>sqljdbc</artifactId>
-            <version>${dependency.ms-sql-server-driver.version}</version>
+            <version>${dependency.ms-sql-server.version}</version>
         </dependency>
         <dependency>
             <groupId>com.oracle.jdbc</groupId>
             <artifactId>ojdbc7</artifactId>
-            <version>${dependency.oracle-driver.version}</version>
+            <version>${dependency.oracle.version}</version>
         </dependency>
     </dependencies>
 
@@ -111,7 +111,7 @@
                                 <artifactItem>
                                     <groupId>com.ibm.db2.jcc</groupId>
                                     <artifactId>db2jcc4</artifactId>
-                                    <version>${dependency.db2-driver.version}</version>
+                                    <version>${dependency.db2.version}</version>
                                     <type>jar</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/connector</outputDirectory>
@@ -119,7 +119,7 @@
                                 <artifactItem>
                                     <groupId>com.microsoft.sqlserver</groupId>
                                     <artifactId>sqljdbc</artifactId>
-                                    <version>${dependency.ms-sql-server-driver.version}</version>
+                                    <version>${dependency.ms-sql-server.version}</version>
                                     <type>jar</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/connector</outputDirectory>
@@ -127,7 +127,7 @@
                                 <artifactItem>
                                     <groupId>com.oracle.jdbc</groupId>
                                     <artifactId>ojdbc7</artifactId>
-                                    <version>${dependency.oracle-driver.version}</version>
+                                    <version>${dependency.oracle.version}</version>
                                     <type>jar</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/connector</outputDirectory>
