@@ -31,7 +31,7 @@
     </distributionManagement>
 
     <properties>
-        <dependency.acs-community-packaging.version>6.0.b-SNAPSHOT</dependency.acs-community-packaging.version>
+        <dependency.acs-community-packaging.version>6.0.0-SNAPSHOT</dependency.acs-community-packaging.version>
         <dependency.alfresco-enterprise-repository.version>6.3</dependency.alfresco-enterprise-repository.version>
         <dependency.alfresco-enterprise-remote-api.version>6.2</dependency.alfresco-enterprise-remote-api.version>
         <dependency.content-services-community.version>${dependency.acs-community-packaging.version}</dependency.content-services-community.version>
