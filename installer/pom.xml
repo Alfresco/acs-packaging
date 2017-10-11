@@ -13,20 +13,8 @@
     <properties>
         <binaries.folder>${user.home}/binaries</binaries.folder>
         <bitrock.folder>${project.build.directory}/installbuilder</bitrock.folder>
-        <signing.key.location>${binaries.folder}/build-classpath/code-signing</signing.key.location>
-        <license.file.location>${binaries.folder}/build-classpath/license.xml</license.file.location>
-        <bitrock.arguments>
-           project.version=${installer.version.name} 
-           project.fullName='Alfresco Content Services'
-           project.windowsSigningPkcs12File=${signing.key.location}/Alfresco-Software-Ltd.p12 
-           project.windowsSigningPkcs12Password=${p12Password} 
-           alfresco_edition=enterprise 
-           alfresco_package='${alfresco.package.name}' 
-           alfrescogoogledocs_component_enabled=1 
-           alfrescosolr_component_enabled=1 
-           alfrescowcmqs_component_enabled=1 
-           project.outputDirectory=${project.build.directory} 
-        </bitrock.arguments>
+        <!-- it is a single line because it is sensitive to line endings -->
+        <bitrock.arguments>project.version=${installer.version.name} project.fullName='Alfresco Content Services' project.windowsSigningPkcs12File=${signing.key.location} project.windowsSigningPkcs12Password=${p12Password} alfresco_edition=enterprise alfresco_package='${alfresco.package.name}' alfrescogoogledocs_component_enabled=1 alfrescosolr_component_enabled=1 alfrescowcmqs_component_enabled=1 project.outputDirectory=${project.build.directory}</bitrock.arguments>
     </properties>
 
     <dependencies>
