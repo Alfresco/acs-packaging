@@ -7,7 +7,8 @@
         <version>6.0.0-SNAPSHOT</version>
     </parent>
     <artifactId>alfresco-content-services-full-distribution</artifactId>
-    <packaging>pom</packaging>
+    <!-- Needs to be a jar as there are resources -->
+    <packaging>jar</packaging>
     <name>Alfresco Content Services Full Distribution</name>
 
     <!-- To replace in share-config-custom.xml -->
