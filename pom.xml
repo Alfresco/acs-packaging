@@ -88,7 +88,7 @@
         </repository>
         <snapshotRepository>
             <id>alfresco-internal-snapshots</id>
-            <url>https://artifacts.alfresco.com/nexus/content/repositories/internal-snapshots</url>
+            <url>https://artifacts.alfresco.com/nexus/content/repositories/enterprise-snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 </project>
