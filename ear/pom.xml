@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>alfresco-content-services-ear-distribution-ea</artifactId>
+    <artifactId>alfresco-content-services-ear-distribution</artifactId>
     <name>Alfresco Content Services EAR Distribution</name>
     <packaging>pom</packaging>
 
     <parent>
         <groupId>org.alfresco</groupId>
-        <artifactId>acs-packaging-ea</artifactId>
+        <artifactId>acs-packaging</artifactId>
         <version>6.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
@@ -15,7 +15,7 @@
         <!-- WARs to include in the EAR -->
         <dependency>
             <groupId>org.alfresco</groupId>
-            <artifactId>content-services-ea</artifactId>
+            <artifactId>content-services</artifactId>
             <version>${project.version}</version>
             <type>war</type>
         </dependency>
@@ -29,7 +29,7 @@
         <!-- Distribution zip -->
         <dependency>
             <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-content-services-distribution-ea</artifactId>
+            <artifactId>alfresco-content-services-distribution</artifactId>
             <version>${project.version}</version>
             <type>zip</type>
             <scope>provided</scope>
@@ -171,7 +171,7 @@
                     <modules>
                         <webModule>
                             <groupId>org.alfresco</groupId>
-                            <artifactId>content-services-ea</artifactId>
+                            <artifactId>content-services</artifactId>
                             <bundleFileName>alfresco.war</bundleFileName>
                         </webModule>
                         <webModule>
@@ -193,9 +193,9 @@
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>alfresco-content-services-distribution-ea</includeArtifactIds>
+                            <includeArtifactIds>alfresco-content-services-distribution</includeArtifactIds>
                             <excludeTransitive>true</excludeTransitive>
-                            <excludes>alfresco-content-services-distribution-ea-${project.version}/solr4/,alfresco-content-services-distribution-ea-${project.version}/web-server/webapps/,alfresco-content-services-distribution-ea-${project.version}/modules/</excludes>
+                            <excludes>alfresco-content-services-distribution-${project.version}/solr4/,alfresco-content-services-distribution-${project.version}/web-server/webapps/,alfresco-content-services-distribution-${project.version}/modules/</excludes>
                         </configuration>
                     </execution>
 
@@ -213,7 +213,7 @@
                                     <version>1.0.1</version>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${project.build.directory}/dependency/alfresco-content-services-distribution-ea-${project.version}/web-server/lib</outputDirectory>
+                            <outputDirectory>${project.build.directory}/dependency/alfresco-content-services-distribution-${project.version}/web-server/lib</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>

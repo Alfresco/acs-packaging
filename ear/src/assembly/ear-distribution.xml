@@ -8,14 +8,14 @@
 
     <fileSets>
         <fileSet>
-            <directory>${project.build.directory}/dependency/alfresco-content-services-distribution-ea-${project.version}</directory>
+            <directory>${project.build.directory}/dependency/alfresco-content-services-distribution-${project.version}</directory>
             <outputDirectory/>
             <excludes>
                 <exclude>web-server/shared/**</exclude>
             </excludes>
         </fileSet>
         <fileSet>
-            <directory>${project.build.directory}/dependency/alfresco-content-services-distribution-ea-${project.version}/web-server/shared/classes</directory>
+            <directory>${project.build.directory}/dependency/alfresco-content-services-distribution-${project.version}/web-server/shared/classes</directory>
             <outputDirectory>web-server/classpath</outputDirectory>
         </fileSet>
     </fileSets>
@@ -25,8 +25,8 @@
             <source>${project.build.directory}/myfaces1_1-websphere-shared-lib-${project.version}.zip</source>
         </file>
         <file>
-            <source>${project.build.directory}/alfresco-content-services-ear-distribution-ea-${project.version}.ear</source>
-            <destName>alfresco-content-services-ea-${project.version}.ear</destName>
+            <source>${project.build.directory}/alfresco-content-services-ear-distribution-${project.version}.ear</source>
+            <destName>alfresco-content-services-${project.version}.ear</destName>
         </file>
     </files>
 </assembly>
