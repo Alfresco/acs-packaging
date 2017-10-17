@@ -266,6 +266,7 @@
                             </descriptors>
                             <finalName>myfaces1_1-websphere-shared-lib-${project.version}</finalName>
                             <appendAssemblyId>false</appendAssemblyId>
+                            <attach>false</attach>
                         </configuration>
                     </execution>
 
@@ -280,6 +281,7 @@
                                 <descriptor>src/assembly/ear-distribution.xml</descriptor>
                             </descriptors>
                             <appendAssemblyId>false</appendAssemblyId>
+                            <attach>false</attach>
                         </configuration>
                     </execution>
                 </executions>
