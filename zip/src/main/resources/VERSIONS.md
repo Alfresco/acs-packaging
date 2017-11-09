@@ -78,7 +78,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Application Servers
 | Component | Recommended | Also Available |
 |---|---|---|
-| Tomcat | 7.0.78 |
+| Tomcat | 7.0.82 |
 | JBoss | 6.4.0 EAP |
 | Oracle WebLogic Server | 12.2.1.2 |
 | IBM WebSphere | 8.5.5.10	Classic |
