@@ -28,7 +28,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Alfresco Content Connector for Salesforce | 2.0.2.4 |
 | Alfresco Kofax Integration | 2.0 |
 | Alfresco S3 Connector | 2.0.0 | 1.3.x |
-| Alfresco EMC Centera Connector | 2.1.0 |
+| Alfresco EMC Centera Connector | 2.1.1 |
 | Alfresco Outlook Integration | 2.2.4 |
 | Alfresco SDK | 3.0.1 |
 
