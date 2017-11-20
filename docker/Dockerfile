@@ -1,4 +1,4 @@
-FROM tomcat:8.5.20-jre8-alpine
+FROM quay.io/alfresco/alfresco-base-repository:0.1.1
 
 RUN mkdir -p /usr/local/tomcat/shared/classes
 
