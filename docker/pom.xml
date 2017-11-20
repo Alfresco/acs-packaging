@@ -18,6 +18,17 @@
             <version>${project.version}</version>
             <type>war</type>
         </dependency>
+        <!-- The version is picked from acs-community-packaging dependencies -->
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-mmt</artifactId>
+        </dependency>
+        <!-- The version is picked from acs-community-packaging dependencies -->
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-server-root</artifactId>
+            <type>war</type>
+        </dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -131,6 +142,21 @@
                                     <type>jar</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/connector</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>alfresco-mmt</artifactId>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/alfresco-mmt</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>alfresco-server-root</artifactId>
+                                    <type>war</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/server-root</outputDirectory>
+                                    <destFileName>ROOT.war</destFileName>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
