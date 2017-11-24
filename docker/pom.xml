@@ -30,34 +30,9 @@
             <type>war</type>
         </dependency>
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${dependency.mysql.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.mariadb.jdbc</groupId>
-            <artifactId>mariadb-java-client</artifactId>
-            <version>${dependency.mariadb.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${dependency.postgresql.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.ibm.db2.jcc</groupId>
-            <artifactId>db2jcc4</artifactId>
-            <version>${dependency.db2.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.microsoft.sqlserver</groupId>
-            <artifactId>sqljdbc</artifactId>
-            <version>${dependency.ms-sql-server.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.oracle.jdbc</groupId>
-            <artifactId>ojdbc7</artifactId>
-            <version>${dependency.oracle.version}</version>
         </dependency>
     </dependencies>
 
@@ -97,48 +72,9 @@
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
-                                    <groupId>mysql</groupId>
-                                    <artifactId>mysql-connector-java</artifactId>
-                                    <type>jar</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/connector</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.mariadb.jdbc</groupId>
-                                    <artifactId>mariadb-java-client</artifactId>
-                                    <version>${dependency.mariadb.version}</version>
-                                    <type>jar</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/connector</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
                                     <groupId>org.postgresql</groupId>
                                     <artifactId>postgresql</artifactId>
                                     <version>${dependency.postgresql.version}</version>
-                                    <type>jar</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/connector</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>com.ibm.db2.jcc</groupId>
-                                    <artifactId>db2jcc4</artifactId>
-                                    <version>${dependency.db2.version}</version>
-                                    <type>jar</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/connector</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>com.microsoft.sqlserver</groupId>
-                                    <artifactId>sqljdbc</artifactId>
-                                    <version>${dependency.ms-sql-server.version}</version>
-                                    <type>jar</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/connector</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>com.oracle.jdbc</groupId>
-                                    <artifactId>ojdbc7</artifactId>
-                                    <version>${dependency.oracle.version}</version>
                                     <type>jar</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/connector</outputDirectory>
