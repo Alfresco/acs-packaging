@@ -25,6 +25,9 @@
         <!-- Enterprise Packaging version -->
         <dependency.acs-packaging.version>6.0.0-SNAPSHOT</dependency.acs-packaging.version>
 
+		<!-- Temporary use a fix Alfresco Share version -->
+        <alfresco.share.version>5.2.f</alfresco.share.version>
+		
         <!-- Override alfresco.package.name for the installer naming -->
         <alfresco.package.name>alfresco-content-services-full</alfresco.package.name>
     </properties>
