@@ -11,7 +11,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Alfresco Share | 5.2.2 |
 | Alfresco Search Services | 1.1 | 1.0 |
 | Alfresco Desktop Sync Service | 2.1.1 | 2.1.0 |
-| Document Transformation Engine | 2.1.0 | 2.0.x |
+| Document Transformation Engine | 2.1.1 | 2.0.x |
 | Alfresco File Transfer Receiver | 6.0 |
 | Alfresco Module Management Tool | 6.0 |
 | Alfresco Spring Encryptor | 6.0 |
@@ -29,7 +29,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Alfresco Kofax Integration | 2.0 |
 | Alfresco S3 Connector | 2.1.0 | 1.3.x |
 | Alfresco EMC Centera Connector | 2.1.1 |
-| Alfresco Outlook Integration | 2.2.4 |
+| Alfresco Outlook Integration | 2.4.2 | 2.2.4 |
 | Alfresco SDK | 3.0.1 |
 
 ##### Microsoft Office Suite
