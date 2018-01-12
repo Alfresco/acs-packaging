@@ -101,5 +101,5 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Java
 | Component | Recommended | Also Available |
 |---|---|---|
-| Oracle JRE | 1.8.0_121 | 1.8.0_111, 1.8.0_112
+| Oracle JRE | 1.8.0_131 | 1.8.0_111, 1.8.0_112, 1.8.0_121 |
 | IBM SDK | 8 |
