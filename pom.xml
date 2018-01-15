@@ -38,7 +38,7 @@
         <module>installer</module>
         <module>war-for-ear</module>
         <module>ear</module>
-        <module>docker</module>
+        <module>docker-alfresco</module>
     </modules>
 
     <dependencyManagement>
