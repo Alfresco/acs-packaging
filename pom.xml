@@ -34,8 +34,8 @@
         <version.edition>Enterprise</version.edition>
 
         <dependency.acs-community-packaging.version>6.0.2-SNAPSHOT</dependency.acs-community-packaging.version>
-        <dependency.alfresco-enterprise-repository.version>6.15</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-enterprise-remote-api.version>6.9</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>6.16</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-enterprise-remote-api.version>6.10</dependency.alfresco-enterprise-remote-api.version>
         <dependency.content-services-community.version>${dependency.acs-community-packaging.version}</dependency.content-services-community.version>
         <dependency.alfresco-content-services-community-distribution.version>${dependency.acs-community-packaging.version}</dependency.alfresco-content-services-community-distribution.version>
         <dependency.alfresco-spring-encryptor.version>6.0</dependency.alfresco-spring-encryptor.version>
