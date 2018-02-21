@@ -42,7 +42,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 |---|---|---|
 | ImageMagick | 7.0.5 |
 | LibreOffice | 5.2.1 |
-| Alfresco PDF Renderer | 1.0 |
+| Alfresco PDF Renderer | 1.1 |
 
 ##### Operating Systems
 | Component | Recommended | Also Available |
