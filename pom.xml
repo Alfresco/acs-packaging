@@ -20,7 +20,7 @@
 
     <properties>
         <!-- Full Community Packaging version -->
-        <dependency.full-community-packaging.version>6.0.0-SNAPSHOT</dependency.full-community-packaging.version>
+        <dependency.full-community-packaging.version>6.0.3-SNAPSHOT</dependency.full-community-packaging.version>
 
         <!-- Enterprise Packaging version -->
         <dependency.acs-packaging.version>6.0.0-SNAPSHOT</dependency.acs-packaging.version>
