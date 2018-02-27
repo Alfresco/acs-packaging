@@ -34,7 +34,7 @@
         <version.edition>Enterprise</version.edition>
 
         <dependency.acs-community-packaging.version>6.0.3-ea</dependency.acs-community-packaging.version>
-        <dependency.alfresco-enterprise-repository.version>6.17-TOKEN-AUTH</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-enterprise-repository.version>6.17-TOKEN-AUTH2</dependency.alfresco-enterprise-repository.version>
         <dependency.alfresco-enterprise-remote-api.version>6.10</dependency.alfresco-enterprise-remote-api.version>
         <dependency.content-services-community.version>${dependency.acs-community-packaging.version}</dependency.content-services-community.version>
         <dependency.alfresco-content-services-community-distribution.version>${dependency.acs-community-packaging.version}</dependency.alfresco-content-services-community-distribution.version>
