@@ -22,9 +22,9 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Alfresco Share Services | 5.2.2 |
 | Alfresco Google Docs Integration | 3.0.4.2 |
 | Alfresco Records Management | 2.5.2 |
-| Alfresco Media Management | 1.0.3 |
+| Alfresco Media Management | 1.0.3.3 |
 | Alfresco Office Services | 1.1.7 |
-| SAML Single Sign-On (SSO) for Alfresco Content Services | 1.0.3.3 |
+| SAML Single Sign-On (SSO) for Alfresco Content Services | 1.0.3 |
 | Alfresco Content Connector for Salesforce | 2.0.2.5 |
 | Alfresco Kofax Integration | 2.0 |
 | Alfresco S3 Connector | 2.1.0 | 1.3.x |
