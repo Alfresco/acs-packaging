@@ -22,13 +22,13 @@
 
         <dependency>
             <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-mmt</artifactId>
+            <artifactId>alfresco-server-root</artifactId>
+            <type>war</type>
         </dependency>
 
         <dependency>
             <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-content-services-community-distribution</artifactId>
-            <classifier>assembly</classifier>
+            <artifactId>alfresco-mmt</artifactId>
         </dependency>
 
         <!-- JAR files, to extract alfresco/extension -->
@@ -42,9 +42,9 @@
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
-            <artifactId>content-services-community</artifactId>
-            <classifier>classes</classifier>
+            <artifactId>alfresco-data-model</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-enterprise-remote-api</artifactId>
@@ -105,23 +105,6 @@
                     </execution>
 
                     <execution>
-                        <id>unpack-resources</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.alfresco</groupId>
-                                    <artifactId>alfresco-content-services-community-distribution</artifactId>
-                                    <outputDirectory>${project.build.outputDirectory}</outputDirectory>
-                                    <excludes>META-INF/**</excludes>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                    <execution>
                         <id>extract-jlan-dll</id>
                         <phase>generate-resources</phase>
                         <goals>
@@ -138,6 +121,26 @@
                             </artifactItems>
                         </configuration>
                     </execution>
+                    <!-- Copy ROOT.war -->
+                    <execution>
+                        <id>copy-resources-war</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>alfresco-server-root</artifactId>
+                                    <type>war</type>
+                                    <outputDirectory>${project.build.outputDirectory}/web-server/webapps</outputDirectory>
+                                    <destFileName>ROOT.war</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>         
+
                     <execution>
                         <id>copy-resources</id>
                         <phase>generate-resources</phase>
@@ -160,14 +163,6 @@
 
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.alfresco</groupId>
-                        <artifactId>alfresco-content-services-community-distribution</artifactId>
-                        <version>${dependency.alfresco-content-services-community-distribution.version}</version>
-                        <classifier>assembly</classifier>
-                    </dependency>
-                </dependencies>
                 <executions>
                     <execution>
                         <id>make-assembly</id>
@@ -179,11 +174,12 @@
                 </executions>
                 <configuration>
                     <appendAssemblyId>false</appendAssemblyId>
-                    <descriptorRefs>
-                        <descriptorRef>distribution</descriptorRef>
-                    </descriptorRefs>
+                    <descriptors>
+                        <descriptor>src/assemblies/distribution.xml</descriptor>
+                    </descriptors>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 

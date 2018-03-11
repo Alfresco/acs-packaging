@@ -78,6 +78,7 @@
         <module>war-for-ear</module>
         <module>ear</module>
         <module>docker-alfresco</module>
+        <module>docker-share</module>
     </modules>
 
     <dependencyManagement>
