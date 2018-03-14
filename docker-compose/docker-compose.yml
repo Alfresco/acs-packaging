@@ -14,9 +14,27 @@ services:
                 -Dsolr.secureComms=none
                 -Dsolr.base.url=/solr
                 -Dindex.subsystem.name=solr6
+                -Dalfresco-pdf-renderer.url=alfresco-pdf-renderer://alfresco-pdf-renderer:8090/
+                -Dimagemagick.url=imagemagick://imagemagick:8091/
+                -Djodconverter.url=libreoffice://libreoffice:8092/
                 "
         ports:
             - 8082:8080 #Browser port
+
+    alfresco-pdf-renderer:
+        image: quay.io/alfresco/alfresco-docker-alfresco-pdf-renderer:${TRANSFORMERS_TAG}
+        ports:
+            - 8090:8090
+
+    imagemagick:
+        image: quay.io/alfresco/alfresco-docker-imagemagick:${TRANSFORMERS_TAG}
+        ports:
+            - 8091:8090
+
+    libreoffice:
+        image: quay.io/alfresco/alfresco-docker-libreoffice:${TRANSFORMERS_TAG}
+        ports:
+            - 8092:8090
 
     share:
         image: quay.io/alfresco/alfresco-full-share:${SHARE_TAG}

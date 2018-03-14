@@ -53,6 +53,7 @@
         <dependency.alfresco-messaging-repo.version>1.2.8</dependency.alfresco-messaging-repo.version>
 
         <dependency.spring.version>5.0.4.RELEASE</dependency.spring.version>
+        <dependency.fabric8.version>3.5.37</dependency.fabric8.version>
 
          <!-- Alfresco Share version -->
         <alfresco.share.version>5.2.f</alfresco.share.version>
