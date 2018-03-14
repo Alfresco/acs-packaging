@@ -32,19 +32,27 @@
     <properties>
         <!-- Set to "Enterprise Early Access" to add to the version.edition property in version.properties -->
         <version.edition>Enterprise</version.edition>
-        <dependency.alfresco-repository.version>6.28</dependency.alfresco-repository.version>
-        <dependency.alfresco-remote-api.version>6.19</dependency.alfresco-remote-api.version>
-        <dependency.alfresco-trashcan-cleaner.version>2.3</dependency.alfresco-trashcan-cleaner.version>
+
         <dependency.alfresco-core.version>7.0</dependency.alfresco-core.version>
         <dependency.alfresco-data-model.version>8.0</dependency.alfresco-data-model.version>
+        <dependency.alfresco-repository.version>6.28</dependency.alfresco-repository.version>
+        <dependency.alfresco-remote-api.version>6.19</dependency.alfresco-remote-api.version>
+
+        <dependency.alfresco-enterprise-repository.version>6.18</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-enterprise-remote-api.version>6.12</dependency.alfresco-enterprise-remote-api.version>
+
+        <dependency.alfresco-spring-encryptor.version>6.0</dependency.alfresco-spring-encryptor.version>
+        <dependency.alfresco-enterprise-crypto.version>6.0</dependency.alfresco-enterprise-crypto.version>
+        <dependency.alfresco-events-repo.version>1.2.14</dependency.alfresco-events-repo.version>
+
         <dependency.alfresco-mmt.version>6.0</dependency.alfresco-mmt.version>
         <dependency.alfresco-pdf-renderer.version>1.1</dependency.alfresco-pdf-renderer.version>
+        <dependency.alfresco-trashcan-cleaner.version>2.3</dependency.alfresco-trashcan-cleaner.version>
         <dependency.alfresco-jlan.version>7.0</dependency.alfresco-jlan.version>
         <dependency.alfresco-server-root.version>6.0</dependency.alfresco-server-root.version>
         <dependency.alfresco-messaging-repo.version>1.2.8</dependency.alfresco-messaging-repo.version>
 
         <dependency.spring.version>5.0.4.RELEASE</dependency.spring.version>
-        <dependency.postgresql.version>9.4.1212</dependency.postgresql.version>
 
          <!-- Alfresco Share version -->
         <alfresco.share.version>5.2.f</alfresco.share.version>
@@ -59,13 +67,8 @@
         <alfresco.solr4.version>6.6</alfresco.solr4.version>
 
         <installer.version.name>${project.version}</installer.version.name>
+        <alfresco.package.name>alfresco</alfresco.package.name>
         <alfresco.distribution.name>${alfresco.package.name}-distribution</alfresco.distribution.name>
-
-        <dependency.alfresco-enterprise-repository.version>6.18</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-enterprise-remote-api.version>6.12</dependency.alfresco-enterprise-remote-api.version>
-        <dependency.alfresco-spring-encryptor.version>6.0</dependency.alfresco-spring-encryptor.version>
-        <dependency.alfresco-enterprise-crypto.version>6.0</dependency.alfresco-enterprise-crypto.version>
-        <dependency.alfresco-events-repo.version>1.2.14</dependency.alfresco-events-repo.version>
 
         <dependency.postgresql.version>9.4.1212</dependency.postgresql.version>
 
@@ -366,7 +369,6 @@
                 <version>4.12</version>
                 <scope>test</scope>
             </dependency>
-
             <dependency>
                 <groupId>org.alfresco.aos-module</groupId>
                 <artifactId>alfresco-aos-module</artifactId>
@@ -444,7 +446,6 @@
                 <version>${alfresco.googledocs.version}</version>
                 <type>amp</type>
             </dependency>
-
             <dependency>
                 <groupId>org.alfresco</groupId>
                 <artifactId>alfresco-enterprise-crypto</artifactId>
@@ -480,7 +481,6 @@
                 <artifactId>alfresco-spring-encryptor</artifactId>
                 <version>${dependency.alfresco-spring-encryptor.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.apache.ws.commons.axiom</groupId>
                 <artifactId>axiom-api</artifactId>

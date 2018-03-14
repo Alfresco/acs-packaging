@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>content-services</artifactId>
     <packaging>war</packaging>
@@ -12,18 +13,14 @@
     </parent>
 
     <properties>
-        <build-number>0</build-number>
-        <build-key>BUILD-KEY</build-key>
-        <build-name>Build-Name</build-name>
         <scm-path>local/development/workspace</scm-path>
         <scm-revision>${buildNumber}</scm-revision>
     </properties>
 
     <dependencies>
-
-     <dependency>
+        <dependency>
             <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-trashcan-cleaner</artifactId>
+            <artifactId>alfresco-repository</artifactId>
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
@@ -31,7 +28,31 @@
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-repository</artifactId>
+            <artifactId>alfresco-enterprise-remote-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-enterprise-repository</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco.services</groupId>
+            <artifactId>alfresco-events-repo</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco.services</groupId>
+            <artifactId>alfresco-events-repo-publishing</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco.services</groupId>
+            <artifactId>alfresco-events-repo-activiti</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-enterprise-crypto</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-trashcan-cleaner</artifactId>
         </dependency>
         <dependency>
             <groupId>xalan</groupId>
@@ -78,7 +99,6 @@
             <artifactId>standard</artifactId>
             <version>1.1.2</version>
         </dependency>
-
         <!-- 'provided' dependencies, not packaged in war -->
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -98,19 +118,16 @@
             <version>2.0</version>
             <scope>provided</scope>
         </dependency>
-
         <dependency>
             <groupId>org.alfresco.services</groupId>
             <artifactId>alfresco-messaging-repo</artifactId>
         </dependency>
-
         <!-- CORS Filter Libraries -->
         <dependency>
             <groupId>com.thetransactioncompany</groupId>
             <artifactId>cors-filter</artifactId>
             <version>2.5</version>
         </dependency>
-
         <!-- Test dependencies -->
         <dependency>
             <groupId>org.alfresco</groupId>
@@ -160,27 +177,6 @@
             <version>${dependency.mysql.version}</version>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-enterprise-crypto</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-enterprise-remote-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco.services</groupId>
-            <artifactId>alfresco-events-repo</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco.services</groupId>
-            <artifactId>alfresco-events-repo-publishing</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco.services</groupId>
-            <artifactId>alfresco-events-repo-activiti</artifactId>
-        </dependency>
     </dependencies>
 
     <build>
@@ -225,7 +221,7 @@
                                             <runOnConfiguration>true</runOnConfiguration>
                                         </execute>
                                     </action>
-                                    <comment>source: </comment>
+                                    <comment>source:</comment>
                                 </pluginExecution>
                             </pluginExecutions>
                         </lifecycleMappingMetadata>
@@ -271,7 +267,7 @@
                     </execution>
                 </executions>
             </plugin>
-             <plugin>
+            <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <!-- CLOUD-1967 Put core log4j config in WEB-INF/classes, so that it's first in classloader -->
@@ -326,7 +322,8 @@
                             <replacements>
                                 <replacement>
                                     <token><![CDATA[<!-- Enterprise context-param placeholder -->]]></token>
-                                    <value><![CDATA[<context-param><description>Vaadin production mode</description><param-name>productionMode</param-name><param-value>true</param-value></context-param>]]></value>
+                                    <value>
+                                        <![CDATA[<context-param><description>Vaadin production mode</description><param-name>productionMode</param-name><param-value>true</param-value></context-param>]]></value>
                                 </replacement>
                                 <replacement>
                                     <token><![CDATA[<!-- Activiti Global Authentication Filter mapping placeholder -->]]></token>

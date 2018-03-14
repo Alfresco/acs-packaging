@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>alfresco-content-services-full-ear-distribution</artifactId>
     <name>Alfresco Content Services Full EAR Distribution</name>
@@ -225,7 +226,9 @@
                         <configuration>
                             <includeArtifactIds>alfresco-content-services-full-distribution</includeArtifactIds>
                             <excludeTransitive>true</excludeTransitive>
-                            <excludes>alfresco-content-services-full-distribution-${project.version}/solr4/,alfresco-content-services-full-distribution-${project.version}/web-server/webapps/,alfresco-content-services-full-distribution-${project.version}/modules/</excludes>
+                            <excludes>
+                                alfresco-content-services-full-distribution-${project.version}/solr4/,alfresco-content-services-full-distribution-${project.version}/web-server/webapps/,alfresco-content-services-full-distribution-${project.version}/modules/
+                            </excludes>
                         </configuration>
                     </execution>
 
@@ -239,7 +242,9 @@
                             <includeArtifactIds>alfresco-content-services-share-distribution</includeArtifactIds>
                             <excludeTransitive>true</excludeTransitive>
                             <excludes>*</excludes>
-                            <includes>alfresco-content-services-share-distribution-${alfresco.share.version}/web-extension-samples/</includes>
+                            <includes>
+                                alfresco-content-services-share-distribution-${alfresco.share.version}/web-extension-samples/
+                            </includes>
                         </configuration>
                     </execution>
 
@@ -257,7 +262,9 @@
                                     <version>1.0.1</version>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${project.build.directory}/dependency/alfresco-content-services-full-distribution-${project.version}/web-server/lib</outputDirectory>
+                            <outputDirectory>
+                                ${project.build.directory}/dependency/alfresco-content-services-full-distribution-${project.version}/web-server/lib
+                            </outputDirectory>
                         </configuration>
                     </execution>
                 </executions>

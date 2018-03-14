@@ -1,7 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>content-services-docker</artifactId>
-    <name>Alfresco Content Services Docker image builder</name>
+    <name>Alfresco Content Services Docker Image Builder</name>
     <packaging>pom</packaging>
 
     <parent>
@@ -18,12 +19,10 @@
             <version>${project.version}</version>
             <type>war</type>
         </dependency>
-        <!-- The version is picked from acs-community-packaging dependencies -->
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-mmt</artifactId>
         </dependency>
-        <!-- The version is picked from acs-community-packaging dependencies -->
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-server-root</artifactId>
@@ -158,8 +157,75 @@
                     </execution>
                 </executions>
             </plugin>
-        </plugins>
 
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>fabric8-maven-plugin</artifactId>
+                <version>3.5.37</version>
+                <configuration>
+                    <images>
+                        <image>
+                            <name>alfresco/alfresco-content-services</name>
+                            <registry>quay.io</registry>
+                            <build>
+                                <dockerFileDir>${project.basedir}/</dockerFileDir>
+                                <tags>
+                                    <tag>${project.version}</tag>
+                                </tags>
+                            </build>
+                        </image>
+                    </images>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>deploy</phase>
+                        <id>buildAndPush</id>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>push</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>dockerImages</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>fabric8-maven-plugin</artifactId>
+                        <version>3.5.37</version>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>alfresco/alfresco-content-services</name>
+                                    <registry>quay.io</registry>
+                                    <build>
+                                        <dockerFileDir>${project.basedir}/</dockerFileDir>
+                                        <tags>
+                                            <tag>${project.version}</tag>
+                                        </tags>
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>buildAndPush</id>
+                                <goals>
+                                    <goal>build</goal>
+                                    <goal>push</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

@@ -1,20 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <artifactId>alfresco-content-services-full-distribution</artifactId>
+    <packaging>jar</packaging>
+    <name>Alfresco Content Services Full Distribution zip</name>
+
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>acs-packaging</artifactId>
         <version>6.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>alfresco-content-services-full-distribution</artifactId>
-    <!-- Needs to be a jar as there are resources -->
-    <packaging>jar</packaging>
-    <name>Alfresco Content Services Full Distribution</name>
-
-    <!-- To replace in share-config-custom.xml -->
-    <properties>
-        
-    </properties>
 
     <dependencies>
         <dependency>
