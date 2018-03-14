@@ -215,6 +215,7 @@
                         </configuration>
                         <executions>
                             <execution>
+                                <phase>install</phase>
                                 <id>buildAndPush</id>
                                 <goals>
                                     <goal>build</goal>
