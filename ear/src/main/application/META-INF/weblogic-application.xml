@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 
 <!--
-  This weblogic-application.xml file is for a Platform only install.
-  The is another version for a Share and Platform install.  
+  This weblogic-application.xml file is for a Share and Platform install.
+  The is another version for a Platform only install.  
 -->
 <weblogic-application xmlns="http://xmlns.oracle.com/weblogic/weblogic-application" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   

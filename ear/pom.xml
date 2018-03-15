@@ -1,22 +1,26 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>alfresco-content-services-ear-distribution</artifactId>
-    <name>Alfresco Content Services EAR Distribution</name>
-    <packaging>pom</packaging>
-
+    <artifactId>alfresco-content-services-full-ear-distribution</artifactId>
+    <name>Alfresco Content Services Full EAR Distribution</name>
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>acs-packaging</artifactId>
         <version>6.0.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
+    <packaging>pom</packaging>
 
     <dependencies>
         <!-- WARs to include in the EAR -->
         <dependency>
             <groupId>org.alfresco</groupId>
-            <artifactId>content-services</artifactId>
+            <artifactId>alfresco-content-services-war-for-ear</artifactId>
             <version>${project.version}</version>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>share</artifactId>
             <type>war</type>
         </dependency>
         <dependency>
@@ -24,13 +28,30 @@
             <artifactId>alfresco-server-root</artifactId>
             <type>war</type>
         </dependency>
+        <dependency>
+            <groupId>org.alfresco.aos-module</groupId>
+            <artifactId>alfresco-vti-bin</artifactId>
+            <type>war</type>
+        </dependency>
 
         <!-- Provided dependencies, unpacked -->
         <!-- Distribution zip -->
         <dependency>
             <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-content-services-distribution</artifactId>
+            <artifactId>alfresco-content-services-full-distribution</artifactId>
             <version>${project.version}</version>
+            <type>zip</type>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-content-services-share-distribution</artifactId>
             <type>zip</type>
             <scope>provided</scope>
             <exclusions>
@@ -153,7 +174,7 @@
     </dependencies>
 
     <build>
-        <finalName>${project.artifactId}-${project.version}</finalName>
+        <finalName>${project.artifactId}-${installer.version.name}</finalName>
         <plugins>
             <!-- Build EAR -->
             <plugin>
@@ -171,13 +192,23 @@
                     <modules>
                         <webModule>
                             <groupId>org.alfresco</groupId>
-                            <artifactId>content-services</artifactId>
+                            <artifactId>alfresco-content-services-war-for-ear</artifactId>
                             <bundleFileName>alfresco.war</bundleFileName>
+                        </webModule>
+                        <webModule>
+                            <groupId>org.alfresco</groupId>
+                            <artifactId>share</artifactId>
+                            <bundleFileName>share.war</bundleFileName>
                         </webModule>
                         <webModule>
                             <groupId>org.alfresco</groupId>
                             <artifactId>alfresco-server-root</artifactId>
                             <bundleFileName>ROOT.war</bundleFileName>
+                        </webModule>
+                        <webModule>
+                            <groupId>org.alfresco.aos-module</groupId>
+                            <artifactId>alfresco-vti-bin</artifactId>
+                            <bundleFileName>_vti_bin.war</bundleFileName>
                         </webModule>
                     </modules>
                 </configuration>
@@ -187,15 +218,33 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>unpack-distribution</id>
+                        <id>unpack-platform-distribution</id>
                         <phase>prepare-package</phase>
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
                         <configuration>
-                            <includeArtifactIds>alfresco-content-services-distribution</includeArtifactIds>
+                            <includeArtifactIds>alfresco-content-services-full-distribution</includeArtifactIds>
                             <excludeTransitive>true</excludeTransitive>
-                            <excludes>alfresco-content-services-distribution-${project.version}/solr4/,alfresco-content-services-distribution-${project.version}/web-server/webapps/,alfresco-content-services-distribution-${project.version}/modules/</excludes>
+                            <excludes>
+                                alfresco-content-services-full-distribution-${project.version}/solr4/,alfresco-content-services-full-distribution-${project.version}/web-server/webapps/,alfresco-content-services-full-distribution-${project.version}/modules/
+                            </excludes>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>unpack-share-distribution</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <includeArtifactIds>alfresco-content-services-share-distribution</includeArtifactIds>
+                            <excludeTransitive>true</excludeTransitive>
+                            <excludes>*</excludes>
+                            <includes>
+                                alfresco-content-services-share-distribution-${alfresco.share.version}/web-extension-samples/
+                            </includes>
                         </configuration>
                     </execution>
 
@@ -213,7 +262,9 @@
                                     <version>1.0.1</version>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${project.build.directory}/dependency/alfresco-content-services-distribution-${project.version}/web-server/lib</outputDirectory>
+                            <outputDirectory>
+                                ${project.build.directory}/dependency/alfresco-content-services-full-distribution-${project.version}/web-server/lib
+                            </outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -249,6 +300,7 @@
                                 <descriptor>src/assembly/ear-distribution.xml</descriptor>
                             </descriptors>
                             <appendAssemblyId>false</appendAssemblyId>
+                            <attach>false</attach>
                         </configuration>
                     </execution>
                 </executions>
