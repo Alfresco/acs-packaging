@@ -202,13 +202,10 @@
                         <configuration>
                             <images>
                                 <image>
-                                    <name>alfresco/alfresco-content-services</name>
+                                    <name>alfresco/alfresco-content-services:${bamboo.tag.name}</name>
                                     <registry>quay.io</registry>
                                     <build>
                                         <dockerFileDir>${project.basedir}/</dockerFileDir>
-                                        <tags>
-                                            <tag>${project.version}</tag>
-                                        </tags>
                                     </build>
                                 </image>
                             </images>
