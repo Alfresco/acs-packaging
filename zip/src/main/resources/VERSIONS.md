@@ -11,7 +11,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Alfresco Share | 5.2.2 |
 | Alfresco Search Services | 1.1 | 1.0 |
 | Alfresco Desktop Sync Service | 2.1.1 | 2.1.0 |
-| Document Transformation Engine | 2.1.0 | 2.0.x |
+| Document Transformation Engine | 2.1.1 | 2.0.x |
 | Alfresco File Transfer Receiver | 6.0 |
 | Alfresco Module Management Tool | 6.0 |
 | Alfresco Spring Encryptor | 6.0 |
@@ -22,14 +22,14 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Alfresco Share Services | 5.2.2 |
 | Alfresco Google Docs Integration | 3.0.4.2 |
 | Alfresco Records Management | 2.5.2 |
-| Alfresco Media Management | 1.0.3 |
+| Alfresco Media Management | 1.0.3.3 |
 | Alfresco Office Services | 1.1.7 |
-| SAML Single Sign-On (SSO) for Alfresco Content Services | 1.0.2 |
-| Alfresco Content Connector for Salesforce | 2.0.2.4 |
+| SAML Single Sign-On (SSO) for Alfresco Content Services | 1.0.3 |
+| Alfresco Content Connector for Salesforce | 2.0.2.5 |
 | Alfresco Kofax Integration | 2.0 |
-| Alfresco S3 Connector | 2.0.0 | 1.3.x |
-| Alfresco EMC Centera Connector | 2.1.0 |
-| Alfresco Outlook Integration | 2.2.4 |
+| Alfresco S3 Connector | 2.1.0 | 1.3.x |
+| Alfresco EMC Centera Connector | 2.1.1 |
+| Alfresco Outlook Integration | 2.4.2 | 2.2.4 |
 | Alfresco SDK | 3.0.1 |
 
 ##### Microsoft Office Suite
@@ -42,7 +42,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 |---|---|---|
 | ImageMagick | 7.0.5 |
 | LibreOffice | 5.2.1 |
-| Alfresco PDF Renderer | 1.0 |
+| Alfresco PDF Renderer | 1.1 |
 
 ##### Operating Systems
 | Component | Recommended | Also Available |
@@ -78,7 +78,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Application Servers
 | Component | Recommended | Also Available |
 |---|---|---|
-| Tomcat | 7.0.78 |
+| Tomcat | 7.0.82 |
 | JBoss | 6.4.0 EAP |
 | Oracle WebLogic Server | 12.2.1.2 |
 | IBM WebSphere | 8.5.5.10	Classic |
@@ -101,5 +101,5 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Java
 | Component | Recommended | Also Available |
 |---|---|---|
-| Oracle JRE | 1.8.0_121 | 1.8.0_111, 1.8.0_112
+| Oracle JRE | 1.8.0_131 | 1.8.0_111, 1.8.0_112, 1.8.0_121 |
 | IBM SDK | 8 |
