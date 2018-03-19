@@ -20,6 +20,9 @@ services:
                 -Dftp.dataPortFrom=30000
                 -Dftp.dataPortTo=30099
                 -Dcifs.enabled=true
+                -Dalfresco-pdf-renderer.url=http://alfresco-pdf-renderer:8090/
+                -Djodconverter.url=http://libreoffice:8090/
+                -Dimg.url=http://imagemagick:8090/
                 "
         ports:
             - 8080:8080
@@ -27,6 +30,21 @@ services:
             - 143:143
             - "21:21"
             - "30000-30099:30000-30099"
+
+    alfresco-pdf-renderer:
+        image: quay.alfresco/alfresco-docker-alfresco-pdf-renderer:${TRANSFORMERS_TAG}
+        ports:
+            - 8090:8090
+
+    imagemagick:
+        image: quay.alfresco/alfresco-docker-imagemagick:${TRANSFORMERS_TAG}
+        ports:
+            - 8091:8090
+
+    libreoffice:
+        image: quay.alfresco/alfresco-docker-libreoffice:${TRANSFORMERS_TAG}
+        ports:
+            - 8092:8090
 
     postgres:
         image: docker.io/library/postgres:9.4.12
