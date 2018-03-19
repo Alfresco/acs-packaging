@@ -89,7 +89,6 @@
             <modules>
                 <module>war</module>
                 <module>docker-alfresco</module>
-                <module>docker-share</module>
             </modules>
         </profile>
         <profile>
@@ -104,7 +103,6 @@
                 <module>war-for-ear</module>
                 <module>ear</module>
                 <module>docker-alfresco</module>
-                <module>docker-share</module>
             </modules>
         </profile>
     </profiles>
