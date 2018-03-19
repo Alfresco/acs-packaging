@@ -32,17 +32,17 @@ services:
             - "30000-30099:30000-30099"
 
     alfresco-pdf-renderer:
-        image: quay.alfresco/alfresco-docker-alfresco-pdf-renderer:${TRANSFORMERS_TAG}
+        image: quay.io/alfresco/alfresco-docker-alfresco-pdf-renderer:${TRANSFORMERS_TAG}
         ports:
             - 8090:8090
 
     imagemagick:
-        image: quay.alfresco/alfresco-docker-imagemagick:${TRANSFORMERS_TAG}
+        image: quay.io/alfresco/alfresco-docker-imagemagick:${TRANSFORMERS_TAG}
         ports:
             - 8091:8090
 
     libreoffice:
-        image: quay.alfresco/alfresco-docker-libreoffice:${TRANSFORMERS_TAG}
+        image: quay.io/alfresco/alfresco-docker-libreoffice:${TRANSFORMERS_TAG}
         ports:
             - 8092:8090
 
