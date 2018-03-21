@@ -22,7 +22,7 @@
     <distributionManagement>
         <repository>
             <id>alfresco-internal</id>
-            <url>https://artifacts.alfresco.com/nexus/content/repositories/enterprise-releases</url>
+            <url>https://artifacts.alfresco.com/nexus/content/repositories/internal-releases</url>
         </repository>
         <snapshotRepository>
             <id>alfresco-internal-snapshots</id>
@@ -33,7 +33,7 @@
     <properties>
         <!-- Set to "Enterprise Early Access" to add to the version.edition property in version.properties -->
         <version.edition>Enterprise</version.edition>
-        <bamboo.tag.name></bamboo.tag.name>
+        <image.tag>local</image.tag>
 
         <dependency.alfresco-core.version>7.1</dependency.alfresco-core.version>
         <dependency.alfresco-data-model.version>8.2</dependency.alfresco-data-model.version>
