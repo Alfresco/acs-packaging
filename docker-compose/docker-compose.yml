@@ -37,7 +37,7 @@ services:
             - 8092:8090
 
     share:
-        image: ${REPO}alfresco/alfresco-share:${SHARE_TAG}
+        image: quay.io/alfresco/alfresco-share:${SHARE_TAG}
         environment:
             - REPO_HOST=alfresco
             - REPO_PORT=8080
