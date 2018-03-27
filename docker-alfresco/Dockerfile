@@ -1,4 +1,4 @@
-FROM quay.io/alfresco/alfresco-base-tomcat:0.1.0
+FROM quay.io/alfresco/alfresco-base-tomcat:8.5.28-java-8-oracle-centos-7-f7b1278cc0eb
 
 RUN mkdir -p /usr/local/tomcat/shared/classes && \
     mkdir /usr/local/tomcat/alfresco-mmt
