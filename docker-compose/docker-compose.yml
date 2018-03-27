@@ -45,7 +45,7 @@ services:
             - 8080:8080
 
     postgres:
-        image: docker.io/library/postgres:9.4.12
+        image: docker.io/library/postgres:10.1
         environment:
             - POSTGRES_PASSWORD=alfresco
             - POSTGRES_USER=alfresco
