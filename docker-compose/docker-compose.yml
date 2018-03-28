@@ -2,7 +2,7 @@ version: "3"
 
 services:
     alfresco:
-        image: ${REPO}alfresco/alfresco-content-repository:${ALFRESCO_TAG}
+        image: alfresco/alfresco-content-repository:${ALFRESCO_TAG}
         environment:
             JAVA_OPTS : "
                 -Ddb.driver=org.postgresql.Driver
@@ -22,22 +22,22 @@ services:
             - 8082:8080 #Browser port
 
     alfresco-pdf-renderer:
-        image: ${REPO}alfresco/alfresco-docker-alfresco-pdf-renderer:${TRANSFORMERS_TAG}
+        image: alfresco/alfresco-docker-alfresco-pdf-renderer:${TRANSFORMERS_TAG}
         ports:
             - 8090:8090
 
     imagemagick:
-        image: ${REPO}alfresco/alfresco-docker-imagemagick:${TRANSFORMERS_TAG}
+        image: alfresco/alfresco-docker-imagemagick:${TRANSFORMERS_TAG}
         ports:
             - 8091:8090
 
     libreoffice:
-        image: ${REPO}alfresco/alfresco-docker-libreoffice:${TRANSFORMERS_TAG}
+        image: alfresco/alfresco-docker-libreoffice:${TRANSFORMERS_TAG}
         ports:
             - 8092:8090
 
     share:
-        image: quay.io/alfresco/alfresco-share:${SHARE_TAG}
+        image: alfresco/alfresco-share:${SHARE_TAG}
         environment:
             - REPO_HOST=alfresco
             - REPO_PORT=8080
@@ -45,7 +45,7 @@ services:
             - 8080:8080
 
     postgres:
-        image: docker.io/library/postgres:10.1
+        image: postgres:${POSTGRES_TAG}
         environment:
             - POSTGRES_PASSWORD=alfresco
             - POSTGRES_USER=alfresco
@@ -54,7 +54,7 @@ services:
             - 5432:5432
 
     solr6:
-        image: quay.io/alfresco/search-services:1.2.0-SNAPSHOT
+        image: alfresco/alfresco-search-services:${SOLR6_TAG}
         environment:
             #Solr needs to know how to register itself with Alfresco
             - SOLR_ALFRESCO_HOST=alfresco
