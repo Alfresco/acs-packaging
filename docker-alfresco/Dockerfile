@@ -8,7 +8,7 @@ RUN mkdir -p /usr/local/tomcat/shared/classes && \
     mkdir /usr/local/tomcat/alfresco-mmt
 RUN touch /usr/local/tomcat/shared/classes/alfresco-global.properties
 
-# You need to run `mvn clean install` into the root of this project to update next dependencies
+# You need to run `mvn clean install` in the root of this project to update the following dependencies
 # Copy the WAR files to the appropriate location for your application server
 # Copy the JDBC drivers for the database you are using to the lib/ directory.
 # Copy the alfresco-mmt.jar
