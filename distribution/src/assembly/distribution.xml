@@ -37,14 +37,6 @@
                 <include>*.dll</include>
             </includes>
         </fileSet>
-        <!-- Empty endorsed folder -->
-        <fileSet>
-            <directory>src/assembly</directory>
-            <outputDirectory>web-server/endorsed</outputDirectory>
-            <excludes>
-                <exclude>*</exclude>
-            </excludes>
-        </fileSet>
 
         <!-- Solr4 Distribution -->
         <fileSet>
