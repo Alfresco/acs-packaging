@@ -13,12 +13,6 @@
             <directory>target/classes</directory>
             <outputDirectory></outputDirectory>
         </fileSet>
-
-        <!-- Local resources: README, etc. -->
-        <fileSet>
-            <directory>target/classes</directory>
-            <outputDirectory></outputDirectory>
-        </fileSet>
         <!-- Licenses -->
         <fileSet>
             <directory>${highest.basedir}/installer/bitrock/licenses</directory>
