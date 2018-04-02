@@ -98,10 +98,7 @@
             </activation>
             <modules>
                 <module>war</module>
-                <module>zip</module>
                 <module>distribution</module>
-                <module>war-for-ear</module>
-                <module>ear</module>
                 <module>docker-alfresco</module>
             </modules>
         </profile>
