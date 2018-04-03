@@ -2,7 +2,7 @@ version: "3"
 
 services:
     alfresco:
-        image: quay.io/alfresco/alfresco-content-services:${ALFRESCO_TAG}
+        image: quay.io/alfresco/alfresco-content-repository:${ALFRESCO_TAG}
         environment:
             JAVA_OPTS : "
                 -Ddb.driver=org.postgresql.Driver
@@ -19,6 +19,10 @@ services:
                 -Dftp.enabled=true
                 -Dftp.dataPortFrom=30000
                 -Dftp.dataPortTo=30099
+                -Dcifs.enabled=true
+                -Dalfresco-pdf-renderer.url=http://alfresco-pdf-renderer:8090/
+                -Djodconverter.url=http://libreoffice:8090/
+                -Dimg.url=http://imagemagick:8090/
                 "
         ports:
             - 8080:8080
@@ -27,8 +31,23 @@ services:
             - "21:21"
             - "30000-30099:30000-30099"
 
+    alfresco-pdf-renderer:
+        image: quay.io/alfresco/alfresco-docker-alfresco-pdf-renderer:${TRANSFORMERS_TAG}
+        ports:
+            - 8090:8090
+
+    imagemagick:
+        image: quay.io/alfresco/alfresco-docker-imagemagick:${TRANSFORMERS_TAG}
+        ports:
+            - 8091:8090
+
+    libreoffice:
+        image: quay.io/alfresco/alfresco-docker-libreoffice:${TRANSFORMERS_TAG}
+        ports:
+            - 8092:8090
+
     postgres:
-        image: docker.io/library/postgres:9.4.12
+        image: docker.io/library/postgres:10.1
         environment:
             - POSTGRES_PASSWORD=alfresco
             - POSTGRES_USER=alfresco
