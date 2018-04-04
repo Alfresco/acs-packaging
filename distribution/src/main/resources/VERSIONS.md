@@ -20,7 +20,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Component | Recommended | Also Available |
 |---|---|---|
 | Alfresco Share Services | 5.2.2 |
-| Alfresco Google Docs Integration | 3.0.4.2 |
+| Alfresco Google Docs Integration | 3.1.0-RC1 |
 | Alfresco Records Management | 2.5.2 |
 | Alfresco Media Management | 1.0.3.3 |
 | Alfresco Office Services | 1.1.7 |
