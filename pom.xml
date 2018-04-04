@@ -35,13 +35,13 @@
         <image.tag>latest</image.tag>
 
         <dependency.alfresco-core.version>7.1</dependency.alfresco-core.version>
-        <dependency.alfresco-data-model.version>8.2</dependency.alfresco-data-model.version>
-        <dependency.alfresco-repository.version>6.38</dependency.alfresco-repository.version>
-        <dependency.alfresco-remote-api.version>6.25</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-data-model.version>8.3</dependency.alfresco-data-model.version>
+        <dependency.alfresco-repository.version>6.41</dependency.alfresco-repository.version>
+        <dependency.alfresco-remote-api.version>6.27</dependency.alfresco-remote-api.version>
         <dependency.alfresco-hb-data-sender.version>1.0.7</dependency.alfresco-hb-data-sender.version>
 
-        <dependency.alfresco-enterprise-repository.version>6.22</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-enterprise-remote-api.version>6.17</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>6.24</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-enterprise-remote-api.version>6.19</dependency.alfresco-enterprise-remote-api.version>
 
         <dependency.alfresco-spring-encryptor.version>6.0</dependency.alfresco-spring-encryptor.version>
         <dependency.alfresco-enterprise-crypto.version>6.0</dependency.alfresco-enterprise-crypto.version>
@@ -58,8 +58,8 @@
         <dependency.fabric8.version>3.5.37</dependency.fabric8.version>
 
         <!-- Alfresco Share version -->
-        <alfresco.share.version>5.2.f</alfresco.share.version>
-        <alfresco.alfresco-share-services.version>6.0.0-test</alfresco.alfresco-share-services.version>
+        <alfresco.share.version>6.0.a</alfresco.share.version>
+        <alfresco.alfresco-share-services.version>6.0.a</alfresco.alfresco-share-services.version>
 
         <!-- Alfresco GoogleDocs integration version -->
         <alfresco.googledocs.version>3.1.0-RC1</alfresco.googledocs.version>
@@ -98,10 +98,7 @@
             </activation>
             <modules>
                 <module>war</module>
-                <module>zip</module>
                 <module>distribution</module>
-                <module>war-for-ear</module>
-                <module>ear</module>
                 <module>docker-alfresco</module>
             </modules>
         </profile>
@@ -266,16 +263,6 @@
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient-cache</artifactId>
                 <version>4.5.2</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.myfaces.core</groupId>
-                <artifactId>myfaces-api</artifactId>
-                <version>1.1.10</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.myfaces.core</groupId>
-                <artifactId>myfaces-impl</artifactId>
-                <version>1.1.10</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
