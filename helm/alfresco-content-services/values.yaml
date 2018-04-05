@@ -27,6 +27,57 @@ repository:
     limits:
       memory: "4000Mi"
 
+alfrescopdfrenderer:
+  replicaCount: 1
+  image:
+    repository: quay.io/alfresco/alfresco-docker-alfresco-pdf-renderer
+    tag: "latest"
+    pullPolicy: Always
+    internalPort: 8090
+  service:
+    name: alfrescopdfrenderer
+    type: ClusterIP
+    externalPort: 80
+  resources:
+    requests:
+      memory: "256Mi"
+    limits:
+      memory: "512Mi"
+
+imagemagick:
+  replicaCount: 1
+  image:
+    repository: quay.io/alfresco/alfresco-docker-imagemagick
+    tag: "latest"
+    pullPolicy: Always
+    internalPort: 8090
+  service:
+    name: imagemagick
+    type: ClusterIP
+    externalPort: 80
+  resources:
+    requests:
+      memory: "256Mi"
+    limits:
+      memory: "512Mi"
+
+libreoffice:
+  replicaCount: 1
+  image:
+    repository: quay.io/alfresco/alfresco-docker-libreoffice
+    tag: "latest"
+    pullPolicy: Always
+    internalPort: 8090
+  service:
+    name: libreoffice
+    type: ClusterIP
+    externalPort: 80
+  resources:
+    requests:
+      memory: "256Mi"
+    limits:
+      memory: "1024Mi"
+
 share:
   replicaCount: 1
   image:
@@ -44,7 +95,7 @@ share:
     requests:
       memory: "500Mi"
     limits:
-      memory: "1000Mi"
+      memory: "1600Mi"
 
 solr:
   replicaCount: 1
@@ -66,7 +117,7 @@ solr:
     requests:
       memory: "250Mi"
     limits:
-      memory: "500Mi"
+      memory: "1024Mi"
 
 persistence:
   existingClaim: "alfresco-volume-claim"
@@ -78,6 +129,22 @@ persistence:
     data:
       mountPath: "/opt/alfresco-search-services/data"
       subPath: "alfresco-content-services/solr-data"
+
+alfresco-content-services:
+  alfresco-infrastructure:
+    enabled: true
+
+alfresco-infrastructure:
+  rabbitmq-ha:
+    enabled: false
+  activemq:
+    enabled: false
+  alfresco-keycloak:
+    enabled: false
+  alfresco-activiti-cloud-registry:
+    enabled: false
+  alfresco-api-gateway:
+    enabled: false
 
 database:
   type: postgresql
