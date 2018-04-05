@@ -20,12 +20,66 @@ repository:
   environment:
     JAVA_OPTS: " -Dsolr.base.url=/solr
       -Dsolr.secureComms=none
-      -Dindex.subsystem.name=solr6"
+      -Dindex.subsystem.name=solr6
+      -Dalfresco-pdf-renderer.url=http://alfrescopdfrenderer/
+      -Djodconverter.url=http://libreoffice/
+      -Dimg.url=http://imagemagick/"
   resources:
     requests:
       memory: "1000Mi"
     limits:
       memory: "4000Mi"
+
+alfrescopdfrenderer:
+  replicaCount: 1
+  image:
+    repository: quay.io/alfresco/alfresco-docker-alfresco-pdf-renderer
+    tag: "latest"
+    pullPolicy: Always
+    internalPort: 8090
+  service:
+    name: alfrescopdfrenderer
+    type: NodePort
+    externalPort: 80
+  resources:
+    requests:
+      memory: "256Mi"
+    limits:
+      memory: "1000Mi"
+
+imagemagick:
+  replicaCount: 1
+  image:
+    repository: quay.io/alfresco/alfresco-docker-imagemagick
+    tag: "latest"
+    pullPolicy: Always
+    internalPort: 8091
+  service:
+    name: imagemagick
+    type: NodePort
+    externalPort: 80
+  resources:
+    requests:
+      memory: "256Mi"
+    limits:
+      memory: "1000Mi"
+
+libreoffice:
+  replicaCount: 1
+  image:
+    repository: quay.io/alfresco/alfresco-docker-libreoffice
+    tag: "latest"
+    pullPolicy: Always
+    internalPort: 8092
+  service:
+    name: libreoffice
+    type: NodePort
+    externalPort: 80
+  resources:
+    requests:
+      memory: "256Mi"
+    limits:
+      memory: "1000Mi"
 
 share:
   replicaCount: 1
