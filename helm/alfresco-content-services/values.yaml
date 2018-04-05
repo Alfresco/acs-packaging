@@ -76,7 +76,7 @@ libreoffice:
     requests:
       memory: "256Mi"
     limits:
-      memory: "1000Mi"
+      memory: "1024Mi"
 
 share:
   replicaCount: 1
@@ -95,7 +95,7 @@ share:
     requests:
       memory: "500Mi"
     limits:
-      memory: "1000Mi"
+      memory: "1600Mi"
 
 solr:
   replicaCount: 1
@@ -117,7 +117,7 @@ solr:
     requests:
       memory: "250Mi"
     limits:
-      memory: "500Mi"
+      memory: "1024Mi"
 
 persistence:
   existingClaim: "alfresco-volume-claim"
