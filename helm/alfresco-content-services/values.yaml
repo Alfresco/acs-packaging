@@ -20,10 +20,7 @@ repository:
   environment:
     JAVA_OPTS: " -Dsolr.base.url=/solr
       -Dsolr.secureComms=none
-      -Dindex.subsystem.name=solr6
-      -Dalfresco-pdf-renderer.url=http://alfrescopdfrenderer/
-      -Djodconverter.url=http://libreoffice/
-      -Dimg.url=http://imagemagick/"
+      -Dindex.subsystem.name=solr6"
   resources:
     requests:
       memory: "1000Mi"
@@ -39,13 +36,13 @@ alfrescopdfrenderer:
     internalPort: 8090
   service:
     name: alfrescopdfrenderer
-    type: NodePort
+    type: ClusterIP
     externalPort: 80
   resources:
     requests:
       memory: "256Mi"
     limits:
-      memory: "1000Mi"
+      memory: "512Mi"
 
 imagemagick:
   replicaCount: 1
@@ -53,16 +50,16 @@ imagemagick:
     repository: quay.io/alfresco/alfresco-docker-imagemagick
     tag: "latest"
     pullPolicy: Always
-    internalPort: 8091
+    internalPort: 8090
   service:
     name: imagemagick
-    type: NodePort
+    type: ClusterIP
     externalPort: 80
   resources:
     requests:
       memory: "256Mi"
     limits:
-      memory: "1000Mi"
+      memory: "512Mi"
 
 libreoffice:
   replicaCount: 1
@@ -70,10 +67,10 @@ libreoffice:
     repository: quay.io/alfresco/alfresco-docker-libreoffice
     tag: "latest"
     pullPolicy: Always
-    internalPort: 8092
+    internalPort: 8090
   service:
     name: libreoffice
-    type: NodePort
+    type: ClusterIP
     externalPort: 80
   resources:
     requests:
