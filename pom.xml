@@ -12,9 +12,9 @@
     </parent>
 
     <scm>
-        <connection>scm:git:https://git.alfresco.com/Repository/acs-packaging.git</connection>
-        <developerConnection>scm:git:https://git.alfresco.com/Repository/acs-packaging.git</developerConnection>
-        <url>https://git.alfresco.com/Repository/acs-packaging</url>
+        <connection>scm:git:git@github.com:Alfresco/acs-packaging.git</connection>
+        <developerConnection>scm:git:git@github.com:Alfresco/acs-packaging.git</developerConnection>
+        <url>https://github.com/Alfresco/acs-packaging</url>
         <tag>HEAD</tag>
     </scm>
 
