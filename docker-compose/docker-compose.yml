@@ -36,7 +36,7 @@ services:
             - 8090:8090
 
     imagemagick:
-        image: alfresco/alfresco-magemagick:${TRANSFORMERS_TAG}
+        image: alfresco/alfresco-imagemagick:${TRANSFORMERS_TAG}
         ports:
             - 8091:8090
 
