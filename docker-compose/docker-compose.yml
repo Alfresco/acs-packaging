@@ -1,9 +1,17 @@
 version: "3"
 
+# The acs-deployment project contains the product version of docker-compose.
+#
+# This version is for testing and development use. For testing and debug we need to have a more open version.
+# For remote debug we need the CATALINA_OPTS and to expose port 8000.
+
 services:
     alfresco:
         image: alfresco/alfresco-content-repository:${ALFRESCO_TAG}
         environment:
+            CATALINA_OPTS : "
+                -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n
+                "
             JAVA_OPTS : "
                 -Ddb.driver=org.postgresql.Driver
                 -Ddb.username=alfresco
@@ -20,19 +28,20 @@ services:
                 "
         ports:
             - 8082:8080 #Browser port
+            - 8000:8000 #Debug port
 
     alfresco-pdf-renderer:
-        image: alfresco/alfresco-docker-alfresco-pdf-renderer:${TRANSFORMERS_TAG}
+        image: alfresco/alfresco-pdf-renderer:${TRANSFORMERS_TAG}
         ports:
             - 8090:8090
 
     imagemagick:
-        image: alfresco/alfresco-docker-imagemagick:${TRANSFORMERS_TAG}
+        image: alfresco/alfresco-magemagick:${TRANSFORMERS_TAG}
         ports:
             - 8091:8090
 
     libreoffice:
-        image: alfresco/alfresco-docker-libreoffice:${TRANSFORMERS_TAG}
+        image: alfresco/alfresco-libreoffice:${TRANSFORMERS_TAG}
         ports:
             - 8092:8090
 

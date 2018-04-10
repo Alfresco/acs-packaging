@@ -4,7 +4,7 @@
 FROM quay.io/alfresco/alfresco-base-tomcat:8.5.28-java-8-oracle-centos-7-f7b1278cc0eb
 
 # Create prerequisite to store tools and properties
-RUN mkdir -p /usr/local/tomcat/shared/classes && \
+RUN mkdir -p /usr/local/tomcat/shared/classes/alfresco/extension && \
     mkdir /usr/local/tomcat/alfresco-mmt
 RUN touch /usr/local/tomcat/shared/classes/alfresco-global.properties
 
@@ -27,6 +27,11 @@ RUN echo -e '\n\
 jodconverter.enabled=true\n\
 ' >> /usr/local/tomcat/shared/classes/alfresco-global.properties
 
+# Add debug for testing
+# RUN echo -e '\n\
+# log4j.logger.org.alfresco.repo.content.transform.TransformerDebug=debug\n\
+# ' >> /usr/local/tomcat/shared/classes/alfresco/extension/custom-log4j.properties
+
 RUN mkdir -p /usr/local/tomcat/amps
 
 # Copy the amps from build context to the appropriate location for your application server
@@ -37,3 +42,7 @@ RUN java -jar /usr/local/tomcat/alfresco-mmt/alfresco-mmt*.jar install \
               /usr/local/tomcat/amps /usr/local/tomcat/webapps/alfresco -directory -nobackup -force
 
 # Docker CMD from parent image starts the server
+
+# To remote debug into this image add: EXPOSE 8000
+# Changes are also required to the docker-compose/docker-compose.yml file.
+# EXPOSE 8000
