@@ -57,7 +57,9 @@
 
       <!-- The first rule with a matching request will get its action invoked, the remaining rules will be ignored. -->
       <filter>
-
+         <!-- CSRF is disabled by default for the repository. To enable it use the values from the renamefilter tags in this filter tag -->
+      </filter>
+      <renamefilter>
          <!-- Refresh token on each new page visit -->
          <rule>
             <request>
@@ -181,7 +183,7 @@
                <param name="origin">{origin}</param>
             </action>
          </rule>
-      </filter>
+      </renamefilter>
 
    </config>
 
