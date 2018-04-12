@@ -8,7 +8,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Component | Recommended | Also Available |
 |---|---|---|
 | Alfresco Content Services | @project.version@ |
-| Alfresco Share | 5.2.2 |
+| Alfresco Share | @alfresco.share.version@ |
 | Alfresco Search Services | 1.1 | 1.0 |
 | Alfresco Desktop Sync Service | 2.1.1 | 2.1.0 |
 | Document Transformation Engine | 2.1.1 | 2.0.x |
@@ -19,11 +19,11 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Alfresco Modules and Integrations
 | Component | Recommended | Also Available |
 |---|---|---|
-| Alfresco Share Services | 5.2.2 |
-| Alfresco Google Docs Integration | 3.1.0-RC1 |
+| Alfresco Share Services | @alfresco.alfresco-share-services.version@ |
+| Alfresco Google Docs Integration | @alfresco.googledocs.version@ |
 | Alfresco Records Management | 2.5.2 |
 | Alfresco Media Management | 1.0.3.3 |
-| Alfresco Office Services | 1.1.7 |
+| Alfresco Office Services | @alfresco.aos-module.version@ |
 | SAML Single Sign-On (SSO) for Alfresco Content Services | 1.0.3 |
 | Alfresco Content Connector for Salesforce | 2.0.2.5 |
 | Alfresco Kofax Integration | 2.0 |
@@ -47,7 +47,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Operating Systems
 | Component | Recommended | Also Available |
 |---|---|---|
-| Red Hat Enterprise Linux | 7.3 | 7.2 |
+| Red Hat Enterprise Linux | 7.4 | 7.3 | 7.2 |
 | Windows Server | 2012 R2 x64 |
 | CentOS | 7 x64 |
 | Ubuntu | 16.04 LTS x64 |
@@ -57,28 +57,26 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Databases
 | Component | Recommended | Also Available |
 |---|---|---|
-| MySQL | 5.7.17 | 5.7.16 |
+| MySQL | 5.7.21 | 5.7.17 | 5.7.16 |
 | MS SQL Server | 2016 | 2014 |
-| Oracle | 12c  | 
+| Oracle | 12c  |
 | PostgreSQL | 9.4.12 |
-| IBM DB2 | 10.5 |
-| MariaDB | 10.1.18 |
+| MariaDB | 10.2.11 |
 | Amazon Aurora | Latest |
 
 ##### Database Connectors
 | Component | Recommended | Also Available |
 |---|---|---|
-| MySQL connector | @dependency.mysql.version@ |
-| MariaDB Java Client | @dependency.mariadb.version@ |
+| MySQL connector | 5.1.40 |
+| MariaDB Java Client | 2.0.1 |
 | PostgreSQL | @dependency.postgresql.version@ |
-| Oracle JDBC ojdbc7 | @dependency.oracle.version@ |
-| IBM JCC Driver | @dependency.db2.version@ |
-| Microsoft JDBC Driver | @dependency.ms-sql-server.version@ |
+| Oracle JDBC ojdbc7 | 12.1.0.1.0 |
+| Microsoft JDBC Driver | 6.0 |
 
 ##### Application Servers
 | Component | Recommended | Also Available |
 |---|---|---|
-| Tomcat | 7.0.82 |
+| Tomcat | 8.5.28 |
 
 ##### Client Operating Systems
 | Component | Recommended | Also Available |
@@ -98,5 +96,5 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Java
 | Component | Recommended | Also Available |
 |---|---|---|
-| Oracle JRE | 1.8.0_131 | 1.8.0_111, 1.8.0_112, 1.8.0_121 |
+| Oracle JRE | 1.8.0_161 | 1.8.0_131 | 1.8.0_111, 1.8.0_112, 1.8.0_121 |
 | IBM SDK | 8 |
