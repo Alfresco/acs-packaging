@@ -1,3 +1,11 @@
+### License
+
+License rights for this program may be obtained from Alfresco Software, Ltd.
+pursuant to a written agreement and any use of this program without such an
+agreement is prohibited.
+
+https://www.alfresco.com/legal/agreements and https://www.alfresco.com/terms-use
+
 ### Contributing
 Thanks for your interest in contributing to this project!
 
