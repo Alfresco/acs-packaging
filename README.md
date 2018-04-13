@@ -1,6 +1,12 @@
 
-# Alfresco Content Services Packaging
-This project is producing packaging for Alfresco Content Services Repository.
+# Alfresco Content Services Enterprise Packaging
+This project is producing packaging for Alfresco Content Services Repository Enterprise.
+
+License rights for this program may be obtained from Alfresco Software, Ltd.
+pursuant to a written agreement and any use of this program without such an
+agreement is prohibited.
+
+https://www.alfresco.com/legal/agreements and https://www.alfresco.com/terms-use
 
 The SNAPSHOT version of the artifacts is **never** published.
 
@@ -28,6 +34,6 @@ For testing locally:
 Use the deployment project if you want the sample docker-compose or helm: https://github.com/Alfresco/acs-deployment
 
 ## Distribution zip
-In this folder the distribution zip is build. It contains all the war files, libraries, certificates and settings files you need to deploy Alfresco Content Services on the supported application servers.
+In this folder the distribution zip is built. It contains all the war files, libraries, certificates and settings files you need to deploy Alfresco Content Services on the supported application servers.
 
 
