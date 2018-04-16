@@ -19,7 +19,7 @@ This produces the docker images for alfresco-content-repository and the distribu
 
 ### Build:
 * ```mvn clean install``` in the root of the project will build everything.
-* This project is the Enterprise equivalent of the [Community Packaging Project](https://github.com/Alfresco/acs-packaging).  Please ensure that you have the correct agreements in place and access to the Enterprise Maven artifacts.
+* This project is the Enterprise equivalent of the [Community Packaging Project](https://github.com/Alfresco/acs-community-packaging).  Please ensure that you have the correct agreements in place and access to the Enterprise Maven artifacts.
 
 ## Docker Alfresco
 On official releases, the image is published:
