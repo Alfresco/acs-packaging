@@ -27,7 +27,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | SAML Single Sign-On (SSO) for Alfresco Content Services | 1.0.3 |
 | Alfresco Content Connector for Salesforce | 2.1.0-RC1 |
 | Alfresco Kofax Integration | 2.0 |
-| Alfresco S3 Connector | 2.1.0 | 1.3.x |
+| Alfresco S3 Connector | 2.2.0-RC1 |
 | Alfresco EMC Centera Connector | 2.2.0-RC1 |
 | Alfresco Outlook Integration | 2.4.2 | 2.2.4 |
 | Alfresco SDK | 3.0.1 |
