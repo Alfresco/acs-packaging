@@ -36,11 +36,11 @@
 
         <dependency.alfresco-core.version>7.2</dependency.alfresco-core.version>
         <dependency.alfresco-data-model.version>8.5</dependency.alfresco-data-model.version>
-        <dependency.alfresco-repository.version>6.44-REPO-3329-1</dependency.alfresco-repository.version>
+        <dependency.alfresco-repository.version>6.46</dependency.alfresco-repository.version>
         <dependency.alfresco-remote-api.version>6.29</dependency.alfresco-remote-api.version>
         <dependency.alfresco-hb-data-sender.version>1.0.8</dependency.alfresco-hb-data-sender.version>
 
-        <dependency.alfresco-enterprise-repository.version>6.26-REPO-3329</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-enterprise-repository.version>6.28</dependency.alfresco-enterprise-repository.version>
         <dependency.alfresco-enterprise-remote-api.version>6.21</dependency.alfresco-enterprise-remote-api.version>
 
         <dependency.alfresco-spring-encryptor.version>6.0</dependency.alfresco-spring-encryptor.version>
