@@ -64,6 +64,18 @@
         <!-- Alfresco GoogleDocs integration version -->
         <alfresco.googledocs.version>3.1.0-RC1</alfresco.googledocs.version>
 
+        <!-- Alfresco S3 Connector integration version -->
+        <alfresco.s3connector.version>2.2.0-RC1</alfresco.s3connector.version>
+
+        <!-- Alfresco Centera Connector version -->
+        <alfresco.centera-connector.version>2.2.0-RC1</alfresco.centera-connector.version>
+
+        <!-- Alfresco Salesforce Connector version -->
+        <alfresco.salesforce-connector.version>2.1.0-RC1</alfresco.salesforce-connector.version>
+
+        <!-- Alfresco Kofax Connector version -->
+        <alfresco.kofax.version>2.0.0</alfresco.kofax.version>
+
         <!-- Alfresco Office Services Module -->
         <alfresco.aos-module.version>1.2.0-RC2</alfresco.aos-module.version>
 
@@ -89,6 +101,7 @@
             <modules>
                 <module>war</module>
                 <module>docker-alfresco</module>
+                <module>docker-alfresco-all-amps</module>
             </modules>
         </profile>
         <profile>
@@ -512,16 +525,32 @@
             </dependency>
             <dependency>
                 <groupId>org.alfresco.integrations</groupId>
-                <artifactId>alfresco-googledocs-repo</artifactId>
-                <version>${alfresco.googledocs.version}</version>
-                <classifier>enterprise</classifier>
+                <artifactId>alfresco-s3-connector</artifactId>
+                <version>${alfresco.s3connector.version}</version>
+                <type>amp</type>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-centera-connector</artifactId>
+                <version>${alfresco.centera-connector.version}</version>
                 <type>amp</type>
             </dependency>
             <dependency>
                 <groupId>org.alfresco.integrations</groupId>
-                <artifactId>alfresco-googledocs-share</artifactId>
-                <version>${alfresco.googledocs.version}</version>
-                <classifier>enterprise</classifier>
+                <artifactId>alfresco-content-connector-for-salesforce-repo</artifactId>
+                <version>${alfresco.salesforce-connector.version}</version>
+                <type>amp</type>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.integrations</groupId>
+                <artifactId>alfresco-content-connector-for-salesforce-share</artifactId>
+                <version>${alfresco.salesforce-connector.version}</version>
+                <type>amp</type>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.module.KofaxAddon</groupId>
+                <artifactId>kofaxaddon</artifactId>
+                <version>${alfresco.kofax.version}</version>
                 <type>amp</type>
             </dependency>
         </dependencies>
