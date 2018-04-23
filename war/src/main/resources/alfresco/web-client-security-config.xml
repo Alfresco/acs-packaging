@@ -3,9 +3,7 @@
    <!--
       CSRF filter config to mitigate CSRF/Seasurfing/XSRF attacks
 
-      NOTE: CSRF is disabled by default for the repository
-
-     To disable the CSRF filter override the <filter> to not contain any values, for example:
+      To disable the CSRF filter override the <filter> to not contain any values, for example:
          <config evaluator="string-compare" condition="CSRFPolicy" replace="true">
             <filter/>
          </config>
@@ -59,10 +57,10 @@
 
       <!-- The first rule with a matching request will get its action invoked, the remaining rules will be ignored. -->
       <filter>
-         <!-- CSRF is disabled by default for the repository -->
-         <!-- To re enable it, uncomment the following rule nodes (and fix the comments) -->
-         <!--
-         < ! - - Refresh token on each new page visit - - >
+         <!-- CSRF is disabled by default for the repository. To enable it use the values from the renamefilter tags in this filter tag -->
+      </filter>
+      <renamefilter>
+         <!-- Refresh token on each new page visit -->
          <rule>
             <request>
                <method>GET</method>
@@ -144,10 +142,10 @@
             </action>
          </rule>
 
-         < ! - -
+         <!--
             Verify multipart requests contain the token as a parameter
             and also correct referer & origin header if available
-         - - >
+         -->
          <rule>
             <request>
                <method>POST</method>
@@ -165,11 +163,11 @@
             </action>
          </rule>
 
-         < ! - -
+         <!--
             Verify that all remaining state changing requests contain a token in the header and correct referer & origin headers
             if available. We "catch" all content types since just setting it to "application/json.*" since a webscript that doesn't
             require a json request body otherwise would be successfully executed using i.e."text/plain".
-         - - >
+         -->
          <rule>
             <request>
                <method>POST|PUT|DELETE</method>
@@ -185,8 +183,7 @@
                <param name="origin">{origin}</param>
             </action>
          </rule>
-         -->
-      </filter>
+      </renamefilter>
 
    </config>
 
