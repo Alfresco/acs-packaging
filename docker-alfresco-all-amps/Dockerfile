@@ -25,9 +25,9 @@ RUN sed -i "s/shared.loader=/shared.loader=\${catalina.base}\/shared\/classes/" 
 # Add here configurations for alfresco-global.properties
 RUN echo -e '\n\
 jodconverter.enabled=true\n\
-s3.accessKey=$aws-access-key-id\n\
-s3.secretKey=$aws-secret-access-key\n\
-s3.bucketName=$s3.bucketName\n\
+s3.accessKey=${aws-access-key-id}\n\
+s3.secretKey=${aws-secret-access-key}\n\
+s3.bucketName=${s3.bucketName}\n\
 centera.url=168.159.214.26?d:\\kit\\CenteraSDK3.3\\c2armtesting.pea\n\
 ' >> /usr/local/tomcat/shared/classes/alfresco-global.properties
 
