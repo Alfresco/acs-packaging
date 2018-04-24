@@ -113,6 +113,7 @@
                 <module>war</module>
                 <module>distribution</module>
                 <module>docker-alfresco</module>
+                <module>docker-alfresco-all-amps</module>
             </modules>
         </profile>
     </profiles>
