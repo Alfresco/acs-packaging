@@ -12,7 +12,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Alfresco Search Services | 1.1.0 | 1.0.0 |
 | Alfresco Desktop Sync Service | 2.1.1 | 2.1.0 |
 | Document Transformation Engine | 2.1.1 | 2.0.x |
-| Alfresco File Transfer Receiver | 6.0 |
+| Alfresco File Transfer Receiver | 6.2.1 |
 | Alfresco Module Management Tool | 6.0 |
 | Alfresco Spring Encryptor | 6.0 |
 
