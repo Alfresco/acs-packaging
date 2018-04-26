@@ -22,11 +22,13 @@ COPY target/server-root/* /usr/local/tomcat/webapps
 RUN sed -i "s/shared.loader=/shared.loader=\${catalina.base}\/shared\/classes/" /usr/local/tomcat/conf/catalina.properties
 
 # Add here configurations for alfresco-global.properties
+# Lowercase the bucket name as bamboo will pass in a bucket name with the build plan key in it
 RUN echo -e '\n\
 jodconverter.enabled=true\n\
 s3.accessKey=${aws-access-key-id}\n\
 s3.secretKey=${aws-secret-access-key}\n\
 s3.bucketName=${s3.bucketName}\n\
+s3.autoLowerCaseBucketName=true
 centera.url=168.159.214.26?d:\\kit\\CenteraSDK3.3\\c2armtesting.pea\n\
 ' >> /usr/local/tomcat/shared/classes/alfresco-global.properties
 
