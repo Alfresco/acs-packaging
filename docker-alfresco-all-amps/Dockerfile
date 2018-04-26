@@ -28,7 +28,7 @@ jodconverter.enabled=true\n\
 s3.accessKey=${aws-access-key-id}\n\
 s3.secretKey=${aws-secret-access-key}\n\
 s3.bucketName=${s3.bucketName}\n\
-s3.autoLowerCaseBucketName=true
+s3.autoLowerCaseBucketName=true\n\
 centera.url=168.159.214.26?d:\\kit\\CenteraSDK3.3\\c2armtesting.pea\n\
 ' >> /usr/local/tomcat/shared/classes/alfresco-global.properties
 
