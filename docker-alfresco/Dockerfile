@@ -1,7 +1,6 @@
 # Fetch image based on Tomcat 8.5.28 and Java 8
-# `docker login [OPTIONS] [SERVER]` is currently required
 # More infos about this image: https://github.com/Alfresco/alfresco-docker-base-tomcat
-FROM quay.io/alfresco/alfresco-base-tomcat:8.5.28-java-8-oracle-centos-7-f7b1278cc0eb
+FROM alfresco/alfresco-base-tomcat:8.5.28-java-8-oracle-centos-7
 
 # Create prerequisite to store tools and properties
 RUN mkdir -p /usr/local/tomcat/shared/classes/alfresco/extension && \
