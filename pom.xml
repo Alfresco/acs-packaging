@@ -213,24 +213,6 @@
                 <groupId>org.alfresco.surf</groupId>
                 <artifactId>spring-webscripts</artifactId>
                 <version>${dependency.alfresco-spring-webscripts.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.sun</groupId>
-                        <artifactId>tools</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>nu.validator.htmlparser</groupId>
-                        <artifactId>htmlparser</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.myfaces.core</groupId>
-                        <artifactId>myfaces-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.myfaces.core</groupId>
-                        <artifactId>myfaces-impl</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.alfresco.surf</groupId>
