@@ -45,7 +45,7 @@
 
         <dependency.alfresco-spring-encryptor.version>6.0</dependency.alfresco-spring-encryptor.version>
         <dependency.alfresco-enterprise-crypto.version>6.0</dependency.alfresco-enterprise-crypto.version>
-        <dependency.alfresco-events-repo.version>1.2.16</dependency.alfresco-events-repo.version>
+        <dependency.alfresco-events-repo.version>1.2.18</dependency.alfresco-events-repo.version>
 
         <dependency.alfresco-mmt.version>6.0</dependency.alfresco-mmt.version>
         <dependency.alfresco-pdf-renderer.version>1.1</dependency.alfresco-pdf-renderer.version>
@@ -202,7 +202,7 @@
             <dependency>
                 <groupId>org.alfresco.services</groupId>
                 <artifactId>alfresco-events</artifactId>
-                <version>1.2.10</version>
+                <version>1.2.12</version>
             </dependency>
             <dependency>
                 <groupId>org.quartz-scheduler</groupId>
