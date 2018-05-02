@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-    <artifactId>content-services-docker-all-amps</artifactId>
+    <artifactId>content-services-docker-all-amps-test</artifactId>
     <name>Alfresco Content and Share Services with Amps Docker Image Builder</name>
   <packaging>pom</packaging>
 
@@ -12,7 +12,7 @@
   </parent>
 
   <properties>
-      <image.name>alfresco/alfresco-content-repository-all-amps</image.name>
+      <image.name>alfresco/alfresco-content-repository-all-amps-test</image.name>
       <image.registry>quay.io</image.registry>
       <s3.bucketName>bamboo-s3-conn-default</s3.bucketName>
       <aws-access-key-id>default</aws-access-key-id>

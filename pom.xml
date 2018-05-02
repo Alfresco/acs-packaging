@@ -76,6 +76,24 @@
         <!-- Alfresco Kofax Connector version -->
         <alfresco.kofax.version>2.0.0</alfresco.kofax.version>
 
+        <!-- SAML Single Sign-On (SSO) for Alfresco Content Services -->
+        <alfresco.saml.version>1.0.3</alfresco.saml.version>
+
+        <!-- Alfresco Media Management -->
+        <alfresco.media-management.version>1.0.3.3</alfresco.media-management.version>
+
+        <!-- Alfresco Outlook Integration -->
+        <alfresco.outlook.version>2.4.2</alfresco.outlook.version>
+
+        <!-- Alfresco Desktop Sync Service -->
+        <alfresco.desktop-sync.version>2.1.1</alfresco.desktop-sync.version>
+
+        <!-- Document Transformation Engine -->
+        <alfresco.transformation-engine.version>2.1.1</alfresco.transformation-engine.version>
+
+        <!-- Alfresco Records Management -->
+        <alfresco.records-management.version>2.5.2</alfresco.records-management.version>
+
         <!-- Alfresco Office Services Module -->
         <alfresco.aos-module.version>1.2.0-RC2</alfresco.aos-module.version>
 
@@ -101,7 +119,7 @@
             <modules>
                 <module>war</module>
                 <module>docker-alfresco</module>
-                <module>docker-alfresco-all-amps</module>
+                <module>docker-alfresco-all-amps-test</module>
             </modules>
         </profile>
         <profile>
@@ -113,7 +131,7 @@
                 <module>war</module>
                 <module>distribution</module>
                 <module>docker-alfresco</module>
-                <module>docker-alfresco-all-amps</module>
+                <module>docker-alfresco-all-amps-test</module>
             </modules>
         </profile>
     </profiles>
