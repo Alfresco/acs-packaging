@@ -35,9 +35,9 @@
         <image.tag>latest</image.tag>
 
         <dependency.alfresco-core.version>7.2</dependency.alfresco-core.version>
-        <dependency.alfresco-data-model.version>8.6-Jackson2.9.5</dependency.alfresco-data-model.version>
-        <dependency.alfresco-repository.version>6.46</dependency.alfresco-repository.version>
-        <dependency.alfresco-remote-api.version>6.29-Jackson2.9.5</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-data-model.version>8.5</dependency.alfresco-data-model.version>
+        <dependency.alfresco-repository.version>6.47</dependency.alfresco-repository.version>
+        <dependency.alfresco-remote-api.version>6.30</dependency.alfresco-remote-api.version>
         <dependency.alfresco-hb-data-sender.version>1.0.8</dependency.alfresco-hb-data-sender.version>
 
         <dependency.alfresco-enterprise-repository.version>6.28</dependency.alfresco-enterprise-repository.version>
@@ -45,14 +45,14 @@
 
         <dependency.alfresco-spring-encryptor.version>6.0</dependency.alfresco-spring-encryptor.version>
         <dependency.alfresco-enterprise-crypto.version>6.0</dependency.alfresco-enterprise-crypto.version>
-        <dependency.alfresco-events-repo.version>1.2.16</dependency.alfresco-events-repo.version>
-
+        <dependency.alfresco-events-repo.version>1.2.18</dependency.alfresco-events-repo.version>
+        <dependency.alfresco-spring-webscripts.version>6.17</dependency.alfresco-spring-webscripts.version>
         <dependency.alfresco-mmt.version>6.0</dependency.alfresco-mmt.version>
         <dependency.alfresco-pdf-renderer.version>1.1</dependency.alfresco-pdf-renderer.version>
         <dependency.alfresco-trashcan-cleaner.version>2.3</dependency.alfresco-trashcan-cleaner.version>
         <dependency.alfresco-jlan.version>7.0</dependency.alfresco-jlan.version>
         <dependency.alfresco-server-root.version>6.0</dependency.alfresco-server-root.version>
-        <dependency.alfresco-messaging-repo.version>1.2.8</dependency.alfresco-messaging-repo.version>
+        <dependency.alfresco-messaging-repo.version>1.2.9</dependency.alfresco-messaging-repo.version>
 
         <dependency.spring.version>5.0.4.RELEASE</dependency.spring.version>
         <dependency.fabric8.version>3.5.37</dependency.fabric8.version>
@@ -67,9 +67,6 @@
 
         <!-- Alfresco Office Services Module -->
         <alfresco.aos-module.version>1.2.0-RC2</alfresco.aos-module.version>
-
-        <alfresco.solr.version>6.1</alfresco.solr.version>
-        <alfresco.solr4.version>6.6</alfresco.solr4.version>
 
         <installer.version.name>${project.version}</installer.version.name>
         <alfresco.package.name>alfresco</alfresco.package.name>
@@ -203,7 +200,22 @@
             <dependency>
                 <groupId>org.alfresco.services</groupId>
                 <artifactId>alfresco-events</artifactId>
-                <version>1.2.10</version>
+                <version>1.2.12</version>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.surf</groupId>
+                <artifactId>spring-surf-core-configservice</artifactId>
+                <version>${dependency.alfresco-spring-webscripts.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.surf</groupId>
+                <artifactId>spring-webscripts</artifactId>
+                <version>${dependency.alfresco-spring-webscripts.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.surf</groupId>
+                <artifactId>spring-webscripts-api</artifactId>
+                <version>${dependency.alfresco-spring-webscripts.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.quartz-scheduler</groupId>
@@ -422,18 +434,6 @@
                 <artifactId>share</artifactId>
                 <version>${alfresco.share.version}</version>
                 <type>war</type>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-solr1-distribution</artifactId>
-                <version>${alfresco.solr.version}</version>
-                <type>zip</type>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-solr4-distribution</artifactId>
-                <version>${alfresco.solr4.version}</version>
-                <type>zip</type>
             </dependency>
             <dependency>
                 <groupId>org.alfresco</groupId>
