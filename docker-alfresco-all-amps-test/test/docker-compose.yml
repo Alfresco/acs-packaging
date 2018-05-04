@@ -37,8 +37,6 @@ services:
             - 8000:8000
             - 445:445
             - 143:143
-            - "21:21"
-            - "30000-30099:30000-30099"
 
     alfresco-pdf-renderer:
         image: alfresco/alfresco-pdf-renderer:${TRANSFORMERS_TAG}

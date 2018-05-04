@@ -37,23 +37,4 @@ centera.url=168.159.214.26?d:\\kit\\CenteraSDK3.3\\c2armtesting.pea\n\
 # log4j.logger.org.alfresco.repo.content.transform.TransformerDebug=debug\n\
 # ' >> /usr/local/tomcat/shared/classes/alfresco/extension/custom-log4j.properties
 
-RUN mkdir -p /usr/local/tomcat/amps
-RUN mkdir -p /usr/local/tomcat/amps_share
-
-# Copy the amps from build context to the appropriate location for your application server
-COPY target/amps /usr/local/tomcat/amps
-COPY target/amps_share /usr/local/tomcat/amps_share
-
-# Install amps on alfresco.war
-RUN java -jar /usr/local/tomcat/alfresco-mmt/alfresco-mmt*.jar install \
-              /usr/local/tomcat/amps /usr/local/tomcat/webapps/alfresco -directory -nobackup -force
-
-# Install amps on share.war
-RUN java -jar /usr/local/tomcat/alfresco-mmt/alfresco-mmt*.jar install \
-              /usr/local/tomcat/amps_share /usr/local/tomcat/webapps/share -directory -nobackup -force
-
-# Docker CMD from parent image starts the server
-
-# To remote debug into this image add: EXPOSE 8000
-# Changes are also required to the docker-compose/docker-compose.yml file.
-# EXPOSE 8000
+# Amps are already applied to exploded war
