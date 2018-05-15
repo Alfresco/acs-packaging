@@ -30,6 +30,8 @@ s3.secretKey=${aws-secret-access-key}\n\
 s3.bucketName=${s3.bucketName}\n\
 s3.autoLowerCaseBucketName=true\n\
 centera.url=168.159.214.26?d:\\kit\\CenteraSDK3.3\\c2armtesting.pea\n\
+saml.sp.isEnforced=false\n\
+dsync.service.uris=http://127.0.0.1:8080/alfresco\n\
 ' >> /usr/local/tomcat/shared/classes/alfresco-global.properties
 
 # Add debug for testing

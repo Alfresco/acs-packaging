@@ -77,16 +77,10 @@
         <alfresco.kofax.version>2.0.0</alfresco.kofax.version>
 
         <!-- SAML Single Sign-On (SSO) for Alfresco Content Services -->
-        <alfresco.saml.version>1.0.3</alfresco.saml.version>
-
-        <!-- Alfresco Media Management -->
-        <alfresco.media-management.version>1.0.3.3</alfresco.media-management.version>
+        <alfresco.saml.version>1.1.0-RC3</alfresco.saml.version>
 
         <!-- Alfresco Outlook Integration -->
         <alfresco.outlook.version>2.4.2</alfresco.outlook.version>
-
-        <!-- Alfresco Desktop Sync Service -->
-        <alfresco.desktop-sync.version>2.1.1</alfresco.desktop-sync.version>
 
         <!-- Document Transformation Engine -->
         <alfresco.transformation-engine.version>2.1.1</alfresco.transformation-engine.version>
@@ -99,6 +93,9 @@
 
         <!-- Alfresco Media Management Module -->
         <alfresco.mm.version>1.2.0-RC2-SNAPSHOT</alfresco.mm.version>
+
+        <!-- Alfresco Desktop Sync Service Module -->
+        <alfresco.desktop-sync.version>3.0-RC1</alfresco.desktop-sync.version>
 
         <installer.version.name>${project.version}</installer.version.name>
         <alfresco.package.name>alfresco</alfresco.package.name>
@@ -585,6 +582,24 @@
                 <groupId>org.alfresco.mediamanagement</groupId>
                 <artifactId>alfresco-mm-share</artifactId>
                 <version>${alfresco.mm.version}</version>
+                <type>amp</type>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.services.sync</groupId>
+                <artifactId>alfresco-device-sync-repo</artifactId>
+                <version>${alfresco.desktop-sync.version}</version>
+                <type>amp</type>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.saml</groupId>
+                <artifactId>alfresco-saml-share</artifactId>
+                <version>${alfresco.saml.version}</version>
+                <type>amp</type>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.saml</groupId>
+                <artifactId>alfresco-saml-repo</artifactId>
+                <version>${alfresco.saml.version}</version>
                 <type>amp</type>
             </dependency>
         </dependencies>
