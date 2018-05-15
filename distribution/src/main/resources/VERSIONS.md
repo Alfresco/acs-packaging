@@ -24,7 +24,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Alfresco Records Management | 2.5.2 |
 | Alfresco Media Management | 1.0.3.3 |
 | Alfresco Office Services | @alfresco.aos-module.version@ |
-| SAML Single Sign-On (SSO) for Alfresco Content Services | 1.0.3 |
+| SAML Single Sign-On (SSO) for Alfresco Content Services | 1.1.0-RC3 |
 | Alfresco Content Connector for Salesforce | 2.1.0-RC1 |
 | Alfresco Kofax Integration | 2.0 |
 | Alfresco S3 Connector | 2.2.0-RC1 |
