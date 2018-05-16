@@ -32,6 +32,7 @@ s3.autoLowerCaseBucketName=true\n\
 centera.url=168.159.214.26?d:\\kit\\CenteraSDK3.3\\c2armtesting.pea\n\
 saml.sp.isEnforced=false\n\
 dsync.service.uris=http://127.0.0.1:8080/alfresco\n\
+messaging.broker.url=vm:broker:(tcp://localhost:61616)?persistent=false\n\
 ' >> /usr/local/tomcat/shared/classes/alfresco-global.properties
 
 # Add debug for testing
