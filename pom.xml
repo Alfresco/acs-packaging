@@ -93,7 +93,7 @@
         <alfresco.aos-module.version>1.2.0-RC2</alfresco.aos-module.version>
 
         <!-- Alfresco Media Management Module -->
-        <alfresco.mm.version>1.2.0-RC2-SNAPSHOT</alfresco.mm.version>
+        <alfresco.mm.version>1.2.0-RC1</alfresco.mm.version>
 
         <!-- Alfresco Desktop Sync Service Module -->
         <alfresco.desktop-sync.version>3.0-RC1</alfresco.desktop-sync.version>
@@ -571,18 +571,6 @@
                 <groupId>org.alfresco.module.KofaxAddon</groupId>
                 <artifactId>kofaxaddon</artifactId>
                 <version>${alfresco.kofax.version}</version>
-                <type>amp</type>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco.mediamanagement</groupId>
-                <artifactId>alfresco-mm-repo</artifactId>
-                <version>${alfresco.mm.version}</version>
-                <type>amp</type>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco.mediamanagement</groupId>
-                <artifactId>alfresco-mm-share</artifactId>
-                <version>${alfresco.mm.version}</version>
                 <type>amp</type>
             </dependency>
             <dependency>
