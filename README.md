@@ -38,3 +38,6 @@ Use the deployment project if you want the sample docker-compose or helm: https:
 In this folder the distribution zip is built. It contains all the war files, libraries, certificates and settings files you need to deploy Alfresco Content Services on the supported application servers.
 
 
+## How to
+
+* [Create a custom Docker image](docs/how-to/create-custom-image.md)
