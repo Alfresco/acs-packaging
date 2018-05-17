@@ -2,7 +2,7 @@
 
 **WARNING**
 
-The recommended way of building extensions is to use V1 Rest APIs. Using AMPs is strongly discouraged. The AMP extension mechanism will be EOLed in future.
+The recommended way of building extensions is to use [Rest APIs](https://api-explorer.alfresco.com/api-explorer). The AMP extension mechanism may be replaced in the future.
 
 ### Applying a custom AMP
 
@@ -14,7 +14,7 @@ This project uses [fabric8](https://github.com/fabric8io/fabric8-maven-plugin) m
 * Java
 * Maven
 * Docker
-* Access to Docker registry were the new Docker image will be pushed
+* Access to Docker registry where the new Docker image will be pushed
 
 #### Modifications to [pom.xml](../../docker-alfresco/pom.xml)
 
