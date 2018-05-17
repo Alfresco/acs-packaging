@@ -35,7 +35,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Microsoft Office Suite
 | Component | Recommended | Also Available |
 |---|---|---|
-| MS Office | 2016 | 2013, 2011, 2010 |
+| MS Office | 2016 | 2013 |
 
 ##### Utility Applications
 | Component | Recommended | Also Available |
