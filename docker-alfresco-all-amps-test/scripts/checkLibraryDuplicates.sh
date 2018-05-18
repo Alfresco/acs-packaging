@@ -18,7 +18,7 @@ for lib1 in $(ls "$Libdir"); do
 done
 
 if [ -n "$lib_list" ]; then
-    echo "The following libraries have more than one version: $lib_list"
+    >&2 echo "The following libraries have more than one version: $lib_list"
     exit 1
 else
     echo "There are no duplicated libraries"
