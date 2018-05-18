@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # Script used to check for duplicated libraries after applying all amps
 
 Libdir=$1
