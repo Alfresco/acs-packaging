@@ -22,7 +22,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Alfresco Share Services | @alfresco.alfresco-share-services.version@ |
 | Alfresco Google Docs Integration | @alfresco.googledocs.version@ |
 | Alfresco Records Management | @alfresco.records-management.version@ |
-| Alfresco Media Management | @alfresco.media-management.version@ |
+| Alfresco Media Management | @alfresco.mm.version@ |
 | Alfresco Office Services | @alfresco.aos-module.version@ |
 | SAML Single Sign-On (SSO) for Alfresco Content Services | @alfresco.saml.version@ |
 | Alfresco Content Connector for Salesforce | @alfresco.salesforce-connector.version@ |
