@@ -73,47 +73,7 @@ ModuleDetails shareServicesModule = moduleService.getModule("alfresco-share-serv
          <div class="index-list">
             <h4><%=descriptorService.getServerDescriptor().getEdition()%>&nbsp;-&nbsp;<%=descriptorService.getServerDescriptor().getVersion()%></h4>
             <p></p>
-            <p id ="errorMessage">Oops something went wrong!</p>
-            <script>
-                var errorNumber=Math.floor(Math.random() * 11);
-                var errorMessage="";
-                switch(errorNumber) {
-                  case 0:
-                    errorMessage="Sorry but my dog is throwing up...";
-                    break;
-                  case 1:
-                    errorMessage="Sorry but I have to work...";
-                    break;
-                  case 2:
-                    errorMessage="Sorry but I have a package I have to sign for...";
-                    break;
-                  case 3:
-                    errorMessage="Omg, I totally forgot we had plans...";
-                    break;
-                  case 4:
-                    errorMessage="Sorry but my hot water isn’t working...";
-                    break;
-                  case 5:
-                    errorMessage="Sorry but I have a migraine...";
-                    break;
-                  case 6:
-                    errorMessage="Sorry but I totally missed this!"
-                    break;
-                  case 7:
-                    errorMessage="Sorry but I have a doctor's appointment...";
-                    break;
-                  case 8:
-                    errorMessage="Sorry but I`m working from home...";
-                    break;
-                  case 9:
-                    errorMessage="I think we need to discuss something...";
-                    break;
-                  case 10:
-                    errorMessage="I am hallucinating...";
-                    break
-                }
-                   document.getElementById("errorMessage").innerHTML = errorMessage;
-            </script>
+            <p id ="errorMessage">An error was encountered, please contact your system administrator.</p>
          </div>
 
       </div>
