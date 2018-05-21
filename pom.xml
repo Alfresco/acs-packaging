@@ -65,8 +65,38 @@
         <!-- Alfresco GoogleDocs integration version -->
         <alfresco.googledocs.version>3.1.0-RC1</alfresco.googledocs.version>
 
+        <!-- Alfresco S3 Connector integration version -->
+        <alfresco.s3connector.version>2.2.0-RC1</alfresco.s3connector.version>
+
+        <!-- Alfresco Centera Connector version -->
+        <alfresco.centera-connector.version>2.2.0-RC1</alfresco.centera-connector.version>
+
+        <!-- Alfresco Salesforce Connector version -->
+        <alfresco.salesforce-connector.version>2.1.0-RC1</alfresco.salesforce-connector.version>
+
+        <!-- Alfresco Kofax Connector version -->
+        <alfresco.kofax.version>2.0.0</alfresco.kofax.version>
+
+        <!-- SAML Single Sign-On (SSO) for Alfresco Content Services -->
+        <alfresco.saml.version>1.1.0-RC3</alfresco.saml.version>
+
+        <!-- Alfresco Outlook Integration -->
+        <alfresco.outlook.version>2.4.2</alfresco.outlook.version>
+
+        <!-- Document Transformation Engine -->
+        <alfresco.transformation-engine.version>2.1.1</alfresco.transformation-engine.version>
+
+        <!-- Alfresco Records Management -->
+        <alfresco.records-management.version>2.5.2</alfresco.records-management.version>
+
         <!-- Alfresco Office Services Module -->
         <alfresco.aos-module.version>1.2.0-RC3</alfresco.aos-module.version>
+
+        <!-- Alfresco Media Management Module -->
+        <alfresco.mm.version>1.2.0-RC1</alfresco.mm.version>
+
+        <!-- Alfresco Desktop Sync Service Module -->
+        <alfresco.desktop-sync.version>3.0-RC1</alfresco.desktop-sync.version>
 
         <installer.version.name>${project.version}</installer.version.name>
         <alfresco.package.name>alfresco</alfresco.package.name>
@@ -87,6 +117,7 @@
             <modules>
                 <module>war</module>
                 <module>docker-alfresco</module>
+                <module>docker-alfresco-all-amps-test</module>
             </modules>
         </profile>
         <profile>
@@ -98,6 +129,7 @@
                 <module>war</module>
                 <module>distribution</module>
                 <module>docker-alfresco</module>
+                <module>docker-alfresco-all-amps-test</module>
             </modules>
         </profile>
     </profiles>
@@ -499,16 +531,50 @@
             </dependency>
             <dependency>
                 <groupId>org.alfresco.integrations</groupId>
-                <artifactId>alfresco-googledocs-repo</artifactId>
-                <version>${alfresco.googledocs.version}</version>
-                <classifier>enterprise</classifier>
+                <artifactId>alfresco-s3-connector</artifactId>
+                <version>${alfresco.s3connector.version}</version>
+                <type>amp</type>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-centera-connector</artifactId>
+                <version>${alfresco.centera-connector.version}</version>
                 <type>amp</type>
             </dependency>
             <dependency>
                 <groupId>org.alfresco.integrations</groupId>
-                <artifactId>alfresco-googledocs-share</artifactId>
-                <version>${alfresco.googledocs.version}</version>
-                <classifier>enterprise</classifier>
+                <artifactId>alfresco-content-connector-for-salesforce-repo</artifactId>
+                <version>${alfresco.salesforce-connector.version}</version>
+                <type>amp</type>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.integrations</groupId>
+                <artifactId>alfresco-content-connector-for-salesforce-share</artifactId>
+                <version>${alfresco.salesforce-connector.version}</version>
+                <type>amp</type>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.module.KofaxAddon</groupId>
+                <artifactId>kofaxaddon</artifactId>
+                <version>${alfresco.kofax.version}</version>
+                <type>amp</type>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.services.sync</groupId>
+                <artifactId>alfresco-device-sync-repo</artifactId>
+                <version>${alfresco.desktop-sync.version}</version>
+                <type>amp</type>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.saml</groupId>
+                <artifactId>alfresco-saml-share</artifactId>
+                <version>${alfresco.saml.version}</version>
+                <type>amp</type>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.saml</groupId>
+                <artifactId>alfresco-saml-repo</artifactId>
+                <version>${alfresco.saml.version}</version>
                 <type>amp</type>
             </dependency>
         </dependencies>

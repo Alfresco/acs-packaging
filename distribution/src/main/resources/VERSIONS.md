@@ -10,8 +10,8 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Alfresco Content Services | @project.version@ |
 | Alfresco Share | @alfresco.share.version@ |
 | Alfresco Search Services | 1.1.0 | 1.0.0 |
-| Alfresco Desktop Sync Service | 2.1.1 | 2.1.0 |
-| Document Transformation Engine | 2.1.1 | 2.0.x |
+| Alfresco Desktop Sync Service | @alfresco.desktop-sync.version@ |
+| Document Transformation Engine | @alfresco.transformation-engine.version@ |
 | Alfresco File Transfer Receiver | 6.2.1 |
 | Alfresco Module Management Tool | 6.0 |
 | Alfresco Spring Encryptor | 6.0 |
@@ -21,15 +21,15 @@ This file lists the recommended components for this Service Pack. Use it along w
 |---|---|---|
 | Alfresco Share Services | @alfresco.alfresco-share-services.version@ |
 | Alfresco Google Docs Integration | @alfresco.googledocs.version@ |
-| Alfresco Records Management | 2.5.2 |
-| Alfresco Media Management | 1.0.3.3 |
+| Alfresco Records Management | @alfresco.records-management.version@ |
+| Alfresco Media Management | @alfresco.mm.version@ |
 | Alfresco Office Services | @alfresco.aos-module.version@ |
-| SAML Single Sign-On (SSO) for Alfresco Content Services | 1.1.0-RC3 |
-| Alfresco Content Connector for Salesforce | 2.1.0-RC1 |
-| Alfresco Kofax Integration | 2.0 |
-| Alfresco S3 Connector | 2.2.0-RC1 |
-| Alfresco EMC Centera Connector | 2.2.0-RC1 |
-| Alfresco Outlook Integration | 2.4.2 | 2.2.4 |
+| SAML Single Sign-On (SSO) for Alfresco Content Services | @alfresco.saml.version@ |
+| Alfresco Content Connector for Salesforce | @alfresco.salesforce-connector.version@ |
+| Alfresco Kofax Integration | @alfresco.kofax.version@ |
+| Alfresco S3 Connector | @alfresco.s3connector.version@ |
+| Alfresco EMC Centera Connector | @alfresco.centera-connector.version@ |
+| Alfresco Outlook Integration | @alfresco.outlook.version@ |
 | Alfresco SDK | 3.0.1 |
 
 ##### Microsoft Office Suite
