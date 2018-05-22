@@ -59,7 +59,6 @@
             <groupId>org.alfresco.integrations</groupId>
             <artifactId>alfresco-googledocs-repo</artifactId>
             <version>${alfresco.googledocs.version}</version>
-            <classifier>enterprise</classifier>
             <type>amp</type>
         </dependency>
     </dependencies>
@@ -153,10 +152,17 @@
                                     <groupId>org.alfresco.integrations</groupId>
                                     <artifactId>alfresco-googledocs-repo</artifactId>
                                     <version>${alfresco.googledocs.version}</version>
-                                    <classifier>enterprise</classifier>
                                     <type>amp</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.alfresco.integrations</groupId>
+                                    <artifactId>alfresco-googledocs-share</artifactId>
+                                    <version>${alfresco.googledocs.version}</version>
+                                    <type>amp</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
