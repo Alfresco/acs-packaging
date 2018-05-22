@@ -117,7 +117,7 @@
             <modules>
                 <module>war</module>
                 <module>docker-alfresco</module>
-                <module>docker-alfresco-all-amps-test</module>
+                <module>docker-alfresco/test/docker-alfresco-all-amps-test</module>
             </modules>
         </profile>
         <profile>
@@ -129,7 +129,7 @@
                 <module>war</module>
                 <module>distribution</module>
                 <module>docker-alfresco</module>
-                <module>docker-alfresco-all-amps-test</module>
+                <module>docker-alfresco/test/docker-alfresco-all-amps-test</module>
             </modules>
         </profile>
     </profiles>
