@@ -59,8 +59,8 @@
         <dependency.jackson.version>2.9.5</dependency.jackson.version>
 
         <!-- Alfresco Share version -->
-        <alfresco.share.version>6.0.0-rc4</alfresco.share.version>
-        <alfresco.alfresco-share-services.version>6.0.0-rc4</alfresco.alfresco-share-services.version>
+        <alfresco.share.version>6.0.0-rc2</alfresco.share.version>
+        <alfresco.alfresco-share-services.version>6.0.0-rc1</alfresco.alfresco-share-services.version>
 
         <!-- Alfresco GoogleDocs integration version -->
         <alfresco.googledocs.version>3.1.0-RC2</alfresco.googledocs.version>
@@ -90,7 +90,7 @@
         <alfresco.records-management.version>2.5.2</alfresco.records-management.version>
 
         <!-- Alfresco Office Services Module -->
-        <alfresco.aos-module.version>1.2.0-RC4</alfresco.aos-module.version>
+        <alfresco.aos-module.version>1.2.0-RC3</alfresco.aos-module.version>
 
         <!-- Alfresco Media Management Module -->
         <alfresco.mm.version>1.2.0-RC2</alfresco.mm.version>
