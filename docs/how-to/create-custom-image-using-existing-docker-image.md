@@ -115,7 +115,7 @@ alfresco-custom-image                            (Dir)
 
 * Create Dockerfile for custom-alfresco-repository image:
 
-```
+```bash
 ### We are going to apply amp(s) on the latest enterprise repository image.
 FROM alfresco/alfresco-content-repository:latest
 
