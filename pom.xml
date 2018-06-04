@@ -577,6 +577,18 @@
                 <version>${alfresco.saml.version}</version>
                 <type>amp</type>
             </dependency>
+            <dependency>
+                <groupId>org.alfresco.mediamanagement</groupId>
+                <artifactId>alfresco-mm-repo</artifactId>
+                <version>${alfresco.mm.version}</version>
+                <type>amp</type>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.mediamanagement</groupId>
+                <artifactId>alfresco-mm-share</artifactId>
+                <version>${alfresco.mm.version}</version>
+                <type>amp</type>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
