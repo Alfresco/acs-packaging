@@ -41,3 +41,12 @@ messaging.broker.url=vm:broker:(tcp://localhost:61616)?persistent=false\n\
 # ' >> /usr/local/tomcat/shared/classes/alfresco/extension/custom-log4j.properties
 
 # Amps are already applied to exploded war
+
+# Docker CMD from parent image starts the server
+
+# Unpack ROOT.war and make webapps folder read-only.
+RUN mkdir /usr/local/tomcat/webapps/ROOT && cd /usr/local/tomcat/webapps/ROOT && jar -xvf /usr/local/tomcat/webapps/ROOT.war && rm -f /usr/local/tomcat/webapps/ROOT.war && chmod -R =r /usr/local/tomcat/webapps && \
+# Add catalina.policy to ROOT.war and alfresco.war
+# Grant all security permissions to alfresco webapp because of numerous permissions required in order to work properly.
+# Grant only deployXmlPermission to ROOT webapp.
+    sed -i -e "\$a\grant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/alfresco\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};\ngrant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/ROOT\/-\" \{\n\    permission org.apache.catalina.security.DeployXmlPermission \"ROOT\";\n\};" /usr/local/tomcat/conf/catalina.policy
