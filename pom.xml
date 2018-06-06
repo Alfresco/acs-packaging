@@ -66,7 +66,7 @@
         <alfresco.googledocs.version>3.1.0-RC2</alfresco.googledocs.version>
 
         <!-- Alfresco S3 Connector integration version -->
-        <alfresco.s3connector.version>2.2.0-RC1</alfresco.s3connector.version>
+        <alfresco.s3connector.version>2.2.0-RC2</alfresco.s3connector.version>
 
         <!-- Alfresco Centera Connector version -->
         <alfresco.centera-connector.version>2.2.0-RC1</alfresco.centera-connector.version>
@@ -400,6 +400,11 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
+                <version>${dependency.jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-cbor</artifactId>
                 <version>${dependency.jackson.version}</version>
             </dependency>
             <!-- Newer cxf libs, see REPO-3131 -->
