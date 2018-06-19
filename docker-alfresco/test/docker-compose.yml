@@ -29,8 +29,9 @@ services:
                 -Dftp.dataPortTo=30099
                 -Dcifs.enabled=true
                 -Dalfresco-pdf-renderer.url=http://alfresco-pdf-renderer:8090/
-                -Djodconverter.url=http://libreoffice:8090/
-                -Dimg.url=http://imagemagick:8090/
+                -Djodconverter.url=http://libreoffice:8091/
+                -Dimg.url=http://imagemagick:8092/
+                -Dtika.url=http://tika:8093/
                 -Dshare.host=localhost
                 "
         ports:
@@ -55,6 +56,11 @@ services:
         image: alfresco/alfresco-libreoffice:${TRANSFORMERS_TAG}
         ports:
             - 8092:8090
+
+    tika:
+        image: alfresco/alfresco-tika:${TRANSFORMERS_TAG}
+        ports:
+            - 8093:8090
 
     share:
         image: alfresco/alfresco-share:${SHARE_TAG}
