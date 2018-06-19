@@ -14,7 +14,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Document Transformation Engine | @alfresco.transformation-engine.version@ |
 | Alfresco File Transfer Receiver | 6.2.1 |
 | Alfresco Module Management Tool | 6.0 |
-| Alfresco Spring Encryptor | 6.0 |
+| Alfresco Spring Encryptor | 6.1 |
 
 ##### Alfresco Modules and Integrations
 | Component | Recommended | Also Available |
