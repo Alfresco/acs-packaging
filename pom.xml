@@ -96,7 +96,7 @@
         <alfresco.mm.version>1.2.0-RC2</alfresco.mm.version>
 
         <!-- Alfresco Desktop Sync Service Module -->
-        <alfresco.desktop-sync.version>3.0-RC1</alfresco.desktop-sync.version>
+        <alfresco.desktop-sync.version>3.0</alfresco.desktop-sync.version>
 
         <installer.version.name>${project.version}</installer.version.name>
         <alfresco.package.name>alfresco</alfresco.package.name>
