@@ -29,7 +29,7 @@ s3.accessKey=${aws-access-key-id}\n\
 s3.secretKey=${aws-secret-access-key}\n\
 s3.bucketName=${s3.bucketName}\n\
 s3.autoLowerCaseBucketName=true\n\
-centera.url=168.159.214.26?d:\\kit\\CenteraSDK3.3\\c2armtesting.pea\n\
+centera.url=168.159.214.26?/binaries/bamboo-agent-config/Centera/c2armtesting.pea\n\
 saml.sp.isEnforced=false\n\
 dsync.service.uris=http://127.0.0.1:8080/alfresco\n\
 messaging.broker.url=vm:broker:(tcp://localhost:61616)?persistent=false\n\
