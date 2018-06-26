@@ -1,6 +1,6 @@
 # Component Versions
 
-This file lists the recommended components for this Service Pack. Use it along with the [Supported Platforms Matrix](http://docs.alfresco.com/5.2/concepts/supported-platforms-ACS.html) and the [Alfresco Documentation](https://docs.alfresco.com/5.2/concepts/ch-upgrade.html) to apply selective component upgrades.
+This file lists the recommended components for this Service Pack. Use it along with the [Supported Platforms Matrix](http://docs.alfresco.com/6.0/concepts/supported-platforms-ACS.html) and the [Alfresco Documentation](https://docs.alfresco.com/6.0/concepts/ch-upgrade.html) to apply selective component upgrades.
 
 #### Alfresco Content Services @project.version@
 
