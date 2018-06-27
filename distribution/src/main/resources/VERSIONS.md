@@ -52,7 +52,6 @@ This file lists the recommended components for this Service Pack. Use it along w
 | CentOS | 7 x64 |
 | Ubuntu | 16.04 LTS x64 |
 | SUSE | 12.0 SP1 x64 |
-| Oracle Solaris | 11.3 x64 |
 
 ##### Databases
 | Component | Recommended | Also Available |
