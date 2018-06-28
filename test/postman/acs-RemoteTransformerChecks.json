@@ -1,0 +1,538 @@
+{
+	"info": {
+		"_postman_id": "e230379e-3bc8-4c01-93b4-d8ab1e4a1256",
+		"name": "RemoteTransformChecks",
+		"description": "Checks that perform transformations and then check the docker transformers to make sure they were used.\nThis avoids wiring problems that result in the local processes being used.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "PdfRendererPdfToPng",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1bdcc015-31ff-41c9-bb1c-8cff86368cbd",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"validateStatusCodeTest\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "saveHelperData",
+							"type": "any"
+						},
+						{
+							"key": "showPassword",
+							"value": false,
+							"type": "boolean"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8082/alfresco/s/enterprise/admin/admin-testtransform-test?operation=testTransform&arg1=alfresco-pdf-renderer&arg2=pdf&arg3=png&arg4=",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"alfresco",
+						"s",
+						"enterprise",
+						"admin",
+						"admin-testtransform-test"
+					],
+					"query": [
+						{
+							"key": "operation",
+							"value": "testTransform"
+						},
+						{
+							"key": "arg1",
+							"value": "alfresco-pdf-renderer"
+						},
+						{
+							"key": "arg2",
+							"value": "pdf"
+						},
+						{
+							"key": "arg3",
+							"value": "png"
+						},
+						{
+							"key": "arg4",
+							"value": ""
+						}
+					]
+				},
+				"description": "Request a PDF Renderer transform"
+			},
+			"response": []
+		},
+		{
+			"name": "ImageMagickJpgToPng",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1bdcc015-31ff-41c9-bb1c-8cff86368cbd",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"validateStatusCodeTest\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "saveHelperData",
+							"type": "any"
+						},
+						{
+							"key": "showPassword",
+							"value": false,
+							"type": "boolean"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8082/alfresco/s/enterprise/admin/admin-testtransform-test?operation=testTransform&arg1=ImageMagick&arg2=jpg&arg3=png&arg4=",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"alfresco",
+						"s",
+						"enterprise",
+						"admin",
+						"admin-testtransform-test"
+					],
+					"query": [
+						{
+							"key": "operation",
+							"value": "testTransform"
+						},
+						{
+							"key": "arg1",
+							"value": "ImageMagick"
+						},
+						{
+							"key": "arg2",
+							"value": "jpg"
+						},
+						{
+							"key": "arg3",
+							"value": "png"
+						},
+						{
+							"key": "arg4",
+							"value": ""
+						}
+					]
+				},
+				"description": "Request an ImageMagick transform"
+			},
+			"response": []
+		},
+		{
+			"name": "LiberOfficeDocxToPdf",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1bdcc015-31ff-41c9-bb1c-8cff86368cbd",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"validateStatusCodeTest\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "saveHelperData",
+							"type": "any"
+						},
+						{
+							"key": "showPassword",
+							"value": false,
+							"type": "boolean"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8082/alfresco/s/enterprise/admin/admin-testtransform-test?operation=testTransform&arg1=JodConverter&arg2=docx&arg3=pdf&arg4=",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"alfresco",
+						"s",
+						"enterprise",
+						"admin",
+						"admin-testtransform-test"
+					],
+					"query": [
+						{
+							"key": "operation",
+							"value": "testTransform"
+						},
+						{
+							"key": "arg1",
+							"value": "JodConverter"
+						},
+						{
+							"key": "arg2",
+							"value": "docx"
+						},
+						{
+							"key": "arg3",
+							"value": "pdf"
+						},
+						{
+							"key": "arg4",
+							"value": ""
+						}
+					]
+				},
+				"description": "Request a PDF Renderer transform"
+			},
+			"response": []
+		},
+		{
+			"name": "TikaZipToTxt",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1bdcc015-31ff-41c9-bb1c-8cff86368cbd",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"validateStatusCodeTest\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "password",
+							"value": "admin",
+							"type": "string"
+						},
+						{
+							"key": "saveHelperData",
+							"type": "any"
+						},
+						{
+							"key": "showPassword",
+							"value": false,
+							"type": "boolean"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8082/alfresco/s/enterprise/admin/admin-testtransform-test?operation=testTransform&arg1=Archive&arg2=zip&arg3=txt&arg4=",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8082",
+					"path": [
+						"alfresco",
+						"s",
+						"enterprise",
+						"admin",
+						"admin-testtransform-test"
+					],
+					"query": [
+						{
+							"key": "operation",
+							"value": "testTransform"
+						},
+						{
+							"key": "arg1",
+							"value": "Archive"
+						},
+						{
+							"key": "arg2",
+							"value": "zip"
+						},
+						{
+							"key": "arg3",
+							"value": "txt"
+						},
+						{
+							"key": "arg4",
+							"value": ""
+						}
+					]
+				},
+				"description": "Request a Tika transform"
+			},
+			"response": []
+		},
+		{
+			"name": "PdfRendererPdfToPngLogged",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "04398d0b-673b-451b-ab6b-f71d9c29e641",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Body matches string\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"pdf</td>\\n                    <td>23.1 KB</td>\\n                    <td>png</td>\\n                    <td>7.2 KB</td>\\n                    <td></td>\\n                    <td>Success\");",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:8090/log",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8090",
+					"path": [
+						"log"
+					]
+				},
+				"description": "Check the PDF Renderer docker image was used rather than a local process."
+			},
+			"response": []
+		},
+		{
+			"name": "ImageMagickJpgToPngLogged",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "242cfbf3-87e5-40c6-8abf-65d8eedd3270",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Body matches string\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"jpg</td>\\n                    <td>25.8 KB</td>\\n                    <td>png</td>\\n                    <td>34.7 KB</td>\\n                    <td></td>\\n                    <td>Success\");",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:8091/log",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8091",
+					"path": [
+						"log"
+					]
+				},
+				"description": "Check the ImageMagick docker image was used rather than a local process."
+			},
+			"response": []
+		},
+		{
+			"name": "LiberOfficeDocxToPdfLogged",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1391c3ca-1c97-4732-9352-28f261c4e2ca",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Body matches string\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"docx</td>\\n                    <td>9.9 KB</td>\\n                    <td>pdf</td>\\n                    <td>11.5 KB</td>\\n                    <td></td>\\n                    <td>Success\");",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:8092/log",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8092",
+					"path": [
+						"log"
+					]
+				},
+				"description": "Check the LiberOffice docker image was used rather than a local process."
+			},
+			"response": []
+		},
+		{
+			"name": "TikaZipToTxtLogged",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1bf34ee9-aec5-4131-814d-fd6ccc3db5b3",
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Body matches string\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"Archive --targetMimetype=text/plain --targetEncoding=UTF-8 zip txt</td>\\n                    <td>Success\");",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:8093/log",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8093",
+					"path": [
+						"log"
+					]
+				},
+				"description": "Check the Tika docker image was used rather than a local process."
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "1c29f416-3b6c-41af-91f6-08c2e6d62517",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "c839727f-904d-411d-8b9a-b594f42e40de",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "c86ec27c-be9f-41ee-9ca0-df31786c28b7",
+			"key": "url",
+			"value": "localhost",
+			"type": "string",
+			"disabled": true,
+			"description": ""
+		}
+	]
+}
