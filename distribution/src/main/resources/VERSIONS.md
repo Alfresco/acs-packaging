@@ -1,6 +1,6 @@
 # Component Versions
 
-This file lists the recommended components for this Service Pack. Use it along with the [Supported Platforms Matrix](http://docs.alfresco.com/5.2/concepts/supported-platforms-ACS.html) and the [Alfresco Documentation](https://docs.alfresco.com/5.2/concepts/ch-upgrade.html) to apply selective component upgrades.
+This file lists the recommended components for this Service Pack. Use it along with the [Supported Platforms Matrix](http://docs.alfresco.com/6.0/concepts/supported-platforms-ACS.html) and the [Alfresco Documentation](https://docs.alfresco.com/6.0/concepts/ch-upgrade.html) to apply selective component upgrades.
 
 #### Alfresco Content Services @project.version@
 
@@ -9,12 +9,12 @@ This file lists the recommended components for this Service Pack. Use it along w
 |---|---|---|
 | Alfresco Content Services | @project.version@ |
 | Alfresco Share | @alfresco.share.version@ |
-| Alfresco Search Services | 1.1.0 | 1.0.0 |
+| Alfresco Search Services | 1.1.1 |
 | Alfresco Desktop Sync Service | @alfresco.desktop-sync.version@ |
 | Document Transformation Engine | @alfresco.transformation-engine.version@ |
 | Alfresco File Transfer Receiver | 6.2.1 |
 | Alfresco Module Management Tool | 6.0 |
-| Alfresco Spring Encryptor | 6.0 |
+| Alfresco Spring Encryptor | 6.1 |
 
 ##### Alfresco Modules and Integrations
 | Component | Recommended | Also Available |
@@ -52,7 +52,6 @@ This file lists the recommended components for this Service Pack. Use it along w
 | CentOS | 7 x64 |
 | Ubuntu | 16.04 LTS x64 |
 | SUSE | 12.0 SP1 x64 |
-| Oracle Solaris | 11.3 x64 |
 
 ##### Databases
 | Component | Recommended | Also Available |
