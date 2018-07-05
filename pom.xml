@@ -84,7 +84,7 @@
         <alfresco.outlook.version>2.4.2</alfresco.outlook.version>
 
         <!-- Document Transformation Engine -->
-        <alfresco.transformation-engine.version>2.2.0</alfresco.transformation-engine.version>
+        <alfresco.transformation-engine.version>2.2.1</alfresco.transformation-engine.version>
 
         <!-- Alfresco Records Management -->
         <alfresco.records-management.version>2.5.2</alfresco.records-management.version>
