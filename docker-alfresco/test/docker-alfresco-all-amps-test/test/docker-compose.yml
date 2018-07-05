@@ -22,8 +22,18 @@ services:
                 -Dsolr.secureComms=none
                 -Dsolr.base.url=/solr
                 -Dindex.subsystem.name=solr6
+                -Dalfresco.host=localhost
+                -Dalfresco.port.ssl=80
+                -Dalfresco.protocol=http
+                -Dalfresco.port=8082
+                -Dshare.host=localhost
+                -Dshare.port=8080
+                -Dshare.protocol=http
                 -Dalfresco.restApi.basicAuthScheme=true
                 -Dimap.server.enabled=true
+                -Dimap.server.port=1143
+                -Dimap.server.imaps.port=1143
+                -Dimap.server.host=0.0.0.0
                 -Dftp.enabled=true
                 -Dftp.dataPortFrom=30000
                 -Dftp.dataPortTo=30099
@@ -36,8 +46,11 @@ services:
         ports:
             - 8082:8080
             - 8000:8000
-            - 445:445
-            - 143:143
+            - 446:445
+            - 1143:1143
+            - 50500:50500
+            - 50501:50501
+            - "30000-30099:30000-30099"
 
     alfresco-pdf-renderer:
         image: alfresco/alfresco-pdf-renderer:${TRANSFORMERS_TAG}
