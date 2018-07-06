@@ -22,18 +22,7 @@ services:
                 -Dsolr.secureComms=none
                 -Dsolr.base.url=/solr
                 -Dindex.subsystem.name=solr6
-                -Dalfresco.host=localhost
-                -Dalfresco.port.ssl=80
-                -Dalfresco.protocol=http
-                -Dalfresco.port=8082
-                -Dshare.host=localhost
-                -Dshare.port=8080
-                -Dshare.protocol=http
                 -Dalfresco.restApi.basicAuthScheme=true
-                -Dimap.server.enabled=true
-                -Dimap.server.port=1143
-                -Dimap.server.imaps.port=1143
-                -Dimap.server.host=0.0.0.0
                 -Dftp.enabled=true
                 -Dftp.dataPortFrom=30000
                 -Dftp.dataPortTo=30099
@@ -42,6 +31,22 @@ services:
                 -Djodconverter.url=http://libreoffice:8090/
                 -Dimg.url=http://imagemagick:8090/
                 -Dtika.url=http://tika:8090/
+                -Dalfresco.host=localhost
+                -Dalfresco.port.ssl=80
+                -Dalfresco.protocol=http
+                -Dalfresco.port=8082
+                -Dimap.server.port=1143
+                -Dimap.server.imaps.port=1143
+                -Dimap.server.host=0.0.0.0
+                -Dmail.protocol=smtp
+                -Dmail.port=1025
+                -Dmail.host=mailhog
+                -Demail.inbound.unknownUser=anonymous
+                -Demail.inbound.unknownUser=admin@alfresco.com
+                -Demail.inbound.enabled=true
+                -Demail.server.enabled=true
+                -Demail.server.port=1025
+                -Dcsrf.filter.enabled=false
                 "
         ports:
             - 8082:8080
@@ -94,3 +99,9 @@ services:
             - SOLR_CREATE_ALFRESCO_DEFAULTS=alfresco,archive
         ports:
             - 8083:8983 #Browser port
+
+    mailhog:
+        image: mailhog/mailhog
+        ports:
+            - 1025:1025
+            - 8025:8025
