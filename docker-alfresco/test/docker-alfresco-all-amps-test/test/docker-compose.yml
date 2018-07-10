@@ -47,6 +47,7 @@ services:
                 -Demail.inbound.enabled=true
                 -Demail.server.enabled=true
                 -Demail.server.port=1126
+                -Dsystem.usages.enabled=true
                 -Dcsrf.filter.enabled=false
                 "
         ports:
