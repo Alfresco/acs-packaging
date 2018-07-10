@@ -40,8 +40,8 @@ services:
                 -Dimap.server.imaps.port=1143
                 -Dimap.server.host=0.0.0.0
                 -Dmail.protocol=smtp
-                -Dmail.port=1025
-                -Dmail.host=mailhog
+                -Dmail.port=465
+                -Dmail.host=smtp.gmail.com
                 -Demail.inbound.unknownUser=anonymous
                 -Demail.inbound.unknownUser=admin@alfresco.com
                 -Demail.inbound.enabled=true
@@ -100,9 +100,3 @@ services:
             - SOLR_CREATE_ALFRESCO_DEFAULTS=alfresco,archive
         ports:
             - 8083:8983 #Browser port
-
-    mailhog:
-        image: mailhog/mailhog
-        ports:
-            - 1025:1025
-            - 8025:8025
