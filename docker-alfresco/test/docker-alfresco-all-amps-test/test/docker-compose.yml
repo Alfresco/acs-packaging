@@ -42,7 +42,6 @@ services:
                 -Dmail.protocol=smtp
                 -Dmail.port=465
                 -Dmail.host=smtp.gmail.com
-                -Demail.inbound.unknownUser=anonymous
                 -Demail.inbound.unknownUser=admin@alfresco.com
                 -Demail.inbound.enabled=true
                 -Demail.server.enabled=true
