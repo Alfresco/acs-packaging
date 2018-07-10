@@ -36,11 +36,12 @@
 
         <dependency.alfresco-core.version>7.3</dependency.alfresco-core.version>
         <dependency.alfresco-data-model.version>8.9</dependency.alfresco-data-model.version>
+
         <dependency.alfresco-repository.version>7.3</dependency.alfresco-repository.version>
         <dependency.alfresco-remote-api.version>6.39</dependency.alfresco-remote-api.version>
         <dependency.alfresco-hb-data-sender.version>1.0.9</dependency.alfresco-hb-data-sender.version>
 
-        <dependency.alfresco-enterprise-repository.version>6.36</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-enterprise-repository.version>7.0</dependency.alfresco-enterprise-repository.version>
         <dependency.alfresco-enterprise-remote-api.version>6.28</dependency.alfresco-enterprise-remote-api.version>
 
         <dependency.alfresco-spring-encryptor.version>6.1</dependency.alfresco-spring-encryptor.version>
@@ -79,13 +80,13 @@
         <alfresco.kofax.version>2.0.0</alfresco.kofax.version>
 
         <!-- SAML Single Sign-On (SSO) for Alfresco Content Services -->
-        <alfresco.saml.version>1.1.0</alfresco.saml.version>
+        <alfresco.saml.version>1.1.1</alfresco.saml.version>
 
         <!-- Alfresco Outlook Integration -->
         <alfresco.outlook.version>2.4.2</alfresco.outlook.version>
 
         <!-- Document Transformation Engine -->
-        <alfresco.transformation-engine.version>2.1.1</alfresco.transformation-engine.version>
+        <alfresco.transformation-engine.version>2.2.1</alfresco.transformation-engine.version>
 
         <!-- Alfresco Records Management -->
         <alfresco.records-management.version>2.5.2</alfresco.records-management.version>
@@ -94,7 +95,7 @@
         <alfresco.aos-module.version>1.2.0</alfresco.aos-module.version>
 
         <!-- Alfresco Media Management Module -->
-        <alfresco.mm.version>1.2.0</alfresco.mm.version>
+        <alfresco.mm.version>1.2.1</alfresco.mm.version>
 
         <!-- Alfresco Desktop Sync Service Module -->
         <alfresco.desktop-sync.version>3.0</alfresco.desktop-sync.version>
@@ -593,6 +594,18 @@
                 <groupId>org.alfresco.mediamanagement</groupId>
                 <artifactId>alfresco-mm-share</artifactId>
                 <version>${alfresco.mm.version}</version>
+                <type>amp</type>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-document-transformation-engine-repo</artifactId>
+                <version>${alfresco.transformation-engine.version}</version>
+                <type>amp</type>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-document-transformation-engine-share</artifactId>
+                <version>${alfresco.transformation-engine.version}</version>
                 <type>amp</type>
             </dependency>
         </dependencies>
