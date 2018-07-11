@@ -23,7 +23,6 @@ services:
                 -Dsolr.base.url=/solr
                 -Dindex.subsystem.name=solr6
                 -Dalfresco.restApi.basicAuthScheme=true
-                -Dimap.server.enabled=true
                 -Dftp.enabled=true
                 -Dftp.dataPortFrom=30000
                 -Dftp.dataPortTo=30099
@@ -32,12 +31,32 @@ services:
                 -Djodconverter.url=http://libreoffice:8090/
                 -Dimg.url=http://imagemagick:8090/
                 -Dtika.url=http://tika:8090/
+                -Dalfresco.host=localhost
+                -Dalfresco.port.ssl=80
+                -Dalfresco.protocol=http
+                -Dalfresco.port=8082
+                -Dimap.server.enabled=true
+                -Dimap.server.port=1143
+                -Dimap.server.imaps.port=1143
+                -Dimap.server.host=0.0.0.0
+                -Dmail.protocol=smtp
+                -Dmail.port=465
+                -Dmail.host=smtp.gmail.com
+                -Demail.inbound.unknownUser=admin@alfresco.com
+                -Demail.inbound.enabled=true
+                -Demail.server.enabled=true
+                -Demail.server.port=1126
+                -Dsystem.usages.enabled=true
+                -Dcsrf.filter.enabled=false
                 "
         ports:
             - 8082:8080
             - 8000:8000
-            - 445:445
-            - 143:143
+            - 446:445
+            - 1143:1143
+            - 1126:1126
+            - 1125:1125
+            - "30000-30099:30000-30099"
 
     alfresco-pdf-renderer:
         image: alfresco/alfresco-pdf-renderer:${TRANSFORMERS_TAG}
