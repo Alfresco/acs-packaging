@@ -40,4 +40,4 @@ In this folder the distribution zip is built. It contains all the war files, lib
 
 ## How to
 
-* [Create a custom Docker image](docs/how-to/create-custom-image.md)
+* [Create a custom Docker image](docs/create-custom-image.md)
