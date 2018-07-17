@@ -30,7 +30,6 @@ services:
                 -Dalfresco-pdf-renderer.url=http://alfresco-pdf-renderer:8090/
                 -Djodconverter.url=http://libreoffice:8090/
                 -Dimg.url=http://imagemagick:8090/
-                -Dtika.url=http://tika:8090/
                 -Dalfresco.host=localhost
                 -Dalfresco.port.ssl=80
                 -Dalfresco.protocol=http
@@ -62,11 +61,6 @@ services:
         image: alfresco/alfresco-pdf-renderer:${TRANSFORMERS_TAG}
         ports:
             - 8090:8090
-
-    imagemagick:
-        image: alfresco/alfresco-imagemagick:${TRANSFORMERS_TAG}
-        ports:
-            - 8091:8090
 
     libreoffice:
         image: alfresco/alfresco-libreoffice:${TRANSFORMERS_TAG}
