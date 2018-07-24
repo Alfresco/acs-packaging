@@ -36,8 +36,8 @@
 
         <dependency.alfresco-core.version>7.3</dependency.alfresco-core.version>
         <dependency.alfresco-data-model.version>8.8</dependency.alfresco-data-model.version>
-        <dependency.alfresco-repository.version>6.56-egate55-temp</dependency.alfresco-repository.version>
-        <dependency.alfresco-remote-api.version>6.36</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-repository.version>7.4</dependency.alfresco-repository.version>
+        <dependency.alfresco-remote-api.version>7.0</dependency.alfresco-remote-api.version>
         <dependency.alfresco-hb-data-sender.version>1.0.9</dependency.alfresco-hb-data-sender.version>
 
         <dependency.alfresco-enterprise-repository.version>6.31</dependency.alfresco-enterprise-repository.version>
@@ -94,7 +94,7 @@
         <alfresco.mm.version>1.2.0-RC2</alfresco.mm.version>
 
         <!-- Alfresco Desktop Sync Service Module -->
-        <alfresco.desktop-sync.version>3.0-EGATE55</alfresco.desktop-sync.version>
+        <alfresco.desktop-sync.version>3.1-EGATE55</alfresco.desktop-sync.version>
 
         <installer.version.name>${project.version}</installer.version.name>
         <alfresco.package.name>alfresco</alfresco.package.name>
