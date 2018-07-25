@@ -13,7 +13,7 @@ The SNAPSHOT version of the artifacts is **never** published.
 ### Contributing guide
 Please use [this guide](CONTRIBUTING.md) to make a contribution to the project.
 
-This produces the docker images for alfresco-content-repository and the distribution zip for the entire Alfresco Content Services product
+This produces the docker images for alfresco-content-repository and the distribution zip for the entire Alfresco Content Services product.
 
 # General
 
@@ -26,18 +26,18 @@ On official releases, the image is published:
 https://hub.docker.com/r/alfresco/alfresco-content-repository/tags/ 
 
 For testing locally:
-1. Go to docker-alfreco folder
-2. Run *mvn clean install* if you have not done so
+1. Go to docker-alfresco folder
+2. Run ```mvn clean install``` if you have not done so
 3. Build the docker image: ```docker build . --tag acr:6.0.tag```
-4. Check that the image has been created locally with your desired name/tag: ```docker images```
+4. Check that the image has been created locally, with your desired name/tag: ```docker images```
 
 ### Docker-compose & Kubernetes
 Use the deployment project if you want the sample docker-compose or helm: https://github.com/Alfresco/acs-deployment
 
 ## Distribution zip
-In this folder the distribution zip is built. It contains all the war files, libraries, certificates and settings files you need to deploy Alfresco Content Services on the supported application servers.
+In this folder the distribution zip is built. It contains all the war files, libraries, certificates and settings files you need, to deploy Alfresco Content Services on the supported application servers.
 
 
 ## How to
 
-* [Create a custom Docker image](docs/how-to/create-custom-image.md)
+* [Create a custom Docker image](docs/create-custom-image.md)

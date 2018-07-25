@@ -7,7 +7,7 @@
   <parent>
       <groupId>org.alfresco</groupId>
       <artifactId>acs-packaging</artifactId>
-      <version>6.0.0-SNAPSHOT</version>
+      <version>6.1.0-SNAPSHOT</version>
       <relativePath>../../../pom.xml</relativePath>
   </parent>
 
@@ -70,6 +70,12 @@
             <version>${alfresco.googledocs.version}</version>
             <type>amp</type>
         </dependency>
+        <dependency>
+            <groupId>org.jolokia</groupId>
+            <artifactId>jolokia-war</artifactId>
+            <version>1.5.0</version>
+            <type>war</type>
+        </dependency>
     </dependencies>
 
     <build>
@@ -104,6 +110,14 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/war/share</outputDirectory>
                                     <destFileName>share.war</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.jolokia</groupId>
+                                    <artifactId>jolokia-war</artifactId>
+                                    <version>1.5.0</version>
+                                    <type>war</type>
+                                    <outputDirectory>${project.build.directory}/war/jolokia</outputDirectory>
+                                    <destFileName>jolokia.war</destFileName>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
@@ -258,6 +272,22 @@
                                     <groupId>org.alfresco.mediamanagement</groupId>
                                     <artifactId>alfresco-mm-share</artifactId>
                                     <version>${alfresco.mm.version}</version>
+                                    <type>amp</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>alfresco-document-transformation-engine-repo</artifactId>
+                                    <version>${alfresco.transformation-engine.version}</version>
+                                    <type>amp</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/amps</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>alfresco-document-transformation-engine-share</artifactId>
+                                    <version>${alfresco.transformation-engine.version}</version>
                                     <type>amp</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
