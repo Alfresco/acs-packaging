@@ -71,13 +71,8 @@ services:
     share:
         image: alfresco/alfresco-share:${SHARE_TAG}
         environment:
-            REPO_HOST: alfresco
-            REPO_PORT: 8080
-            JAVA_OPTS : "
-                -Dalfresco.context=alfresco
-                -Dalfresco.host=localhost
-                -Dalfresco.port=8082
-                -Dalfresco.protocol=http"
+            - REPO_HOST=alfresco
+            - REPO_PORT=8080
         ports:
             - 8080:8080
 
