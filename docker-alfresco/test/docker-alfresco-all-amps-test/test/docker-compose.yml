@@ -31,6 +31,7 @@ services:
                 -Djodconverter.url=http://libreoffice:8090/
                 -Dimg.url=http://imagemagick:8090/
                 -Dtika.url=http://tika:8090/
+                -Dsfs.url=http://shared-file-store:8099/
                 -Dalfresco.host=localhost
                 -Dalfresco.port.ssl=80
                 -Dalfresco.protocol=http
@@ -77,6 +78,11 @@ services:
         image: alfresco/alfresco-tika:${TRANSFORMERS_TAG}
         ports:
             - 8093:8090
+
+    shared-file-store:
+        image: alfresco/alfresco-shared-file-store:${SFS_TAG}
+        ports:
+            - 8099:8099
 
     postgres:
         image: library/postgres:${POSTGRES_TAG}

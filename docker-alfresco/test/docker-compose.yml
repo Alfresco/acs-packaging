@@ -32,6 +32,7 @@ services:
                 -Djodconverter.url=http://libreoffice:8090/
                 -Dimg.url=http://imagemagick:8090/
                 -Dtika.url=http://tika:8090/
+                -Dsfs.url=http://shared-file-store:8099/
                 -Dshare.host=localhost
                 "
         ports:
@@ -62,11 +63,21 @@ services:
         ports:
             - 8093:8090
 
+    shared-file-store:
+        image: alfresco/alfresco-shared-file-store:${SFS_TAG}
+        ports:
+            - 8099:8099
+
     share:
         image: alfresco/alfresco-share:${SHARE_TAG}
         environment:
-            - REPO_HOST=alfresco
-            - REPO_PORT=8080
+            REPO_HOST: alfresco
+            REPO_PORT: 8080
+            JAVA_OPTS : "
+                -Dalfresco.context=alfresco
+                -Dalfresco.host=localhost
+                -Dalfresco.port=8082
+                -Dalfresco.protocol=http"
         ports:
             - 8080:8080
 
