@@ -105,6 +105,7 @@
         <alfresco.distribution.name>${alfresco.package.name}-distribution</alfresco.distribution.name>
 
         <dependency.postgresql.version>42.2.1</dependency.postgresql.version>
+        <dependency.mariadb.version>2.0.1</dependency.mariadb.version>
     </properties>
 
     <profiles>
