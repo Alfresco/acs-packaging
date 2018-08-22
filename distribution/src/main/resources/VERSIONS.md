@@ -47,19 +47,19 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Operating Systems
 | Component | Recommended | Also Available |
 |---|---|---|
-| Red Hat Enterprise Linux | 7.4 | 7.3 | 7.2 |
-| Windows Server | 2012 R2 x64 |
+| Red Hat Enterprise Linux | 7.4 |
+| Windows Server | 2016 |
 | CentOS | 7 x64 |
-| Ubuntu | 16.04 LTS x64 |
+| Ubuntu | 17.04 |
 | SUSE | 12.0 SP1 x64 |
 
 ##### Databases
 | Component | Recommended | Also Available |
 |---|---|---|
-| MySQL | 5.7.21 | 5.7.17 | 5.7.16 |
-| MS SQL Server | 2016 | 2014 |
+| MySQL | 5.7.21 | 5.7.17 |
+| MS SQL Server | 2017 |
 | Oracle | 12c  |
-| PostgreSQL | 9.4.12 |
+| PostgreSQL | 10.1 |
 | MariaDB | 10.2.11 |
 | Amazon Aurora | Latest |
 
@@ -69,7 +69,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | MySQL connector | 5.1.40 |
 | MariaDB Java Client | 2.0.1 |
 | PostgreSQL | @dependency.postgresql.version@ |
-| Oracle JDBC ojdbc7 | 12.1.0.1.0 |
+| Oracle JDBC ojdbc7 | 12.2.0.1 |
 | Microsoft JDBC Driver | 6.0 |
 
 ##### Application Servers
@@ -80,7 +80,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Client Operating Systems
 | Component | Recommended | Also Available |
 |---|---|---|
-| Windows x64 | 10 | 7, 8.1 |
+| Windows x64 | 10 | 7 |
 | Mac OSX | 10.12 |
 
 ##### Client browsers
@@ -90,10 +90,10 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Microsoft Edge | Latest |
 | IE | 11 |
 | Chrome | Latest |
-| Safari | 9 |
+| Safari | 11 |
 
 ##### Java
 | Component | Recommended | Also Available |
 |---|---|---|
-| Oracle JRE | 1.8.0_161 | 1.8.0_131 | 1.8.0_111, 1.8.0_112, 1.8.0_121 |
+| Oracle JRE | 1.8.0_161 | 1.8.0_152 |
 | IBM SDK | 8 |
