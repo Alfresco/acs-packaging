@@ -1,3 +1,26 @@
+<h1>        6.1.0
+</h1>
+<h2>
+  New Features (TODO)
+</h2>
+<ul>
+  <li>
+    ActiveMQ:
+  </li>
+  <li>
+    Transform Service:
+  </li>
+</ul>
+<h2>
+  Deprecations
+</h2>
+<ul>
+  <li>
+    TransformService and RenditionService: All Java APIs related to TransformService and RenditionService have been deprecated; the ability to perform arbitrary transformations will be phased out as the new DBP Transform Service takes effect.  Renditions can be triggered using the existing repository REST API but will be processed asynchronously using the new services.<br/>
+    The 
+  </li>
+</ul>
+
 <h1>        6.0.0
 </h1>                        
 <h2>        Feature
