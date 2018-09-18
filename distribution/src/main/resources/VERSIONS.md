@@ -98,3 +98,8 @@ This file lists the recommended components for this Service Pack. Use it along w
 |---|---|---|
 | Oracle JRE | 1.8.0_161 | 1.8.0_152 |
 | IBM SDK | 8 |
+
+##### Message Broker
+| Component | Recommended | Also Available |
+|---|---|---|
+| ActiveMQ | 5.15.6 |
