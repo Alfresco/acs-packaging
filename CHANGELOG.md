@@ -19,6 +19,14 @@
     TransformService and RenditionService: All Java APIs related to TransformService and RenditionService have been deprecated; the ability to perform arbitrary transformations will be phased out as the new DBP Transform Service takes effect.  Renditions can be triggered using the existing repository REST API but will be processed asynchronously using the new services.<br/>
   </li>
 </ul>
+<h2>
+  Known issues
+</h2>
+<ul>
+  <li>
+    Due to the changes to the RenditionService the Media Management AMP is not supported yet.<br/>
+  </li>
+</ul>
 
 <h1>        6.0.0
 </h1>                        
