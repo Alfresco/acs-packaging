@@ -104,6 +104,9 @@
 
         <dependency.postgresql.version>42.2.1</dependency.postgresql.version>
         <dependency.mariadb.version>2.2.6</dependency.mariadb.version>
+
+        <!-- Private docker registry -->
+        <image.registry>quay.io</image.registry>
     </properties>
 
     <profiles>
