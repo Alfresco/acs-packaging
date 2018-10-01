@@ -2,6 +2,9 @@
 # More infos about this image: https://github.com/Alfresco/alfresco-docker-base-tomcat
 FROM alfresco/alfresco-base-tomcat:8.5.28-java-8-oracle-centos-7
 
+# Set default docker_context. Will / Can be overriden with maven.
+ARG docker_context=target
+
 # Create prerequisite to store tools and properties
 RUN mkdir -p /usr/local/tomcat/shared/classes/alfresco/extension && \
     mkdir /usr/local/tomcat/alfresco-mmt
@@ -11,11 +14,11 @@ RUN touch /usr/local/tomcat/shared/classes/alfresco-global.properties
 # Copy the WAR files to the appropriate location for your application server
 # Copy the JDBC drivers for the database you are using to the lib/ directory.
 # Copy the alfresco-mmt.jar
-COPY target/war /usr/local/tomcat/webapps
-COPY target/connector/* /usr/local/tomcat/lib/
-COPY target/alfresco-mmt/* /usr/local/tomcat/alfresco-mmt/
+COPY ${docker_context}/war /usr/local/tomcat/webapps
+COPY ${docker_context}/connector/* /usr/local/tomcat/lib/
+COPY ${docker_context}/alfresco-mmt/* /usr/local/tomcat/alfresco-mmt/
 RUN rm -rf /usr/local/tomcat/webapps/ROOT
-COPY target/server-root/* /usr/local/tomcat/webapps
+COPY ${docker_context}/server-root/* /usr/local/tomcat/webapps
 
 # Change the value of the shared.loader= property to the following:
 # shared.loader=${catalina.base}/shared/classes
@@ -34,7 +37,7 @@ jodconverter.enabled=true\n\
 RUN mkdir -p /usr/local/tomcat/amps
 
 # Copy the amps from build context to the appropriate location for your application server
-COPY target/amps /usr/local/tomcat/amps
+COPY ${docker_context}/amps /usr/local/tomcat/amps
 
 # Install amps on alfresco.war
 RUN java -jar /usr/local/tomcat/alfresco-mmt/alfresco-mmt*.jar install \

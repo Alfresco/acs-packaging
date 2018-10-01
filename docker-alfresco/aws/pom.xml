@@ -9,11 +9,12 @@
         <groupId>org.alfresco</groupId>
         <artifactId>acs-packaging</artifactId>
         <version>6.1.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <properties>
         <image.name>alfresco/alfresco-content-repository-aws</image.name>
+        <docker_context>aws/target</docker_context>
     </properties>
 
     <dependencies>
@@ -192,7 +193,7 @@
                                     <name>${image.name}:${image.tag}</name>
                                     <registry>${image.registry}</registry>
                                     <build>
-                                        <dockerFileDir>../docker-alfresco/</dockerFileDir>
+                                        <dockerFileDir>${project.basedir}/../</dockerFileDir>
                                     </build>
                                 </image>
                             </images>
@@ -226,13 +227,13 @@
                                     <name>${image.name}</name>
                                     <registry>${image.registry}</registry>
                                     <build>
-                                        <dockerFileDir>../docker-alfresco/</dockerFileDir>
+                                        <dockerFileDir>${project.basedir}/../</dockerFileDir>
                                     </build>
                                 </image>
                                 <image>
                                     <name>${image.name}</name>
                                     <build>
-                                        <dockerFileDir>../docker-alfresco/</dockerFileDir>
+                                        <dockerFileDir>${project.basedir}/../</dockerFileDir>
                                     </build>
                                 </image>
                             </images>
@@ -266,13 +267,13 @@
                                     <name>${image.name}:${project.version}</name>
                                     <registry>${image.registry}</registry>
                                     <build>
-                                        <dockerFileDir>../docker-alfresco/</dockerFileDir>
+                                        <dockerFileDir>${project.basedir}/../</dockerFileDir>
                                     </build>
                                 </image>
                                 <image>
                                     <name>${image.name}:${project.version}</name>
                                     <build>
-                                        <dockerFileDir>../docker-alfresco/</dockerFileDir>
+                                        <dockerFileDir>${project.basedir}/../</dockerFileDir>
                                     </build>
                                 </image>
                             </images>
