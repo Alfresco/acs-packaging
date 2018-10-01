@@ -192,7 +192,7 @@
                                     <name>${image.name}:${image.tag}</name>
                                     <registry>${image.registry}</registry>
                                     <build>
-                                        <dockerFileDir>${project.basedir}/</dockerFileDir>
+                                        <dockerFileDir>../docker-alfresco/</dockerFileDir>
                                     </build>
                                 </image>
                             </images>
@@ -226,13 +226,13 @@
                                     <name>${image.name}</name>
                                     <registry>${image.registry}</registry>
                                     <build>
-                                        <dockerFileDir>${project.basedir}/</dockerFileDir>
+                                        <dockerFileDir>../docker-alfresco/</dockerFileDir>
                                     </build>
                                 </image>
                                 <image>
                                     <name>${image.name}</name>
                                     <build>
-                                        <dockerFileDir>${project.basedir}/</dockerFileDir>
+                                        <dockerFileDir>../docker-alfresco/</dockerFileDir>
                                     </build>
                                 </image>
                             </images>
@@ -266,13 +266,13 @@
                                     <name>${image.name}:${project.version}</name>
                                     <registry>${image.registry}</registry>
                                     <build>
-                                        <dockerFileDir>${project.basedir}/</dockerFileDir>
+                                        <dockerFileDir>../docker-alfresco/</dockerFileDir>
                                     </build>
                                 </image>
                                 <image>
                                     <name>${image.name}:${project.version}</name>
                                     <build>
-                                        <dockerFileDir>${project.basedir}/</dockerFileDir>
+                                        <dockerFileDir>../docker-alfresco/</dockerFileDir>
                                     </build>
                                 </image>
                             </images>
