@@ -14,7 +14,7 @@
 
     <properties>
         <image.name>alfresco/alfresco-content-repository-aws</image.name>
-        <docker_context>aws/target</docker_context>
+        <resource_path>aws/target</resource_path>
     </properties>
 
     <dependencies>
