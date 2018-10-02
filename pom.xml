@@ -103,6 +103,10 @@
         <alfresco.distribution.name>${alfresco.package.name}-distribution</alfresco.distribution.name>
 
         <dependency.postgresql.version>42.2.1</dependency.postgresql.version>
+        <dependency.mariadb.version>2.2.6</dependency.mariadb.version>
+
+        <!-- Private docker registry -->
+        <image.registry>quay.io</image.registry>
     </properties>
 
     <profiles>
@@ -117,6 +121,7 @@
             <modules>
                 <module>war</module>
                 <module>docker-alfresco</module>
+                <module>docker-alfresco/aws</module>
                 <module>docker-alfresco/test/docker-alfresco-all-amps-test</module>
             </modules>
         </profile>
@@ -129,6 +134,7 @@
                 <module>war</module>
                 <module>distribution</module>
                 <module>docker-alfresco</module>
+                <module>docker-alfresco/aws</module>
                 <module>docker-alfresco/test/docker-alfresco-all-amps-test</module>
             </modules>
         </profile>

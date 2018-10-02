@@ -1,71 +1,33 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>content-services-docker</artifactId>
-    <name>Alfresco Content Services Docker Image Builder</name>
+    <artifactId>content-services-docker-aws</artifactId>
+    <name>Alfresco Content Services Docker Image Builder for AWS</name>
     <packaging>pom</packaging>
+    <groupId>org.alfresco</groupId>
 
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>acs-packaging</artifactId>
         <version>6.1.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <properties>
-        <image.name>alfresco/alfresco-content-repository</image.name>
-        <resource_path>target</resource_path>
+        <image.name>alfresco/alfresco-content-repository-aws</image.name>
+        <resource_path>aws/target</resource_path>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.alfresco</groupId>
-            <artifactId>content-services</artifactId>
-            <version>${project.version}</version>
-            <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco</groupId>
-            <artifactId>api-explorer</artifactId>
-            <version>${dependency.alfresco-api-explorer.version}</version>
-            <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-mmt</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-server-root</artifactId>
-            <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${dependency.postgresql.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-share-services</artifactId>
-            <version>${alfresco.alfresco-share-services.version}</version>
-            <type>amp</type>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco.aos-module</groupId>
-            <artifactId>alfresco-aos-module</artifactId>
-            <version>${alfresco.aos-module.version}</version>
-            <type>amp</type>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco.aos-module</groupId>
-            <artifactId>alfresco-vti-bin</artifactId>
-            <version>${alfresco.aos-module.version}</version>
-            <type>war</type>
-        </dependency>
-        <dependency>
             <groupId>org.alfresco.integrations</groupId>
-            <artifactId>alfresco-googledocs-repo</artifactId>
-            <version>${alfresco.googledocs.version}</version>
+            <artifactId>alfresco-s3-connector</artifactId>
+            <version>${alfresco.s3connector.version}</version>
             <type>amp</type>
+        </dependency>
+        <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>${dependency.mariadb.version}</version>
         </dependency>
     </dependencies>
 
@@ -121,6 +83,14 @@
                                     <outputDirectory>${project.build.directory}/connector</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
+                                    <groupId>org.mariadb.jdbc</groupId>
+                                    <artifactId>mariadb-java-client</artifactId>
+                                    <version>${dependency.mariadb.version}</version>
+                                    <type>jar</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/connector</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-mmt</artifactId>
                                     <type>jar</type>
@@ -170,26 +140,18 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.alfresco.integrations</groupId>
+                                    <artifactId>alfresco-s3-connector</artifactId>
+                                    <version>${alfresco.s3connector.version}</version>
+                                    <type>amp</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/amps</outputDirectory>
+                                </artifactItem>
                             </artifactItems>
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>io.fabric8</groupId>
-                <artifactId>fabric8-maven-plugin</artifactId>
-                <version>${dependency.fabric8.version}</version>
-                <configuration>
-                    <images>
-                        <image>
-                            <name>${image.name}</name>
-                            <build>
-                                <dockerFileDir>${project.basedir}/</dockerFileDir>
-                            </build>
-                        </image>
-                    </images>
-                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -231,7 +193,7 @@
                                     <name>${image.name}:${image.tag}</name>
                                     <registry>${image.registry}</registry>
                                     <build>
-                                        <dockerFileDir>${project.basedir}/</dockerFileDir>
+                                        <dockerFileDir>${project.basedir}/../</dockerFileDir>
                                     </build>
                                 </image>
                             </images>
@@ -265,13 +227,13 @@
                                     <name>${image.name}</name>
                                     <registry>${image.registry}</registry>
                                     <build>
-                                        <dockerFileDir>${project.basedir}/</dockerFileDir>
+                                        <dockerFileDir>${project.basedir}/../</dockerFileDir>
                                     </build>
                                 </image>
                                 <image>
                                     <name>${image.name}</name>
                                     <build>
-                                        <dockerFileDir>${project.basedir}/</dockerFileDir>
+                                        <dockerFileDir>${project.basedir}/../</dockerFileDir>
                                     </build>
                                 </image>
                             </images>
@@ -305,13 +267,13 @@
                                     <name>${image.name}:${project.version}</name>
                                     <registry>${image.registry}</registry>
                                     <build>
-                                        <dockerFileDir>${project.basedir}/</dockerFileDir>
+                                        <dockerFileDir>${project.basedir}/../</dockerFileDir>
                                     </build>
                                 </image>
                                 <image>
                                     <name>${image.name}:${project.version}</name>
                                     <build>
-                                        <dockerFileDir>${project.basedir}/</dockerFileDir>
+                                        <dockerFileDir>${project.basedir}/../</dockerFileDir>
                                     </build>
                                 </image>
                             </images>
@@ -331,5 +293,4 @@
             </build>
         </profile>
     </profiles>
-
 </project>
