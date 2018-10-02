@@ -31,6 +31,17 @@ For testing locally:
 3. Build the docker image: ```docker build . --tag acr:6.0.tag```
 4. Check that the image has been created locally, with your desired name/tag: ```docker images```
 
+## Docker Alfresco AWS
+We created an other ACS image for our AWS deployment. It adds the S3 connector amp and MariaDB driver to the image.
+During a release it will be published on:
+https://hub.docker.com/r/alfresco/alfresco-content-repository-aws/tags/ 
+
+For testing locally:
+1. Go to docker-alfresco/aws folder
+2. Run ```mvn clean install``` if you have not done so
+3. Build the docker image: ```docker build . --tag acr-aws:6.0.tag```
+4. Check that the image has been created locally, with your desired name/tag: ```docker images```
+
 ### Docker-compose & Kubernetes
 Use the deployment project if you want the sample docker-compose or helm: https://github.com/Alfresco/acs-deployment
 
