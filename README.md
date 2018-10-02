@@ -32,8 +32,8 @@ For testing locally:
 4. Check that the image has been created locally, with your desired name/tag: ```docker images```
 
 ## Docker Alfresco AWS
-We created an other ACS image for our AWS deployment. It adds the S3 connector amp and MariaDB driver to the image.
-During a release it will be published on:
+We created another ACS image for our AWS deployment. It adds the S3 Connector amp and MariaDB driver to the image.
+During a release, it will be published on:
 https://hub.docker.com/r/alfresco/alfresco-content-repository-aws/tags/ 
 
 For testing locally:
