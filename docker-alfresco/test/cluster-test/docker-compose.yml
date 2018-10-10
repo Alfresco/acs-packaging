@@ -1,4 +1,5 @@
-version: "3"
+# Using version 2 as 3 does not support resource constraint options (cpu_*, mem_* limits) for non swarm mode in Compose
+version: "2"
 
 # The acs-deployment project contains the product version of docker-compose.
 #
@@ -7,6 +8,7 @@ version: "3"
 services:
     alfresco1:
         image: alfresco/alfresco-content-repository:latest
+        mem_limit: 1500m
         environment:
             CATALINA_OPTS: "
                 -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n
@@ -22,13 +24,10 @@ services:
             - 8001:8000 #Debug port
         volumes:
             - alf_data:/usr/local/tomcat/alf_data
-        deploy:
-            resources:
-                limits:
-                    memory: 1500M
 
     alfresco2:
         image: alfresco/alfresco-content-repository:latest
+        mem_limit: 1500m
         environment:
             CATALINA_OPTS: "
                 -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n
@@ -44,13 +43,10 @@ services:
             - 8002:8000 #Debug port
         volumes:
             - alf_data:/usr/local/tomcat/alf_data
-        deploy:
-            resources:
-                limits:
-                    memory: 1500M
 
     alfresco3:
         image: alfresco/alfresco-content-repository:latest
+        mem_limit: 1500m
         environment:
             CATALINA_OPTS: "
                     -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n
@@ -66,10 +62,6 @@ services:
         - 8003:8000 #Debug port
         volumes:
         - alf_data:/usr/local/tomcat/alf_data
-        deploy:
-            resources:
-                limits:
-                    memory: 1500M
 
     postgres:
         image: library/postgres:${POSTGRES_TAG}
