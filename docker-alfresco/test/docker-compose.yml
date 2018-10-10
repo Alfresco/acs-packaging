@@ -34,6 +34,7 @@ services:
                 -Dtika.url=http://tika:8090/
                 -Dsfs.url=http://shared-file-store:8099/
                 -Dshare.host=localhost
+                -agentpath:/usr/local/YourKit-JavaProfiler-2018.04/bin/linux-x86-64/libyjpagent.so=delay=10000,listen=all,sessionname=Tomcat,dir=/tmp/Alfresco/yourkit,onexit=snapshot,periodicperf=60
                 "
         ports:
             - 8082:8080
@@ -42,6 +43,10 @@ services:
             - 143:143
             - "21:21"
             - "30000-30099:30000-30099"
+            - 10001:10001
+
+        volumes:
+            - yourkit-snapshots-volume:/tmp/Alfresco/yourkit
 
     transform-router:
         image: quay.io/alfresco/alfresco-transform-router:${TRANSFORM_ROUTER_TAG}
@@ -136,6 +141,10 @@ services:
 
 volumes:
     shared-file-store-volume:
+        driver_opts:
+            type: tmpfs
+            device: tmpfs
+    yourkit-snapshots-volume:
         driver_opts:
             type: tmpfs
             device: tmpfs

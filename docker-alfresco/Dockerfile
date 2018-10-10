@@ -52,6 +52,14 @@ RUN mkdir /usr/local/tomcat/webapps/ROOT && cd /usr/local/tomcat/webapps/ROOT &&
 # Grant only deployXmlPermission to ROOT webapp.
     sed -i -e "\$a\grant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/alfresco\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};\ngrant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/ROOT\/-\" \{\n\    permission org.apache.catalina.security.DeployXmlPermission \"ROOT\";\n\};" /usr/local/tomcat/conf/catalina.policy
 
+# Unzip YourKit-JavaProfiler-2018
+RUN curl -o /tmp/YourKit-JavaProfiler-2018.04-docker.zip 'https://www.yourkit.com/download/docker/YourKit-JavaProfiler-2018.04-docker.zip' && cd /usr/local && \
+    jar xvf /tmp/YourKit-JavaProfiler-2018.04-docker.zip && \
+    rm /tmp/YourKit-JavaProfiler-2018.04-docker.zip
+
+EXPOSE 10001
+
 # To remote debug into this image add: EXPOSE 8000
 # Changes are also required to the docker-compose/docker-compose.yml file.
-# EXPOSE 8000
+
+EXPOSE 8000
