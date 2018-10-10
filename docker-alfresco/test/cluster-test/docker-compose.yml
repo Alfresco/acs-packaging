@@ -7,7 +7,7 @@ version: "2"
 
 services:
     alfresco1:
-        image: alfresco/alfresco-content-repository:latest
+        image: ${REGISTRY}alfresco/alfresco-content-repository:${ALFRESCO_TAG}
         mem_limit: 1500m
         environment:
             CATALINA_OPTS: "
@@ -26,7 +26,7 @@ services:
             - alf_data:/usr/local/tomcat/alf_data
 
     alfresco2:
-        image: alfresco/alfresco-content-repository:latest
+        image: ${REGISTRY}alfresco/alfresco-content-repository:${ALFRESCO_TAG}
         mem_limit: 1500m
         environment:
             CATALINA_OPTS: "
@@ -45,7 +45,7 @@ services:
             - alf_data:/usr/local/tomcat/alf_data
 
     alfresco3:
-        image: alfresco/alfresco-content-repository:latest
+        image: ${REGISTRY}alfresco/alfresco-content-repository:${ALFRESCO_TAG}
         mem_limit: 1500m
         environment:
             CATALINA_OPTS: "
