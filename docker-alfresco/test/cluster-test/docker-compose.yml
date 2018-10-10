@@ -1,0 +1,85 @@
+version: "3"
+
+# The acs-deployment project contains the product version of docker-compose.
+#
+# This version is for testing and development in a cluster environment.
+
+services:
+    alfresco1:
+        image: alfresco/alfresco-content-repository:latest
+        environment:
+            CATALINA_OPTS: "
+                -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n
+                "
+            JAVA_OPTS: "
+                -Ddb.driver=org.postgresql.Driver
+                -Ddb.username=alfresco
+                -Ddb.password=alfresco
+                -Ddb.url=jdbc:postgresql://postgres:5432/alfresco
+                "
+        ports:
+            - 8071:8080 #Browser port
+            - 8001:8000 #Debug port
+        volumes:
+            - alf_data:/usr/local/tomcat/alf_data
+        deploy:
+            resources:
+                limits:
+                    memory: 1500M
+
+    alfresco2:
+        image: alfresco/alfresco-content-repository:latest
+        environment:
+            CATALINA_OPTS: "
+                -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n
+                "
+            JAVA_OPTS: "
+                -Ddb.driver=org.postgresql.Driver
+                -Ddb.username=alfresco
+                -Ddb.password=alfresco
+                -Ddb.url=jdbc:postgresql://postgres:5432/alfresco
+                "
+        ports:
+            - 8072:8080 #Browser port
+            - 8002:8000 #Debug port
+        volumes:
+            - alf_data:/usr/local/tomcat/alf_data
+        deploy:
+            resources:
+                limits:
+                    memory: 1500M
+
+    alfresco3:
+        image: alfresco/alfresco-content-repository:latest
+        environment:
+            CATALINA_OPTS: "
+                    -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n
+                    "
+            JAVA_OPTS: "
+                    -Ddb.driver=org.postgresql.Driver
+                    -Ddb.username=alfresco
+                    -Ddb.password=alfresco
+                    -Ddb.url=jdbc:postgresql://postgres:5432/alfresco
+                    "
+        ports:
+        - 8073:8080 #Browser port
+        - 8003:8000 #Debug port
+        volumes:
+        - alf_data:/usr/local/tomcat/alf_data
+        deploy:
+            resources:
+                limits:
+                    memory: 1500M
+
+    postgres:
+        image: library/postgres:${POSTGRES_TAG}
+        environment:
+            - POSTGRES_PASSWORD=alfresco
+            - POSTGRES_USER=alfresco
+            - POSTGRES_DB=alfresco
+        ports:
+            - 5432:5432
+
+volumes:
+    alf_data:
+      driver: local
