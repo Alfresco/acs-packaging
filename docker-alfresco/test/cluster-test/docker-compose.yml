@@ -8,7 +8,7 @@ version: "2"
 services:
     alfresco1:
         image: ${REGISTRY}alfresco/alfresco-content-repository:${ALFRESCO_TAG}
-        mem_limit: 1500m
+#        mem_limit: 1500m
         environment:
             CATALINA_OPTS: "
                 -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n
@@ -27,7 +27,7 @@ services:
 
     alfresco2:
         image: ${REGISTRY}alfresco/alfresco-content-repository:${ALFRESCO_TAG}
-        mem_limit: 1500m
+#        mem_limit: 1500m
         environment:
             CATALINA_OPTS: "
                 -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n
@@ -46,7 +46,7 @@ services:
 
     alfresco3:
         image: ${REGISTRY}alfresco/alfresco-content-repository:${ALFRESCO_TAG}
-        mem_limit: 1500m
+#        mem_limit: 1500m
         environment:
             CATALINA_OPTS: "
                     -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n
