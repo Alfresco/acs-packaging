@@ -56,6 +56,7 @@ services:
 
     postgres:
         image: library/postgres:${POSTGRES_TAG}
+        mem_limit: 1500m
         environment:
             - POSTGRES_PASSWORD=alfresco
             - POSTGRES_USER=alfresco
