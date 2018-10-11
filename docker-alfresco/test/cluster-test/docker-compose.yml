@@ -8,7 +8,6 @@ version: "2"
 services:
     alfresco1:
         image: ${REGISTRY}alfresco/alfresco-content-repository:${ALFRESCO_TAG}
-#        mem_limit: 1500m
         environment:
             CATALINA_OPTS: "
                 -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n
@@ -27,7 +26,6 @@ services:
 
     alfresco2:
         image: ${REGISTRY}alfresco/alfresco-content-repository:${ALFRESCO_TAG}
-#        mem_limit: 1500m
         environment:
             CATALINA_OPTS: "
                 -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n
@@ -46,17 +44,16 @@ services:
 
     alfresco3:
         image: ${REGISTRY}alfresco/alfresco-content-repository:${ALFRESCO_TAG}
-#        mem_limit: 1500m
         environment:
             CATALINA_OPTS: "
-                    -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n
-                    "
+                -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n
+                "
             JAVA_OPTS: "
-                    -Ddb.driver=org.postgresql.Driver
-                    -Ddb.username=alfresco
-                    -Ddb.password=alfresco
-                    -Ddb.url=jdbc:postgresql://postgres:5432/alfresco
-                    "
+                -Ddb.driver=org.postgresql.Driver
+                -Ddb.username=alfresco
+                -Ddb.password=alfresco
+                -Ddb.url=jdbc:postgresql://postgres:5432/alfresco
+                "
         ports:
         - 8073:8080 #Browser port
         - 8003:8000 #Debug port
