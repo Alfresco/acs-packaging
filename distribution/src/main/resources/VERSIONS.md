@@ -13,7 +13,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Alfresco Insight Engine | 1.0.0 |
 | Alfresco Desktop Sync Service | @alfresco.desktop-sync.version@ |
 | Alfresco Transform Service | 0.2.0 EA |
-| Document Transformation Engine | 2.0.4 EA |
+| Document Transformation Engine | @alfresco.transformation-engine.version@ |
 | Alfresco File Transfer Receiver | 6.2.1 |
 | Alfresco Module Management Tool | 6.0 |
 | Alfresco Spring Encryptor | 6.1 |
