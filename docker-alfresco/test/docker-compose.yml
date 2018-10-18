@@ -14,7 +14,6 @@ services:
         environment:
             CATALINA_OPTS : "
                 -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n
-                -agentpath:/usr/local/YourKit-JavaProfiler-2018.04/bin/linux-x86-64/libyjpagent.so=delay=200000,listen=all,sessionname=$$HOSTNAME,dir=/tmp/Alfresco/yourkit,onexit=snapshot,periodicperf=60,periodicmem=60
                 "
             JAVA_OPTS : "
                 -Ddb.driver=org.postgresql.Driver
@@ -47,9 +46,6 @@ services:
             - "21:21"
             - "30000-30099:30000-30099"
             - 10001:10001
-
-        volumes:
-            - yourkit-snapshots-volume:/tmp/Alfresco/yourkit
 
     transform-router:
         image: quay.io/alfresco/alfresco-transform-router:${TRANSFORM_ROUTER_TAG}
@@ -144,10 +140,6 @@ services:
 
 volumes:
     shared-file-store-volume:
-        driver_opts:
-            type: tmpfs
-            device: tmpfs
-    yourkit-snapshots-volume:
         driver_opts:
             type: tmpfs
             device: tmpfs
