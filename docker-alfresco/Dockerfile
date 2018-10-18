@@ -61,5 +61,4 @@ EXPOSE 10001
 
 # To remote debug into this image add: EXPOSE 8000
 # Changes are also required to the docker-compose/docker-compose.yml file.
-
-EXPOSE 8000
+# EXPOSE 8000
