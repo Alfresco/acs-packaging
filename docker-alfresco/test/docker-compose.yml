@@ -5,12 +5,16 @@ version: "3"
 # This version is for testing and development use. For testing and debug we need to have a more open version.
 # For remote debug we need the CATALINA_OPTS and to expose port 8000.
 
+# Add the following environment variable to CATALINA_OPTS to activate YourKit profiling agent on tomcat
+#-agentpath:/usr/local/YourKit-JavaProfiler-2018.04/bin/linux-x86-64/libyjpagent.so=delay=200000,listen=all,sessionname=$$HOSTNAME,dir=/tmp/Alfresco/yourkit,onexit=snapshot,periodicperf=600,periodicmem=600
+
 services:
     alfresco:
         image: ${REGISTRY}alfresco/alfresco-content-repository:${ALFRESCO_TAG}
         environment:
             CATALINA_OPTS : "
                 -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n
+                -agentpath:/usr/local/YourKit-JavaProfiler-2018.04/bin/linux-x86-64/libyjpagent.so=delay=200000,listen=all,sessionname=$$HOSTNAME,dir=/tmp/Alfresco/yourkit,onexit=snapshot,periodicperf=60,periodicmem=60
                 "
             JAVA_OPTS : "
                 -Ddb.driver=org.postgresql.Driver
@@ -34,14 +38,13 @@ services:
                 -Dtika.url=http://tika:8090/
                 -Dsfs.url=http://shared-file-store:8099/
                 -Dshare.host=localhost
-                -agentpath:/usr/local/YourKit-JavaProfiler-2018.04/bin/linux-x86-64/libyjpagent.so=delay=10000,listen=all,sessionname=Tomcat,dir=/tmp/Alfresco/yourkit,onexit=snapshot,periodicperf=60
                 "
         ports:
             - 8082:8080
             - 8000:8000
-            - 445:445
+            - 446:445
             - 143:143
-            - "21:21"
+            - "22:21"
             - "30000-30099:30000-30099"
             - 10001:10001
 
