@@ -45,7 +45,6 @@ services:
             - 143:143
             - "21:21"
             - "30000-30099:30000-30099"
-            - 10001:10001
 
     transform-router:
         image: quay.io/alfresco/alfresco-transform-router:${TRANSFORM_ROUTER_TAG}
