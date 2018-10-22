@@ -49,6 +49,7 @@ services:
                 -Demail.server.port=1126
                 -Dsystem.usages.enabled=true
                 -Dcsrf.filter.enabled=false
+                -Dmessaging.broker.url=\"failover:(tcp://activemq:61616)?timeout=3000&jms.useCompression=true\"
                 "
         ports:
             - 8082:8080
