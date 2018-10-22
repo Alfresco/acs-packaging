@@ -35,6 +35,7 @@ various metrics exposed by Alfresco through a Prometheus aggregation server.
 
 Feel free to update or add new Dashboards or queries that others may find useful.
 * [DB Metrics](/docs/micrometer/AlfrescoDBMetricsDashboard.json)
+* [REST Metrics](/docs/micrometer/AlfrescoRESTAPIMetricsDashboard.json)
 
 #### JVM metrics
 
