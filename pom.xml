@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-super-pom</artifactId>
-        <version>9</version>
+        <version>10-RC2</version>
     </parent>
 
     <scm>
@@ -34,15 +34,15 @@
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <dependency.alfresco-core.version>7.4</dependency.alfresco-core.version>
-        <dependency.alfresco-data-model.version>8.15</dependency.alfresco-data-model.version>
+        <dependency.alfresco-core.version>7.5_REPO_3918_java_11_2</dependency.alfresco-core.version>
+        <dependency.alfresco-data-model.version>8.16_REPO_3918_java_11</dependency.alfresco-data-model.version>
 
-        <dependency.alfresco-repository.version>7.21</dependency.alfresco-repository.version>
-        <dependency.alfresco-remote-api.version>7.6</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-repository.version>7.22_REPO_3918_java_11</dependency.alfresco-repository.version>
+        <dependency.alfresco-remote-api.version>7.7_REPO_3918_java_11</dependency.alfresco-remote-api.version>
         <dependency.alfresco-hb-data-sender.version>1.0.9</dependency.alfresco-hb-data-sender.version>
 
-        <dependency.alfresco-enterprise-repository.version>7.12</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-enterprise-remote-api.version>7.7</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>7.13_REPO_3918_java_11_2</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-enterprise-remote-api.version>7.6_REPO_3918_java_11</dependency.alfresco-enterprise-remote-api.version>
 
         <dependency.alfresco-spring-encryptor.version>6.1</dependency.alfresco-spring-encryptor.version>
         <dependency.alfresco-enterprise-crypto.version>6.1</dependency.alfresco-enterprise-crypto.version>
