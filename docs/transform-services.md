@@ -4,10 +4,10 @@
 
 The Transform Service performs transformations for Alfresco Content Service
 in remote docker containers providing greater scalability. Requests to the
-Transform Service are place on a queue and processed asynchronous.
+Transform Service are placed on a queue and processed asynchronously.
 Security is also improved by better isolation.
 
-The initially version of the Transform Service provides a limited number of
+The initial version of the Transform Service provides a limited number of
 transformations so transformation still need to be performed locally
 by the Alfresco Content Service as took place in previous versions.
 
