@@ -147,5 +147,7 @@
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19771'>MNT-19771</a>] -         Tomcat 7 classloader serializes authentication ticket retrieval
 </li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/REPO-3944'>REPO-3934</a>] -         Renditions: Switches for TransformServer and Local Transforms
+</li>
 </ul>
                                                                 
