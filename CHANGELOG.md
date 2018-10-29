@@ -9,7 +9,7 @@
   </li>
   <li>
     Transform Service:
-    <p>The <a href='https://github.com/Alfresco/acs-packaging/blob/master/docs/transform-services.md'>Transform Service</a> performs transformations for
+    <p>The <a href='docs/transform-services.md'>Transform Service</a> performs transformations for
     Alfresco Content Service remotely in scalable containers. By default it is disabled for the zip distribution
     but enabled for docker-compose and helm deployments.</p>
   </li>
