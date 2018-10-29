@@ -9,10 +9,9 @@
   </li>
   <li>
     Transform Service:
-    The [Transform Service](docs/transform-services) performs transformations for
-    Alfresco Content Service in remote docker containers providing greater scalability.
-    By default the Transform Server is disabled for the zip distribution
-    but enabled for docker-compose and helm deployments.
+    <p>The <a href='https://github.com/Alfresco/acs-packaging/blob/master/docs/transform-services.md'>Transform Service</a> performs transformations for
+    Alfresco Content Service remotely in scalable containers. By default it is disabled for the zip distribution
+    but enabled for docker-compose and helm deployments.</p>
   </li>
 </ul>
 <h2>
