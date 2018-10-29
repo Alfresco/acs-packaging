@@ -1,7 +1,7 @@
 <h1>        6.1.0
 </h1>
 <h2>
-  New Features (TODO)
+  New Features
 </h2>
 <ul>
   <li>
@@ -9,6 +9,10 @@
   </li>
   <li>
     Transform Service:
+    The [Transform Service](docs/transform-services) performs transformations for
+    Alfresco Content Service in remote docker containers providing greater scalability.
+    By default the Transform Server is disabled for the zip distribution
+    but enabled for docker-compose and helm deployments.
   </li>
 </ul>
 <h2>
