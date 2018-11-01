@@ -260,8 +260,6 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
                                 </artifactItem>
-                                <!-- Remove Mediamanagement as it depends on old RendidionService -->
-                                <!--
                                 <artifactItem>
                                     <groupId>org.alfresco.mediamanagement</groupId>
                                     <artifactId>alfresco-mm-repo</artifactId>
@@ -278,7 +276,6 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
                                 </artifactItem>
-                                -->
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-document-transformation-engine-repo</artifactId>

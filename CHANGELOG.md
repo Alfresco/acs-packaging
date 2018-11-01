@@ -1,14 +1,18 @@
 <h1>        6.1.0
 </h1>
 <h2>
-  New Features (TODO)
+  New Features
 </h2>
 <ul>
   <li>
     ActiveMQ:
+    <p>Alfresco ActiveMQ Docker images: <a href='https://github.com/Alfresco/alfresco-docker-activemq'>GitHub Repo</a> <a href='https://hub.docker.com/r/alfresco/alfresco-activemq/'>DockerHub Repo</a></p>
   </li>
   <li>
     Transform Service:
+    <p>The <a href='docs/transform-services.md'>Transform Service</a> performs transformations for
+    Alfresco Content Services remotely in scalable containers. By default it is disabled for the zip distribution
+    but enabled for docker-compose and helm deployments.</p>
   </li>
 </ul>
 <h2>
@@ -149,6 +153,8 @@
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19769'>MNT-19769</a>] -         DojoDependencyHandler - cached generated resources use significant amount of heap memory
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19771'>MNT-19771</a>] -         Tomcat 7 classloader serializes authentication ticket retrieval
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/REPO-3944'>REPO-3934</a>] -         Renditions: Switches for TransformServer and Local Transforms
 </li>
 </ul>
                                                                 
