@@ -10,7 +10,7 @@ services:
         image: ${REGISTRY}alfresco/alfresco-content-repository:${ALFRESCO_TAG}
         environment:
             CATALINA_OPTS : "
-                -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n
+                -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
                 "
             JAVA_OPTS : "
                 -Ddb.driver=org.postgresql.Driver
