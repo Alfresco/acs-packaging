@@ -26,6 +26,7 @@ services:
                 -Dftp.enabled=true
                 -Dftp.dataPortFrom=30000
                 -Dftp.dataPortTo=30099
+                -Dcifs.enabled=true
                 -Dalfresco-pdf-renderer.url=http://alfresco-pdf-renderer:8090/
                 -Djodconverter.url=http://libreoffice:8090/
                 -Dimg.url=http://imagemagick:8090/
