@@ -143,6 +143,25 @@ services:
             - 61616:61616 # OpenWire
             - 61613:61613 # STOMP
 
+    digital-workspace:
+        image: quay.io/alfresco/alfresco-digital-workspace:${DIGITAL_WORSPACE_TAG}
+
+    digital-workspace-ingress:
+        image: quay.io/alfresco/alfresco-digital-workspace-ingress:${NGINX_TAG}
+        depends_on:
+            - alfresco
+            - digital-workspace
+        ports:
+            - 8080:80
+        links:
+            - digital-workspace
+            - alfresco
+            - share
+        # environment:
+        #     ADW_URL: "http://digital-workspace"
+        #     REPO_URL: "http://alfresco:8080"
+        #     SHARE_URL: "http://share:8080"
+
 volumes:
     shared-file-store-volume:
         driver_opts:

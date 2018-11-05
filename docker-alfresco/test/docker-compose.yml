@@ -13,6 +13,12 @@ services:
                 -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
                 "
             JAVA_OPTS : "
+                -Dalfresco.host=localhost
+                -Dalfresco.port=80
+                -Dshare.host=localhost
+                -Dshare.port=80
+                -Dcsrf.filter.origin=http://localhost
+                -Dcsrf.filter.referer=http://localhost/.*
                 -Ddb.driver=org.postgresql.Driver
                 -Ddb.username=alfresco
                 -Ddb.password=alfresco
@@ -39,7 +45,6 @@ services:
                 -Dtransform.service.enabled=${TRANSFORM_SERVICE_ENABLED}
                 "
         ports:
-            - 8082:8080
             - 8000:8000
             - 445:445
             - 143:143
@@ -103,8 +108,8 @@ services:
         environment:
             - REPO_HOST=alfresco
             - REPO_PORT=8080
-        ports:
-            - 8080:8080
+            - CSRF_FILTER_REFERER="http://loclahost/.*"
+            - CSRF_FILTER_ORIGIN="http://localhost"
 
     postgres:
         image: library/postgres:${POSTGRES_TAG}
@@ -136,6 +141,25 @@ services:
             - 5672:5672 # AMQP
             - 61616:61616 # OpenWire
             - 61613:61613 # STOMP
+
+    digital-workspace:
+        image: quay.io/alfresco/alfresco-digital-workspace:${DIGITAL_WORSPACE_TAG}
+
+    digital-workspace-ingress:
+        image: quay.io/alfresco/alfresco-digital-workspace-ingress:${NGINX_TAG}
+        depends_on:
+            - alfresco
+            - digital-workspace
+        ports:
+            - 80:80
+        links:
+            - digital-workspace
+            - alfresco
+            - share
+        # environment:
+        #     ADW_URL: "http://digital-workspace"
+        #     REPO_URL: "http://alfresco:8080"
+        #     SHARE_URL: "http://share:8080"
 
 volumes:
     shared-file-store-volume:
