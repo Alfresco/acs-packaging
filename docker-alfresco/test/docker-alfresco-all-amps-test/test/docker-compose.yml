@@ -13,6 +13,8 @@ services:
                 -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
                 "
             JAVA_OPTS : "
+                -Dalfresco.port.ssl=80
+                -Dalfresco.protocol=http
                 -Dalfresco.host=localhost
                 -Dalfresco.port=8080
                 -Dshare.host=localhost
@@ -36,10 +38,6 @@ services:
                 -Dimg.url=http://imagemagick:8090/
                 -Dtika.url=http://tika:8090/
                 -Dsfs.url=http://shared-file-store:8099/
-                -Dalfresco.host=localhost
-                -Dalfresco.port.ssl=80
-                -Dalfresco.protocol=http
-                -Dalfresco.port=8082
                 -Dimap.server.enabled=true
                 -Dimap.server.port=1143
                 -Dimap.server.imaps.port=1143
