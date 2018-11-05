@@ -56,7 +56,6 @@ services:
                 -Dmessaging.broker.url=\"failover:(tcp://activemq:61616)?timeout=3000&jms.useCompression=true\"
                 "
         ports:
-            - 8082:8080
             - 8000:8000
             - 446:445
             - 1143:1143
