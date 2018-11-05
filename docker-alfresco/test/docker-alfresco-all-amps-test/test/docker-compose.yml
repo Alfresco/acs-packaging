@@ -13,6 +13,10 @@ services:
                 -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
                 "
             JAVA_OPTS : "
+                -Dalfresco.host=localhost
+                -Dalfresco.port=8080
+                -Dshare.host=localhost
+                -Dshare.port=8080
                 -Ddb.driver=org.postgresql.Driver
                 -Ddb.username=alfresco
                 -Ddb.password=alfresco
@@ -152,11 +156,10 @@ services:
             - alfresco
             - digital-workspace
         ports:
-            - 8080:80
+            - 8080:8080
         links:
             - digital-workspace
             - alfresco
-            - share
         # environment:
         #     ADW_URL: "http://digital-workspace"
         #     REPO_URL: "http://alfresco:8080"

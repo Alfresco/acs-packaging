@@ -14,11 +14,9 @@ services:
                 "
             JAVA_OPTS : "
                 -Dalfresco.host=localhost
-                -Dalfresco.port=80
+                -Dalfresco.port=8080
                 -Dshare.host=localhost
-                -Dshare.port=80
-                -Dcsrf.filter.origin=http://localhost
-                -Dcsrf.filter.referer=http://localhost/.*
+                -Dshare.port=8080
                 -Ddb.driver=org.postgresql.Driver
                 -Ddb.username=alfresco
                 -Ddb.password=alfresco
@@ -108,8 +106,8 @@ services:
         environment:
             - REPO_HOST=alfresco
             - REPO_PORT=8080
-            - CSRF_FILTER_REFERER="http://loclahost/.*"
-            - CSRF_FILTER_ORIGIN="http://localhost"
+            - CSRF_FILTER_REFERER="http://loclahost:8080/.*"
+            - CSRF_FILTER_ORIGIN="http://localhost:8080"
 
     postgres:
         image: library/postgres:${POSTGRES_TAG}
@@ -151,7 +149,7 @@ services:
             - alfresco
             - digital-workspace
         ports:
-            - 80:80
+            - 8080:8080
         links:
             - digital-workspace
             - alfresco
