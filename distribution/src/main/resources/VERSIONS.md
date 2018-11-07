@@ -49,7 +49,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Operating Systems
 | Component | Recommended | Also Available |
 |---|---|---|
-| Red Hat Enterprise Linux | 7.4 |
+| Red Hat Enterprise Linux | 7.4 Release 2 |
 | Windows Server | 2016 |
 | CentOS | 7 x64 |
 | Ubuntu | 18.04 |
@@ -72,7 +72,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | MariaDB Java Client | 2.0.1 |
 | PostgreSQL | @dependency.postgresql.version@ |
 | Oracle JDBC ojdbc7 | 12.2.0.1 |
-| Microsoft JDBC Driver | 6.0 |
+| Microsoft JDBC Driver | 6.2 |
 
 ##### Application Servers
 | Component | Recommended | Also Available |
@@ -88,10 +88,10 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Client browsers
 | Component | Recommended | Also Available |
 |---|---|---|
-| Mozilla Firefox | Latest |
+| Mozilla Firefox | 58 |
 | Microsoft Edge | Latest |
 | IE | 11 |
-| Chrome | Latest |
+| Chrome | 64 |
 | Safari | 11 |
 
 ##### Java
