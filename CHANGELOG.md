@@ -16,6 +16,14 @@
   </li>
 </ul>
 <h2>
+  Removed features
+</h2>
+<ul>
+  <li>
+    NTLM v1 was removed. "Passthru" authentication subsystem type is no longer available.
+  </li>
+</ul>
+<h2>
   Deprecations
 </h2>
 <ul>
