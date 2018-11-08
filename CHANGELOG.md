@@ -1,5 +1,13 @@
 <h1>        6.0.1
-</h1>                                                                                    
+</h1>
+<h2>
+  Known issues
+</h2>
+<ul>
+  <li>
+    [<a href='https://issues.alfresco.com/jira/browse/MNT-20126'>MNT-20126</a>] - Workflow diagrams can not be rendered due to java 11 incompatibilities.<br/>
+  </li>
+</ul>                                                                                    
 <h2>        Service Pack Request
 </h2>
 <ul>
@@ -83,14 +91,6 @@
 <ul>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-16433'>MNT-16433</a>] -         Alfresco FTP server and Passive Mode clients
 </li>
-</ul>
-<h2>
-  Known issues
-</h2>
-<ul>
-  <li>
-    [<a href='https://issues.alfresco.com/jira/browse/MNT-20126'>MNT-20126</a>] - Workflow diagrams can not be rendered due to java 11 incompatibilities.<br/>
-  </li>
 </ul>
                                                             
 <h2>        Service Pack Request
