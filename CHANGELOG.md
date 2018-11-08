@@ -1,3 +1,81 @@
+<h1>        6.0.1
+</h1>                                                                                    
+<h2>        Service Pack Request
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-16184'>MNT-16184</a>] -         Request to remove export/import from the help menu in the tenant console
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-16713'>MNT-16713</a>] -         “Link to file” in faceted search doesn’t work
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-17928'>MNT-17928</a>] -         Solr index fails for image files containing an unsupported date format in EXIF metadata
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-18099'>MNT-18099</a>] -         Clicking on Date Picker for Date Property Cause Browser Window to Scroll Up
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-18877'>MNT-18877</a>] -         Alfresco doesn&#39;t bootstrap if &#39;system.cache.disableMutableSharedCaches&#39; is set to true
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19611'>MNT-19611</a>] -         Transformation of a pdf document creates a tmp file which grows endlessly
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19630'>MNT-19630</a>] -         CMIS: Unable to call getAllVersions() if node is checked out and if binding type is WSDL
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19854'>MNT-19854</a>] -         Unable to open document&#39;s workflow from document details screen
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19906'>MNT-19906</a>] -         Commons-lang version for Share 6.0 went backwards from 2.6 to 2.1
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19923'>MNT-19923</a>] -         External Authentication fails after ticket expiration
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20015'>MNT-20015</a>] -         Alfresco has Detected a Manual Change Within the User Tracking Database
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20065'>MNT-20065</a>] -         Security: CVE-2018-1000613 Bouncy Castle
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20139'>MNT-20139</a>] -         CmisConnector returns wrong values for changeLogToken and hasMoreItems
+</li>
+</ul>
+    
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19701'>MNT-19701</a>] -         Groups rest api call is very expensive on the DB CPU
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19864'>MNT-19864</a>] -         Rest API: &quot;groups/{groupname} /members&quot; endpoint does not honor more than 100 maxItems and pagination fails
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19881'>MNT-19881</a>] -         CLONE - Multi-threaded check-in and check-out throwing exception using CMIS API
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19919'>MNT-19919</a>] -         Scheduled replication job does not run as expected
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19955'>MNT-19955</a>] -         [5.2.2] User Authorisation fails and system goes to read-only after upgrade to a version &gt;= 5.2.2
+</li>
+</ul>
+                                                                                                                                                                        
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-15932'>MNT-15932</a>] -         Update message from delete user dialog
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19615'>MNT-19615</a>] -         Stored XSS through File Sharing and Improper Access Control in Workflows
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19634'>MNT-19634</a>] -         briefSummary contains sensitive details about deauthorized user
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19753'>MNT-19753</a>] -         License verification sometimes breaks bootstrap in a cluster
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19825'>MNT-19825</a>] -         ImageMagick docker transformer does not take arbitrary command line options.
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19833'>MNT-19833</a>] -         Download via v1 REST API loaded in memory
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19834'>MNT-19834</a>] -         ACS 6.0 Admin Tools --&gt; Administration Console Link Invalid
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19918'>MNT-19918</a>] -         ACS Deployment: Ingress Resources Should Use Default SSL-Redirect of Ingress Controller
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19946'>MNT-19946</a>] -         VERSIONS.md incorrect for latest stacks
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19981'>MNT-19981</a>] -         Node fails to bootstrap in large cluster
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19986'>MNT-19986</a>] -         Concurrency problem: First cluster startup can leave repository in a broken state
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19991'>MNT-19991</a>] -         Chart repo references should be https
+</li>
+</ul>
+                                                                                
+
 <h1>        6.0.0
 </h1>                        
 <h2>        Feature
