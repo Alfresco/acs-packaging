@@ -5,30 +5,35 @@
 </h2>
 <ul>
   <li>
-    ActiveMQ:
-    <p>Alfresco ActiveMQ Docker images: <a href='https://github.com/Alfresco/alfresco-docker-activemq'>GitHub Repo</a> <a href='https://hub.docker.com/r/alfresco/alfresco-activemq/'>DockerHub Repo</a></p>
+    <h4>Alfresco Identity Service (SSO):</h4>
+    <p>SSO using the <a href='https://github.com/Alfresco/alfresco-identity-service'>Alfresco Identity Service</a> is supported by the ACS V1 REST APIs.
+    <p>Other components in ACS, such as Share and protocol access, do not (yet) support the Alfresco Identity Service.
   </li>
   <li>
-    Transform Service:
+    <h4>ActiveMQ:</h4>
+    Alfresco ActiveMQ Docker images: <a href='https://github.com/Alfresco/alfresco-docker-activemq'>GitHub Repo</a> <a href='https://hub.docker.com/r/alfresco/alfresco-activemq/'>DockerHub Repo</a></p>
+  </li>
+  <li>
+    <h4>Transform Service:</h4>
     <p>The <a href='docs/transform-services.md'>Transform Service</a> performs transformations for
     Alfresco Content Services remotely in scalable containers. By default it is disabled for the zip distribution
     but enabled for docker-compose and helm deployments.</p>
   </li>
   <li>
-      AWS Deployment: 
-      <p>ACS can now be deployed on AWS EKS using helm charts.</p>
-      <p>This can be done using the <a href='https://github.com/Alfresco/acs-deployment-aws'>ACS on AWS deployment project</a>.</p>
+    <h4>AWS Deployment:</h4>
+    <p>ACS can now be deployed on AWS EKS using helm charts.</p>
+    <p>This can be done using the <a href='https://github.com/Alfresco/acs-deployment-aws'>ACS on AWS deployment project</a>.</p>
   </li>
   <li>
-  Alfresco Benchmark Framework: 
-  <p>The benchmark framework project provides a way to run highly scalable, easy-to-run Java-based load and benchmark tests on an Alfresco instance.</p>
-  <p>It comprises the following: <a href='https://github.com/Alfresco/alfresco-bm-manager'>Alfresco BM Manager</a> and Alfresco BM Drivers.</p> 
-  <p>The currently provided drivers are:</p>
-    <ul>
-      <li><a href='https://github.com/Alfresco/alfresco-bm-load-data'>Alfresco Benchmark Load Data</a></li>
-      <li><a href='https://github.com/Alfresco/alfresco-bm-rest-api'>Alfresco Benchmark Rest Api</a></li>
-  	  <li><a href='https://github.com/Alfresco/alfresco-bm-load-users'>Alfresco Benchmark Load Users</a></li>
-    </ul>	 
+    <h4>Alfresco Benchmark Framework:</h4>
+    <p>The benchmark framework project provides a way to run highly scalable, easy-to-run Java-based load and benchmark tests on an Alfresco instance.</p>
+    <p>It comprises the following: <a href='https://github.com/Alfresco/alfresco-bm-manager'>Alfresco BM Manager</a> and Alfresco BM Drivers.</p> 
+    <p>The currently provided drivers are:</p>
+      <ul>
+        <li><a href='https://github.com/Alfresco/alfresco-bm-load-data'>Alfresco Benchmark Load Data</a></li>
+        <li><a href='https://github.com/Alfresco/alfresco-bm-rest-api'>Alfresco Benchmark Rest Api</a></li>
+        <li><a href='https://github.com/Alfresco/alfresco-bm-load-users'>Alfresco Benchmark Load Users</a></li>
+      </ul>	 
   </li>
 </ul>
 <h2>
