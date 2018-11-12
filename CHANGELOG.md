@@ -14,6 +14,22 @@
     Alfresco Content Services remotely in scalable containers. By default it is disabled for the zip distribution
     but enabled for docker-compose and helm deployments.</p>
   </li>
+  <li>
+      AWS Deployment: 
+      <p>ACS can now be deployed on AWS EKS using helm charts.</p>
+      <p>This can be done using the <a href='https://github.com/Alfresco/acs-deployment-aws'>ACS on AWS deployment project</a>.</p>
+  </li>
+  <li>
+  Alfresco Benchmark Framework: 
+  <p>The benchmark framework project provides a way to run highly scalable, easy-to-run Java-based load and benchmark tests on an Alfresco instance.</p>
+  <p>It comprises the following: <a href='https://github.com/Alfresco/alfresco-bm-manager'>Alfresco BM Manager</a> and Alfresco BM Drivers.</p> 
+  <p>The currently provided drivers are:</p>
+    <ul>
+      <li><a href='https://github.com/Alfresco/alfresco-bm-load-data'>Alfresco Benchmark Load Data</a></li>
+      <li><a href='https://github.com/Alfresco/alfresco-bm-rest-api'>Alfresco Benchmark Rest Api</a></li>
+  	  <li><a href='https://github.com/Alfresco/alfresco-bm-load-users'>Alfresco Benchmark Load Users</a></li>
+    </ul>	 
+  </li>
 </ul>
 <h2>
   Removed features
@@ -21,6 +37,9 @@
 <ul>
   <li>
     NTLM v1 was removed. "Passthru" authentication subsystem type is no longer available.
+  </li>
+  <li>
+    CIFS was removed.
   </li>
 </ul>
 <h2>
