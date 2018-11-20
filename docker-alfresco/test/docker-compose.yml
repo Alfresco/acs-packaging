@@ -13,6 +13,7 @@ services:
                 -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
                 "
             JAVA_OPTS : "
+                -Daos.baseUrlOverwrite=${alfresco.protocol}://${alfresco.host}:${alfresco.port}/alfresco/aos
                 -Ddb.driver=org.postgresql.Driver
                 -Ddb.username=alfresco
                 -Ddb.password=alfresco

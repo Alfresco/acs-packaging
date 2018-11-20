@@ -35,6 +35,7 @@ services:
                 -Dalfresco.port.ssl=80
                 -Dalfresco.protocol=http
                 -Dalfresco.port=8082
+                -Daos.baseUrlOverwrite=${alfresco.protocol}://${alfresco.host}:${alfresco.port}/alfresco/aos
                 -Dimap.server.enabled=true
                 -Dimap.server.port=1143
                 -Dimap.server.imaps.port=1143
