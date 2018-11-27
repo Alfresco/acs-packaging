@@ -40,7 +40,7 @@ Alfresco Content Service (the same ones supported in previous releases).
 Local transforms includes those run within the JVM of the Alfresco node,
 in external processes (such as LibreOffice and ImageMagick) located on the same
 machine and in Docker transformers (introduced in ACS 6.0). The same Docker
-transformer images are also used by the Transform Service all be it via a
+transformer images are also used by the Transform Service albeit via a
 different API.
 
 The original *RenditionService* is now deprecated as it supports synchronous
