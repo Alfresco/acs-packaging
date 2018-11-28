@@ -19,7 +19,7 @@ COPY ${resource_path}/connector/* /usr/local/tomcat/lib/
 COPY ${resource_path}/alfresco-mmt/* /usr/local/tomcat/alfresco-mmt/
 RUN rm -rf /usr/local/tomcat/webapps/ROOT
 COPY ${resource_path}/server-root/* /usr/local/tomcat/webapps
-COPY ${resource_path}/wti-bin/* /usr/local/tomcat/webapps
+COPY ${resource_path}/vti-bin/* /usr/local/tomcat/webapps
 
 # Change the value of the shared.loader= property to the following:
 # shared.loader=${catalina.base}/shared/classes
@@ -53,8 +53,8 @@ RUN mkdir /usr/local/tomcat/webapps/ROOT && cd /usr/local/tomcat/webapps/ROOT &&
 # Grant only deployXmlPermission to ROOT webapp.
     sed -i -e "\$a\grant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/alfresco\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};\ngrant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/ROOT\/-\" \{\n\    permission org.apache.catalina.security.DeployXmlPermission \"ROOT\";\n\};" /usr/local/tomcat/conf/catalina.policy
 
-# Unpack wti-bin.war
-RUN mkdir /usr/local/tomcat/webapps/wti-bin && cd /usr/local/tomcat/webapps/wti-bin && jar -xvf /usr/local/tomcat/webapps/wti-bin.war && rm -f /usr/local/tomcat/webapps/wti-bin.war
+# Unpack _vti_bin.war
+RUN mkdir /usr/local/tomcat/webapps/_vti_bin && cd /usr/local/tomcat/webapps/_vti_bin && jar -xvf /usr/local/tomcat/webapps/_vti_bin.war && rm -f /usr/local/tomcat/webapps/_vti_bin.war
 
 # To remote debug into this image add: EXPOSE 8000
 # Changes are also required to the docker-compose/docker-compose.yml file.
