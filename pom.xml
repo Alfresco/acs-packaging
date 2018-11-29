@@ -34,7 +34,7 @@
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <dependency.alfresco-core.version>7.5</dependency.alfresco-core.version>
+        <dependency.alfresco-core.version>7.6</dependency.alfresco-core.version>
         <dependency.alfresco-data-model.version>8.22</dependency.alfresco-data-model.version>
 
         <dependency.alfresco-repository.version>7.33</dependency.alfresco-repository.version>
