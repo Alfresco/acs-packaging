@@ -65,6 +65,9 @@
   <li>
     [<a href='https://issues.alfresco.com/jira/browse/MNT-20126'>MNT-20126</a>] - Workflow diagrams can not be rendered due to java 11 incompatibilities.<br/>
   </li>
+  <li>
+    The Tomcat in the Docker image is running with Security Manager switched on. This may impact performance. See <a href='https://github.com/Alfresco/alfresco-docker-base-tomcat#notes'>Tomcat base image documentaion</a> for details.
+  </li>
 </ul>
 
 <h1>        6.0.0
