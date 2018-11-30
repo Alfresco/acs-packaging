@@ -1,6 +1,6 @@
-# Fetch image based on Tomcat 8.5.28 and Java 8
+# Fetch image based on Tomcat 8.5.34 and Java 11
 # More infos about this image: https://github.com/Alfresco/alfresco-docker-base-tomcat
-FROM alfresco/alfresco-base-tomcat:8.5.28-java-8-oracle-centos-7
+FROM alfresco/alfresco-base-tomcat:8.5.34-java-11-openjdk-centos-7
 
 # Set default docker_context. Will / Can be overriden with maven.
 ARG resource_path=target
@@ -19,6 +19,7 @@ COPY ${resource_path}/connector/* /usr/local/tomcat/lib/
 COPY ${resource_path}/alfresco-mmt/* /usr/local/tomcat/alfresco-mmt/
 RUN rm -rf /usr/local/tomcat/webapps/ROOT
 COPY ${resource_path}/server-root/* /usr/local/tomcat/webapps
+COPY ${resource_path}/vti-bin/* /usr/local/tomcat/webapps
 
 # Change the value of the shared.loader= property to the following:
 # shared.loader=${catalina.base}/shared/classes
@@ -52,12 +53,17 @@ RUN mkdir /usr/local/tomcat/webapps/ROOT && cd /usr/local/tomcat/webapps/ROOT &&
 # Grant only deployXmlPermission to ROOT webapp.
     sed -i -e "\$a\grant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/alfresco\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};\ngrant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/ROOT\/-\" \{\n\    permission org.apache.catalina.security.DeployXmlPermission \"ROOT\";\n\};" /usr/local/tomcat/conf/catalina.policy
 
+
 # Unzip YourKit-JavaProfiler-2018
 RUN curl -o /tmp/YourKit-JavaProfiler-2018.04-docker.zip 'https://www.yourkit.com/download/docker/YourKit-JavaProfiler-2018.04-docker.zip' && cd /usr/local && \
     jar xvf /tmp/YourKit-JavaProfiler-2018.04-docker.zip && \
     rm /tmp/YourKit-JavaProfiler-2018.04-docker.zip
 
 EXPOSE 10001
+
+# Unpack _vti_bin.war
+RUN mkdir /usr/local/tomcat/webapps/_vti_bin && cd /usr/local/tomcat/webapps/_vti_bin && jar -xvf /usr/local/tomcat/webapps/_vti_bin.war && rm -f /usr/local/tomcat/webapps/_vti_bin.war
+
 
 # To remote debug into this image add: EXPOSE 8000
 # Changes are also required to the docker-compose/docker-compose.yml file.

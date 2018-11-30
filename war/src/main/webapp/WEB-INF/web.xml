@@ -36,9 +36,9 @@
    <!-- Enterprise context-param placeholder -->
 
    <filter>
-      <description>Cleans security context before authentication via the CMIS services or filters. Mapped only for CMIS</description>
-      <filter-name>CMIS security context cleaning filter</filter-name>
-      <filter-class>org.alfresco.web.app.servlet.CmisSecurityContextCleanerFilter</filter-class>
+      <description>Cleans the security context after the request was processed</description>
+      <filter-name>Clear security context filter</filter-name>
+      <filter-class>org.alfresco.web.app.servlet.ClearSecurityContextFilter</filter-class>
    </filter>
 
    <filter>
@@ -143,6 +143,11 @@
    <!-- Enterprise filter placeholder -->
 
    <filter-mapping>
+      <filter-name>Clear security context filter</filter-name>
+      <url-pattern>/*</url-pattern>
+   </filter-mapping>
+
+   <filter-mapping>
       <filter-name>Global Localization Filter</filter-name>
       <url-pattern>/*</url-pattern>
       <dispatcher>REQUEST</dispatcher>
@@ -157,16 +162,6 @@
       <url-pattern>/cmisbrowser/*</url-pattern>
    </filter-mapping>-->
    <!-- CORS Filter Mappings End -->
- 
-   <filter-mapping>
-      <filter-name>CMIS security context cleaning filter</filter-name>
-      <url-pattern>/cmisws/*</url-pattern>
-   </filter-mapping>
-
-   <filter-mapping>
-      <filter-name>CMIS security context cleaning filter</filter-name>
-      <url-pattern>/cmisatom/*</url-pattern>
-   </filter-mapping>
 
    <!-- Activiti Global Authentication Filter mapping placeholder -->
 
@@ -277,6 +272,20 @@
       <url-pattern>/wcs/admin/*</url-pattern>
    </filter-mapping>
 
+   <!-- Metrics filter -->
+   <filter>
+      <filter-name>ServletMetricsFilter</filter-name>
+      <filter-class>org.alfresco.repo.web.filter.beans.BeanProxyFilter</filter-class>
+      <init-param>
+         <param-name>beanName</param-name>
+         <param-value>servletMetricsReporter</param-value>
+      </init-param>
+   </filter>
+    <filter-mapping>
+        <filter-name>ServletMetricsFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
    <!-- Enterprise filter-mapping placeholder -->
    
    <!-- Spring Context Loader listener - can disable loading of context if runtime config changes are needed -->
@@ -319,7 +328,7 @@
 
    <servlet>
       <servlet-name>apiServlet</servlet-name>
-      <servlet-class>org.springframework.extensions.webscripts.servlet.WebScriptServlet</servlet-class>
+      <servlet-class>org.alfresco.repo.web.scripts.AlfrescoWebScriptServlet</servlet-class>
       <init-param>
          <param-name>authenticator</param-name>
          <param-value>webscripts.authenticator.remoteuser</param-value>
@@ -328,7 +337,7 @@
    
    <servlet>
       <servlet-name>wcapiServlet</servlet-name>
-      <servlet-class>org.springframework.extensions.webscripts.servlet.WebScriptServlet</servlet-class>
+      <servlet-class>org.alfresco.repo.web.scripts.AlfrescoWebScriptServlet</servlet-class>
       <init-param>
          <param-name>authenticator</param-name>
          <param-value>webscripts.authenticator.remoteuser</param-value>

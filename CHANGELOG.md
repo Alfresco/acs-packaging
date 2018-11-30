@@ -1,14 +1,50 @@
 <h1>        6.1.0
 </h1>
 <h2>
-  New Features (TODO)
+  New Features
 </h2>
 <ul>
   <li>
-    ActiveMQ:
+    <h4>Alfresco Identity Service (SSO):</h4>
+    <p>SSO using the <a href='https://github.com/Alfresco/alfresco-identity-service'>Alfresco Identity Service</a> is supported by the ACS V1 REST APIs.
+    <p>Other components in ACS, such as Share and protocol access, do not (yet) support the Alfresco Identity Service.
   </li>
   <li>
-    Transform Service:
+    <h4>ActiveMQ:</h4>
+    Alfresco ActiveMQ Docker images: <a href='https://github.com/Alfresco/alfresco-docker-activemq'>GitHub Repo</a> <a href='https://hub.docker.com/r/alfresco/alfresco-activemq/'>DockerHub Repo</a></p>
+  </li>
+  <li>
+    <h4>Transform Service:</h4>
+    <p>The <a href='docs/transform-services.md'>Transform Service</a> performs transformations for
+    Alfresco Content Services remotely in scalable containers. By default it is disabled for the zip distribution
+    but enabled for docker-compose and helm deployments.</p>
+  </li>
+  <li>
+    <h4>AWS Deployment:</h4>
+    <p>ACS can now be deployed on AWS EKS using helm charts.</p>
+    <p>This can be done using the <a href='https://github.com/Alfresco/acs-deployment-aws'>ACS on AWS deployment project</a>.</p>
+  </li>
+  <li>
+    <h4>Alfresco Benchmark Framework:</h4>
+    <p>The benchmark framework project provides a way to run highly scalable, easy-to-run Java-based load and benchmark tests on an Alfresco instance.</p>
+    <p>It comprises the following: <a href='https://github.com/Alfresco/alfresco-bm-manager'>Alfresco BM Manager</a> and Alfresco BM Drivers.</p> 
+    <p>The currently provided drivers are:</p>
+      <ul>
+        <li><a href='https://github.com/Alfresco/alfresco-bm-load-data'>Alfresco Benchmark Load Data</a></li>
+        <li><a href='https://github.com/Alfresco/alfresco-bm-rest-api'>Alfresco Benchmark Rest Api</a></li>
+        <li><a href='https://github.com/Alfresco/alfresco-bm-load-users'>Alfresco Benchmark Load Users</a></li>
+      </ul>	 
+  </li>
+</ul>
+<h2>
+  Removed features
+</h2>
+<ul>
+  <li>
+    NTLM v1 was removed. "Passthru" authentication subsystem type is no longer available.
+  </li>
+  <li>
+    CIFS was removed.
   </li>
 </ul>
 <h2>
@@ -25,6 +61,9 @@
 <ul>
   <li>
     Due to the changes to the RenditionService the Media Management AMP is not supported yet.<br/>
+  </li>
+  <li>
+    [<a href='https://issues.alfresco.com/jira/browse/MNT-20126'>MNT-20126</a>] - Workflow diagrams can not be rendered due to java 11 incompatibilities.<br/>
   </li>
 </ul>
 
@@ -146,6 +185,8 @@
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19769'>MNT-19769</a>] -         DojoDependencyHandler - cached generated resources use significant amount of heap memory
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19771'>MNT-19771</a>] -         Tomcat 7 classloader serializes authentication ticket retrieval
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/REPO-3944'>REPO-3934</a>] -         Renditions: Switches for TransformServer and Local Transforms
 </li>
 </ul>
                                                                 

@@ -3,12 +3,12 @@
     <artifactId>acs-packaging</artifactId>
     <packaging>pom</packaging>
     <name>Alfresco Content Services Packaging</name>
-    <version>6.1.0-SNAPSHOT</version>
+    <version>6.2.0-SNAPSHOT</version>
 
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-super-pom</artifactId>
-        <version>9</version>
+        <version>10</version>
     </parent>
 
     <scm>
@@ -34,15 +34,15 @@
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <dependency.alfresco-core.version>7.4</dependency.alfresco-core.version>
-        <dependency.alfresco-data-model.version>8.15</dependency.alfresco-data-model.version>
+        <dependency.alfresco-core.version>7.5</dependency.alfresco-core.version>
+        <dependency.alfresco-data-model.version>8.22</dependency.alfresco-data-model.version>
 
-        <dependency.alfresco-repository.version>7.11</dependency.alfresco-repository.version>
-        <dependency.alfresco-remote-api.version>7.3</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-repository.version>7.33</dependency.alfresco-repository.version>
+        <dependency.alfresco-remote-api.version>7.15</dependency.alfresco-remote-api.version>
         <dependency.alfresco-hb-data-sender.version>1.0.9</dependency.alfresco-hb-data-sender.version>
 
-        <dependency.alfresco-enterprise-repository.version>7.5</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-enterprise-remote-api.version>7.3</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>7.20</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-enterprise-remote-api.version>7.16</dependency.alfresco-enterprise-remote-api.version>
 
         <dependency.alfresco-spring-encryptor.version>6.1</dependency.alfresco-spring-encryptor.version>
         <dependency.alfresco-enterprise-crypto.version>6.1</dependency.alfresco-enterprise-crypto.version>
@@ -54,13 +54,14 @@
         <dependency.alfresco-server-root.version>6.0</dependency.alfresco-server-root.version>
         <dependency.alfresco-api-explorer.version>6.1.0-ea</dependency.alfresco-api-explorer.version>
 
-        <dependency.spring.version>5.1.0.RELEASE</dependency.spring.version>
+        <dependency.spring.version>5.1.1.RELEASE</dependency.spring.version>
         <dependency.fabric8.version>3.5.37</dependency.fabric8.version>
-        <dependency.jackson.version>2.9.5</dependency.jackson.version>
+        <dependency.jackson.version>2.9.7</dependency.jackson.version>
+        <dependency.cxf.version>3.2.7</dependency.cxf.version>
 
         <!-- Alfresco Share version -->
-        <alfresco.share.version>6.0.c</alfresco.share.version>
-        <alfresco.alfresco-share-services.version>6.0.c</alfresco.alfresco-share-services.version>
+        <alfresco.share.version>6.1.0-RC1</alfresco.share.version>
+        <alfresco.alfresco-share-services.version>6.1.0-RC1</alfresco.alfresco-share-services.version>
 
         <!-- Alfresco GoogleDocs integration version -->
         <alfresco.googledocs.version>3.1.0</alfresco.googledocs.version>
@@ -90,13 +91,13 @@
         <alfresco.records-management.version>2.5.2</alfresco.records-management.version>
 
         <!-- Alfresco Office Services Module -->
-        <alfresco.aos-module.version>1.2.0</alfresco.aos-module.version>
+        <alfresco.aos-module.version>1.2.2</alfresco.aos-module.version>
 
         <!-- Alfresco Media Management Module -->
-        <alfresco.mm.version>1.2.1</alfresco.mm.version>
+        <alfresco.mm.version>1.3.0-RC4</alfresco.mm.version>
 
         <!-- Alfresco Desktop Sync Service Module -->
-        <alfresco.desktop-sync.version>3.1-EGATE55</alfresco.desktop-sync.version>
+        <alfresco.desktop-sync.version>3.1.0</alfresco.desktop-sync.version>
 
         <installer.version.name>${project.version}</installer.version.name>
         <alfresco.package.name>alfresco</alfresco.package.name>
@@ -266,7 +267,7 @@
             <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
-                <version>2.9.4</version>
+                <version>2.10</version>
             </dependency>
             <dependency>
                 <groupId>commons-httpclient</groupId>
@@ -311,7 +312,7 @@
             <dependency>
                 <groupId>com.sun.xml.bind</groupId>
                 <artifactId>jaxb-impl</artifactId>
-                <version>2.3.0</version>
+                <version>2.3.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
@@ -321,7 +322,7 @@
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient-cache</artifactId>
-                <version>4.5.2</version>
+                <version>4.5.6</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.xmlbeans</groupId>
@@ -412,17 +413,17 @@
             <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-frontend-jaxws</artifactId>
-                <version>3.0.12</version>
+                <version>${dependency.cxf.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-transports-http</artifactId>
-                <version>3.0.12</version>
+                <version>${dependency.cxf.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-ws-policy</artifactId>
-                <version>3.0.12</version>
+                <version>${dependency.cxf.version}</version>
             </dependency>
             <!-- newer version, see REPO-3133 -->
             <dependency>
@@ -602,6 +603,11 @@
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcmail-jdk15on</artifactId>
                 <version>1.60</version>
+            </dependency>
+            <dependency>
+                <groupId>com.hazelcast</groupId>
+                <artifactId>hazelcast</artifactId>
+                <version>3.9.2</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

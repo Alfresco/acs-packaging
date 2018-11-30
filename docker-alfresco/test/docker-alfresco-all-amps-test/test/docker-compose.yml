@@ -10,7 +10,7 @@ services:
         image: ${REGISTRY}alfresco/alfresco-content-repository-all-amps-test:${ALFRESCO_TAG}
         environment:
             CATALINA_OPTS : "
-                -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n
+                -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
                 "
             JAVA_OPTS : "
                 -Ddb.driver=org.postgresql.Driver
@@ -26,7 +26,6 @@ services:
                 -Dftp.enabled=true
                 -Dftp.dataPortFrom=30000
                 -Dftp.dataPortTo=30099
-                -Dcifs.enabled=true
                 -Dalfresco-pdf-renderer.url=http://alfresco-pdf-renderer:8090/
                 -Djodconverter.url=http://libreoffice:8090/
                 -Dimg.url=http://imagemagick:8090/
@@ -36,6 +35,7 @@ services:
                 -Dalfresco.port.ssl=80
                 -Dalfresco.protocol=http
                 -Dalfresco.port=8082
+                -Daos.baseUrlOverwrite=http://localhost:8082/alfresco/aos
                 -Dimap.server.enabled=true
                 -Dimap.server.port=1143
                 -Dimap.server.imaps.port=1143
@@ -49,6 +49,7 @@ services:
                 -Demail.server.port=1126
                 -Dsystem.usages.enabled=true
                 -Dcsrf.filter.enabled=false
+                -Dmessaging.broker.url=\"failover:(tcp://activemq:61616)?timeout=3000&jms.useCompression=true\"
                 "
         ports:
             - 8082:8080
@@ -67,6 +68,7 @@ services:
             PDF_RENDERER_URL : "http://alfresco-pdf-renderer:8090"
             LIBREOFFICE_URL : "http://libreoffice:8090"
             TIKA_URL : "http://tika:8090"
+            FILE_STORE_URL: "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file"
         links:
             - activemq
 

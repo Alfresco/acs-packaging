@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>acs-packaging</artifactId>
-        <version>6.1.0-SNAPSHOT</version>
+        <version>6.2.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -104,6 +104,14 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/server-root</outputDirectory>
                                     <destFileName>ROOT.war</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.alfresco.aos-module</groupId>
+                                    <artifactId>alfresco-vti-bin</artifactId>
+                                    <type>war</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/vti-bin</outputDirectory>
+                                    <destFileName>_vti_bin.war</destFileName>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>

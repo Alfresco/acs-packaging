@@ -9,10 +9,10 @@ This file lists the recommended components for this Service Pack. Use it along w
 |---|---|---|
 | Alfresco Content Services | @project.version@ |
 | Alfresco Share | @alfresco.share.version@ |
-| Alfresco Search Services | 1.2.0 | 1.1.1 |
+| Alfresco Search Services | 1.2.0 | 1.1.2 |
 | Alfresco Insight Engine | 1.0.0 |
 | Alfresco Desktop Sync Service | @alfresco.desktop-sync.version@ |
-| Alfresco Transform Service | 0.1.0 EA |
+| Alfresco Transform Service | 0.4.0 RC |
 | Document Transformation Engine | @alfresco.transformation-engine.version@ |
 | Alfresco File Transfer Receiver | 6.2.1 |
 | Alfresco Module Management Tool | 6.0 |
@@ -42,27 +42,27 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Utility Applications
 | Component | Recommended | Also Available |
 |---|---|---|
-| ImageMagick | 7.0.5 |
-| LibreOffice | 5.2.1 |
+| ImageMagick | 7.0.7 |
+| LibreOffice | 5.4.6 |
 | Alfresco PDF Renderer | 1.1 |
 
 ##### Operating Systems
 | Component | Recommended | Also Available |
 |---|---|---|
-| Red Hat Enterprise Linux | 7.4 |
+| Red Hat Enterprise Linux | 7.4 Release 2 |
 | Windows Server | 2016 |
 | CentOS | 7 x64 |
-| Ubuntu | 17.04 |
+| Ubuntu | 18.04 |
 | SUSE | 12.0 SP1 x64 |
 
 ##### Databases
 | Component | Recommended | Also Available |
 |---|---|---|
-| MySQL | 5.7.21 | 5.7.17 |
+| MySQL | 5.7.23 | 5.7.17 |
 | MS SQL Server | 2017 |
 | Oracle | 12c  |
 | PostgreSQL | 10.1 |
-| MariaDB | 10.2.11 |
+| MariaDB | 10.2.18 |
 | Amazon Aurora | Latest |
 
 ##### Database Connectors
@@ -72,12 +72,12 @@ This file lists the recommended components for this Service Pack. Use it along w
 | MariaDB Java Client | 2.0.1 |
 | PostgreSQL | @dependency.postgresql.version@ |
 | Oracle JDBC ojdbc7 | 12.2.0.1 |
-| Microsoft JDBC Driver | 6.0 |
+| Microsoft JDBC Driver | 6.2 |
 
 ##### Application Servers
 | Component | Recommended | Also Available |
 |---|---|---|
-| Tomcat | 8.5.28 |
+| Tomcat | 8.5.34 |
 
 ##### Client Operating Systems
 | Component | Recommended | Also Available |
@@ -88,17 +88,16 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Client browsers
 | Component | Recommended | Also Available |
 |---|---|---|
-| Mozilla Firefox | Latest |
+| Mozilla Firefox | 58 |
 | Microsoft Edge | Latest |
 | IE | 11 |
-| Chrome | Latest |
+| Chrome | 64 |
 | Safari | 11 |
 
 ##### Java
 | Component | Recommended | Also Available |
 |---|---|---|
-| Oracle JRE | 1.8.0_161 | 1.8.0_152 |
-| IBM SDK | 8 |
+| Open JDK | 11 |
 
 ##### Message Broker
 | Component | Recommended | Also Available |
