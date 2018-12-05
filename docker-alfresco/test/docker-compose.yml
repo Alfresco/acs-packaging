@@ -14,6 +14,7 @@ services:
         environment:
             CATALINA_OPTS : "
                 -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
+                --add-exports java.desktop/sun.font=ALL-UNNAMED
                 "
             JAVA_OPTS : "
                 -Dalfresco.port=8082
