@@ -258,7 +258,7 @@
                 <groupId>org.activiti</groupId>
                 <artifactId>activiti-simple-workflow</artifactId>
                 <version>${dependency.activiti.version}</version>
-            </dependency>
+            </dependency>sun.font.SunFontManager
             <dependency>
                 <groupId>org.activiti</groupId>
                 <artifactId>activiti-engine</artifactId>
