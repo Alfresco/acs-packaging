@@ -1,4 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+            <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>acs-packaging</artifactId>
     <packaging>pom</packaging>
@@ -37,11 +37,11 @@
         <dependency.alfresco-core.version>7.5</dependency.alfresco-core.version>
         <dependency.alfresco-data-model.version>8.22</dependency.alfresco-data-model.version>
 
-        <dependency.alfresco-repository.version>7.33.1</dependency.alfresco-repository.version>
+        <dependency.alfresco-repository.version>7.33.2</dependency.alfresco-repository.version>
         <dependency.alfresco-remote-api.version>7.16</dependency.alfresco-remote-api.version>
         <dependency.alfresco-hb-data-sender.version>1.0.9</dependency.alfresco-hb-data-sender.version>
 
-        <dependency.alfresco-enterprise-repository.version>7.20</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-enterprise-repository.version>7.22</dependency.alfresco-enterprise-repository.version>
         <dependency.alfresco-enterprise-remote-api.version>7.16</dependency.alfresco-enterprise-remote-api.version>
 
         <dependency.alfresco-spring-encryptor.version>6.1</dependency.alfresco-spring-encryptor.version>
