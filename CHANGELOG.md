@@ -35,6 +35,11 @@
         <li><a href='https://github.com/Alfresco/alfresco-bm-load-users'>Alfresco Benchmark Load Users</a></li>
       </ul>	 
   </li>
+  <li>
+    <h4>Jave Profiling with YourKit</h4>
+    <p>Integrated YourKit agent in the acs docker image.</p>
+    <p>Documented instructions on how to activate and connect with the YourKit profiller to the JVM inside the container will follow</a>.</p>
+    </li>
 </ul>
 <h2>
   Removed features
