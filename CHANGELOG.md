@@ -42,8 +42,8 @@
   </li>
   <li>
     <h4>Jave Profiling with YourKit</h4>
-    <p>Integrated YourKit agent in the acs docker image.</p>
-    <p>Documented instructions on how to activate and connect with the YourKit profiller to the JVM inside the container will follow</a>.</p>
+    <p>Integrated YourKit agent in the ACS docker image.</p>
+    <p>Documented instructions on how to activate and connect with the YourKit profiller to the JVM inside the container will follow soon.</p>
   </li>
 </ul>
 <h2>
