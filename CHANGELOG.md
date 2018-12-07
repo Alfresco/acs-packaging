@@ -38,7 +38,6 @@
   <li>
     <h4>Java 11 support</h4>
     <p>ACS is now runnable with OpenJDK 11.0.1. It still remains compatible with JDK 1.8.</p>
-    <p>The ACS images are using OpenJDK 11.</p>
   </li>
   <li>
     <h4>Jave Profiling with YourKit</h4>
