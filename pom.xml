@@ -38,11 +38,11 @@
         <dependency.alfresco-data-model.version>8.22</dependency.alfresco-data-model.version>
 
         <dependency.alfresco-repository.version>7.35</dependency.alfresco-repository.version>
-        <dependency.alfresco-remote-api.version>7.17</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-remote-api.version>7.18</dependency.alfresco-remote-api.version>
         <dependency.alfresco-hb-data-sender.version>1.0.9</dependency.alfresco-hb-data-sender.version>
 
         <dependency.alfresco-enterprise-repository.version>7.22</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-enterprise-remote-api.version>7.17</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-remote-api.version>7.18</dependency.alfresco-enterprise-remote-api.version>
 
         <dependency.alfresco-spring-encryptor.version>6.1</dependency.alfresco-spring-encryptor.version>
         <dependency.alfresco-enterprise-crypto.version>6.1</dependency.alfresco-enterprise-crypto.version>
@@ -103,7 +103,7 @@
         <alfresco.package.name>alfresco</alfresco.package.name>
         <alfresco.distribution.name>${alfresco.package.name}-distribution</alfresco.distribution.name>
 
-        <dependency.postgresql.version>42.2.1</dependency.postgresql.version>
+        <dependency.postgresql.version>42.2.5</dependency.postgresql.version>
         <dependency.mariadb.version>2.2.6</dependency.mariadb.version>
 
         <!-- Private docker registry -->
