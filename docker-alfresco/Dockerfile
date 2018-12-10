@@ -53,6 +53,15 @@ RUN mkdir /usr/local/tomcat/webapps/ROOT && cd /usr/local/tomcat/webapps/ROOT &&
 # Grant only deployXmlPermission to ROOT webapp.
     sed -i -e "\$a\grant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/alfresco\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};\ngrant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/ROOT\/-\" \{\n\    permission org.apache.catalina.security.DeployXmlPermission \"ROOT\";\n\};" /usr/local/tomcat/conf/catalina.policy
 
+# fontconfig is required by Activiti worflow diagram generator
+# installing pinned dependencies as well
+RUN yum install -y fontconfig-2.13.0-4.3.el7 \
+                   dejavu-fonts-common-2.33-6.el7 \
+                   fontpackages-filesystem-1.44-8.el7 \
+                   freetype-2.8-12.el7 \
+                   libpng-1.5.13-7.el7_2 \
+                   dejavu-sans-fonts-2.33-6.el7 && \
+    yum clean all
 
 # Unzip YourKit-JavaProfiler-2018
 RUN curl -o /tmp/YourKit-JavaProfiler-2018.04-docker.zip 'https://www.yourkit.com/download/docker/YourKit-JavaProfiler-2018.04-docker.zip' && cd /usr/local && \
