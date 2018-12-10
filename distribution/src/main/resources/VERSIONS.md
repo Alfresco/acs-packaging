@@ -97,7 +97,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Java
 | Component | Recommended | Also Available |
 |---|---|---|
-| Open JDK | 11 |
+| OpenJDK | 11.0.1 |
 
 ##### Message Broker
 | Component | Recommended | Also Available |
