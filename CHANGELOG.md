@@ -35,6 +35,15 @@
         <li><a href='https://github.com/Alfresco/alfresco-bm-load-users'>Alfresco Benchmark Load Users</a></li>
       </ul>	 
   </li>
+  <li>
+    <h4>Java 11 support</h4>
+    <p>ACS is now runnable with OpenJDK 11.0.1. It still remains compatible with JDK 1.8.</p>
+  </li>
+  <li>
+    <h4>Jave Profiling with YourKit</h4>
+    <p>Integrated YourKit agent in the ACS docker image.</p>
+    <p>Documented instructions on how to activate and connect with the YourKit profiller to the JVM inside the container will follow soon.</p>
+  </li>
 </ul>
 <h2>
   Removed features
