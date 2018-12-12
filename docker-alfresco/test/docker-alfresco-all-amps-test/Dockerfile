@@ -16,7 +16,7 @@ COPY target/connector/* /usr/local/tomcat/lib/
 COPY target/alfresco-mmt/* /usr/local/tomcat/alfresco-mmt/
 RUN rm -rf /usr/local/tomcat/webapps/ROOT
 COPY target/server-root/* /usr/local/tomcat/webapps
-COPY target/wti-bin/* /usr/local/tomcat/webapps
+COPY target/vti-bin/* /usr/local/tomcat/webapps
 
 # Change the value of the shared.loader= property to the following:
 # shared.loader=${catalina.base}/shared/classes
@@ -53,5 +53,5 @@ RUN mkdir /usr/local/tomcat/webapps/ROOT && cd /usr/local/tomcat/webapps/ROOT &&
 # Grant all security permissions to jolokia and share in order to work properly.
     sed -i -e "\$a\grant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/alfresco\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};\ngrant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/ROOT\/-\" \{\n\    permission org.apache.catalina.security.DeployXmlPermission \"ROOT\";\n\};\ngrant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/jolokia\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};\ngrant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/share\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};" /usr/local/tomcat/conf/catalina.policy
 
-# Unpack wti-bin.war
-RUN mkdir /usr/local/tomcat/webapps/wti-bin && cd /usr/local/tomcat/webapps/wti-bin && jar -xvf /usr/local/tomcat/webapps/wti-bin.war && rm -f /usr/local/tomcat/webapps/wti-bin.war
+# Unpack _vti_bin.war
+RUN mkdir /usr/local/tomcat/webapps/_vti_bin && cd /usr/local/tomcat/webapps/_vti_bin && jar -xvf /usr/local/tomcat/webapps/_vti_bin.war && rm -f /usr/local/tomcat/webapps/_vti_bin.war
