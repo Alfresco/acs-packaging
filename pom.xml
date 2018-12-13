@@ -67,7 +67,10 @@
         <alfresco.googledocs.version>3.1.0</alfresco.googledocs.version>
 
         <!-- Alfresco S3 Connector integration version -->
-        <alfresco.s3connector.version>2.2.1</alfresco.s3connector.version>
+        <alfresco.s3connector.version>2.3.0</alfresco.s3connector.version>
+
+        <!-- Alfresco Glacier Connector Repo version -->
+        <alfresco.glacier-connector.version>1.0.0-EA1</alfresco.glacier-connector.version>
 
         <!-- Alfresco Centera Connector version -->
         <alfresco.centera-connector.version>2.2.0</alfresco.centera-connector.version>
@@ -525,6 +528,12 @@
                 <groupId>org.alfresco.integrations</groupId>
                 <artifactId>alfresco-s3-connector</artifactId>
                 <version>${alfresco.s3connector.version}</version>
+                <type>amp</type>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-glacier-connector-repo</artifactId>
+                <version>${alfresco.glacier-connector.version}</version>
                 <type>amp</type>
             </dependency>
             <dependency>
