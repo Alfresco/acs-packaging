@@ -35,14 +35,14 @@
         <image.tag>latest</image.tag>
 
         <dependency.alfresco-core.version>7.5</dependency.alfresco-core.version>
-        <dependency.alfresco-data-model.version>8.22</dependency.alfresco-data-model.version>
+        <dependency.alfresco-data-model.version>8.24</dependency.alfresco-data-model.version>
 
-        <dependency.alfresco-repository.version>7.35</dependency.alfresco-repository.version>
-        <dependency.alfresco-remote-api.version>7.18</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-repository.version>7.36</dependency.alfresco-repository.version>
+        <dependency.alfresco-remote-api.version>7.19</dependency.alfresco-remote-api.version>
         <dependency.alfresco-hb-data-sender.version>1.0.9</dependency.alfresco-hb-data-sender.version>
 
-        <dependency.alfresco-enterprise-repository.version>7.22</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-enterprise-remote-api.version>7.18</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>7.23</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-enterprise-remote-api.version>7.19</dependency.alfresco-enterprise-remote-api.version>
 
         <dependency.alfresco-spring-encryptor.version>6.1</dependency.alfresco-spring-encryptor.version>
         <dependency.alfresco-enterprise-crypto.version>6.1</dependency.alfresco-enterprise-crypto.version>
@@ -67,7 +67,10 @@
         <alfresco.googledocs.version>3.1.0</alfresco.googledocs.version>
 
         <!-- Alfresco S3 Connector integration version -->
-        <alfresco.s3connector.version>2.2.1</alfresco.s3connector.version>
+        <alfresco.s3connector.version>2.3.0</alfresco.s3connector.version>
+
+        <!-- Alfresco Glacier Connector Repo version -->
+        <alfresco.glacier-connector.version>1.0.0-EA1</alfresco.glacier-connector.version>
 
         <!-- Alfresco Centera Connector version -->
         <alfresco.centera-connector.version>2.2.0</alfresco.centera-connector.version>
@@ -525,6 +528,12 @@
                 <groupId>org.alfresco.integrations</groupId>
                 <artifactId>alfresco-s3-connector</artifactId>
                 <version>${alfresco.s3connector.version}</version>
+                <type>amp</type>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-glacier-connector-repo</artifactId>
+                <version>${alfresco.glacier-connector.version}</version>
                 <type>amp</type>
             </dependency>
             <dependency>
