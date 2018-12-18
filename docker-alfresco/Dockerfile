@@ -30,12 +30,11 @@ RUN echo -e '\n\
 jodconverter.enabled=true\n\
 ' >> /usr/local/tomcat/shared/classes/alfresco-global.properties
 
-RUN echo -e '\n\
-log4j.logger.org.alfresco.repo.content.transform.TransformerDebug=debug\n\
-log4j.logger.org.alfresco.repo.rendition2=debug\n\
-log4j.logger.org.alfresco.repo.rendition.RenditionServiceImpl=debug\n\
-log4j.logger.org.alfresco.repo.rawevents=debug\n\
-' >> /usr/local/tomcat/shared/classes/alfresco/extension/custom-log4j.properties
+# Add debug for testing
+# RUN echo -e '\n\
+# log4j.logger.org.alfresco.repo.content.transform.TransformerDebug=debug\n\
+# ' >> /usr/local/tomcat/shared/classes/alfresco/extension/custom-log4j.properties
+
 RUN mkdir -p /usr/local/tomcat/amps
 
 # Copy the amps from build context to the appropriate location for your application server
