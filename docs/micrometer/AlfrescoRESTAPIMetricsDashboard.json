@@ -95,7 +95,7 @@
       "thresholds": [],
       "timeFrom": null,
       "timeShift": null,
-      "title": "All query count",
+      "title": "All requests count",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -179,7 +179,7 @@
       "thresholds": [],
       "timeFrom": null,
       "timeShift": null,
-      "title": "All query time",
+      "title": "All requests time",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -288,7 +288,7 @@
       "thresholds": [],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Rate query count by type",
+      "title": "Rate requests count by type",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -397,7 +397,7 @@
       "thresholds": [],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Rate query time by type",
+      "title": "Rate requests time by type",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -805,6 +805,6 @@
   },
   "timezone": "",
   "title": "AlfrescoRESTAPIDash",
-  "uid": "VFigGWbmk",
+  "uid": "VFttGWbmk",
   "version": 5
 }
