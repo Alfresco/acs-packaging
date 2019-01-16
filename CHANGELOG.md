@@ -73,6 +73,40 @@
   </li>
 </ul>
 
+<h2>        Service Pack Request
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19740'>MNT-19740</a>] -         WebDav login throws NullPointer Exception/HTTP 500 error when Kerberos SSO is used
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19762'>MNT-19762</a>] -         [Security] PDFBox Vulnerabilities
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19859'>MNT-19859</a>] -         Possible to Create User called &#39;System&#39;
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20042'>MNT-20042</a>] -         Official Alfresco Docker Image Missing vti-bin war file
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20097'>MNT-20097</a>] -         taggingStartupTrigger and downloadCleanerSchedulerAccessor jobs are missconfigured
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20120'>MNT-20120</a>] -         Alfresco JS-API fails to return URL with SSO mode on
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20126'>MNT-20126</a>] -         Activiti: No workflow images generated in Java 11
+</li>
+</ul>
+                                                                                                                                                                            
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19634'>MNT-19634</a>] -         briefSummary contains sensitive details about deauthorized user
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19981'>MNT-19981</a>] -         Node fails to bootstrap in large cluster
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19986'>MNT-19986</a>] -         Concurrency problem: First cluster startup can leave repository in a broken state
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20176'>MNT-20176</a>] -         Delete site fails with 403 for users from SITE_ADMINISTRATORS group
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20221'>MNT-20221</a>] -         [Security] postgresql-42.2.1 (CVE-2018-10936)
+</li>
+</ul>
+
 <h1>        6.0.0
 </h1>                        
 <h2>        Feature
