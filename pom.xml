@@ -82,7 +82,7 @@
         <alfresco.saml.version>1.1.1</alfresco.saml.version>
 
         <!-- Alfresco Outlook Integration -->
-        <alfresco.outlook.version>2.4.2</alfresco.outlook.version>
+        <alfresco.outlook.version>2.5.1</alfresco.outlook.version>
 
         <!-- Document Transformation Engine -->
         <alfresco.transformation-engine.version>2.2.1</alfresco.transformation-engine.version>
