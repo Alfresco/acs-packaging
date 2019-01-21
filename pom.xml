@@ -70,7 +70,7 @@
         <alfresco.s3connector.version>2.2.1</alfresco.s3connector.version>
 
         <!-- Alfresco Centera Connector version -->
-        <alfresco.centera-connector.version>2.2.0</alfresco.centera-connector.version>
+        <alfresco.centera-connector.version>2.2.1</alfresco.centera-connector.version>
 
         <!-- Alfresco Salesforce Connector version -->
         <alfresco.salesforce-connector.version>2.1.0</alfresco.salesforce-connector.version>
