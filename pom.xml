@@ -37,7 +37,7 @@
         <dependency.alfresco-core.version>7.5</dependency.alfresco-core.version>
         <dependency.alfresco-data-model.version>8.25</dependency.alfresco-data-model.version>
 
-        <dependency.alfresco-repository.version>7.44</dependency.alfresco-repository.version>
+        <dependency.alfresco-repository.version>7.33.10</dependency.alfresco-repository.version>
         <dependency.alfresco-remote-api.version>7.34</dependency.alfresco-remote-api.version>
         <dependency.alfresco-hb-data-sender.version>1.0.9</dependency.alfresco-hb-data-sender.version>
 
@@ -52,7 +52,7 @@
         <dependency.alfresco-trashcan-cleaner.version>2.3</dependency.alfresco-trashcan-cleaner.version>
         <dependency.alfresco-jlan.version>7.1</dependency.alfresco-jlan.version>
         <dependency.alfresco-server-root.version>6.0.1</dependency.alfresco-server-root.version>
-        <dependency.alfresco-api-explorer.version>6.1.0-RC4</dependency.alfresco-api-explorer.version>
+        <dependency.alfresco-api-explorer.version>6.1.0</dependency.alfresco-api-explorer.version>
 
         <dependency.spring.version>5.1.1.RELEASE</dependency.spring.version>
         <dependency.fabric8.version>3.5.37</dependency.fabric8.version>
@@ -85,7 +85,7 @@
         <alfresco.saml.version>1.1.1</alfresco.saml.version>
 
         <!-- Alfresco Outlook Integration -->
-        <alfresco.outlook.version>2.4.2</alfresco.outlook.version>
+        <alfresco.outlook.version>2.5.1</alfresco.outlook.version>
 
         <!-- Document Transformation Engine -->
         <alfresco.transformation-engine.version>2.2.1</alfresco.transformation-engine.version>
