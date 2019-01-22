@@ -66,6 +66,7 @@ services:
         image: quay.io/alfresco/alfresco-pdf-renderer:${TRANSFORMERS_TAG}
         environment:
             JAVA_OPTS: " -Xms256m -Xmx256m"
+            ACTIVEMQ_URL: "nio://activemq:61616"
             FILE_STORE_URL: "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file"
         ports:
             - 8090:8090
@@ -74,6 +75,7 @@ services:
         image: quay.io/alfresco/alfresco-imagemagick:${TRANSFORMERS_TAG}
         environment:
             JAVA_OPTS: " -Xms256m -Xmx256m"
+            ACTIVEMQ_URL: "nio://activemq:61616"
             FILE_STORE_URL: "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file"
         ports:
             - 8091:8090
@@ -82,6 +84,7 @@ services:
         image: quay.io/alfresco/alfresco-libreoffice:${TRANSFORMERS_TAG}
         environment:
             JAVA_OPTS: " -Xms256m -Xmx256m"
+            ACTIVEMQ_URL: "nio://activemq:61616"
             FILE_STORE_URL: "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file"
         ports:
             - 8092:8090
@@ -90,6 +93,7 @@ services:
         image: quay.io/alfresco/alfresco-tika:${TRANSFORMERS_TAG}
         environment:
             JAVA_OPTS: " -Xms256m -Xmx256m"
+            ACTIVEMQ_URL: "nio://activemq:61616"
             FILE_STORE_URL: "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file"
         ports:
             - 8093:8090
