@@ -82,9 +82,11 @@
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19859'>MNT-19859</a>] -         Possible to Create User called &#39;System&#39;
 </li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19923'>MNT-19923</a>] -         External Authentication fails after ticket expiration
+</li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20042'>MNT-20042</a>] -         Official Alfresco Docker Image Missing vti-bin war file
 </li>
-<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20097'>MNT-20097</a>] -         taggingStartupTrigger and downloadCleanerSchedulerAccessor jobs are missconfigured
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20097'>MNT-20097</a>] -         taggingStartupTrigger and downloadCleanerSchedulerAccessor jobs are misconfigured
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20120'>MNT-20120</a>] -         Alfresco JS-API fails to return URL with SSO mode on
 </li>
@@ -181,7 +183,7 @@
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-18929'>MNT-18929</a>] -         [Security] - CVE-2017-9801 - commons-email vulnerability
 </li>
-<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-18982'>MNT-18982</a>] -         Remove dependancy to commons-beanutils from spring-webscripts
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-18982'>MNT-18982</a>] -         Remove dependency to commons-beanutils from spring-webscripts
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19000'>MNT-19000</a>] -         [Security] - cloud Embedded XSS 
 </li>
@@ -197,7 +199,7 @@
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19514'>MNT-19514</a>] -         REST API: Deauthorized users 500
 </li>
-<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19770'>MNT-19770</a>] -         [Security] Libreoffice SSRF (Forced HTTP GET)
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19770'>MNT-19770</a>] -         [Security] LibreOffice SSRF (Forced HTTP GET)
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19956'>MNT-19956</a>] -         ACS HELM Deployment: Unprotected access to all resources
 </li>
