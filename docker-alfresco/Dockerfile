@@ -18,6 +18,10 @@ COPY ${resource_path}/war /usr/local/tomcat/webapps
 COPY ${resource_path}/connector/* /usr/local/tomcat/lib/
 COPY ${resource_path}/alfresco-mmt/* /usr/local/tomcat/alfresco-mmt/
 
+# Copy Licenses to the root of the Docker image
+RUN mkdir /licenses
+COPY ${resource_path}/dependency/licenses/ /licenses/
+
 # Change the value of the shared.loader= property to the following:
 # shared.loader=${catalina.base}/shared/classes
 RUN sed -i "s/shared.loader=/shared.loader=\${catalina.base}\/shared\/classes/" /usr/local/tomcat/conf/catalina.properties

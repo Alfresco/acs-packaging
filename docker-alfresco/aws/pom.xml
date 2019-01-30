@@ -19,6 +19,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-content-services-distribution</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.alfresco.integrations</groupId>
             <artifactId>alfresco-s3-connector</artifactId>
             <version>${alfresco.s3connector.version}</version>
@@ -38,6 +43,23 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>3.0.2</version>
                 <executions>
+                    <execution>
+                        <id>extract-licenses</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <!-- Extract licenses directory from distribution jar -->
+                                <artifactItem>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>alfresco-content-services-distribution</artifactId>
+                                    <includes>licenses/**</includes>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>unpack-resources</id>
                         <phase>process-resources</phase>
