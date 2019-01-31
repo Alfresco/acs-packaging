@@ -134,13 +134,23 @@ RUN java -jar /usr/local/tomcat/alfresco-mmt/alfresco-mmt*.jar install \
 ###    </Engine>
 ### With
 ###    </Engine>
-###    <Connector port="8443" URIEncoding="UTF-8" protocol="org.apache.coyote.http11.Http11Protocol" SSLEnabled="true"
-###    maxThreads="150" scheme="https" keystoreFile="/usr/local/tomcat/keystore/ssl.keystore" keystorePass="keystorePass" keystoreType="JCEKS"
-###    secure="true" connectionTimeout="240000" truststoreFile="/usr/local/tomcat/keystore/ssl.truststore" truststorePass="truststorePass" truststoreType="JCEKS"
-###    clientAuth="want" sslProtocol="TLS" allowUnsafeLegacyRenegotiation="true" maxHttpHeaderSize="32768" maxSavePostSize="-1" /
+###    <Connector port="8443" 
+###               protocol="org.apache.coyote.http11.Http11Nio2Protocol"
+###               sslImplementationName="org.apache.tomcat.util.net.jsse.JSSEImplementation"
+###               maxThreads="150"
+###               SSLEnabled="true">
+###        <SSLHostConfig certificateVerification="required" 
+###                       truststoreFile="/usr/local/tomcat/keystore/ssl.keystore/ssl.truststore" 
+###                       truststorePassword="truststorePass" 
+###                       truststoreType="JCEKS" >
+###            <Certificate certificateKeystoreFile="/usr/local/tomcat/keystore/ssl.keystore/ssl.keystore"
+###                         certificateKeystorePassword="keystorePass"
+###                         certificateKeystoreType="JCEKS" />
+###        </SSLHostConfig>
+###    </Connector> 
 
 ### Enable SSL by adding the proper Connector to server.xml (using a very hard to understand SED command)
-RUN sed -i "s/\    <\/Engine>/\n\    <\/Engine>\n\    <Connector\ port=\"8443\"\ URIEncoding=\"UTF-8\"\ protocol=\"org.apache.coyote.http11.Http11Protocol\"\ SSLEnabled=\"true\"\n\               maxThreads=\"150\"\ scheme=\"https\"\ keystoreFile=\"\/usr\/local\/tomcat\/keystore\/ssl.keystore\"\ keystorePass=\"keystorePass\"\ keystoreType=\"JCEKS\"\n\ secure=\"true\"\ connectionTimeout=\"240000\"\ truststoreFile=\"\/usr\/local\/tomcat\/keystore\/ssl.truststore\"\ truststorePass=\"truststorePass\"\ truststoreType=\"JCEKS\"\n\               clientAuth=\"want\"\ sslProtocol=\"TLS\"\ allowUnsafeLegacyRenegotiation=\"true\"\ maxHttpHeaderSize=\"32768\"\ maxSavePostSize=\"-1\" \/>/g" /usr/local/tomcat/conf/server.xml
+RUN sed -i "s/\    <\/Engine>/\n\    <\/Engine>\n\    <Connector\ port=\"8443\"\n\               protocol=\"org.apache.coyote.http11.Http11Nio2Protocol\"\n\               sslImplementationName=\"org.apache.tomcat.util.net.jsse.JSSEImplementation\"\n\               maxThreads=\"150\"\n\               SSLEnabled=\"true\">\n\        <SSLHostConfig certificateVerification=\"required\" \n\                       truststoreFile=\"\/usr\/local\/tomcat\/keystore\/ssl.keystore\/ssl.truststore\"\n\                       truststorePassword=\"truststorePass\"\n\                       truststoreType=\"JCEKS\" >\n\            <Certificate certificateKeystoreFile=\"\/usr\/local\/tomcat\/keystore\/ssl.keystore\/ssl.keystore\"\n\                         certificateKeystorePassword=\"keystorePass\"\n\                         certificateKeystoreType=\"JCEKS\" \/>\n\        <\/SSLHostConfig>\n\    <\/Connector>/g" /usr/local/tomcat/conf/server.xml
 ```
 
 * Open a Terminal and run the following command to build the custom docker repository image.
@@ -179,13 +189,23 @@ RUN java -jar /usr/local/tomcat/alfresco-mmt/alfresco-mmt*.jar install \
 ###    </Engine>
 ### With
 ###    </Engine>
-###    <Connector port="8443" URIEncoding="UTF-8" protocol="org.apache.coyote.http11.Http11Protocol" SSLEnabled="true"
-###    maxThreads="150" scheme="https" keystoreFile="/usr/local/tomcat/keystore/ssl.keystore" keystorePass="keystorePass" keystoreType="JCEKS"
-###    secure="true" connectionTimeout="240000" truststoreFile="/usr/local/tomcat/keystore/ssl.truststore" truststorePass="truststorePass" truststoreType="JCEKS"
-###    clientAuth="want" sslProtocol="TLS" allowUnsafeLegacyRenegotiation="true" maxHttpHeaderSize="32768" maxSavePostSize="-1" /
+###    <Connector port="8443" 
+###               protocol="org.apache.coyote.http11.Http11Nio2Protocol"
+###               sslImplementationName="org.apache.tomcat.util.net.jsse.JSSEImplementation"
+###               maxThreads="150"
+###               SSLEnabled="true">
+###        <SSLHostConfig certificateVerification="required" 
+###                       truststoreFile="/usr/local/tomcat/keystore/ssl.keystore/ssl.truststore" 
+###                       truststorePassword="truststorePass" 
+###                       truststoreType="JCEKS" >
+###            <Certificate certificateKeystoreFile="/usr/local/tomcat/keystore/ssl.keystore/ssl.keystore"
+###                         certificateKeystorePassword="keystorePass"
+###                         certificateKeystoreType="JCEKS" />
+###        </SSLHostConfig>
+###    </Connector> 
 
 ### Enable SSL by adding the proper Connector to server.xml (using a very hard to understand SED command)
-RUN sed -i "s/\    <\/Engine>/\n\    <\/Engine>\n\    <Connector\ port=\"8443\"\ URIEncoding=\"UTF-8\"\ protocol=\"org.apache.coyote.http11.Http11Protocol\"\ SSLEnabled=\"true\"\n\               maxThreads=\"150\"\ scheme=\"https\"\ keystoreFile=\"\/usr\/local\/tomcat\/keystore\/ssl.keystore\"\ keystorePass=\"keystorePass\"\ keystoreType=\"JCEKS\"\n\ secure=\"true\"\ connectionTimeout=\"240000\"\ truststoreFile=\"\/usr\/local\/tomcat\/keystore\/ssl.truststore\"\ truststorePass=\"truststorePass\"\ truststoreType=\"JCEKS\"\n\               clientAuth=\"want\"\ sslProtocol=\"TLS\"\ allowUnsafeLegacyRenegotiation=\"true\"\ maxHttpHeaderSize=\"32768\"\ maxSavePostSize=\"-1\" \/>/g" /usr/local/tomcat/conf/server.xml
+RUN sed -i "s/\    <\/Engine>/\n\    <\/Engine>\n\    <Connector\ port=\"8443\"\n\               protocol=\"org.apache.coyote.http11.Http11Nio2Protocol\"\n\               sslImplementationName=\"org.apache.tomcat.util.net.jsse.JSSEImplementation\"\n\               maxThreads=\"150\"\n\               SSLEnabled=\"true\">\n\        <SSLHostConfig certificateVerification=\"required\" \n\                       truststoreFile=\"\/usr\/local\/tomcat\/keystore\/ssl.keystore\/ssl.truststore\"\n\                       truststorePassword=\"truststorePass\"\n\                       truststoreType=\"JCEKS\" >\n\            <Certificate certificateKeystoreFile=\"\/usr\/local\/tomcat\/keystore\/ssl.keystore\/ssl.keystore\"\n\                         certificateKeystorePassword=\"keystorePass\"\n\                         certificateKeystoreType=\"JCEKS\" \/>\n\        <\/SSLHostConfig>\n\    <\/Connector>/g" /usr/local/tomcat/conf/server.xml
 ```
 
 * Open a Terminal and run the following command to build the custom docker repository image.
