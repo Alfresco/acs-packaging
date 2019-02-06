@@ -70,7 +70,7 @@
         <alfresco.s3connector.version>2.3.0</alfresco.s3connector.version>
 
         <!-- Alfresco Glacier Connector Repo version -->
-        <alfresco.glacier-connector.version>1.0.0-EA1</alfresco.glacier-connector.version>
+        <alfresco.glacier-connector.version>1.0.0</alfresco.glacier-connector.version>
 
         <!-- Alfresco Centera Connector version -->
         <alfresco.centera-connector.version>2.2.1</alfresco.centera-connector.version>
