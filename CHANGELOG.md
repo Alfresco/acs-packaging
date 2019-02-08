@@ -26,7 +26,10 @@
 <h2>        Improvement
 </h2>
 <ul>
-<li>[<a href='https://issues.alfresco.com/jira/browse/REPO-3918'>REPO-3918</a>] - Stacks: Update ACS 6.0+ Stacks
+<li>
+<h4>Java 11 support</h4>
+<p>ACS is now runnable with OpenJDK 11.0.1. It still remains compatible with JDK 1.8.</p>
+<p>[<a href='https://issues.alfresco.com/jira/browse/REPO-3918'>REPO-3918</a>] - Stacks: Update ACS 6.0+ Stacks</p>
 </li>
 </ul>
 
