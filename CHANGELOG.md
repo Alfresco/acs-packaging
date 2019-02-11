@@ -65,24 +65,54 @@
   </li>
 </ul>
 <h2>
-  Known issues
-</h2>
-<ul>
-  <li>
-    Due to the changes to the RenditionService the Media Management AMP is not supported yet.<br/>
-  </li>
-</ul>
+
 
 <h2>        Service Pack Request
 </h2>
 <ul>
-<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19740'>MNT-19740</a>] -         WebDav login throws NullPointer Exception/HTTP 500 error when Kerberos SSO is used
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-15977'>MNT-15977</a>] -         &#39;Create document (folder) from template&#39; does not sort nor is scrollable
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-16608'>MNT-16608</a>] -         Manage Aspects does not work on Advanced Search Results page (folders)
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-16713'>MNT-16713</a>] -         “Link to file” in faceted search doesn’t work
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-18099'>MNT-18099</a>] -         Clicking on Date Picker for Date Property Cause Browser Window to Scroll Up
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-18324'>MNT-18324</a>] -         datetime property cannot be set using &#39;set property&#39; action in rule
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-18453'>MNT-18453</a>] -         Error message appears on People finder page when subscription service disabled
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-18514'>MNT-18514</a>] -         Multiple XSS vulnerabilities
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-18816'>MNT-18816</a>] -         Date Picker via Document Properties resets the folder hierarchy in Alfresco Share.
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19173'>MNT-19173</a>] -         Data-list title not readable because of high contrast in CSS theme.
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19236'>MNT-19236</a>] -         Node Browser - Select Store button not working in IE 11
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19306'>MNT-19306</a>] -         Dragging and dropping content in the breadcrumb path in the document library not working in 5.2.2
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19374'>MNT-19374</a>] -         Different UI versioning behaviour
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19449'>MNT-19449</a>] -         Web Preview from Filmstrip View option returns double slash in URL
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19519'>MNT-19519</a>] -         Deleting a file with its link asset in the same folder return wrong message
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19740'>MNT-19740</a>] -         WebDav login throws NullPointerException/HTTP 500 error when Kerberos SSO is used
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19762'>MNT-19762</a>] -         [Security] PDFBox Vulnerabilities
 </li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19791'>MNT-19791</a>] -         [Security] Share error page shows stack trace in page source - information leakage
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19854'>MNT-19854</a>] -         Unable to open document&#39;s workflow from document details screen
+</li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19859'>MNT-19859</a>] -         Possible to Create User called &#39;System&#39;
 </li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19906'>MNT-19906</a>] -         Commons-lang version for Share 6.0 went backwards from 2.6 to 2.1
+</li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19923'>MNT-19923</a>] -         External Authentication fails after ticket expiration
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19980'>MNT-19980</a>] -         Aspect.cm_attachable Displayed when Editing a Meeting Agenda Datalist
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20042'>MNT-20042</a>] -         Official Alfresco Docker Image Missing vti-bin war file
 </li>
@@ -92,22 +122,37 @@
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20126'>MNT-20126</a>] -         Activiti: No workflow images generated in Java 11
 </li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20162'>MNT-20162</a>] -         The “Shared Files” Button Label for the Spanish (es) Locale Doesn’t Display Correctly
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20222'>MNT-20222</a>] -         French Encoding Problem of Move to and Copy to on Search Page
+</li>
 </ul>
                                                                                                                                                                             
 <h2>        Bug
 </h2>
 <ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-14338'>MNT-14338</a>] -         Server exception should be handled better in document details page and document library page
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-15932'>MNT-15932</a>] -         Update message from delete user dialog
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19615'>MNT-19615</a>] -         Stored XSS through File Sharing and Improper Access Control in Workflows
+</li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19634'>MNT-19634</a>] -         briefSummary contains sensitive details about deauthorized user
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19937'>MNT-19937</a>] -         Update documentation for Tomcat 8.5&#39;s new SSL configurations to fix AOS for ACS 6.0/6.1
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19981'>MNT-19981</a>] -         Node fails to bootstrap in large cluster
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19986'>MNT-19986</a>] -         Concurrency problem: First cluster startup can leave repository in a broken state
 </li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20170'>MNT-20170</a>] -         Wrong label in faceted search title, slash is missed in Spanish translation
+</li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20176'>MNT-20176</a>] -         Delete site fails with 403 for users from SITE_ADMINISTRATORS group
 </li>
-<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20221'>MNT-20221</a>] -         [Security] postgresql-42.2.1 (CVE-2018-10936)
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20221'>MNT-20221</a>] -         Security: postgresql-42.2.1 (CVE-2018-10936)
 </li>
 </ul>
+
 
 <h1>        6.0.0
 </h1>                        
