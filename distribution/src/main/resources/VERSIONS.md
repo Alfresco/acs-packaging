@@ -1,6 +1,6 @@
 # Component Versions
 
-This file lists the recommended components for this Service Pack. Use it along with the [Supported Platforms Matrix](http://docs.alfresco.com/6.0/concepts/supported-platforms-ACS.html) and the [Alfresco Documentation](https://docs.alfresco.com/6.0/concepts/ch-upgrade.html) to apply selective component upgrades.
+This file lists the recommended components for this Service Pack. Use it along with the [Supported Platforms Matrix](http://docs.alfresco.com/6.1/concepts/supported-platforms-ACS.html) and the [Alfresco Documentation](https://docs.alfresco.com/6.1/concepts/ch-upgrade.html) to apply selective component upgrades.
 
 #### Alfresco Content Services @project.version@
 
@@ -9,7 +9,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 |---|---|---|
 | Alfresco Content Services | @project.version@ |
 | Alfresco Share | @alfresco.share.version@ |
-| Alfresco Search Services | 1.3.0 |
+| Alfresco Search Services | 1.3.0.1 |
 | Alfresco Insight Engine | 1.0.0 |
 | Alfresco Desktop Sync Service | @alfresco.desktop-sync.version@ |
 | Alfresco Transform Service | 1.0.1 |
