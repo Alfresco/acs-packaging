@@ -4,6 +4,8 @@
 <h2>        Service Pack Request
 </h2>
 <ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20296'>MNT-20296</a>] - Notification Email when 'following' a user displays incorrectly in Japanese
+</li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20097'>MNT-20097</a>] - taggingStartupTrigger and downloadCleanerSchedulerAccessor jobs are missconfigured
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20042'>MNT-20042</a>] - Official Alfresco Docker Image Missing vti-bin war file
