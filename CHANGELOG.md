@@ -1,3 +1,14 @@
+<h1>        6.2.0
+</h1>
+<h2>
+  Removed features
+</h2>
+<ul>
+  <li>
+    DB2 support was removed.
+  </li>
+</ul>
+
 <h1>        6.1.0
 </h1>
 <h2>
@@ -156,7 +167,7 @@
 
 <h1>        6.0.0
 </h1>                        
-<h2>        Feature
+<h2>        New Feature
 </h2>
 <ul>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-16433'>MNT-16433</a>] -         Alfresco FTP server and Passive Mode clients
