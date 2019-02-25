@@ -165,7 +165,7 @@
       <url-pattern>/s/*</url-pattern>
       <url-pattern>/cmisbrowser/*</url-pattern>
       <url-pattern>/definitions/*</url-pattern>
-   </filter-mapping>
+   </filter-mapping>-->
    <!-- CORS Filter Mappings End -->
 
    <!-- Activiti Global Authentication Filter mapping placeholder -->
