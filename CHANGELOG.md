@@ -1,3 +1,40 @@
+<h1>        6.0.1.1
+</h1>
+
+<h2>        Service Pack Request
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20296'>MNT-20296</a>] - Notification Email when 'following' a user displays incorrectly in Japanese
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20097'>MNT-20097</a>] - taggingStartupTrigger and downloadCleanerSchedulerAccessor jobs are missconfigured
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20042'>MNT-20042</a>] - Official Alfresco Docker Image Missing vti-bin war file
+</li>
+</ul>
+
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19937'>MNT-19937</a>] - Update documentation for Tomcat 8.5's new SSL configurations to fix AOS for ACS 6.0/6.1
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20213'>MNT-20213</a>] - Unable to run using Java 8
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/ACE-5930'>ACE-5930</a>] - Stack 3 - Microsoft JDBC 6.2 Driver is not compatible with Open JDK 11
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/ACE-5890'>ACE-5890</a>] - 6.1: MariaDB ConnectorJ not upgraded
+</li>
+</ul>
+
+<h2>        Improvement
+</h2>
+<ul>
+<li>
+<h4>Java 11 support</h4>
+<p>ACS is now runnable with OpenJDK 11.0.1. It still remains compatible with JDK 1.8.</p>
+<p>[<a href='https://issues.alfresco.com/jira/browse/REPO-3918'>REPO-3918</a>] - Stacks: Update ACS 6.0+ Stacks</p>
+</li>
+</ul>
+
 <h1>        6.0.1
 </h1>
 <h2>
