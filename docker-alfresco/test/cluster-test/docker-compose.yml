@@ -9,14 +9,14 @@ version: "3"
 #-agentpath:/usr/local/YourKit-JavaProfiler-2018.04/bin/linux-x86-64/libyjpagent.so=delay=200000,listen=all,sessionname=$$HOSTNAME,dir=/tmp/Alfresco/yourkit,onexit=snapshot,periodicperf=600,periodicmem=600,probe_off=*
 
 services:
-    alfresco:
+    alfresco1:
         image: ${REGISTRY}alfresco/alfresco-content-repository:${ALFRESCO_TAG}
         environment:
             CATALINA_OPTS : "
                 -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
                 "
             JAVA_OPTS : "
-                -Dalfresco.port=8082
+                -Dalfresco.port=6081
                 -Daos.baseUrlOverwrite=http://localhost:8082/alfresco/aos
                 -Ddb.driver=org.postgresql.Driver
                 -Ddb.username=alfresco
@@ -28,10 +28,8 @@ services:
                 -Dsolr.base.url=/solr
                 -Dindex.subsystem.name=solr6
                 -Dalfresco.restApi.basicAuthScheme=true
-                -Dimap.server.enabled=true
-                -Dftp.enabled=true
-                -Dftp.dataPortFrom=30000
-                -Dftp.dataPortTo=30099
+                -Dimap.server.enabled=false
+                -Dftp.enabled=false
                 -Dalfresco-pdf-renderer.url=http://alfresco-pdf-renderer:8090/
                 -Djodconverter.url=http://libreoffice:8090/
                 -Dimg.url=http://imagemagick:8090/
@@ -43,12 +41,84 @@ services:
                 -Dtransform.service.enabled=${TRANSFORM_SERVICE_ENABLED}
                 "
         ports:
-            - 8082:8080
-            - 8000:8000
-            - 445:445
-            - 143:143
-            - "21:21"
-            - "30000-30099:30000-30099"
+            - 6081:8080
+            - 6001:8000
+        volumes:
+            - alf_data:/usr/local/tomcat/alf_data
+
+    alfresco2:
+        image: ${REGISTRY}alfresco/alfresco-content-repository:${ALFRESCO_TAG}
+        environment:
+            CATALINA_OPTS : "
+                -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
+                "
+            JAVA_OPTS : "
+                -Dalfresco.port=6082
+                -Daos.baseUrlOverwrite=http://localhost:8080/alfresco/aos
+                -Ddb.driver=org.postgresql.Driver
+                -Ddb.username=alfresco
+                -Ddb.password=alfresco
+                -Ddb.url=jdbc:postgresql://postgres:5432/alfresco
+                -Dsolr.host=solr6
+                -Dsolr.port=8983
+                -Dsolr.secureComms=none
+                -Dsolr.base.url=/solr
+                -Dindex.subsystem.name=solr6
+                -Dalfresco.restApi.basicAuthScheme=true
+                -Dimap.server.enabled=false
+                -Dftp.enabled=false
+                -Dalfresco-pdf-renderer.url=http://alfresco-pdf-renderer:8090/
+                -Djodconverter.url=http://libreoffice:8090/
+                -Dimg.url=http://imagemagick:8090/
+                -Dtika.url=http://tika:8090/
+                -Dsfs.url=http://shared-file-store:8099/
+                -Dshare.host=localhost
+                -Dmessaging.broker.url=\"failover:(tcp://activemq:61616)?timeout=3000&jms.useCompression=true\"
+                -Dlocal.transform.service.enabled=${LOCAL_TRANSFORM_SERVICE_ENABLED}
+                -Dtransform.service.enabled=${TRANSFORM_SERVICE_ENABLED}
+                "
+        ports:
+            - 6082:8080
+            - 6002:8000
+        volumes:
+            - alf_data:/usr/local/tomcat/alf_data
+
+    alfresco3:
+        image: ${REGISTRY}alfresco/alfresco-content-repository:${ALFRESCO_TAG}
+        environment:
+            CATALINA_OPTS : "
+                -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
+                "
+            JAVA_OPTS : "
+                -Dalfresco.port=6083
+                -Daos.baseUrlOverwrite=http://localhost:8080/alfresco/aos
+                -Ddb.driver=org.postgresql.Driver
+                -Ddb.username=alfresco
+                -Ddb.password=alfresco
+                -Ddb.url=jdbc:postgresql://postgres:5432/alfresco
+                -Dsolr.host=solr6
+                -Dsolr.port=8983
+                -Dsolr.secureComms=none
+                -Dsolr.base.url=/solr
+                -Dindex.subsystem.name=solr6
+                -Dalfresco.restApi.basicAuthScheme=true
+                -Dimap.server.enabled=false
+                -Dftp.enabled=false
+                -Dalfresco-pdf-renderer.url=http://alfresco-pdf-renderer:8090/
+                -Djodconverter.url=http://libreoffice:8090/
+                -Dimg.url=http://imagemagick:8090/
+                -Dtika.url=http://tika:8090/
+                -Dsfs.url=http://shared-file-store:8099/
+                -Dshare.host=localhost
+                -Dmessaging.broker.url=\"failover:(tcp://activemq:61616)?timeout=3000&jms.useCompression=true\"
+                -Dlocal.transform.service.enabled=${LOCAL_TRANSFORM_SERVICE_ENABLED}
+                -Dtransform.service.enabled=${TRANSFORM_SERVICE_ENABLED}
+                "
+        ports:
+            - 6083:8080
+            - 6003:8000
+        volumes:
+            - alf_data:/usr/local/tomcat/alf_data
 
     transform-router:
         image: quay.io/alfresco/alfresco-transform-router:${TRANSFORM_ROUTER_TAG}
@@ -110,10 +180,10 @@ services:
     share:
         image: alfresco/alfresco-share:${SHARE_TAG}
         environment:
-            - REPO_HOST=alfresco
+            - REPO_HOST=alfresco1
             - REPO_PORT=8080
         ports:
-            - 8080:8080
+            - 8020:8080
 
     postgres:
         image: library/postgres:${POSTGRES_TAG}
@@ -128,7 +198,7 @@ services:
         image: alfresco/alfresco-search-services:${SOLR6_TAG}
         environment:
             #Solr needs to know how to register itself with Alfresco
-            - SOLR_ALFRESCO_HOST=alfresco
+            - SOLR_ALFRESCO_HOST=alfresco1
             - SOLR_ALFRESCO_PORT=8080
             #Alfresco needs to know how to call solr
             - SOLR_SOLR_HOST=solr6
@@ -141,8 +211,8 @@ services:
     activemq:
         image: alfresco/alfresco-activemq:${ACTIVEMQ_TAG}
         ports:
-            - 8161:8161 # Web Console
-            - 5672:5672 # AMQP
+            - 8161:8161   # Web Console
+            - 5672:5672   # AMQP
             - 61616:61616 # OpenWire
             - 61613:61613 # STOMP
 
@@ -152,16 +222,12 @@ services:
             - alfresco1
             - alfresco2
             - alfresco3
-            - alfresco4
-            - alfresco5
         ports:
             - 8080:8080
         links:
             - alfresco1
             - alfresco2
             - alfresco3
-            - alfresco4
-            - alfresco5
 
 volumes:
     shared-file-store-volume:
