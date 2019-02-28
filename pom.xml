@@ -37,12 +37,12 @@
         <dependency.alfresco-core.version>7.9</dependency.alfresco-core.version>
         <dependency.alfresco-data-model.version>8.27</dependency.alfresco-data-model.version>
 
-        <dependency.alfresco-repository.version>7.50</dependency.alfresco-repository.version>
+        <dependency.alfresco-repository.version>7.52-userAuth</dependency.alfresco-repository.version>
         <dependency.alfresco-remote-api.version>7.40</dependency.alfresco-remote-api.version>
         <dependency.alfresco-hb-data-sender.version>1.0.10</dependency.alfresco-hb-data-sender.version>
 
-        <dependency.alfresco-enterprise-repository.version>7.27</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-enterprise-remote-api.version>7.22</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>7.28</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-enterprise-remote-api.version>7.23</dependency.alfresco-enterprise-remote-api.version>
 
         <dependency.alfresco-spring-encryptor.version>6.1</dependency.alfresco-spring-encryptor.version>
         <dependency.alfresco-enterprise-crypto.version>6.1</dependency.alfresco-enterprise-crypto.version>
@@ -621,7 +621,7 @@
             <dependency>
                 <groupId>com.hazelcast</groupId>
                 <artifactId>hazelcast</artifactId>
-                <version>3.9.2</version>
+                <version>3.11.2</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
