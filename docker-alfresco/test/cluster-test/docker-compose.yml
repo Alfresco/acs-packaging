@@ -42,7 +42,6 @@ services:
                 "
         ports:
             - 6081:8080
-            - 6001:8000
         volumes:
             - alf_data:/usr/local/tomcat/alf_data
 
@@ -79,7 +78,6 @@ services:
                 "
         ports:
             - 6082:8080
-            - 6002:8000
         volumes:
             - alf_data:/usr/local/tomcat/alf_data
 
@@ -116,7 +114,6 @@ services:
                 "
         ports:
             - 6083:8080
-            - 6003:8000
         volumes:
             - alf_data:/usr/local/tomcat/alf_data
 
