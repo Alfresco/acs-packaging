@@ -260,6 +260,8 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
+                                <!--
+                                Uncomment this when REPO-4233 is fixed and we have a compatible saml module
                                 <artifactItem>
                                     <groupId>org.alfresco.saml</groupId>
                                     <artifactId>alfresco-saml-repo</artifactId>
@@ -276,6 +278,9 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
                                 </artifactItem>
+                                -->
+                                <!--
+                                Uncomment this when MM-785 is fixed and we have a compatible MM module
                                 <artifactItem>
                                     <groupId>org.alfresco.mediamanagement</groupId>
                                     <artifactId>alfresco-mm-repo</artifactId>
@@ -292,6 +297,7 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
                                 </artifactItem>
+                                 -->
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-document-transformation-engine-repo</artifactId>
