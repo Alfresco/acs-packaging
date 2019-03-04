@@ -70,7 +70,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | MySQL connector | 5.1.40 |
 | MariaDB Java Client | @dependency.mariadb.version@ |
 | PostgreSQL | @dependency.postgresql.version@ |
-| Oracle JDBC ojdbc7 | 12.2.0.1 |
+| Oracle JDBC ojdbc8 | 12.2.0.1 |
 | Microsoft JDBC Driver | 7.0 | 7.1
 
 ##### Application Servers
