@@ -1,28 +1,16 @@
-# <Work in progress> Project to start a standard cluster 
+### Alfresco repository cluster with load balancer for testing
 
-## Current limitations:
-1. only works for starting up two alfresco nodes in the cluster
-2. no clustered share!
-3. only one solr6 is working - that connects to alfresconode1!
-4. no load balancer!
+This folder contains a sample setup for a cluster with 3 alfressco repository nodes in a cluster,
+following the reference docker-compose file from the acs-deployment project.
 
-## There is a lot of room for improvement here!
-This project was done as a learning exercise for docker/docker-compose
+To configure the sticky session with **ip_hash** method, just comment/uncomment the ```ip_hash;``` line 
+from /ngnix/alfresco.conf
 
-### Configuration:  
-1 shared alf_data local volume  
-1 postgres DB  
-2 nodes(each with its own alfresco, share)  
-2 solr6 nodes - each one connected to one of the alfresco nodes  
-1 ngnix load balancer  
+This docker-compose is used in the _ACS Packaging Cluster_ bamboo build plan 
+https://bamboo.alfresco.com/bamboo/browse/PLAT-APCLUST
 
-### Steps:
-1. clone this project
-2. clean your local docker environmet of unnecessary images/volumes/process
-3. then run ``` docker-compose up postgres alfresconode1 solr6node1```
-4. go to localhost:8181/alfresco - upload a cluster enabled license for 6.0 **EA**
-5. open another terminal and run: ``` docker-compose up alfresconode2```
-6. go to localhost:8182/alfresco and check that this node is in the cluster - It should be
-7. open another terminal and run: ``` docker-compose stop alfresconode1```
-8. then, in the same terminal, run: ```docker-compose up alfresconode1```
-9. go to localhost:8181/alfresco again and check that both nodes are in the cluster
+Note that at the moment, we expect CMIS test to fail without sticky session set. 
+And the TAS REST API tests also use CMIS - see REPO-4250
+
+See also REPO-3932 for details.
+
