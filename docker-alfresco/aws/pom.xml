@@ -19,6 +19,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-ai-repo</artifactId>
+            <version>${alfresco.ai-repo.version}</version>
+            <type>amp</type>
+        </dependency>
+        <dependency>
             <groupId>org.alfresco.integrations</groupId>
             <artifactId>alfresco-s3-connector</artifactId>
             <version>${alfresco.s3connector.version}</version>
