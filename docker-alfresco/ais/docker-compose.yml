@@ -7,6 +7,10 @@ version: "3"
 
 # Add the following environment variable to CATALINA_OPTS to activate YourKit profiling agent on tomcat
 #-agentpath:/usr/local/YourKit-JavaProfiler-2018.04/bin/linux-x86-64/libyjpagent.so=delay=200000,listen=all,sessionname=$$HOSTNAME,dir=/tmp/Alfresco/yourkit,onexit=snapshot,periodicperf=600,periodicmem=600,probe_off=*
+#
+# The identity service address should be the same as the origin of the request ( eg localhost ) for testing
+# So identity-service.auth-server-url=http://<IP>:8999 should point to the right address 
+# Otherwise, the requests to authenticate will fail
 
 services:
     alfresco:
@@ -44,7 +48,7 @@ services:
                 -Dauthentication.chain=identity-service1:identity-service,ldap:ldap,alfrescoNtlm1:alfrescoNtlm
                 -Didentity-service.enable-basic-auth=true
                 -Didentity-service.authentication.validation.failure.silent=false
-                -Didentity-service.auth-server-url=http://172.30.145.78:8999/auth
+                -Didentity-service.auth-server-url=http://<HOST_IP>:8999/auth
                 -Didentity-service.realm=alfresco
                 -Didentity-service.resource=alfresco
                 "
