@@ -102,6 +102,9 @@
         <!-- Alfresco Desktop Sync Service Module -->
         <alfresco.desktop-sync.version>3.1.0</alfresco.desktop-sync.version>
 
+        <!-- Alfresco AI AMP -->
+        <alfresco.ai-repo.version>0.3.1</alfresco.ai-repo.version>
+
         <installer.version.name>${project.version}</installer.version.name>
         <alfresco.package.name>alfresco</alfresco.package.name>
         <alfresco.distribution.name>${alfresco.package.name}-distribution</alfresco.distribution.name>
