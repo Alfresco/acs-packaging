@@ -16,6 +16,7 @@ services:
     alfresco:
         image: ${REGISTRY}alfresco/alfresco-content-repository:${ALFRESCO_TAG}
         environment:
+            HOST_IP: ${HOST_IP}
             CATALINA_OPTS : "
                 -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
                 "
