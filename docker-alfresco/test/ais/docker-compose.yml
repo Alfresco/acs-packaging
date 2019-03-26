@@ -16,7 +16,6 @@ services:
     alfresco:
         image: ${REGISTRY}alfresco/alfresco-content-repository:${ALFRESCO_TAG}
         environment:
-            HOST_IP: ${HOST_IP}
             CATALINA_OPTS : "
                 -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
                 "
@@ -46,10 +45,10 @@ services:
                 -Dmessaging.broker.url=\"failover:(tcp://activemq:61616)?timeout=3000&jms.useCompression=true\"
                 -Dlocal.transform.service.enabled=${LOCAL_TRANSFORM_SERVICE_ENABLED}
                 -Dtransform.service.enabled=${TRANSFORM_SERVICE_ENABLED}
-                -Dauthentication.chain=identity-service1:identity-service,ldap:ldap,alfrescoNtlm1:alfrescoNtlm
+                -Dauthentication.chain=identity-service1:identity-service,alfrescoNtlm1:alfrescoNtlm
                 -Didentity-service.enable-basic-auth=true
                 -Didentity-service.authentication.validation.failure.silent=false
-                -Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth
+                -Didentity-service.auth-server-url=http://host.docker.internal:8999/auth
                 -Didentity-service.realm=alfresco
                 -Didentity-service.resource=alfresco
                 "
