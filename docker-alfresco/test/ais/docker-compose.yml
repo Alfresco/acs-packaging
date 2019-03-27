@@ -48,7 +48,7 @@ services:
                 -Dauthentication.chain=identity-service1:identity-service,alfrescoNtlm1:alfrescoNtlm
                 -Didentity-service.enable-basic-auth=true
                 -Didentity-service.authentication.validation.failure.silent=false
-                -Didentity-service.auth-server-url=http://0.0.0.0:8999/auth
+                -Didentity-service.auth-server-url=http://127.0.0.1:8999/auth
                 -Didentity-service.realm=alfresco
                 -Didentity-service.resource=alfresco
                 "
