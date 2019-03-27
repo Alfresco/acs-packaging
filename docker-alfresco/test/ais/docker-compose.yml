@@ -16,6 +16,8 @@ services:
     alfresco:
         image: ${REGISTRY}alfresco/alfresco-content-repository:${ALFRESCO_TAG}
         environment:
+            # use 'export HOST_IP=xxx' for specifying the host ip before starting docker compose
+            # export HOST_IP=$(ifconfig | grep -E "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v 127.0.0.1 | awk '{ print $2 }' | cut -f2 -d: | head -n1)
             HOST_IP: ${HOST_IP}
             CATALINA_OPTS : "
                 -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
