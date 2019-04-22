@@ -35,7 +35,7 @@
         <image.tag>latest</image.tag>
 
         <dependency.alfresco-core.version>7.5</dependency.alfresco-core.version>
-        <dependency.alfresco-data-model.version>8.18.1</dependency.alfresco-data-model.version>
+        <dependency.alfresco-data-model.version>8.18.2</dependency.alfresco-data-model.version>
         <dependency.alfresco-repository.version>6.56.18</dependency.alfresco-repository.version>
         <dependency.alfresco-remote-api.version>6.39.10</dependency.alfresco-remote-api.version>
         <dependency.alfresco-hb-data-sender.version>1.0.10</dependency.alfresco-hb-data-sender.version>
@@ -626,6 +626,18 @@
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcmail-jdk15on</artifactId>
                 <version>1.60</version>
+            </dependency>
+            <!-- upgrade dependency from TIKA -->
+            <dependency>
+                <groupId>com.github.junrar</groupId>
+                <artifactId>junrar</artifactId>
+                <version>4.0.0</version>
+            </dependency>
+            <!-- upgrade dependency from TIKA -->
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>1.11.3</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
