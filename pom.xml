@@ -57,6 +57,7 @@
         <dependency.spring.version>5.1.0.RELEASE</dependency.spring.version>
         <dependency.fabric8.version>3.5.37</dependency.fabric8.version>
         <dependency.jackson.version>2.9.8</dependency.jackson.version>
+        <dependency.camel.version>2.23.2</dependency.camel.version>
 
         <!-- Alfresco Share version -->
         <alfresco.share.version>6.0.1.1</alfresco.share.version>
@@ -432,6 +433,27 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-email</artifactId>
                 <version>1.5</version>
+            </dependency>
+            <!-- Newer Camel, see REPO-4355 -->
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-core</artifactId>
+                <version>${dependency.camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-jackson</artifactId>
+                <version>${dependency.camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-spring</artifactId>
+                <version>${dependency.camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-amqp</artifactId>
+                <version>${dependency.camel.version}</version>
             </dependency>
             <!-- Make sure JUnit is not packaged -->
             <dependency>
