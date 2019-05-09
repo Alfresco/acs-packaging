@@ -31,8 +31,8 @@ for current_lib in $(ls "$lib_dir"); do
            echo "Skip $current_lib"
            continue
        fi
-       
-       for other_lib in $(gls --ignore="$current_lib" "$lib_dir"); do
+
+       for other_lib in $(ls --ignore="$current_lib" "$lib_dir"); do
            if [[ "$other_lib" = "$noversion_lib"[0-9].* ]]; then
                multiple_version_lib_list="$multiple_version_lib_list $current_lib"
            fi
