@@ -12,7 +12,9 @@ lib_dir=$1
 multiple_version_lib_list=""
 
 echo "Scanning libraries from $lib_dir"
-echo "Skipping libraries which match the whitelist, check for false positives:"
+if [[ -n "$WHITELIST" ]]; then
+    echo "Skipping libraries which match the whitelist, check for false positives:"
+fi
 
 for current_lib in $(ls "$lib_dir"); do
    if [[ "$current_lib" =~ [0-9]+.[0-9] ]]; then
@@ -29,7 +31,8 @@ for current_lib in $(ls "$lib_dir"); do
            echo "Skip $current_lib"
            continue
        fi
-       for other_lib in $(ls --ignore="$current_lib" "$lib_dir"); do
+       
+       for other_lib in $(gls --ignore="$current_lib" "$lib_dir"); do
            if [[ "$other_lib" = "$noversion_lib"[0-9].* ]]; then
                multiple_version_lib_list="$multiple_version_lib_list $current_lib"
            fi
