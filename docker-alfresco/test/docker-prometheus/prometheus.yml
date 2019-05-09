@@ -1,0 +1,29 @@
+# my global config
+global:
+  scrape_interval:     15s 
+  evaluation_interval: 15s 
+  # scrape_timeout is set to the global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      # - alertmanager:9093
+      
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'prometheus'
+    
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+    metrics_path: alfresco/s/prometheus
+
+    static_configs:
+      - targets: ['172.31.147.54:8080']
+      
+    # Sets the `Authorization` header on every scrape request with the
+    # configured username and password
+    basic_auth:
+      username: admin
+      password: admin

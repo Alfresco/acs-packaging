@@ -4,7 +4,7 @@ and useful files.
 
 Alfresco repository now exposes an endpoint ```/alfresco/s/prometheus``` that is compatible with the 
 [Prometheus](https://prometheus.io/) scarping and point. 
-This end point is read-only and does not currently require authentication. 
+This end point is read-only and does currently require authentication using an alfresco user. 
 Prometheus uses a pulling pattern on the specified end points and is able to provide 
 aggregation of time series events that help in monitoring our application.
 
@@ -12,18 +12,18 @@ We expose, for now, three types of metrics:
 1. JVM metrics
 2. DB (mybatis) metrics
 3. REST API metrics
-
 All of these and specific details about each gathered metrics can be controlled with system properties:
 ```
 # Metrics reporting
-metrics.enabled=true
-metrics.dbMetricsReporter.enabled=true
-metrics.dbMetricsReporter.query.enabled=true
+metrics.enabled=false
+metrics.dbMetricsReporter.enabled=false
+metrics.dbMetricsReporter.query.enabled=false
 metrics.dbMetricsReporter.query.statements.enabled=false
-metrics.jvmMetricsReporter.enabled=true
-metrics.restMetricsReporter.enabled=true
+metrics.jvmMetricsReporter.enabled=false
+metrics.restMetricsReporter.enabled=false
 metrics.restMetricsReporter.path.enabled=false
 ```
+We have defined the main property metrics.enabled which defaults to false. If turned off, the web-script API will return 404.
 
 This feature is enterprise only;
 
