@@ -20,10 +20,4 @@ scrape_configs:
     metrics_path: alfresco/s/prometheus
 
     static_configs:
-      - targets: ['172.31.147.54:8080']
-      
-    # Sets the `Authorization` header on every scrape request with the
-    # configured username and password
-    basic_auth:
-      username: admin
-      password: admin
+      - targets: ['scrape_host_ip:8080']

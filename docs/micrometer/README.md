@@ -4,7 +4,7 @@ and useful files.
 
 Alfresco repository now exposes an endpoint ```/alfresco/s/prometheus``` that is compatible with the 
 [Prometheus](https://prometheus.io/) scarping and point. 
-This end point is read-only and does currently require authentication using an alfresco user. 
+This end point is read-only and does not currently require authentication. 
 Prometheus uses a pulling pattern on the specified end points and is able to provide 
 aggregation of time series events that help in monitoring our application.
 
