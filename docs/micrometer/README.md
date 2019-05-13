@@ -12,18 +12,18 @@ We expose, for now, three types of metrics:
 1. JVM metrics
 2. DB (mybatis) metrics
 3. REST API metrics
-
 All of these and specific details about each gathered metrics can be controlled with system properties:
 ```
 # Metrics reporting
-metrics.enabled=true
-metrics.dbMetricsReporter.enabled=true
-metrics.dbMetricsReporter.query.enabled=true
+metrics.enabled=false
+metrics.dbMetricsReporter.enabled=false
+metrics.dbMetricsReporter.query.enabled=false
 metrics.dbMetricsReporter.query.statements.enabled=false
-metrics.jvmMetricsReporter.enabled=true
-metrics.restMetricsReporter.enabled=true
+metrics.jvmMetricsReporter.enabled=false
+metrics.restMetricsReporter.enabled=false
 metrics.restMetricsReporter.path.enabled=false
 ```
+We have defined the main property metrics.enabled which defaults to false. If turned off, the web-script API will return 404.
 
 This feature is enterprise only;
 
