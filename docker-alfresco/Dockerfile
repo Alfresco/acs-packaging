@@ -56,10 +56,13 @@ COPY ${resource_path}/amps ${TOMCAT_DIR}/amps
 RUN java -jar ${TOMCAT_DIR}/alfresco-mmt/alfresco-mmt*.jar install \
               ${TOMCAT_DIR}/amps ${TOMCAT_DIR}/webapps/alfresco -directory -nobackup -force
 
-# Docker CMD from parent image starts the server
+# Unpack ROOT.war, move the log file and make webapps folder read-only.
+RUN mkdir ${TOMCAT_DIR}/webapps/ROOT && cd ${TOMCAT_DIR}/webapps/ROOT && \
+    jar -xvf ${TOMCAT_DIR}/webapps/ROOT.war && rm -f ${TOMCAT_DIR}/webapps/ROOT.war && \
+    sed -i -e "s_log4j.appender.File.File\=alfresco.log_log4j.appender.File.File\=${TOMCAT_DIR}/logs\/alfresco.log_" \
+        ${TOMCAT_DIR}/webapps/alfresco/WEB-INF/classes/log4j.properties && \
+    chmod -R =r ${TOMCAT_DIR}/webapps && \
 
-# Unpack ROOT.war and make webapps folder read-only.
-RUN mkdir ${TOMCAT_DIR}/webapps/ROOT && cd ${TOMCAT_DIR}/webapps/ROOT && jar -xvf ${TOMCAT_DIR}/webapps/ROOT.war && rm -f ${TOMCAT_DIR}/webapps/ROOT.war && chmod -R =r ${TOMCAT_DIR}/webapps && \
 # Add catalina.policy to ROOT.war and alfresco.war
 # Grant all security permissions to alfresco webapp because of numerous permissions required in order to work properly.
 # Grant only deployXmlPermission to ROOT webapp.
@@ -75,7 +78,6 @@ RUN mkdir -p ${TOMCAT_DIR}/conf/Catalina/localhost && \
     groupadd -g ${GROUPID} ${GROUPNAME} && \
     useradd -u ${USERID} -G ${GROUPNAME} ${USERNAME} && \
     chgrp -R ${GROUPNAME} ${TOMCAT_DIR} && \
-    chmod g+w ${TOMCAT_DIR}/logs && \
     chmod g+rx ${TOMCAT_DIR}/conf && \
     chmod -R g+r ${TOMCAT_DIR}/conf && \
     find ${TOMCAT_DIR}/webapps -type d -exec chmod 0750 {} \; && \
@@ -84,13 +86,10 @@ RUN mkdir -p ${TOMCAT_DIR}/conf/Catalina/localhost && \
     chmod g+r ${TOMCAT_DIR}/conf/Catalina && \
     chmod g+rwx ${TOMCAT_DIR}/alf_data && \
     chmod g+rwx ${TOMCAT_DIR}/logs && \
+    chmod o-w ${TOMCAT_DIR}/logs && \
     chmod g+rwx ${TOMCAT_DIR}/temp && \
     chmod g+rwx ${TOMCAT_DIR}/work && \
-
-# After MNT-18557 is fixed we need to uncomment the appender change and remove the write access on the tomcat dir.
-#    sed -i -e "s_log4j.appender.File.File\=alfresco.log_log4j.appender.File.File\=${TOMCAT_DIR}/logs\/alfresco.log_" \ 
-#        ${TOMCAT_DIR}/webapps/alfresco/WEB-INF/classes/log4j.properties && \
-    chmod g+w ${TOMCAT_DIR}
+    chmod o-w ${TOMCAT_DIR}/work
 
 # To remote debug into this image add: EXPOSE 8000
 # Changes are also required to the docker-compose/docker-compose.yml file.
