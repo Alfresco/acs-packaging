@@ -152,6 +152,24 @@ services:
             - 5672:5672 # AMQP
             - 61616:61616 # OpenWire
             - 61613:61613 # STOMP
+            
+    sync-service:
+        image: quay.io/alfresco/service-sync:${SYNC_SERVICE_TAG}
+        environment:
+            JAVA_OPTS : "
+            -Dsql.db.driver=org.postgresql.Driver
+            -Dsql.db.url=jdbc:postgresql://postgres:5432/alfresco
+            -Dsql.db.username=alfresco
+            -Dsql.db.password=alfresco
+            -Dmessaging.broker.host=activemq
+            -Drepo.hostname=alfresco
+            -Drepo.port=8080
+            -Ddw.server.applicationConnectors[0].type=http
+            -Xms500m -Xmx500m
+            "
+            
+        ports:
+            - 9090:9090       
 
 volumes:
     shared-file-store-volume:
