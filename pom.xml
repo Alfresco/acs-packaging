@@ -40,7 +40,7 @@
         <dependency.alfresco-repository.version>7.70</dependency.alfresco-repository.version>
         <dependency.alfresco-remote-api.version>7.57</dependency.alfresco-remote-api.version>
 
-        <dependency.alfresco-hb-data-sender.version>1.0.10</dependency.alfresco-hb-data-sender.version>
+        <dependency.alfresco-hb-data-sender.version>1.0.11</dependency.alfresco-hb-data-sender.version>
 
         <dependency.alfresco-enterprise-repository.version>7.37</dependency.alfresco-enterprise-repository.version>
         <dependency.alfresco-enterprise-remote-api.version>7.29</dependency.alfresco-enterprise-remote-api.version>
