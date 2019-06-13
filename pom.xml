@@ -43,6 +43,7 @@
         <dependency.alfresco-hb-data-sender.version>1.0.10</dependency.alfresco-hb-data-sender.version>
 
         <dependency.alfresco-enterprise-repository.version>7.35</dependency.alfresco-enterprise-repository.version>
+
         <dependency.alfresco-enterprise-remote-api.version>7.28</dependency.alfresco-enterprise-remote-api.version>
 
         <dependency.alfresco-spring-encryptor.version>6.1</dependency.alfresco-spring-encryptor.version>
