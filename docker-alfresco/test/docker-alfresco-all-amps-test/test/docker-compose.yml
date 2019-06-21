@@ -57,7 +57,7 @@ services:
                 -Dcentera.url=168.159.214.26?/binaries/bamboo-agent-config/Centera/c2armtesting.pea
                 -Dsaml.sp.isEnforced=false
                 -Ddsync.service.uris=http://127.0.0.1:8080/alfresco
-                -Dmessaging.broker.url=vm:broker:(tcp://localhost:61616)?persistent=false
+                -Dmessaging.broker.url=\"failover:(tcp://activemq:61616)?timeout=3000&jms.useCompression=true\"
                 "
         ports:
             - 8082:8080
