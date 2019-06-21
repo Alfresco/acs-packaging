@@ -49,7 +49,15 @@ services:
                 -Demail.server.port=1126
                 -Dsystem.usages.enabled=true
                 -Dcsrf.filter.enabled=false
-                -Dmessaging.broker.url=\"failover:(tcp://activemq:61616)?timeout=3000&jms.useCompression=true\"
+                -Djodconverter.enabled=true\n\
+                -Ds3.accessKey=${aws-access-key-id}\n\
+                -Ds3.secretKey=${aws-secret-access-key}\n\
+                -Ds3.bucketName=${s3.bucketName}\n\
+                -Ds3.autoLowerCaseBucketName=true\n\
+                -Dcentera.url=168.159.214.26?/binaries/bamboo-agent-config/Centera/c2armtesting.pea\n\
+                -Dsaml.sp.isEnforced=false\n\
+                -Ddsync.service.uris=http://127.0.0.1:8080/alfresco\n\
+                -Dmessaging.broker.url=vm:broker:(tcp://localhost:61616)?persistent=false\n\
                 "
         ports:
             - 8082:8080
