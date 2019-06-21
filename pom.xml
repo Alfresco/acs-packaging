@@ -34,20 +34,20 @@
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <dependency.alfresco-core.version>7.11</dependency.alfresco-core.version>
-        <dependency.alfresco-data-model.version>8.32</dependency.alfresco-data-model.version>
+        <dependency.alfresco-core.version>7.17</dependency.alfresco-core.version>
+        <dependency.alfresco-data-model.version>8.39</dependency.alfresco-data-model.version>
 
-        <dependency.alfresco-repository.version>repo-4450.1</dependency.alfresco-repository.version>
-        <dependency.alfresco-remote-api.version>repo-4450.1</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-repository.version>repo-4450.2</dependency.alfresco-repository.version>
+        <dependency.alfresco-remote-api.version>repo-4450.2</dependency.alfresco-remote-api.version>
 
-        <dependency.alfresco-hb-data-sender.version>1.0.10</dependency.alfresco-hb-data-sender.version>
+        <dependency.alfresco-hb-data-sender.version>1.0.11</dependency.alfresco-hb-data-sender.version>
 
-        <dependency.alfresco-enterprise-repository.version>repo-4450.1</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-enterprise-remote-api.version>repo-4450.1</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>repo-4450.2</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-enterprise-remote-api.version>repo-4450.2</dependency.alfresco-enterprise-remote-api.version>
 
         <dependency.alfresco-spring-encryptor.version>6.1</dependency.alfresco-spring-encryptor.version>
         <dependency.alfresco-enterprise-crypto.version>6.1</dependency.alfresco-enterprise-crypto.version>
-        <dependency.alfresco-spring-webscripts.version>7.1</dependency.alfresco-spring-webscripts.version>
+        <dependency.alfresco-spring-webscripts.version>7.2</dependency.alfresco-spring-webscripts.version>
         <dependency.alfresco-mmt.version>6.0</dependency.alfresco-mmt.version>
         <dependency.alfresco-pdf-renderer.version>1.1</dependency.alfresco-pdf-renderer.version>
         <dependency.alfresco-trashcan-cleaner.version>2.3</dependency.alfresco-trashcan-cleaner.version>
@@ -55,10 +55,10 @@
         <dependency.alfresco-server-root.version>6.0.1</dependency.alfresco-server-root.version>
         <dependency.alfresco-api-explorer.version>6.1.0</dependency.alfresco-api-explorer.version>
 
-        <dependency.spring.version>5.1.6.RELEASE</dependency.spring.version>
+        <dependency.spring.version>5.1.8.RELEASE</dependency.spring.version>
         <dependency.fabric8.version>3.5.37</dependency.fabric8.version>
         <dependency.jackson.version>2.9.9</dependency.jackson.version>
-        <dependency.cxf.version>3.3.1</dependency.cxf.version>
+        <dependency.cxf.version>3.3.2</dependency.cxf.version>
 
         <!-- Alfresco Share version -->
         <alfresco.share.version>6.1.0</alfresco.share.version>
@@ -324,12 +324,12 @@
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
-                <version>4.5.8</version>
+                <version>4.5.9</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient-cache</artifactId>
-                <version>4.5.8</version>
+                <version>4.5.9</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.xmlbeans</groupId>
@@ -536,12 +536,12 @@
             <dependency>
                 <groupId>org.apache.ws.commons.axiom</groupId>
                 <artifactId>axiom-api</artifactId>
-                <version>1.2.19</version>
+                <version>1.2.22</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.ws.commons.axiom</groupId>
                 <artifactId>axiom-impl</artifactId>
-                <version>1.2.18</version>
+                <version>1.2.22</version>
             </dependency>
             <dependency>
                 <groupId>org.alfresco.integrations</groupId>
@@ -625,17 +625,17 @@
             <dependency>
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcprov-jdk15on</artifactId>
-                <version>1.61</version>
+                <version>1.62</version>
             </dependency>
             <dependency>
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcmail-jdk15on</artifactId>
-                <version>1.61</version>
+                <version>1.62</version>
             </dependency>
             <dependency>
                 <groupId>com.hazelcast</groupId>
                 <artifactId>hazelcast</artifactId>
-                <version>3.12</version>
+                <version>3.12.1</version>
             </dependency>
             <!-- upgrade dependency from TIKA -->
             <dependency>
