@@ -143,7 +143,7 @@ services:
             - activemq
 
     alfresco-pdf-renderer:
-        image: quay.io/alfresco/alfresco-pdf-renderer:${TRANSFORMERS_TAG}
+        image: alfresco/alfresco-pdf-renderer:${TRANSFORMERS_TAG}
         environment:
             JAVA_OPTS: " -Xms256m -Xmx256m"
             ACTIVEMQ_URL: "nio://activemq:61616"
@@ -152,7 +152,7 @@ services:
             - 8090:8090
 
     imagemagick:
-        image: quay.io/alfresco/alfresco-imagemagick:${TRANSFORMERS_TAG}
+        image: alfresco/alfresco-imagemagick:${TRANSFORMERS_TAG}
         environment:
             JAVA_OPTS: " -Xms256m -Xmx256m"
             ACTIVEMQ_URL: "nio://activemq:61616"
@@ -161,7 +161,7 @@ services:
             - 8091:8090
 
     libreoffice:
-        image: quay.io/alfresco/alfresco-libreoffice:${TRANSFORMERS_TAG}
+        image: alfresco/alfresco-libreoffice:${TRANSFORMERS_TAG}
         environment:
             JAVA_OPTS: " -Xms256m -Xmx256m"
             ACTIVEMQ_URL: "nio://activemq:61616"
@@ -170,7 +170,7 @@ services:
             - 8092:8090
 
     tika:
-        image: quay.io/alfresco/alfresco-tika:${TRANSFORMERS_TAG}
+        image: alfresco/alfresco-tika:${TRANSFORMERS_TAG}
         environment:
             JAVA_OPTS: " -Xms256m -Xmx256m"
             ACTIVEMQ_URL: "nio://activemq:61616"
@@ -179,7 +179,7 @@ services:
             - 8093:8090
 
     transform-misc:
-        image: quay.io/alfresco/alfresco-transform-misc:${TRANSFORMERS_TAG}
+        image: alfresco/alfresco-transform-misc:${TRANSFORMERS_TAG}
         environment:
             JAVA_OPTS: " -Xms256m -Xmx256m"
             ACTIVEMQ_URL: "nio://activemq:61616"
