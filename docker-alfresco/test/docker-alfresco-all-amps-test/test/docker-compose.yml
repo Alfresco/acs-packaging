@@ -50,9 +50,9 @@ services:
                 -Dsystem.usages.enabled=true
                 -Dcsrf.filter.enabled=false
                 -Djodconverter.enabled=true
-                -Ds3.accessKey=${aws-access-key-id}
-                -Ds3.secretKey=${aws-secret-access-key}
-                -Ds3.bucketName=${s3.bucketName}
+                -Ds3.accessKey=$${aws-access-key-id}
+                -Ds3.secretKey=$${aws-secret-access-key}
+                -Ds3.bucketName=$${s3.bucketName}
                 -Ds3.autoLowerCaseBucketName=true
                 -Dcentera.url=168.159.214.26?/binaries/bamboo-agent-config/Centera/c2armtesting.pea
                 -Dsaml.sp.isEnforced=false
