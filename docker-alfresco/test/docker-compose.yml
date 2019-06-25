@@ -10,7 +10,7 @@ version: "3"
 
 services:
     alfresco:
-        image: ${REGISTRY}alfresco/alfresco-content-repository:${ALFRESCO_TAG}
+        image: quay.io/alfresco/alfresco-content-repository:feature-LocalTransform-6.2.0-SNAPSHOT
         environment:
             CATALINA_OPTS : "
                 -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
@@ -64,6 +64,8 @@ services:
         image: quay.io/alfresco/alfresco-transform-router:${TRANSFORM_ROUTER_TAG}
         environment:
             ACTIVEMQ_URL: "nio://activemq:61616"
+            ACTIVEMQ_USER: "admin"
+            ACTIVEMQ_PASSWORD: "admin"
             IMAGEMAGICK_URL: "http://imagemagick:8090"
             PDF_RENDERER_URL : "http://alfresco-pdf-renderer:8090"
             LIBREOFFICE_URL : "http://libreoffice:8090"
@@ -80,6 +82,8 @@ services:
         environment:
             JAVA_OPTS: " -Xms256m -Xmx256m"
             ACTIVEMQ_URL: "nio://activemq:61616"
+            ACTIVEMQ_USER: "admin"
+            ACTIVEMQ_PASSWORD: "admin"
             FILE_STORE_URL: "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file"
         ports:
             - 8090:8090
@@ -89,6 +93,8 @@ services:
         environment:
             JAVA_OPTS: " -Xms256m -Xmx256m"
             ACTIVEMQ_URL: "nio://activemq:61616"
+            ACTIVEMQ_USER: "admin"
+            ACTIVEMQ_PASSWORD: "admin"
             FILE_STORE_URL: "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file"
         ports:
             - 8091:8090
@@ -98,6 +104,8 @@ services:
         environment:
             JAVA_OPTS: " -Xms256m -Xmx256m"
             ACTIVEMQ_URL: "nio://activemq:61616"
+            ACTIVEMQ_USER: "admin"
+            ACTIVEMQ_PASSWORD: "admin"
             FILE_STORE_URL: "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file"
         ports:
             - 8092:8090
@@ -108,6 +116,8 @@ services:
             JAVA_OPTS: " -Xms256m -Xmx256m"
             ACTIVEMQ_URL: "nio://activemq:61616"
             FILE_STORE_URL: "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file"
+            ACTIVEMQ_USER: "admin"
+            ACTIVEMQ_PASSWORD: "admin"
         ports:
             - 8093:8090
 
@@ -116,6 +126,8 @@ services:
         environment:
             JAVA_OPTS: " -Xms256m -Xmx256m"
             ACTIVEMQ_URL: "nio://activemq:61616"
+            ACTIVEMQ_USER: "admin"
+            ACTIVEMQ_PASSWORD: "admin"
             FILE_STORE_URL: "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file"
         ports:
             - 8094:8090
