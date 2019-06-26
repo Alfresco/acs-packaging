@@ -23,9 +23,7 @@ services:
                 -Dsolr.base.url=/solr
                 -Dindex.subsystem.name=solr6
                 -Dalfresco.restApi.basicAuthScheme=true
-                -Dftp.enabled=true
-                -Dftp.dataPortFrom=30000
-                -Dftp.dataPortTo=30099
+                -Dftp.enabled=false
                 -Dalfresco-pdf-renderer.url=http://alfresco-pdf-renderer:8090/
                 -Djodconverter.url=http://libreoffice:8090/
                 -Dimg.url=http://imagemagick:8090/
