@@ -45,12 +45,8 @@ jodconverter.enabled=true\n\
 
 RUN echo -e '\n\
 log4j.logger.org.alfresco.repo.content.transform.TransformerDebug=debug\n\
-log4j.logger.org.alfresco.repo.rendition2.LocalTransformClient=debug\n\
-log4j.logger.org.alfresco.repo.rendition2.LegacyTransformClient=debug\n\
-log4j.logger.org.alfresco.enterprise.repo.rendition2.RemoteTransformClient=debug\n\
-log4j.logger.org.alfresco.repo.content.transform.LocalTransformServiceRegistry=trace\n\
-log4j.logger.org.alfresco.enterprise.repo.rendition2.RemoteTransformServiceRegistry=trace\n\
-log4j.logger.org.alfresco.repo.content.transform.LocalTransformer=debug\n\
+log4j.logger.org.alfresco.repo.content.transform.LocalTransformServiceRegistry=debug\n\
+log4j.logger.org.alfresco.enterprise.repo.rendition2.RemoteTransformServiceRegistry=debug\n\
 ' >> ${TOMCAT_DIR}/shared/classes/alfresco/extension/custom-log4j.properties
 
 RUN mkdir -p ${TOMCAT_DIR}/amps
