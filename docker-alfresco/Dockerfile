@@ -102,7 +102,6 @@ RUN mkdir -p ${TOMCAT_DIR}/conf/Catalina/localhost && \
     chmod g+rwx ${TOMCAT_DIR}/temp && \
     chmod g+rwx ${TOMCAT_DIR}/work && \
     chmod o-w ${TOMCAT_DIR}/work && \
-
     # Configure YourKit Java Profiler access
     chgrp -R ${GROUPNAME} ${JAVA_PROFILER_DIR} && \
     mkdir -p ${JAVA_PROFILER_RUNTIME_DIR} && \
