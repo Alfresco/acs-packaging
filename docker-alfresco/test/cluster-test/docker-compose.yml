@@ -30,15 +30,27 @@ services:
                 -Dalfresco.restApi.basicAuthScheme=true
                 -Dimap.server.enabled=false
                 -Dftp.enabled=false
+                -Dshare.host=localhost
+                -Dmessaging.broker.url=\"failover:(tcp://activemq:61616)?timeout=3000&jms.useCompression=true\"
+
+                -Dtransform.service.enabled=${TRANSFORM_SERVICE_ENABLED}
+                -Dtransform.service.url=http://transform-router:8095
+                -Dsfs.url=http://shared-file-store:8099/
+
+                -Dlocal.transform.service.enabled=${LOCAL_TRANSFORM_SERVICE_ENABLED}
+                -DlocalTransform.pdfrenderer.url=http://alfresco-pdf-renderer:8090/
+                -DlocalTransform.imagemagick.url=http://imagemagick:8090/
+                -DlocalTransform.libreoffice.url=http://libreoffice:8090/
+                -DlocalTransform.tika.url=http://tika:8090/
+                -DlocalTransform.misc.url=http://transform-misc:8090/
+
+                -Dlegacy.transform.service.enabled=${LEGACY_TRANSFORM_SERVICE_ENABLED}
                 -Dalfresco-pdf-renderer.url=http://alfresco-pdf-renderer:8090/
                 -Djodconverter.url=http://libreoffice:8090/
                 -Dimg.url=http://imagemagick:8090/
                 -Dtika.url=http://tika:8090/
-                -Dsfs.url=http://shared-file-store:8099/
-                -Dshare.host=localhost
-                -Dmessaging.broker.url=\"failover:(tcp://activemq:61616)?timeout=3000&jms.useCompression=true\"
-                -Dlocal.transform.service.enabled=${LOCAL_TRANSFORM_SERVICE_ENABLED}
-                -Dtransform.service.enabled=${TRANSFORM_SERVICE_ENABLED}
+                -Dtransform.misc.url=http://transform-misc:8090/
+
                 -Dcors.enabled=true
                 -Dcors.allowed.origins=http://localhost:4200
                 "
@@ -68,15 +80,27 @@ services:
                 -Dalfresco.restApi.basicAuthScheme=true
                 -Dimap.server.enabled=false
                 -Dftp.enabled=false
+                -Dshare.host=localhost
+                -Dmessaging.broker.url=\"failover:(tcp://activemq:61616)?timeout=3000&jms.useCompression=true\"
+
+                -Dtransform.service.enabled=${TRANSFORM_SERVICE_ENABLED}
+                -Dtransform.service.url=http://transform-router:8095
+                -Dsfs.url=http://shared-file-store:8099/
+
+                -Dlocal.transform.service.enabled=${LOCAL_TRANSFORM_SERVICE_ENABLED}
+                -DlocalTransform.pdfrenderer.url=http://alfresco-pdf-renderer:8090/
+                -DlocalTransform.imagemagick.url=http://imagemagick:8090/
+                -DlocalTransform.libreoffice.url=http://libreoffice:8090/
+                -DlocalTransform.tika.url=http://tika:8090/
+                -DlocalTransform.misc.url=http://transform-misc:8090/
+
+                -Dlegacy.transform.service.enabled=${LEGACY_TRANSFORM_SERVICE_ENABLED}
                 -Dalfresco-pdf-renderer.url=http://alfresco-pdf-renderer:8090/
                 -Djodconverter.url=http://libreoffice:8090/
                 -Dimg.url=http://imagemagick:8090/
                 -Dtika.url=http://tika:8090/
-                -Dsfs.url=http://shared-file-store:8099/
-                -Dshare.host=localhost
-                -Dmessaging.broker.url=\"failover:(tcp://activemq:61616)?timeout=3000&jms.useCompression=true\"
-                -Dlocal.transform.service.enabled=${LOCAL_TRANSFORM_SERVICE_ENABLED}
-                -Dtransform.service.enabled=${TRANSFORM_SERVICE_ENABLED}
+                -Dtransform.misc.url=http://transform-misc:8090/
+
                 -Dcors.enabled=true
                 -Dcors.allowed.origins=http://localhost:4200
                 "
@@ -106,15 +130,27 @@ services:
                 -Dalfresco.restApi.basicAuthScheme=true
                 -Dimap.server.enabled=false
                 -Dftp.enabled=false
+                -Dshare.host=localhost
+                -Dmessaging.broker.url=\"failover:(tcp://activemq:61616)?timeout=3000&jms.useCompression=true\"
+
+                -Dtransform.service.enabled=${TRANSFORM_SERVICE_ENABLED}
+                -Dtransform.service.url=http://transform-router:8095
+                -Dsfs.url=http://shared-file-store:8099/
+
+                -Dlocal.transform.service.enabled=${LOCAL_TRANSFORM_SERVICE_ENABLED}
+                -DlocalTransform.pdfrenderer.url=http://alfresco-pdf-renderer:8090/
+                -DlocalTransform.imagemagick.url=http://imagemagick:8090/
+                -DlocalTransform.libreoffice.url=http://libreoffice:8090/
+                -DlocalTransform.tika.url=http://tika:8090/
+                -DlocalTransform.misc.url=http://transform-misc:8090/
+
+                -Dlegacy.transform.service.enabled=${LEGACY_TRANSFORM_SERVICE_ENABLED}
                 -Dalfresco-pdf-renderer.url=http://alfresco-pdf-renderer:8090/
                 -Djodconverter.url=http://libreoffice:8090/
                 -Dimg.url=http://imagemagick:8090/
                 -Dtika.url=http://tika:8090/
-                -Dsfs.url=http://shared-file-store:8099/
-                -Dshare.host=localhost
-                -Dmessaging.broker.url=\"failover:(tcp://activemq:61616)?timeout=3000&jms.useCompression=true\"
-                -Dlocal.transform.service.enabled=${LOCAL_TRANSFORM_SERVICE_ENABLED}
-                -Dtransform.service.enabled=${TRANSFORM_SERVICE_ENABLED}
+                -Dtransform.misc.url=http://transform-misc:8090/
+
                 -Dcors.enabled=true
                 -Dcors.allowed.origins=http://localhost:4200
                 "
@@ -136,7 +172,7 @@ services:
             - activemq
 
     alfresco-pdf-renderer:
-        image: quay.io/alfresco/alfresco-pdf-renderer:${TRANSFORMERS_TAG}
+        image: alfresco/alfresco-pdf-renderer:${TRANSFORMERS_TAG}
         environment:
             JAVA_OPTS: " -Xms256m -Xmx256m"
             ACTIVEMQ_URL: "nio://activemq:61616"
@@ -145,7 +181,7 @@ services:
             - 8090:8090
 
     imagemagick:
-        image: quay.io/alfresco/alfresco-imagemagick:${TRANSFORMERS_TAG}
+        image: alfresco/alfresco-imagemagick:${TRANSFORMERS_TAG}
         environment:
             JAVA_OPTS: " -Xms256m -Xmx256m"
             ACTIVEMQ_URL: "nio://activemq:61616"
@@ -154,7 +190,7 @@ services:
             - 8091:8090
 
     libreoffice:
-        image: quay.io/alfresco/alfresco-libreoffice:${TRANSFORMERS_TAG}
+        image: alfresco/alfresco-libreoffice:${TRANSFORMERS_TAG}
         environment:
             JAVA_OPTS: " -Xms256m -Xmx256m"
             ACTIVEMQ_URL: "nio://activemq:61616"
@@ -163,13 +199,22 @@ services:
             - 8092:8090
 
     tika:
-        image: quay.io/alfresco/alfresco-tika:${TRANSFORMERS_TAG}
+        image: alfresco/alfresco-tika:${TRANSFORMERS_TAG}
         environment:
             JAVA_OPTS: " -Xms256m -Xmx256m"
             ACTIVEMQ_URL: "nio://activemq:61616"
             FILE_STORE_URL: "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file"
         ports:
             - 8093:8090
+
+    transform-misc:
+        image: alfresco/alfresco-transform-misc:${TRANSFORMERS_TAG}
+        environment:
+            JAVA_OPTS: " -Xms256m -Xmx256m"
+            ACTIVEMQ_URL: "nio://activemq:61616"
+            FILE_STORE_URL: "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file"
+        ports:
+            - 8094:8090
 
     shared-file-store:
         image: alfresco/alfresco-shared-file-store:${SFS_TAG}

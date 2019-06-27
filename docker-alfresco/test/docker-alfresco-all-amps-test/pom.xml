@@ -77,12 +77,12 @@
             <version>1.5.0</version>
             <type>war</type>
         </dependency>
-        <dependency>
-            <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-ai-repo</artifactId>
-            <version>${alfresco.ai-repo.version}</version>
-            <type>amp</type>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.alfresco</groupId>-->
+<!--            <artifactId>alfresco-ai-repo</artifactId>-->
+<!--            <version>${alfresco.ai-repo.version}</version>-->
+<!--            <type>amp</type>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>
@@ -219,14 +219,14 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.alfresco</groupId>
-                                    <artifactId>alfresco-ai-repo</artifactId>
-                                    <version>${alfresco.ai-repo.version}</version>
-                                    <type>amp</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                </artifactItem>
+<!--                                <artifactItem>-->
+<!--                                    <groupId>org.alfresco</groupId>-->
+<!--                                    <artifactId>alfresco-ai-repo</artifactId>-->
+<!--                                    <version>${alfresco.ai-repo.version}</version>-->
+<!--                                    <type>amp</type>-->
+<!--                                    <overWrite>false</overWrite>-->
+<!--                                    <outputDirectory>${project.build.directory}/amps</outputDirectory>-->
+<!--                                </artifactItem>-->
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-glacier-connector-repo</artifactId>
