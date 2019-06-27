@@ -22,6 +22,6 @@ RUN sed -i -e "s_log4j.appender.File.File\=alfresco.log_log4j.appender.File.File
     find ${TOMCAT_DIR}/webapps -type d -exec chmod 0750 {} \; && \
     find ${TOMCAT_DIR}/webapps -type f -exec chmod 0640 {} \; && \
     chmod -R g+r ${TOMCAT_DIR}/webapps && \
-    chgrp -R ${GROUPNAME} ${TOMCAT_DIR} && \
+    chgrp -R ${GROUPNAME} ${TOMCAT_DIR}
 
 USER ${USERNAME}
