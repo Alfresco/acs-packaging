@@ -19,8 +19,8 @@ ARG JAVA_PROFILER_RUNTIME_DIR=/tmp/Alfresco/yourkit
 
 # Create prerequisite to store tools and properties
 RUN mkdir -p ${TOMCAT_DIR}/shared/classes/alfresco/extension && \
-    mkdir ${TOMCAT_DIR}/alfresco-mmt
-RUN touch ${TOMCAT_DIR}/shared/classes/alfresco-global.properties
+    mkdir ${TOMCAT_DIR}/alfresco-mmt && \
+    touch ${TOMCAT_DIR}/shared/classes/alfresco-global.properties
 
 # You need to run `mvn clean install` in the root of this project to update the following dependencies
 # Copy the WAR files to the appropriate location for your application server
@@ -101,7 +101,6 @@ RUN mkdir -p ${TOMCAT_DIR}/conf/Catalina/localhost && \
     chmod g+rwx ${TOMCAT_DIR}/temp && \
     chmod g+rwx ${TOMCAT_DIR}/work && \
     chmod o-w ${TOMCAT_DIR}/work && \
-
     # Configure YourKit Java Profiler access
     chgrp -R ${GROUPNAME} ${JAVA_PROFILER_DIR} && \
     mkdir -p ${JAVA_PROFILER_RUNTIME_DIR} && \
