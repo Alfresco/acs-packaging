@@ -23,9 +23,7 @@ services:
                 -Dsolr.base.url=/solr
                 -Dindex.subsystem.name=solr6
                 -Dalfresco.restApi.basicAuthScheme=true
-                -Dftp.enabled=true
-                -Dftp.dataPortFrom=30000
-                -Dftp.dataPortTo=30099
+                -Dftp.enabled=false
 
                 -Dtransform.service.enabled=${TRANSFORM_SERVICE_ENABLED}
                 -Dtransform.service.url=http://transform-router:8095
@@ -63,6 +61,15 @@ services:
                 -Demail.server.port=1126
                 -Dsystem.usages.enabled=true
                 -Dcsrf.filter.enabled=false
+                -Ddir.contentstore=/usr/local/tomcat/alf_data/contentstore
+                -Ddir.contentstore.deleted=/usr/local/tomcat/alf_data/contentstore.deleted
+                -Ds3.accessKey=default
+                -Ds3.secretKey=default
+                -Ds3.bucketName=bamboo-s3-conn-default
+                -Ds3.autoLowerCaseBucketName=true
+                -Dcentera.url=168.159.214.26?/binaries/bamboo-agent-config/Centera/c2armtesting.pea
+                -Dsaml.sp.isEnforced=false
+                -Ddsync.service.uris=http://localhost:8082/alfresco
                 -Dmessaging.broker.url=\"failover:(tcp://activemq:61616)?timeout=3000&jms.useCompression=true\"
                 "
         ports:
@@ -72,7 +79,6 @@ services:
             - 1143:1143
             - 1126:1126
             - 1125:1125
-            - "30000-30099:30000-30099"
 
     transform-router:
         image: quay.io/alfresco/alfresco-transform-router:${TRANSFORM_ROUTER_TAG}
