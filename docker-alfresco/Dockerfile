@@ -47,10 +47,9 @@ COPY ${resource_path}/amps ${TOMCAT_DIR}/amps
 RUN java -jar ${TOMCAT_DIR}/alfresco-mmt/alfresco-mmt*.jar install \
               ${TOMCAT_DIR}/amps ${TOMCAT_DIR}/webapps/alfresco -directory -nobackup -force
 
-# Move the log file and make webapps folder read-only.
+# Move the log file
 RUN sed -i -e "s_log4j.appender.File.File\=alfresco.log_log4j.appender.File.File\=${TOMCAT_DIR}/logs\/alfresco.log_" \
         ${TOMCAT_DIR}/webapps/alfresco/WEB-INF/classes/log4j.properties && \
-    chmod -R =r ${TOMCAT_DIR}/webapps && \
 
 # Add catalina.policy to ROOT.war and alfresco.war
 # Grant all security permissions to alfresco webapp because of numerous permissions required in order to work properly.
