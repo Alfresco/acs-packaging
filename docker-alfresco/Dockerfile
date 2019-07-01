@@ -19,8 +19,8 @@ ARG JAVA_PROFILER_RUNTIME_DIR=/tmp/Alfresco/yourkit
 
 # Create prerequisite to store tools and properties
 RUN mkdir -p ${TOMCAT_DIR}/shared/classes/alfresco/extension && \
-    mkdir ${TOMCAT_DIR}/alfresco-mmt
-RUN touch ${TOMCAT_DIR}/shared/classes/alfresco-global.properties
+    mkdir ${TOMCAT_DIR}/alfresco-mmt && \
+    touch ${TOMCAT_DIR}/shared/classes/alfresco-global.properties
 
 # You need to run `mvn clean install` in the root of this project to update the following dependencies
 # Copy the WAR files to the appropriate location for your application server
@@ -37,17 +37,6 @@ COPY ${resource_path}/licenses/ /licenses/
 # Change the value of the shared.loader= property to the following:
 # shared.loader=${catalina.base}/shared/classes
 RUN sed -i "s/shared.loader=/shared.loader=\${catalina.base}\/shared\/classes/" ${TOMCAT_DIR}/conf/catalina.properties
-
-# Add here configurations for alfresco-global.properties
-RUN echo -e '\n\
-jodconverter.enabled=true\n\
-' >> ${TOMCAT_DIR}/shared/classes/alfresco-global.properties
-
-RUN echo -e '\n\
-log4j.logger.org.alfresco.repo.content.transform.TransformerDebug=debug\n\
-log4j.logger.org.alfresco.repo.content.transform.LocalTransformServiceRegistry=debug\n\
-log4j.logger.org.alfresco.enterprise.repo.rendition2.RemoteTransformServiceRegistry=debug\n\
-' >> ${TOMCAT_DIR}/shared/classes/alfresco/extension/custom-log4j.properties
 
 RUN mkdir -p ${TOMCAT_DIR}/amps
 
