@@ -13,9 +13,6 @@ alfresco/*
 *.iml
 *.iws
 
-# Vscode
-.vscode/
-
 # Mac
 .DS_Store
 
