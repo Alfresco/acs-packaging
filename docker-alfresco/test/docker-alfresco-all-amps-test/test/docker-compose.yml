@@ -55,7 +55,6 @@ services:
             - 1143:1143
             - 1126:1126
             - 1125:1125
-            - "30000-30099:30000-30099"
 
     alfresco-pdf-renderer:
         image: alfresco/alfresco-pdf-renderer:${TRANSFORMERS_TAG}
