@@ -23,9 +23,7 @@ services:
                 -Dsolr.base.url=/solr
                 -Dindex.subsystem.name=solr6
                 -Dalfresco.restApi.basicAuthScheme=true
-                -Dftp.enabled=true
-                -Dftp.dataPortFrom=30000
-                -Dftp.dataPortTo=30099
+                -Dftp.enabled=false
                 -Dalfresco-pdf-renderer.url=http://alfresco-pdf-renderer:8090/
                 -Djodconverter.url=http://libreoffice:8090/
                 -Dimg.url=http://imagemagick:8090/
@@ -66,7 +64,6 @@ services:
             - 1143:1143
             - 1126:1126
             - 1125:1125
-            - "30000-30099:30000-30099"
 
     transform-router:
         image: quay.io/alfresco/alfresco-transform-router:${TRANSFORM_ROUTER_TAG}
