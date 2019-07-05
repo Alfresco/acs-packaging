@@ -14,6 +14,7 @@
   <properties>
       <image.name>alfresco/alfresco-content-repository-all-amps-test</image.name>
       <image.registry>quay.io</image.registry>
+      <image.tag>latest</image.tag>
       <s3.bucketName>bamboo-s3-conn-default</s3.bucketName>
       <aws-access-key-id>default</aws-access-key-id>
       <aws-secret-access-key>default</aws-secret-access-key>

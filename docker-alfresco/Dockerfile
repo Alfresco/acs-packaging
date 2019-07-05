@@ -19,8 +19,8 @@ ARG JAVA_PROFILER_RUNTIME_DIR=/tmp/Alfresco/yourkit
 
 # Create prerequisite to store tools and properties
 RUN mkdir -p ${TOMCAT_DIR}/shared/classes/alfresco/extension && \
-    mkdir ${TOMCAT_DIR}/alfresco-mmt
-RUN touch ${TOMCAT_DIR}/shared/classes/alfresco-global.properties
+    mkdir ${TOMCAT_DIR}/alfresco-mmt && \
+    touch ${TOMCAT_DIR}/shared/classes/alfresco-global.properties
 
 # You need to run `mvn clean install` in the root of this project to update the following dependencies
 # Copy the WAR files to the appropriate location for your application server
@@ -38,17 +38,6 @@ COPY ${resource_path}/licenses/ /licenses/
 # shared.loader=${catalina.base}/shared/classes
 RUN sed -i "s/shared.loader=/shared.loader=\${catalina.base}\/shared\/classes/" ${TOMCAT_DIR}/conf/catalina.properties
 
-# Add here configurations for alfresco-global.properties
-RUN echo -e '\n\
-jodconverter.enabled=true\n\
-' >> ${TOMCAT_DIR}/shared/classes/alfresco-global.properties
-
-RUN echo -e '\n\
-log4j.logger.org.alfresco.repo.content.transform.TransformerDebug=debug\n\
-log4j.logger.org.alfresco.repo.content.transform.LocalTransformServiceRegistry=debug\n\
-log4j.logger.org.alfresco.enterprise.repo.rendition2.RemoteTransformServiceRegistry=debug\n\
-' >> ${TOMCAT_DIR}/shared/classes/alfresco/extension/custom-log4j.properties
-
 RUN mkdir -p ${TOMCAT_DIR}/amps
 
 # Copy the amps from build context to the appropriate location for your application server
@@ -58,10 +47,9 @@ COPY ${resource_path}/amps ${TOMCAT_DIR}/amps
 RUN java -jar ${TOMCAT_DIR}/alfresco-mmt/alfresco-mmt*.jar install \
               ${TOMCAT_DIR}/amps ${TOMCAT_DIR}/webapps/alfresco -directory -nobackup -force
 
-# Move the log file and make webapps folder read-only.
+# Move the log file
 RUN sed -i -e "s_log4j.appender.File.File\=alfresco.log_log4j.appender.File.File\=${TOMCAT_DIR}/logs\/alfresco.log_" \
         ${TOMCAT_DIR}/webapps/alfresco/WEB-INF/classes/log4j.properties && \
-    chmod -R =r ${TOMCAT_DIR}/webapps && \
 
 # Add catalina.policy to ROOT.war and alfresco.war
 # Grant all security permissions to alfresco webapp because of numerous permissions required in order to work properly.
@@ -102,7 +90,6 @@ RUN mkdir -p ${TOMCAT_DIR}/conf/Catalina/localhost && \
     chmod g+rwx ${TOMCAT_DIR}/temp && \
     chmod g+rwx ${TOMCAT_DIR}/work && \
     chmod o-w ${TOMCAT_DIR}/work && \
-
     # Configure YourKit Java Profiler access
     chgrp -R ${GROUPNAME} ${JAVA_PROFILER_DIR} && \
     mkdir -p ${JAVA_PROFILER_RUNTIME_DIR} && \

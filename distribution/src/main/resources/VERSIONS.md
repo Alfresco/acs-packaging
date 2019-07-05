@@ -62,6 +62,8 @@ This file lists the recommended components for this Service Pack. Use it along w
 | MySQL | 5.7.23 | 5.7.17 |
 | MS SQL Server | 2017 |
 | Oracle | 12c  |
+| Oracle | 18c  |
+| Oracle | 19c  |
 | PostgreSQL | 10.1 |
 | MariaDB | 10.2.18 |
 | Amazon Aurora | Latest |
