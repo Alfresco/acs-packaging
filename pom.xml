@@ -421,16 +421,6 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-                <version>${dependency.cxf.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-rs-client</artifactId>
-                <version>${dependency.cxf.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-transports-http</artifactId>
                 <version>${dependency.cxf.version}</version>
             </dependency>
@@ -678,6 +668,18 @@
                 <artifactId>jsoup</artifactId>
                 <version>1.11.3</version>
             </dependency>
+            <!-- upgrade dependency from cxf -->
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-xjc</artifactId>
+                <version>2.3.2</version>
+            </dependency>
+            <!-- upgrade dependency from cxf -->
+            <dependency>
+                <groupId>org.ow2.asm</groupId>
+                <artifactId>asm</artifactId>
+                <version>7.0</version>
+            </dependency>                     
         </dependencies>
     </dependencyManagement>
 
