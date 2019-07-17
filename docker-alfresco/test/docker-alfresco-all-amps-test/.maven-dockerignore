@@ -1,1 +1,4 @@
-target/docker/
+target/docker/**
+tmp/**
+test/**
+scripts/**
