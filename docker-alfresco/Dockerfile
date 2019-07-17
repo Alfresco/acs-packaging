@@ -91,8 +91,8 @@ RUN mkdir -p ${TOMCAT_DIR}/conf/Catalina/localhost && \
     chmod g+rwx ${TOMCAT_DIR}/work && \
     chmod o-w ${TOMCAT_DIR}/work
 
-# To remote debug into this image add: EXPOSE 8000	EXPOSE 10001
-# Changes are also required to the docker-compose/docker-compose.yml file.	
+# To remote debug into this image add: EXPOSE 8000
+# Changes are also required to the docker-compose/docker-compose.yml file.
 # EXPOSE 8000
 
 USER ${USERNAME}
