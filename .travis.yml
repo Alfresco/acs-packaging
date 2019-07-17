@@ -1,6 +1,9 @@
-dist: trusty
+dist: xenial
 sudo: required
 language: java
+jdk:
+  - openjdk11
+
 services:
   - docker
 
@@ -30,7 +33,6 @@ matrix:
     - name: "WhiteSource scan"
       # only on support branches or master and if it is not a PR
       if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request
-      jdk: openjdk11
       install:
         - travis_retry travis_wait 30 mvn -q install -Dbuild-number=${TRAVIS_BUILD_NUMBER} "-Dbuild-key=${TRAVIS_COMMIT}" "-Dbuild-name=${TRAVIS_BUILD_WEB_URL}" "-Dscm-path=${TRAVIS_REPO_SLUG}" "-Dversion.edition=${VERSION_EDITION}" -f war/pom.xml
       script:
