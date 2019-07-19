@@ -7,7 +7,7 @@ version: "3"
 
 services:
     alfresco:
-        image: quay.io/alfresco/alfresco-content-repository-all-amps-test:fix-repo-4461-hazelcast-fix-6.2.0-SNAPSHOT
+        image: ${REGISTRY}alfresco/alfresco-content-repository-all-amps-test:${ALFRESCO_TAG}
         environment:
             CATALINA_OPTS : "
                 -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
