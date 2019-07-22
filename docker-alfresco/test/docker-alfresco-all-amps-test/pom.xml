@@ -275,8 +275,6 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
-                                <!--
-                                Uncomment this when REPO-4233 is fixed and we have a compatible saml module
                                 <artifactItem>
                                     <groupId>org.alfresco.saml</groupId>
                                     <artifactId>alfresco-saml-repo</artifactId>
@@ -293,7 +291,6 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
                                 </artifactItem>
-                                -->
                                 <!--
                                 Uncomment this when MM-785 is fixed and we have a compatible MM module
                                 <artifactItem>
