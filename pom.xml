@@ -36,13 +36,13 @@
 
         <dependency.alfresco-core.version>7.5.6</dependency.alfresco-core.version>
         <dependency.alfresco-data-model.version>8.18.11</dependency.alfresco-data-model.version>
-        <dependency.alfresco-repository.version>6.56.32</dependency.alfresco-repository.version>
-        <dependency.alfresco-remote-api.version>6.39.22</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-repository.version>6.56.33</dependency.alfresco-repository.version>
+        <dependency.alfresco-remote-api.version>6.39.23</dependency.alfresco-remote-api.version>
     
         <dependency.alfresco-hb-data-sender.version>1.0.10</dependency.alfresco-hb-data-sender.version>
 
-        <dependency.alfresco-enterprise-repository.version>6.36.25</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-enterprise-remote-api.version>6.28.17</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>6.36.26</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-enterprise-remote-api.version>6.28.18</dependency.alfresco-enterprise-remote-api.version>
 
         <dependency.alfresco-spring-encryptor.version>6.1</dependency.alfresco-spring-encryptor.version>
         <dependency.alfresco-enterprise-crypto.version>6.1</dependency.alfresco-enterprise-crypto.version>
@@ -108,7 +108,7 @@
         <alfresco.package.name>alfresco</alfresco.package.name>
         <alfresco.distribution.name>${alfresco.package.name}-distribution</alfresco.distribution.name>
 
-        <dependency.postgresql.version>42.2.5</dependency.postgresql.version>
+        <dependency.postgresql.version>42.2.6</dependency.postgresql.version>
         <dependency.mariadb.version>2.2.5</dependency.mariadb.version>
     </properties>
 
