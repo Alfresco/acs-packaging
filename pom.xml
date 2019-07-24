@@ -37,7 +37,7 @@
         <dependency.alfresco-core.version>7.19</dependency.alfresco-core.version>
         <dependency.alfresco-data-model.version>8.44</dependency.alfresco-data-model.version>
 
-        <dependency.alfresco-repository.version>7.84</dependency.alfresco-repository.version>
+        <dependency.alfresco-repository.version>7.86</dependency.alfresco-repository.version>
         <dependency.alfresco-remote-api.version>7.69</dependency.alfresco-remote-api.version>
 
         <dependency.alfresco-hb-data-sender.version>1.0.11</dependency.alfresco-hb-data-sender.version>
@@ -54,6 +54,7 @@
         <dependency.alfresco-jlan.version>7.1</dependency.alfresco-jlan.version>
         <dependency.alfresco-server-root.version>6.0.1</dependency.alfresco-server-root.version>
         <dependency.alfresco-api-explorer.version>6.1.0</dependency.alfresco-api-explorer.version>
+        <dependency.gytheio.version>0.9.1</dependency.gytheio.version>
 
         <dependency.spring.version>5.1.8.RELEASE</dependency.spring.version>
         <dependency.fabric8.version>4.1.0</dependency.fabric8.version>
