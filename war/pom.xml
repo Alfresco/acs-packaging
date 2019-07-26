@@ -76,7 +76,7 @@
             <artifactId>standard</artifactId>
             <version>1.1.2</version>
         </dependency>
-        <!-- required by MM -->
+        <!-- required by MM and GDocs-->
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
