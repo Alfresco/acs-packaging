@@ -55,6 +55,7 @@
         <dependency.alfresco-server-root.version>6.0.1</dependency.alfresco-server-root.version>
         <dependency.alfresco-api-explorer.version>6.1.0</dependency.alfresco-api-explorer.version>
         <dependency.gytheio.version>0.9.1</dependency.gytheio.version>
+        <dependency.alfresco-log-sanitizer.version>0.1</dependency.alfresco-log-sanitizer.version>
 
         <dependency.spring.version>5.1.8.RELEASE</dependency.spring.version>
         <dependency.fabric8.version>4.1.0</dependency.fabric8.version>
@@ -543,6 +544,11 @@
                 <groupId>org.apache.ws.commons.axiom</groupId>
                 <artifactId>axiom-impl</artifactId>
                 <version>1.2.22</version>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-log-sanitizer</artifactId>
+                <version>${dependency.alfresco-log-sanitizer.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.alfresco.integrations</groupId>
