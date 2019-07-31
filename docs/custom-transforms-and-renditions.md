@@ -85,9 +85,9 @@ New T-Engines are set up as Maven projects built on top of [Alfresco Transform C
 The Alfresco Transform Core project brings in Spring Boot capabilities
 as well as base classes which allowing us to easily develop new T-Engines.
 Using the provided example T-Engine, we are going to take a look at:
- * How to [set up] the T-Engine as a Dockerized Spring Application.
- * How to define the [engine configuration]
- * How to implement a Controller in order to add [custom transform logic].
+ * How to [set up](#project-setup) a T-Engine as a Dockerized Spring Application.
+ * How to specify [T-Engine configuration](#t-engine-configuration).
+ * How to implement a [T-Engine controller](#custom-transform-api).
 
 #### Project setup
 
