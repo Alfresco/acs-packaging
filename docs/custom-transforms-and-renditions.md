@@ -153,7 +153,7 @@ in the language requested via transformOptions.
   "transformers":
   [
     {
-      "transformerName": "exampleTransformer",
+      "transformerName": "helloWorldTransformer",
       "supportedSourceAndTargetList":
       [
         {"sourceMediaType": "text/plain",  "targetMediaType": "text/html"  }
@@ -172,10 +172,11 @@ by the T-Engine to perform the transform. The options have a unique name
 such as *exampleOptions* and a list of option names, in this case just *language*.
 * **transformers** - A list of transformer definitions.
 Each transformer definition has a unique **transformerName**,
-list of supported **sourceMediaTypes** and **targetMediaTypes**.
+list of supported **sourceMediaTypes** and **targetMediaTypes**
+and a reference to **transformOptions**.
 
 The **engine_config.json** file has to be provided at the top level
-of the resources folder (same as in the example) with the same name (engine_config.json).
+of the `resources` folder (same as in the example) with the same name (engine_config.json).
 No additional wiring is required for this file to be served by the T-Engine.
 
 > ACS uses transformOptions in its transformer selection strategy.
@@ -185,7 +186,7 @@ For this reason it is recommended to prefix option names with a namespace to pre
 
 T-Engines define their endpoints through an annotated Spring controller
 provided by Alfresco Transform Core.
-The [ExampleController.java] in the example T-Engine illustrates how to
+The [HelloWorldController.java] in the example T-Engine illustrates how to
 implement such controller.
 
 
@@ -231,51 +232,126 @@ For example a test transform on a file included in the same Docker image.
 ##### Hello World T-Engine
 
 This chapter will describe how to run and debug the example [Hello World T-Engine].
-The steps for building and running the T-Engine are described in the project's
-[README.md].
+Instructions on how to build and run the T-Engine are described in the project's
+[README.md] and also specified below.
+The Hello World T-Engine transform takes an input text file
+and a `language` **transformOption** and returns a html file.
+See [engine configuration] for details.
 
-The Hello World T-Engine transforms a text file into a html file
-and takes a language option. See [engine configuration].
-To test the transform:
-
-1. Build the T-Engine
-```
-mvn clean install -Plocal
-```
-2. Start the T-Engine
-```
-docker run -d -p 8099:8090 --name alfresco-helloworld-transformer alfresco/alfresco-helloworld-transformer:latest
-```
-3. Create a **sourceFile.txt** file with content:
-```text
-T-Engines
-```
+1. Clone the [Hello World T-Engine] project.
+2. Build the T-Engine
+    ```bash
+    mvn clean install -Plocal
+    ```
+3. Start the T-Engine
+    ```bash
+    docker run -d -p 8090:8090 --name alfresco-helloworld-transformer alfresco/alfresco-helloworld-transformer:latest
+    ```
+4. Create a **source_file.txt** file with the following content:
+    ```
+    T-Engines
+    ```
 
 4. Send a HTTP POST request to the /transform. The Hello World T-Engine provides
 a convenience [HTML form] to do this.
-Once the T-Engine is running the form can be accessed at http://localhost:8099/
+Once the T-Engine is running, the form can be accessed at: http://localhost:8090/
 
-5. In the HTML Form, choose the **sourceFile.txt** file.
-    Specify a language, supported languages are: English, Spanish, German.
-6. Click transform
+5. In the HTML Form, choose the **source_file.txt**.
+Specify a language, supported languages are: English, Spanish, German.
+6. Click **Transform**
+7. Verify that the returned HTML contains a Hello World greeting in the specified language.
+
+###### Logs
+
+T-Engines provide a `/log` endpoint out of the box which shows information about
+transformations performed by the T-Engine.
+In addition, the T-Engine server logs can be accessed using the Docker `logs` command.
+For more information see [Docker documentation](https://docs.docker.com/engine/reference/commandline/logs/).
+```bash
+docker logs alfresco-helloworld-transformer
+```
 
 ##### Hello World T-Engine with ACS
 
-* Refer to other chapters for the setup:
-localTransform.xxx.url, add a custom rendition.
-* Upload file via Share or REST API, get the node id
-* REST API request for available renditions, note the custom rendition
-* REST API request to create the custom rendition
-* REST API request to retrieve the rendition
+This chapter will describe how to configure and run Alfresco Content Services
+with the new Hello World T-Engine in Docker Compose.
 
+Maybe some words about what will be done, create a rendition, add the T-Engine url, define new service ...
 
+1. Clone the [Hello World T-Engine] project (if not done already).
+2. Build the Hello World T-Engine, (if not done already).
+Check that the local Docker image repository contains **alfresco/alfresco-helloworld-transformer:latest**
+3. Clone the [ACS](https://github.com/Alfresco/acs-deployment) project.
+4. Modify the ACS [docker-compose] file by the Hello World T-Engine
+as one of the services.
+    ```yaml
+    transform-helloworld:
+        image: alfresco/alfresco-helloworld-transformer:latest
+        environment:
+            JAVA_OPTS: " -Xms256m -Xmx256m"
+            ACTIVEMQ_URL: "nio://activemq:61616"
+            ACTIVEMQ_USER: "admin"
+            ACTIVEMQ_PASSWORD: "admin"
+            FILE_STORE_URL: "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file"
+        ports:
+            - 8096:8090
+    ```
 
+    Add a `localTransform.{transformer}.url` property to the Alfresco service JAVA_OPTS. See [here](#configure-a-t-engine-as-a-local-transform)
+    for details. For Docker Compose, the **transform-helloworld**
+    in the URL http://**transform-helloworld**:8090/ has the match
+    the service name defined above.
+    ```
+    -DlocalTransform.helloworld.url=http://transform-helloworld:8090/
+    ```
 
+5. Create a custom rendition which will use the new Hello World T-Engine.
+See [here](#configure-a-custom-rendition).
+    ```
+    The json for helloWorldRendition and the property
+    ```
 
+6. Start ACS using the modified docker-compose file.
+    ```bash
+    docker-compose up
+    ```
+
+###### Test custom rendition
+
+This chapter walks through the process of uploading a file to ACS and
+requesting a **helloWorldRendition** created in the previous chapter.
+
+1. Create a **source_file.txt** file with the following content:
+   ```
+   T-Engines
+   ```
+1. Upload the file using [REST API](https://api-explorer.alfresco.com/api-explorer/#!/nodes/createNode)
+and write down the **id** in the response, this is the **nodeId** used in following requests.
+    ```bash
+    curl -u admin:admin -X POST localhost:8082/alfresco/api/-default-/public/alfresco/versions/1/nodes/-my-/children -F filedata=@sourceFile.txt
+    ```
+2. Request a list of available renditions using [REST API](https://api-explorer.alfresco.com/api-explorer/#!/renditions/listRenditions)
+on the uploaded file.
+Notice that the custom helloWorldRendition is in the list of available renditions.
+    ```bash
+    curl -u admin:admin -X GET localhost:8082/alfresco/api/-default-/public/alfresco/versions/1/nodes/{nodeId}/renditions
+    ```
+3. Request the **helloWorldRendition** to be created using [REST API](https://api-explorer.alfresco.com/api-explorer/#!/renditions/createRendition).
+    ```bash
+    curl -u admin:admin -X POST localhost:8082/alfresco/api/-default-/public/alfresco/versions/1/nodes/{nodeId}/renditions -d '{"id":"helloWorldRendition"}' -H "Content-Type: application/json"
+    ```
+4. Request the rendered file using [REST API](https://api-explorer.alfresco.com/api-explorer/#!/renditions/getRenditionContent).
+    ```bash
+    curl -u admin:admin -X GET localhost:8082/alfresco/api/-default-/public/alfresco/versions/1/nodes/{nodeId}/renditions/helloWorldRendition/content -o hello_world_rendition.html
+    ```
+
+###### Logs and Debugging
+
+log4j.logger.org.alfresco.repo.rendition2
+log4j.logger.org.alfresco.enterprise.repo.rendition2
 TODO
-* Talk about using the test /transform and /log endpoints
+
 * Identify the repo log4j settings to set.
-* Talk about how to access log files in the T-Engine
 * Talk about the bits of the Support Tools section of the Alfresco
   Admin Tool that have not been deprecated, and how to use it to
   work out if your transforms have been created. 
