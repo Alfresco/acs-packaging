@@ -17,7 +17,7 @@ the ACS repository. They and their supporting code has been deprecated
 and will go away at some point. ACS 6.2 still uses them if a rendition
 cannot be created by the Transform Service or Local Transforms. The
 process of migrating custom legacy transformers is described at the end
-of this section.
+of this document.
 
 One of the advantages of Local Transforms is that there is no longer any
 need for custom Java code, Spring bean definitions, or alfresco
@@ -30,36 +30,54 @@ Java or Spring beans.
 
 ### Configure a T-Engine as a Local Transform
 
-In order for ACS to connect and talk to a T-Engines, it needs the T-Engine's
-URL. The URL can be added as an System property either by
-specifying in a property file or via JAVA_OPTS in Docker.
+The configuration required for ACS to connect and talk to a T-Engine
+as a Local Transform is a single URL of the T-Engine.
+The URL can be added as an System property either by
+specifying it in a property file or via JAVA_OPTS in Docker.
 ```properties
-localTransform.*.url=
+localTransform.{transformer}.url=
 ```
 
-The asterisk in the above example is a unique name of the transformer.
+The {transformer} in the above example is a unique name of the transformer.
 For example, `localTransform.helloworld.url=`.
 Having set the URL to a T-Engine, ACS will update its transformer
 configuration by requesting the
 [T-Engine's configuration](#t-engine-configuration) on a periodic basis.
 The frequency of these requests has 2 phases.
 A more frequent phase used when ACS starts up and when an error occurs,
-and a less frequent phase used the rest of the time.
+and a less frequent phase used during normal operation.
 
-```
+```properties
 local.transform.service.cronExpression=0 0/10 * * * ?
 local.transform.service.initialAndOnError.cronExpression=0/10 * * * * ?
 ```
 
-TODO
+#### T-Engine selection strategy
+[T-Engine's configuration](#t-engine-configuration) returned by each
+registered T-Engine provides the basis for selection by ACS.
+ACS will use the configurations to choose the appropriate T-Engine based
+on its transformer definitions.
+A transformer definition contains supported source and target Media Types,
+so ACS will choose the T-Engine which supports the required pair.
+Furthermore, a transformer definition might include transform options.
+If the required transform options are specified then the [rendition options](#configure-a-custom-rendition)
+will have to be satisfied by the transformer options for the T-Engine
+to be picked.
 
-• Talk about the options role in transformer selection.
+```text
+For example:
+Transformer T1 defines some options: Op1, Op2
+Transformer T2 defines some options: Op1, Op2, Op3
+Rendition   R1 defines some options: Op1, Op2
+Given that T1 and T2 accept the same Media Types, T1 will be chosen for
+the transform.
+```
 
 ### Enabling and disabling Legacy, Local or Transform Service transforms.
 
 Legacy, Local or Transform Service transforms can be enabled or disabled
-independently of each other. The following System properties
-control each one:
+independently of each other and all 3 can be enabled at the same time.
+The following System properties control each one:
 
 
 ```properties
@@ -76,7 +94,7 @@ transform.service.enabled=true
 Setting the enabled state to **false** will disable all of the transforms
 performed by that particular service. It is possible to disable individual
 Local transforms by setting their corresponding property
-[localTransform.*.url=](#configure-a-t-engine-as-a-local-transform)
+[localTransform.{transformer}.url=](#configure-a-t-engine-as-a-local-transform)
 value to an empty string.
 
 TODO
@@ -84,7 +102,10 @@ TODO
 
 ### Configure a pipeline of local transforms
 
+
 TODO - Talk about the json file
+* Talk about creating pipelines in json rather than Spring or via
+   values in transformer.properties.
 
 ### Configure a custom rendition
 
@@ -125,13 +146,24 @@ Optionally, an additional location can be specified using the System property:
 rendition.config.dir=
 ```
 
->Create a new JSON file with the above rendition definition in one of
-the specified locations for the Hellow World example used in
-[Developing and Debugging T-Engines](#developing-and-debugging-t-engines).
-
 ### Configure a custom mimetype
 
-TODO - links to the work on creating renditions
+Custom MIME types can be defined using the JSON format.
+A custom JSON file with MIME type definitions can be placed in
+
+TODO
+* How to add this file?
+
+Example MIME type definition for Microsoft Word document in JSON:
+```json
+{
+    "name": "Microsoft Word",
+    "extension": "doc",
+    "mediaType": "application/msword",
+    "inputFamily": "TEXT",
+    "storePropertiesByFamily": {"TEXT": {"FilterName": "MS Word 97"}}
+  }
+```
 
 ## Transform Service Configuration
 
@@ -145,9 +177,9 @@ TODO Raise an ATS ticket, or make it part of the same ticket
 
 ## Creating a T-Engine
 
-This chapter will describe how to develop, configure and run a custom
+This section will describe how to develop, configure and run a custom
 T-Engine. We will use an example Hello World T-Engine as a reference
-throughout this chapter. The Hello World T-Engine project can be found
+throughout this section. The Hello World T-Engine project can be found
 [here].
 
 It is assumed that the reader has some familiarity with the following
@@ -162,7 +194,7 @@ T-Engines are Dockerized Spring Boot applications.
 New T-Engines are set up as Maven projects built on top of
 [Alfresco Transform Core].
 The Alfresco Transform Core project brings in Spring Boot capabilities
-as well as base classes which allowing us to easily develop new T-Engines.
+as well as base classes which allow us to easily develop new T-Engines.
 Using the provided example T-Engine, we are going to take a look at:
  * How to [set up](#project-setup) a T-Engine as a Dockerized Spring
  application.
@@ -171,7 +203,7 @@ Using the provided example T-Engine, we are going to take a look at:
 
 #### Project setup
 
-In order to configure the custom T-Engine to be built as a Spring Boot
+In order to configure a custom T-Engine to be built as a Spring Boot
 application
 in a Docker image, we need to add some configuration.
 The quickest way to get started is to clone the example T-Engine from
@@ -327,7 +359,7 @@ For example, a test transform on a file included in the same Docker image.
 
 ##### Hello World T-Engine
 
-This chapter will describe how to run and debug the example [Hello World T-Engine].
+This section will describe how to run and debug the example [Hello World T-Engine].
 Instructions on how to build and run the T-Engine are described in
 the project's [README.md] and also specified below.
 The Hello World T-Engine transform takes an input text file
@@ -344,7 +376,7 @@ See [engine configuration] for details.
     docker run -d -p 8090:8090 --name alfresco-helloworld-transformer alfresco/alfresco-helloworld-transformer:latest
     ```
 4. Create a **source_file.txt** file with the following content:
-    ```
+    ```text
     T-Engines
     ```
 
@@ -371,10 +403,10 @@ docker logs alfresco-helloworld-transformer
 
 ##### Hello World T-Engine with ACS
 
-This chapter will describe how to configure a development environment
+This section will describe how to configure a development environment
 and run Alfresco Content Services with the new Hello World T-Engine.
 
-> The example in this chapter uses Docker Compose for simplicity;
+> The example in this section uses Docker Compose for simplicity;
 however, it is not recommended to run ACS in Docker Compose in production.
 
 1. Clone the [Hello World T-Engine] project (if not done already).
@@ -425,11 +457,11 @@ Hello World T-Engine. See [here](#configure-a-custom-rendition) for details.
 
 ###### Test custom rendition
 
-This chapter walks through an end to end example of using
+This section walks through an end to end example of using
 the Hello World T-Engine with ACS by requesting the **helloWorldRendition**.
 
 1. Create a **source_file.txt** file with the following content:
-   ```
+   ```text
    T-Engines
    ```
 2. Upload the file using [REST API](https://api-explorer.alfresco.com/api-explorer/#!/nodes/createNode)
@@ -494,9 +526,9 @@ a new T-Engine as described [here](#developing-and-debugging-t-engines).
 This section will describe how to migrate custom synchronous transformers
 created for Alfresco Content Repository (ACS) prior to version 6.2, to new
 asynchronous out of process T-Engines.
-The pre 6.2 transformers will be referred to as *legacy transformers*.
+The pre 6.2 transformers will be referred to as *Legacy Transformers*.
 
-A custom legacy transformer would typically be packaged as an Alfresco
+A custom Legacy Transformer would typically be packaged as an Alfresco
 Module Package (AMP). The AMP would contain Java classes, Spring context
 files with new transformer beans and any additional configuration
 required by the new transformer.
@@ -506,11 +538,11 @@ as well as greater separation between the ACS codebase and custom
 transformer code. This also means that there is no longer the need to use
 AMPs in order to provide Spring context files or to override beans in ACS
 in order to introduce new transformers. New transformers will be
-added to ACS by creating and configuring a new T-Engine.
+added to ACS by creating and configuring new T-Engines.
 
-Legacy transformers are implemented by extending a now deprecated class
+Legacy Transformers are implemented by extending a now deprecated class
 `org.alfresco.repo.content.transform.AbstractContentTransformer2`.
-This implementation requires the legacy transformer to define functionality
+This implementation requires the Legacy Transformer to define functionality
 by implementing 2 abstract methods `isTransformableMimetype` and `transformInternal`.
 
 #### Migrating isTransformableMimetype
@@ -519,7 +551,7 @@ public boolean isTransformableMimetype(String sourceMimetype, String targetMimet
 ```
 The `isTransformableMimetype` method allows ACS to determine whether
 this transformer is applicable for a given transform request.
-When migrating a legacy transformer to a T-Engine, this method is no longer
+When migrating a Legacy Transformer to a T-Engine, this method is no longer
 needed.
 
 **How to migrate:**
@@ -540,13 +572,13 @@ A **TransformationOptions** parameter provides the transform options.
 
 **How to migrate:**
 
->Notice how the signature of the legacy transformer's `transformInternal`
+>Notice how the signature of the Legacy Transformer's `transformInternal`
 method is similar to the Hello World T-Engine's `transformInternal` method
 in [HelloWorldController].
 
 The [Custom transform API] section describes how to add transform logic
 to a custom T-Engine. In short, the logic in the `transformInternal`
-method in a legacy transformer can be copied into a new T-Engine and
+method in a Legacy Transformer can be copied into a new T-Engine and
 modified to use the parameters provided by the `/transform` endpoint.
 An example of this can be seen in the [HelloWorldController.java].
 
@@ -566,7 +598,3 @@ TODO
 
 * Talk about not needing to create a sub class of TransformOptions, or
   the need to marshal and un marshal TransformOptions.
-* Talk about being able to run legacy transformers, local transforms and
-  and the Transform service at the same time.
-* Talk about creating pipelines in json rather than Spring or via
-   values in transformer.properties.
