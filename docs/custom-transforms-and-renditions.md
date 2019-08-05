@@ -104,6 +104,8 @@ TODO - Talk about the json file
 * Talk about creating pipelines in json rather than Spring or via
    values in transformer.properties.
 
+local.transform.pipeline.config.dir=
+
 ### Configure a custom rendition
 
 Renditions definitions prior to ACS 6.2 were defined as Spring beans.
@@ -155,6 +157,7 @@ A custom JSON file with MIME type definitions can be placed in
 TODO
 * How to add this file?
 
+mimetype.config.dir=
 Example MIME type definition for Microsoft Word document in JSON:
 ```json
 {
@@ -289,16 +292,13 @@ requested via transformOptions.
 by the T-Engine to perform the transform. The options have a unique name
 such as *exampleOptions* and a list of option names, in this case just
 *language*.
-    > Custom transform options values are statically defined in
-    [rendition definitions](#configure-a-custom-rendition). However, there
-    is a short list of dynamic options which ACS will provide if defined
-    in the engine configuration, these do not need to be supplied in a
-    rendition definition. The dynamic options are:
+    > In addition to the transform options defined in the engine
+    configuration and their static values supplied by [rendition definitions](#configure-a-custom-rendition),
+    ACS appends the following dynamic options with each transform request:
     * sourceMimetype
     * targetMimetype
     * sourceExtension
     * targetExtension
-    * sourceEncoding
 
 * **transformers** - A list of transformer definitions.
 Each transformer definition has a unique **transformerName**,
@@ -505,8 +505,16 @@ in the language specified in the **helloWorldRendition** transform options.
 ###### Logs and Debugging
 
 Log4j `DEBUG` level logging for the transformations code can be enabled
-in ACS on the following packages:
-
+in ACS log4j properties on the following packages:
+```properties
+log4j.logger.org.alfresco.repo.rendition2=debug
+log4j.logger.org.alfresco.enterprise.repo.rendition2=debug
+log4j.logger.org.alfresco.repo.content.transform.TransformerDebug=debug
+log4j.logger.org.alfresco.repo.content.transform.LocalTransformServiceRegistry=debug
+log4j.logger.org.alfresco.enterprise.repo.rendition2.RemoteTransformServiceRegistry=debug
+log4j.logger.org.alfresco.repo.content.transform.TransformerDebug=debug
+log4j.logger.org.alfresco.repo.content.transform.LocalTransform=debug
+```
 * `log4j.logger.org.alfresco.repo.rendition2` - The package associated
 with the core functionality and local transforms.
 
@@ -527,20 +535,19 @@ tool called `Test Transform` under the `Support Tools` section.
 **Get Transformation Debug Log**
 
 TODO
-* Identify the repo log4j settings to set. **Any other?**
 * Talk about the bits of the Support Tools section of the Alfresco
   Admin Tool that have not been deprecated, and how to use it to
-  work out if your transforms have been created.  **Doesn't seem to show the new transformer?**
+  work out if your transforms have been created.
+  **This functionality does not work at the moment**
 
 ### Migrating a Legacy Transformer into a T-Engine
-
-> It is assumed that the reader is familiar with creating and configuring
-a new T-Engine as described [here](#developing-and-debugging-t-engines).
 
 This section will describe how to migrate custom synchronous transformers
 created for Alfresco Content Repository (ACS) prior to version 6.2, to new
 asynchronous out of process T-Engines.
 The pre 6.2 transformers will be referred to as *Legacy Transformers*.
+It is assumed that the reader is familiar with creating and configuring
+a new T-Engine as described [here](#developing-and-debugging-t-engines).
 
 A custom Legacy Transformer would typically be packaged as an Alfresco
 Module Package (AMP). The AMP would contain Java classes, Spring context
@@ -610,6 +617,5 @@ These are comparable to the options in the **TransformationOptions** parameter.
 
 
 TODO
-
 * Talk about not needing to create a sub class of TransformOptions, or
   the need to marshal and un marshal TransformOptions.
