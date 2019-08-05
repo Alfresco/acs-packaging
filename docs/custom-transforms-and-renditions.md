@@ -5,12 +5,14 @@ but also allows custom transforms to be added. This section describes
 how to create custom transforms.
 
 From ACS 6.2 it is possible to create custom transforms that run in
-separate processes known as T-Engines. The same engines may be used
+separate processes known as T-Engines (short for Transformer Engines).
+The same engines may be used
 in Community and Enterprise Editions. They may be directly
 connected to the ACS repository as Local Transforms, but in the
 Enterprise edition there is the option to include them as part of the
 Transform Service which provides more balanced throughput and better
-administration capabilities.
+administration capabilities. A T-Engine is intended to be run as a 
+Docker image, but may also be run as a standalone process.
 
 Prior to ACS 6.0 all legacy transformers ran within the same JVM as
 the ACS repository. They and their supporting code has been deprecated
@@ -30,22 +32,22 @@ Java or Spring beans.
 
 ### Configure a T-Engine as a Local Transform
 
-The configuration required for ACS to connect and talk to a T-Engine
-as a Local Transform is a single URL of the T-Engine.
-The URL can be added as an System property either by
-specifying it in a property file or via JAVA_OPTS in Docker.
+For the ACS repository to talk to a T-Engine, it must know the engine's 
+URL. The URL can be added as an Alfresco global property,
+or more simply as a Java system property. JAVA_OPTS may be used to set
+this if starting the repository with Docker.
 ```properties
-localTransform.{transformer}.url=
+localTransform.<engineName>.url=
 ```
 
-The {transformer} in the above example is a unique name of the transformer.
-For example, `localTransform.helloworld.url`.
-Having set the URL to a T-Engine, ACS will update its transformer
+The &lt;engineName> is a unique name of the T-Engine. 
+For example, `localTransform.helloworld.url`. Typically a T-Engine
+contains a single transform or an associated group of transforms.
+Having set the URL to a T-Engine, the ACS repository will update its
 configuration by requesting the
 [T-Engine's configuration](#t-engine-configuration) on a periodic basis.
-The frequency of these requests has 2 phases.
-A more frequent phase used when ACS starts up and when an error occurs,
-and a less frequent phase used during normal operation.
+It is requested more frequent on start up or if a communication or configuration
+problem has occurred, and a less frequent during normal operation.
 
 ```properties
 local.transform.service.cronExpression=0 0/10 * * * ?
@@ -53,49 +55,50 @@ local.transform.service.initialAndOnError.cronExpression=0/10 * * * * ?
 ```
 
 #### T-Engine selection strategy
-[T-Engine's configuration](#t-engine-configuration) returned by each
-registered T-Engine provides the basis for selection by ACS.
-ACS will use the configurations to choose the appropriate T-Engine based
-on its transformer definitions.
-A transformer definition contains supported source and target Media Types,
-so ACS will choose the T-Engine which supports the required pair.
-Furthermore, a transformer definition might include transform options.
-If the required transform options are specified then the [rendition options](#configure-a-custom-rendition)
-will have to be satisfied by the transformer options for the T-Engine
-to be picked.
-
+The ACS repository will use the
+[T-Engine configuration](#t-engine-configuration) to
+choose which T-Engine will perform a transform. A transformer definition
+contains a supported list of source and target Media Types. This is used
+for the most basic selection. This is further refined by checking
+that the definition also supports transform options (parameters) that
+have been supplied in a transform or rendition request.
+See [rendition options](#configure-a-custom-rendition).
 ```text
-For example:
-Transformer T1 defines some options: Op1, Op2
-Transformer T2 defines some options: Op1, Op2, Op3
-Rendition   R1 defines some options: Op1, Op2, Op3
-Given that T1 and T2 accept the same Media Types, T2 will be chosen for
-the transform.
+Transformer T1 defines options: Op1, Op2
+Transformer T2 defines options: Op1, Op2, Op3, Op4
 ```
+```
+Rendition R1 provides values for options: Op2, Op3
+```
+If we assume both transformers support the required source and target
+Media Types, T2 will be selected because it knows about all available
+options. The definition may also specify that some options are required
+or grouped.
 
 ### Enabling and disabling Legacy, Local or Transform Service transforms
 
 Legacy, Local or Transform Service transforms can be enabled or disabled
-independently of each other and all 3 can be enabled at the same time.
-The following System properties control each one:
-
+independently of each other. The ACS repository will try to transform
+content using the Transform Service if possible, falling back to a Local
+transform and failing that a Legacy transform. This makes it possible to
+gradually migrate away from legacy transforms and to take advantage of
+the Transform Service if it is available. 
 
 ```properties
-# Legacy transforms
-legacy.transform.service.enabled=true
-
-# Local transforms
-local.transform.service.enabled=true
-
-# Transform Service
 transform.service.enabled=true
+local.transform.service.enabled=true
+legacy.transform.service.enabled=true
 ```
 
 Setting the enabled state to **false** will disable all of the transforms
 performed by that particular service. It is possible to disable individual
-Local transforms by setting their corresponding property
-[localTransform.{transformer}.url](#configure-a-t-engine-as-a-local-transform)
+Local transforms by setting the corresponding T-Engine URL property
+[localTransform.&lt;engineName>.url](#configure-a-t-engine-as-a-local-transform)
 value to an empty string.
+
+```
+localTransform.helloworld.url=
+```
 
 ### Configure a pipeline of local transforms
 
@@ -112,7 +115,7 @@ Renditions definitions prior to ACS 6.2 were defined as Spring beans.
 A rendition as a Spring bean might look like this:
 ```xml
 <bean id="renditionDefinitionHelloWorldRendition" class="org.alfresco.repo.rendition2.RenditionDefinition2Impl">
-    <constructor-arg name="renditionName" value="helloWorldRendition"/>
+    <constructor-arg name="renditionName" value="helloWorld"/>
 	<constructor-arg name="targetMimetype" value="text/html"/>
 	<constructor-arg name="transformOptions">
 	<map>
@@ -127,7 +130,7 @@ Starting from ACS 6.2, renditions can be added via a JSON file.
 The new JSON equivalent of the above **helloWorldRendition** looks like this:
 ```json
 {
-    "renditionName": "helloWorldRendition",
+    "renditionName": "helloWorld",
     "targetMediaType": "text/html",
     "options": [
         {"name": "language", "value": "German"}
