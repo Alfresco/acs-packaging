@@ -39,7 +39,7 @@ localTransform.{transformer}.url=
 ```
 
 The {transformer} in the above example is a unique name of the transformer.
-For example, `localTransform.helloworld.url=`.
+For example, `localTransform.helloworld.url`.
 Having set the URL to a T-Engine, ACS will update its transformer
 configuration by requesting the
 [T-Engine's configuration](#t-engine-configuration) on a periodic basis.
@@ -68,8 +68,8 @@ to be picked.
 For example:
 Transformer T1 defines some options: Op1, Op2
 Transformer T2 defines some options: Op1, Op2, Op3
-Rendition   R1 defines some options: Op1, Op2
-Given that T1 and T2 accept the same Media Types, T1 will be chosen for
+Rendition   R1 defines some options: Op1, Op2, Op3
+Given that T1 and T2 accept the same Media Types, T2 will be chosen for
 the transform.
 ```
 
@@ -94,7 +94,7 @@ transform.service.enabled=true
 Setting the enabled state to **false** will disable all of the transforms
 performed by that particular service. It is possible to disable individual
 Local transforms by setting their corresponding property
-[localTransform.{transformer}.url=](#configure-a-t-engine-as-a-local-transform)
+[localTransform.{transformer}.url](#configure-a-t-engine-as-a-local-transform)
 value to an empty string.
 
 ### Configure a pipeline of local transforms
@@ -152,12 +152,12 @@ rendition.config.dir=
 ### Configure a custom mimetype
 
 Custom MIME types can be defined using the JSON format.
-A custom JSON file with MIME type definitions can be placed in
-
-TODO
-* How to add this file?
-
+A custom JSON file with MIME type definitions can be added by specifying
+a System property
+```properties
 mimetype.config.dir=
+```
+
 Example MIME type definition for Microsoft Word document in JSON:
 ```json
 {
@@ -168,6 +168,9 @@ Example MIME type definition for Microsoft Word document in JSON:
     "storePropertiesByFamily": {"TEXT": {"FilterName": "MS Word 97"}}
   }
 ```
+
+TODO
+Complete this section once the functionality is in place
 
 ## Transform Service Configuration
 
@@ -517,11 +520,10 @@ log4j.logger.org.alfresco.repo.content.transform.LocalTransform=debug
 ```
 * `log4j.logger.org.alfresco.repo.rendition2` - The package associated
 with the core functionality and local transforms.
-
 * `log4j.logger.org.alfresco.enterprise.repo.rendition2` - The package
 associated with Transform Service transforms in the Enterprise Edition of ACS.
 
-In addtion, the `Alfresco Admin Tool` provides a transformers debugging
+In addition, the `Alfresco Admin Tool` provides a transformers debugging
 tool called `Test Transform` under the `Support Tools` section.
 
 **Get Transformer Names**
@@ -535,10 +537,12 @@ tool called `Test Transform` under the `Support Tools` section.
 **Get Transformation Debug Log**
 
 TODO
+
 * Talk about the bits of the Support Tools section of the Alfresco
   Admin Tool that have not been deprecated, and how to use it to
   work out if your transforms have been created.
-  **This functionality does not work at the moment**
+  This functionality does not work at the moment,
+  compete the section when fixed.
 
 ### Migrating a Legacy Transformer into a T-Engine
 
