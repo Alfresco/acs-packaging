@@ -99,12 +99,69 @@ value to an empty string.
 
 ### Configure a pipeline of local transforms
 
+Pipeline definitions can be used to define a pipeline of transformers.
+A pipeline defines which transformers are used and which Media Types
+the transform will go through. From the outside, a pipeline
+can be seen as a transformer with its own source and target
+Media Types and a list of transform options.
+
+The example pipeline in this section begins with the **helloWorldTransformer**
+described in [Creating a T-Engine](#creating-a-t-Engine).
+The **helloWorldTransformer** take a text file with a name and produces
+a HTML file with body: "Hello World!, Hello {name from file}!"
+
+After the **helloWorldTransformer**, a second **html** transformer is called
+which takes the HTML file from the previous transformer and returns a
+text file with the contents of the `<title>` and `<body>` tags extracted
+into a text file.
+
+Example pipeline definition in JSON:
+```json
+{
+  "transformers": [
+    {
+      "transformerName": "helloWorldPipeline",
+      "transformerPipeline" : [
+        {"transformerName": "helloWorldTransformer", "targetMediaType": "text/html"},
+        {"transformerName": "html"}
+      ],
+      "supportedSourceAndTargetList": [
+        {"sourceMediaType": "text/plain",  "targetMediaType": "text/plain" }
+      ],
+      "transformOptions": [
+        "exampleOptions",
+        "htmlOptions"
+      ]
+    }
+  ]
+}
+```
+
+* **transformerName** - A unique name for this pipeline transformer
+* **transformerPipeline** - A list of transformers in the pipeline.
+Each transformer in the pipeline has a name as defined in its [T-Engine configuration](#t-engine-configuration)
+and target Media Type. The **targetMediaType** specifies the intermediate
+Media Types.
+* **supportedSourceAndTargetList** - The supported source and target
+Media Types, which refer to the Media Types this pipeline transformer
+can transform from and to.
+* **transformOptions** - A list of references to options required by
+the pipeline transformer. This will normally be the options required by
+the individual transformers defined in the pipeline.
+
+The location of the pipeline JSON file can be specified using the System
+property:
+```properties
+local.transform.pipeline.config.dir=
+```
 
 TODO - Talk about the json file
 * Talk about creating pipelines in json rather than Spring or via
    values in transformer.properties.
-
-local.transform.pipeline.config.dir=
+* Would it be better to use a generic pipeline definition for the example?
+Something that would refer to "transformer1" and "transformer2" with
+"transformOptionsA" and "transformOptionsB"
+    * If yes, provide a custom rendition for the pipeline
 
 ### Configure a custom rendition
 
@@ -148,6 +205,9 @@ Optionally, an additional location can be specified using the System property:
 ```properties
 rendition.config.dir=
 ```
+
+TODO
+Confirm how we will add this configuration
 
 ### Configure a custom mimetype
 
@@ -305,7 +365,7 @@ such as *exampleOptions* and a list of option names, in this case just
 
 * **transformers** - A list of transformer definitions.
 Each transformer definition has a unique **transformerName**,
-list of supported **sourceMediaTypes** and **targetMediaTypes**
+**supportedSourceAndTargetList** of supported **sourceMediaTypes** and **targetMediaTypes**
 and a reference to **transformOptions**.
 
 The **engine_config.json** file has to be provided at the top level
