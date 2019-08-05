@@ -73,7 +73,7 @@ Given that T1 and T2 accept the same Media Types, T1 will be chosen for
 the transform.
 ```
 
-### Enabling and disabling Legacy, Local or Transform Service transforms.
+### Enabling and disabling Legacy, Local or Transform Service transforms
 
 Legacy, Local or Transform Service transforms can be enabled or disabled
 independently of each other and all 3 can be enabled at the same time.
@@ -96,9 +96,6 @@ performed by that particular service. It is possible to disable individual
 Local transforms by setting their corresponding property
 [localTransform.{transformer}.url=](#configure-a-t-engine-as-a-local-transform)
 value to an empty string.
-
-TODO
-* Talk about restarting pods or bouncing the repo
 
 ### Configure a pipeline of local transforms
 
@@ -135,6 +132,10 @@ The new JSON equivalent of the above **helloWorldRendition** looks like this:
     ]
 }
 ```
+* **renditionName** - A unique rendition name.
+* **targetMediaType** - The target Media Type for the rendition.
+* **options** - The list of static transform options corresponding to the
+transform options defined in [T-Engine configuration](#t-engine-configuration).
 
 The default location for the rendition definitions is:
 ```
@@ -288,6 +289,17 @@ requested via transformOptions.
 by the T-Engine to perform the transform. The options have a unique name
 such as *exampleOptions* and a list of option names, in this case just
 *language*.
+    > Custom transform options values are statically defined in
+    [rendition definitions](#configure-a-custom-rendition). However, there
+    is a short list of dynamic options which ACS will provide if defined
+    in the engine configuration, these do not need to be supplied in a
+    rendition definition. The dynamic options are:
+    * sourceMimetype
+    * targetMimetype
+    * sourceExtension
+    * targetExtension
+    * sourceEncoding
+
 * **transformers** - A list of transformer definitions.
 Each transformer definition has a unique **transformerName**,
 list of supported **sourceMediaTypes** and **targetMediaTypes**
@@ -469,7 +481,7 @@ the Hello World T-Engine with ACS by requesting the **helloWorldRendition**.
 and write down the **id** in the response, this is the **nodeId**
 used in following requests.
     ```bash
-    curl -u admin:admin -X POST localhost:8082/alfresco/api/-default-/public/alfresco/versions/1/nodes/-my-/children -F filedata=@sourceFile.txt
+    curl -u admin:admin -X POST localhost:8082/alfresco/api/-default-/public/alfresco/versions/1/nodes/-my-/children -F filedata=@source_file.txt
     ```
 3. Request a list of available renditions using [REST API](https://api-explorer.alfresco.com/api-explorer/#!/renditions/listRenditions)
 on the uploaded file.
@@ -482,12 +494,13 @@ renditions.
     ```bash
     curl -u admin:admin -X POST localhost:8082/alfresco/api/-default-/public/alfresco/versions/1/nodes/{nodeId}/renditions -d '{"id":"helloWorldRendition"}' -H "Content-Type: application/json"
     ```
-5. Request the rendered file using [REST API](https://api-explorer.alfresco.com/api-explorer/#!/renditions/getRenditionContent).
+5. Request the rendered file using [REST API](https://api-explorer.alfresco.com/api-explorer/#!/renditions/getRenditionContent)
+and save it to **hello_world_rendition.html**.
     ```bash
     curl -u admin:admin -X GET localhost:8082/alfresco/api/-default-/public/alfresco/versions/1/nodes/{nodeId}/renditions/helloWorldRendition/content -o hello_world_rendition.html
     ```
 6. Verify that the returned HTML file contains a Hello World greeting
-in the language specified in the **helloWorldRendition**.
+in the language specified in the **helloWorldRendition** transform options.
 
 ###### Logs and Debugging
 
