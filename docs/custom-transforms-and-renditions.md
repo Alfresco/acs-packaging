@@ -155,7 +155,7 @@ property:
 local.transform.pipeline.config.dir=
 ```
 
-TODO - Talk about the json file
+TODO
 * Talk about creating pipelines in json rather than Spring or via
    values in transformer.properties.
 * Would it be better to use a generic pipeline definition for the example?
@@ -165,7 +165,7 @@ Something that would refer to "transformer1" and "transformer2" with
 
 ### Configure a custom rendition
 
-Renditions definitions prior to ACS 6.2 were defined as Spring beans.
+Renditions definitions prior to ACS 6.2 were defined as Spring Beans.
 A rendition as a Spring bean might look like this:
 ```xml
 <bean id="renditionDefinitionHelloWorldRendition" class="org.alfresco.repo.rendition2.RenditionDefinition2Impl">
@@ -611,26 +611,46 @@ created for Alfresco Content Repository (ACS) prior to version 6.2, to new
 asynchronous out of process T-Engines.
 The pre 6.2 transformers will be referred to as *Legacy Transformers*.
 It is assumed that the reader is familiar with creating and configuring
-a new T-Engine as described [here](#developing-and-debugging-t-engines).
+a new T-Engine as described in  [Developing and Debugging T-Engines](#developing-and-debugging-t-engines).
 
-A custom Legacy Transformer would typically be packaged as an Alfresco
-Module Package (AMP). The AMP would contain Java classes, Spring context
-files with new transformer beans and any additional configuration
-required by the new transformer.
-The new out of process approach using T-Engines provides means to
-decouple ACS and transformers. This allows for decoupled releases
+The new asynchronous approach of using T-Engines provides the means to
+decouple ACS and Legacy Transformers. This allows for decoupled releases
 as well as greater separation between the ACS codebase and custom
 transformer code. This also means that there is no longer the need to use
 AMPs in order to provide Spring context files or to override beans in ACS
-in order to introduce new transformers. New transformers will be
-added to ACS by creating and configuring new T-Engines.
+to introduce new transformers, renditions or pipelines.
+New transformers will be added to ACS by creating and configuring new T-Engines.
 
+A custom Legacy Transformer would typically be packaged as an Alfresco
+Module Package (AMP). The AMP would contain Java classes, Spring context
+files with new transformer, rendition or pipeline Spring Beans and any
+additional custom configuration required by the new transformer.
+All of this functionality can now be added without the need to override
+the ACS Spring Bean configuration.
+
+The steps to create and migrate a Legacy Transformer into a custom
+T-Engine are as follows:
+
+1. Create a custom T-Engine. This section walks through how to
+develop, configure and run a new t-Engine using a simple Hello World
+example.
+2. Migrate the custom Legacy Transformer Java code into the new T-Engine
+as described in [Migrating custom transform code](#migrating-custom-transform-code).
+3. Migrate any custom renditions defined as Spring Beans.
+See how to add custom renditions in [Configure a custom rendition](#configure-a-custom-rendition)
+4. Migrate any custom pipelines defined as Spring Beans.
+See how to add a custom pipeline in [Configure a pipeline of local transforms](#configure-a-pipeline-of-local-transforms).
+5. Configure ACS to use the new custom T-Engine as described in [Configure a T-Engine as a Local Transform](#configure-a-t-engine-as-a-local-transform).
+
+#### Migrating custom transform code
 Legacy Transformers are implemented by extending a now deprecated class
 `org.alfresco.repo.content.transform.AbstractContentTransformer2`.
 This implementation requires the Legacy Transformer to define functionality
-by implementing 2 abstract methods `isTransformableMimetype` and `transformInternal`.
+by implementing the following abstract methods:
+* **isTransformableMimetype**
+* **transformInternal**
 
-#### Migrating isTransformableMimetype
+##### Migrating isTransformableMimetype
 ```java
 public boolean isTransformableMimetype(String sourceMimetype, String targetMimetype, TransformationOptions options)
 ```
@@ -645,7 +665,7 @@ This functionality is now defined via a JSON file served by T-Engines.
 See how to define the configuration in the
 [engine configuration](#t-engine-configuration) section.
 
-#### Migrating transformInternal
+##### Migrating transformInternal
 ```java
 public void transformInternal(ContentReader reader, ContentWriter writer,  TransformationOptions options) throws Exception
 ```
@@ -669,14 +689,12 @@ the `/transform` endpoint.
 An example of this can be seen in the **HelloWorldController.java**.
 
 * Requests to a T-Engine's `/transform` endpoint contain a multipart file.
-This is comparable to the **ContentReader** parameter.
+This is equivalent to the **ContentReader** parameter.
 * The response from the `/transform` endpoint contains the transformed file.
-This is comparable to the **ContentWriter** parameter.
+This is equivalent to the **ContentWriter** parameter.
 * Requests to a T-Engine's `/transform` endpoint contain a list of
 transform options as defined by the [engine configuration](#t-engine-configuration).
-These are comparable to the options in the **TransformationOptions** parameter.
-
-
+These are equivalent to the options in the **TransformationOptions** parameter.
 
 
 
