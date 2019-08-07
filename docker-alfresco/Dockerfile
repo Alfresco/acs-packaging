@@ -19,6 +19,9 @@ ARG JAVA_PROFILER_RUNTIME_DIR=/tmp/Alfresco/yourkit
 
 # Create prerequisite to store tools and properties
 RUN mkdir -p ${TOMCAT_DIR}/shared/classes/alfresco/extension && \
+    mkdir -p ${TOMCAT_DIR}/shared/classes/alfresco/extension/transform/renditions && \
+    mkdir -p ${TOMCAT_DIR}/shared/classes/alfresco/extension/transform/pipelines && \
+    mkdir -p ${TOMCAT_DIR}/shared/classes/alfresco/extension/transform/mediatypes && \
     mkdir ${TOMCAT_DIR}/alfresco-mmt && \
     touch ${TOMCAT_DIR}/shared/classes/alfresco-global.properties
 

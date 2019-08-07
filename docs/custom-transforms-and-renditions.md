@@ -152,10 +152,14 @@ can transform from and to.
 the pipeline transformer. This will normally be the options required by
 the individual transformers defined in the pipeline.
 
-The location of the pipeline JSON file can be specified using the System
-property:
+Location of the pipeline JSON file can be specified using a System
+property, the default value is:
 ```properties
-local.transform.pipeline.config.dir=
+local.transform.pipeline.config.dir=<TOMCAT_DIR>/shared/classes/alfresco/extension/transform/pipelines
+```
+The location is checked on a periodic basis specified by the following
+Cron expression properties:
+```properties
 ```
 
 TODO
@@ -168,18 +172,18 @@ If yes, provide a custom rendition for the pipeline
 the `local.transform.pipeline.config.dir` property as JAVA_OPTS to the Alfresco service.
 
     ```
-    -Dlocal.transform.pipeline.config.dir=/usr/local/tomcat/shared/classes/alfresco/extension/
+    -Dlocal.transform.pipeline.config.dir=/usr/local/tomcat/shared/classes/alfresco/extension/transform/pipelines
     ```
 2. Start ACS
     ```bash
     docker-compose up
     ```
-2. Create a JSON file **custom_pipelines.json** with the above pipeline
+3. Create a JSON file **custom_pipelines.json** with the above pipeline
 definition and copy it into the Alfresco Docker container.
     ```bash
-    docker cp custom_pipelines.json <alfresco container>:/usr/local/tomcat/shared/classes/alfresco/extension/
+    docker cp custom_pipelines.json <alfresco container>:/usr/local/tomcat/shared/classes/alfresco/extension/transform/pipelines
     ```
-2. Restart the Alfresco service.
+4. Restart the Alfresco service.
     ```bash
     docker-compose restart alfresco
     ```
@@ -227,9 +231,16 @@ The new JSON equivalent of the above **helloWorld** rendition looks like this:
 * **options** - The list of static transform options corresponding to the
 transform options defined in [T-Engine configuration](#t-engine-configuration).
 
-The location of the renditions JSON file can be specified using the System property:
+Location of the renditions JSON file can be specified using
+a System property, the default value is:
 ```properties
-rendition.config.dir=
+rendition.config.dir=<TOMCAT_DIR>/shared/classes/alfresco/extension/transform/renditions
+```
+The location is checked on a periodic basis specified by the following
+Cron expression properties:
+```
+rendition.config.cronExpression=
+rendition.config.initialAndOnError.cronExpression=
 ```
 
 #### Adding a custom rendition in Docker Compose
@@ -244,12 +255,12 @@ the `rendition.config.dir` property as JAVA_OPTS to the Alfresco service.
     ```bash
     docker-compose up
     ```
-2. Create a JSON file **custom_renditions.json** with the above rendition
+3. Create a JSON file **custom_renditions.json** with the above rendition
 definition and copy it into the Alfresco Docker container.
     ```bash
     docker cp custom_renditions.json <alfresco container>:/usr/local/tomcat/shared/classes/alfresco/extension/
     ```
-2. Restart the Alfresco service.
+4. Restart the Alfresco service.
     ```bash
     docker-compose restart alfresco
     ```
@@ -262,10 +273,7 @@ TODO
 
 Custom MIME types can be defined using the JSON format.
 A custom JSON file with MIME type definitions can be added by specifying
-a System property
-```properties
-mimetype.config.dir=
-```
+a System property.
 
 Example MIME type definition for Microsoft Word document in JSON:
 ```json
@@ -276,6 +284,15 @@ Example MIME type definition for Microsoft Word document in JSON:
     "inputFamily": "TEXT",
     "storePropertiesByFamily": {"TEXT": {"FilterName": "MS Word 97"}}
   }
+```
+
+Location of the Media Type JSON file can be specified using a System
+property, the default value is:
+```properties
+```
+The location is checked on a periodic basis specified by the following
+Cron expression properties:
+```properties
 ```
 
 TODO
@@ -624,7 +641,6 @@ log4j.logger.org.alfresco.enterprise.repo.rendition2=debug
 log4j.logger.org.alfresco.repo.content.transform.TransformerDebug=debug
 log4j.logger.org.alfresco.repo.content.transform.LocalTransformServiceRegistry=debug
 log4j.logger.org.alfresco.enterprise.repo.rendition2.RemoteTransformServiceRegistry=debug
-log4j.logger.org.alfresco.repo.content.transform.TransformerDebug=debug
 log4j.logger.org.alfresco.repo.content.transform.LocalTransform=debug
 ```
 * `log4j.logger.org.alfresco.repo.rendition2` - The package associated
