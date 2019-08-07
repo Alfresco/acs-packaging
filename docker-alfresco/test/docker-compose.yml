@@ -11,13 +11,13 @@ version: "2"
 services:
     alfresco:
         image: ${REGISTRY}alfresco/alfresco-content-repository:${ALFRESCO_TAG}
-        mem_limit: 1500m
+        mem_limit: 2000m
         environment:
             CATALINA_OPTS : "
                 -agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n
                 "
             JAVA_OPTS : "
-                -Xms1400m -Xmx1400m
+                -Xms1900m -Xmx1900m
                 -Dalfresco.port=8082
                 -Daos.baseUrlOverwrite=http://localhost:8082/alfresco/aos
                 -Ddb.driver=org.postgresql.Driver
