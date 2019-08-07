@@ -96,7 +96,7 @@ Local transforms by setting the corresponding T-Engine URL property
 [localTransform.&lt;engineName>.url](#configure-a-t-engine-as-a-local-transform)
 value to an empty string.
 
-```
+```properties
 localTransform.helloworld.url=
 ```
 
@@ -163,6 +163,7 @@ Cron expression properties:
 ```
 
 TODO
+* Add the cron expression properties, maybe with the default values
 * Would it be better to use a generic pipeline definition for the example? Something that would refer to "transformer1" and "transformer2" with "transformOptionsA" and "transformOptionsB"
 If yes, provide a custom rendition for the pipeline
 
@@ -187,16 +188,13 @@ definition and copy it into the Alfresco Docker container.
     ```bash
     docker-compose restart alfresco
     ```
+TODO Remove step 1. if the location is indeed specified by default
 
 #### Adding a custom pipeline in Kubernetes
 
 TODO
 * Talk about creating pipelines in json rather than Spring or via
    values in transformer.properties.
-* Would it be better to use a generic pipeline definition for the example?
-Something that would refer to "transformer1" and "transformer2" with
-"transformOptionsA" and "transformOptionsB"
-    * If yes, provide a custom rendition for the pipeline
 
 ### Configure a custom rendition
 
@@ -242,6 +240,7 @@ Cron expression properties:
 rendition.config.cronExpression=
 rendition.config.initialAndOnError.cronExpression=
 ```
+TODO Add default cron expression values
 
 #### Adding a custom rendition in Docker Compose
 
@@ -264,6 +263,7 @@ definition and copy it into the Alfresco Docker container.
     ```bash
     docker-compose restart alfresco
     ```
+TODO Remove step 1. if the location is indeed specified by default
 
 #### Adding a custom rendition in Kubernetes
 
@@ -293,6 +293,8 @@ property, the default value is:
 The location is checked on a periodic basis specified by the following
 Cron expression properties:
 ```properties
+mimetype.config.cronExpression=
+mimetype.config.initialAndOnError.cronExpression=
 ```
 
 TODO
