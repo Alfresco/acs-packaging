@@ -2,14 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.alfresco.tas</groupId>
-    <artifactId>acs-community-webdav-test</artifactId>
-    <name>acs-community-webdav-test</name>
+    <artifactId>acs-webdav-test</artifactId>
+    <name>acs-webdav-test</name>
     <version>6.2.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <parent>
         <groupId>org.alfresco</groupId>
-        <artifactId>acs-community-packaging-tas-tests-parent</artifactId>
+        <artifactId>acs-packaging-tas-tests-parent</artifactId>
         <version>6.2.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
