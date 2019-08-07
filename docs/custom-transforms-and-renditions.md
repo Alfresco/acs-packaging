@@ -158,6 +158,10 @@ property:
 local.transform.pipeline.config.dir=
 ```
 
+TODO
+* Would it be better to use a generic pipeline definition for the example? Something that would refer to "transformer1" and "transformer2" with "transformOptionsA" and "transformOptionsB"
+If yes, provide a custom rendition for the pipeline
+
 #### Adding a custom pipeline in Docker Compose
 
 1. Modify the ACS Docker Compose file by adding
