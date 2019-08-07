@@ -44,6 +44,7 @@ matrix:
       jdk: openjdk11
       install:
         - travis_retry travis_wait 40 mvn install -q -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Dbuild-key=${TRAVIS_COMMIT} -Dbuild-name="${TRAVIS_BUILD_WEB_URL}" -Dscm-path=${TRAVIS_REPO_SLUG} "-Dversion.edition=${VERSION_EDITION}" "-Dimage.tag=${DOCKER_IMAGE_TAG}" -Dimage.registry=${DOCKER_IMAGE_REGISTRY} -Dimage.name=${ALFRESCO_IMAGE_NAME} -Dmaven.javadoc.skip=true -PenterpriseDocker
+        - docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
         - cd docker-alfresco/test
         - travis_retry docker-compose pull
         - cd ../..
@@ -54,6 +55,7 @@ matrix:
       jdk: openjdk11
       install:
         - travis_retry travis_wait 40 mvn install -q -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Dbuild-key=${TRAVIS_COMMIT} -Dbuild-name="${TRAVIS_BUILD_WEB_URL}" -Dscm-path=${TRAVIS_REPO_SLUG} "-Dversion.edition=${VERSION_EDITION}" "-Dimage.tag=${DOCKER_IMAGE_TAG}" -Dimage.registry=${DOCKER_IMAGE_REGISTRY} -Dimage.name=${ALFRESCO_IMAGE_NAME} -Dmaven.javadoc.skip=true -PenterpriseDocker
+        - docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
         - cd docker-alfresco/test
         - travis_retry docker-compose pull
         - cd ../..
@@ -64,6 +66,7 @@ matrix:
       jdk: openjdk11
       install:
         - travis_retry travis_wait 40 mvn install -q -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Dbuild-key=${TRAVIS_COMMIT} -Dbuild-name="${TRAVIS_BUILD_WEB_URL}" -Dscm-path=${TRAVIS_REPO_SLUG} "-Dversion.edition=${VERSION_EDITION}" "-Dimage.tag=${DOCKER_IMAGE_TAG}" -Dimage.registry=${DOCKER_IMAGE_REGISTRY} -Dimage.name=${ALFRESCO_IMAGE_NAME} -Dmaven.javadoc.skip=true -PenterpriseDocker
+        - docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
         - cd docker-alfresco/test/docker-alfresco-all-amps-test/test
         - travis_retry docker-compose pull
         - cd ../../../..
@@ -74,6 +77,7 @@ matrix:
       jdk: openjdk11
       install:
         - travis_retry travis_wait 40 mvn install -q -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Dbuild-key=${TRAVIS_COMMIT} -Dbuild-name="${TRAVIS_BUILD_WEB_URL}" -Dscm-path=${TRAVIS_REPO_SLUG} "-Dversion.edition=${VERSION_EDITION}" "-Dimage.tag=${DOCKER_IMAGE_TAG}" -Dimage.registry=${DOCKER_IMAGE_REGISTRY} -Dimage.name=${ALFRESCO_IMAGE_NAME} -Dmaven.javadoc.skip=true -PenterpriseDocker
+        - docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
         - cd docker-alfresco/test
         - travis_retry docker-compose pull
         - cd ../..
@@ -84,6 +88,7 @@ matrix:
       jdk: openjdk11
       install:
         - travis_retry travis_wait 40 mvn install -q -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Dbuild-key=${TRAVIS_COMMIT} -Dbuild-name="${TRAVIS_BUILD_WEB_URL}" -Dscm-path=${TRAVIS_REPO_SLUG} "-Dversion.edition=${VERSION_EDITION}" "-Dimage.tag=${DOCKER_IMAGE_TAG}" -Dimage.registry=${DOCKER_IMAGE_REGISTRY} -Dimage.name=${ALFRESCO_IMAGE_NAME} -Dmaven.javadoc.skip=true -PenterpriseDocker
+        - docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
         - cd docker-alfresco/test
         - travis_retry docker-compose pull
         - cd ../..
