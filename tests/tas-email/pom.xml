@@ -24,7 +24,7 @@
     </developers>
 
     <properties>
-        <suiteXmlFile>${project.basedir}/src/test/resources/email-suites-without-jmx.xml</suiteXmlFile>
+        <suiteXmlFile>${project.basedir}/src/test/resources/email-suites.xml</suiteXmlFile>
         <test.exclude />
         <test.include />
     </properties>
