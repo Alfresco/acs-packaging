@@ -158,6 +158,30 @@ property:
 local.transform.pipeline.config.dir=
 ```
 
+#### Adding a custom pipeline in Docker Compose
+
+1. Modify the ACS Docker Compose file by adding
+the `local.transform.pipeline.config.dir` property as JAVA_OPTS to the Alfresco service.
+
+    ```
+    -Dlocal.transform.pipeline.config.dir=/usr/local/tomcat/shared/classes/alfresco/extension/
+    ```
+2. Start ACS
+    ```bash
+    docker-compose up
+    ```
+2. Create a JSON file **custom_pipelines.json** with the above pipeline
+definition and copy it into the Alfresco Docker container.
+    ```bash
+    docker cp custom_pipelines.json <alfresco container>:/usr/local/tomcat/shared/classes/alfresco/extension/
+    ```
+2. Restart the Alfresco service.
+    ```bash
+    docker-compose restart alfresco
+    ```
+
+#### Adding a custom pipeline in Kubernetes
+
 TODO
 * Talk about creating pipelines in json rather than Spring or via
    values in transformer.properties.
@@ -171,7 +195,7 @@ Something that would refer to "transformer1" and "transformer2" with
 Renditions definitions prior to ACS 6.2 were defined as Spring Beans.
 A rendition as a Spring bean might look like this:
 ```xml
-<bean id="renditionDefinitionHelloWorldRendition" class="org.alfresco.repo.rendition2.RenditionDefinition2Impl">
+<bean id="renditionDefinitionHelloWorld" class="org.alfresco.repo.rendition2.RenditionDefinition2Impl">
     <constructor-arg name="renditionName" value="helloWorld"/>
 	<constructor-arg name="targetMimetype" value="text/html"/>
 	<constructor-arg name="transformOptions">
@@ -184,7 +208,7 @@ A rendition as a Spring bean might look like this:
 ```
 
 Starting from ACS 6.2, renditions can be added via a JSON file.
-The new JSON equivalent of the above **helloWorldRendition** looks like this:
+The new JSON equivalent of the above **helloWorld** rendition looks like this:
 ```json
 {
     "renditionName": "helloWorld",
@@ -199,18 +223,36 @@ The new JSON equivalent of the above **helloWorldRendition** looks like this:
 * **options** - The list of static transform options corresponding to the
 transform options defined in [T-Engine configuration](#t-engine-configuration).
 
-The default location for the rendition definitions is:
-```
-alfresco-repository/src/main/resources/alfresco/renditions/
-```
-
-Optionally, an additional location can be specified using the System property:
+The location of the renditions JSON file can be specified using the System property:
 ```properties
 rendition.config.dir=
 ```
 
+#### Adding a custom rendition in Docker Compose
+
+1. Modify the ACS Docker Compose file by adding
+the `rendition.config.dir` property as JAVA_OPTS to the Alfresco service.
+
+    ```
+    -Drendition.config.dir=/usr/local/tomcat/shared/classes/alfresco/extension/
+    ```
+2. Start ACS
+    ```bash
+    docker-compose up
+    ```
+2. Create a JSON file **custom_renditions.json** with the above rendition
+definition and copy it into the Alfresco Docker container.
+    ```bash
+    docker cp custom_renditions.json <alfresco container>:/usr/local/tomcat/shared/classes/alfresco/extension/
+    ```
+2. Restart the Alfresco service.
+    ```bash
+    docker-compose restart alfresco
+    ```
+
+#### Adding a custom rendition in Kubernetes
+
 TODO
-Confirm how we will add this configuration
 
 ### Configure a custom mimetype
 
@@ -404,10 +446,10 @@ configured to use local transforms.
 Method parameters:
 
 * **sourceMultipartFile** - The file to be transformed from the
-transform request.
+transform request. This is always provided in ACS requests.
 * **targetExtension** - The target extension of the transformed file
 to be returned in the response.
-This is always provided by ACS requests.
+This is always provided in ACS requests.
 * **language** - This is the custom transform option defined for
 the example T-Engine.
 
@@ -517,11 +559,11 @@ file by adding the Hello World T-Engine as one of the services.
     -DlocalTransform.helloworld.url=http://transform-helloworld:8090/
     ```
 
-5. Create a custom **helloWorldRendition** which will use the new
+5. Create a custom **helloWorld** rendition which will use the new
 Hello World T-Engine. See [here](#configure-a-custom-rendition) for details.
     ```json
     {
-        "renditionName": "helloWorldRendition",
+        "renditionName": "helloWorld",
         "targetMediaType": "text/html",
         "options": [
             {"name": "language", "value": "German"}
@@ -537,7 +579,7 @@ Hello World T-Engine. See [here](#configure-a-custom-rendition) for details.
 ###### Test custom rendition
 
 This section walks through an end to end example of using
-the Hello World T-Engine with ACS by requesting the **helloWorldRendition**.
+the Hello World T-Engine with ACS by requesting the **helloWorld** rendition.
 
 1. Create a **source_file.txt** file with the following content:
    ```text
@@ -551,22 +593,22 @@ used in following requests.
     ```
 3. Request a list of available renditions using [REST API](https://api-explorer.alfresco.com/api-explorer/#!/renditions/listRenditions)
 on the uploaded file.
-Notice that the custom helloWorldRendition is in the list of available
+Notice that the custom **helloWorld** is in the list of available
 renditions.
     ```bash
     curl -u admin:admin -X GET localhost:8082/alfresco/api/-default-/public/alfresco/versions/1/nodes/{nodeId}/renditions
     ```
-4. Request the **helloWorldRendition** to be created using [REST API](https://api-explorer.alfresco.com/api-explorer/#!/renditions/createRendition).
+4. Request the **helloWorld** rendition to be created using [REST API](https://api-explorer.alfresco.com/api-explorer/#!/renditions/createRendition).
     ```bash
-    curl -u admin:admin -X POST localhost:8082/alfresco/api/-default-/public/alfresco/versions/1/nodes/{nodeId}/renditions -d '{"id":"helloWorldRendition"}' -H "Content-Type: application/json"
+    curl -u admin:admin -X POST localhost:8082/alfresco/api/-default-/public/alfresco/versions/1/nodes/{nodeId}/renditions -d '{"id":"helloWorld"}' -H "Content-Type: application/json"
     ```
 5. Request the rendered file using [REST API](https://api-explorer.alfresco.com/api-explorer/#!/renditions/getRenditionContent)
 and save it to **hello_world_rendition.html**.
     ```bash
-    curl -u admin:admin -X GET localhost:8082/alfresco/api/-default-/public/alfresco/versions/1/nodes/{nodeId}/renditions/helloWorldRendition/content -o hello_world_rendition.html
+    curl -u admin:admin -X GET localhost:8082/alfresco/api/-default-/public/alfresco/versions/1/nodes/{nodeId}/renditions/helloWorld/content -o hello_world_rendition.html
     ```
 6. Verify that the returned HTML file contains a Hello World greeting
-in the language specified in the **helloWorldRendition** transform options.
+in the language specified in the **helloWorld** rendition transform options.
 
 ###### Logs and Debugging
 
@@ -614,7 +656,7 @@ created for Alfresco Content Repository (ACS) prior to version 6.2, to new
 asynchronous out of process T-Engines.
 The pre 6.2 transformers will be referred to as *Legacy Transformers*.
 It is assumed that the reader is familiar with creating and configuring
-a new T-Engine as described in  [Developing and Debugging T-Engines](#developing-and-debugging-t-engines).
+a new T-Engine as described in  [Creating a T-Engine](#creating-a-t-engine).
 
 The new asynchronous approach of using T-Engines provides the means to
 decouple ACS and Legacy Transformers. This allows for decoupled releases
@@ -634,7 +676,7 @@ the ACS Spring Bean configuration.
 The steps to create and migrate a Legacy Transformer into a custom
 T-Engine are as follows:
 
-1. Create a custom T-Engine. This section walks through how to
+1. Create a custom T-Engine. The [Creating a T-Engine](#creating-a-t-engine) section walks through how to
 develop, configure and run a new t-Engine using a simple Hello World
 example.
 2. Migrate the custom Legacy Transformer Java code into the new T-Engine
@@ -642,7 +684,7 @@ as described in [Migrating custom transform code](#migrating-custom-transform-co
 3. Migrate any custom renditions defined as Spring Beans.
 See how to add custom renditions in [Configure a custom rendition](#configure-a-custom-rendition)
 4. Migrate any custom pipelines defined as Spring Beans.
-See how to add a custom pipeline in [Configure a pipeline of local transforms](#configure-a-pipeline-of-local-transforms).
+See how to add a custom pipelines in [Configure a pipeline of local transforms](#configure-a-pipeline-of-local-transforms).
 5. Configure ACS to use the new custom T-Engine as described in [Configure a T-Engine as a Local Transform](#configure-a-t-engine-as-a-local-transform).
 
 #### Migrating custom transform code
