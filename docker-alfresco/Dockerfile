@@ -41,7 +41,14 @@ COPY ${resource_path}/licenses/ /licenses/
 # shared.loader=${catalina.base}/shared/classes
 RUN sed -i "s/shared.loader=/shared.loader=\${catalina.base}\/shared\/classes/" ${TOMCAT_DIR}/conf/catalina.properties
 
-RUN mkdir -p ${TOMCAT_DIR}/amps
+RUN mkdir -p ${TOMCAT_DIR}/amps \
+             ${TOMCAT_DIR}/shared/classes/alfresco/extension/transform/mimetypes \
+             ${TOMCAT_DIR}/shared/classes/alfresco/extension/transform/renditions \
+             ${TOMCAT_DIR}/shared/classes/alfresco/extension/transform/pipelines
+
+#RUN echo -e '\n\
+#log4j.logger.org.alfresco.repo.content.transform.TransformerDebug=debug\n\
+#' >> ${TOMCAT_DIR}/shared/classes/alfresco/extension/custom-log4j.propertiesRUN mkdir -p ${TOMCAT_DIR}/amps
 
 # Copy the amps from build context to the appropriate location for your application server
 COPY ${resource_path}/amps ${TOMCAT_DIR}/amps

@@ -34,16 +34,14 @@
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <dependency.alfresco-core.version>7.19</dependency.alfresco-core.version>
-        <dependency.alfresco-data-model.version>8.45</dependency.alfresco-data-model.version>
-
-        <dependency.alfresco-repository.version>7.89</dependency.alfresco-repository.version>
-        <dependency.alfresco-remote-api.version>7.71</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-enterprise-remote-api.version>7.38</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>7.49</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-remote-api.version>7.77</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-repository.version>7.103</dependency.alfresco-repository.version>
+        <dependency.alfresco-data-model.version>8.46</dependency.alfresco-data-model.version>
+        <dependency.alfresco-core.version>7.20</dependency.alfresco-core.version>
 
         <dependency.alfresco-hb-data-sender.version>1.0.11</dependency.alfresco-hb-data-sender.version>
-
-    	<dependency.alfresco-enterprise-repository.version>7.46</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-enterprise-remote-api.version>7.36</dependency.alfresco-enterprise-remote-api.version>
 
         <dependency.alfresco-spring-encryptor.version>6.1</dependency.alfresco-spring-encryptor.version>
         <dependency.alfresco-enterprise-crypto.version>6.1</dependency.alfresco-enterprise-crypto.version>
@@ -55,6 +53,7 @@
         <dependency.alfresco-server-root.version>6.0.1</dependency.alfresco-server-root.version>
         <dependency.alfresco-api-explorer.version>6.1.0</dependency.alfresco-api-explorer.version>
         <dependency.gytheio.version>0.9.1</dependency.gytheio.version>
+        <dependency.alfresco-log-sanitizer.version>0.1</dependency.alfresco-log-sanitizer.version>
 
         <dependency.spring.version>5.1.8.RELEASE</dependency.spring.version>
         <dependency.fabric8.version>4.1.0</dependency.fabric8.version>
@@ -102,7 +101,7 @@
         <alfresco.mm.version>1.3.0</alfresco.mm.version>
 
         <!-- Alfresco Desktop Sync Service Module -->
-        <alfresco.desktop-sync.version>3.1.0</alfresco.desktop-sync.version>
+        <alfresco.desktop-sync.version>3.1.2-RC2</alfresco.desktop-sync.version>
 
         <!-- Alfresco AI AMP -->
         <alfresco.ai-repo.version>1.0.2</alfresco.ai-repo.version>
@@ -543,6 +542,11 @@
                 <groupId>org.apache.ws.commons.axiom</groupId>
                 <artifactId>axiom-impl</artifactId>
                 <version>1.2.22</version>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-log-sanitizer</artifactId>
+                <version>${dependency.alfresco-log-sanitizer.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.alfresco.integrations</groupId>
