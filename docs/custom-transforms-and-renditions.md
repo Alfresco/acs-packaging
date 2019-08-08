@@ -14,7 +14,7 @@ Transform Service which provides more balanced throughput and better
 administration capabilities. A T-Engine is intended to be run as a 
 Docker image, but may also be run as a standalone process.
 
-Prior to ACS 6.0 all legacy transformers ran within the same JVM as
+Prior to ACS 6.0 Legacy transformers ran within the same JVM as
 the ACS repository. They and their supporting code has been deprecated
 and will go away at some point. ACS 6.2 still uses them if a rendition
 cannot be created by the Transform Service or Local Transforms. The
@@ -25,8 +25,9 @@ One of the advantages of Local Transforms is that there is no longer any
 need for custom Java code, Spring bean definitions, or alfresco
 properties to be applied to the ACS repository. When adding custom
 transforms, it is not uncommon to add custom renditions or additional
-mimetypes. This section also covers adding these with json rather than
-Java or Spring beans.
+mimetypes, so this is also covered on this page. Generally custom
+transforms and renditions can be added to Docker deployments without
+having to create or apply an AMP.
 
 ## Repository Configuration
 
@@ -50,11 +51,11 @@ It is requested more frequent on start up or if a communication or configuration
 problem has occurred, and a less frequent during normal operation.
 
 ```properties
-local.transform.service.cronExpression=0 0/10 * * * ?
+local.transform.service.cronExpression=0 0 0/1 * * ?
 local.transform.service.initialAndOnError.cronExpression=0/10 * * * * ?
 ```
 
-#### T-Engine selection strategy
+#### Transformer selection strategy
 The ACS repository will use the
 [T-Engine configuration](#t-engine-configuration) to
 choose which T-Engine will perform a transform. A transformer definition
@@ -64,14 +65,14 @@ that the definition also supports transform options (parameters) that
 have been supplied in a transform or rendition request.
 See [rendition options](#configure-a-custom-rendition).
 ```text
-Transformer T1 defines options: Op1, Op2
-Transformer T2 defines options: Op1, Op2, Op3, Op4
+Transformer 1 defines options: Op1, Op2
+Transformer 2 defines options: Op1, Op2, Op3, Op4
 ```
 ```
-Rendition R1 provides values for options: Op2, Op3
+Rendition provides values for options: Op2, Op3
 ```
 If we assume both transformers support the required source and target
-Media Types, T2 will be selected because it knows about all available
+Media Types, Transformer 2 will be selected because it knows about all the supplied
 options. The definition may also specify that some options are required
 or grouped.
 
@@ -81,7 +82,7 @@ Legacy, Local or Transform Service transforms can be enabled or disabled
 independently of each other. The ACS repository will try to transform
 content using the Transform Service if possible, falling back to a Local
 transform and failing that a Legacy transform. This makes it possible to
-gradually migrate away from legacy transforms and to take advantage of
+gradually migrate away from Legacy transforms and to take advantage of
 the Transform Service if it is available. 
 
 ```properties
