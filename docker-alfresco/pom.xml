@@ -197,6 +197,14 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.alfresco.services.sync</groupId>
+                                    <artifactId>alfresco-device-sync-repo</artifactId>
+                                    <version>${alfresco.desktop-sync.version}</version>
+                                    <type>amp</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/amps</outputDirectory>
+                                </artifactItem>
                             </artifactItems>
                         </configuration>
                     </execution>
