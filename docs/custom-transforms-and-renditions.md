@@ -81,8 +81,8 @@ or grouped.
 Legacy, Local or Transform Service transforms can be enabled or disabled
 independently of each other. The ACS repository will try to transform
 content using the Transform Service if possible, falling back to a Local
-transform and failing that a Legacy transform. This makes it possible to
-gradually migrate away from Legacy transforms and to take advantage of
+Transform and failing that a Legacy Transform. This makes it possible to
+gradually migrate away from Legacy Transforms and to take advantage of
 the Transform Service if it is available. 
 
 ```properties
@@ -93,7 +93,7 @@ legacy.transform.service.enabled=true
 
 Setting the enabled state to **false** will disable all of the transforms
 performed by that particular service. It is possible to disable individual
-Local transforms by setting the corresponding T-Engine URL property
+Local Transforms by setting the corresponding T-Engine URL property
 [localTransform.&lt;engineName>.url](#configure-a-t-engine-as-a-local-transform)
 value to an empty string.
 
@@ -101,7 +101,7 @@ value to an empty string.
 localTransform.helloworld.url=
 ```
 
-### Configure a pipeline of local transforms
+### Configure a pipeline of Local Transforms
 
 Pipeline definitions can be used to define a pipeline of transformers.
 A pipeline defines which transformers are used and which Media Types
@@ -232,7 +232,6 @@ Cron expression properties:
 rendition.config.cronExpression=2 30 0/1 * * ?
 rendition.config.initialAndOnError.cronExpression=0/10 * * * * ?
 ```
-TODO Add default cron expression values
 
 #### Adding a custom rendition in Docker Compose
 
@@ -447,7 +446,7 @@ public ResponseEntity<Resource> transform(HttpServletRequest request,
 
 The handler method for the `/transform` endpoint, it serves HTTP
 requests for transforms. ACS will make requests to this endpoint when
-configured to use local transforms.
+configured to use Local Transforms.
 
 Method parameters:
 
@@ -629,7 +628,7 @@ log4j.logger.org.alfresco.enterprise.repo.rendition2.RemoteTransformServiceRegis
 log4j.logger.org.alfresco.repo.content.transform.LocalTransform=debug
 ```
 * `log4j.logger.org.alfresco.repo.rendition2` - The package associated
-with the core functionality and local transforms.
+with the core functionality and Local Transforms.
 * `log4j.logger.org.alfresco.enterprise.repo.rendition2` - The package
 associated with Transform Service transforms in the Enterprise Edition of ACS.
 
@@ -689,7 +688,7 @@ as described in [Migrating custom transform code](#migrating-custom-transform-co
 3. Migrate any custom renditions defined as Spring Beans.
 See how to add custom renditions in [Configure a custom rendition](#configure-a-custom-rendition)
 4. Migrate any custom pipelines defined as Spring Beans.
-See how to add a custom pipelines in [Configure a pipeline of local transforms](#configure-a-pipeline-of-local-transforms).
+See how to add a custom pipelines in [Configure a pipeline of Local Transforms](#configure-a-pipeline-of-local-transforms).
 5. Configure ACS to use the new custom T-Engine as described in [Configure a T-Engine as a Local Transform](#configure-a-t-engine-as-a-local-transform).
 
 #### Migrating custom transform code
