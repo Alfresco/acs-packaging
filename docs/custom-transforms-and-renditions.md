@@ -109,6 +109,10 @@ the transform will go through. From the outside, a pipeline
 can be seen as a transformer with its own source and target
 Media Types and a list of transform options.
 
+TODO
+* Wouldn't it be better to use a generic pipeline definition for the example? Something that would refer to "transformer1" and "transformer2" with "transformOptionsA" and "transformOptionsB"
+
+
 The example pipeline in this section begins with the **helloWorldTransformer**
 described in [Creating a T-Engine](#creating-a-t-Engine).
 The **helloWorldTransformer** take a text file with a name and produces
@@ -156,7 +160,7 @@ the individual transformers defined in the pipeline.
 Location of the pipeline JSON file can be specified using a System
 property, the default value is:
 ```properties
-local.transform.pipeline.config.dir=<TOMCAT_DIR>/shared/classes/alfresco/extension/transform/pipelines
+local.transform.pipeline.config.dir=shared/classes/alfresco/extension/transform/pipelines/
 ```
 The location is checked on a periodic basis specified by the following
 Cron expression properties:
@@ -164,38 +168,25 @@ Cron expression properties:
 ```
 
 TODO
-* Add the cron expression properties, maybe with the default values
-* Would it be better to use a generic pipeline definition for the example? Something that would refer to "transformer1" and "transformer2" with "transformOptionsA" and "transformOptionsB"
-If yes, provide a custom rendition for the pipeline
+* Talk about creating pipelines in json rather than Spring or via
+   values in transformer.properties.
 
 #### Adding a custom pipeline in Docker Compose
 
-1. Modify the ACS Docker Compose file by adding
-the `local.transform.pipeline.config.dir` property as JAVA_OPTS to the Alfresco service.
-
-    ```
-    -Dlocal.transform.pipeline.config.dir=/usr/local/tomcat/shared/classes/alfresco/extension/transform/pipelines
-    ```
-2. Start ACS
+After starting ACS in Docker Compose:
+1. Create a JSON file, for example **custom_pipelines.json** with the
+required pipeline definitions and copy it into the Alfresco Docker container.
     ```bash
-    docker-compose up
+    docker cp custom_pipelines.json <alfresco container>:/usr/local/tomcat/shared/classes/alfresco/extension/transform/pipelines/
     ```
-3. Create a JSON file **custom_pipelines.json** with the above pipeline
-definition and copy it into the Alfresco Docker container.
-    ```bash
-    docker cp custom_pipelines.json <alfresco container>:/usr/local/tomcat/shared/classes/alfresco/extension/transform/pipelines
-    ```
-4. Restart the Alfresco service.
+2. Restart the Alfresco service.
     ```bash
     docker-compose restart alfresco
     ```
-TODO Remove step 1. if the location is indeed specified by default
 
 #### Adding a custom pipeline in Kubernetes
 
-TODO
-* Talk about creating pipelines in json rather than Spring or via
-   values in transformer.properties.
+TODO Complete this section
 
 ### Configure a custom rendition
 
@@ -233,42 +224,32 @@ transform options defined in [T-Engine configuration](#t-engine-configuration).
 Location of the renditions JSON file can be specified using
 a System property, the default value is:
 ```properties
-rendition.config.dir=<TOMCAT_DIR>/shared/classes/alfresco/extension/transform/renditions
+rendition.config.dir=shared/classes/alfresco/extension/transform/renditions/
 ```
 The location is checked on a periodic basis specified by the following
 Cron expression properties:
-```
-rendition.config.cronExpression=
-rendition.config.initialAndOnError.cronExpression=
+```properties
+rendition.config.cronExpression=2 30 0/1 * * ?
+rendition.config.initialAndOnError.cronExpression=0/10 * * * * ?
 ```
 TODO Add default cron expression values
 
 #### Adding a custom rendition in Docker Compose
 
-1. Modify the ACS Docker Compose file by adding
-the `rendition.config.dir` property as JAVA_OPTS to the Alfresco service.
-
-    ```
-    -Drendition.config.dir=/usr/local/tomcat/shared/classes/alfresco/extension/
-    ```
-2. Start ACS
-    ```bash
-    docker-compose up
-    ```
-3. Create a JSON file **custom_renditions.json** with the above rendition
+After starting ACS in Docker Compose:
+1. Create a JSON file **custom_renditions.json** with the above rendition
 definition and copy it into the Alfresco Docker container.
     ```bash
-    docker cp custom_renditions.json <alfresco container>:/usr/local/tomcat/shared/classes/alfresco/extension/
+    docker cp custom_renditions.json <alfresco container>:/usr/local/tomcat/shared/classes/alfresco/extension/transform/renditions/
     ```
-4. Restart the Alfresco service.
+2. Restart the Alfresco service.
     ```bash
     docker-compose restart alfresco
     ```
-TODO Remove step 1. if the location is indeed specified by default
 
 #### Adding a custom rendition in Kubernetes
 
-TODO
+TODO Complete this section
 
 ### Configure a custom mimetype
 
@@ -290,16 +271,17 @@ Example MIME type definition for Microsoft Word document in JSON:
 Location of the Media Type JSON file can be specified using a System
 property, the default value is:
 ```properties
+mimetype.config.dir=shared/classes/alfresco/extension/transform/mimetypes
 ```
 The location is checked on a periodic basis specified by the following
 Cron expression properties:
 ```properties
-mimetype.config.cronExpression=
-mimetype.config.initialAndOnError.cronExpression=
+mimetype.config.cronExpression=0 30 0/1 * * ?
+mimetype.config.initialAndOnError.cronExpression=0/10 * * * * ?
 ```
 
 TODO
-Complete this section once the functionality is in place
+* Describe the mimetype definition
 
 ## Transform Service Configuration
 
