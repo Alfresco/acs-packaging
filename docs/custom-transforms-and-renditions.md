@@ -103,27 +103,18 @@ localTransform.helloworld.url=
 
 ### Configure a pipeline of Local Transforms
 
-Pipeline definitions can be used to define a pipeline of transformers.
-A pipeline defines which transformers are used and which Media Types
-the transform will go through. From the outside, a pipeline
-can be seen as a transformer with its own source and target
-Media Types and a list of transform options.
+Local transforms may be combined together in a pipeline to form a new
+transformer. A pipeline definition (JSON) is used to define the sequence of
+transforms and intermediate Media Types. Like any other transformer, it
+specifies a list of supported source and target Media Types. The
+definition may reuse the transformOptions of transformers in the
+pipeline, but typically will define its own subset of these.  
 
-TODO
-* Wouldn't it be better to use a generic pipeline definition for the example? Something that would refer to "transformer1" and "transformer2" with "transformOptionsA" and "transformOptionsB"
-
-
-The example pipeline in this section begins with the **helloWorldTransformer**
-described in [Creating a T-Engine](#creating-a-t-Engine).
-The **helloWorldTransformer** take a text file with a name and produces
-a HTML file with body: "Hello World!, Hello {name from file}!"
-
-After the **helloWorldTransformer**, a second **html** transformer is called
-which takes the HTML file from the previous transformer and returns a
-text file with the contents of the `<title>` and `<body>` tags extracted
-into a text file.
-
-Example pipeline definition in JSON:
+The following example begins with the **helloWorldTransformer**
+described in [Creating a T-Engine](#creating-a-t-Engine), which takes a
+text file containing a name and produces an HTML file with a Hello
+&lt;name> message in the body. This is then transformed back into a
+text file.
 ```json
 {
   "transformers": [
@@ -145,26 +136,29 @@ Example pipeline definition in JSON:
 }
 ```
 
-* **transformerName** - A unique name for this pipeline transformer
+* **transformerName** - Try to create a unique name for the transformer.
 * **transformerPipeline** - A list of transformers in the pipeline.
-Each transformer in the pipeline has a name as defined in its [T-Engine configuration](#t-engine-configuration)
-and target Media Type. The **targetMediaType** specifies the intermediate
-Media Types.
+The **targetMediaType** specifies the intermediate Media Types between
+transformers. There is no final targetMediaType as this comes from the
+supportedSourceAndTargetList.
 * **supportedSourceAndTargetList** - The supported source and target
 Media Types, which refer to the Media Types this pipeline transformer
 can transform from and to.
 * **transformOptions** - A list of references to options required by
-the pipeline transformer. This will normally be the options required by
-the individual transformers defined in the pipeline.
+the pipeline transformer.
 
-Location of the pipeline JSON file can be specified using a System
-property, the default value is:
+Pipeline definitions need to be placed in a directory of an ACS
+repository. The default location (below) may be changed by resetting the
+following Alfresco global property.
 ```properties
-local.transform.pipeline.config.dir=shared/classes/alfresco/extension/transform/pipelines/
+local.transform.pipeline.config.dir=shared/classes/alfresco/extension/transform/pipelines
 ```
-The location is checked on a periodic basis specified by the following
-Cron expression properties:
+By default this location is checked every 10 seconds, but then switches
+to once an hour if successfully. After a problem, it tries every 10
+seconds again.
 ```properties
+local.transform.service.cronExpression=4 30 0/1 * * ?
+local.transform.service.initialAndOnError.cronExpression=0/10 * * * * ?
 ```
 
 TODO
