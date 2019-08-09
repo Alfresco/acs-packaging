@@ -7,6 +7,124 @@
   <li>[<a href='https://issues.alfresco.com/jira/browse/REPO-4226'>REPO-4226</a>] -         [Security] New batch of jackson-databind vulnerabilities
   </li>
 </ul>
+                        
+<h2>        Documentation
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20385'>MNT-20385</a>] -         Discrepancy between the compatible versions list for Outlook Integration on the Supported Platforms doc and the knowledgebase article#000014970
+</li>
+</ul>
+                                                                
+<h2>        Service Pack Request
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-16673'>MNT-16673</a>] -         Setting minimum password length for Share has no effect
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-17551'>MNT-17551</a>] -         Long rule name without spaces causes the text to overlaps on Folder Rules page and as well when you edit the rule
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-18112'>MNT-18112</a>] -         Ampersand in Wiki page name breaks search link
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-18557'>MNT-18557</a>] -         Location Of alfresco.log is Ultimately Incorrect
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-18730'>MNT-18730</a>] -         XML content encoded with UTF-16 can&#39;t be downloaded from Share&#39;s proxy
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19103'>MNT-19103</a>] -         Share Admin Tools: Link to Repository Administration Console is not always valid
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19397'>MNT-19397</a>] -         Create Folder Allows double click on Save Button resulting in Error 500
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19593'>MNT-19593</a>] -         Copy/Move dialog hidden views works on Document-Library page but not on Faceted Search Result page
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20196'>MNT-20196</a>] -         JMX Password redaction inconsistent
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20200'>MNT-20200</a>] -         Improper Neutralization of Script-Related HTML Tags in a Web Page (Basic XSS) CWE ID 80
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20234'>MNT-20234</a>] -         Javascript debugger causing errors when enabled 
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20296'>MNT-20296</a>] -         Notification Email when &#39;following&#39; a user displays incorrectly in Japanese 
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20305'>MNT-20305</a>] -         Oracle schema validation check failure with ojdbc7.jar version 12.1.0.2
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20314'>MNT-20314</a>] -         Untranslated strings: Title of Actions column of Table View in Document Library
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20325'>MNT-20325</a>] -         Documents with % and spaces version download issue.
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20339'>MNT-20339</a>] -         Enterprise Admin Console - JMX Settings tool: &quot;Revert&quot; button only revert the last set of JMX properties 
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20371'>MNT-20371</a>] -         Support for IDS 1.1 in ACS 6.1
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20379'>MNT-20379</a>] -         [Security] New batch of jackson-databind vulnerabilities
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20513'>MNT-20513</a>] -         [Security] Multiple xmlrpc vulnerabilities
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20516'>MNT-20516</a>] -         [Security] CVE-2016-2510 bsh deserialization vulnerability
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20517'>MNT-20517</a>] -         [Security] Multiple spring-core vulnerabilities
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20518'>MNT-20518</a>] -         [Security] CVE-2018-1000632 dom4j XML injection vulnerability
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20520'>MNT-20520</a>] -         [Security] Multiple cxf-core vulnerabilities
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20521'>MNT-20521</a>] -         [Security] CVE-2018-17187 proton-j MitM vulnerability
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20522'>MNT-20522</a>] -         [Security] CVE-2015-6748 jsoup XSS vulnerability
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20524'>MNT-20524</a>] -         [Security] CVE-2018-10237 guava DoS vulnerability
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20529'>MNT-20529</a>] -         [Security] Multiple Bouncy Castle vulnerabilities
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20530'>MNT-20530</a>] -         [Security] CVE-2016-6814 groovy deserialization vulnerability
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20531'>MNT-20531</a>] -         [Security] CVE-2018-10936 postgresql-jdbc MitM vulnerability
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20533'>MNT-20533</a>] -         [Security] CVE-2018-11775 activemq-client MitM vulnerability
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20534'>MNT-20534</a>] -         [Security] Multiple camel-core vulnerabilities
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20535'>MNT-20535</a>] -         [Security] Multiple commons-compress vulnerabilities
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20670'>MNT-20670</a>] -         Renaming parent category hides its children
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20723'>MNT-20723</a>] -         Admin cannot deauthorize user - Authorization status columns missing from admin console
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20747'>MNT-20747</a>] -         [Security] CVE-2016-10750 - Hazelcast deserialization vulnerability
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20748'>MNT-20748</a>] -         [Security] CVE-2019-12086 - Jackson Databind polymorphic typing vulnerability
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20751'>MNT-20751</a>] -         [Security] Multiple camel-jackson vulnerabilities
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20779'>MNT-20779</a>] -         Prop cleaner job creates DB dangling references when running within close time proximity to the sync job, preventing ACS from further syncing and prop cleaning
+</li>
+</ul>
+    
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20507'>MNT-20507</a>] -         Some documents with special characters cannot be indexed by solr6
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20593'>MNT-20593</a>] -         [Security] Full repository access for all unauthenticated users
+</li>
+</ul>
+                                                                                                                                                                                    
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20308'>MNT-20308</a>] -         POST /authentication/versions/1/tickets incorrectly returns 403 when repository is in read-only
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20344'>MNT-20344</a>] -         No Alfresco-supplied docker image should run as root
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20587'>MNT-20587</a>] -         Prometheus metrics are exposed without authentication
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20634'>MNT-20634</a>] -         Long rule description without spaces causes the text to overlap on when you edit the rule
+</li>
+</ul>
+                
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19696'>MNT-19696</a>] -         REST API add order by parameter option to GET favorites
+</li>
+</ul>
+                                                                
 
 <h1>        6.1.0
 </h1>
