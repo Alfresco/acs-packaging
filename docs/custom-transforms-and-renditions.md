@@ -246,10 +246,59 @@ mimetype.config.cronExpression=0 30 0/1 * * ?
 mimetype.config.initialAndOnError.cronExpression=0/10 * * * * ?
 ```
 
+## Transform Service Configuration
+
+### Configure a T-Engine in the Transform Service
+
+TODO Raise an ATS ticket
+
 ### Configure a pipeline in the Transform Service
 
 TODO Raise an ATS ticket, or make it part of the same ticket
 
+## Creating a T-Engine
+
+The deployment and development of a T-Engine transformer is simpler
+than before.
+* Transformers no longer needs to applied on top of an ACS repository.
+* New versions may be deployed separately without restarting the repository.
+* As a standalone SpringBoot application develop and test
+cycles are reduced.
+* A base SpringBoot application is provided with hook point for you to extend with you custom transform code.
+* The base also includes the creation of a Docker image for your
+SpringBoot application. Even if you don't intend to deploy with Docker,
+this may still be of interest, as the configuration of any tools or
+libraries used in the transform need only be done once rather than for
+every development or ad-hoc test environment.
+
+### Developing a new T-Engine
+
+The process of developing a new T-Engine is described on the
+[Developing a new T-Engine](developing-a-new-t-enging) page. It walks
+through the steps involved in creating a simple Hello World transformer
+and includes commands to help test.
+
+### Migrating a Legacy Transformer
+
+ACS 6.2 is useful if you already have custom transformers based on the
+legacy approach, because it will allow you to gradually migrate them.
+Initially you will probably want to create new T-Engines but run them as
+Local Transformers attached directly to an ACS repository. All of the
+transforms provided with the base ACS are available as Local
+Transformers, so may be combined with your own Local
+Transformers in Local Pipelines. Once happy you have every thing working
+it then probably makes sense to add your new T-Engines to the Transform
+Service. The
+[Migrating a Legacy Transformer](migrating-a-legacy-transformer) page
+helps by showing which areas of legacy code are no longer needed and
+which sections can be simply copied and pasted into the new code. Some of
+the concepts have changed sightly to simplify what the custom transform
+developer needs to do and understand.
+
+
+
+
+TODO MOVE TO NEW PAGE
 ## Creating a T-Engine
 
 This section will describe how to develop, configure and run a custom
