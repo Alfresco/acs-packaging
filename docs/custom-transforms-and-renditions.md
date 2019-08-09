@@ -21,13 +21,12 @@ cannot be created by the Transform Service or Local Transforms. The
 process of migrating custom legacy transformers is described at the end
 of this document.
 
-One of the advantages of Local Transforms is that there is no longer any
-need for custom Java code, Spring bean definitions, or alfresco
-properties to be applied to the ACS repository. When adding custom
-transforms, it is not uncommon to add custom renditions or additional
-mimetypes, so this is also covered on this page. Generally custom
-transforms and renditions can be added to Docker deployments without
-having to create or apply an AMP.
+One of the advantages of Custom Transforms and Renditions in ACS 6.2 is
+that there is no longer any need for custom Java code, Spring bean
+definitions, or alfresco properties to be applied to the ACS repository.
+Generally custom transforms and renditions can now be added to Docker
+deployments without having to create or apply an AMP, or even restarting
+the repository.
 
 ## Repository Configuration
 
@@ -104,7 +103,7 @@ localTransform.helloworld.url=
 ### Configure a pipeline of Local Transforms
 
 Local transforms may be combined together in a pipeline to form a new
-transformer. A pipeline definition (JSON) is used to define the sequence of
+transformer. A pipeline definition (JSON) defines the sequence of
 transforms and intermediate Media Types. Like any other transformer, it
 specifies a list of supported source and target Media Types. The
 definition may reuse the transformOptions of transformers in the
@@ -147,7 +146,7 @@ can transform from and to.
 * **transformOptions** - A list of references to options required by
 the pipeline transformer.
 
-Pipeline definitions need to be placed in a directory of an ACS
+Pipeline definitions need to be placed in a directory of the ACS
 repository. The default location (below) may be changed by resetting the
 following Alfresco global property.
 ```properties
@@ -178,23 +177,10 @@ TODO Complete this section
 
 ### Configure a custom rendition
 
-Renditions definitions prior to ACS 6.2 were defined as Spring Beans.
-A rendition as a Spring bean might look like this:
-```xml
-<bean id="renditionDefinitionHelloWorld" class="org.alfresco.repo.rendition2.RenditionDefinition2Impl">
-    <constructor-arg name="renditionName" value="helloWorld"/>
-	<constructor-arg name="targetMimetype" value="text/html"/>
-	<constructor-arg name="transformOptions">
-	<map>
-	    <entry key="language" value="German" />
-	</map>
-	</constructor-arg>
-	<constructor-arg name="registry" ref="renditionDefinitionRegistry2"/>
-</bean>
-```
+Renditions are a representation of source content in another form. A
+Rendition Definition (JSON) defines the transform option (parameter)
+values that will be passed to a transformer and the target Media Type.
 
-Starting from ACS 6.2, renditions can be added via a JSON file.
-The new JSON equivalent of the above **helloWorld** rendition looks like this:
 ```json
 {
     "renditionName": "helloWorld",
@@ -206,37 +192,24 @@ The new JSON equivalent of the above **helloWorld** rendition looks like this:
 ```
 * **renditionName** - A unique rendition name.
 * **targetMediaType** - The target Media Type for the rendition.
-* **options** - The list of static transform options corresponding to the
-transform options defined in [T-Engine configuration](#t-engine-configuration).
+* **options** - The list of transform option names and values
+corresponding to the transform options defined in
+[T-Engine configuration](#t-engine-configuration). If you specify
+**sourceEncoding** without a value, the system will automatically add
+the source content's encoding value at run time. 
 
-Location of the renditions JSON file can be specified using
-a System property, the default value is:
+Just like Pipeline Definitions, Rendition Definitions need to be placed
+in a directory of the ACS repository. There are similar properties that
+control where and when these definitions are read and the same approach
+may be taken to get them into Docker Compose and Kubernetes environments.
+
 ```properties
 rendition.config.dir=shared/classes/alfresco/extension/transform/renditions/
 ```
-The location is checked on a periodic basis specified by the following
-Cron expression properties:
 ```properties
 rendition.config.cronExpression=2 30 0/1 * * ?
 rendition.config.initialAndOnError.cronExpression=0/10 * * * * ?
 ```
-
-#### Adding a custom rendition in Docker Compose
-
-After starting ACS in Docker Compose:
-1. Create a JSON file **custom_renditions.json** with the above rendition
-definition and copy it into the Alfresco Docker container.
-    ```bash
-    docker cp custom_renditions.json <alfresco container>:/usr/local/tomcat/shared/classes/alfresco/extension/transform/renditions/
-    ```
-2. Restart the Alfresco service.
-    ```bash
-    docker-compose restart alfresco
-    ```
-
-#### Adding a custom rendition in Kubernetes
-
-TODO Complete this section
 
 ### Configure a custom mimetype
 
