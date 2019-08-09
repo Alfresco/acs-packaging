@@ -113,7 +113,8 @@ The following example begins with the **helloWorldTransformer**
 described in [Creating a T-Engine](#creating-a-t-Engine), which takes a
 text file containing a name and produces an HTML file with a Hello
 &lt;name> message in the body. This is then transformed back into a
-text file.
+text file. This example contains just one pipeline transformer, but
+many may be defined in the same file.
 ```json
 {
   "transformers": [
@@ -146,7 +147,7 @@ can transform from and to.
 * **transformOptions** - A list of references to options required by
 the pipeline transformer.
 
-Pipeline definitions need to be placed in a directory of the ACS
+Custom Pipeline definitions need to be placed in a directory of the ACS
 repository. The default location (below) may be changed by resetting the
 following Alfresco global property.
 ```properties
@@ -160,8 +161,6 @@ local.transform.service.cronExpression=4 30 0/1 * * ?
 local.transform.service.initialAndOnError.cronExpression=0/10 * * * * ?
 ```
 
-###### Docker Compose
-
 If you are using Docker Compose in development, you will need to copy
 your pipeline definition into your running AWC repository container.
 One way is to use the following command and it will be picked up the
@@ -170,8 +169,6 @@ next time the location is read, which is dependent on the cron values.
 ```bash
 docker cp custom_pipelines.json <alfresco container>:/usr/local/tomcat/shared/classes/alfresco/extension/transform/pipelines/
 ```
-
-###### Kubernetes and ConfigMaps
 
 TODO Complete this section
 
@@ -183,11 +180,15 @@ values that will be passed to a transformer and the target Media Type.
 
 ```json
 {
-    "renditionName": "helloWorld",
-    "targetMediaType": "text/html",
-    "options": [
+  "renditions": [
+    {
+      "renditionName": "helloWorld",
+      "targetMediaType": "text/html",
+      "options": [
         {"name": "language", "value": "German"}
-    ]
+      ]
+    }
+  ]
 }
 ```
 * **renditionName** - A unique rendition name.
@@ -198,7 +199,7 @@ corresponding to the transform options defined in
 **sourceEncoding** without a value, the system will automatically add
 the source content's encoding value at run time. 
 
-Just like Pipeline Definitions, Rendition Definitions need to be placed
+Just like Pipeline Definitions, custom Rendition Definitions need to be placed
 in a directory of the ACS repository. There are similar properties that
 control where and when these definitions are read and the same approach
 may be taken to get them into Docker Compose and Kubernetes environments.
@@ -211,43 +212,39 @@ rendition.config.cronExpression=2 30 0/1 * * ?
 rendition.config.initialAndOnError.cronExpression=0/10 * * * * ?
 ```
 
-### Configure a custom mimetype
+### Configure a custom MIME type
 
-Custom MIME types can be defined using the JSON format.
-A custom JSON file with MIME type definitions can be added by specifying
-a System property.
-
-Example MIME type definition for Microsoft Word document in JSON:
+Quite often the reason a custom transform is created is to convert to or
+from a MIME type (or Media type) that is not known to ACS by default.
+Another reason is to introduce an application specific MIME type that
+indicates a specific use of a more general format such as XML or JSON. 
+From ACS 6.2, it is possible add custom MIME types in a similar way to
+custom Pipelines and Renditions. The JSON format and properties are as
+follows:
 ```json
 {
-    "name": "Microsoft Word",
-    "extension": "doc",
-    "mediaType": "application/msword",
-    "inputFamily": "TEXT",
-    "storePropertiesByFamily": {"TEXT": {"FilterName": "MS Word 97"}}
-  }
+  "mediaTypes": [
+    {
+      "name": "MPEG4 Audio",
+      "mediaType": "audio/mp4",
+      "defaultExtension": "m4a",
+      "alternateExtensions": [ "m4b", "mp4a" ]
+    }
+  ]
+}
 ```
+* **name** Human readable or display name.
+* **mediaType** used to identify the content.
+* **defaultExtension** if saved as a file.
+* **alternateExtensions** that may also contain the same content.
 
-Location of the Media Type JSON file can be specified using a System
-property, the default value is:
 ```properties
 mimetype.config.dir=shared/classes/alfresco/extension/transform/mimetypes
 ```
-The location is checked on a periodic basis specified by the following
-Cron expression properties:
 ```properties
 mimetype.config.cronExpression=0 30 0/1 * * ?
 mimetype.config.initialAndOnError.cronExpression=0/10 * * * * ?
 ```
-
-TODO
-* Describe the mimetype definition
-
-## Transform Service Configuration
-
-### Configure a T-Engine in the Transform Service
-
-TODO Raise an ATS ticket
 
 ### Configure a pipeline in the Transform Service
 
