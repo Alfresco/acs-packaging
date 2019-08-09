@@ -47,10 +47,10 @@ Having set the URL to a T-Engine, the ACS repository will update its
 configuration by requesting the
 [T-Engine's configuration](#t-engine-configuration) on a periodic basis.
 It is requested more frequent on start up or if a communication or configuration
-problem has occurred, and a less frequent during normal operation.
+problem has occurred, and a less frequently otherwise.
 
 ```properties
-local.transform.service.cronExpression=0 0 0/1 * * ?
+local.transform.service.cronExpression=4 30 0/1 * * ?
 local.transform.service.initialAndOnError.cronExpression=0/10 * * * * ?
 ```
 
@@ -119,7 +119,7 @@ many may be defined in the same file.
 {
   "transformers": [
     {
-      "transformerName": "helloWorldPipeline",
+      "transformerName": "helloWorldText",
       "transformerPipeline" : [
         {"transformerName": "helloWorldTransformer", "targetMediaType": "text/html"},
         {"transformerName": "html"}
@@ -155,7 +155,10 @@ local.transform.pipeline.config.dir=shared/classes/alfresco/extension/transform/
 ```
 On startup this location is checked every 10 seconds, but then switches
 to once an hour if successfully. After a problem, it tries every 10
-seconds again.
+seconds again. These are the same properties use to decide when to read
+T-Engine configurations, because pipelines combine transformers in the
+T-Engines.
+
 ```properties
 local.transform.service.cronExpression=4 30 0/1 * * ?
 local.transform.service.initialAndOnError.cronExpression=0/10 * * * * ?
@@ -169,8 +172,6 @@ next time the location is read, which is dependent on the cron values.
 ```bash
 docker cp custom_pipelines.json <alfresco container>:/usr/local/tomcat/shared/classes/alfresco/extension/transform/pipelines/
 ```
-
-TODO Complete this section
 
 ### Configure a custom rendition
 
@@ -246,30 +247,35 @@ mimetype.config.cronExpression=0 30 0/1 * * ?
 mimetype.config.initialAndOnError.cronExpression=0/10 * * * * ?
 ```
 
-## Transform Service Configuration
+### Configure the repository to use the Transform Service
 
-### Configure a T-Engine in the Transform Service
+By default the Transform service is disabled by default, but Docker
+Compose and Kubernetes Helm Charts may enable it again by setting
+**transform.service.enabled**. The Transform Service handles
+communication with all its own T-Engines and builds up its own combined
+configuration JSON which is requested by the ACS repository
+periodically.
 
-TODO Raise an ATS ticket
-
-### Configure a pipeline in the Transform Service
-
-TODO Raise an ATS ticket, or make it part of the same ticket
+```properties
+transform.service.cronExpression=4 30 0/1 * * ?
+transform.service.initialAndOnError.cronExpression=0/10 * * * * ?
+```
 
 ## Creating a T-Engine
 
 The deployment and development of a T-Engine transformer is simpler
 than before.
-* Transformers no longer needs to applied on top of an ACS repository.
+* Transformers no longer needs to be applied as AMPs on top of an ACS repository.
 * New versions may be deployed separately without restarting the repository.
 * As a standalone SpringBoot application develop and test
-cycles are reduced.
-* A base SpringBoot application is provided with hook point for you to extend with you custom transform code.
+  cycles are reduced.
+* A base SpringBoot application is provided with hook points to extend
+  with custom transform code.
 * The base also includes the creation of a Docker image for your
-SpringBoot application. Even if you don't intend to deploy with Docker,
-this may still be of interest, as the configuration of any tools or
-libraries used in the transform need only be done once rather than for
-every development or ad-hoc test environment.
+  SpringBoot application. Even if you don't intend to deploy with Docker,
+  this may still be of interest, as the configuration of any tools or
+  libraries used in the transform need only be done once rather than for
+  every development or ad-hoc test environment.
 
 ### Developing a new T-Engine
 
@@ -277,6 +283,17 @@ The process of developing a new T-Engine is described on the
 [Developing a new T-Engine](developing-a-new-t-enging) page. It walks
 through the steps involved in creating a simple Hello World transformer
 and includes commands to help test.
+
+When developing new Local Transformers it is generally a good idea to
+increase the frequency of the polling of the various locations that
+contain custom Pipeline, Rendition, Mimetype Definitions and also of
+the Transform Service.
+```properties
+mimetype.config.cronExpression=0 0/1 * * * ?
+rendition.config.cronExpression=2 0/1 * * * ?
+local.transform.service.cronExpression=4 0/1 * * * ?
+transform.service.cronExpression=6 0/1 * * * ?
+```
 
 ### Migrating a Legacy Transformer
 
@@ -294,6 +311,16 @@ helps by showing which areas of legacy code are no longer needed and
 which sections can be simply copied and pasted into the new code. Some of
 the concepts have changed sightly to simplify what the custom transform
 developer needs to do and understand.
+
+## Transform Service Configuration
+
+### Configure a T-Engine in the Transform Service
+
+TODO Raise an ATS ticket
+
+### Configure a pipeline in the Transform Service
+
+TODO Raise an ATS ticket, or make it part of the same ticket
 
 
 
