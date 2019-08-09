@@ -1,3 +1,5 @@
+For context see [Custom Transforms and Renditions](custom-transforms-and-renditions.md) and [Creating A T-Engine](creating-a-t-engine.md).
+
 # Migrating a Legacy Transformer
 
 TODO
@@ -9,7 +11,7 @@ created for Alfresco Content Repository (ACS) prior to version 6.2, to new
 asynchronous out of process T-Engines.
 The pre 6.2 transformers will be referred to as *Legacy Transformers*.
 It is assumed that the reader is familiar with creating and configuring
-a new T-Engine as described in  [Creating a T-Engine](#creating-a-t-engine).
+a new T-Engine as described in [Creating a T-Engine](creating-a-t-engine.md).
 
 The new asynchronous approach of using T-Engines provides the means to
 decouple ACS and Legacy Transformers. This allows for decoupled releases
@@ -29,16 +31,16 @@ the ACS Spring Bean configuration.
 The steps to create and migrate a Legacy Transformer into a custom
 T-Engine are as follows:
 
-1. Create a custom T-Engine. The [Creating a T-Engine](#creating-a-t-engine) section walks through how to
+1. Create a custom T-Engine. The [Creating a T-Engine](creating-a-t-engine.md) section walks through how to
 develop, configure and run a new t-Engine using a simple Hello World
 example.
 2. Migrate the custom Legacy Transformer Java code into the new T-Engine
 as described in [Migrating custom transform code](#migrating-custom-transform-code).
 3. Migrate any custom renditions defined as Spring Beans.
-See how to add custom renditions in [Configure a custom rendition](#configure-a-custom-rendition)
+See how to add custom renditions in [Configure a custom rendition](custom-transforms-and-renditions.md#configure-a-custom-rendition)
 4. Migrate any custom pipelines defined as Spring Beans.
-See how to add a custom pipelines in [Configure a pipeline of Local Transforms](#configure-a-pipeline-of-local-transforms).
-5. Configure ACS to use the new custom T-Engine as described in [Configure a T-Engine as a Local Transform](#configure-a-t-engine-as-a-local-transform).
+See how to add a custom pipelines in [Configure a pipeline of Local Transforms](custom-transforms-and-renditions.md#configure-a-custom-transform-pipeline).
+5. Configure ACS to use the new custom T-Engine as described in [Configure a T-Engine as a Local Transform](custom-transforms-and-renditions.md#configure-a-t-engine-as-a-local-transform).
 
 ## Migrating custom transform code
 Legacy Transformers are implemented by extending a now deprecated class
@@ -79,7 +81,7 @@ A **TransformationOptions** parameter provides the transform options.
 method is similar to the Hello World T-Engine's `transformInternal` method
 in [HelloWorldController.java](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/src/main/java/org/alfresco/transformer/HelloWorldController.java).
 
-The [Custom transform API](#custom-transform-api) section describes how
+The [Custom transform API](creating-a-t-engine.md#custom-transform-api) section describes how
 to add transform logic to a custom T-Engine. In short, the logic in
 the `transformInternal` method in a Legacy Transformer can be copied
 into a new T-Engine and modified to use the parameters provided by
@@ -91,7 +93,7 @@ This is equivalent to the **ContentReader** parameter.
 * The response from the `/transform` endpoint contains the transformed file.
 This is equivalent to the **ContentWriter** parameter.
 * Requests to a T-Engine's `/transform` endpoint contain a list of
-transform options as defined by the [engine configuration](#t-engine-configuration).
+transform options as defined by the [T-Engine configuration](creating-a-t-engine.md#t-engine-configuration).
 These are equivalent to the options in the **TransformationOptions** parameter.
 
 

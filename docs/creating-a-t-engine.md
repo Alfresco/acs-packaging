@@ -1,6 +1,8 @@
+For context see [Custom Transforms and Renditions](custom-transforms-and-renditions.md).
+
 # Creating a T-Engine
 
-This section will describe how to develop, configure and run a custom
+This page will describe how to develop, configure and run a custom
 T-Engine. We will use an example Hello World T-Engine as a reference
 throughout this section. The Hello World T-Engine project can be found
 [here](https://github.com/Alfresco/alfresco-helloworld-transformer).
@@ -58,7 +60,7 @@ application.
 ### T-Engine configuration
 
 See ACS side of the configuration
-[here](#configure-a-t-engine-as-a-local-transform).
+[here](custom-transforms-and-renditions.md#configure-a-t-engine-as-a-local-transform).
 
 Each T-Engine has to provide engine configuration which is read by
 T-Engine's clients to determine supported transformations.
@@ -262,7 +264,7 @@ file by adding the Hello World T-Engine as one of the services.
     ```
 
     Add a `localTransform.{transformer}.url` property to the Alfresco
-    service JAVA_OPTS. See [here](#configure-a-t-engine-as-a-local-transform)
+    service JAVA_OPTS. See [here](custom-transforms-and-renditions.md#configure-a-t-engine-as-a-local-transform)
     for details. For Docker Compose, the **transform-helloworld**
     in the URL http://**transform-helloworld**:8090/ has the match
     the service name defined above.
@@ -271,7 +273,7 @@ file by adding the Hello World T-Engine as one of the services.
     ```
 
 5. Create a custom **helloWorld** rendition which will use the new
-Hello World T-Engine. See [here](#configure-a-custom-rendition) for details.
+Hello World T-Engine. See [here](custom-transforms-and-renditions.md#configure-a-custom-rendition) for details.
     ```json
     {
         "renditionName": "helloWorld",

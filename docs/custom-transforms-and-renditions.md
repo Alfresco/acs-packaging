@@ -45,7 +45,7 @@ For example, `localTransform.helloworld.url`. Typically a T-Engine
 contains a single transform or an associated group of transforms.
 Having set the URL to a T-Engine, the ACS repository will update its
 configuration by requesting the
-[T-Engine configuration](creating-a-t-enging#t-engine-configuration)
+[T-Engine configuration](creating-a-t-engine.md#t-engine-configuration)
 on a periodic basis. It is requested more frequent on start up or if a
 communication or configuration problem has occurred, and a less
 frequently otherwise.
@@ -57,7 +57,7 @@ local.transform.service.initialAndOnError.cronExpression=0/10 * * * * ?
 
 #### Transformer selection strategy
 The ACS repository will use the
-[T-Engine configuration](creating-a-t-enging#t-engine-configuration) to
+[T-Engine configuration](creating-a-t-engine.md#t-engine-configuration) to
 choose which T-Engine will perform a transform. A transformer definition
 contains a supported list of source and target Media Types. This is used
 for the most basic selection. This is further refined by checking
@@ -94,7 +94,7 @@ legacy.transform.service.enabled=true
 Setting the enabled state to **false** will disable all of the transforms
 performed by that particular service. It is possible to disable individual
 Local Transforms by setting the corresponding T-Engine URL property
-[localTransform.&lt;engineName>.url](creating-a-t-enging#configure-a-t-engine-as-a-local-transform)
+[localTransform.&lt;engineName>.url](creating-a-t-engine.md#configure-a-t-engine-as-a-local-transform)
 value to an empty string.
 
 ```properties
@@ -111,7 +111,7 @@ definition may reuse the transformOptions of transformers in the
 pipeline, but typically will define its own subset of these.  
 
 The following example begins with the **helloWorldTransformer**
-described in [Creating a T-Engine](#creating-a-t-Engine), which takes a
+described in [Creating a T-Engine](#creating-a-t-Engine.md), which takes a
 text file containing a name and produces an HTML file with a Hello
 &lt;name> message in the body. This is then transformed back into a
 text file. This example contains just one pipeline transformer, but
@@ -197,7 +197,7 @@ values that will be passed to a transformer and the target Media Type.
 * **targetMediaType** - The target Media Type for the rendition.
 * **options** - The list of transform option names and values
 corresponding to the transform options defined in
-[T-Engine configuration](creating-a-t-enging#t-engine-configuration). If you specify
+[T-Engine configuration](creating-a-t-engine.md#t-engine-configuration). If you specify
 **sourceEncoding** without a value, the system will automatically add
 the source content's encoding value at run time. 
 
@@ -281,7 +281,7 @@ than before.
 ### Developing a new T-Engine
 
 The process of developing a new T-Engine is described on the
-[Creating a T-Engine](creating-a-t-enging) page. It walks
+[Creating a T-Engine](creating-a-t-engine.md) page. It walks
 through the steps involved in creating a simple Hello World transformer
 and includes commands to help test.
 
@@ -307,7 +307,7 @@ Transformers, so may be combined with your own Local
 Transformers in Local Pipelines. Once happy you have every thing working
 it then probably makes sense to add your new T-Engines to the Transform
 Service. The
-[Migrating a Legacy Transformer](migrating-a-legacy-transformer) page
+[Migrating a Legacy Transformer](migrating-a-legacy-transformer.md) page
 helps by showing which areas of legacy code are no longer needed and
 which sections can be simply copied and pasted into the new code. Some of
 the concepts have changed sightly to simplify what the custom transform
