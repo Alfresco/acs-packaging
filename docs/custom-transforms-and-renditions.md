@@ -109,7 +109,7 @@ specifies a list of supported source and target Media Types. The
 definition may reuse the transformOptions of transformers in the
 pipeline, but typically will define its own subset of these.  
 
-The following example begins with the **helloWorldTransformer**
+The following example begins with the **helloWorld** Transformer
 described in [Creating a T-Engine](#creating-a-t-engine.md), which takes a
 text file containing a name and produces an HTML file with a Hello
 &lt;name> message in the body. This is then transformed back into a
@@ -121,14 +121,14 @@ many may be defined in the same file.
     {
       "transformerName": "helloWorldText",
       "transformerPipeline" : [
-        {"transformerName": "helloWorldTransformer", "targetMediaType": "text/html"},
+        {"transformerName": "helloWorld", "targetMediaType": "text/html"},
         {"transformerName": "html"}
       ],
       "supportedSourceAndTargetList": [
         {"sourceMediaType": "text/plain",  "targetMediaType": "text/plain" }
       ],
       "transformOptions": [
-        "exampleOptions",
+        "helloWorldOptions",
         "htmlOptions"
       ]
     }
@@ -267,12 +267,12 @@ The deployment and development of a T-Engine transformer is simpler
 than before.
 * Transformers no longer needs to be applied as AMPs on top of an ACS repository.
 * New versions may be deployed separately without restarting the repository.
-* As a standalone SpringBoot application develop and test
+* As a standalone Spring Boot application develop and test
   cycles are reduced.
-* A base SpringBoot application is provided with hook points to extend
+* A base Spring Boot application is provided with hook points to extend
   with custom transform code.
 * The base also includes the creation of a Docker image for your
-  SpringBoot application. Even if you don't intend to deploy with Docker,
+  Spring Boot application. Even if you don't intend to deploy with Docker,
   this may still be of interest, as the configuration of any tools or
   libraries used in the transform need only be done once rather than for
   every development or ad-hoc test environment.
