@@ -59,8 +59,7 @@ application.
 
 ### T-Engine configuration
 
-See ACS side of the configuration
-[here](custom-transforms-and-renditions.md#configure-a-t-engine-as-a-local-transform).
+Also see [Configure a T-Engine as a Local Transform](custom-transforms-and-renditions.md#configure-a-t-engine-as-a-local-transform).
 
 Each T-Engine has to provide engine configuration which is read by
 T-Engine's clients to determine supported transformations.

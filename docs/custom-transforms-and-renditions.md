@@ -62,8 +62,8 @@ choose which T-Engine will perform a transform. A transformer definition
 contains a supported list of source and target Media Types. This is used
 for the most basic selection. This is further refined by checking
 that the definition also supports transform options (parameters) that
-have been supplied in a transform or rendition request.
-See [rendition options](#configure-a-custom-rendition).
+have been supplied in a transform request or a Rendition Definition used
+in a rendition request. See [Configure a Custom Rendition](#configure-a-custom-rendition).
 ```text
 Transformer 1 defines options: Op1, Op2
 Transformer 2 defines options: Op1, Op2, Op3, Op4
@@ -94,8 +94,7 @@ legacy.transform.service.enabled=true
 Setting the enabled state to **false** will disable all of the transforms
 performed by that particular service. It is possible to disable individual
 Local Transforms by setting the corresponding T-Engine URL property
-[localTransform.&lt;engineName>.url](creating-a-t-engine.md#configure-a-t-engine-as-a-local-transform)
-value to an empty string.
+**localTransform.&lt;engineName>.url** value to an empty string.
 
 ```properties
 localTransform.helloworld.url=
@@ -111,7 +110,7 @@ definition may reuse the transformOptions of transformers in the
 pipeline, but typically will define its own subset of these.  
 
 The following example begins with the **helloWorldTransformer**
-described in [Creating a T-Engine](#creating-a-t-Engine.md), which takes a
+described in [Creating a T-Engine](#creating-a-t-engine.md), which takes a
 text file containing a name and produces an HTML file with a Hello
 &lt;name> message in the body. This is then transformed back into a
 text file. This example contains just one pipeline transformer, but
