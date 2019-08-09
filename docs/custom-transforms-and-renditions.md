@@ -153,7 +153,7 @@ following Alfresco global property.
 ```properties
 local.transform.pipeline.config.dir=shared/classes/alfresco/extension/transform/pipelines
 ```
-By default this location is checked every 10 seconds, but then switches
+On startup this location is checked every 10 seconds, but then switches
 to once an hour if successfully. After a problem, it tries every 10
 seconds again.
 ```properties
@@ -161,24 +161,18 @@ local.transform.service.cronExpression=4 30 0/1 * * ?
 local.transform.service.initialAndOnError.cronExpression=0/10 * * * * ?
 ```
 
-TODO
-* Talk about creating pipelines in json rather than Spring or via
-   values in transformer.properties.
+###### Docker Compose
 
-#### Adding a custom pipeline in Docker Compose
+If you are using Docker Compose in development, you will need to copy
+your pipeline definition into your running AWC repository container.
+One way is to use the following command and it will be picked up the
+next time the location is read, which is dependent on the cron values.
 
-After starting ACS in Docker Compose:
-1. Create a JSON file, for example **custom_pipelines.json** with the
-required pipeline definitions and copy it into the Alfresco Docker container.
-    ```bash
-    docker cp custom_pipelines.json <alfresco container>:/usr/local/tomcat/shared/classes/alfresco/extension/transform/pipelines/
-    ```
-2. Restart the Alfresco service.
-    ```bash
-    docker-compose restart alfresco
-    ```
+```bash
+docker cp custom_pipelines.json <alfresco container>:/usr/local/tomcat/shared/classes/alfresco/extension/transform/pipelines/
+```
 
-#### Adding a custom pipeline in Kubernetes
+###### Kubernetes and ConfigMaps
 
 TODO Complete this section
 
@@ -648,6 +642,10 @@ TODO
   compete the section when fixed.
 
 ### Migrating a Legacy Transformer into a T-Engine
+
+TODO
+* Talk about creating pipelines in json rather than Spring or via
+   values in transformer.properties.
 
 This section will describe how to migrate custom synchronous transformers
 created for Alfresco Content Repository (ACS) prior to version 6.2, to new
