@@ -196,9 +196,9 @@ values that will be passed to a transformer and the target Media Type.
 * **targetMediaType** - The target Media Type for the rendition.
 * **options** - The list of transform option names and values
 corresponding to the transform options defined in
-[T-Engine configuration](creating-a-t-engine.md#t-engine-configuration). If you specify
-**sourceEncoding** without a value, the system will automatically add
-the source content's encoding value at run time. 
+[T-Engine configuration](creating-a-t-engine.md#t-engine-configuration).
+If you specify **sourceEncoding** or **sourceNodeRef** without a value,
+the system will automatically add the values at run time. 
 
 Just like Pipeline Definitions, custom Rendition Definitions need to be placed
 in a directory of the ACS repository. There are similar properties that
