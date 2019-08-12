@@ -22,8 +22,9 @@ technologies:
 
 T-Engines are Dockerized Spring Boot applications. They are set up as
 Maven projects built on top of
-[Alfresco Transform Core](https://github.com/Alfresco/alfresco-transform-core).
-The Alfresco Transform Core project brings in Spring Boot capabilities
+[alfresco-transformer-base](https://github.com/Alfresco/alfresco-transform-core/tree/master/alfresco-transformer-base),
+which is a sub project of Alfresco Transform Core.
+The Alfresco Transformer Base brings in Spring Boot capabilities
 as well as base classes which assist in the creation of new T-Engines.
 We are going to take a look at:
  * How to [set up](#project-setup) a project.
@@ -34,25 +35,23 @@ We are going to take a look at:
 
 ### Project setup
 
-In order to configure a custom T-Engine to be built as a Spring Boot
-application
-in a Docker image, we need to add some configuration.
-The quickest way to get started is base it on the
-[alfresco-helloworld-transformer](https://github.com/Alfresco/alfresco-helloworld-transformer)
-project, as it is fully configured, ready to be built and run and
-contains relatively little extra code that needs to be stripped out. It
-is also possible to start from a blank Maven project with the same folder
-structure. Key files:
+In order to configure a custom T-Engine as a Spring Boot
+application in a Docker image, we need to add some configuration.
+The quickest way to get started is to base your project on
+[alfresco-helloworld-transformer](https://github.com/Alfresco/alfresco-helloworld-transformer),
+as it is fully configured, ready to be built and run and contains
+relatively little extra code. It is also possible to start from a blank
+Maven project with the same folder structure. Key files:
 
-* *[pom.xml](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/pom.xml)*
+* [pom.xml](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/pom.xml)
   The POM file defines Alfresco Transform Core as the parent and adds
   required dependencies. It also configures plugins for building
   the Spring Boot application and generating the Docker image. It is
   likely you will need to change the artifact name and add extra dependencies.
-* *[Application.java](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/src/main/java/org/alfresco/transformer/Application.java)*
+* [Application.java](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/src/main/java/org/alfresco/transformer/Application.java)
   The Application class defines an entry point for the Spring Boot
   application.
-* *[Dockerfile](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/Dockerfile)*
+* [Dockerfile](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/Dockerfile)
   The Dockerfile is needed by the **docker-maven-plugin** configured in
   the **pom.xml** to generate a docker image.
   It defines a simple Docker image with our Spring Boot application fat
@@ -100,7 +99,7 @@ as the one used by the [Tika T-Engine](https://github.com/Alfresco/alfresco-tran
   don't need to be repeated for each transformer. They can even be
   shared between T-Engines. In this example there is only one group of
   options called **helloWorldOptions**, which has just one option the
-  **language**. Unless an option has a **"required": true** it is
+  **language**. Unless an option has a **"required": true** field it is
   considered to be optional. If you look at the [Tika T-Engine](https://github.com/Alfresco/alfresco-transform-core/blob/master/alfresco-docker-imagemagick/src/main/resources/engine_config.json)
   file, you can see options may also be grouped. You don't need to
   specify *sourceMimetype*, *targetMimetype*, *sourceExtension* or
@@ -119,13 +118,14 @@ as the one used by the [Tika T-Engine](https://github.com/Alfresco/alfresco-tran
   text to HTML and we have limited the source file size, to avoid
   transforming files that clearly don't contain names.
 
-### Custom transform API
+### The Controller Class
 
-T-Engines define their endpoints through an annotated Spring controller
-provided by Alfresco Transform Core.
-The [HelloWorldController.java](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/src/main/java/org/alfresco/transformer/HelloWorldController.java)
-in the example T-Engine illustrates how to implement such controller.
+T-Engines generally extend an AbstractTransformerController and provide
+implementations of the following methods. Take a look at the
+[HelloWorldController.java](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/src/main/java/org/alfresco/transformer/HelloWorldController.java)
+example.
 
+#### transform
 
 ```java
 @PostMapping(value = "/transform", consumes = MULTIPART_FORM_DATA_VALUE)
@@ -135,17 +135,20 @@ public ResponseEntity<Resource> transform(HttpServletRequest request,
                                               @RequestParam(value = "language") String language)
 ```
 
-The handler method for the `/transform` endpoint, it serves HTTP
-requests for transforms. ACS will make requests to this endpoint when
-configured to use Local Transforms.
+The `/transform` endpoint handles ACS repository requests to Local
+Transforms over http. Generally it will:
+* prepare source and target files on disk using the supplied
+  MultipartFile and targetExtension. The Transformer Base will handle
+  the removal of these files.
+* perform the transform
+* send the result back
 
 Method parameters:
 
 * **sourceMultipartFile** - The file to be transformed from the
-transform request. This is always provided in ACS requests.
+transform request. This is always provided.
 * **targetExtension** - The target extension of the transformed file
-to be returned in the response.
-This is always provided in ACS requests.
+to be returned in the response. This is always provided.
 * **language** - This is the custom transform option defined for
 the example T-Engine.
 
@@ -155,13 +158,17 @@ The example T-Engine is configured to take a single `language`
 transform option, but the number of the `transform` method's
 parameters will have to match the transform options defined in [engine_config.json]((https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/src/main/resources/engine_config.json)).
 
+#####  processTransform
+
 ```java
 public void processTransform(File sourceFile, File targetFile, Map<String, String> transformOptions, Long timeout)
 ```
 
-This method is called by requests which come in through a message queue
-used by the Transform Service. It performs the same transform as
-the `/transform` endpoint.
+This method handles requests from the Transform Service via a message
+queue. As it performs the same transform as the **transform** method
+they tend to both call a common method to perform the actual transform.
+
+#####  getProbeTestTransform
 
 ```java
 public ProbeTestTransform getProbeTestTransform()
@@ -169,18 +176,13 @@ public ProbeTestTransform getProbeTestTransform()
 
 This method provides a way to define a test transform for
 [T-Engine Probes](https://github.com/Alfresco/alfresco-transform-core/blob/master/docs/Probes.md).
-For example, a test transform on a file included in the same Docker image.
+For example, a test transform of a small file included in the Docker image.
 
 ### Running and Debugging
 
 #### Hello World T-Engine
 
 This section will describe how to run and debug the example [Hello World T-Engine](https://github.com/Alfresco/alfresco-helloworld-transformer).
-Instructions on how to build and run the T-Engine are described in
-the project's **README.md** and also specified below.
-The Hello World T-Engine transform takes an input text file
-and a `language` **transformOption** and returns a html file.
-See [T-Engine configuration](#t-engine-configuration) for details.
 
 1. Clone the **Hello World T-Engine** project.
 2. Build the T-Engine
@@ -195,16 +197,12 @@ See [T-Engine configuration](#t-engine-configuration) for details.
     ```text
     T-Engines
     ```
-
-4. Send a HTTP POST request to the /transform. The Hello World T-Engine
-provides a convenience HTML form to do this.
-Once the T-Engine is running, the form can be accessed at: http://localhost:8090/
-
-5. In the HTML Form, choose the **source_file.txt**.
+5. In a browser go to http://localhost:8090/. For convenience the
+Hello World T-Engine, provides an [HTML form](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/src/main/resources/templates/transformForm.html) to POST requests to the
+**/transform** endpoint.
+6. In the HTML Form, choose the **source_file.txt**.
 Specify a language, supported languages are: English, Spanish, German.
-6. Click **Transform**
-7. Verify that the returned HTML contains a Hello World greeting in the
-specified language.
+7. Click **Transform** and then view the downloaded file.
 
 ##### Logs
 
@@ -217,7 +215,7 @@ For more information see [Docker documentation](https://docs.docker.com/engine/r
 docker logs alfresco-helloworld-transformer
 ```
 
-#### Hello World T-Engine with ACS
+#### Hello World T-Engine with the ACS repository
 
 This section will describe how to configure a development environment
 and run Alfresco Content Services with the new Hello World T-Engine.
