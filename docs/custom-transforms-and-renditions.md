@@ -25,7 +25,7 @@ One of the advantages of Custom Transforms and Renditions in ACS 6.2 is
 that there is no longer any need for custom Java code, Spring bean
 definitions, or alfresco properties to be applied to the ACS repository.
 Generally custom transforms and renditions can now be added to Docker
-deployments without having to create or apply an AMP, or even restarting
+deployments without having to create or apply an AMP/JAR, or even restarting
 the repository.
 
 ## Repository Configuration
@@ -280,7 +280,7 @@ transform.service.initialAndOnError.cronExpression=0/10 * * * * ?
 
 The deployment and development of a T-Engine transformer is simpler
 than before.
-* Transformers no longer needs to be applied as AMPs on top of an ACS repository.
+* Transformers no longer needs to be applied as AMPs/JARs on top of an ACS repository.
 * New versions may be deployed separately without restarting the repository.
 * As a standalone Spring Boot application develop and test
   cycles are reduced.

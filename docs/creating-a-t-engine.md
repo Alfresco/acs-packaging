@@ -14,9 +14,14 @@ option that specifies which language to use.
 
 It is assumed that the reader has some familiarity with the following
 technologies:
-* Spring Boot
-* Maven
-* Docker
+
+| Component | Recommended Version | Also Available |
+|---|---|---|
+| Java | 11.0.1 | 11.0.2,11.0.3 |
+| Spring Boot | 2.1.7.RELEASE | |
+| Maven | 3.5.0 | 3.6.0,3.6.1 |
+| Docker | 2.0.0 | 2.1.0.1 |
+
 
 ## Developing and Debugging T-Engines
 
@@ -180,7 +185,7 @@ For example, a test transform of a small file included in the Docker image.
 
 ### Running and Debugging
 
-#### Hello World T-Engine
+#### Hello World T-Engine Standalone
 
 This section will describe how to run and debug the example [Hello World T-Engine](https://github.com/Alfresco/alfresco-helloworld-transformer).
 
@@ -193,7 +198,7 @@ This section will describe how to run and debug the example [Hello World T-Engin
     ```bash
     docker run -d -p 8090:8090 --name alfresco-helloworld-transformer alfresco/alfresco-helloworld-transformer:latest
     ```
-4. Create a **source_file.txt** file with the following content:
+4. Create a test resource/file named **source_file.txt** with the following content:
     ```text
     T-Engines
     ```
@@ -204,7 +209,7 @@ Hello World T-Engine, provides an [HTML form](https://github.com/Alfresco/alfres
 Specify a language, supported languages are: English, Spanish, German.
 7. Click **Transform** and then view the downloaded file.
 
-##### Logs
+#### Logs
 
 T-Engines provide a `/log` endpoint out of the box which shows
 information about transformations performed by the T-Engine.
@@ -228,8 +233,8 @@ project (if not done already).
 2. Build the Hello World T-Engine, (if not done already).
 Check that the local Docker image repository contains
 **alfresco/alfresco-helloworld-transformer:latest**
-3. Clone the [ACS](https://github.com/Alfresco/acs-deployment) project.
-4. Modify the ACS [docker-compose]https://github.com/Alfresco/acs-deployment/blob/master/docker-compose/docker-compose.yml
+3. Clone [Alfresco/acs-deployment](https://github.com/Alfresco/acs-deployment) project.
+4. Modify asc-deployment [docker-compose]https://github.com/Alfresco/acs-deployment/blob/master/docker-compose/docker-compose.yml
 file by adding the Hello World T-Engine as one of the services.
     ```yaml
     transform-helloworld:
@@ -274,12 +279,12 @@ Hello World T-Engine. See [here](custom-transforms-and-renditions.md#configure-a
     docker-compose up
     ```
 
-##### Test custom rendition
+#### Test custom rendition
 
 This section walks through an end to end example of using
 the Hello World T-Engine with ACS by requesting the **helloWorld** rendition.
 
-1. Create a **source_file.txt** file with the following content:
+1. Create a test resource/file named **source_file.txt** with the following content:
    ```text
    T-Engines
    ```
@@ -308,7 +313,7 @@ and save it to **hello_world_rendition.html**.
 6. Verify that the returned HTML file contains a Hello World greeting
 in the language specified in the **helloWorld** rendition transform options.
 
-##### Logs and Debugging
+#### Logs and Debugging
 
 Log4j `DEBUG` level logging for the transformations code can be enabled
 in ACS log4j properties on the following packages:
