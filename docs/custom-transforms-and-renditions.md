@@ -265,7 +265,7 @@ follows:
 * **alternateExtensions** that may also contain the same content.
 
 ```properties
-mimetype.config.dir=shared/classes/alfresco/extension/transform/mimetypes
+mimetype.config.dir=shared/classes/alfresco/extension/mimetypes
 ```
 ```properties
 mimetype.config.cronExpression=0 30 0/1 * * ?
