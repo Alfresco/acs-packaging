@@ -309,13 +309,16 @@ in the language specified in the **helloWorld** rendition transform options.
 Log4j `DEBUG` level logging for the transformations code can be enabled
 in ACS log4j properties on the following packages:
 ```properties
+log4j.logger.org.alfresco.repo.content.transform.TransformerDebug=debug
 log4j.logger.org.alfresco.repo.rendition2=debug
 log4j.logger.org.alfresco.enterprise.repo.rendition2=debug
-log4j.logger.org.alfresco.repo.content.transform.TransformerDebug=debug
 log4j.logger.org.alfresco.repo.content.transform.LocalTransformServiceRegistry=debug
 log4j.logger.org.alfresco.enterprise.repo.rendition2.RemoteTransformServiceRegistry=debug
 log4j.logger.org.alfresco.repo.content.transform.LocalTransform=debug
 ```
+* `log4j.logger.org.alfresco.repo.content.transform.TransformerDebug` - This
+ class provides concise tailored debug for transforms and should be used
+ as a starting point before using the more verbose classes and packages.
 * `log4j.logger.org.alfresco.repo.rendition2` - The package associated
 with the core functionality and Local Transforms.
 * `log4j.logger.org.alfresco.enterprise.repo.rendition2` - The package
@@ -323,21 +326,3 @@ associated with Transform Service transforms in the Enterprise Edition of ACS.
 
 In addition, the `Alfresco Admin Tool` provides a transformers debugging
 tool called `Test Transform` under the `Support Tools` section.
-
-**Get Transformer Names**
-
-**Get Transformations By Extension**
-
-**Get Transformations By Transformer**
-
-**Get Transformation Log**
-
-**Get Transformation Debug Log**
-
-TODO
-
-* Talk about the bits of the Support Tools section of the Alfresco
-  Admin Tool that have not been deprecated, and how to use it to
-  work out if your transforms have been created.
-  This functionality does not work at the moment,
-  compete the section when fixed.
