@@ -143,6 +143,14 @@
                                     <outputDirectory>${project.build.directory}/vti-bin</outputDirectory>
                                     <destFileName>_vti_bin.war</destFileName>
                                 </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.alfresco.services.sync</groupId>
+                                    <artifactId>alfresco-device-sync-repo</artifactId>
+                                    <version>${alfresco.desktop-sync.version}</version>
+                                    <type>amp</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/amps</outputDirectory>
+                                </artifactItem>
                             </artifactItems>
                         </configuration>
                     </execution>
