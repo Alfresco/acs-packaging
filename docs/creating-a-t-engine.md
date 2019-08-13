@@ -247,7 +247,7 @@ file by adding the Hello World T-Engine as one of the services.
     Add a `localTransform.{transformer}.url` property to the Alfresco
     service JAVA_OPTS. See [here](custom-transforms-and-renditions.md#configure-a-t-engine-as-a-local-transform)
     for details. For Docker Compose, the **transform-helloworld**
-    in the URL http://**transform-helloworld**:8090/ has the match
+    in the URL http://**transform-helloworld**:8090/ has to match
     the service name defined above.
     ```
     -DlocalTransform.helloworld.url=http://transform-helloworld:8090/
