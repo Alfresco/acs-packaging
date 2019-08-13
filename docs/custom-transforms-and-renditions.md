@@ -187,7 +187,7 @@ In the ACS repository pod configuration:
 volumes:
     - name: custom-pipeline-config-volume
       configMap:
-        name: custom-pipeline-config
+          name: custom-pipeline-config
 ```
 
 ```yaml
