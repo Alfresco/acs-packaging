@@ -173,6 +173,21 @@ next time the location is read, which is dependent on the cron values.
 docker cp custom_pipelines.json <alfresco container>:/usr/local/tomcat/shared/classes/alfresco/extension/transform/pipelines/
 ```
 
+In a Kubernetes environment, [ConfigMaps](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/)
+can be used to add pipeline definitions. You will need to create
+a ConfigMap from the JSON file and mount the ConfigMap through a volume
+to the ACS repository pods.
+
+```bash
+kubectl create configmap custom-pipeline-config --from-file=custom_pipelines.json
+```
+
+```yaml
+volumeMounts:
+        - name: custom-pipeline-config
+            mountPath: /usr/local/tomcat/shared/classes/alfresco/extension/transform/pipelines/
+```
+
 ### Configure a custom rendition
 
 Renditions are a representation of source content in another form. A

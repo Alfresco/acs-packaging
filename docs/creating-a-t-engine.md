@@ -257,11 +257,15 @@ file by adding the Hello World T-Engine as one of the services.
 Hello World T-Engine. See [here](custom-transforms-and-renditions.md#configure-a-custom-rendition) for details.
     ```json
     {
-        "renditionName": "helloWorld",
-        "targetMediaType": "text/html",
-        "options": [
+      "renditions": [
+        {
+          "renditionName": "helloWorld",
+          "targetMediaType": "text/html",
+          "options": [
             {"name": "language", "value": "German"}
-        ]
+          ]
+        }
+      ]
     }
     ```
 
