@@ -195,7 +195,7 @@ volumeMounts:
     - name: custom-pipeline-config-volume
       mountPath: /usr/local/tomcat/shared/classes/alfresco/extension/transform/pipelines/
 ```
-> Form Kubernetes documentation: Caution: If there are some files
+> From Kubernetes documentation: Caution: If there are some files
 in the mountPath location, they will be deleted.
 
 ### Configure a custom rendition
