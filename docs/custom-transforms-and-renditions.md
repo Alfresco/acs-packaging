@@ -341,8 +341,8 @@ developer needs to do and understand.
 
 ### Configure a T-Engine in the Transform Service
 
-TODO Raise an ATS ticket
+TODO
 
 ### Configure a pipeline in the Transform Service
 
-TODO Raise an ATS ticket, or make it part of the same ticket
+TODO
