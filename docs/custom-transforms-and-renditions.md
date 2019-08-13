@@ -182,11 +182,21 @@ to the ACS repository pods.
 kubectl create configmap custom-pipeline-config --from-file=custom_pipelines.json
 ```
 
+In the ACS repository pod configuration:
+```yaml
+volumes:
+    - name: custom-pipeline-config-volume
+      configMap:
+        name: custom-pipeline-config
+```
+
 ```yaml
 volumeMounts:
-        - name: custom-pipeline-config
-            mountPath: /usr/local/tomcat/shared/classes/alfresco/extension/transform/pipelines/
+    - name: custom-pipeline-config-volume
+      mountPath: /usr/local/tomcat/shared/classes/alfresco/extension/transform/pipelines/
 ```
+> Form Kubernetes documentation: Caution: If there are some files
+in the mountPath location, they will be deleted.
 
 ### Configure a custom rendition
 
