@@ -7,22 +7,10 @@ in docker containers providing greater scalability. Requests to the
 Transform Service are placed on a queue and processed asynchronously.
 Security is also improved by better isolation.
 
-The initial version of the Transform Service provides a limited number of
-transformations so transformation still need to be performed locally
-by the Alfresco Content Service as took place in previous versions.
-
-### Enabling and disabling Legacy, Local or Transform Service transforms
-It is possible to turn on and off Local, Legacy and Transform Service
+It is possible to [turn on and off](https://github.com/Alfresco/acs-packaging/blob/feature/REPO-4338_helloworld_transformer/docs/custom-transforms-and-renditions.md#enabling-and-disabling-legacy-local-or-transform-service-transforms) Local, Legacy and Transform Service
 transforms by setting Alfresco global properties.
 By default the Transform Server is disabled for the zip distribution
 but enabled for docker-compose and helm deployments.
-For more information see [here](custom-transforms-and-renditions.md#enabling-and-disabling-legacy,-local-or-transform-service-transforms)
-
-```bash
-transform.service.enabled=false
-local.transform.service.enabled=true
-legacy.transform.service.enabled=true
-```
 
 ### When are Transform Service or Local or Legacy Transforms used?
 
@@ -36,7 +24,7 @@ and is known to support the transformation specified in the *RenditionDefinition
 If not, the service with fallback to the transformers performed locally by
 Alfresco Content Service.
 
-For more information see [Custome Transforms and Renditions](custom-transforms-and-renditions.md)).
+For more information see [Custom Transforms and Renditions](custom-transforms-and-renditions.md)).
 
 The original *RenditionService* is now deprecated as it supports synchronous
 requests or requests that have callbacks that must be processed on the same
