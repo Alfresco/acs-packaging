@@ -414,6 +414,12 @@
                 <artifactId>jackson-dataformat-cbor</artifactId>
                 <version>${dependency.jackson.version}</version>
             </dependency>
+            <!-- newer dependency from camel-jackson -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-jaxb-annotations</artifactId>
+                <version>${dependency.jackson.version}</version>
+            </dependency>
             <!-- Newer cxf libs, see REPO-3131 -->
             <dependency>
                 <groupId>org.apache.cxf</groupId>
