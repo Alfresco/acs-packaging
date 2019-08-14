@@ -198,7 +198,7 @@ This section will describe how to run and debug the example [Hello World T-Engin
     ```bash
     docker run -d -p 8090:8090 --name alfresco-helloworld-transformer alfresco/alfresco-helloworld-transformer:latest
     ```
-4. Create a test resource/file named **source_file.txt** with the following content:
+4. Create a test file named **source_file.txt** with the following content:
     ```text
     T-Engines
     ```
