@@ -24,7 +24,7 @@ and is known to support the transformation specified in the *RenditionDefinition
 If not, the service with fallback to the transformers performed locally by
 Alfresco Content Service.
 
-For more information see [Custom Transforms and Renditions](custom-transforms-and-renditions.md)).
+For more information see [Custom Transforms and Renditions](custom-transforms-and-renditions.md).
 
 The original *RenditionService* is now deprecated as it supports synchronous
 requests or requests that have callbacks that must be processed on the same
