@@ -314,12 +314,18 @@ in the language specified in the **helloWorld** rendition transform options.
 Log4j `DEBUG` level logging for the transformations code can be enabled
 in ACS log4j properties on the following packages:
 ```properties
-log4j.logger.org.alfresco.repo.content.transform.TransformerDebug=debug
+# For loading of custom JSON files
+log4j.logger.org.alfresco.enterprise.repo.rendition2.RemoteTransformServiceRegistry=debug
+log4j.logger.org.alfresco.repo.content.transform.LocalTransformServiceRegistry=debug
+log4j.logger.org.alfresco.repo.rendition2.RenditionDefinitionRegistry2Impl=debug
+log4j.logger.org.alfresco.repo.content.MimetypeMap=debug
+
+# For even more detailed debug
+log4j.logger.org.alfresco.enterprise.repo.rendition2.RemoteTransformClient=debug
+log4j.logger.org.alfresco.repo.rendition2.LocalTransformClient=debug
+log4j.logger.org.alfresco.repo.rendition2.LegacyTransformClient=debug
 
 log4j.logger.org.alfresco.repo.content.transform.LocalTransform=debug
-log4j.logger.org.alfresco.repo.content.transform.LocalTransform=debug
-log4j.logger.org.alfresco.repo.content.transform.LocalTransformServiceRegistry=debug
-log4j.logger.org.alfresco.repo.content.MimetypeMap=debug
 log4j.logger.org.alfresco.repo.rendition2=debug
 log4j.logger.org.alfresco.enterprise.repo.rendition2=debug
 ```
