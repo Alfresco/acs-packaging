@@ -19,6 +19,9 @@ ARG JAVA_PROFILER_RUNTIME_DIR=/tmp/Alfresco/yourkit
 
 # Create prerequisite to store tools and properties
 RUN mkdir -p ${TOMCAT_DIR}/shared/classes/alfresco/extension && \
+    mkdir -p ${TOMCAT_DIR}/shared/classes/alfresco/extension/transform/renditions && \
+    mkdir -p ${TOMCAT_DIR}/shared/classes/alfresco/extension/transform/pipelines && \
+    mkdir -p ${TOMCAT_DIR}/shared/classes/alfresco/extension/transform/mimetypes && \
     mkdir ${TOMCAT_DIR}/alfresco-mmt && \
     touch ${TOMCAT_DIR}/shared/classes/alfresco-global.properties
 
@@ -38,10 +41,7 @@ COPY ${resource_path}/licenses/ /licenses/
 # shared.loader=${catalina.base}/shared/classes
 RUN sed -i "s/shared.loader=/shared.loader=\${catalina.base}\/shared\/classes/" ${TOMCAT_DIR}/conf/catalina.properties
 
-RUN mkdir -p ${TOMCAT_DIR}/amps \
-             ${TOMCAT_DIR}/shared/classes/alfresco/extension/transform/mimetypes \
-             ${TOMCAT_DIR}/shared/classes/alfresco/extension/transform/renditions \
-             ${TOMCAT_DIR}/shared/classes/alfresco/extension/transform/pipelines
+RUN mkdir -p ${TOMCAT_DIR}/amps
 
 #RUN echo -e '\n\
 #log4j.logger.org.alfresco.repo.content.transform.TransformerDebug=debug\n\
