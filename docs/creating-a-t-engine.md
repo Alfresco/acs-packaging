@@ -14,13 +14,9 @@ option that specifies which language to use.
 
 It is assumed that the reader has some familiarity with the following
 technologies:
-
-| Component | Recommended Version | Also Available |
-|---|---|---|
-| Java | 11.0.1 | 11.0.2,11.0.3 |
-| Spring Boot | 2.1.7.RELEASE | |
-| Maven | 3.5.0 | 3.6.0,3.6.1 |
-| Docker | 2.0.0 | 2.1.0.1 |
+* Spring Boot
+* Maven
+* Docker
 
 
 ## Developing and Debugging T-Engines
@@ -319,11 +315,13 @@ Log4j `DEBUG` level logging for the transformations code can be enabled
 in ACS log4j properties on the following packages:
 ```properties
 log4j.logger.org.alfresco.repo.content.transform.TransformerDebug=debug
+
+log4j.logger.org.alfresco.repo.content.transform.LocalTransform=debug
+log4j.logger.org.alfresco.repo.content.transform.LocalTransform=debug
+log4j.logger.org.alfresco.repo.content.transform.LocalTransformServiceRegistry=debug
+log4j.logger.org.alfresco.repo.content.MimetypeMap=debug
 log4j.logger.org.alfresco.repo.rendition2=debug
 log4j.logger.org.alfresco.enterprise.repo.rendition2=debug
-log4j.logger.org.alfresco.repo.content.transform.LocalTransformServiceRegistry=debug
-log4j.logger.org.alfresco.enterprise.repo.rendition2.RemoteTransformServiceRegistry=debug
-log4j.logger.org.alfresco.repo.content.transform.LocalTransform=debug
 ```
 * `log4j.logger.org.alfresco.repo.content.transform.TransformerDebug` - This
  class provides concise tailored debug for transforms and should be used

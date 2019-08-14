@@ -165,7 +165,7 @@ local.transform.service.initialAndOnError.cronExpression=0/10 * * * * ?
 ```
 
 If you are using Docker Compose in development, you will need to copy
-your pipeline definition into your running AWC repository container.
+your pipeline definition into your running ACS repository container.
 One way is to use the following command and it will be picked up the
 next time the location is read, which is dependent on the cron values.
 
