@@ -284,7 +284,7 @@ Hello World T-Engine. See [here](custom-transforms-and-renditions.md#configure-a
 This section walks through an end to end example of using
 the Hello World T-Engine with ACS by requesting the **helloWorld** rendition.
 
-1. Create a test resource/file named **source_file.txt** with the following content:
+1. Create a test file named **source_file.txt** with the following content:
    ```text
    T-Engines
    ```
