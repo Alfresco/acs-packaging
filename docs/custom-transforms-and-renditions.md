@@ -253,16 +253,30 @@ follows:
     {
       "name": "MPEG4 Audio",
       "mediaType": "audio/mp4",
-      "defaultExtension": "m4a",
-      "alternateExtensions": [ "m4b", "mp4a" ]
+      "extensions": [
+        {"extension": "m4a"}
+      ]
+    },
+    {
+      "name": "Plain Text",
+      "mediaType": "text/plain",
+      "text": true,
+      "extensions": [
+        {"extension": "txt", "default": true},
+        {"extension": "sql", "name": "SQL"},
+        {"extension": "properties", "name": "Java Properties"},
+        {"extension": "log", "name": "Log File"}
+      ]
     }
   ]
 }
 ```
-* **name** Human readable or display name.
+* **name** Display name of the mimetype or file extension. Optional for extensions.
 * **mediaType** used to identify the content.
-* **defaultExtension** if saved as a file.
-* **alternateExtensions** that may also contain the same content.
+* **text** optional value indicating if the mimetype is text based.
+* **extensions** a list of possible extensions.
+* **extension** the file extension.
+* **default** indicates the extension is the default one if there is more than one.
 
 ```properties
 mimetype.config.dir=shared/classes/alfresco/extension/mimetypes
