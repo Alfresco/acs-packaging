@@ -314,6 +314,9 @@ in the language specified in the **helloWorld** rendition transform options.
 Log4j `DEBUG` level logging for the transformations code can be enabled
 in ACS log4j properties on the following packages:
 ```properties
+# For normal transform debug
+log4j.logger.org.alfresco.repo.content.transform.TransformerDebug=debug
+
 # For loading of custom JSON files
 log4j.logger.org.alfresco.enterprise.repo.rendition2.RemoteTransformServiceRegistry=debug
 log4j.logger.org.alfresco.repo.content.transform.LocalTransformServiceRegistry=debug
