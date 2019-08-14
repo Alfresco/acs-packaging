@@ -332,13 +332,6 @@ log4j.logger.org.alfresco.repo.content.transform.LocalTransform=debug
 log4j.logger.org.alfresco.repo.rendition2=debug
 log4j.logger.org.alfresco.enterprise.repo.rendition2=debug
 ```
-* `log4j.logger.org.alfresco.repo.content.transform.TransformerDebug` - This
- class provides concise tailored debug for transforms and should be used
- as a starting point before using the more verbose classes and packages.
-* `log4j.logger.org.alfresco.repo.rendition2` - The package associated
-with the core functionality and Local Transforms.
-* `log4j.logger.org.alfresco.enterprise.repo.rendition2` - The package
-associated with Transform Service transforms in the Enterprise Edition of ACS.
 
 In addition, the `Alfresco Admin Tool` provides a transformers debugging
 tool called `Test Transform` under the `Support Tools` section.
