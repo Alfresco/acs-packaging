@@ -55,9 +55,9 @@ matrix:
     - name: "Email TAS tests"
       jdk: openjdk11
       install:
-        - travis_retry travis_wait 40 mvn install -q -PfullBuild,enterpriseDocker
+        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
         - docker login quay.io -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
-        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-all-amps.yml
+        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-jolokia.yml
       script:
         - travis_wait 40 mvn install -q -f tests/tas-email/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
     - name: "WebDAV TAS tests"

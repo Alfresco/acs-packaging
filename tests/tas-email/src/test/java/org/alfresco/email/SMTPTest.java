@@ -12,8 +12,7 @@ public abstract class SMTPTest extends EmailTest
     @AfterMethod(alwaysRun = true)
     public void resetServerConfiguration() throws Exception
     {
-        String jmxUseJolokiaAgent = System.getProperty("jmx.useJolokiaAgent");
-        if ("true".equals(jmxUseJolokiaAgent))
+        if (emailProperties.getUseJolokiaAgent())
         {
             ServerConfiguration.restore(smtpProtocol.withJMX());
         }
