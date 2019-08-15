@@ -10,9 +10,7 @@ fi
 
 echo "Starting ACS stack in ${DOCKER_COMPOSE_PATH}"
 
-cd ${DOCKER_COMPOSE_PATH}
-
-docker-compose up -d
+docker-compose --file "${DOCKER_COMPOSE_PATH}" up -d
 
 if [ $? -eq 0 ]
 then
@@ -25,7 +23,7 @@ fi
 WAIT_INTERVAL=1
 COUNTER=0
 TIMEOUT=300
-t0=`date +%s`
+t0=$(date +%s)
 
 echo "Waiting for alfresco to start"
 until $(curl --output /dev/null --silent --head --fail http://localhost:8082/alfresco) || [ "$COUNTER" -eq "$TIMEOUT" ]; do
@@ -35,7 +33,7 @@ until $(curl --output /dev/null --silent --head --fail http://localhost:8082/alf
 done
 
 if (("$COUNTER" < "$TIMEOUT")) ; then
-   t1=`date +%s`
+   t1=$(date +%s)
    delta=$((($t1 - $t0)/60))
    echo "Alfresco Started in $delta minutes"
 else
