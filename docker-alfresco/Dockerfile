@@ -18,10 +18,9 @@ ARG JAVA_PROFILER_DIR=/usr/local/YourKit-JavaProfiler-2018.04
 ARG JAVA_PROFILER_RUNTIME_DIR=/tmp/Alfresco/yourkit
 
 # Create prerequisite to store tools and properties
-RUN mkdir -p ${TOMCAT_DIR}/shared/classes/alfresco/extension && \
+RUN mkdir -p ${TOMCAT_DIR}/shared/classes/alfresco/extension/mimetypes && \
     mkdir -p ${TOMCAT_DIR}/shared/classes/alfresco/extension/transform/renditions && \
     mkdir -p ${TOMCAT_DIR}/shared/classes/alfresco/extension/transform/pipelines && \
-    mkdir -p ${TOMCAT_DIR}/shared/classes/alfresco/extension/transform/mimetypes && \
     mkdir ${TOMCAT_DIR}/alfresco-mmt && \
     touch ${TOMCAT_DIR}/shared/classes/alfresco-global.properties
 
