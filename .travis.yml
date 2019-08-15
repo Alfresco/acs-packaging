@@ -13,11 +13,7 @@ cache:
 
 env:
   global:
-    - VERSION_EDITION=Enterprise
-    - DOCKER_IMAGE_TAG=latest
-    - DOCKER_IMAGE_REGISTRY=quay.io
     - DOCKER_COMPOSE_VERSION=1.23.2
-    - ALFRESCO_IMAGE_NAME=alfresco/alfresco-content-repository
 
 branches:
   only:
@@ -34,7 +30,7 @@ matrix:
       # only on support branches or master and if it is not a PR
       if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request
       install:
-        - travis_retry travis_wait 30 mvn -q install -Dbuild-number=${TRAVIS_BUILD_NUMBER} "-Dbuild-key=${TRAVIS_COMMIT}" "-Dbuild-name=${TRAVIS_BUILD_WEB_URL}" "-Dscm-path=${TRAVIS_REPO_SLUG}" "-Dversion.edition=${VERSION_EDITION}" -f war/pom.xml
+        - travis_retry travis_wait 30 mvn -q install -f war/pom.xml
       script:
         # Download the latest version of WhiteSource Unified Agent
         - curl -LJO https://github.com/whitesource/unified-agent-distribution/raw/master/standAlone/wss-unified-agent.jar
@@ -43,7 +39,7 @@ matrix:
     - name: "REST API TAS tests"
       jdk: openjdk11
       install:
-        - travis_retry travis_wait 40 mvn install -q -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Dbuild-key=${TRAVIS_COMMIT} -Dbuild-name="${TRAVIS_BUILD_WEB_URL}" -Dscm-path=${TRAVIS_REPO_SLUG} "-Dversion.edition=${VERSION_EDITION}" "-Dimage.tag=${DOCKER_IMAGE_TAG}" -Dimage.registry=${DOCKER_IMAGE_REGISTRY} -Dimage.name=${ALFRESCO_IMAGE_NAME} -Dmaven.javadoc.skip=true -PenterpriseDocker
+        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
         - docker login quay.io -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-minimal.yml
       script:
@@ -51,7 +47,7 @@ matrix:
     - name: "CMIS TAS tests"
       jdk: openjdk11
       install:
-        - travis_retry travis_wait 40 mvn install -q -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Dbuild-key=${TRAVIS_COMMIT} -Dbuild-name="${TRAVIS_BUILD_WEB_URL}" -Dscm-path=${TRAVIS_REPO_SLUG} "-Dversion.edition=${VERSION_EDITION}" "-Dimage.tag=${DOCKER_IMAGE_TAG}" -Dimage.registry=${DOCKER_IMAGE_REGISTRY} -Dimage.name=${ALFRESCO_IMAGE_NAME} -Dmaven.javadoc.skip=true -PenterpriseDocker
+        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
         - docker login quay.io -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-minimal.yml
       script:
@@ -59,7 +55,7 @@ matrix:
     - name: "Email TAS tests"
       jdk: openjdk11
       install:
-        - travis_retry travis_wait 40 mvn install -q -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Dbuild-key=${TRAVIS_COMMIT} -Dbuild-name="${TRAVIS_BUILD_WEB_URL}" -Dscm-path=${TRAVIS_REPO_SLUG} "-Dversion.edition=${VERSION_EDITION}" "-Dimage.tag=${DOCKER_IMAGE_TAG}" -Dimage.registry=${DOCKER_IMAGE_REGISTRY} -Dimage.name=${ALFRESCO_IMAGE_NAME} -Dmaven.javadoc.skip=true -PfullBuild,enterpriseDocker
+        - travis_retry travis_wait 40 mvn install -q -PfullBuild,enterpriseDocker
         - docker login quay.io -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-all-amps.yml
       script:
@@ -67,7 +63,7 @@ matrix:
     - name: "WebDAV TAS tests"
       jdk: openjdk11
       install:
-        - travis_retry travis_wait 40 mvn install -q -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Dbuild-key=${TRAVIS_COMMIT} -Dbuild-name="${TRAVIS_BUILD_WEB_URL}" -Dscm-path=${TRAVIS_REPO_SLUG} "-Dversion.edition=${VERSION_EDITION}" "-Dimage.tag=${DOCKER_IMAGE_TAG}" -Dimage.registry=${DOCKER_IMAGE_REGISTRY} -Dimage.name=${ALFRESCO_IMAGE_NAME} -Dmaven.javadoc.skip=true -PenterpriseDocker
+        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
         - docker login quay.io -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-minimal.yml
       script:
@@ -75,7 +71,7 @@ matrix:
     - name: "Integration TAS tests"
       jdk: openjdk11
       install:
-        - travis_retry travis_wait 40 mvn install -q -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Dbuild-key=${TRAVIS_COMMIT} -Dbuild-name="${TRAVIS_BUILD_WEB_URL}" -Dscm-path=${TRAVIS_REPO_SLUG} "-Dversion.edition=${VERSION_EDITION}" "-Dimage.tag=${DOCKER_IMAGE_TAG}" -Dimage.registry=${DOCKER_IMAGE_REGISTRY} -Dimage.name=${ALFRESCO_IMAGE_NAME} -Dmaven.javadoc.skip=true -PenterpriseDocker
+        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
         - docker login quay.io -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-minimal.yml
       script:
