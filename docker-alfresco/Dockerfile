@@ -41,7 +41,12 @@ COPY ${resource_path}/licenses/ /licenses/
 # shared.loader=${catalina.base}/shared/classes
 RUN sed -i "s/shared.loader=/shared.loader=\${catalina.base}\/shared\/classes/" ${TOMCAT_DIR}/conf/catalina.properties
 
-RUN mkdir -p ${TOMCAT_DIR}/amps
+RUN mkdir -p ${TOMCAT_DIR}/amps && \
+    mkdir -p ${TOMCAT_DIR}/shared/classes/alfresco/extension/mimetypes && \
+    mkdir -p ${TOMCAT_DIR}/shared/classes/alfresco/extension/transform/renditions && \
+    mkdir -p ${TOMCAT_DIR}/shared/classes/alfresco/extension/transform/pipelines && \
+    mkdir ${TOMCAT_DIR}/alfresco-mmt && \
+    touch ${TOMCAT_DIR}/shared/classes/alfresco-global.properties
 
 #RUN echo -e '\n\
 #log4j.logger.org.alfresco.repo.content.transform.TransformerDebug=debug\n\
