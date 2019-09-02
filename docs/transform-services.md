@@ -9,7 +9,7 @@ Security is also improved by better isolation.
 
 It is possible to [turn on and off](custom-transforms-and-renditions.md#enabling-and-disabling-legacy-local-or-transform-service-transforms) Local, Legacy and Transform Service
 transforms by setting Alfresco global properties.
-By default the Transform Server is disabled for the zip distribution
+By default the Transform Service is disabled for the zip distribution
 but enabled for docker-compose and helm deployments.
 
 ### When are Transform Service or Local or Legacy Transforms used?
