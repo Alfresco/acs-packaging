@@ -70,8 +70,7 @@ public class DiscoveryTests extends RestTest
                 "org_alfresco_integrations_S3Connector", "org_alfresco_module_xamconnector",
                 "org.alfresco.module.KofaxAddon", "alfresco-content-connector-for-salesforce-repo",
                 "alfresco-share-services",
-                // uncomment when REPO-4233 is fixed
-                // "alfresco-saml-repo",
+                "alfresco-saml-repo",
                 "org_alfresco_device_sync_repo",
                 // uncomment when MM-785 is fixed:
                 // "org_alfresco_mm_repo",
