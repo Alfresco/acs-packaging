@@ -34,10 +34,10 @@
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <dependency.alfresco-enterprise-remote-api.version>REPO-4612-1</dependency.alfresco-enterprise-remote-api.version>
-        <dependency.alfresco-enterprise-repository.version>REPO-4612-1</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-remote-api.version>REPO-4612-1</dependency.alfresco-remote-api.version>
-        <dependency.alfresco-repository.version>REPO-4612-1</dependency.alfresco-repository.version>
+        <dependency.alfresco-enterprise-remote-api.version>7.43</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>7.56</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-remote-api.version>7.84</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-repository.version>7.110</dependency.alfresco-repository.version>
         <dependency.alfresco-data-model.version>8.48</dependency.alfresco-data-model.version>
         <dependency.alfresco-core.version>7.21</dependency.alfresco-core.version>
 
@@ -56,7 +56,7 @@
         <dependency.alfresco-log-sanitizer.version>0.2</dependency.alfresco-log-sanitizer.version>
 
         <dependency.spring.version>5.1.8.RELEASE</dependency.spring.version>
-        <dependency.fabric8.version>4.1.0</dependency.fabric8.version>
+        <dependency.fabric8.version>4.2.0</dependency.fabric8.version>
         <dependency.jackson.version>2.9.9</dependency.jackson.version>
         <dependency.cxf.version>3.3.2</dependency.cxf.version>
 
@@ -83,7 +83,7 @@
         <alfresco.kofax.version>2.0.0</alfresco.kofax.version>
 
         <!-- SAML Single Sign-On (SSO) for Alfresco Content Services -->
-        <alfresco.saml.version>1.1.1</alfresco.saml.version>
+        <alfresco.saml.version>1.2.0-RC1</alfresco.saml.version>
 
         <!-- Alfresco Outlook Integration -->
         <alfresco.outlook.version>2.5.1</alfresco.outlook.version>
