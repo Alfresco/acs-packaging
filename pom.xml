@@ -34,10 +34,10 @@
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <dependency.alfresco-enterprise-remote-api.version>7.43</dependency.alfresco-enterprise-remote-api.version>
-        <dependency.alfresco-enterprise-repository.version>7.56</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-remote-api.version>7.85</dependency.alfresco-remote-api.version>
-        <dependency.alfresco-repository.version>7.111</dependency.alfresco-repository.version>
+        <dependency.alfresco-enterprise-remote-api.version>7.44</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>7.57</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-remote-api.version>7.86</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-repository.version>7.112</dependency.alfresco-repository.version>
         <dependency.alfresco-data-model.version>8.48</dependency.alfresco-data-model.version>
         <dependency.alfresco-core.version>7.21</dependency.alfresco-core.version>
 
@@ -84,7 +84,7 @@
         <alfresco.kofax.version>2.0.0</alfresco.kofax.version>
 
         <!-- SAML Single Sign-On (SSO) for Alfresco Content Services -->
-        <alfresco.saml.version>1.1.1</alfresco.saml.version>
+        <alfresco.saml.version>1.2.0-RC1</alfresco.saml.version>
 
         <!-- Alfresco Outlook Integration -->
         <alfresco.outlook.version>2.5.1</alfresco.outlook.version>
