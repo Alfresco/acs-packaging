@@ -104,8 +104,8 @@
         <!-- Alfresco Desktop Sync Service Module -->
         <alfresco.desktop-sync.version>3.1.2-RC2</alfresco.desktop-sync.version>
 
-        <!-- Alfresco AI AMP -->
-        <alfresco.ai-repo.version>1.0.2</alfresco.ai-repo.version>
+        <!-- Alfresco Alfresco Intelligence Services (AIS) -->
+        <alfresco.ai.version>1.0.2</alfresco.ai.version>
 
         <installer.version.name>${project.version}</installer.version.name>
         <alfresco.package.name>alfresco</alfresco.package.name>
