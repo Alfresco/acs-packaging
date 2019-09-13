@@ -99,7 +99,7 @@
         <alfresco.aos-module.version>1.2.2</alfresco.aos-module.version>
 
         <!-- Alfresco Media Management Module -->
-        <alfresco.mm.version>1.4.0-TEST2</alfresco.mm.version>
+        <alfresco.mm.version>1.4.0-TEST3</alfresco.mm.version>
 
         <!-- Alfresco Desktop Sync Service Module -->
         <alfresco.desktop-sync.version>3.1.2</alfresco.desktop-sync.version>
