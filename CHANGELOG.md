@@ -48,6 +48,8 @@
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20325'>MNT-20325</a>] -         Documents with % and spaces version download issue.
 </li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20337'>MNT-20337</a>] -         [Security] CVE-2018-16858 - LibreOffice directory traversal vulnerability
+</li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20339'>MNT-20339</a>] -         Enterprise Admin Console - JMX Settings tool: &quot;Revert&quot; button only revert the last set of JMX properties 
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20371'>MNT-20371</a>] -         Support for IDS 1.1 in ACS 6.1
@@ -55,6 +57,8 @@
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20379'>MNT-20379</a>] -         [Security] New batch of jackson-databind vulnerabilities
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20513'>MNT-20513</a>] -         [Security] Multiple xmlrpc vulnerabilities
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20515'>MNT-20515</a>] -         [Security] CVE-2017-18197 jgraphx XXE vulnerability
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20516'>MNT-20516</a>] -         [Security] CVE-2016-2510 bsh deserialization vulnerability
 </li>
@@ -90,9 +94,15 @@
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20748'>MNT-20748</a>] -         [Security] CVE-2019-12086 - Jackson Databind polymorphic typing vulnerability
 </li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20749'>MNT-20749</a>] -         [Security] Multiple dcharts-widget vulnerabilities in contained jQuery lib
+</li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20751'>MNT-20751</a>] -         [Security] Multiple camel-jackson vulnerabilities
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20779'>MNT-20779</a>] -         Prop cleaner job creates DB dangling references when running within close time proximity to the sync job, preventing ACS from further syncing and prop cleaning
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20833'>MNT-20833</a>] -         ScriptNode method createAssociation can be used where users only have consumer role
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20840'>MNT-20840</a>] -         [Security] - Persistent Cross Site Scripting
 </li>
 </ul>
     
@@ -103,8 +113,12 @@
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20593'>MNT-20593</a>] -         [Security] Full repository access for all unauthenticated users
 </li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20734'>MNT-20734</a>] -         0kb file when using REST API nodes/{nodeID}/content in a clustered ACS
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20859'>MNT-20859</a>] -         ACS Admin Console does not display all Shards when using mTLS config between SOLR &amp; Repo
+</li>
 </ul>
-                                                                                                                                                                                    
+                                                                                                                                                                                        
 <h2>        Bug
 </h2>
 <ul>
@@ -124,6 +138,7 @@
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19696'>MNT-19696</a>] -         REST API add order by parameter option to GET favorites
 </li>
 </ul>
+                                                                
                                                                 
 
 <h1>        6.1.0
