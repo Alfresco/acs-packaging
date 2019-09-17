@@ -34,11 +34,11 @@
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <dependency.alfresco-enterprise-remote-api.version>7.44</dependency.alfresco-enterprise-remote-api.version>
-        <dependency.alfresco-enterprise-repository.version>7.57</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-remote-api.version>7.86</dependency.alfresco-remote-api.version>
-        <dependency.alfresco-repository.version>7.112</dependency.alfresco-repository.version>
-        <dependency.alfresco-data-model.version>8.48</dependency.alfresco-data-model.version>
+        <dependency.alfresco-enterprise-remote-api.version>7.45</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>7.59</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-remote-api.version>7.89</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-repository.version>7.118</dependency.alfresco-repository.version>
+        <dependency.alfresco-data-model.version>8.49</dependency.alfresco-data-model.version>
         <dependency.alfresco-core.version>7.21</dependency.alfresco-core.version>
 
         <dependency.alfresco-hb-data-sender.version>1.0.11</dependency.alfresco-hb-data-sender.version>
@@ -52,7 +52,7 @@
         <dependency.alfresco-jlan.version>7.1</dependency.alfresco-jlan.version>
         <dependency.alfresco-server-root.version>6.0.1</dependency.alfresco-server-root.version>
         <dependency.alfresco-api-explorer.version>6.1.0</dependency.alfresco-api-explorer.version>
-        <dependency.gytheio.version>0.9.1</dependency.gytheio.version>
+        <dependency.gytheio.version>0.10.1</dependency.gytheio.version>
         <dependency.alfresco-log-sanitizer.version>0.2</dependency.alfresco-log-sanitizer.version>
 
         <dependency.spring.version>5.1.8.RELEASE</dependency.spring.version>
@@ -62,8 +62,8 @@
         <dependency.cxf.version>3.3.2</dependency.cxf.version>
 
         <!-- Alfresco Share version -->
-        <alfresco.share.version>6.1.0</alfresco.share.version>
-        <alfresco.alfresco-share-services.version>6.1.0</alfresco.alfresco-share-services.version>
+        <alfresco.share.version>6.2.0-RC1</alfresco.share.version>
+        <alfresco.alfresco-share-services.version>6.2.0-RC1</alfresco.alfresco-share-services.version>
 
         <!-- Alfresco GoogleDocs integration version -->
         <alfresco.googledocs.version>3.1.0</alfresco.googledocs.version>
@@ -99,10 +99,10 @@
         <alfresco.aos-module.version>1.2.2</alfresco.aos-module.version>
 
         <!-- Alfresco Media Management Module -->
-        <alfresco.mm.version>1.4.0-TEST2</alfresco.mm.version>
+        <alfresco.mm.version>1.4.0-TEST4</alfresco.mm.version>
 
         <!-- Alfresco Desktop Sync Service Module -->
-        <alfresco.desktop-sync.version>3.1.2</alfresco.desktop-sync.version>
+        <alfresco.desktop-sync.version>3.2.0-RC2</alfresco.desktop-sync.version>
 
         <!-- Alfresco Alfresco Intelligence Services (AIS) -->
         <alfresco.ais.version>1.1.0-RC1</alfresco.ais.version>
