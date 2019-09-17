@@ -69,7 +69,7 @@
         <alfresco.googledocs.version>3.1.0</alfresco.googledocs.version>
 
         <!-- Alfresco S3 Connector integration version -->
-        <alfresco.s3connector.version>3.0</alfresco.s3connector.version>
+        <alfresco.s3connector.version>3.0-RC3</alfresco.s3connector.version>
 
         <!-- Alfresco Glacier Connector Repo version -->
         <alfresco.glacier-connector.version>1.0.0</alfresco.glacier-connector.version>
