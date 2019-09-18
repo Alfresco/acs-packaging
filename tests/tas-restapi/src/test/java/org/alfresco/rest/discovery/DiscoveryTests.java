@@ -74,7 +74,10 @@ public class DiscoveryTests extends RestTest
                 "org_alfresco_device_sync_repo",
                 // uncomment when MM-785 is fixed:
                 // "org_alfresco_mm_repo",
-                "org.alfresco.module.TransformationServer", "alfresco-glacier-connector-repo");
+                // uncomment when REPO-4594 is fixed:
+                // "alfresco-glacier-connector-repo");
+                "org.alfresco.module.TransformationServer");
+
 
         expectedModules.forEach(module ->
                 assertTrue(modules.contains(module), String.format("Expected module %s is not installed", module)));
