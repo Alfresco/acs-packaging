@@ -228,7 +228,8 @@
                                     <type>amp</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
-                                </artifactItem>                               
+                                </artifactItem>
+                                <!--  TODO uncomment this artifact Item in REPO-4594
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-glacier-connector-repo</artifactId>
@@ -236,7 +237,7 @@
                                     <type>amp</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                </artifactItem>
+                                </artifactItem> -->
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-centera-connector</artifactId>
