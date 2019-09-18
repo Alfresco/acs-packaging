@@ -122,6 +122,8 @@
 <h2>        Bug
 </h2>
 <ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/REPO-4645'>REPO-4645</a>] -         Whitesource High: CVE-2015-0254 - standard-1.1.2 - Assess Impact
+</li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20308'>MNT-20308</a>] -         POST /authentication/versions/1/tickets incorrectly returns 403 when repository is in read-only
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20344'>MNT-20344</a>] -         No Alfresco-supplied docker image should run as root
