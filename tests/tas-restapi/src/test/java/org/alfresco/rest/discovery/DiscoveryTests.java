@@ -75,7 +75,7 @@ public class DiscoveryTests extends RestTest
                 // uncomment when MM-785 is fixed:
                 // "org_alfresco_mm_repo",
                 // uncomment when REPO-4594 is fixed:
-                // "alfresco-glacier-connector-repo");
+                // "alfresco-glacier-connector-repo",
                 "org.alfresco.module.TransformationServer");
 
 
