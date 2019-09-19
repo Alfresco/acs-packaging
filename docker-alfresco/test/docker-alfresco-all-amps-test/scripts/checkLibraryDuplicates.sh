@@ -6,7 +6,7 @@
 # usually libraries with versions that don't follow naming/versioning standards.
 # e.g. geronimo-jms_2.0_spec-1.0-alpha-2.jar
 #      geronimo-jms_1.1_spec-1.1.1.jar
-WHITELIST="geronimo-jms"
+WHITELIST="geronimo-jms geronimo-jta"
 
 lib_dir=$1
 multiple_version_lib_list=""
