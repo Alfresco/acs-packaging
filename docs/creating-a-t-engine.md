@@ -44,7 +44,7 @@ as it is fully configured, ready to be built and run and contains
 relatively little extra code. It is also possible to start from a blank
 Maven project with the same folder structure. Key files:
 
-* [pom.xml](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/pom.xml)
+* [pom.xml](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/alfresco-helloworld-transformer-engine/pom.xml)
   The POM file defines Alfresco Transform Core as the parent and adds
   required dependencies. It also configures plugins for building
   the Spring Boot application and generating the Docker image. It is
@@ -183,9 +183,10 @@ For example, a test transform of a small file included in the Docker image.
 
 #### Hello World T-Engine Standalone
 
-This section will describe how to run and debug the example [Hello World T-Engine](https://github.com/Alfresco/alfresco-helloworld-transformer/tree/master/alfresco-helloworld-transformer-engine).
+This section will describe how to run and debug the example Hello World T-Engine
+which can be found in the [alfresco-helloworld-transformer](https://github.com/Alfresco/alfresco-helloworld-transformer/tree/master/alfresco-helloworld-transformer-engine).
 
-1. Clone the **Hello World T-Engine** project.
+1. Clone the **alfresco-helloworld-transformer** project and navigate to the **alfresco-helloworld-transformer-engine** folder.
 2. Build the T-Engine
     ```bash
     mvn clean install -Plocal
@@ -224,13 +225,12 @@ and run Alfresco Content Services with the new Hello World T-Engine.
 > The example in this section uses Docker Compose for simplicity;
 however, it is not recommended to run ACS in Docker Compose in production.
 
-1. Clone the [Hello World Transformer](https://github.com/Alfresco/alfresco-helloworld-transformer)
-project (if not done already).
-2. Build the Hello World T-Engine (alfresco-helloworld-transformer-engine),
-(if not done already). Check that the local Docker image repository contains
-**alfresco/alfresco-helloworld-transformer:latest**
+1. If not done already, clone the **alfresco-helloworld-transformer** project and navigate to
+the **alfresco-helloworld-transformer-engine** folder.
+2. If not done already, build the Hello World T-Engine from the **alfresco-helloworld-transformer-engine** folder.
+Check that the local Docker image repository contains **alfresco/alfresco-helloworld-transformer:latest**.
 3. Clone [Alfresco/acs-deployment](https://github.com/Alfresco/acs-deployment) project.
-4. Modify asc-deployment [docker-compose]https://github.com/Alfresco/acs-deployment/blob/master/docker-compose/docker-compose.yml
+4. Modify asc-deployment [docker-compose](https://github.com/Alfresco/acs-deployment/blob/master/docker-compose/docker-compose.yml)
 file by adding the Hello World T-Engine as one of the services.
     ```yaml
     transform-helloworld:

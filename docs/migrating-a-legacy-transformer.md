@@ -89,27 +89,26 @@ An example of this can be seen in the **HelloWorldController.java**.
 This is equivalent to the **ContentReader** parameter.
 * The response from the `/transform` endpoint contains the transformed file.
 This is equivalent to the **ContentWriter** parameter.
-
-Depending on the case, on a legacy Transformer, new transform options need to
-subclass `TransformationOptions`, or implement `TransformationSourceOptions`
-which needs to be marshaled and un-marshaled. After custom
-options are defined, `repo.renditions2.TransformationOptionsConverter` needs to be subclassed,
-in which the logic to handle the new options is defined and injected into Alfresco-repository
-via a Spring Beans.
-
 * Requests to a T-Engine's `/transform` endpoint contain a list of
 transform options as defined by the [T-Engine configuration](creating-a-t-engine.md#t-engine-configuration).
 These are equivalent to the options in the **TransformationOptions** parameter
 see [engine_config](https://github.com/Alfresco/alfresco-transform-core/blob/master/docs/engine_config.md)
 for more information.
+In Legacy Transformers, it was possible to create new transform options by
+subclassing `TransformationOptions`, or implement `TransformationSourceOptions`
+which then needed to be marshaled and un-marshaled. If custom
+options were defined, then `org.alfresco.repo.renditions2.TransformationOptionsConverter` needed to be subclassed.
+These new classes would then be added as Spring Beans to the Repository's Application Context.
+This is no longer the case when creating new out of process T-Engines, new transform options are only added via
+the **engine_config**.
 
-**Pipeline Transformers:**
+## Migrating a Pipeline Transformer
 
 **Legacy Transformers Pipelines**
 
-Pipeline Transformers definitions for the Legacy Transformers was done by adding properties in
-alfresco-global.properties. Definition for the pipline is `Transformer1 | Extension | Transformer2`,
-the resulting pipeline transformer will have the same supportedExtension as Transformer1, but the resulted
+Pipeline Transformers for the Legacy Transformers were defined using properties in
+alfresco-global.properties. The pipline definition syntax via properties is  `Transformer1 | Extension | Transformer2`.
+The resulting pipeline transformer will have the same supportedExtension as Transformer1, but the resulting
 targetExtension will be the sum of targetExtension(Transformer1) + targetExtension(Transformer2(Extension)).
 Additional properties are available:
 * `.extension.Ext1.Ext2.supported=false` restricts the transformation from Ext1 to Ext2 for a specific Transformer.
@@ -136,32 +135,9 @@ Pipeline definitions for Local Transformers are done via JSON rather than alfres
 In contrast with the Legacy Transformer Pipelines:
 * Transformer configuration uses **Media Types** instead of **Extensions**.
 * A pipeline transformer does not inherit any Source-Target Mimetypes from any
-of Transformers used in its definition, only transformations that are needed 
-will be added into *supportedSourceAndTargetList*. Because of this there is no similar
-property to `.extension.Ext1.Ext2.supported=false`.
+of Transformers used in its definition, transformations are listed explicitly under
+*supportedSourceAndTargetList*, therefore there is no need for a property similar to `.extension.Ext1.Ext2.supported=false`.
 * `priority` option is now used in `supportedSourceAndTargetList` for each
  transform individually instead on the whole transformer.
 * There is no `.available=false` property, a transformer cannot be disabled.
-For this, it's configuration needs to be removed.
-
-Sample configuration of Local Transformer Pipeline
-```
-{
-  "transformers": [
-    {
-      "transformerName": "helloWorldText",
-      "transformerPipeline" : [
-        {"transformerName": "helloWorld", "targetMediaType": "text/html"},
-        {"transformerName": "html"}
-      ],
-      "supportedSourceAndTargetList": [
-        {"sourceMediaType": "text/plain",  "targetMediaType": "text/plain" }
-      ],
-      "transformOptions": [
-        "helloWorldOptions",
-        "htmlOptions"
-      ]
-    }
-  ]
-}
-```
+To disable a pipeline transformer, its configuration should to be removed.
