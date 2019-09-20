@@ -125,7 +125,7 @@ many may be defined in the same file.
         {"transformerName": "html"}
       ],
       "supportedSourceAndTargetList": [
-        {"sourceMediaType": "text/plain",  "targetMediaType": "text/plain" }
+        {"sourceMediaType": "text/plain", priority:45,  "targetMediaType": "text/plain" }
       ],
       "transformOptions": [
         "helloWorldOptions",
@@ -143,7 +143,8 @@ transformers. There is no final targetMediaType as this comes from the
 supportedSourceAndTargetList.
 * **supportedSourceAndTargetList** - The supported source and target
 Media Types, which refer to the Media Types this pipeline transformer
-can transform from and to.
+can transform from and to, additionally you can set the priority and the
+maxSourceSizeBytes see [Supported Source and Target List](https://github.com/Alfresco/alfresco-transform-core/blob/master/docs/engine_config.md#supported-source-and-target-list).
 * **transformOptions** - A list of references to options required by
 the pipeline transformer.
 

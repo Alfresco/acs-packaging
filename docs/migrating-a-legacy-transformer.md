@@ -105,6 +105,8 @@ for more information.
 
 **Pipeline Transformers:**
 
+**Legacy Transformers Pipelines**
+
 Pipeline Transformers definitions for the Legacy Transformers was done by adding properties in
 alfresco-global.properties. Definition for the pipline is `Transformer1 | Extension | Transformer2`,
 the resulting pipeline transformer will have the same supportedExtension as Transformer1, but the resulted
@@ -114,6 +116,8 @@ Additional properties are available:
 * `.priority=200` sets priority value of the transformer, the values are like the order in a queue,
 the lower the number the higher the priority is.
 * `.available=false` disables a transformer.
+
+Sample configuration of Legacy Transformer Pipeline
 ```
 # alfresco-pdf-renderer.ImageMagick
 # ---------------------------------
@@ -123,5 +127,41 @@ the lower the number the higher the priority is.
 # content.transformer.alfresco-pdf-renderer.ImageMagick.extension.ai.jpg.supported=false
 
 ```
+
+**Local Transformers Pipelines**
+
+>For details see section [Configure a custom transform pipeline](custom-transforms-and-renditions.md#configure-a-custom-transform-pipeline).
+
 Pipeline definitions for Local Transformers are done via JSON rather than alfresco-global.properties
-see section [Configure a custom transform pipeline](https://github.com/Alfresco/acs-packaging/blob/master/docs/custom-transforms-and-renditions.md#configure-a-custom-transform-pipeline).
+In contrast with the Legacy Transformer Pipelines:
+* Transformer configuration uses **Media Types** instead of **Extensions**.
+* A pipeline transformer does not inherit any Source-Target Mimetypes from any
+of Transformers used in its definition, only transformations that are needed 
+will be added into *supportedSourceAndTargetList*. Because of this there is no similar
+property to `.extension.Ext1.Ext2.supported=false`.
+* `priority` option is now used in `supportedSourceAndTargetList` for each
+ transform individually instead on the whole transformer.
+* There is no `.available=false` property, a transformer cannot be disabled.
+For this, it's configuration needs to be removed.
+
+Sample configuration of Local Transformer Pipeline
+```
+{
+  "transformers": [
+    {
+      "transformerName": "helloWorldText",
+      "transformerPipeline" : [
+        {"transformerName": "helloWorld", "targetMediaType": "text/html"},
+        {"transformerName": "html"}
+      ],
+      "supportedSourceAndTargetList": [
+        {"sourceMediaType": "text/plain",  "targetMediaType": "text/plain" }
+      ],
+      "transformOptions": [
+        "helloWorldOptions",
+        "htmlOptions"
+      ]
+    }
+  ]
+}
+```
