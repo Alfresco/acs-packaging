@@ -11,6 +11,15 @@
     Discussions, blogs and forums APIs were removed.
   </li>
 </ul>
+<h2>
+  New JAVA_OPTS attribute
+</h2>
+<ul>
+  <li>
+    <code>-Dhttp.secured.session=true</code><br>
+    Required for Share when configured with HTTPS, to secure the JSESSIONID cookie; this is not set by default because it would break Share when configured with plain HTTP.
+  </li>
+</ul>
 
 <h1>        6.1.0
 </h1>
