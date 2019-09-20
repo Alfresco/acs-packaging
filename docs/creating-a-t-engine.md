@@ -5,12 +5,12 @@ For context see [Custom Transforms and Renditions](custom-transforms-and-renditi
 This page will describe how to develop, configure and run custom
 transformers running within a T-Engine.
  
-We will use code from an example [alfresco-helloworld-transformer](https://github.com/Alfresco/alfresco-helloworld-transformer)
+We will use code from an example [alfresco-helloworld-transformer](https://github.com/Alfresco/alfresco-helloworld-transformer/tree/master/alfresco-helloworld-transformer-engine)
 project in GitHub. This T-Engine contains a single transformer but there
-may be many in a single T-Engine. The transformer takes a source text
-file containing a name and produces an HTML file with the message:
-Hello &lt;name>. To show how to use Renditions it also takes a transform
-option that specifies which language to use.
+may be many in a single T-Engine, see [alfresco-docker-transform-misc](https://github.com/Alfresco/alfresco-transform-core/tree/master/alfresco-docker-transform-misc).
+The transformer takes a source textfile containing a name and produces 
+an HTML file with the message: Hello &lt;name>. To show how to use 
+Renditions it also takes a transform option that specifies which language to use.
 
 It is assumed that the reader has some familiarity with the following
 technologies:

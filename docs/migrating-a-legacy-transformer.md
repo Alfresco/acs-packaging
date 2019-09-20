@@ -2,10 +2,6 @@ For context see [Custom Transforms and Renditions](custom-transforms-and-renditi
 
 # Migrating a Legacy Transformer
 
-TODO
-* Talk about creating pipelines in json rather than Spring or via
-   values in transformer.properties.
-
 This section will describe how to migrate custom synchronous transformers
 created for Alfresco Content Repository (ACS) prior to version 6.2, to new
 asynchronous out of process T-Engines.
@@ -24,7 +20,7 @@ New transformers will be added to ACS by creating and configuring new T-Engines.
 A custom Legacy Transformer would typically be packaged as an Alfresco
 Module Package (AMP). The AMP would contain Java classes, Spring context
 files with new transformer, rendition or pipeline Spring Beans and any
-additional custom configuration required by the new transformer.
+additional custom configuration required by the new transformer, see [example](https://github.com/Alfresco/alfresco-helloworld-transformer/tree/master/alfresco-helloworld-transformer-amp).
 All of this functionality can now be added without the need to override
 the ACS Spring Bean configuration.
 
@@ -51,6 +47,7 @@ by implementing the following abstract methods:
 * **transformInternal**
 
 ### Migrating isTransformableMimetype
+Example of a [legacy Transformer](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/alfresco-helloworld-transformer-amp/helloworld-amp/src/main/java/org/alfresco/content/transform/HelloWorldTransformer.java).
 ```java
 public boolean isTransformableMimetype(String sourceMimetype, String targetMimetype, TransformationOptions options)
 ```
@@ -77,9 +74,9 @@ A **TransformationOptions** parameter provides the transform options.
 
 **How to migrate:**
 
->Notice how the signature of the Legacy Transformer's `transformInternal`
+>Notice how the signature of the [Legacy Transformer's](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/alfresco-helloworld-transformer-amp/helloworld-amp/src/main/java/org/alfresco/content/transform/HelloWorldTransformer.java#L35) `transformInternal`
 method is similar to the Hello World T-Engine's `transformInternal` method
-in [HelloWorldController.java](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/src/main/java/org/alfresco/transformer/HelloWorldController.java).
+in [HelloWorldController.java](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/alfresco-helloworld-transformer-engine/src/main/java/org/alfresco/transformer/HelloWorldController.java#L177).
 
 The [Custom transform API](creating-a-t-engine.md#custom-transform-api) section describes how
 to add transform logic to a custom T-Engine. In short, the logic in
@@ -92,12 +89,35 @@ An example of this can be seen in the **HelloWorldController.java**.
 This is equivalent to the **ContentReader** parameter.
 * The response from the `/transform` endpoint contains the transformed file.
 This is equivalent to the **ContentWriter** parameter.
+
+Depending on the case, on a legacy Transformer, new transform options need to
+subclass `TransformationOptions`, or implement `TransformationSourceOptions`
+which needs to be marshaled and un-marshaled. After custom
+options are defined, `repo.renditions2.TransformationOptionsConverter` needs to be subclassed,
+in which the logic to handle the new options is defined and injected into Alfresco-repository
+via a Spring Beans.
+
 * Requests to a T-Engine's `/transform` endpoint contain a list of
 transform options as defined by the [T-Engine configuration](creating-a-t-engine.md#t-engine-configuration).
-These are equivalent to the options in the **TransformationOptions** parameter.
+These are equivalent to the options in the **TransformationOptions** parameter
+see [engine_config](https://github.com/Alfresco/alfresco-transform-core/blob/master/docs/engine_config.md)
+for more information.
 
+**Pipeline Transformers:**
 
-
-TODO
-* Talk about not needing to create a sub class of TransformOptions, or
-  the need to marshal and un marshal TransformOptions.
+Pipeline Transformers definitions for the Legacy Transformers was done by adding properties in
+alfresco-global.properties. Definition for the pipline is `Transformer1 | Extension | Transformer2`,
+the resulting pipeline transformer will have the same supportedExtension as Transformer1, but the resulted
+targetExtension will be the sum of targetExtension(Transformer1) + targetExtension(Transformer2(Extension)).
+Additional properties are available:
+* `.extension.Ext1.Ext2.supported=false`  - restrict the transformation from Ext1 to Ext2 for a specific Transformer.
+* `.priority=200` - set priority value of the transformer, the values are like the order in a queue,
+the lower the number the higher the priority is.
+* `.available=false` - transformer can be defined but at the same time disabled.
+```
+# alfresco-pdf-renderer.ImageMagick
+# ---------------------------------
+# content.transformer.alfresco-pdf-renderer.ImageMagick.pipeline=alfresco-pdf-renderer|png|ImageMagick
+```
+Pipeline definitions for Local Transformers are done via JSON rather than alfresco-global.properties
+see section [Configure a custom transform pipeline](https://github.com/Alfresco/acs-packaging/blob/master/docs/custom-transforms-and-renditions.md#configure-a-custom-transform-pipeline).
