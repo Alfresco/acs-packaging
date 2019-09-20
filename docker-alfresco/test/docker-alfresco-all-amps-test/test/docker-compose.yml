@@ -69,6 +69,7 @@ services:
                 -Ds3.autoLowerCaseBucketName=true
                 -Dazure.account.name=${AZURE_STORAGE_ACCOUNT_NAME}
                 -Dazure.account.key=${AZURE_STORAGE_ACCOUNT_KEY}
+                -Dazure.containerName=${AZURE_CONTAINER_NAME}
                 -Dcentera.url=168.159.214.26?/binaries/bamboo-agent-config/Centera/c2armtesting.pea
                 -Dsaml.sp.isEnforced=false
                 -Ddsync.service.uris=http://localhost:8082/alfresco
