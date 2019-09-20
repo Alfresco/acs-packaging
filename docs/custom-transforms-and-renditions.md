@@ -365,13 +365,3 @@ helps by showing which areas of legacy code are no longer needed and
 which sections can be simply copied and pasted into the new code. Some of
 the concepts have changed sightly to simplify what the custom transform
 developer needs to do and understand.
-
-## Transform Service Configuration
-
-### Configure a T-Engine in the Transform Service
-
-TODO
-
-### Configure a pipeline in the Transform Service
-
-TODO
