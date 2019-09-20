@@ -1,6 +1,25 @@
 <h1>        6.2.0
 </h1>
 <h2>
+  New Features
+</h2>
+<ul>
+  <li>
+    <b>Custom Transforms and Renditions</b>
+    <p>Alfresco Content Services (ACS) provides a number of content
+     transforms, but also allows custom transforms to be added.
+    <p>It is now possible to create custom transforms that run in 
+    separate processes known as T-Engines (short for Transformer
+    Engines). The same engines may be used in Community and 
+    Enterprise Editions. They may be directly connected to the ACS 
+    repository as Local Transforms, but in the Enterprise edition there 
+    is the option to include them as part of the Transform Service 
+    which provides more balanced throughput and better administration 
+    capabilities.
+    <p>For more information see <a href='https://github.com/Alfresco/acs-packaging/blob/master/docs/custom-transforms-and-renditions.md'>Custom Transforms and Renditions</a>
+  </li>
+</ul>
+<h2>
   Removed features
 </h2>
 <ul>
@@ -10,6 +29,45 @@
   <li>
     Discussions, blogs and forums APIs were removed.
   </li>
+</ul>
+
+                                                                                       
+<h2>        Service Pack Request
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20196'>MNT-20196</a>] -         JMX Password redaction inconsistent
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20199'>MNT-20199</a>] -         Improper Output Neutralization for Logs CWE ID 117
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20200'>MNT-20200</a>] -         Improper Neutralization of Script-Related HTML Tags in a Web Page (Basic XSS) CWE ID 80
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20208'>MNT-20208</a>] -         Sensitive Cookie in HTTPS Session Without &#39;Secure&#39; Attribute CWE ID 614
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20337'>MNT-20337</a>] -         [Security] CVE-2018-16858 - LibreOffice directory traversal vulnerability
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20515'>MNT-20515</a>] -         [Security] CVE-2017-18197 jgraphx XXE vulnerability
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20525'>MNT-20525</a>] -         [Security] Multiple tika-parsers vulnerabilities
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20595'>MNT-20595</a>] -         Update Hazelcast version to at least 3.11 for OpenJDK
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20749'>MNT-20749</a>] -         [Security] Multiple dcharts-widget vulnerabilities in contained jQuery lib
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20821'>MNT-20821</a>] -         Wrong translation in site-profile.get_fr.properties for Site Manager(s)
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20833'>MNT-20833</a>] -         ScriptNode method createAssociation can be used where users only have consumer role
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20840'>MNT-20840</a>] -         [Security] - Persistent Cross Site Scripting
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20850'>MNT-20850</a>] -         [Security] Content can be read by malicious user, bypassing permissions
+</li>
+</ul>
+    
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-18461'>MNT-18461</a>] -         CWE113 - Improper Neutralization of CRLF Sequences in HTTP Headers (&#39;HTTP Response Splitting&#39;)
+</li>
 </ul>
 
 <h1>        6.1.0

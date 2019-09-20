@@ -36,6 +36,7 @@
 
         <dependency.alfresco-enterprise-remote-api.version>7.46</dependency.alfresco-enterprise-remote-api.version>
         <dependency.alfresco-enterprise-repository.version>7.61</dependency.alfresco-enterprise-repository.version>
+
         <dependency.alfresco-remote-api.version>7.91</dependency.alfresco-remote-api.version>
         <dependency.alfresco-repository.version>7.121</dependency.alfresco-repository.version>
         <dependency.alfresco-data-model.version>8.50</dependency.alfresco-data-model.version>
@@ -62,8 +63,8 @@
         <dependency.cxf.version>3.3.2</dependency.cxf.version>
 
         <!-- Alfresco Share version -->
-        <alfresco.share.version>6.2.0-RC1</alfresco.share.version>
-        <alfresco.alfresco-share-services.version>6.2.0-RC1</alfresco.alfresco-share-services.version>
+        <alfresco.share.version>6.2.0-RC2</alfresco.share.version>
+        <alfresco.alfresco-share-services.version>6.2.0-RC2</alfresco.alfresco-share-services.version>
 
         <!-- Alfresco GoogleDocs integration version -->
         <alfresco.googledocs.version>3.1.0</alfresco.googledocs.version>
@@ -96,10 +97,10 @@
         <alfresco.records-management.version>3.0.0</alfresco.records-management.version>
 
         <!-- Alfresco Office Services Module -->
-        <alfresco.aos-module.version>1.2.2</alfresco.aos-module.version>
+        <alfresco.aos-module.version>1.3.0-RC1</alfresco.aos-module.version>
 
         <!-- Alfresco Media Management Module -->
-        <alfresco.mm.version>1.4.0-TEST4</alfresco.mm.version>
+        <alfresco.mm.version>1.4.0-RC3</alfresco.mm.version>
 
         <!-- Alfresco Desktop Sync Service Module -->
         <alfresco.desktop-sync.version>3.2.0-RC2</alfresco.desktop-sync.version>

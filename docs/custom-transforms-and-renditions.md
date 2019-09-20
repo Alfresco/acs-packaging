@@ -179,22 +179,15 @@ a ConfigMap from the JSON file and mount the ConfigMap through a volume
 to the ACS repository pods.
 
 ```bash
-kubectl create configmap custom-pipeline-config --from-file=custom_pipelines.json
+kubectl create configmap custom-pipeline-config --from-file=name_of_a_file.json
 ```
 
-In the ACS repository pod configuration:
-```yaml
-volumes:
-    - name: custom-pipeline-config-volume
-      configMap:
-          name: custom-pipeline-config
-```
+The necessary volumes are already provided out of the box and the files
+in ConfigMap `custom-pipeline-config` will be mounted to
+`/usr/local/tomcat/shared/classes/alfresco/extension/transform/pipelines/`.
+Again, the files will be picked up the next time the location is read,
+or when the repository pods are restarted.
 
-```yaml
-volumeMounts:
-    - name: custom-pipeline-config-volume
-      mountPath: /usr/local/tomcat/shared/classes/alfresco/extension/transform/pipelines/
-```
 > From Kubernetes documentation: Caution: If there are some files
 in the mountPath location, they will be deleted.
 
@@ -237,6 +230,17 @@ rendition.config.dir=shared/classes/alfresco/extension/transform/renditions/
 rendition.config.cronExpression=2 30 0/1 * * ?
 rendition.config.initialAndOnError.cronExpression=0/10 * * * * ?
 ```
+
+In a Kubernetes environment:
+```bash
+kubectl create configmap custom-rendition-config --from-file=name_of_a_file.json
+```
+
+The necessary volumes are already provided out of the box and the files
+in ConfigMap `custom-rendition-config` will be mounted to
+`/usr/local/tomcat/shared/classes/alfresco/extension/transform/renditions/`.
+Again, the files will be picked up the next time the location is read,
+or when the repository pods are restarted.
 
 ### Configure a custom MIME type
 
@@ -285,6 +289,17 @@ mimetype.config.dir=shared/classes/alfresco/extension/mimetypes
 mimetype.config.cronExpression=0 30 0/1 * * ?
 mimetype.config.initialAndOnError.cronExpression=0/10 * * * * ?
 ```
+
+In a Kubernetes environment:
+```bash
+kubectl create configmap custom-mimetype-config --from-file=name_of_a_file.json
+```
+
+The necessary volumes are already provided out of the box and the files
+in ConfigMap `custom-mimetype-config` will be mounted to
+`/usr/local/tomcat/shared/classes/alfresco/extension/mimetypes`.
+Again, the files will be picked up the next time the location is read,
+or when the repository pods are restarted.
 
 ### Configure the repository to use the Transform Service
 
@@ -350,13 +365,3 @@ helps by showing which areas of legacy code are no longer needed and
 which sections can be simply copied and pasted into the new code. Some of
 the concepts have changed sightly to simplify what the custom transform
 developer needs to do and understand.
-
-## Transform Service Configuration
-
-### Configure a T-Engine in the Transform Service
-
-TODO
-
-### Configure a pipeline in the Transform Service
-
-TODO
