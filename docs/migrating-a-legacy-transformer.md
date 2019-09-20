@@ -110,14 +110,18 @@ alfresco-global.properties. Definition for the pipline is `Transformer1 | Extens
 the resulting pipeline transformer will have the same supportedExtension as Transformer1, but the resulted
 targetExtension will be the sum of targetExtension(Transformer1) + targetExtension(Transformer2(Extension)).
 Additional properties are available:
-* `.extension.Ext1.Ext2.supported=false`  - restrict the transformation from Ext1 to Ext2 for a specific Transformer.
-* `.priority=200` - set priority value of the transformer, the values are like the order in a queue,
+* `.extension.Ext1.Ext2.supported=false` restricts the transformation from Ext1 to Ext2 for a specific Transformer.
+* `.priority=200` sets priority value of the transformer, the values are like the order in a queue,
 the lower the number the higher the priority is.
-* `.available=false` - transformer can be defined but at the same time disabled.
+* `.available=false` disables a transformer.
 ```
 # alfresco-pdf-renderer.ImageMagick
 # ---------------------------------
 # content.transformer.alfresco-pdf-renderer.ImageMagick.pipeline=alfresco-pdf-renderer|png|ImageMagick
+# content.transformer.alfresco-pdf-renderer.ImageMagick.priority=200
+# content.transformer.alfresco-pdf-renderer.ImageMagick.available=false
+# content.transformer.alfresco-pdf-renderer.ImageMagick.extension.ai.jpg.supported=false
+
 ```
 Pipeline definitions for Local Transformers are done via JSON rather than alfresco-global.properties
 see section [Configure a custom transform pipeline](https://github.com/Alfresco/acs-packaging/blob/master/docs/custom-transforms-and-renditions.md#configure-a-custom-transform-pipeline).
