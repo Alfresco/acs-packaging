@@ -56,7 +56,7 @@ services:
                 -Dimap.server.port=1143
                 -Dftp.port=1221
                 -Dcors.enabled=true
-                -Dcors.allowed.origins=http://localhost:4200
+                -Dcors.allowed.origins=http://localhost:4200,http://localhost:8080
                 -Ddsync.service.uris=http://localhost:8082/alfresco
                 "
         ports:
