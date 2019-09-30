@@ -2,10 +2,6 @@ For context see [Custom Transforms and Renditions](custom-transforms-and-renditi
 
 # Migrating a Legacy Transformer
 
-TODO
-* Talk about creating pipelines in json rather than Spring or via
-   values in transformer.properties.
-
 This section will describe how to migrate custom synchronous transformers
 created for Alfresco Content Repository (ACS) prior to version 6.2, to new
 asynchronous out of process T-Engines.
@@ -24,7 +20,7 @@ New transformers will be added to ACS by creating and configuring new T-Engines.
 A custom Legacy Transformer would typically be packaged as an Alfresco
 Module Package (AMP). The AMP would contain Java classes, Spring context
 files with new transformer, rendition or pipeline Spring Beans and any
-additional custom configuration required by the new transformer.
+additional custom configuration required by the new transformer, see [example](https://github.com/Alfresco/alfresco-helloworld-transformer/tree/master/alfresco-helloworld-transformer-amp).
 All of this functionality can now be added without the need to override
 the ACS Spring Bean configuration.
 
@@ -51,6 +47,7 @@ by implementing the following abstract methods:
 * **transformInternal**
 
 ### Migrating isTransformableMimetype
+Example of a [legacy Transformer](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/alfresco-helloworld-transformer-amp/helloworld-amp/src/main/java/org/alfresco/content/transform/HelloWorldTransformer.java).
 ```java
 public boolean isTransformableMimetype(String sourceMimetype, String targetMimetype, TransformationOptions options)
 ```
@@ -77,9 +74,9 @@ A **TransformationOptions** parameter provides the transform options.
 
 **How to migrate:**
 
->Notice how the signature of the Legacy Transformer's `transformInternal`
+>Notice how the signature of the [Legacy Transformer's](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/alfresco-helloworld-transformer-amp/helloworld-amp/src/main/java/org/alfresco/content/transform/HelloWorldTransformer.java#L35) `transformInternal`
 method is similar to the Hello World T-Engine's `transformInternal` method
-in [HelloWorldController.java](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/src/main/java/org/alfresco/transformer/HelloWorldController.java).
+in [HelloWorldController.java](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/alfresco-helloworld-transformer-engine/src/main/java/org/alfresco/transformer/HelloWorldController.java#L177).
 
 The [Custom transform API](creating-a-t-engine.md#custom-transform-api) section describes how
 to add transform logic to a custom T-Engine. In short, the logic in
@@ -94,10 +91,53 @@ This is equivalent to the **ContentReader** parameter.
 This is equivalent to the **ContentWriter** parameter.
 * Requests to a T-Engine's `/transform` endpoint contain a list of
 transform options as defined by the [T-Engine configuration](creating-a-t-engine.md#t-engine-configuration).
-These are equivalent to the options in the **TransformationOptions** parameter.
+These are equivalent to the options in the **TransformationOptions** parameter
+see [engine_config](https://github.com/Alfresco/alfresco-transform-core/blob/master/docs/engine_config.md)
+for more information.
+In Legacy Transformers, it was possible to create new transform options by
+subclassing `TransformationOptions`, or implement `TransformationSourceOptions`
+which then needed to be marshaled and un-marshaled. If custom
+options were defined, then `org.alfresco.repo.renditions2.TransformationOptionsConverter` needed to be subclassed.
+These new classes would then be added as Spring Beans to the Repository's Application Context.
+This is no longer the case when creating new out of process T-Engines, new transform options are only added via
+the **engine_config**.
 
+## Migrating a Pipeline Transformer
 
+**Legacy Transformers Pipelines**
 
-TODO
-* Talk about not needing to create a sub class of TransformOptions, or
-  the need to marshal and un marshal TransformOptions.
+Pipeline Transformers for the Legacy Transformers were defined using properties in
+alfresco-global.properties. The pipline definition syntax via properties is  `Transformer1 | Extension | Transformer2`.
+The resulting pipeline transformer will have the same supportedExtension as Transformer1, but the resulting
+targetExtension will be the sum of targetExtension(Transformer1) + targetExtension(Transformer2(Extension)).
+Additional properties are available:
+* `.extension.Ext1.Ext2.supported=false` restricts the transformation from Ext1 to Ext2 for a specific Transformer.
+* `.priority=200` sets priority value of the transformer, the values are like the order in a queue,
+the lower the number the higher the priority is.
+* `.available=false` disables a transformer.
+
+Sample configuration of Legacy Transformer Pipeline
+```
+# alfresco-pdf-renderer.ImageMagick
+# ---------------------------------
+# content.transformer.alfresco-pdf-renderer.ImageMagick.pipeline=alfresco-pdf-renderer|png|ImageMagick
+# content.transformer.alfresco-pdf-renderer.ImageMagick.priority=200
+# content.transformer.alfresco-pdf-renderer.ImageMagick.available=false
+# content.transformer.alfresco-pdf-renderer.ImageMagick.extension.ai.jpg.supported=false
+
+```
+
+**Local Transformers Pipelines**
+
+>For details see section [Configure a custom transform pipeline](custom-transforms-and-renditions.md#configure-a-custom-transform-pipeline).
+
+Pipeline definitions for Local Transformers are done via JSON rather than alfresco-global.properties
+In contrast with the Legacy Transformer Pipelines:
+* Transformer configuration uses **Media Types** instead of **Extensions**.
+* A pipeline transformer does not inherit any Source-Target Mimetypes from any
+of Transformers used in its definition, transformations are listed explicitly under
+*supportedSourceAndTargetList*, therefore there is no need for a property similar to `.extension.Ext1.Ext2.supported=false`.
+* `priority` option is now used in `supportedSourceAndTargetList` for each
+ transform individually instead on the whole transformer.
+* There is no `.available=false` property, a transformer cannot be disabled.
+To disable a pipeline transformer, its configuration should to be removed.

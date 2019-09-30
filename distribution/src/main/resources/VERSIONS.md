@@ -12,7 +12,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Alfresco Search Services | 1.4.0 |
 | Alfresco Insight Engine | 1.4.0 |
 | Alfresco Desktop Sync Service | @alfresco.desktop-sync.version@ |
-| Alfresco Transform Service | 1.1.0-RC2 |
+| Alfresco Transform Service | 1.1.0-RC3 |
 | Document Transformation Engine | @alfresco.transformation-engine.version@ |
 | Alfresco File Transfer Receiver | 6.2.1 |
 | Alfresco Module Management Tool | 6.0 |
@@ -31,6 +31,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Alfresco Content Connector for Salesforce | @alfresco.salesforce-connector.version@ |
 | Alfresco Kofax Integration | @alfresco.kofax.version@ |
 | Alfresco S3 Connector | @alfresco.s3connector.version@ |
+| Alfresco Content Connector for Azure | @alfresco.azure-connector.version@ |
 | Alfresco EMC Centera Connector | @alfresco.centera-connector.version@ |
 | Alfresco Outlook Integration | @alfresco.outlook.version@ |
 | Alfresco SDK | 3.0.1 |
@@ -72,7 +73,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Database Connectors
 | Component | Recommended | Also Available |
 |---|---|---|
-| MySQL connector | 5.1.40 |
+| MySQL connector | 5.1.47 |
 | MariaDB Java Client | 2.2.5 |
 | PostgreSQL | @dependency.postgresql.version@ |
 | Oracle JDBC ojdbc8 | 12.2.0.1 |
@@ -81,7 +82,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Application Servers
 | Component | Recommended | Also Available |
 |---|---|---|
-| Tomcat | 8.5.34 |
+| Tomcat | 8.5.43 |
 
 ##### Client Operating Systems
 | Component | Recommended | Also Available |
