@@ -316,6 +316,11 @@ transform.service.cronExpression=4 30 0/1 * * ?
 transform.service.initialAndOnError.cronExpression=0/10 * * * * ?
 ```
 
+## ATS Configuration
+### Configure a T-Engine as a Remote Transform
+
+Please follow the steps described in [Alfresco Transform Service Docs](https://github.com/Alfresco/alfresco-transform-service/blob/master/docs/custom-t-engine.md).
+
 ## Creating a T-Engine
 
 The deployment and development of a T-Engine transformer is simpler
