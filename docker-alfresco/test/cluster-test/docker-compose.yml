@@ -52,7 +52,7 @@ services:
                 -Dtransform.misc.url=http://transform-misc:8090/
 
                 -Dcors.enabled=true
-                -Dcors.allowed.origins=http://localhost:4200
+                -Dcors.allowed.origins=http://localhost:4200,http://localhost:8020
                 "
         ports:
             - 6081:8080
@@ -102,7 +102,7 @@ services:
                 -Dtransform.misc.url=http://transform-misc:8090/
 
                 -Dcors.enabled=true
-                -Dcors.allowed.origins=http://localhost:4200
+                -Dcors.allowed.origins=http://localhost:4200,http://localhost:8020
                 "
         ports:
             - 6082:8080
@@ -152,7 +152,7 @@ services:
                 -Dtransform.misc.url=http://transform-misc:8090/
 
                 -Dcors.enabled=true
-                -Dcors.allowed.origins=http://localhost:4200
+                -Dcors.allowed.origins=http://localhost:4200,http://localhost:8020
                 "
         ports:
             - 6083:8080
