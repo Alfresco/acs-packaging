@@ -26,9 +26,6 @@
   <li>
     DB2 support was removed.
   </li>
-  <li>
-    Discussions, blogs and forums APIs were removed.
-  </li>
 </ul>
 
                                                                                        
