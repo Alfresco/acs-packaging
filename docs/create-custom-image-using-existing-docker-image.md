@@ -40,29 +40,53 @@ mvn clean install
 * Add the following lines to the Dockerfile:
 
 ```bash
-### Apply AMPs to the latest Community repository image.
-FROM alfresco/alfresco-content-repository-community:latest
+# Apply AMPs to the latest Community repository image.
+ARG BASE_IMAGE=alfresco/alfresco-content-repository-community
+ARG VERSION=latest
+
+FROM ${BASE_IMAGE}:${VERSION}
+
+# Need these viariables to give permissions to tomcat (refer Dockerfile below)
+ARG GROUPNAME=Alfresco
+ARG USERNAME=alfresco
+ARG TOMCAT_DIR=/usr/local/tomcat
+
+# Need to switch to root to add the new files
+USER root
 
 ### Copy the AMPs from build context to the appropriate location for your application server
-COPY amps /usr/local/tomcat/amps
+COPY amps ${TOMCAT_DIR}/amps
 
 ### Install AMPs on alfresco
-RUN java -jar /usr/local/tomcat/alfresco-mmt/alfresco-mmt*.jar install \
-              /usr/local/tomcat/amps/alfresco-bulk-import-*.amp /usr/local/tomcat/webapps/alfresco -nobackup -force
+RUN java -jar ${TOMCAT_DIR}/alfresco-mmt/alfresco-mmt*.jar install \
+              ${TOMCAT_DIR}/amps ${TOMCAT_DIR}/webapps/alfresco -directory -nobackup -force
+
+# Need to have all Tomcat files owned by root with group GROUPNAME as mentionned (refer Dockerfile below)
+RUN chgrp -R ${GROUPNAME} ${TOMCAT_DIR}/webapps && \
+    find ${TOMCAT_DIR}/webapps -type d -exec chmod 0750 {} \; && \
+    find ${TOMCAT_DIR}/webapps -type f -exec chmod 0640 {} \; && \
+    chmod -R g+r ${TOMCAT_DIR}/webapps && \
+    chgrp -R ${GROUPNAME} ${TOMCAT_DIR}
+
+# Switching back to alfresco user after having added amps files to run the container as non-root
+USER ${USERNAME}
+
 ```
+
+** Note: ** [Alfresco/acs-community-packaging/docker-alfresco/Dockerfile](https://github.com/Alfresco/acs-community-packaging/blob/master/docker-alfresco/Dockerfile).
 
 ** Note: ** It's not necessary to build the .amp file if you can download it via a network (FTP/HTTP/HTTPS), since the COPY command can be replaced by CURL/WGET.
 
 * Open a Terminal and run the following command to build the custom docker image.
 
 ```bash
-docker build . -t customrepository/alfresco-custom-image:customTag
+docker build -t <repository>:<tag> .
 ```
 
-* The new docker image was built locally, now it can be pushed to customrepository by running the following command in Terminat/CMD:
+* The new docker image was built locally, now it can be pushed to the custom repository by running the following command in a terminal:
 
 ```bash
-docker push customrepository/alfresco-custom-image:customTag
+docker push <repository>:<tag>
 ```
 
 ### Applying AMPs that require additional configuration (advanced)
@@ -115,19 +139,29 @@ alfresco-custom-image                            (Dir)
 * Create a Dockerfile for custom-alfresco-repository image:
 
 ```bash
-### Apply AMPs to the latest Enterprise repository image.
-FROM alfresco/alfresco-content-repository:latest
+# Apply AMPs to the latest Community repository image.
+ARG BASE_IMAGE=alfresco/alfresco-content-repository-community
+ARG VERSION=latest
+
+FROM ${BASE_IMAGE}:${VERSION}
+
+# Need these viariables to give permissions to tomcat (refer Dockerfile below)
+ARG GROUPNAME=Alfresco
+ARG USERNAME=alfresco
+ARG TOMCAT_DIR=/usr/local/tomcat
+
+# Need to switch to root to add the new files
+USER root
 
 ### Copy the keystore from build context to the appropriate location for your application server
-COPY keystore /usr/local/tomcat/keystore
+COPY keystore ${TOMCAT_DIR}/keystore
 
 ### Copy the AMPs from build context to the appropriate location for your application server
-COPY amps /usr/local/tomcat/amps
-
+COPY amps ${TOMCAT_DIR}/amps
 
 ### Install AMPs on alfresco
-RUN java -jar /usr/local/tomcat/alfresco-mmt/alfresco-mmt*.jar install \
-              /usr/local/tomcat/amps/alfresco-saml-repo-1.1.0-*.amp /usr/local/tomcat/webapps/alfresco -nobackup -force
+RUN java -jar ${TOMCAT_DIR}/alfresco-mmt/alfresco-mmt*.jar install \
+              ${TOMCAT_DIR}/amps ${TOMCAT_DIR}/webapps/alfresco -directory -nobackup -force
 
 ### NOTE: This is not the recommanded way to enable SSL, it is only for testing purposes !
 ### We are going to add a new <Connector> to server.xml by replacing
@@ -150,19 +184,35 @@ RUN java -jar /usr/local/tomcat/alfresco-mmt/alfresco-mmt*.jar install \
 ###    </Connector> 
 
 ### Enable SSL by adding the proper Connector to server.xml (using a very hard to understand SED command)
-RUN sed -i "s/\    <\/Engine>/\n\    <\/Engine>\n\    <Connector\ port=\"8443\"\n\               protocol=\"org.apache.coyote.http11.Http11Nio2Protocol\"\n\               sslImplementationName=\"org.apache.tomcat.util.net.jsse.JSSEImplementation\"\n\               maxThreads=\"150\"\n\               SSLEnabled=\"true\">\n\        <SSLHostConfig certificateVerification=\"required\" \n\                       truststoreFile=\"\/usr\/local\/tomcat\/keystore\/ssl.keystore\/ssl.truststore\"\n\                       truststorePassword=\"truststorePass\"\n\                       truststoreType=\"JCEKS\" >\n\            <Certificate certificateKeystoreFile=\"\/usr\/local\/tomcat\/keystore\/ssl.keystore\/ssl.keystore\"\n\                         certificateKeystorePassword=\"keystorePass\"\n\                         certificateKeystoreType=\"JCEKS\" \/>\n\        <\/SSLHostConfig>\n\    <\/Connector>/g" /usr/local/tomcat/conf/server.xml
+RUN sed -i "s/\    <\/Engine>/\n\    <\/Engine>\n\    <Connector\ port=\"8443\"\n\               protocol=\"org.apache.coyote.http11.Http11Nio2Protocol\"\n\               sslImplementationName=\"org.apache.tomcat.util.net.jsse.JSSEImplementation\"\n\               maxThreads=\"150\"\n\               SSLEnabled=\"true\">\n\        <SSLHostConfig certificateVerification=\"required\" \n\                       truststoreFile=\"\/usr\/local\/tomcat\/keystore\/ssl.keystore\/ssl.truststore\"\n\                       truststorePassword=\"truststorePass\"\n\                       truststoreType=\"JCEKS\" >\n\            <Certificate certificateKeystoreFile=\"\/usr\/local\/tomcat\/keystore\/ssl.keystore\/ssl.keystore\"\n\                         certificateKeystorePassword=\"keystorePass\"\n\                         certificateKeystoreType=\"JCEKS\" \/>\n\        <\/SSLHostConfig>\n\    <\/Connector>/g" ${TOMCAT_DIR}/conf/server.xml
+
+
+# Need to have all Tomcat files owned by root with group GROUPNAME as mentionned (refer Dockerfile below)
+RUN chgrp -R ${GROUPNAME} ${TOMCAT_DIR}/webapps && \
+    find ${TOMCAT_DIR}/webapps -type d -exec chmod 0750 {} \; && \
+    find ${TOMCAT_DIR}/webapps -type f -exec chmod 0640 {} \; && \
+    find ${TOMCAT_DIR}/keystore -type d -exec chmod 0750 {} \; && \
+    find ${TOMCAT_DIR}/keystore -type f -exec chmod 0640 {} \; && \
+    chmod g+rx ${TOMCAT_DIR}/conf && \
+    chmod -R g+r ${TOMCAT_DIR}/conf && \
+    chmod -R g+r ${TOMCAT_DIR}/webapps && \
+    chgrp -R ${GROUPNAME} ${TOMCAT_DIR}
+
+# Switching back to alfresco user after having added amps files to run the container as non-root
+USER ${USERNAME}
+
 ```
 
 * Open a Terminal and run the following command to build the custom docker repository image.
 
 ```bash
-docker build . -t customrepository/custom-alfresco-repository:customTag
+docker build -t <repository>:<tag> .
 ```
 
-* The new docker image was built locally, now it can be pushed to customrepository by running the following command in Terminat/CMD:
+* The new docker image was built locally and can be pushed to the repository by running the following command in a terminal:
 
 ```bash
-docker push customrepository/custom-alfresco-repository:customTag
+docker push <repository>:<tag>
 ```
 
 * Create a Dockerfile for custom-alfresco-share image:
@@ -171,18 +221,26 @@ docker push customrepository/custom-alfresco-repository:customTag
 ### Apply AMPs to the latest Share image (at this moment).
 FROM alfresco/alfresco-share:6.0.0-rc2
 
-### Copy the keystore build context to the appropriate location for your application server
-COPY keystore /usr/local/tomcat/keystore
+# Need these viariables to give permissions to tomcat (refer Dockerfile below)
+ARG GROUPNAME=Alfresco
+ARG USERNAME=alfresco
+ARG TOMCAT_DIR=/usr/local/tomcat
+
+# Need to switch to root to add the new files
+USER root
+
+### Copy the keystore from build context to the appropriate location for your application server
+COPY keystore ${TOMCAT_DIR}/keystore
 
 ### Copy the AMPs from build context to the appropriate location for your application server
-COPY amps_share /usr/local/tomcat/amps_share
+COPY amps_share ${TOMCAT_DIR}/amps_share
 
 ### Overwrite share-config-custom.xml with the one containing additional rules required for CSRF protection. 
-COPY share-config-custom.xml /usr/local/tomcat/shared/classes/alfresco/web-extension
+COPY share-config-custom.xml ${TOMCAT_DIR}/shared/classes/alfresco/web-extension
 
 ### Install AMPs on share
-RUN java -jar /usr/local/tomcat/alfresco-mmt/alfresco-mmt*.jar install \
-              /usr/local/tomcat/amps_share/alfresco-saml-share-*.amp /usr/local/tomcat/webapps/share -nobackup -force
+RUN java -jar ${TOMCAT_DIR}/alfresco-mmt/alfresco-mmt*.jar install \
+              ${TOMCAT_DIR}/amps_share/alfresco-saml-share-*.amp ${TOMCAT_DIR}/webapps/share -nobackup -force
 
 ### NOTE: This is not the recommanded way to enable SSL, it is only for testing purposes !
 ### We are going to add a new <Connector> to server.xml by replacing
@@ -205,17 +263,34 @@ RUN java -jar /usr/local/tomcat/alfresco-mmt/alfresco-mmt*.jar install \
 ###    </Connector> 
 
 ### Enable SSL by adding the proper Connector to server.xml (using a very hard to understand SED command)
-RUN sed -i "s/\    <\/Engine>/\n\    <\/Engine>\n\    <Connector\ port=\"8443\"\n\               protocol=\"org.apache.coyote.http11.Http11Nio2Protocol\"\n\               sslImplementationName=\"org.apache.tomcat.util.net.jsse.JSSEImplementation\"\n\               maxThreads=\"150\"\n\               SSLEnabled=\"true\">\n\        <SSLHostConfig certificateVerification=\"required\" \n\                       truststoreFile=\"\/usr\/local\/tomcat\/keystore\/ssl.keystore\/ssl.truststore\"\n\                       truststorePassword=\"truststorePass\"\n\                       truststoreType=\"JCEKS\" >\n\            <Certificate certificateKeystoreFile=\"\/usr\/local\/tomcat\/keystore\/ssl.keystore\/ssl.keystore\"\n\                         certificateKeystorePassword=\"keystorePass\"\n\                         certificateKeystoreType=\"JCEKS\" \/>\n\        <\/SSLHostConfig>\n\    <\/Connector>/g" /usr/local/tomcat/conf/server.xml
+RUN sed -i "s/\    <\/Engine>/\n\    <\/Engine>\n\    <Connector\ port=\"8443\"\n\               protocol=\"org.apache.coyote.http11.Http11Nio2Protocol\"\n\               sslImplementationName=\"org.apache.tomcat.util.net.jsse.JSSEImplementation\"\n\               maxThreads=\"150\"\n\               SSLEnabled=\"true\">\n\        <SSLHostConfig certificateVerification=\"required\" \n\                       truststoreFile=\"\/usr\/local\/tomcat\/keystore\/ssl.keystore\/ssl.truststore\"\n\                       truststorePassword=\"truststorePass\"\n\                       truststoreType=\"JCEKS\" >\n\            <Certificate certificateKeystoreFile=\"\/usr\/local\/tomcat\/keystore\/ssl.keystore\/ssl.keystore\"\n\                         certificateKeystorePassword=\"keystorePass\"\n\                         certificateKeystoreType=\"JCEKS\" \/>\n\        <\/SSLHostConfig>\n\    <\/Connector>/g" ${TOMCAT_DIR}/conf/server.xml
+
+
+# Need to have all Tomcat files owned by root with group GROUPNAME as mentionned (refer Dockerfile below)
+RUN chgrp -R ${GROUPNAME} ${TOMCAT_DIR}/webapps && \
+    find ${TOMCAT_DIR}/webapps -type d -exec chmod 0750 {} \; && \
+    find ${TOMCAT_DIR}/webapps -type f -exec chmod 0640 {} \; && \
+    find ${TOMCAT_DIR}/keystore -type d -exec chmod 0750 {} \; && \
+    find ${TOMCAT_DIR}/keystore -type f -exec chmod 0640 {} \; && \
+    find ${TOMCAT_DIR}/shared -type d -exec chmod 0750 {} \; && \
+    find ${TOMCAT_DIR}/shared -type f -exec chmod 0640 {} \; && \
+    chmod -R g+r ${TOMCAT_DIR}/webapps && \
+    chgrp -R ${GROUPNAME} ${TOMCAT_DIR}
+
+# Switching back to alfresco user after having added amps files to run the container as non-root
+USER ${USERNAME}
+
+
 ```
 
 * Open a Terminal and run the following command to build the custom docker repository image.
 
 ```bash
-docker build . -t customrepository/custom-share-repository:customTag
+docker build -t <repository>:<tag> .
 ```
 
-* The new docker image was built locally, now it can be pushed to customrepository by running the following command in Terminat/CMD:
+* The new docker image was built locally and can be pushed to the repository by running the following command in a terminal:
 
 ```bash
-docker push customrepository/custom-share-repository:customTag
+docker push <repository>:<tag>
 ```
