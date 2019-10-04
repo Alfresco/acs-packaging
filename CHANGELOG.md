@@ -86,6 +86,8 @@
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20535'>MNT-20535</a>] -         [Security] Multiple commons-compress vulnerabilities
 </li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20595'>MNT-20595</a>] -         Update Hazelcast version to at least 3.11 for OpenJDK
+</li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20670'>MNT-20670</a>] -         Renaming parent category hides its children
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20723'>MNT-20723</a>] -         Admin cannot deauthorize user - Authorization status columns missing from admin console
