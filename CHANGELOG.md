@@ -141,6 +141,16 @@
 <ul>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19696'>MNT-19696</a>] -         REST API add order by parameter option to GET favorites
 </li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/REPO-1835'>REPO-1835</a>] -         Add displayName property to person representation
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/REPO-3579'>REPO-3579</a>] -         REST API: Include target node with the Shared Link info
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/REPO-4530'>REPO-4530</a>] -         Update supported PostgreSQL version to 10.9
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/REPO-4463'>REPO-4463</a>] -         Enable testing with PostgreSQL 11 (11.4)
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/REPO-4464'>REPO-4464</a>] -         Enable testing with Oracle 18C and 19C
+</li>
 </ul>
                                                                 
                                                                 
