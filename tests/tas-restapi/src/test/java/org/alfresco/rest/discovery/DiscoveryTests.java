@@ -72,19 +72,17 @@ public class DiscoveryTests extends RestTest
                 "alfresco-share-services",
                 "alfresco-saml-repo",
                 "org_alfresco_device_sync_repo",
-                // uncomment when MM-785 is fixed:
-                // "org_alfresco_mm_repo",
+                "org_alfresco_mm_repo",
                 // uncomment when REPO-4594 is fixed:
                 // "alfresco-glacier-connector-repo",
                 "org.alfresco.module.TransformationServer");
-
 
         expectedModules.forEach(module ->
                 assertTrue(modules.contains(module), String.format("Expected module %s is not installed", module)));
 
         // Check that all installed modules are in INSTALLED state
         List<String> modulesStates = restClient.onResponse().getResponse().jsonPath().getList("entry.repository.modules.installState", String.class);
-        //change back to assertEquals after REPO-4233 and MM-785 is fixed
+        //change back to assertEquals after REPO-4233
         assertTrue(Collections.frequency(modulesStates, "INSTALLED") >= expectedModules.size(), "Number of amps installed should match expected");
     }
 
