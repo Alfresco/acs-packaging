@@ -43,4 +43,4 @@ matrix:
         - docker login quay.io -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-cluster.yml
       script:
-        - travis_wait 40 mvn install -q -f tests/tas-restapi/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+        - echo "Cluster started up. More cluster tests will be added in future"
