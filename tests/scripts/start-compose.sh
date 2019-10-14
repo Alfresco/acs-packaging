@@ -21,8 +21,7 @@ else
 fi
 
 # find this script's directory
-#SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-#./${SCRIP_DIR}/
-./wait-for-alfresco-start.sh "http://localhost:8081/alfresco"
-./wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+source ${SCRIP_DIR}/wait-for-alfresco-start.sh "http://localhost:8081/alfresco"
+source ${SCRIP_DIR}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
