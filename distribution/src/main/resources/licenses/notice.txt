@@ -75,7 +75,6 @@ JSlidesShare    http://code.google.com/p/jslideshare/
 JSON.simple http://code.google.com/p/json-simple/
 jsr107cache http://jsr107cache.sourceforge.net/
 JSR 305 http://findbugs.sourceforge.net/
-jstl    http://tomcat.apache.org/taglibs/index.html
 jug-asl http://jug.safehaus.org/ 
 LESS for Java   http://www.asual.com/lesscss/
 LiveTribe   http://livetribe.codehaus.org/
@@ -114,7 +113,6 @@ xbean   http://geronimo.apache.org/xbean/
 xercesImpl  http://xerces.apache.org/xerces2-j
 XML Commons External Components http://xml.apache.org/commons/components/external/
 XMLBeans    http://xmlbeans.apache.org/
-XML-RPC http://ws.apache.org/xmlrpc/
 XML Schema  http://ws.apache.org/commons/XmlSchema/
 Santuario   http://santuario.apache.org/
 OpenSSL http://www.openssl.org/
