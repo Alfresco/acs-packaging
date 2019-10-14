@@ -12,7 +12,7 @@
   </parent>
 
   <properties>
-      <all-amps.image.name>alfresco/alfresco-content-repository-all-amps-test</all-amps.image.name>
+      <image.name>alfresco/alfresco-content-repository-all-amps-test</image.name>
       <image.registry>quay.io</image.registry>
       <image.tag>latest</image.tag>
       <s3.bucketName>bamboo-s3-conn-default</s3.bucketName>
@@ -394,7 +394,7 @@
                 <configuration>
                     <images>
                         <image>
-                            <name>${all-amps.image.name}</name>
+                            <name>${image.name}</name>
                             <build>
                                 <dockerFileDir>${project.basedir}/</dockerFileDir>
                             </build>
@@ -439,7 +439,7 @@
                         <configuration>
                             <images>
                                 <image>
-                                    <name>${all-amps.image.name}:${image.tag}</name>
+                                    <name>${image.name}:${image.tag}</name>
                                     <registry>${image.registry}</registry>
                                     <build>
                                         <dockerFileDir>${project.basedir}/</dockerFileDir>
@@ -473,7 +473,7 @@
                         <configuration>
                             <images>
                                 <image>
-                                    <name>${all-amps.image.name}</name>
+                                    <name>${image.name}</name>
                                     <registry>${image.registry}</registry>
                                     <build>
                                         <dockerFileDir>${project.basedir}/</dockerFileDir>
