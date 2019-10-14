@@ -26,7 +26,7 @@
 		</packages>
 	</test>
 
-	<test name="ACS Community Tests">
+	<test name="ACS Tests without transformations">
 		<groups>
 			<run>
 				<include name="sanity" />
@@ -35,6 +35,7 @@
 				<exclude name="unit"></exclude>
 				<exclude name="require-share"></exclude>
 				<exclude name="require-jmx"></exclude>
+                <exclude name="require-transformation"></exclude>
 				<exclude name="require-solr" />
 				<exclude name="networks"></exclude>
 				<exclude name="all_amps"></exclude>
