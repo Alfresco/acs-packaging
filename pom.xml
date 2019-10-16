@@ -37,7 +37,7 @@
         <dependency.alfresco-enterprise-remote-api.version>8.0</dependency.alfresco-enterprise-remote-api.version>
         <dependency.alfresco-enterprise-repository.version>8.1</dependency.alfresco-enterprise-repository.version>
         <dependency.alfresco-remote-api.version>8.10</dependency.alfresco-remote-api.version>
-        <dependency.alfresco-repository.version>8.10</dependency.alfresco-repository.version>
+        <dependency.alfresco-repository.version>8.11</dependency.alfresco-repository.version>
         <dependency.alfresco-data-model.version>8.52</dependency.alfresco-data-model.version>
         <dependency.alfresco-core.version>7.22</dependency.alfresco-core.version>
 
@@ -45,7 +45,7 @@
 
         <dependency.alfresco-spring-encryptor.version>6.1</dependency.alfresco-spring-encryptor.version>
         <dependency.alfresco-enterprise-crypto.version>6.2</dependency.alfresco-enterprise-crypto.version>
-        <dependency.alfresco-spring-webscripts.version>7.9</dependency.alfresco-spring-webscripts.version>
+        <dependency.alfresco-spring-webscripts.version>7.10</dependency.alfresco-spring-webscripts.version>
         <dependency.alfresco-mmt.version>6.0</dependency.alfresco-mmt.version>
         <dependency.alfresco-pdf-renderer.version>1.1</dependency.alfresco-pdf-renderer.version>
         <dependency.alfresco-trashcan-cleaner.version>2.3</dependency.alfresco-trashcan-cleaner.version>
@@ -62,8 +62,8 @@
         <dependency.cxf.version>3.3.3</dependency.cxf.version>
 
         <!-- Alfresco Share version -->
-        <alfresco.share.version>6.2.0-RC2</alfresco.share.version>
-        <alfresco.alfresco-share-services.version>6.2.0-RC2</alfresco.alfresco-share-services.version>
+        <alfresco.share.version>6.2.0-RC4</alfresco.share.version>
+        <alfresco.alfresco-share-services.version>6.2.0-RC4</alfresco.alfresco-share-services.version>
 
         <!-- Alfresco GoogleDocs integration version -->
         <alfresco.googledocs.version>3.1.0</alfresco.googledocs.version>
@@ -640,7 +640,7 @@
             <dependency>
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcprov-jdk15on</artifactId>
-                <version>1.63</version>
+                <version>1.64</version>
             </dependency>
             <dependency>
                 <groupId>org.bouncycastle</groupId>
