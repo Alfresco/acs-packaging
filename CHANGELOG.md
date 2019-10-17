@@ -26,6 +26,9 @@
   <li>
     DB2 support was removed.
   </li>
+  <li>
+    Support for setting a custom Heartbeat data sending schedule was removed.
+  </li>
 </ul>
 
 <h2>        Documentation
