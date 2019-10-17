@@ -41,7 +41,7 @@
         <dependency.alfresco-data-model.version>8.50.2</dependency.alfresco-data-model.version>
         <dependency.alfresco-core.version>7.22</dependency.alfresco-core.version>
 
-        <dependency.alfresco-hb-data-sender.version>1.0.11</dependency.alfresco-hb-data-sender.version>
+        <dependency.alfresco-hb-data-sender.version>1.0.12</dependency.alfresco-hb-data-sender.version>
 
         <dependency.alfresco-spring-encryptor.version>6.1</dependency.alfresco-spring-encryptor.version>
         <dependency.alfresco-enterprise-crypto.version>6.1</dependency.alfresco-enterprise-crypto.version>
