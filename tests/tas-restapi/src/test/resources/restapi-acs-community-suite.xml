@@ -19,6 +19,7 @@
 				<exclude name="networks"></exclude>
 				<exclude name="all_amps"></exclude>
 				<exclude name="renditions-regression"></exclude>
+                <exclude name="renditions"></exclude>
 			</run>
 		</groups>
 		<packages>
