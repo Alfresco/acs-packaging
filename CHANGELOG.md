@@ -154,6 +154,8 @@
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20859'>MNT-20859</a>] -         ACS Admin Console does not display all Shards when using mTLS config between SOLR &amp; Repo
 </li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20714'>MNT-20714</a>] -         REST API /nodes/{nodeId}/content endpoint fails for content created by a deleted user
+</li>
 </ul>
                                                                                                                                                                                         
 <h2>        Bug
