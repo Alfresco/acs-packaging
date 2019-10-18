@@ -93,7 +93,7 @@ public class ModelReloadTests extends ClusterTest
 
         // Check CMM if the model is actually deployed on the first node
         RestCustomModel restCustomModel = restClientServer1.withPrivateAPI().usingCustomModel(customContentModel).getModel();
-        assertEquals(restClientServer1.getStatusCode(), String.valueOf(HttpStatus.OK.value()), "The model was not deployed on node 1.");
+        assertEquals("The model was not deployed on node 1.", String.valueOf(HttpStatus.OK.value()), restClientServer1.getStatusCode());
         assertNotNull(restCustomModel.getStatus());
         assertEquals("The model should be published on node1 now.", "ACTIVE", restCustomModel.getStatus());
 
@@ -102,15 +102,13 @@ public class ModelReloadTests extends ClusterTest
         restNodeModel = restClientServer2.withCoreAPI()
                 .usingNode(fileModel)
                 .usingParams("include=properties").getNode();
-
-        assertEquals(restClientServer2.getStatusCode(), String.valueOf(HttpStatus.OK.value()), "The model was not deployed on node 2.");
         restClientServer2.assertStatusCodeIs(HttpStatus.OK);
         assertNotNull(restNodeModel.getProperties());
         assertTrue("The model was not activated on node2.", (Boolean) ((Map) restNodeModel.getProperties()).get("cm:modelActive"));
 
         // Check CMM if the model is actually deployed on the second node
         restCustomModel = restClientServer2.withPrivateAPI().usingCustomModel(customContentModel).getModel();
-        restClientServer2.assertStatusCodeIs(HttpStatus.OK);
+        assertEquals("The model was not deployed on node 2.", String.valueOf(HttpStatus.OK.value()), restClientServer2.getStatusCode());
         assertNotNull(restCustomModel.getStatus());
         assertEquals("The model should be published on node2 now.", "ACTIVE", restCustomModel.getStatus());
     }
