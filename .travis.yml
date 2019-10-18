@@ -92,4 +92,4 @@ matrix:
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8081/alfresco"
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
-        - echo "Cluster started up. More cluster tests will be added in future"
+        - travis_wait 40 mvn install -q -f tests/tas-cluster/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false

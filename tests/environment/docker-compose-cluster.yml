@@ -34,7 +34,6 @@ services:
     volumes:
       - alf_data:/usr/local/tomcat/alf_data
 
-
   alfresco2:
     image: alfresco/alfresco-content-repository:latest
     environment:

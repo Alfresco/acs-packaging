@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="REST API" preserve-order="true">
+	<listeners>
+		<listener class-name="org.alfresco.utility.report.HtmlReportListener"></listener>
+		<listener class-name="org.alfresco.utility.testrail.TestRailExecutorListener"></listener>
+		<listener class-name="org.alfresco.utility.testng.OSTestMethodSelector"></listener>
+	</listeners>
+
+
+
+	<test name="ACS cluster tests">
+		<groups>
+			<run>
+				<include name="cluster" />
+			</run>
+		</groups>
+		<packages>
+			<package name="org.alfresco.rest.cluster.*"></package>
+		</packages>
+	</test>
+</suite> <!-- Suite -->

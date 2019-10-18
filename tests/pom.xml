@@ -17,6 +17,7 @@
         <module>tas-email</module>
         <module>tas-webdav</module>
         <module>tas-integration</module>
+        <module>tas-cluster</module>
     </modules>
 
     <dependencyManagement>
