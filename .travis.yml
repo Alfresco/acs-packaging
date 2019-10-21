@@ -52,10 +52,12 @@ matrix:
       jdk: openjdk11
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+      script:
+        # Start Alfresco and test if it is running
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-node-restart.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8081/alfresco"
-      script:
         - ./tests/scripts/node-restart-test.sh
+        # Restart and test again
         - docker-compose --file ./tests/environment/docker-compose-node-restart.yml down
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-node-restart.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8081/alfresco"
