@@ -48,3 +48,17 @@ matrix:
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
         - echo "Cluster started up. More cluster tests will be added in future"
+    - name: "Node restart tests"
+      jdk: openjdk11
+      install:
+        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+      script:
+        # Start Alfresco and test if it is running
+        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-node-restart.yml
+        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8081/alfresco"
+        - ./tests/scripts/node-restart-test.sh
+        # Restart and test again
+        - docker-compose --file ./tests/environment/docker-compose-node-restart.yml stop
+        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-node-restart.yml
+        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8081/alfresco"
+        - ./tests/scripts/node-restart-test.sh
