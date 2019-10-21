@@ -93,3 +93,17 @@ matrix:
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
         - travis_wait 40 mvn install -q -f tests/tas-cluster/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+    - name: "Node restart tests"
+      jdk: openjdk11
+      install:
+        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+      script:
+        # Start Alfresco and test if it is running
+        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-node-restart.yml
+        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8081/alfresco"
+        - ./tests/scripts/node-restart-test.sh
+        # Restart and test again
+        - docker-compose --file ./tests/environment/docker-compose-node-restart.yml stop
+        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-node-restart.yml
+        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8081/alfresco"
+        - ./tests/scripts/node-restart-test.sh
