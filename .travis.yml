@@ -58,7 +58,7 @@ matrix:
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8081/alfresco"
         - ./tests/scripts/node-restart-test.sh
         # Restart and test again
-        - docker-compose --file ./tests/environment/docker-compose-node-restart.yml down
+        - docker-compose --file ./tests/environment/docker-compose-node-restart.yml stop
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-node-restart.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8081/alfresco"
         - ./tests/scripts/node-restart-test.sh
