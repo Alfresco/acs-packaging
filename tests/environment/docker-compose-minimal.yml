@@ -51,7 +51,7 @@ services:
             - "30000-30099:30000-30099"
 
     postgres:
-        image: library/postgres:11.4
+        image: library/postgres:${POSTGRES_TAG}
         environment:
             - POSTGRES_PASSWORD=alfresco
             - POSTGRES_USER=alfresco
@@ -60,7 +60,7 @@ services:
             - 5432:5432
 
     solr6:
-        image: alfresco/alfresco-search-services:1.3.0.1
+        image: alfresco/alfresco-search-services:${SOLR6_TAG}
         environment:
             #Solr needs to know how to register itself with Alfresco
             - SOLR_ALFRESCO_HOST=alfresco
@@ -70,11 +70,13 @@ services:
             - SOLR_SOLR_PORT=8983
             #Create the default alfresco and archive cores
             - SOLR_CREATE_ALFRESCO_DEFAULTS=alfresco,archive
+            #HTTP by default
+            - ALFRESCO_SECURE_COMMS=none
         ports:
             - 8083:8983 #Browser port
 
     activemq:
-        image: alfresco/alfresco-activemq:5.15.8
+        image: alfresco/alfresco-activemq:${ACTIVEMQ_TAG}
         ports:
             - 8161:8161 # Web Console
             - 5672:5672 # AMQP

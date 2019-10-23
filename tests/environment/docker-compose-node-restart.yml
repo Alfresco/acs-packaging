@@ -36,7 +36,7 @@ services:
       - alf_data:/usr/local/tomcat/alf_data
 
   postgres:
-    image: library/postgres:11.4
+    image: library/postgres:${POSTGRES_TAG}
     environment:
       - POSTGRES_PASSWORD=alfresco
       - POSTGRES_USER=alfresco
@@ -47,7 +47,7 @@ services:
       - postgres:/var/lib/postgresql/data
 
   activemq:
-    image: alfresco/alfresco-activemq:5.15.8
+    image: alfresco/alfresco-activemq:${ACTIVEMQ_TAG}
     ports:
       - 8161:8161 # Web Console
       - 5672:5672 # AMQP
