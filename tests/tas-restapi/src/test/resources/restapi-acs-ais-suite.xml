@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="REST-API ACS AIS" preserve-order="true">
+	<listeners>
+        <listener class-name="org.alfresco.utility.report.HtmlReportListener"/>
+        <listener class-name="org.alfresco.utility.testrail.TestRailExecutorListener"/>
+        <listener class-name="org.alfresco.utility.testng.OSTestMethodSelector"/>
+	</listeners>
+
+	<test name="Sanity tests with AIS">
+		<groups>
+			<run>
+                <include name="sanity" />
+                <include name="regression" />
+                <exclude name="demo"/>
+                <exclude name="unit"/>
+                <exclude name="require-share"/>
+                <exclude name="require-transformation"/>
+                <exclude name="require-jmx"/>
+                <exclude name="require-solr" />
+                <exclude name="networks"/>
+                <exclude name="all_amps"/>
+                <exclude name="renditions"/>
+                <exclude name="renditions-regression"/>
+                <exclude name="auth"/>
+			</run>
+		</groups>
+        <packages>
+            <package name="org.alfresco.rest.actions.*"/>
+            <package name="org.alfresco.rest.aos.*"/>
+            <package name="org.alfresco.rest.audit.*"/>
+            <package name="org.alfresco.rest.auth.*"/>
+            <package name="org.alfresco.rest.cmis.*"/>
+            <package name="org.alfresco.rest.comments.*"/>
+            <package name="org.alfresco.rest.discovery.*"/>
+            <package name="org.alfresco.rest.downloads.*"/>
+            <package name="org.alfresco.rest.favorites.*"/>
+            <package name="org.alfresco.rest.groups.*"/>
+            <package name="org.alfresco.rest.networks.*"/>
+            <package name="org.alfresco.rest.nodes.*"/>
+            <package name="org.alfresco.rest.people.*"/>
+            <package name="org.alfresco.rest.queries.*"/>
+            <package name="org.alfresco.rest.ratings.*"/>
+            <package name="org.alfresco.rest.renditions.*"/>
+            <package name="org.alfresco.rest.sharedLinks.*"/>
+            <package name="org.alfresco.rest.sites.*"/>
+            <package name="org.alfresco.rest.trashcan.*"/>
+            <package name="org.alfresco.rest.workflow.*"/>
+            <package name="org.alfresco.rest.FunctionalCasesTests"/>
+        </packages>
+	</test>
+</suite>

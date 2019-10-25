@@ -14,10 +14,6 @@ cache:
 before_cache:
   - rm -rf $HOME/.m2/repository/org/alfresco
 
-env:
-  global:
-    - DOCKER_COMPOSE_VERSION=1.23.2
-
 branches:
   only:
     - master
@@ -43,7 +39,6 @@ matrix:
       jdk: openjdk11
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
-        - docker login quay.io -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-minimal.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
@@ -52,7 +47,6 @@ matrix:
       jdk: openjdk11
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
-        - docker login quay.io -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-minimal.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
@@ -61,7 +55,6 @@ matrix:
       jdk: openjdk11
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
-        - docker login quay.io -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-jolokia.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
@@ -70,7 +63,6 @@ matrix:
       jdk: openjdk11
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
-        - docker login quay.io -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-minimal.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
@@ -79,7 +71,6 @@ matrix:
       jdk: openjdk11
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
-        - docker login quay.io -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-minimal.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
@@ -107,3 +98,16 @@ matrix:
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-node-restart.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8081/alfresco"
         - ./tests/scripts/node-restart-test.sh
+    - name: "REST API TAS tests with AIS"
+      jdk: openjdk11
+      if: fork = false # AIS docker image requires access to quay.io
+      install:
+        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+        - docker login quay.io -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
+        # AIS cannot be configured via localhost
+        - export HOST_IP=$(ip address show | grep -E "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v 127.0.0.1 | awk '{ print $2 }' | head -n 1 )
+        - export HOST_IP=$(echo ${HOST_IP%/*})
+        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-ais.yml
+        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+      script:
+        - travis_wait 40 mvn install -q -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-tas-restapi-tests-with-ais -Denvironment=default -DrunBugs=false
