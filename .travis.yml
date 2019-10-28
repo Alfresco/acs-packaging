@@ -26,79 +26,79 @@ before_install:
 
 matrix:
   include:
-    - name: "WhiteSource scan"
-      # only on support branches or master and if it is not a PR
-      if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request
-      install:
-        - travis_retry travis_wait 30 mvn -q install -f war/pom.xml
-      script:
-        # Download the latest version of WhiteSource Unified Agent
-        - curl -LJO https://github.com/whitesource/unified-agent-distribution/raw/master/standAlone/wss-unified-agent.jar
-        # Run WhiteSource Unified Agent
-        - java -jar wss-unified-agent.jar -apiKey ${WHITESOURCE_API_KEY} -c .wss-unified-agent.config -d ./war
-    - name: "REST API TAS tests"
-      jdk: openjdk11
-      install:
-        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
-        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-minimal.yml
-        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 40 mvn install -q -f tests/tas-restapi/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
-    - name: "CMIS TAS tests"
-      jdk: openjdk11
-      install:
-        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
-        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-minimal.yml
-        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 40 mvn install -q -f tests/tas-cmis/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
-    - name: "Email TAS tests"
-      jdk: openjdk11
-      install:
-        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
-        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-jolokia.yml
-        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 40 mvn install -q -f tests/tas-email/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
-    - name: "WebDAV TAS tests"
-      jdk: openjdk11
-      install:
-        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
-        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-minimal.yml
-        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 40 mvn install -q -f tests/tas-webdav/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
-    - name: "Integration TAS tests"
-      jdk: openjdk11
-      install:
-        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
-        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-minimal.yml
-        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 40 mvn install -q -f tests/tas-integration/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
-    - name: "Cluster tests"
-      jdk: openjdk11
-      install:
-        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
-        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-cluster.yml
-        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8081/alfresco"
-        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 40 mvn install -q -f tests/tas-cluster/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
-    - name: "Node restart tests"
-      jdk: openjdk11
-      install:
-        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
-      script:
-        # Start Alfresco and test if it is running
-        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-node-restart.yml
-        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8081/alfresco"
-        - ./tests/scripts/node-restart-test.sh
-        # Restart and test again
-        - docker-compose --file ./tests/environment/docker-compose-node-restart.yml stop
-        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-node-restart.yml
-        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8081/alfresco"
-        - ./tests/scripts/node-restart-test.sh
+#    - name: "WhiteSource scan"
+#      # only on support branches or master and if it is not a PR
+#      if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request
+#      install:
+#        - travis_retry travis_wait 30 mvn -q install -f war/pom.xml
+#      script:
+#        # Download the latest version of WhiteSource Unified Agent
+#        - curl -LJO https://github.com/whitesource/unified-agent-distribution/raw/master/standAlone/wss-unified-agent.jar
+#        # Run WhiteSource Unified Agent
+#        - java -jar wss-unified-agent.jar -apiKey ${WHITESOURCE_API_KEY} -c .wss-unified-agent.config -d ./war
+#    - name: "REST API TAS tests"
+#      jdk: openjdk11
+#      install:
+#        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+#        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-minimal.yml
+#        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#      script:
+#        - travis_wait 40 mvn install -q -f tests/tas-restapi/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+#    - name: "CMIS TAS tests"
+#      jdk: openjdk11
+#      install:
+#        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+#        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-minimal.yml
+#        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#      script:
+#        - travis_wait 40 mvn install -q -f tests/tas-cmis/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+#    - name: "Email TAS tests"
+#      jdk: openjdk11
+#      install:
+#        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+#        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-jolokia.yml
+#        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#      script:
+#        - travis_wait 40 mvn install -q -f tests/tas-email/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+#    - name: "WebDAV TAS tests"
+#      jdk: openjdk11
+#      install:
+#        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+#        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-minimal.yml
+#        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#      script:
+#        - travis_wait 40 mvn install -q -f tests/tas-webdav/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+#    - name: "Integration TAS tests"
+#      jdk: openjdk11
+#      install:
+#        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+#        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-minimal.yml
+#        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#      script:
+#        - travis_wait 40 mvn install -q -f tests/tas-integration/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+#    - name: "Cluster tests"
+#      jdk: openjdk11
+#      install:
+#        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+#        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-cluster.yml
+#        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8081/alfresco"
+#        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#      script:
+#        - travis_wait 40 mvn install -q -f tests/tas-cluster/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+#    - name: "Node restart tests"
+#      jdk: openjdk11
+#      install:
+#        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+#      script:
+#        # Start Alfresco and test if it is running
+#        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-node-restart.yml
+#        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8081/alfresco"
+#        - ./tests/scripts/node-restart-test.sh
+#        # Restart and test again
+#        - docker-compose --file ./tests/environment/docker-compose-node-restart.yml stop
+#        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-node-restart.yml
+#        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8081/alfresco"
+#        - ./tests/scripts/node-restart-test.sh
 #    - name: "REST API TAS tests with AIS"
 #      jdk: openjdk11
 #      if: fork = false # AIS docker image requires access to quay.io
@@ -114,7 +114,7 @@ matrix:
 #        - travis_wait 40 mvn install -q -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-tas-restapi-tests-with-ais -Denvironment=default -DrunBugs=false
     # In ACS 6.2 existing LOCAL transformers were renamed to LEGACY
     # The below will not be required and should be removed in ACS < 6.2
-    - name:  "Transformation Validation test: Legacy Transformers only" 
+    - name:  "Transformation Validation tests: Legacy Transformers only" 
       jdk: openjdk11
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
@@ -123,7 +123,7 @@ matrix:
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
         - travis_wait 40 mvn install -q -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-tas-renditions-integration-tests -Denvironment=default -DrunBugs=false -Dalfresco.port=8082
-    - name: "Transformation Validation: Transfrom service only"  
+    - name: "Transformation Validation tests: Transfrom service only"  
       jdk: openjdk11
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
@@ -132,7 +132,7 @@ matrix:
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
         - travis_wait 40 mvn install -q -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-tas-renditions-integration-tests -Denvironment=default -DrunBugs=false -Dalfresco.port=8082
-    - name: "Transformation Validation: Local Transformers only"
+    - name: "Transformation Validation tests: Local Transformers only"
       jdk: openjdk11
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
