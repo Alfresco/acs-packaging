@@ -34,3 +34,7 @@ hs_err_pid*
 
 helm/alfresco-content-services/charts/*
 helm/alfresco-content-services/requirements.lock
+
+# TAS output
+tests/tas-cluster/test-output/*
+
