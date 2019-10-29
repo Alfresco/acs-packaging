@@ -15,7 +15,7 @@ public class ClusterProperties extends RestProperties
     @Value("${alfresco.server2:localhost}")
     private String server2Host;
 
-    @Value("${alfresco.port1:8081}")
+    @Value("${alfresco.port1:8083}")
     private int port1;
 
     @Value("${alfresco.port2:8082}")
