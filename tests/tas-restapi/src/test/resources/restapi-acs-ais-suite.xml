@@ -11,8 +11,9 @@
 		<groups>
 			<run>
                 <include name="sanity" />
-                <include name="regression" />
+                <exclude name="regression" />
                 <exclude name="demo"/>
+                <exclude name="core"/>
                 <exclude name="unit"/>
                 <exclude name="require-share"/>
                 <exclude name="require-transformation"/>
