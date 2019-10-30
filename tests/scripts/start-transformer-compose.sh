@@ -15,7 +15,6 @@ docker-compose --version
 
 # NOTE
 # In ACS 6.2 existing LOCAL transformers were renamed to LEGACY
-# For < ACS 6.2 please set LOCAL_TRANSFORM_SERVICE_ENABLED=true
 
 CUSTOM_DETECTED=false 
 for arg in "$@"
