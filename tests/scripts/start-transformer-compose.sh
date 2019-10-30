@@ -1,7 +1,6 @@
 #!/bin/bash
-
-START_COMPOSE_PATH=$1
-DOCKER_COMPOSE_PATH=$2
+export START_COMPOSE_PATH=$1
+export DOCKER_COMPOSE_PATH=$2
 
 if [[ -z "$DOCKER_COMPOSE_PATH" ]] || [[ -z "$START_COMPOSE_PATH" ]];
 then
