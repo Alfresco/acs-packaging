@@ -43,6 +43,7 @@ services:
                 -Dimg.url=http://imagemagick:8090/
                 -Dtika.url=http://tika:8090/
                 -Dtransform.misc.url=http://transform-misc:8090/
+                -Dimap.server.port=1143
                 "
         ports:
             - 8082:8080
@@ -51,23 +52,23 @@ services:
             - "21:1221"
             - "30000-30099:30000-30099"
 
-    postgres:
-        image: library/postgres:${POSTGRES_TAG}
+    transform-router:
+        image: quay.io/alfresco/alfresco-transform-router:${TRANSFORM_ROUTER_TAG}
         environment:
-            - POSTGRES_PASSWORD=alfresco
-            - POSTGRES_USER=alfresco
-            - POSTGRES_DB=alfresco
+            ACTIVEMQ_URL: "nio://activemq:61616"
+            ACTIVEMQ_USER: "admin"
+            ACTIVEMQ_PASSWORD: "admin"
+            IMAGEMAGICK_URL: "http://imagemagick:8090"
+            PDF_RENDERER_URL : "http://alfresco-pdf-renderer:8090"
+            LIBREOFFICE_URL : "http://libreoffice:8090"
+            TIKA_URL : "http://tika:8090"
+            MISC_URL : "http://transform-misc:8090"
+            FILE_STORE_URL: "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file"
         ports:
-            - 5432:5432
+            - 8095:8095
+        links:
+            - activemq
 
-    activemq:
-        image: alfresco/alfresco-activemq:${ACTIVEMQ_TAG}
-        ports:
-            - 8161:8161 # Web Console
-            - 5672:5672 # AMQP
-            - 61616:61616 # OpenWire
-            - 61613:61613 # STOMP
-    
     alfresco-pdf-renderer:
         image: alfresco/alfresco-pdf-renderer:${TRANSFORMERS_TAG}
         environment:
@@ -111,7 +112,7 @@ services:
             ACTIVEMQ_PASSWORD: "admin"
         ports:
             - 8093:8090
-    
+
     transform-misc:
         image: alfresco/alfresco-transform-misc:${TRANSFORMERS_TAG}
         environment:
@@ -122,3 +123,35 @@ services:
             FILE_STORE_URL: "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file"
         ports:
             - 8094:8090
+
+    postgres:
+        image: library/postgres:${POSTGRES_TAG}
+        environment:
+            - POSTGRES_PASSWORD=alfresco
+            - POSTGRES_USER=alfresco
+            - POSTGRES_DB=alfresco
+        ports:
+            - 5432:5432
+        
+    activemq:
+        image: alfresco/alfresco-activemq:${ACTIVEMQ_TAG}
+        ports:
+            - 8161:8161 # Web Console
+            - 5672:5672 # AMQP
+            - 61616:61616 # OpenWire
+            - 61613:61613 # STOMP
+
+    shared-file-store:
+        image: alfresco/alfresco-shared-file-store:${SFS_TAG}
+        environment:
+            JAVA_OPTS: " -Xms256m -Xmx256m"
+        ports:
+            - 8099:8099
+        volumes:
+            - shared-file-store-volume:/tmp/Alfresco/sfs
+
+volumes:
+    shared-file-store-volume:
+        driver_opts:
+            type: tmpfs
+            device: tmpfs
