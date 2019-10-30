@@ -31,13 +31,13 @@ do
       fi
       case $arg in
         --legacy )
-          export LEGACY_TRANSFORM_SERVICE_ENABLED=TRUE
+          export LEGACY_TRANSFORM_SERVICE_ENABLED=true
           echo "LEGACY_TRANSFORM_SERVICE_ENABLED=${LEGACY_TRANSFORM_SERVICE_ENABLED}" ;;
         --local )
-          export LOCAL_TRANSFORM_SERVICE_ENABLED=TRUE
+          export LOCAL_TRANSFORM_SERVICE_ENABLED=true
           echo "LOCAL_TRANSFORM_SERVICE_ENABLED=${LOCAL_TRANSFORM_SERVICE_ENABLED}" ;;
         --transformservice )
-          export TRANSFORM_SERVICE_ENABLED=TRUE 
+          export TRANSFORM_SERVICE_ENABLED=true 
           echo "TRANSFORM_SERVICE_ENABLED=${TRANSFORM_SERVICE_ENABLED}";;
       esac
     fi
