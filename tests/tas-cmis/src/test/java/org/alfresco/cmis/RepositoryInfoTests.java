@@ -89,7 +89,7 @@ public class RepositoryInfoTests extends CmisTest
         cmisApi.authenticateUser(invalidUser).getRepositoryInfo();
     }
     
-    @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS}, expectedExceptions = {NoSuchMethodError.class}, expectedExceptionsMessageRegExp = "^org.apache.chemistry.opencmis.commons.exceptions.CmisConnectionException.*")
+    @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS}, expectedExceptions = {NoSuchMethodError.class}, expectedExceptionsMessageRegExp = ".*org.apache.chemistry.opencmis.commons.exceptions.CmisConnectionException.*")
     @TestRail(section = { "cmis-api" }, executionType = ExecutionType.REGRESSION, description = "Verify that invalid user cannot get repositories")
     public void userCannotGetRepositoriesUsingWrongBrowserUrl() throws Exception
     {
