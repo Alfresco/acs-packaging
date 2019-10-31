@@ -23,7 +23,6 @@ services:
                 -Ddb.password=alfresco
                 -Ddb.url=jdbc:postgresql://postgres:5432/alfresco
                 -Dalfresco.restApi.basicAuthScheme=true
-                -Dimap.server.enabled=true
                 -Dftp.enabled=true
                 -Dftp.dataPortFrom=30000
                 -Dftp.dataPortTo=30099
