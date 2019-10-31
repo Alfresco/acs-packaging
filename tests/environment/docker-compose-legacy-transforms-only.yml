@@ -24,23 +24,22 @@ services:
                 -Ddb.url=jdbc:postgresql://postgres:5432/alfresco
                 -Dalfresco.restApi.basicAuthScheme=true
                 -Dimap.server.enabled=true
+                -Dimap.server.port=1143
                 -Dftp.enabled=true
                 -Dftp.dataPortFrom=30000
                 -Dftp.dataPortTo=30099
                 -Dmessaging.broker.url=\"failover:(tcp://activemq:61616)?timeout=3000&jms.useCompression=true\"
                 
                 -Dtransform.service.enabled=false
+
                 -Dlocal.transform.service.enabled=false
+                
                 -Dlegacy.transform.service.enabled=true
                 -Dalfresco-pdf-renderer.url=http://alfresco-pdf-renderer:8090/
                 -Djodconverter.url=http://libreoffice:8090/
                 -Dimg.url=http://imagemagick:8090/
                 -Dtika.url=http://tika:8090/
                 -Dtransform.misc.url=http://transform-misc:8090/
-                -Dimap.server.port=1143
-                -Dftp.port=1221
-                -Dcors.enabled=true
-                -Dcors.allowed.origins=http://localhost:4200
                 "
         ports:
             - 8082:8080

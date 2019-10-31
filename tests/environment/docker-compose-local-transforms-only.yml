@@ -27,13 +27,16 @@ services:
                 -Dftp.dataPortFrom=30000
                 -Dftp.dataPortTo=30099
                 -Dmessaging.broker.url=\"failover:(tcp://activemq:61616)?timeout=3000&jms.useCompression=true\"
+
                 -Dtransform.service.enabled=false
+
                 -Dlocal.transform.service.enabled=true
                 -DlocalTransform.pdfrenderer.url=http://alfresco-pdf-renderer:8090/
                 -DlocalTransform.imagemagick.url=http://imagemagick:8090/
                 -DlocalTransform.libreoffice.url=http://libreoffice:8090/
                 -DlocalTransform.tika.url=http://tika:8090/
                 -DlocalTransform.misc.url=http://transform-misc:8090/
+                
                 -Dlegacy.transform.service.enabled=false
                 "
         ports:
