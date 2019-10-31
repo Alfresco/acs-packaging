@@ -30,13 +30,10 @@ services:
                 -Dmessaging.broker.url=\"failover:(tcp://activemq:61616)?timeout=3000&jms.useCompression=true\"
                 -Dtransform.service.enabled=true
                 -Dtransform.service.url=http://transform-router:8095
+                -Dsfs.url=http://shared-file-store:8099/
                 -Dlocal.transform.service.enabled=false
                 -Dlegacy.transform.service.enabled=false
-
                 -Dimap.server.port=1143
-                -Dftp.port=1221
-                -Dcors.enabled=true
-                -Dcors.allowed.origins=http://localhost:4200
                 "
         ports:
             - 8082:8080
@@ -133,3 +130,18 @@ services:
             FILE_STORE_URL: "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file"
         ports:
             - 8094:8090
+
+    shared-file-store:
+        image: alfresco/alfresco-shared-file-store:${SFS_TAG}
+        environment:
+            JAVA_OPTS: " -Xms256m -Xmx256m"
+        ports:
+            - 8099:8099
+        volumes:
+            - shared-file-store-volume:/tmp/Alfresco/sfs
+
+volumes:
+    shared-file-store-volume:
+        driver_opts:
+            type: tmpfs
+            device: tmpfs
