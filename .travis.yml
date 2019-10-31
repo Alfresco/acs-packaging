@@ -110,7 +110,7 @@ matrix:
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-ais.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
-        - travis_wait 40 mvn install -q -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-tas-restapi-tests-with-ais -Denvironment=default -DrunBugs=false
+        - travis_wait 40 mvn install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-tas-restapi-tests-with-ais -Denvironment=ais-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
     # In ACS 6.2 existing LOCAL transformers were renamed to LEGACY
     # The below will not be required and should be removed in ACS < 6.2
     - name:  "Transformation Validation tests: Legacy Transformers only" 
