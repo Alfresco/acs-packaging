@@ -24,8 +24,8 @@
     </developers>
 
     <properties>
-        <suiteXmlFile>${project.basedir}/src/test/resources/restapi-acs-community-suite.xml</suiteXmlFile>
-        <renditionsIntegrationSuite>${project.basedir}/src/test/resources/shared-resources/rendition-integration-suite.xml</renditionsIntegrationSuite>
+        <suiteXmlFile>${project.basedir}/src/test/resources/restapi-acs-suite.xml</suiteXmlFile>
+        <renditionsIntegrationSuite>${project.basedir}/src/test/resources/rendition-integration-suite.xml</renditionsIntegrationSuite>
         <test.exclude />
         <test.include />
     </properties>

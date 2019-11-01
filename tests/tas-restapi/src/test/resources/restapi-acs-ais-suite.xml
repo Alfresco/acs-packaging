@@ -12,12 +12,8 @@
 			<run>
                 <include name="sanity" />
                 <exclude name="regression" />
-                <exclude name="demo"/>
                 <exclude name="core"/>
-                <exclude name="unit"/>
-                <exclude name="require-share"/>
                 <exclude name="require-transformation"/>
-                <exclude name="require-jmx"/>
                 <exclude name="require-solr" />
                 <exclude name="networks"/>
                 <exclude name="all_amps"/>

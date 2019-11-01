@@ -2,24 +2,22 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="EMAIL API" preserve-order="true">
 	<listeners>
-		<listener class-name="org.alfresco.utility.report.HtmlReportListener"></listener>
-		<listener class-name="org.alfresco.utility.testrail.TestRailExecutorListener"></listener>
-		<listener class-name="org.alfresco.utility.testng.OSTestMethodSelector"></listener>
+        <listener class-name="org.alfresco.utility.report.HtmlReportListener"/>
+        <listener class-name="org.alfresco.utility.testrail.TestRailExecutorListener"/>
+        <listener class-name="org.alfresco.utility.testng.OSTestMethodSelector"/>
 	</listeners>
 
 	<test name="Sanity">
 		<groups>
 			<run>
 				<include name="sanity" />
-				<exclude name="demo"></exclude>
-				<exclude name="unit"></exclude>
 				<!-- networks is related to tenant tests -->
-				<exclude name="networks"></exclude>
+                <exclude name="networks"/>
 			</run>
 		</groups>
 		<packages>
-			<package name="org.alfresco.email.imap.*"></package>
-			<package name="org.alfresco.email.smtp.*"></package>
+            <package name="org.alfresco.email.imap.*"/>
+            <package name="org.alfresco.email.smtp.*"/>
 		</packages>
 	</test>
 
@@ -27,15 +25,13 @@
 		<groups>
 			<run>
 				<include name="core" />
-				<exclude name="demo"></exclude>
-				<exclude name="unit"></exclude>
 				<!-- networks is related to tenant tests -->
-				<exclude name="networks"></exclude>
+                <exclude name="networks"/>
 			</run>
 		</groups>
 		<packages>
-			<package name="org.alfresco.email.imap.*"></package>
-			<package name="org.alfresco.email.smtp.*"></package>
+            <package name="org.alfresco.email.imap.*"/>
+            <package name="org.alfresco.email.smtp.*"/>
 		</packages>
 	</test>
 
@@ -43,15 +39,13 @@
 		<groups>
 			<run>
 				<include name="full" />
-				<exclude name="demo"></exclude>
-				<exclude name="unit"></exclude>
 				<!-- networks is related to tenant tests -->
-				<exclude name="networks"></exclude>
+                <exclude name="networks"/>
 			</run>
 		</groups>
 		<packages>
-				<package name="org.alfresco.email.imap.*"></package>
-				<package name="org.alfresco.email.smtp.*"></package>
+            <package name="org.alfresco.email.imap.*"/>
+            <package name="org.alfresco.email.smtp.*"/>
 		</packages>
 	</test>
 	
@@ -63,10 +57,8 @@
 			</run>
 		</groups>
 		<packages>
-				<package name="org.alfresco.email.imap.*"></package>
-				<package name="org.alfresco.email.smtp.*"></package>
+            <package name="org.alfresco.email.imap.*"/>
+            <package name="org.alfresco.email.smtp.*"/>
 		</packages>
 	</test>
-	
-
-</suite> <!-- Suite -->
+</suite>

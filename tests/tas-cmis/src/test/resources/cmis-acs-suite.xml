@@ -8,12 +8,11 @@
         <listener class-name="org.alfresco.utility.testng.OSTestMethodSelector"/>
 	</listeners>
 
-	<test name="Sanity tests with AIS">
+	<test name="CMIS Tests">
 		<groups>
 			<run>
                 <include name="sanity"/>
                 <include name="regression"/>
-                <include name="cmis"/>
 			</run>
 		</groups>
 		<packages>
