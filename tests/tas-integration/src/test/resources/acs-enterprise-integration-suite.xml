@@ -7,49 +7,7 @@
         <listener class-name="org.alfresco.utility.testng.OSTestMethodSelector"/>
     </listeners>
 
-    <test name="ACS Enterprise Integration Core Tests">
-        <groups>
-            <run>
-                <include name="core"/>
-                <exclude name="require-jmx"/>
-                <exclude name="networks"/>
-                <exclude name="aos"/>
-                <exclude name="sanity"/>
-                <exclude name="full"/>
-            </run>
-        </groups>
-        <packages>
-            <package name="org.alfresco.tas.integration.*"/>
-        </packages>
-    </test>
-
-    <test name="ACS Enterprise Integration Full Tests">
-        <groups>
-            <run>
-                <include name="full"/>
-                <exclude name="require-jmx"/>
-                <exclude name="networks"/>
-                <exclude name="aos"/>
-                <exclude name="core"/>
-                <exclude name="sanity"/>
-            </run>
-        </groups>
-        <packages>
-            <package name="org.alfresco.tas.integration.*"/>
-        </packages>
-    </test>
-    
-    <test name="ACS Enterprise Integration Sanity Tests">
-        <groups>
-            <run>
-                <include name="sanity"/>
-                <exclude name="require-jmx"/>
-                <exclude name="networks"/>
-                <exclude name="aos"/>
-                <exclude name="core"/>
-                <exclude name="full"/>
-            </run>
-        </groups>
+    <test name="ACS Integration Tests">
         <packages>
             <package name="org.alfresco.tas.integration.*"/>
         </packages>
