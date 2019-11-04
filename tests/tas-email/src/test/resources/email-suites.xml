@@ -7,55 +7,7 @@
         <listener class-name="org.alfresco.utility.testng.OSTestMethodSelector"/>
 	</listeners>
 
-	<test name="Sanity">
-		<groups>
-			<run>
-				<include name="sanity" />
-				<!-- networks is related to tenant tests -->
-                <exclude name="networks"/>
-			</run>
-		</groups>
-		<packages>
-            <package name="org.alfresco.email.imap.*"/>
-            <package name="org.alfresco.email.smtp.*"/>
-		</packages>
-	</test>
-
-	<test name="Core">
-		<groups>
-			<run>
-				<include name="core" />
-				<!-- networks is related to tenant tests -->
-                <exclude name="networks"/>
-			</run>
-		</groups>
-		<packages>
-            <package name="org.alfresco.email.imap.*"/>
-            <package name="org.alfresco.email.smtp.*"/>
-		</packages>
-	</test>
-
-	<test name="Full">
-		<groups>
-			<run>
-				<include name="full" />
-				<!-- networks is related to tenant tests -->
-                <exclude name="networks"/>
-			</run>
-		</groups>
-		<packages>
-            <package name="org.alfresco.email.imap.*"/>
-            <package name="org.alfresco.email.smtp.*"/>
-		</packages>
-	</test>
-	
-	<test name="Tenant">
-		<groups>
-			<run>
-				<!-- networks is related to tenant tests -->
-				<include name="networks" />
-			</run>
-		</groups>
+	<test name="Email tests">
 		<packages>
             <package name="org.alfresco.email.imap.*"/>
             <package name="org.alfresco.email.smtp.*"/>

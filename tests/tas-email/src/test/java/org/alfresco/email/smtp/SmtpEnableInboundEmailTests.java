@@ -20,6 +20,10 @@ import org.jolokia.client.exception.J4pRemoteException;
 import org.testng.annotations.Test;
 
 import com.sun.mail.smtp.SMTPSendFailedException;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 /**
  * 
  * @author Cristina Axinte
@@ -47,11 +51,29 @@ public class SmtpEnableInboundEmailTests extends SMTPTest
     
     @TestRail(section = { TestGroup.PROTOCOLS, TestGroup.SMTP }, executionType = ExecutionType.REGRESSION,
             description = "Verify inbound email port cannot be set to empty port")
-    @Test(groups = { TestGroup.PROTOCOLS, TestGroup.SMTP, TestGroup.REQUIRE_JMX, TestGroup.CORE }, expectedExceptions = {J4pRemoteException.class, RuntimeMBeanException.class},
-                                                                            expectedExceptionsMessageRegExp = ".*Failed to convert property value of type 'java.lang.String' to required type 'int' for property 'port'.*")
+    @Test(groups = { TestGroup.PROTOCOLS, TestGroup.SMTP, TestGroup.REQUIRE_JMX, TestGroup.CORE })
     public void inboundEmailPortCannotBeEmptyString() throws Exception
     {
-        smtpProtocol.withJMX().updateSmtpServerPort("");
+        // make sure that there is a valid value persisted already
+        // if nothing was persisted, then empty value will not overwrite the same empty value.
+        smtpProtocol.withJMX().updateSmtpServerPort(emailProperties.getSmtpPort());
+        try
+        {
+            smtpProtocol.withJMX().updateSmtpServerPort("");
+            fail("No exceptions were thrown, but J4pRemoteException is expected.");
+        }
+        catch (J4pRemoteException e)
+        {
+            Assert.assertTrue(e.getMessage().contains("Failed to convert property value of type 'java.lang.String' to required type 'int' for property 'port'"));
+        }
+        catch (UnmarshalException e)
+        {
+            Assert.assertTrue(e.getMessage().contains("no security manager: RMI class loader disabled"));
+        }
+        catch (Exception e)
+        {
+            fail("The exception thrown is wrong or has a wrong message: " + e.getMessage());
+        }
     }
     
     @TestRail(section = { TestGroup.PROTOCOLS, TestGroup.SMTP }, executionType = ExecutionType.REGRESSION,
