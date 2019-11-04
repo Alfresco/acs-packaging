@@ -9,12 +9,6 @@
 	</listeners>
 
 	<test name="CMIS Tests">
-		<groups>
-			<run>
-                <include name="sanity"/>
-                <include name="regression"/>
-			</run>
-		</groups>
 		<packages>
             <package name="org.alfresco.cmis"/>
 		</packages>
