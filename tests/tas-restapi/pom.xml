@@ -25,59 +25,28 @@
 
     <properties>
         <suiteXmlFile>${project.basedir}/src/test/resources/restapi-acs-suite.xml</suiteXmlFile>
-        <renditionsIntegrationSuite>${project.basedir}/src/test/resources/rendition-integration-suite.xml</renditionsIntegrationSuite>
         <test.exclude />
         <test.include />
     </properties>
 
     <profiles>
         <profile>
-            <id>run-tas-restapi-tests</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <suiteXmlFiles>
-                                <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
-                            </suiteXmlFiles>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
             <id>run-tas-restapi-tests-with-ais</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <suiteXmlFiles>
-                                <suiteXmlFile>${project.basedir}/src/test/resources/restapi-acs-ais-suite.xml</suiteXmlFile>
-                            </suiteXmlFiles>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
+            <properties>
+                <suiteXmlFile>${project.basedir}/src/test/resources/restapi-acs-ais-suite.xml</suiteXmlFile>
+            </properties>
         </profile>
         <profile>
             <id>run-tas-renditions-integration-tests</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <suiteXmlFiles>
-                                <suiteXmlFile>${renditionsIntegrationSuite}</suiteXmlFile>
-                            </suiteXmlFiles>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
+            <properties>
+                <suiteXmlFile>${project.basedir}/src/test/resources/rendition-integration-suite.xml</suiteXmlFile>
+            </properties>
+        </profile>
+        <profile>
+            <id>run-tas-renditions-ats-tests</id>
+            <properties>
+                <suiteXmlFile>${project.basedir}/src/test/resources/ats-integration-suite.xml</suiteXmlFile>
+            </properties>
         </profile>
     </profiles>
 

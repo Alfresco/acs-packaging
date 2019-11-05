@@ -138,7 +138,7 @@ matrix:
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-transform-service-only.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
-        - travis_wait 40 mvn install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-tas-renditions-integration-tests -Denvironment=default -DrunBugs=false -Dalfresco.port=8082
+        - travis_wait 40 mvn install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-tas-renditions-ats-tests -Denvironment=default -DrunBugs=false -Dalfresco.port=8082
 
     - name: "CMIS TAS tests with AIS"
       jdk: openjdk11
