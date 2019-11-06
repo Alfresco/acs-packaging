@@ -15,7 +15,6 @@
                 <exclude name="core"/>
                 <exclude name="require-transformation"/>
                 <exclude name="require-solr" />
-                <exclude name="networks"/>
                 <exclude name="all_amps"/>
                 <exclude name="renditions"/>
                 <exclude name="renditions-regression"/>
@@ -33,7 +32,6 @@
             <package name="org.alfresco.rest.downloads.*"/>
             <package name="org.alfresco.rest.favorites.*"/>
             <package name="org.alfresco.rest.groups.*"/>
-            <package name="org.alfresco.rest.networks.*"/>
             <package name="org.alfresco.rest.nodes.*"/>
             <package name="org.alfresco.rest.people.*"/>
             <package name="org.alfresco.rest.queries.*"/>
