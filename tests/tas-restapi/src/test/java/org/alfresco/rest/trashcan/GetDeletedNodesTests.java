@@ -197,7 +197,7 @@ public class GetDeletedNodesTests extends RestTest
         dataContent.usingUser(adminUserModel).usingResource(file3).deleteContent();
 
         // GET /deleted-nodes/{nodeId}/renditions
-        Utility.sleep(1000, 40000, () ->
+        Utility.sleep(1000, 60000, () ->
         {
             nodeRenditionInfoCollection = restClient.authenticateUser(adminUserModel).withCoreAPI().usingTrashcan().getDeletedNodeRenditions(file3);
             restClient.assertStatusCodeIs(HttpStatus.OK);
@@ -235,7 +235,7 @@ public class GetDeletedNodesTests extends RestTest
         dataContent.usingUser(adminUserModel).usingResource(file4).deleteContent();
 
         // GET /deleted-nodes/{nodeId}/renditions/{id}/content and verify range request header
-        Utility.sleep(1000, 40000, () ->
+        Utility.sleep(1000, 60000, () ->
         {
             restClient.configureRequestSpec().addHeader("content-range", "bytes=1-10");
             restClient.authenticateUser(adminUserModel).withCoreAPI().usingTrashcan().getDeletedNodeRenditionContent(file4, "pdf");
