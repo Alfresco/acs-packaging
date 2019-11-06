@@ -120,6 +120,8 @@ matrix:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-legacy-transforms-only.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+        # limit maven footprint to be able to run a bigger docker-compose
+        - export MAVEN_OPTS="-Xmx256m"
       script:
         - travis_wait 40 mvn install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-tas-renditions-integration-tests -Denvironment=default -DrunBugs=false
     - name: "Transformation Rendition Validation tests: Local Transformers only"  
@@ -128,6 +130,8 @@ matrix:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-local-transforms-only.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+        # limit maven footprint to be able to run a bigger docker-compose
+        - export MAVEN_OPTS="-Xmx256m"
       script:
         - travis_wait 40 mvn install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-tas-renditions-integration-tests -Denvironment=default -DrunBugs=false
     - name: "Transformation Rendition Validation tests: Transform service only"
@@ -137,6 +141,8 @@ matrix:
         - docker login quay.io -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}        
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-transform-service-only.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+        # limit maven footprint to be able to run a bigger docker-compose
+        - export MAVEN_OPTS="-Xmx256m"
       script:
         - travis_wait 40 mvn install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-tas-renditions-ats-tests -Denvironment=default -DrunBugs=false
 
