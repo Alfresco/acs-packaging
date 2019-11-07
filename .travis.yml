@@ -124,6 +124,8 @@ matrix:
         - export MAVEN_OPTS="-Xmx256m"
       script:
         - travis_wait 40 mvn install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-tas-renditions-integration-tests -Denvironment=default -DrunBugs=false
+      after_failure:
+        - docker stats --no-stream
     - name: "Transformation Rendition Validation tests: Local Transformers only"  
       jdk: openjdk11
       install:
@@ -134,6 +136,8 @@ matrix:
         - export MAVEN_OPTS="-Xmx256m"
       script:
         - travis_wait 40 mvn install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-tas-renditions-integration-tests -Denvironment=default -DrunBugs=false
+      after_failure:
+        - docker stats --no-stream
     - name: "Transformation Rendition Validation tests: Transform service only"
       jdk: openjdk11
       install:
@@ -145,7 +149,8 @@ matrix:
         - export MAVEN_OPTS="-Xmx256m"
       script:
         - travis_wait 40 mvn install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-tas-renditions-ats-tests -Denvironment=default -DrunBugs=false
-
+      after_failure:
+        - docker stats --no-stream
     - name: "CMIS TAS tests with AIS"
       jdk: openjdk11
       if: fork = false # AIS docker image requires access to quay.io
