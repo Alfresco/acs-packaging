@@ -110,6 +110,9 @@
         <!-- Alfresco Alfresco Intelligence Services (AIS) -->
         <alfresco.ais.version>1.1.0</alfresco.ais.version>
 
+        <!-- Alfresco Governance Services (AGS) -->
+        <alfresco.ags.version>3.2.0</alfresco.ags.version>
+
         <installer.version.name>${project.version}</installer.version.name>
         <alfresco.package.name>alfresco</alfresco.package.name>
         <alfresco.distribution.name>${alfresco.package.name}-distribution</alfresco.distribution.name>
