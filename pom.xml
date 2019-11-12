@@ -69,13 +69,13 @@
         <alfresco.googledocs.version>3.1.0</alfresco.googledocs.version>
 
         <!-- Alfresco S3 Connector integration version -->
-        <alfresco.s3connector.version>3.0</alfresco.s3connector.version>
+        <alfresco.s3connector.version>3.0-RC4</alfresco.s3connector.version>
 
         <!-- Alfresco Glacier Connector Repo version -->
         <alfresco.glacier-connector.version>2.0.0-RC1</alfresco.glacier-connector.version>
 
         <!-- Alfresco Content Connector for Azure version -->
-        <alfresco.azure-connector.version>1.0</alfresco.azure-connector.version>
+        <alfresco.azure-connector.version>1.0-RC1</alfresco.azure-connector.version>
 
         <!-- Alfresco Centera Connector version -->
         <alfresco.centera-connector.version>2.2.1</alfresco.centera-connector.version>
