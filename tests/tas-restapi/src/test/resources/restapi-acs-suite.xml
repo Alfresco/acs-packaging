@@ -10,7 +10,6 @@
 	<test name="ACS Tests without transformations">
 		<groups>
 			<run>
-                <exclude name="renditions"/>
                 <exclude name="all_amps"/>
 			</run>
 		</groups>
