@@ -46,6 +46,9 @@ services:
                 -Dimg.url=http://imagemagick:8090/
                 -Dtika.url=http://tika:8090/
                 -Dtransform.misc.url=http://transform-misc:8090/
+
+                -Dcors.enabled=true
+                -Dcors.allowed.origins=http://localhost:4200,http://localhost:8080
                 "
         ports:
             - 8082:8080
