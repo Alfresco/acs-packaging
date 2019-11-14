@@ -16,28 +16,7 @@
 
     <properties>
         <suiteXmlFile>${project.basedir}/src/test/resources/restapi-cluster-suite.xml</suiteXmlFile>
-        <test.exclude />
-        <test.include />
     </properties>
-
-    <profiles>
-        <profile>
-            <id>run-tas-cluster-tests</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <suiteXmlFiles>
-                                <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
-                            </suiteXmlFiles>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
     <dependencies>
         <dependency>
@@ -71,12 +50,6 @@
                     <suiteXmlFiles>
                         <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
                     </suiteXmlFiles>
-                    <excludedGroups>
-                        ${test.exclude}
-                    </excludedGroups>
-                    <groups>
-                        ${test.include}
-                    </groups>
                     <argLine>
                         --illegal-access=warn
                     </argLine>
