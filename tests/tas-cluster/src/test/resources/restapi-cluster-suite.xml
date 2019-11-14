@@ -8,11 +8,6 @@
 	</listeners>
 
 	<test name="ACS cluster tests">
-		<groups>
-			<run>
-				<include name="cluster" />
-			</run>
-		</groups>
 		<packages>
             <package name="org.alfresco.rest.cluster.*"/>
 		</packages>
