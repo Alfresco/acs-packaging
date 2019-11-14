@@ -7,16 +7,7 @@
         <listener class-name="org.alfresco.utility.testng.OSTestMethodSelector"/>
 	</listeners>
 
-	<test name="Sanity">
-		<groups>
-			<run>
-				<include name="sanity" />
-				<include name="core" />
-				<include name="full" />
-				<!-- networks is related to tenant tests -->
-                <exclude name="networks"/>
-			</run>
-		</groups>
+	<test name="WebDAV tests">
 		<packages>
             <package name="org.alfresco.webdav.*"/>
 		</packages>
