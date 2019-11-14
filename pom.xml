@@ -72,7 +72,7 @@
         <alfresco.s3connector.version>3.0.0</alfresco.s3connector.version>
 
         <!-- Alfresco Glacier Connector Repo version -->
-        <alfresco.glacier-connector.version>2.0.0-RC1</alfresco.glacier-connector.version>
+        <alfresco.glacier-connector.version>2.0.0</alfresco.glacier-connector.version>
 
         <!-- Alfresco Content Connector for Azure version -->
         <alfresco.azure-connector.version>1.0</alfresco.azure-connector.version>
