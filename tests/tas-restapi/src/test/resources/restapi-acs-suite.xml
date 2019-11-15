@@ -14,26 +14,7 @@
 			</run>
 		</groups>
 		<packages>
-            <package name="org.alfresco.rest.actions.*"/>
-            <package name="org.alfresco.rest.aos.*"/>
-            <package name="org.alfresco.rest.audit.*"/>
-            <package name="org.alfresco.rest.auth.*"/>
-            <package name="org.alfresco.rest.cmis.*"/>
-            <package name="org.alfresco.rest.comments.*"/>
-            <package name="org.alfresco.rest.cors.*"/>
-            <package name="org.alfresco.rest.favorites.*"/>
-            <package name="org.alfresco.rest.nodes.*"/>
-            <package name="org.alfresco.rest.people.*"/>
-            <package name="org.alfresco.rest.ratings.*"/>
-            <package name="org.alfresco.rest.sharedLinks.*"/>
-            <package name="org.alfresco.rest.sites.*"/>
-            <package name="org.alfresco.rest.trashcan.*"/>
-            <package name="org.alfresco.rest.queries.*"/>
-            <package name="org.alfresco.rest.discovery.*"/>
-            <package name="org.alfresco.rest.downloads.*"/>
-            <package name="org.alfresco.rest.renditions.*"/>
-            <package name="org.alfresco.rest.workflow.*"/>
-            <package name="org.alfresco.rest.FunctionalCasesTests"/>
+            <package name="org.alfresco.rest.*"/>
 		</packages>
 	</test>
 </suite>
