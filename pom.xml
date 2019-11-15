@@ -35,9 +35,9 @@
         <image.tag>latest</image.tag>
 
         <dependency.alfresco-enterprise-remote-api.version>8.9</dependency.alfresco-enterprise-remote-api.version>
-        <dependency.alfresco-enterprise-repository.version>8.5</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-remote-api.version>8.24</dependency.alfresco-remote-api.version>
-        <dependency.alfresco-repository.version>8.19</dependency.alfresco-repository.version>
+        <dependency.alfresco-enterprise-repository.version>8.10</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-remote-api.version>8.26</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-repository.version>8.20</dependency.alfresco-repository.version>
         <dependency.alfresco-data-model.version>8.53</dependency.alfresco-data-model.version>
         <dependency.alfresco-core.version>7.22</dependency.alfresco-core.version>
 
@@ -51,7 +51,7 @@
         <dependency.alfresco-trashcan-cleaner.version>2.3</dependency.alfresco-trashcan-cleaner.version>
         <dependency.alfresco-jlan.version>7.1</dependency.alfresco-jlan.version>
         <dependency.alfresco-server-root.version>6.0.1</dependency.alfresco-server-root.version>
-        <dependency.alfresco-api-explorer.version>6.1.0</dependency.alfresco-api-explorer.version>
+        <dependency.alfresco-api-explorer.version>6.2.0</dependency.alfresco-api-explorer.version>
         <dependency.gytheio.version>0.11.2</dependency.gytheio.version>
         <dependency.alfresco-log-sanitizer.version>0.2</dependency.alfresco-log-sanitizer.version>
 
@@ -62,20 +62,20 @@
         <dependency.cxf.version>3.3.3</dependency.cxf.version>
 
         <!-- Alfresco Share version -->
-        <alfresco.share.version>6.2.0-RC4</alfresco.share.version>
-        <alfresco.alfresco-share-services.version>6.2.0-RC4</alfresco.alfresco-share-services.version>
+        <alfresco.share.version>6.2.0</alfresco.share.version>
+        <alfresco.alfresco-share-services.version>6.2.0</alfresco.alfresco-share-services.version>
 
         <!-- Alfresco GoogleDocs integration version -->
         <alfresco.googledocs.version>3.1.0</alfresco.googledocs.version>
 
         <!-- Alfresco S3 Connector integration version -->
-        <alfresco.s3connector.version>3.0-RC4</alfresco.s3connector.version>
+        <alfresco.s3connector.version>3.0.0</alfresco.s3connector.version>
 
         <!-- Alfresco Glacier Connector Repo version -->
-        <alfresco.glacier-connector.version>2.0.0-RC1</alfresco.glacier-connector.version>
+        <alfresco.glacier-connector.version>2.0.0</alfresco.glacier-connector.version>
 
         <!-- Alfresco Content Connector for Azure version -->
-        <alfresco.azure-connector.version>1.0-RC1</alfresco.azure-connector.version>
+        <alfresco.azure-connector.version>1.0</alfresco.azure-connector.version>
 
         <!-- Alfresco Centera Connector version -->
         <alfresco.centera-connector.version>2.2.1</alfresco.centera-connector.version>
@@ -90,13 +90,13 @@
         <alfresco.saml.version>1.2.0</alfresco.saml.version>
 
         <!-- Alfresco Outlook Integration -->
-        <alfresco.outlook.version>2.5.1</alfresco.outlook.version>
+        <alfresco.outlook.version>2.6.1</alfresco.outlook.version>
 
         <!-- Document Transformation Engine -->
         <alfresco.transformation-engine.version>2.2.1</alfresco.transformation-engine.version>
 
-        <!-- Alfresco Records Management -->
-        <alfresco.records-management.version>3.0.0</alfresco.records-management.version>
+        <!-- Alfresco Governance Services (AGS) -->
+        <alfresco.ags.version>3.2.0</alfresco.ags.version>
 
         <!-- Alfresco Office Services Module -->
         <alfresco.aos-module.version>1.3.0</alfresco.aos-module.version>
