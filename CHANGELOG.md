@@ -131,6 +131,10 @@
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20751'>MNT-20751</a>] -         [Security] Multiple camel-jackson vulnerabilities
 </li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20755'>MNT-20755</a>] -         Error accessing Admin Console on ACS 6.1 with External Auth configured
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20770'>MNT-20770</a>] -         Share non responsive during direct download from S3 if content store selector is also configured
+</li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20779'>MNT-20779</a>] -         Prop cleaner job creates DB dangling references when running within close time proximity to the sync job, preventing ACS from further syncing and prop cleaning
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20821'>MNT-20821</a>] -         Wrong translation in site-profile.get_fr.properties for Site Manager(s)
@@ -141,6 +145,8 @@
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20850'>MNT-20850</a>] -         [Security] Content can be read by malicious user, bypassing permissions
 </li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20938'>MNT-20938</a>] -         [Security] CVE-2019-16335 - Jackson Databind polymorphic typing vulnerability
+</li>
 </ul>
     
 <h2>        Hot Fix Request
@@ -150,14 +156,18 @@
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20593'>MNT-20593</a>] -         [Security] Full repository access for all unauthenticated users
 </li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20714'>MNT-20714</a>] -         [HotFix] /nodes/{nodeId}/content REST API fails for content created by a deleted user
+</li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20734'>MNT-20734</a>] -         0kb file when using REST API nodes/{nodeID}/content in a clustered ACS
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20859'>MNT-20859</a>] -         ACS Admin Console does not display all Shards when using mTLS config between SOLR &amp; Repo
 </li>
-<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20714'>MNT-20714</a>] -         REST API /nodes/{nodeId}/content endpoint fails for content created by a deleted user
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20965'>MNT-20965</a>] -         [HotFix ]CLONE-0kb file when using REST API nodes/{nodeID}/content in a clustered ACS
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21086'>MNT-21086</a>] -         CLONE - Some documents with special characters cannot be indexed by solr6
 </li>
 </ul>
-                                                                                                                                                                                        
+                                                                                                                                                                                            
 <h2>        Bug
 </h2>
 <ul>
@@ -167,9 +177,15 @@
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20344'>MNT-20344</a>] -         No Alfresco-supplied docker image should run as root
 </li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20407'>MNT-20407</a>] -         Rest-Api Workflow processes and task tests are failing on ACS 6.0.1.1
+</li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20587'>MNT-20587</a>] -         Prometheus metrics are exposed without authentication
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20634'>MNT-20634</a>] -         Long rule description without spaces causes the text to overlap on when you edit the rule
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20977'>MNT-20977</a>] -         [Security] CVE-2019-12402- Commons compress vulnerability
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20978'>MNT-20978</a>] -         6.1.1: Share Webscripts page showing interpolations instead of the values
 </li>
 </ul>
                 
@@ -177,6 +193,8 @@
 </h2>
 <ul>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19696'>MNT-19696</a>] -         REST API add order by parameter option to GET favorites
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20911'>MNT-20911</a>] -         upload tool is rounding file size when limit is set on the repository
 </li>
 </ul>
                                                                 
