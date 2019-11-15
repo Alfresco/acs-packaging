@@ -12,6 +12,7 @@ import org.alfresco.utility.model.ContentModel;
 import org.alfresco.utility.model.CustomContentModel;
 import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.TestGroup;
+import org.alfresco.utility.report.Bug;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ public class ModelReloadTests extends ClusterTest
     /**
      *  The test can be run only once. Consecutive runs require cleaning environment due to nature of content modelling
      */
+    @Bug(id = "REPO-4690")
     @TestRail(section = { TestGroup.REST_API,TestGroup.CLUSTER }, executionType = ExecutionType.SANITY,
             description = "Verify new data model can be activated on both nodes of the cluster")
     @Test(groups = { TestGroup.REST_API, TestGroup.CLUSTER, TestGroup.SANITY})
