@@ -3,7 +3,7 @@ package org.alfresco.rest.syncService;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.alfresco.rest.RestTest;
+import org.alfresco.rest.SyncServiceTest;
 import org.alfresco.rest.model.RestSubscriberModel;
 import org.alfresco.rest.model.RestSubscriberModelCollection;
 import org.alfresco.rest.model.RestSyncNodeSubscriptionModel;
@@ -31,7 +31,7 @@ import org.testng.annotations.Test;
  * @author mbhave
  */
 @Test(groups = { TestGroup.SYNC_API, TestGroup.REQUIRES_AMP })
-public class SyncServiceAPITests extends RestTest
+public class SyncServiceAPITests extends SyncServiceTest
 {
     private static Logger LOG = LogFactory.getLogger();
 
@@ -48,7 +48,7 @@ public class SyncServiceAPITests extends RestTest
     public void dataPreparation() throws Exception
     {
         adminUserModel = dataUser.getAdminUser();
-        restClient.authenticateUser(adminUserModel);
+        restClientAlfresco.authenticateUser(adminUserModel);
 
         siteModel = dataSite.usingUser(adminUserModel).createPublicRandomSite();
 
@@ -56,7 +56,7 @@ public class SyncServiceAPITests extends RestTest
 
         targetFolder2 = dataContent.usingUser(adminUserModel).usingSite(siteModel).createFolder();
 
-        siteModel.setGuid(restClient.authenticateUser(adminUserModel).withCoreAPI().usingSite(siteModel).getSite().getGuidWithoutVersion());
+        siteModel.setGuid(restClientAlfresco.authenticateUser(adminUserModel).withCoreAPI().usingSite(siteModel).getSite().getGuidWithoutVersion());
 
         clientVersion = "1.1";
     }
@@ -65,7 +65,7 @@ public class SyncServiceAPITests extends RestTest
     public void testSyncServiceHealthCheck() throws Exception
     {
         // Perform HealthCheck
-        Healthcheck healthCheck = restClient.authenticateUser(adminUserModel).withPrivateAPI().doHealthCheck();
+        Healthcheck healthCheck = restClientAlfresco.authenticateUser(adminUserModel).withPrivateAPI().doHealthCheck();
 
         RestSyncServiceHealthCheckModel syncServiceHealthCheck = healthCheck.getHealthcheck();
 
@@ -82,18 +82,18 @@ public class SyncServiceAPITests extends RestTest
     public void testNewDeviceSubscription() throws Exception
     {
         // Register Device
-        RestSubscriberModel deviceSubscription = restClient.authenticateUser(adminUserModel).withPrivateAPI().withSubscribers()
+        RestSubscriberModel deviceSubscription = restClientAlfresco.authenticateUser(adminUserModel).withPrivateAPI().withSubscribers()
                 .registerDevice("windows", clientVersion);
-        restClient.assertStatusCodeIs(HttpStatus.CREATED);
+        restClientAlfresco.assertStatusCodeIs(HttpStatus.CREATED);
 
-        restClient.onResponse().assertThat().body("entry.id", org.hamcrest.Matchers.notNullValue());
-        restClient.onResponse().assertThat().body("entry.id", org.hamcrest.Matchers.equalTo(deviceSubscription.getId()));
+        restClientAlfresco.onResponse().assertThat().body("entry.id", org.hamcrest.Matchers.notNullValue());
+        restClientAlfresco.onResponse().assertThat().body("entry.id", org.hamcrest.Matchers.equalTo(deviceSubscription.getId()));
 
         // Get Registered Devices
-        RestSubscriberModelCollection deviceSubscriptions = restClient.authenticateUser(adminUserModel).withParams("maxItems=500").withPrivateAPI()
+        RestSubscriberModelCollection deviceSubscriptions = restClientAlfresco.authenticateUser(adminUserModel).withParams("maxItems=500").withPrivateAPI()
                 .withSubscribers().getSubscribers();
 
-        restClient.onResponse().assertThat().body("list.entries.entry", org.hamcrest.Matchers.notNullValue());
+        restClientAlfresco.onResponse().assertThat().body("list.entries.entry", org.hamcrest.Matchers.notNullValue());
         int noOfSubscriptions = deviceSubscriptions.getEntries().size();
         Assert.assertTrue(noOfSubscriptions > 0, "No Device subscriptions found when expected");
         Assert.assertTrue(deviceSubscriptions.getEntries().get(noOfSubscriptions - 1).onModel().getId().equals(deviceSubscription.getId()), "Not found: "
@@ -105,29 +105,29 @@ public class SyncServiceAPITests extends RestTest
     public void testDeviceSubcriptionToNode() throws Exception
     {
         // Register Device
-        RestSubscriberModel deviceSubscription = restClient.authenticateUser(adminUserModel).withPrivateAPI().withSubscribers()
+        RestSubscriberModel deviceSubscription = restClientAlfresco.authenticateUser(adminUserModel).withPrivateAPI().withSubscribers()
                 .registerDevice("windows", clientVersion);
 
         // Subscribe to a node
-        RestSyncNodeSubscriptionModel nodeSubscription = restClient.withPrivateAPI().withSubscriber(deviceSubscription)
+        RestSyncNodeSubscriptionModel nodeSubscription = restClientAlfresco.withPrivateAPI().withSubscriber(deviceSubscription)
                 .subscribeToNode(targetFolder1.getNodeRefWithoutVersion(), TYPE.BOTH);
-        restClient.assertStatusCodeIs(HttpStatus.CREATED);
+        restClientAlfresco.assertStatusCodeIs(HttpStatus.CREATED);
 
-        restClient.onResponse().assertThat().body("entry.deviceSubscriptionId", org.hamcrest.Matchers.notNullValue());
-        restClient.onResponse().assertThat().body("entry.deviceSubscriptionId", org.hamcrest.Matchers.equalTo(deviceSubscription.getId()));
+        restClientAlfresco.onResponse().assertThat().body("entry.deviceSubscriptionId", org.hamcrest.Matchers.notNullValue());
+        restClientAlfresco.onResponse().assertThat().body("entry.deviceSubscriptionId", org.hamcrest.Matchers.equalTo(deviceSubscription.getId()));
 
-        restClient.onResponse().assertThat().body("entry.targetNodeId", org.hamcrest.Matchers.notNullValue());
-        restClient.onResponse().assertThat().body("entry.targetNodeId", org.hamcrest.Matchers.equalTo(targetFolder1.getNodeRefWithoutVersion()));
+        restClientAlfresco.onResponse().assertThat().body("entry.targetNodeId", org.hamcrest.Matchers.notNullValue());
+        restClientAlfresco.onResponse().assertThat().body("entry.targetNodeId", org.hamcrest.Matchers.equalTo(targetFolder1.getNodeRefWithoutVersion()));
 
-        restClient.onResponse().assertThat().body("entry.id", org.hamcrest.Matchers.notNullValue());
-        restClient.onResponse().assertThat().body("entry.id", org.hamcrest.Matchers.equalTo(nodeSubscription.getId()));
+        restClientAlfresco.onResponse().assertThat().body("entry.id", org.hamcrest.Matchers.notNullValue());
+        restClientAlfresco.onResponse().assertThat().body("entry.id", org.hamcrest.Matchers.equalTo(nodeSubscription.getId()));
 
         // Get Sync Node Subscriptions
-        nodeSubscriptions = restClient.withPrivateAPI().withSubscriber(deviceSubscription).getSubscriptions();
+        nodeSubscriptions = restClientAlfresco.withPrivateAPI().withSubscriber(deviceSubscription).getSubscriptions();
 
         nodeSubscriptions.assertThat().entriesListContains("id", nodeSubscription.getId());
 
-        restClient.onResponse().assertThat().body("list.entries.entry", org.hamcrest.Matchers.notNullValue());
+        restClientAlfresco.onResponse().assertThat().body("list.entries.entry", org.hamcrest.Matchers.notNullValue());
 
         int noOfSubscriptions = nodeSubscriptions.getEntries().size();
         Assert.assertTrue(noOfSubscriptions > 0, "No Sync subscriptions found when expected");
@@ -137,7 +137,7 @@ public class SyncServiceAPITests extends RestTest
                 nodeSubscription.getDeviceSubscriptionId());
 
         // Get Sync Node Subscription by subscriptionId
-        RestSyncNodeSubscriptionModel subscription = restClient.withPrivateAPI().withSubscriber(deviceSubscription).getSubscription(nodeSubscription.getId());
+        RestSyncNodeSubscriptionModel subscription = restClientAlfresco.withPrivateAPI().withSubscriber(deviceSubscription).getSubscription(nodeSubscription.getId());
 
         subscription.assertThat().field("id").isNotNull().assertThat().field("id").is(nodeSubscription.getId()).assertThat().field("deviceSubscriptionId")
                 .isNotNull().assertThat().field("deviceSubscriptionId").is(nodeSubscription.getDeviceSubscriptionId());
@@ -147,16 +147,16 @@ public class SyncServiceAPITests extends RestTest
     public void testDeviceSubcriptionToMultipleNodes() throws Exception
     {
         // Register Device
-        RestSubscriberModel deviceSubscription = restClient.authenticateUser(adminUserModel).withPrivateAPI().withSubscribers()
+        RestSubscriberModel deviceSubscription = restClientAlfresco.authenticateUser(adminUserModel).withPrivateAPI().withSubscribers()
                 .registerDevice("windows", "1.2");
 
         // Subscribe to a node
-        restClient.withPrivateAPI().withSubscriber(deviceSubscription)
+        restClientAlfresco.withPrivateAPI().withSubscriber(deviceSubscription)
                 .subscribeToNodes(siteModel.getGuid(), targetFolder1.getNodeRefWithoutVersion(), targetFolder2.getNodeRefWithoutVersion());
-        restClient.assertStatusCodeIs(HttpStatus.CREATED);
+        restClientAlfresco.assertStatusCodeIs(HttpStatus.CREATED);
 
         // Get Sync Node Subscriptions
-        RestSyncNodeSubscriptionModelCollection subscriptionList = restClient.withPrivateAPI().withSubscriber(deviceSubscription).getSubscriptions();
+        RestSyncNodeSubscriptionModelCollection subscriptionList = restClientAlfresco.withPrivateAPI().withSubscriber(deviceSubscription).getSubscriptions();
 
         int countOfEntries = subscriptionList.getEntries().size();
         Assert.assertTrue(countOfEntries == 3, "Node subscriptions NOT found when expected");
@@ -167,19 +167,19 @@ public class SyncServiceAPITests extends RestTest
     {
         // Register Device
         List<RestSyncSetChangesModel> clientChanges = new LinkedList<>();
-        RestSubscriberModel deviceSubscription = restClient.authenticateUser(adminUserModel).withPrivateAPI().withSubscribers()
+        RestSubscriberModel deviceSubscription = restClientAlfresco.authenticateUser(adminUserModel).withPrivateAPI().withSubscribers()
                 .registerDevice("windows", "1.2");
 
         // Subscribe to a node
-        RestSyncNodeSubscriptionModel nodeSubscription = restClient.withPrivateAPI().withSubscriber(deviceSubscription)
+        RestSyncNodeSubscriptionModel nodeSubscription = restClientAlfresco.withPrivateAPI().withSubscriber(deviceSubscription)
                 .subscribeToNode(targetFolder1.getNodeRefWithoutVersion(), TYPE.BOTH);
-        restClient.assertStatusCodeIs(HttpStatus.CREATED);
+        restClientAlfresco.assertStatusCodeIs(HttpStatus.CREATED);
 
         // Start Sync
-        RestSyncSetRequestModel syncRequest = restClient.authenticateUser(adminUserModel).withPrivateAPI().withSubscription(nodeSubscription)
+        RestSyncSetRequestModel syncRequest = restClientAlfresco.authenticateUser(adminUserModel).withPrivateAPI().withSubscription(nodeSubscription)
                 .startSync(nodeSubscription, clientChanges, clientVersion);
 
-        restClient.assertStatusCodeIs(HttpStatus.CREATED);
+        restClientAlfresco.assertStatusCodeIs(HttpStatus.CREATED);
 
         Assert.assertNotNull(syncRequest.getSyncId(), "Sync Id not expected to be null");
         String syncId = syncRequest.getSyncId();
@@ -190,15 +190,15 @@ public class SyncServiceAPITests extends RestTest
         Assert.assertNull(syncRequest.getError(), "Sync Error expected to be null. Actual: " + syncRequest.getError());
 
         // Get Sync Changes
-        RestSyncSetGetModel changeSet = restClient.withPrivateAPI().withSubscription(nodeSubscription).getSync(nodeSubscription, syncRequest);
+        RestSyncSetGetModel changeSet = restClientAlfresco.withPrivateAPI().withSubscription(nodeSubscription).getSync(nodeSubscription, syncRequest);
 
-        restClient.assertStatusCodeIs(HttpStatus.OK);
+        restClientAlfresco.assertStatusCodeIs(HttpStatus.OK);
         Assert.assertNotNull(changeSet.getSyncId(), "Sync Id not expected to be null");
         Assert.assertTrue(changeSet.getSyncId().equals(syncId), "Incorrect SyncId in the response");
         Assert.assertNotNull(changeSet.getMoreChanges(), "MoreChanges expected to be true or false. It's null");
 
         // End Sync
-        restClient.withPrivateAPI().withSubscription(nodeSubscription).endSync(nodeSubscription, syncRequest);
-        restClient.assertStatusCodeIs(HttpStatus.NO_CONTENT);
+        restClientAlfresco.withPrivateAPI().withSubscription(nodeSubscription).endSync(nodeSubscription, syncRequest);
+        restClientAlfresco.assertStatusCodeIs(HttpStatus.NO_CONTENT);
     }
 }

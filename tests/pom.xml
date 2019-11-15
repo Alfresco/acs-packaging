@@ -18,6 +18,7 @@
         <module>tas-webdav</module>
         <module>tas-integration</module>
         <module>tas-cluster</module>
+        <module>tas-sync-service</module>
     </modules>
 
     <dependencyManagement>
