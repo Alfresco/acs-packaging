@@ -7,7 +7,7 @@
         <listener class-name="org.alfresco.utility.testng.OSTestMethodSelector"/>
     </listeners>
 
-    <test name="ACS Integration Tests">
+    <test name="Integration Tests">
         <packages>
             <package name="org.alfresco.tas.integration.*"/>
         </packages>

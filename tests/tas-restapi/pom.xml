@@ -24,14 +24,14 @@
     </developers>
 
     <properties>
-        <suiteXmlFile>${project.basedir}/src/test/resources/restapi-acs-suite.xml</suiteXmlFile>
+        <suiteXmlFile>${project.basedir}/src/test/resources/restapi-suite.xml</suiteXmlFile>
     </properties>
 
     <profiles>
         <profile>
             <id>run-tas-restapi-tests-with-ais</id>
             <properties>
-                <suiteXmlFile>${project.basedir}/src/test/resources/restapi-acs-ais-suite.xml</suiteXmlFile>
+                <suiteXmlFile>${project.basedir}/src/test/resources/restapi-ais-suite.xml</suiteXmlFile>
             </properties>
         </profile>
     </profiles>

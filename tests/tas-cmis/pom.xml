@@ -24,7 +24,7 @@
     </developers>
 
     <properties>
-        <suiteXmlFile>${project.basedir}/src/test/resources/cmis-acs-suite.xml</suiteXmlFile>
+        <suiteXmlFile>${project.basedir}/src/test/resources/cmis-suite.xml</suiteXmlFile>
     </properties>
 
     <dependencies>

@@ -24,7 +24,7 @@
     </developers>
 
     <properties>
-        <suiteXmlFile>${project.basedir}/src/test/resources/email-suites.xml</suiteXmlFile>
+        <suiteXmlFile>${project.basedir}/src/test/resources/email-suite.xml</suiteXmlFile>
     </properties>
 
     <dependencies>

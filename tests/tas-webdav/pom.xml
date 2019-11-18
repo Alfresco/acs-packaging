@@ -24,7 +24,7 @@
     </developers>
 
     <properties>
-        <suiteXmlFile>${project.basedir}/src/test/resources/acs-webdav-suite.xml</suiteXmlFile>
+        <suiteXmlFile>${project.basedir}/src/test/resources/webdav-suite.xml</suiteXmlFile>
     </properties>
 
     <dependencies>

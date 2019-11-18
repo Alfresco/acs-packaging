@@ -24,7 +24,7 @@
     </developers>
 
     <properties>
-        <suiteXmlFile>${project.basedir}/src/test/resources/acs-enterprise-integration-suite.xml</suiteXmlFile>
+        <suiteXmlFile>${project.basedir}/src/test/resources/integration-suite.xml</suiteXmlFile>
         <dependency.groovy.version>2.5.5</dependency.groovy.version>
         <dependency.javax.mail.version>1.5.1</dependency.javax.mail.version>
     </properties>
