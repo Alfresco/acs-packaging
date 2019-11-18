@@ -7,7 +7,7 @@
         <listener class-name="org.alfresco.utility.testng.OSTestMethodSelector"/>
 	</listeners>
 
-	<test name="ACS Tests without transformations">
+	<test name="Rest API Tests">
 		<groups>
 			<run>
                 <exclude name="all_amps"/>
