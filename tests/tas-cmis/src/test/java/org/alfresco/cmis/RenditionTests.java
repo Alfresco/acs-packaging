@@ -38,7 +38,7 @@ public class RenditionTests extends CmisTest
             .createFile(testFile).assertThat().existsInRepo();
     }
     
-    @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS})
+    @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS, TestGroup.RENDITIONS})
     @TestRail(section = {"cmis-api"}, executionType= ExecutionType.REGRESSION,
             description = "Verify admin can get renditions for valid Document object")
     public void adminShouldGetRenditionsForDocument() throws Exception
@@ -49,7 +49,7 @@ public class RenditionTests extends CmisTest
                 .assertThat().thumbnailRenditionIsAvailable();
     }
     
-    @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS}, expectedExceptions = {CmisObjectNotFoundException.class})
+    @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS, TestGroup.RENDITIONS}, expectedExceptions = {CmisObjectNotFoundException.class})
     @TestRail(section = {"cmis-api"}, executionType= ExecutionType.REGRESSION,
             description = "Verify admin can get renditions for invalid Document object")
     public void adminCannotGetRenditionsForInvalidDocument() throws Exception
@@ -61,7 +61,7 @@ public class RenditionTests extends CmisTest
                 .assertThat().thumbnailRenditionIsAvailable();
     }
     
-    @Test(groups = { TestGroup.SANITY, TestGroup.CMIS})
+    @Test(groups = { TestGroup.SANITY, TestGroup.CMIS, TestGroup.RENDITIONS})
     @TestRail(section = {"cmis-api"}, executionType= ExecutionType.SANITY,
             description = "Verify site manager can get renditions for valid Document")
     public void managerGetRenditionsForDocument() throws Exception
@@ -71,7 +71,7 @@ public class RenditionTests extends CmisTest
                 .assertThat().thumbnailRenditionIsAvailable();
     }
     
-    @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS})
+    @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS, TestGroup.RENDITIONS})
     @TestRail(section = {"cmis-api"}, executionType= ExecutionType.REGRESSION,
             description = "Verify site collaborator can get renditions for valid Document")
     public void collaboratorGetRenditionsForDocument() throws Exception
@@ -81,7 +81,7 @@ public class RenditionTests extends CmisTest
                 .assertThat().thumbnailRenditionIsAvailable();
     }
     
-    @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS})
+    @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS, TestGroup.RENDITIONS})
     @TestRail(section = {"cmis-api"}, executionType= ExecutionType.REGRESSION,
             description = "Verify site contributor can get renditions for valid Document")
     public void contributorGetRenditionsForDocument() throws Exception
@@ -91,7 +91,7 @@ public class RenditionTests extends CmisTest
                 .assertThat().thumbnailRenditionIsAvailable();
     }
     
-    @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS})
+    @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS, TestGroup.RENDITIONS})
     @TestRail(section = {"cmis-api"}, executionType= ExecutionType.REGRESSION,
             description = "Verify site consumer can get renditions for valid Document")
     public void consumerGetRenditionsForDocument() throws Exception
@@ -101,7 +101,7 @@ public class RenditionTests extends CmisTest
                 .assertThat().thumbnailRenditionIsAvailable();
     }
     
-    @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS})
+    @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS, TestGroup.RENDITIONS})
     @TestRail(section = {"cmis-api"}, executionType= ExecutionType.REGRESSION,
             description = "Verify site manager can get renditions for checked out document")
     public void managerGetRenditionsForCheckedOutDocument() throws Exception
@@ -114,7 +114,7 @@ public class RenditionTests extends CmisTest
                             .assertThat().thumbnailRenditionIsAvailable();
     }
     
-    @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS})
+    @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS, TestGroup.RENDITIONS})
     @TestRail(section = {"cmis-api"}, executionType= ExecutionType.REGRESSION,
             description = "Verify non invited user can get renditions in public site")
     public void nonInvitedUserGetRenditionsInPublicSite() throws Exception
@@ -125,7 +125,7 @@ public class RenditionTests extends CmisTest
                     .assertThat().thumbnailRenditionIsAvailable();
     }
     
-    @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS}, expectedExceptions={CmisPermissionDeniedException.class, CmisUnauthorizedException.class})
+    @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS, TestGroup.RENDITIONS}, expectedExceptions={CmisPermissionDeniedException.class, CmisUnauthorizedException.class})
     @TestRail(section = {"cmis-api"}, executionType= ExecutionType.REGRESSION,
             description = "Verify non invited user cannot get renditions in private site")
     public void nonInvitedUserCannotGetRenditionsInPrivateSite() throws Exception
@@ -140,7 +140,7 @@ public class RenditionTests extends CmisTest
                             .assertThat().thumbnailRenditionIsAvailable();
     }
     
-    @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS}, expectedExceptions={CmisPermissionDeniedException.class, CmisUnauthorizedException.class})
+    @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS, TestGroup.RENDITIONS}, expectedExceptions={CmisPermissionDeniedException.class, CmisUnauthorizedException.class})
     @TestRail(section = {"cmis-api"}, executionType= ExecutionType.REGRESSION,
             description = "Verify non invited user cannot get renditions in moderated site")
     public void nonInvitedUserCannotGetRenditionsInModeratedSite() throws Exception
@@ -155,7 +155,7 @@ public class RenditionTests extends CmisTest
                             .assertThat().thumbnailRenditionIsAvailable();
     }
     
-    @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS}, expectedExceptions=CmisUnauthorizedException.class)
+    @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS, TestGroup.RENDITIONS}, expectedExceptions=CmisUnauthorizedException.class)
     @TestRail(section = {"cmis-api"}, executionType= ExecutionType.REGRESSION,
             description = "Verify inexistent user cannot get renditions")
     public void inexistentUserCannotGetRenditions() throws Exception
