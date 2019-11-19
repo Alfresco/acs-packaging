@@ -15,15 +15,19 @@ import org.alfresco.rest.model.RestNodeModel;
 import org.alfresco.utility.constants.UserRole;
 import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.SiteModel;
+import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.JmxBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 
 import io.restassured.RestAssured;
+import org.testng.annotations.Test;
 
+@Test(groups = {TestGroup.REQUIRE_JMX})
 public abstract class AuditTest extends RestTest
 {
 
@@ -57,11 +61,10 @@ public abstract class AuditTest extends RestTest
         dataUser.addUserToSite(userModel, privateTestSite, UserRole.SiteCollaborator);
         userModel.setUserRole(UserRole.SiteCollaborator);
 
-        // audit is enable in the environment (see docker-compose)
         //Enable alfresco-access audit application.
-//        jmxBuilder.getJmxClient().writeProperty("Alfresco:Type=Configuration,Category=Audit,id1=default", "audit.alfresco-access.enabled", Boolean.TRUE.toString());
-//        String alfrescoAccessEnabled = jmxBuilder.getJmxClient().readProperty("Alfresco:Type=Configuration,Category=Audit,id1=default", "audit.alfresco-access.enabled").toString();
-//        Assert.assertEquals(alfrescoAccessEnabled, Boolean.TRUE.toString(), String.format("Property audit.alfresco-access.enabled is [%s]", alfrescoAccessEnabled));
+        jmxBuilder.getJmxClient().writeProperty("Alfresco:Type=Configuration,Category=Audit,id1=default", "audit.alfresco-access.enabled", Boolean.TRUE.toString());
+        String alfrescoAccessEnabled = jmxBuilder.getJmxClient().readProperty("Alfresco:Type=Configuration,Category=Audit,id1=default", "audit.alfresco-access.enabled").toString();
+        Assert.assertEquals(alfrescoAccessEnabled, Boolean.TRUE.toString(), String.format("Property audit.alfresco-access.enabled is [%s]", alfrescoAccessEnabled));
 
         //GET /alfresco/service/api/audit/control to verify if Audit is enabled on the system.
         RestAssured.basePath = "";

@@ -13,12 +13,10 @@
                 <include name="sanity" />
                 <exclude name="regression" />
                 <exclude name="core"/>
-                <exclude name="require-transformation"/>
                 <exclude name="require-solr" />
-                <exclude name="all_amps"/>
                 <exclude name="renditions"/>
-                <exclude name="renditions-regression"/>
                 <exclude name="auth"/>
+                <exclude name="audit"/>
 			</run>
 		</groups>
         <packages>

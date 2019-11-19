@@ -8,11 +8,6 @@
 	</listeners>
 
 	<test name="Rest API Tests">
-		<groups>
-			<run>
-                <exclude name="all_amps"/>
-			</run>
-		</groups>
 		<packages>
             <package name="org.alfresco.rest.*"/>
 		</packages>

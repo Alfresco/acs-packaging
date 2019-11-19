@@ -27,6 +27,16 @@
         <suiteXmlFile>${project.basedir}/src/test/resources/cmis-suite.xml</suiteXmlFile>
     </properties>
 
+    <profiles>
+        <profile>
+            <id>run-tas-cmis-tests-with-ais</id>
+            <properties>
+                <suiteXmlFile>${project.basedir}/src/test/resources/cmis-ais-suite.xml</suiteXmlFile>
+            </properties>
+        </profile>
+    </profiles>
+
+
     <dependencies>
         <dependency>
             <groupId>org.alfresco.tas</groupId>
