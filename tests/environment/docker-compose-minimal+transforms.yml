@@ -30,6 +30,9 @@ services:
         -Dsolr.base.url=/solr
         -Dindex.subsystem.name=solr6
 
+        -Daudit.enabled=true
+        -Daudit.alfresco-access.enabled=true
+
         -Dtransform.service.enabled=false
 
         -Dlocal.transform.service.enabled=true
