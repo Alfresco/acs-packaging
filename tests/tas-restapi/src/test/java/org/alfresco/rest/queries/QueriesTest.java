@@ -17,6 +17,7 @@ import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.model.UserModel;
+import org.alfresco.utility.report.Bug;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
 import org.springframework.http.HttpStatus;
@@ -60,7 +61,7 @@ public class QueriesTest extends RestTest
             }
         };
 
-        Utility.sleep(100, 100000, op);// Allow indexing to complete.
+        Utility.sleep(300, 100000, op);// Allow indexing to complete.
 
     }
 
@@ -92,7 +93,7 @@ public class QueriesTest extends RestTest
             }
         };
 
-        Utility.sleep(100, 100000, op);// Allow indexing to complete.
+        Utility.sleep(300, 100000, op);// Allow indexing to complete.
 
     }
 
@@ -127,6 +128,7 @@ public class QueriesTest extends RestTest
         restClient.assertStatusCodeIs(HttpStatus.OK);
     }
 
+    @Bug(id="REPO-4784")
     @TestRail(section = { TestGroup.REST_API,
             TestGroup.QUERIES }, executionType = ExecutionType.REGRESSION, description = "Verify GET queries on queries/nodes return success status code")
     @Test(groups = { TestGroup.REST_API, TestGroup.RATINGS, TestGroup.CORE })
@@ -172,7 +174,7 @@ public class QueriesTest extends RestTest
             }
 
         };
-        Utility.sleep(10, 3500, op);// Allow indexing to complete.
+        Utility.sleep(300, 100000, op);// Allow indexing to complete.
 
     }
 }
