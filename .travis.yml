@@ -133,3 +133,13 @@ matrix:
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
         - travis_wait 20 mvn install -f tests/tas-sync-service/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+    - name: "All AMPs tests"
+      jdk: openjdk11
+      install:
+        - travis_retry travis_wait 20 mvn install -q -PenterpriseDocker
+        - travis_retry travis_wait 20 mvn install -q -f tests/tas-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
+      script:
+        - ./tests/scripts/checkLibraryDuplicates.sh ./tests/tas-all-amps/target/war/alfresco/WEB-INF/lib
+        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-all-amps-test.yml
+        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+        - travis_wait 20 mvn install -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
