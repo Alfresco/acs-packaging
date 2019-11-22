@@ -666,7 +666,7 @@
             <dependency>
                 <groupId>com.hazelcast</groupId>
                 <artifactId>hazelcast</artifactId>
-                <version>3.12.3</version>
+                <version>3.12.4</version>
             </dependency>
             <!-- upgrade dependency from TIKA -->
             <dependency>
