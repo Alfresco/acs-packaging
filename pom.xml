@@ -93,7 +93,7 @@
         <alfresco.outlook.version>2.6.1</alfresco.outlook.version>
 
         <!-- Document Transformation Engine -->
-        <alfresco.transformation-engine.version>2.2.1</alfresco.transformation-engine.version>
+        <alfresco.transformation-engine.version>2.2.2</alfresco.transformation-engine.version>
 
         <!-- Alfresco Governance Services (AGS) -->
         <alfresco.ags.version>3.2.0</alfresco.ags.version>
