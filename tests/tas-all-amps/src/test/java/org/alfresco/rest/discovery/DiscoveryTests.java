@@ -1,7 +1,7 @@
 package org.alfresco.rest.discovery;
 
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
+import static org.testng.AssertJUnit.assertEquals;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -66,15 +66,19 @@ public class DiscoveryTests extends RestTest
 
         // Check that all modules are present
         List<String> modules = restClient.onResponse().getResponse().jsonPath().getList("entry.repository.modules.id", String.class);
-        List<String> expectedModules = Arrays.asList("alfresco-aos-module", "org.alfresco.integrations.google.docs",
-                "org_alfresco_integrations_S3Connector", "org_alfresco_module_xamconnector",
-                "org.alfresco.module.KofaxAddon", "alfresco-content-connector-for-salesforce-repo",
+        List<String> expectedModules = Arrays.asList(
+                "alfresco-aos-module",
+                "org.alfresco.integrations.google.docs",
+                "alfresco-trashcan-cleaner",
+                "org_alfresco_integrations_S3Connector",
+                "org_alfresco_module_xamconnector",
+                "org.alfresco.module.KofaxAddon",
+                "alfresco-content-connector-for-salesforce-repo",
                 "alfresco-share-services",
                 "alfresco-saml-repo",
                 "org_alfresco_device_sync_repo",
                 "org_alfresco_mm_repo", "alfresco-ai-repo",
-                // uncomment when REPO-4594 is fixed:
-                // "alfresco-glacier-connector-repo",
+                "alfresco-glacier-connector-repo",
                 "org.alfresco.module.TransformationServer");
 
         expectedModules.forEach(module ->
@@ -82,29 +86,6 @@ public class DiscoveryTests extends RestTest
 
         // Check that all installed modules are in INSTALLED state
         List<String> modulesStates = restClient.onResponse().getResponse().jsonPath().getList("entry.repository.modules.installState", String.class);
-        //change back to assertEquals after REPO-4233
-        assertTrue(Collections.frequency(modulesStates, "INSTALLED") >= expectedModules.size(), "Number of amps installed should match expected");
-    }
-
-    @Test(groups = { TestGroup.REST_API, TestGroup.DISCOVERY, TestGroup.SANITY, TestGroup.CORE })
-    @TestRail(section = { TestGroup.REST_API, TestGroup.DISCOVERY }, executionType = ExecutionType.SANITY,
-            description = "Sanity tests for GET /discovery endpoint")
-    public void getDefaultRepositoryInstalledModules() throws Exception
-    {
-        // Get repository info using Discovery API
-        restClient.authenticateUser(userModel).withDiscoveryAPI().getRepositoryInfo();
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-
-        // Check that all modules are present
-        List<String> modules = restClient.onResponse().getResponse().jsonPath().getList("entry.repository.modules.id", String.class);
-        assertTrue(modules.contains("alfresco-aos-module"));
-        assertTrue(modules.contains("org.alfresco.integrations.google.docs"));
-        assertTrue(modules.contains("alfresco-share-services"));
-        assertTrue(modules.contains("org_alfresco_device_sync_repo"));
-
-
-        // Check that all installed modules are in INSTALLED state
-        List<String> modulesStates = restClient.onResponse().getResponse().jsonPath().getList("entry.repository.modules.installState", String.class);
-        assertEquals(Collections.frequency(modulesStates, "INSTALLED"), 4);
+        assertEquals("Number of amps installed should match expected", expectedModules.size(), Collections.frequency(modulesStates, "INSTALLED"));
     }
 }
