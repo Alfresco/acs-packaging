@@ -325,7 +325,8 @@ public class NodesLockTests extends RestTest
         });
     }
 
-    @Bug(id = "MNT-17612", status = Status.FIXED, description = "AccessDeniedException in AOS Edit Offline Upload New Version")
+//  TODO: uncomment this:  @Bug(id = "MNT-17612", status = Status.FIXED, description = "AccessDeniedException in AOS Edit Offline Upload New Version")
+    @Bug(id = "REPO-4790")
     @Test(groups = { TestGroup.REST_API, TestGroup.NODES, TestGroup.REGRESSION })
     @TestRail(section = { TestGroup.REST_API, TestGroup.NODES }, executionType = ExecutionType.REGRESSION,
             description = "Verify Collaborator can lock PERSISTENT after EPHEMERAL lock made by another user is expired")
