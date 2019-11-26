@@ -206,6 +206,13 @@
                 <groupId>org.alfresco</groupId>
                 <artifactId>alfresco-repository</artifactId>
                 <version>${dependency.alfresco-repository.version}</version>
+		<exclusions>
+	                <exclusion>
+	                    <groupId>com.benfante</groupId>
+	                    <artifactId>JSlideShare</artifactId>
+			    <version>0.6</version>
+	                </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.alfresco</groupId>
