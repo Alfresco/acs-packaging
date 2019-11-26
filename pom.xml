@@ -210,7 +210,6 @@
 	                <exclusion>
 	                    <groupId>com.benfante</groupId>
 	                    <artifactId>JSlideShare</artifactId>
-			    <version>0.6</version>
 	                </exclusion>
                 </exclusions>
             </dependency>
