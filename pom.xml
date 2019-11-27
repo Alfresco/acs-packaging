@@ -206,6 +206,12 @@
                 <groupId>org.alfresco</groupId>
                 <artifactId>alfresco-repository</artifactId>
                 <version>${dependency.alfresco-repository.version}</version>
+	        <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.pdfbox</groupId>
+                        <artifactId>fontbox</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.alfresco</groupId>
