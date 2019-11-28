@@ -20,6 +20,12 @@
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-repository</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>org.bouncycastle</artifactId>
+                    <groupId>bcmail-jdk15on</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
