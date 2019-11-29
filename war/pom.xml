@@ -20,6 +20,12 @@
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-repository</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>com.google.gdata</artifactId>
+                        <groupId>gdata-docs-meta-3.0</groupId>
+                </exclusion>
+            </exclusions>   
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
