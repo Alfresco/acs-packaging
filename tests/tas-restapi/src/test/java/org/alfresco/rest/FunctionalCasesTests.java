@@ -29,7 +29,7 @@ import org.testng.annotations.Test;
 
 public class FunctionalCasesTests extends RestTest
 {
-    private UserModel adminUser, manager;
+    private UserModel adminUser;
     private SiteModel publicSite, moderatedSite, privateSite;
     private RestSiteMemberModel updatedMember;
     private RestSiteMembershipRequestModelsCollection returnedCollection;
@@ -45,9 +45,7 @@ public class FunctionalCasesTests extends RestTest
     public void dataPreparation() throws Exception
     {
         adminUser = dataUser.getAdminUser();
-        manager = dataUser.createRandomTestUser();
         publicSite = dataSite.usingUser(adminUser).createPublicRandomSite();
-        dataUser.addUserToSite(manager, publicSite, UserRole.SiteManager);
         moderatedSite = dataSite.usingUser(adminUser).createModeratedRandomSite();
         privateSite = dataSite.usingUser(adminUser).createPrivateRandomSite();
     }
@@ -210,6 +208,8 @@ public class FunctionalCasesTests extends RestTest
             description = "Add a file and check that activity is included in person activities")
     public void addFileThenGetPersonActivities() throws Exception
     {
+        UserModel manager = dataUser.createRandomTestUser();
+        dataUser.addUserToSite(manager, publicSite, UserRole.SiteManager);
         file = dataContent.usingUser(manager).usingSite(publicSite).createContent(DocumentType.TEXT_PLAIN);
         activities = restClient.authenticateUser(manager).withCoreAPI().usingAuthUser().getPersonActivitiesUntilEntriesCountIs(2);
         activities.assertThat().entriesListIsNotEmpty()
@@ -228,6 +228,8 @@ public class FunctionalCasesTests extends RestTest
             description = "Add a comment to a file and check that activity is included in person activities")
     public void addCommentThenGetPersonActivities() throws Exception
     {
+        UserModel manager = dataUser.createRandomTestUser();
+        dataUser.addUserToSite(manager, publicSite, UserRole.SiteManager);
         file = dataContent.usingUser(manager).usingSite(publicSite).createContent(DocumentType.TEXT_PLAIN);
         restClient.authenticateUser(manager).withCoreAPI().usingResource(file).addComment("new comment");
         activities = restClient.authenticateUser(manager).withCoreAPI().usingAuthUser().getPersonActivitiesUntilEntriesCountIs(3);
@@ -247,6 +249,8 @@ public class FunctionalCasesTests extends RestTest
             description = "Add a file, delete it and check that activity is included in person activities")
     public void addFileDeleteItThenGetPersonActivities() throws Exception
     {
+        UserModel manager = dataUser.createRandomTestUser();
+        dataUser.addUserToSite(manager, publicSite, UserRole.SiteManager);
         file = dataContent.usingUser(manager).usingSite(publicSite).createContent(DocumentType.TEXT_PLAIN);
         dataContent.usingUser(manager).usingResource(file).deleteContent();
         activities = restClient.authenticateUser(manager).withCoreAPI().usingAuthUser().getPersonActivitiesUntilEntriesCountIs(2);
@@ -269,6 +273,8 @@ public class FunctionalCasesTests extends RestTest
             description = "Add comment to a file, then get comment details. Update it and check that get comment returns updated details. Delete comment then check that file has no comments.")
     public void addUpdateDeleteCommentThenGetCommentDetails() throws Exception
     {
+        UserModel manager = dataUser.createRandomTestUser();
+        dataUser.addUserToSite(manager, publicSite, UserRole.SiteManager);
         file = dataContent.usingUser(manager).usingSite(publicSite).createContent(DocumentType.TEXT_PLAIN);
         RestCommentModel newComment = restClient.authenticateUser(manager).withCoreAPI().usingResource(file).addComment("new comment");
         restClient.assertStatusCodeIs(HttpStatus.CREATED);
@@ -303,6 +309,8 @@ public class FunctionalCasesTests extends RestTest
             description = "Add a comment to a file, delete it, then added the same comment again.")
     public void checkThatADeletedCommentCanBePostedAgain() throws Exception
     {
+        UserModel manager = dataUser.createRandomTestUser();
+        dataUser.addUserToSite(manager, publicSite, UserRole.SiteManager);
         file = dataContent.usingUser(manager).usingSite(publicSite).createContent(DocumentType.TEXT_PLAIN);
         RestCommentModel newComment = restClient.authenticateUser(manager).withCoreAPI().usingResource(file).addComment("new comment");
         restClient.assertStatusCodeIs(HttpStatus.CREATED);
@@ -477,6 +485,8 @@ public class FunctionalCasesTests extends RestTest
     @Test(groups = { TestGroup.REST_API, TestGroup.COMMENTS, TestGroup.REGRESSION })
     public void commentAFavoriteFile() throws Exception
     {
+        UserModel manager = dataUser.createRandomTestUser();
+        dataUser.addUserToSite(manager, publicSite, UserRole.SiteManager);
         file = dataContent.usingSite(publicSite).usingUser(adminUser).createContent(CMISUtil.DocumentType.TEXT_PLAIN);
         restClient.authenticateUser(manager).withCoreAPI().usingMe().addFileToFavorites(file);
         restClient.assertStatusCodeIs(HttpStatus.CREATED);
@@ -499,6 +509,8 @@ public class FunctionalCasesTests extends RestTest
     @Test(groups = { TestGroup.REST_API, TestGroup.COMMENTS, TestGroup.REGRESSION })
     public void commentFileRemovedFromFavorites() throws Exception
     {
+        UserModel manager = dataUser.createRandomTestUser();
+        dataUser.addUserToSite(manager, publicSite, UserRole.SiteManager);
         file = dataContent.usingSite(publicSite).usingUser(adminUser).createContent(CMISUtil.DocumentType.TEXT_PLAIN);
         restClient.authenticateUser(manager).withCoreAPI().usingMe().addFileToFavorites(file);
         restClient.assertStatusCodeIs(HttpStatus.CREATED);
@@ -528,6 +540,8 @@ public class FunctionalCasesTests extends RestTest
     @Test(groups = { TestGroup.REST_API, TestGroup.FAVORITES, TestGroup.REGRESSION })
     public void changeFavoriteSiteVisibilityThenCheckFavorites() throws Exception
     {
+        UserModel manager = dataUser.createRandomTestUser();
+        dataUser.addUserToSite(manager, publicSite, UserRole.SiteManager);
         SiteModel favoriteSite = dataSite.usingUser(manager).createPublicRandomSite();
         UserModel regularUser = dataUser.createRandomTestUser();
 
