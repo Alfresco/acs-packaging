@@ -20,6 +20,12 @@
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-repository</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>org.apache.ws.xmlschema</artifactId>
+                    <groupId>xmlschema-core</groupId>
+                </exclusion>
+            </exclusions>            
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
