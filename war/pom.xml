@@ -20,6 +20,12 @@
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-repository</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>net.sf.javamusictag</artifactId>
+                        <groupId>jid3lib</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
