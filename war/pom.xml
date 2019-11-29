@@ -24,6 +24,12 @@
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-remote-api</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>com.rometools</artifactId>
+                    <groupId>rome</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
