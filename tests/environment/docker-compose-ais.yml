@@ -14,7 +14,8 @@ version: "3"
 
 services:
   alfresco:
-    image: alfresco/alfresco-content-repository:latest
+    build:
+      context: ./alfresco-with-jolokia
     environment:
       # use 'export HOST_IP=xxx' for specifying the host ip before starting docker compose
       # the following line will produce the result using 'ifconfig'
