@@ -34,8 +34,8 @@
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <dependency.alfresco-enterprise-remote-api.version>8.16</dependency.alfresco-enterprise-remote-api.version>
-        <dependency.alfresco-enterprise-repository.version>8.18</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-enterprise-remote-api.version>8.18</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>8.19</dependency.alfresco-enterprise-repository.version>
         <dependency.alfresco-remote-api.version>8.28</dependency.alfresco-remote-api.version>
         <dependency.alfresco-repository.version>8.27</dependency.alfresco-repository.version>
         <dependency.alfresco-data-model.version>8.57</dependency.alfresco-data-model.version>
@@ -408,6 +408,14 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-orm</artifactId>
                 <version>${dependency.spring.version}</version>
+                <!-- exclude spring-jcl which is brought in by spring-orm -->
+                <!-- see https://issues.alfresco.com/jira/browse/REPO-4774 -->
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-jcl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
