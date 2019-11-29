@@ -111,7 +111,7 @@ public class CheckInTests extends CmisTest
                 .checkIn().refreshResource()
             .and().assertThat().documentIsNotCheckedOut()
             .then().assertThat().documentHasVersion(2.0);
-        Utility.sleep(500, 5000, () ->
+        Utility.sleep(100, 5000, () ->
                 cmisApi.assertThat().contentIs(newContent));
     }
 
