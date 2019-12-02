@@ -28,10 +28,22 @@
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-enterprise-remote-api</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.activiti</groupId>
+                    <artifactId>activiti-simple-workflow</artifactId>
+                </exclusion>
+            </exclusions>            
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-enterprise-repository</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.activiti</groupId>
+                    <artifactId>activiti-simple-workflow</artifactId>
+                </exclusion>
+            </exclusions>            
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
