@@ -34,12 +34,12 @@
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <dependency.alfresco-enterprise-remote-api.version>8.15</dependency.alfresco-enterprise-remote-api.version>
-        <dependency.alfresco-enterprise-repository.version>8.15</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-remote-api.version>8.28</dependency.alfresco-remote-api.version>
-        <dependency.alfresco-repository.version>8.24</dependency.alfresco-repository.version>
-        <dependency.alfresco-data-model.version>8.55</dependency.alfresco-data-model.version>
-        <dependency.alfresco-core.version>7.22</dependency.alfresco-core.version>
+        <dependency.alfresco-enterprise-remote-api.version>repo-4751</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>repo-4751</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-remote-api.version>repo-4751</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-repository.version>repo-4751</dependency.alfresco-repository.version>
+        <dependency.alfresco-data-model.version>repo-4751</dependency.alfresco-data-model.version>
+        <dependency.alfresco-core.version>repo-4751</dependency.alfresco-core.version>
 
         <dependency.alfresco-hb-data-sender.version>1.0.12</dependency.alfresco-hb-data-sender.version>
 
@@ -55,7 +55,7 @@
         <dependency.gytheio.version>0.11.2</dependency.gytheio.version>
         <dependency.alfresco-log-sanitizer.version>0.2</dependency.alfresco-log-sanitizer.version>
 
-        <dependency.spring.version>5.1.8.RELEASE</dependency.spring.version>
+        <dependency.spring.version>5.2.1.RELEASE</dependency.spring.version>
         <dependency.fabric8.version>4.3.1</dependency.fabric8.version>
         <dependency.jackson.version>2.10.1</dependency.jackson.version>
         <dependency.jackson-databind.version>2.9.10</dependency.jackson-databind.version>
