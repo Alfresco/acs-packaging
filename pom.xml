@@ -34,18 +34,18 @@
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <dependency.alfresco-enterprise-remote-api.version>8.13</dependency.alfresco-enterprise-remote-api.version>
-        <dependency.alfresco-enterprise-repository.version>8.13</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-remote-api.version>8.28</dependency.alfresco-remote-api.version>
-        <dependency.alfresco-repository.version>8.21</dependency.alfresco-repository.version>
-        <dependency.alfresco-data-model.version>8.55</dependency.alfresco-data-model.version>
-        <dependency.alfresco-core.version>7.22</dependency.alfresco-core.version>
+        <dependency.alfresco-enterprise-remote-api.version>8.19</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>8.21</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-remote-api.version>8.37</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-repository.version>8.31</dependency.alfresco-repository.version>
+        <dependency.alfresco-data-model.version>8.57</dependency.alfresco-data-model.version>
+        <dependency.alfresco-core.version>7.23</dependency.alfresco-core.version>
 
         <dependency.alfresco-hb-data-sender.version>1.0.12</dependency.alfresco-hb-data-sender.version>
 
         <dependency.alfresco-spring-encryptor.version>6.1</dependency.alfresco-spring-encryptor.version>
         <dependency.alfresco-enterprise-crypto.version>6.2</dependency.alfresco-enterprise-crypto.version>
-        <dependency.alfresco-spring-webscripts.version>7.10</dependency.alfresco-spring-webscripts.version>
+        <dependency.alfresco-spring-webscripts.version>7.11</dependency.alfresco-spring-webscripts.version>
         <dependency.alfresco-mmt.version>6.0</dependency.alfresco-mmt.version>
         <dependency.alfresco-pdf-renderer.version>1.1</dependency.alfresco-pdf-renderer.version>
         <dependency.alfresco-trashcan-cleaner.version>2.3</dependency.alfresco-trashcan-cleaner.version>
@@ -108,7 +108,7 @@
         <alfresco.desktop-sync.version>3.2.0</alfresco.desktop-sync.version>
 
         <!-- Alfresco Alfresco Intelligence Services (AIS) -->
-        <alfresco.ais.version>1.1.1-RC1</alfresco.ais.version>
+        <alfresco.ais.version>1.1.1</alfresco.ais.version>
 
         <installer.version.name>${project.version}</installer.version.name>
         <alfresco.package.name>alfresco</alfresco.package.name>
@@ -120,14 +120,14 @@
         <!-- Private docker registry -->
         <image.registry>quay.io</image.registry>
 
-        <dependency.tas-utility.version>3.0.14</dependency.tas-utility.version>
+        <dependency.tas-utility.version>3.0.15</dependency.tas-utility.version>
         <dependency.rest-assured.version>3.3.0</dependency.rest-assured.version>
         <dependency.javax.json.version>1.1.4</dependency.javax.json.version>
         <dependency.tas-restapi.version>1.16</dependency.tas-restapi.version>
         <dependency.tas-cmis.version>1.6</dependency.tas-cmis.version>
         <dependency.tas-email.version>1.1</dependency.tas-email.version>
-        <dependency.tas-webdav.version>1.0</dependency.tas-webdav.version>
-        <dependency.tas-ftp.version>1.0</dependency.tas-ftp.version>
+        <dependency.tas-webdav.version>1.2</dependency.tas-webdav.version>
+        <dependency.tas-ftp.version>1.2</dependency.tas-ftp.version>
         <dependency.tas-dataprep.version>2.3</dependency.tas-dataprep.version>
     </properties>
 
@@ -380,6 +380,14 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-core</artifactId>
                 <version>${dependency.spring.version}</version>
+                <!-- exclude commons-logging which is brought in by spring-jcl -->
+                <!-- see https://issues.alfresco.com/jira/browse/REPO-4774 -->
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-jcl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -400,6 +408,14 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-orm</artifactId>
                 <version>${dependency.spring.version}</version>
+                <!-- exclude spring-jcl which is brought in by spring-orm -->
+                <!-- see https://issues.alfresco.com/jira/browse/REPO-4774 -->
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-jcl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
