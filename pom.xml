@@ -34,14 +34,14 @@
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <dependency.alfresco-core.version>7.5.7</dependency.alfresco-core.version>
-        <dependency.alfresco-data-model.version>8.25.11</dependency.alfresco-data-model.version>
+        <dependency.alfresco-core.version>7.5.8</dependency.alfresco-core.version>
+        <dependency.alfresco-data-model.version>8.25.13</dependency.alfresco-data-model.version>
 
-        <dependency.alfresco-repository.version>7.33.49</dependency.alfresco-repository.version>
+        <dependency.alfresco-repository.version>7.33.50</dependency.alfresco-repository.version>
         <dependency.alfresco-remote-api.version>7.34.34</dependency.alfresco-remote-api.version>
         <dependency.alfresco-hb-data-sender.version>1.0.12</dependency.alfresco-hb-data-sender.version>
 
-        <dependency.alfresco-enterprise-repository.version>7.25.25</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-enterprise-repository.version>7.25.27</dependency.alfresco-enterprise-repository.version>
         <dependency.alfresco-enterprise-remote-api.version>7.20.18</dependency.alfresco-enterprise-remote-api.version>
 
         <dependency.alfresco-spring-encryptor.version>6.1</dependency.alfresco-spring-encryptor.version>
@@ -360,6 +360,14 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-core</artifactId>
                 <version>${dependency.spring.version}</version>
+                <!-- exclude commons-logging which is brought in by spring-jcl -->
+                <!-- see https://issues.alfresco.com/jira/browse/REPO-4774 -->
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-jcl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -380,6 +388,14 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-orm</artifactId>
                 <version>${dependency.spring.version}</version>
+                <!-- exclude spring-jcl which is brought in by spring-orm -->
+                <!-- see https://issues.alfresco.com/jira/browse/REPO-4774 -->
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework</groupId>
+                        <artifactId>spring-jcl</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
