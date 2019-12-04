@@ -34,18 +34,18 @@
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <dependency.alfresco-enterprise-remote-api.version>8.22</dependency.alfresco-enterprise-remote-api.version>
-        <dependency.alfresco-enterprise-repository.version>8.26</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-remote-api.version>8.43</dependency.alfresco-remote-api.version>
-        <dependency.alfresco-repository.version>8.35</dependency.alfresco-repository.version>
-        <dependency.alfresco-data-model.version>8.59</dependency.alfresco-data-model.version>
-        <dependency.alfresco-core.version>8.0</dependency.alfresco-core.version>
+        <dependency.alfresco-enterprise-remote-api.version>8.24</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>8.27</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-remote-api.version>8.44</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-repository.version>8.37</dependency.alfresco-repository.version>
+        <dependency.alfresco-data-model.version>8.60</dependency.alfresco-data-model.version>
+        <dependency.alfresco-core.version>8.2</dependency.alfresco-core.version>
 
         <dependency.alfresco-hb-data-sender.version>1.0.12</dependency.alfresco-hb-data-sender.version>
 
         <dependency.alfresco-spring-encryptor.version>6.1</dependency.alfresco-spring-encryptor.version>
         <dependency.alfresco-enterprise-crypto.version>6.2</dependency.alfresco-enterprise-crypto.version>
-        <dependency.alfresco-spring-webscripts.version>8.0</dependency.alfresco-spring-webscripts.version>
+        <dependency.alfresco-spring-webscripts.version>8.1</dependency.alfresco-spring-webscripts.version>
         <dependency.alfresco-mmt.version>6.0</dependency.alfresco-mmt.version>
         <dependency.alfresco-pdf-renderer.version>1.1</dependency.alfresco-pdf-renderer.version>
         <dependency.alfresco-trashcan-cleaner.version>2.3</dependency.alfresco-trashcan-cleaner.version>
@@ -55,7 +55,7 @@
         <dependency.gytheio.version>0.11.2</dependency.gytheio.version>
         <dependency.alfresco-log-sanitizer.version>0.2</dependency.alfresco-log-sanitizer.version>
 
-        <dependency.spring.version>5.2.1.RELEASE</dependency.spring.version>
+        <dependency.spring.version>5.2.2.RELEASE</dependency.spring.version>
         <dependency.fabric8.version>4.3.1</dependency.fabric8.version>
         <dependency.jackson.version>2.10.1</dependency.jackson.version>
         <dependency.jackson-databind.version>2.9.10</dependency.jackson-databind.version>
