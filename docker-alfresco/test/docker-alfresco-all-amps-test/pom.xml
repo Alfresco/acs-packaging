@@ -215,14 +215,6 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
-                                    <artifactId>alfresco-ai-repo</artifactId>
-                                    <version>${alfresco.ais.version}</version>
-                                    <type>amp</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-ai-share</artifactId>
                                     <version>${alfresco.ais.version}</version>
                                     <type>amp</type>
