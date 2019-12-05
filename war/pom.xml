@@ -114,17 +114,6 @@
         </dependency>
         <dependency>
             <groupId>org.gytheio</groupId>
-            <artifactId>gytheio-health-commons</artifactId>
-            <version>${dependency.gytheio.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.gytheio</groupId>
             <artifactId>gytheio-messaging-camel</artifactId>
             <version>${dependency.gytheio.version}</version>
             <exclusions>
