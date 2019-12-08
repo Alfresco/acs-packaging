@@ -31,7 +31,7 @@
         <profile>
             <id>run-restapi-ais</id>
             <properties>
-                <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/restapi-ais-suite.xml</suiteXmlFile>
+                <suiteXmlFile>${project.basedir}/src/test/resources/restapi-ais-suite.xml</suiteXmlFile>
             </properties>
         </profile>
         <profile>
