@@ -40,7 +40,7 @@ public class GroupsTests extends RestTest
             JsonObject groupBody = Json.createObjectBuilder().add("id", id).add("displayName", "TestGroupDisplayName").build();
             String groupBodyCreate = groupBody.toString();
 
-            restClient.authenticateUser(userModel).withCoreAPI().usingGroups().createGroup(groupBodyCreate);
+            restClient.authenticateUser(adminUser).withCoreAPI().usingGroups().createGroup(groupBodyCreate);
             restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST);
         }
     }
