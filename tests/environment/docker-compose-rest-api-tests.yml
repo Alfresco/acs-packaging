@@ -50,8 +50,6 @@ services:
 
         -Dcors.enabled=true
         -Dcors.allowed.origins=http://localhost:4200,http://localhost:8080
-
-        -Dactivities.feed.notifier.enabled=false
         "
     ports:
       - 8082:8080
