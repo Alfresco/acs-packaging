@@ -30,6 +30,23 @@ public class GroupsTests extends RestTest
 
     @Test(groups = { TestGroup.REST_API, TestGroup.GROUPS, TestGroup.SANITY })
     @TestRail(section = { TestGroup.REST_API, TestGroup.NODES }, executionType = ExecutionType.SANITY,
+            description = "Make sure illegal characters are forbidden in group identifiers.")
+    public void createGroupWithIllegalCharInGroupId() throws Exception
+    {
+        char[] ILLEGAL_CHARACTERS = {'/', '\\', '\r', '\n', '"'};
+        for (char illegal_character : ILLEGAL_CHARACTERS)
+        {
+            String id = "Identifier" + illegal_character + "WithIllegalChar";
+            JsonObject groupBody = Json.createObjectBuilder().add("id", id).add("displayName", "TestGroupDisplayName").build();
+            String groupBodyCreate = groupBody.toString();
+
+            restClient.authenticateUser(userModel).withCoreAPI().usingGroups().createGroup(groupBodyCreate);
+            restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Test(groups = { TestGroup.REST_API, TestGroup.GROUPS, TestGroup.SANITY })
+    @TestRail(section = { TestGroup.REST_API, TestGroup.NODES }, executionType = ExecutionType.SANITY,
             description = "Verify creation, listing, updating and deletion of groups.")
     public void createListUpdateAndDeleteGroup() throws Exception
     {
