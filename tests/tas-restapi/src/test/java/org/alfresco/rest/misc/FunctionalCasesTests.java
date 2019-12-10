@@ -15,6 +15,7 @@ import org.alfresco.rest.model.RestSiteMemberModel;
 import org.alfresco.rest.model.RestSiteMembershipRequestModelsCollection;
 import org.alfresco.rest.model.RestTagModel;
 import org.alfresco.rest.model.RestTaskModel;
+import org.alfresco.utility.Utility;
 import org.alfresco.utility.constants.ActivityType;
 import org.alfresco.utility.constants.UserRole;
 import org.alfresco.utility.model.FileModel;
@@ -199,7 +200,7 @@ public class FunctionalCasesTests extends RestTest
         SiteModel publicSite = dataSite.usingUser(dataUser.getAdminUser()).createPublicRandomSite();
         dataUser.addUserToSite(manager, publicSite, UserRole.SiteManager);
         file = dataContent.usingUser(manager).usingSite(publicSite).createContent(DocumentType.TEXT_PLAIN);
-        activities = restClient.authenticateUser(manager).withCoreAPI().usingAuthUser().getPersonActivitiesUntilEntriesCountIs(2);
+        activities = restClient.authenticateUser(manager).withCoreAPI().usingAuthUser().getPersonActivitiesUntilEntriesCountIs(3);
         activities.assertThat().entriesListIsNotEmpty()
             .and().entriesListContains("siteId", publicSite.getId())
             .and().entriesListContains("activityType", "org.alfresco.documentlibrary.file-added")
@@ -243,7 +244,7 @@ public class FunctionalCasesTests extends RestTest
         dataUser.addUserToSite(manager, publicSite, UserRole.SiteManager);
         file = dataContent.usingUser(manager).usingSite(publicSite).createContent(DocumentType.TEXT_PLAIN);
         dataContent.usingUser(manager).usingResource(file).deleteContent();
-        activities = restClient.authenticateUser(manager).withCoreAPI().usingAuthUser().getPersonActivitiesUntilEntriesCountIs(2);
+        activities = restClient.authenticateUser(manager).withCoreAPI().usingAuthUser().getPersonActivitiesUntilEntriesCountIs(4);
         activities.assertThat().entriesListIsNotEmpty()
             .and().entriesListContains("siteId", publicSite.getId())
             .and().entriesListContains("activityType", "org.alfresco.documentlibrary.file-deleted")
@@ -340,7 +341,7 @@ public class FunctionalCasesTests extends RestTest
         UserModel userJoinSite = dataUser.createRandomTestUser();
         SiteModel publicSite = dataSite.usingUser(dataUser.getAdminUser()).createPublicRandomSite();
         restClient.authenticateUser(userJoinSite).withCoreAPI().usingMe().addSiteMembershipRequest(publicSite);
-        activities = restClient.withCoreAPI().usingAuthUser().getPersonActivitiesUntilEntriesCountIs(2);
+        activities = restClient.withCoreAPI().usingAuthUser().getPersonActivitiesUntilEntriesCountIs(1);
         activities.assertThat().entriesListIsNotEmpty().and()
                 .entriesListContains("siteId", publicSite.getId()).and()
                 .entriesListContains("activityType", "org.alfresco.site.user-joined").and()
@@ -459,7 +460,9 @@ public class FunctionalCasesTests extends RestTest
         
         restClient.authenticateUser(dataUser.getAdminUser()).withCoreAPI().usingSite(privateSite).deleteSiteMember(newUser);
         restClient.assertStatusCodeIs(HttpStatus.NO_CONTENT);
-        restClient.withCoreAPI().usingSite(privateSite).getSiteMembers().assertThat().entriesListDoesNotContain("id", newUser.getUsername());
+        Utility.sleep(200, 10000, () ->
+                restClient.withCoreAPI().usingSite(privateSite).getSiteMembers()
+                        .assertThat().entriesListDoesNotContain("id", newUser.getUsername()));
         
         RestCommentModelsCollection comments = restClient.authenticateUser(dataUser.getAdminUser()).withCoreAPI().usingResource(file).getNodeComments();
         restClient.assertStatusCodeIs(HttpStatus.OK);
