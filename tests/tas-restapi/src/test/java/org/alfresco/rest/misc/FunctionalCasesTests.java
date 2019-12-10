@@ -221,7 +221,7 @@ public class FunctionalCasesTests extends RestTest
         dataUser.addUserToSite(manager, publicSite, UserRole.SiteManager);
         file = dataContent.usingUser(manager).usingSite(publicSite).createContent(DocumentType.TEXT_PLAIN);
         restClient.authenticateUser(manager).withCoreAPI().usingResource(file).addComment("new comment");
-        activities = restClient.authenticateUser(manager).withCoreAPI().usingAuthUser().getPersonActivitiesUntilEntriesCountIs(3);
+        activities = restClient.authenticateUser(manager).withCoreAPI().usingAuthUser().getPersonActivitiesUntilEntriesCountIs(4);
         activities.assertThat().entriesListIsNotEmpty()
             .and().entriesListContains("siteId", publicSite.getId())
             .and().entriesListContains("activityType", "org.alfresco.comments.comment-created")
