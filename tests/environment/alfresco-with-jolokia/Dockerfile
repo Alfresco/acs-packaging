@@ -25,8 +25,8 @@ RUN mkdir ${TOMCAT_DIR}/webapps/jolokia && \
 
 RUN echo -e '\n\
 # every second \n\
-activities.feed.generator.cronExpression=0/1 * * * * ? \n\
-activities.post.lookup.cronExpression=0/1 * * * * ?\n\
+activities.feed.generator.cronExpression=* * * ? * * \n\
+activities.post.lookup.cronExpression=* * * ? * * \n\
 ' >> ${TOMCAT_DIR}/shared/classes/alfresco-global.properties
 
 USER ${USERID}
