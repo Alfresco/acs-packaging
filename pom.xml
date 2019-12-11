@@ -34,18 +34,18 @@
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <dependency.alfresco-enterprise-remote-api.version>8.19</dependency.alfresco-enterprise-remote-api.version>
-        <dependency.alfresco-enterprise-repository.version>8.21</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-remote-api.version>8.37</dependency.alfresco-remote-api.version>
-        <dependency.alfresco-repository.version>8.31</dependency.alfresco-repository.version>
-        <dependency.alfresco-data-model.version>8.57</dependency.alfresco-data-model.version>
-        <dependency.alfresco-core.version>7.23</dependency.alfresco-core.version>
+        <dependency.alfresco-enterprise-remote-api.version>8.31</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>8.33</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-remote-api.version>8.47</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-repository.version>8.40</dependency.alfresco-repository.version>
+        <dependency.alfresco-data-model.version>8.60</dependency.alfresco-data-model.version>
+        <dependency.alfresco-core.version>8.2</dependency.alfresco-core.version>
 
         <dependency.alfresco-hb-data-sender.version>1.0.12</dependency.alfresco-hb-data-sender.version>
 
         <dependency.alfresco-spring-encryptor.version>6.1</dependency.alfresco-spring-encryptor.version>
         <dependency.alfresco-enterprise-crypto.version>6.2</dependency.alfresco-enterprise-crypto.version>
-        <dependency.alfresco-spring-webscripts.version>7.11</dependency.alfresco-spring-webscripts.version>
+        <dependency.alfresco-spring-webscripts.version>8.1</dependency.alfresco-spring-webscripts.version>
         <dependency.alfresco-mmt.version>6.0</dependency.alfresco-mmt.version>
         <dependency.alfresco-pdf-renderer.version>1.1</dependency.alfresco-pdf-renderer.version>
         <dependency.alfresco-trashcan-cleaner.version>2.3</dependency.alfresco-trashcan-cleaner.version>
@@ -55,7 +55,7 @@
         <dependency.gytheio.version>0.11.2</dependency.gytheio.version>
         <dependency.alfresco-log-sanitizer.version>0.2</dependency.alfresco-log-sanitizer.version>
 
-        <dependency.spring.version>5.1.8.RELEASE</dependency.spring.version>
+        <dependency.spring.version>5.2.2.RELEASE</dependency.spring.version>
         <dependency.fabric8.version>4.3.1</dependency.fabric8.version>
         <dependency.jackson.version>2.10.1</dependency.jackson.version>
         <dependency.jackson-databind.version>2.9.10</dependency.jackson-databind.version>
@@ -108,26 +108,26 @@
         <alfresco.desktop-sync.version>3.2.0</alfresco.desktop-sync.version>
 
         <!-- Alfresco Alfresco Intelligence Services (AIS) -->
-        <alfresco.ais.version>1.1.1</alfresco.ais.version>
+        <alfresco.ais.version>1.1.1.1</alfresco.ais.version>
 
         <installer.version.name>${project.version}</installer.version.name>
         <alfresco.package.name>alfresco</alfresco.package.name>
         <alfresco.distribution.name>${alfresco.package.name}-distribution</alfresco.distribution.name>
 
-        <dependency.postgresql.version>42.2.8</dependency.postgresql.version>
+        <dependency.postgresql.version>42.2.9</dependency.postgresql.version>
         <dependency.mariadb.version>2.5.2</dependency.mariadb.version>
 
         <!-- Private docker registry -->
         <image.registry>quay.io</image.registry>
 
-        <dependency.tas-utility.version>3.0.15</dependency.tas-utility.version>
+        <dependency.tas-utility.version>3.0.16</dependency.tas-utility.version>
         <dependency.rest-assured.version>3.3.0</dependency.rest-assured.version>
         <dependency.javax.json.version>1.1.4</dependency.javax.json.version>
         <dependency.tas-restapi.version>1.16</dependency.tas-restapi.version>
         <dependency.tas-cmis.version>1.6</dependency.tas-cmis.version>
         <dependency.tas-email.version>1.1</dependency.tas-email.version>
-        <dependency.tas-webdav.version>1.2</dependency.tas-webdav.version>
-        <dependency.tas-ftp.version>1.2</dependency.tas-ftp.version>
+        <dependency.tas-webdav.version>1.3</dependency.tas-webdav.version>
+        <dependency.tas-ftp.version>1.3</dependency.tas-ftp.version>
         <dependency.tas-dataprep.version>2.3</dependency.tas-dataprep.version>
     </properties>
 
@@ -682,7 +682,7 @@
             <dependency>
                 <groupId>com.hazelcast</groupId>
                 <artifactId>hazelcast</artifactId>
-                <version>3.12.4</version>
+                <version>3.12.5</version>
             </dependency>
             <!-- upgrade dependency from TIKA -->
             <dependency>
