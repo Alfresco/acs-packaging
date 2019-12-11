@@ -65,8 +65,9 @@ public class RemoveSiteMemberTests extends RestTest
         restClient.withCoreAPI().usingSite(publicSiteModel).deleteSiteMember(testUserModel);
         restClient.assertStatusCodeIs(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        restClient.withCoreAPI().usingSite(publicSiteModel).getSiteMembers()
-            .assertThat().entriesListContains("id", testUserModel.getUsername());
+        Utility.sleep(300, 10000, () -> restClient.withCoreAPI()
+                .usingSite(publicSiteModel).getSiteMembers()
+                .assertThat().entriesListContains("id", testUserModel.getUsername()));
         restClient.assertStatusCodeIs(HttpStatus.OK);
     }
 
@@ -82,8 +83,8 @@ public class RemoveSiteMemberTests extends RestTest
         restClient.withCoreAPI().usingSite(publicSiteModel).deleteSiteMember(testUserModel);
         restClient.assertStatusCodeIs(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        restClient.withCoreAPI().usingSite(publicSiteModel).getSiteMembers()
-            .assertThat().entriesListContains("id", testUserModel.getUsername());
+        Utility.sleep(300, 10000, () -> restClient.withCoreAPI().usingSite(publicSiteModel)
+                .getSiteMembers().assertThat().entriesListContains("id", testUserModel.getUsername()));
         restClient.assertStatusCodeIs(HttpStatus.OK);
     }
 
@@ -99,8 +100,8 @@ public class RemoveSiteMemberTests extends RestTest
                 .deleteSiteMember(testUserModel);
         restClient.assertStatusCodeIs(HttpStatus.UNPROCESSABLE_ENTITY);
 
-        restClient.withCoreAPI().usingSite(publicSiteModel).getSiteMembers()
-            .assertThat().entriesListContains("id", testUserModel.getUsername());
+        Utility.sleep(300, 10000, () -> restClient.withCoreAPI().usingSite(publicSiteModel)
+                .getSiteMembers().assertThat().entriesListContains("id", testUserModel.getUsername()));
         restClient.assertStatusCodeIs(HttpStatus.OK);
     }
 
