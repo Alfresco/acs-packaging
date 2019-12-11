@@ -20,6 +20,12 @@
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-repository</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.beetstra.jutf7</groupId>
+                    <artifactId>jutf7</artifactId>
+                </exclusion>
+            </exclusions>            
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
