@@ -190,7 +190,7 @@ public class RemoveSiteMemberTests extends RestTest
         restClient.withCoreAPI().usingSite(publicSiteModel).deleteSiteMember(meUser);
         restClient.assertStatusCodeIs(HttpStatus.NO_CONTENT);
 
-        Utility.sleep(300, 10000, () -> restClient.withCoreAPI().usingSite(publicSiteModel)
+        Utility.sleep(400, 15000, () -> restClient.withCoreAPI().usingSite(publicSiteModel)
                 .getSiteMembers().assertThat().entriesListDoesNotContain("id", manager.getUsername()));
     }
 
