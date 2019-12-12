@@ -71,7 +71,10 @@ services:
       - 61613:61613 # STOMP
 
   solr6:
-    image: alfresco/alfresco-search-services:${SOLR6_TAG}
+    build:
+      context: ./search
+      args:
+        - TAG=${SOLR6_TAG}
     environment:
       #Solr needs to know how to register itself with Alfresco
       - SOLR_ALFRESCO_HOST=alfresco
