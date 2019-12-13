@@ -71,10 +71,7 @@ services:
       - 5432:5432
 
   solr6:
-    build:
-      context: ./search
-      args:
-        - TAG=${SOLR6_TAG}
+    image: alfresco/alfresco-search-services:${SOLR6_TAG}
     environment:
       #Solr needs to know how to register itself with Alfresco
       - SOLR_ALFRESCO_HOST=alfresco
