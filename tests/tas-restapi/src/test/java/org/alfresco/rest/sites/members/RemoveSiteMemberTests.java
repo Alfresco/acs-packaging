@@ -37,7 +37,6 @@ public class RemoveSiteMemberTests extends RestTest
                 UserRole.SiteContributor);
     }
 
-    @Bug(id="REPO-4863")
     @Test(groups = { TestGroup.REST_API, TestGroup.SITES, TestGroup.SANITY })
     @TestRail(section = { TestGroup.REST_API,
             TestGroup.SITES }, executionType = ExecutionType.SANITY, description = "Verify that site manager can delete site member and gets status code 204, 'No Content'")
@@ -178,7 +177,6 @@ public class RemoveSiteMemberTests extends RestTest
                 .getSiteMembers().assertThat().entriesListDoesNotContain("id", anothermanager.getUsername()));
     }
 
-    @Bug(id="REPO-4864")
     @TestRail(section = {TestGroup.REST_API, TestGroup.SITES }, executionType = ExecutionType.REGRESSION,
             description = "Verify that manager can delete site member using \"-me-\" in place of personId")
     @Test(groups = { TestGroup.REST_API, TestGroup.SITES, TestGroup.REGRESSION })
@@ -280,7 +278,6 @@ public class RemoveSiteMemberTests extends RestTest
                 .assertLastError().containsSummary(String.format(RestErrorModel.NOT_SUFFICIENT_PERMISSIONS, publicSiteModel.getId()));
     }
 
-    @Bug(id="REPO-4865")
     @TestRail(section = {TestGroup.REST_API, TestGroup.SITES }, executionType = ExecutionType.REGRESSION,
             description = "Verify that manager can delete a site member with Contributor role")
     @Test(groups = { TestGroup.REST_API, TestGroup.SITES, TestGroup.REGRESSION })

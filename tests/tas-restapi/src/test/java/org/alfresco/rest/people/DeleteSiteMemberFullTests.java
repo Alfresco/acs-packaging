@@ -187,7 +187,6 @@ public class DeleteSiteMemberFullTests extends RestTest
                 .entriesListContains("id", usersWithRolesPublicSite.getOneUserWithRole(UserRole.SiteManager).getUsername()));
     }
 
-    @Bug(id="REPO-4862")
     @Test(groups = { TestGroup.REST_API, TestGroup.PEOPLE, TestGroup.REGRESSION })
     @TestRail(section = { TestGroup.REST_API, TestGroup.PEOPLE }, executionType = ExecutionType.REGRESSION, description = "Verify site creator can be deleted")
     public void siteCreatorCanBeDeleted() throws Exception
