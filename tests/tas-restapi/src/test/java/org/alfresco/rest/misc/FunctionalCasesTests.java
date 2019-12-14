@@ -440,6 +440,7 @@ public class FunctionalCasesTests extends RestTest
      * 3. Remove user from site
      * 4. Get comments and check if the above comment was deleted
      */
+    @Bug(id="REPO-4854")
     @TestRail(section = { TestGroup.REST_API, TestGroup.COMMENTS },
             executionType = ExecutionType.REGRESSION, description = "Check that a comment of a document from a private site is not deleted after user is removed")
     @Test(groups = { TestGroup.REST_API, TestGroup.COMMENTS, TestGroup.REGRESSION })
