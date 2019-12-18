@@ -6,6 +6,7 @@ This section will describe how to migrate custom synchronous transformers
 created for Alfresco Content Repository (ACS) prior to version 6.2, to new
 asynchronous out of process T-Engines.
 The pre 6.2 transformers will be referred to as *Legacy Transformers*.
+These have now been removed.
 It is assumed that the reader is familiar with creating and configuring
 a new T-Engine as described in [Creating a T-Engine](creating-a-t-engine.md).
 

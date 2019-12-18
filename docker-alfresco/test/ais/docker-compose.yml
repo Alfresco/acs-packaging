@@ -53,13 +53,6 @@ services:
                 -DlocalTransform.tika.url=http://tika:8090/
                 -DlocalTransform.misc.url=http://transform-misc:8090/
 
-                -Dlegacy.transform.service.enabled=${LEGACY_TRANSFORM_SERVICE_ENABLED}
-                -Dalfresco-pdf-renderer.url=http://alfresco-pdf-renderer:8090/
-                -Djodconverter.url=http://libreoffice:8090/
-                -Dimg.url=http://imagemagick:8090/
-                -Dtika.url=http://tika:8090/
-                -Dtransform.misc.url=http://transform-misc:8090/
-
                 -Dauthentication.chain=identity-service1:identity-service,alfrescoNtlm1:alfrescoNtlm
                 -Didentity-service.enable-basic-auth=true
                 -Didentity-service.authentication.validation.failure.silent=false
