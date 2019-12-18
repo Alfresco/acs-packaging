@@ -24,6 +24,12 @@
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-remote-api</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.alfresco.cmis.client</groupId>
+                    <artifactId>alfresco-opencmis-extension</artifactId>
+                </exclusion>
+            </exclusions>            
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
