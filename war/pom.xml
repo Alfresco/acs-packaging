@@ -32,6 +32,12 @@
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-enterprise-repository</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.vaadin</groupId>
+                    <artifactId>vaadin</artifactId>
+                </exclusion>                
+            </exclusions>            
         </dependency>
         <dependency>
             <groupId>org.alfresco</groupId>
