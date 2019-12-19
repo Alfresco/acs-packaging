@@ -120,14 +120,14 @@
         <!-- Private docker registry -->
         <image.registry>quay.io</image.registry>
 
-        <dependency.tas-utility.version>3.0.16</dependency.tas-utility.version>
+        <dependency.tas-utility.version>3.0.17</dependency.tas-utility.version>
         <dependency.rest-assured.version>3.3.0</dependency.rest-assured.version>
         <dependency.javax.json.version>1.1.4</dependency.javax.json.version>
-        <dependency.tas-restapi.version>1.16</dependency.tas-restapi.version>
-        <dependency.tas-cmis.version>1.11</dependency.tas-cmis.version>
-        <dependency.tas-email.version>1.4</dependency.tas-email.version>
-        <dependency.tas-webdav.version>1.3</dependency.tas-webdav.version>
-        <dependency.tas-ftp.version>1.3</dependency.tas-ftp.version>
+        <dependency.tas-restapi.version>1.26</dependency.tas-restapi.version>
+        <dependency.tas-cmis.version>1.2</dependency.tas-cmis.version>
+        <dependency.tas-email.version>1.6</dependency.tas-email.version>
+        <dependency.tas-webdav.version>1.4</dependency.tas-webdav.version>
+        <dependency.tas-ftp.version>1.4</dependency.tas-ftp.version>
         <dependency.tas-dataprep.version>2.3</dependency.tas-dataprep.version>
     </properties>
 
