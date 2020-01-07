@@ -157,17 +157,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>org.gytheio</groupId>
-            <artifactId>gytheio-transform-worker-ffmpeg</artifactId>
-            <version>${dependency.gytheio.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-log-sanitizer</artifactId>
         </dependency>
