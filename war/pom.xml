@@ -60,12 +60,6 @@
             <artifactId>avalon-framework-impl</artifactId>
             <version>4.3.1</version>
         </dependency>
-        <!-- required by MM and GDocs-->
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
-        </dependency>
         <!-- Gytheio is required by MM and Desktop Sync -->
         <!-- some of the dependencies are declared and used in alfresco-repository -->
         <dependency>
