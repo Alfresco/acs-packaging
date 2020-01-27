@@ -52,6 +52,12 @@
                 <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/part3-suite.xml</suiteXmlFile>
             </properties>
         </profile>
+        <profile>
+            <id>run-restapi-ldap</id>
+            <properties>
+                <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/ldap-suite.xml</suiteXmlFile>
+            </properties>
+        </profile>
     </profiles>
 
     <dependencies>
