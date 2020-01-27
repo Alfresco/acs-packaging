@@ -6,4 +6,5 @@ ADD startup.sh /container/environment/99-default/service/slapd/startup.sh
 ADD default.yaml.startup /container/environment/99-default/default.yaml.startup
 
 # Expose default ldap and ldaps ports
+
 EXPOSE 389 636
