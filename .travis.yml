@@ -21,7 +21,6 @@ branches:
     - feature/repo-4736-release_stage
 
 stages:
-#  - test
   - release
   - publish
 
@@ -53,7 +52,7 @@ matrix:
         # Add email to link commits to user
         - git config user.email "${GIT_EMAIL}"
         # Skip building of release commits
-        - mvn --batch-mode -q -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -Dversion.edition=Enterprise -DreleaseVersion=repo-4736-0 -DdevelopmentVersion=6.3.0-SNAPSHOT -DskipTests -Darguments=-DskipTests release:clean release:prepare release:perform
+        - travis_wait 35 mvn --batch-mode -q -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -Dversion.edition=Enterprise -DreleaseVersion=repo-4736-0 -DdevelopmentVersion=6.3.0-SNAPSHOT -DskipTests -Darguments=-DskipTests release:clean release:prepare release:perform
     - stage: publish
       name: "publish"
       install:
