@@ -21,7 +21,7 @@ branches:
     - feature/repo-4736-release_stage
 
 stages:
-  - test
+#  - test
   - release
   - publish
 
