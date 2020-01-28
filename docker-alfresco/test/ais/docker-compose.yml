@@ -188,7 +188,7 @@ services:
             - 61613:61613 # STOMP
                 
     alfresco-identity-service:
-        image: quay.io/alfresco/alfresco-identity-service:${AIS_TAG}
+        image: quay.io/alfresco/alfresco-identity-service:${AIMS_TAG}
         environment:
             - KEYCLOAK_USER=admin
             - KEYCLOAK_PASSWORD=admin
