@@ -29,9 +29,9 @@
 
     <profiles>
         <profile>
-            <id>run-tas-cmis-tests-with-ais</id>
+            <id>run-tas-cmis-tests-with-aims</id>
             <properties>
-                <suiteXmlFile>${project.basedir}/src/test/resources/cmis-ais-suite.xml</suiteXmlFile>
+                <suiteXmlFile>${project.basedir}/src/test/resources/cmis-aims-suite.xml</suiteXmlFile>
             </properties>
         </profile>
     </profiles>

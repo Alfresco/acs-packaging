@@ -29,9 +29,9 @@
 
     <profiles>
         <profile>
-            <id>run-restapi-ais</id>
+            <id>run-restapi-aims</id>
             <properties>
-                <suiteXmlFile>${project.basedir}/src/test/resources/restapi-ais-suite.xml</suiteXmlFile>
+                <suiteXmlFile>${project.basedir}/src/test/resources/restapi-aims-suite.xml</suiteXmlFile>
             </properties>
         </profile>
         <profile>
