@@ -52,6 +52,7 @@ jobs:
         # Add email to link commits to user
         - git config user.email "${GIT_EMAIL}"
         # Skip building of release commits
+        - cat /home/travis/build/Alfresco/acs-packaging/docker-alfresco/test/docker-alfresco-all-amps-test/target/war/alfresco/WEB-INF/classes/alfresco/version.properties
         - travis_wait 35 mvn --batch-mode -q -X -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=repo-4736-0 -DdevelopmentVersion=6.3.0-SNAPSHOT -DskipTests -Darguments="-DskipTests" release:clean release:prepare release:perform
     - stage: publish
       name: "publish"
