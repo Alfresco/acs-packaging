@@ -20,9 +20,10 @@ branches:
     - /support\/.*/
     - feature/repo-4736-release_stage
 
-stages:
-  - release
-  - publish
+#stages:
+#  - test
+#  - release
+#  - publish
 
 # This should not be required on community build
 before_install:
@@ -30,22 +31,25 @@ before_install:
 
 jobs:
   include:
-    - stage: test
-      name: "WhiteSource scan"
-      # only on support branches or master and if it is not a PR
-#      if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request
-      install:
-        - travis_retry travis_wait 30 mvn -q install -f war/pom.xml
-      script:
-        # Download the latest version of WhiteSource Unified Agent
-        - curl -LJO https://github.com/whitesource/unified-agent-distribution/raw/master/standAlone/wss-unified-agent.jar
-        # Run WhiteSource Unified Agent
-        - java -jar wss-unified-agent.jar -apiKey ${WHITESOURCE_API_KEY} -c .wss-unified-agent.config -d ./war
+#    - stage: test
+#      name: "All AMPs tests"
+#      jdk: openjdk11
+#      install:
+#        - travis_retry travis_wait 20 mvn install -q -PenterpriseDocker
+#        - travis_retry travis_wait 20 mvn install -q -f tests/tas-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
+#      script:
+#        - ./tests/scripts/checkLibraryDuplicates.sh ./tests/tas-all-amps/target/war/alfresco/WEB-INF/lib
+#        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-all-amps-test.yml
+#        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#        - travis_wait 20 mvn install -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
     - stage: release
       name: "Release"
+      jdk: openjdk11
       if: fork = false AND (branch = feature/repo-4736-release_stage OR branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message !~ /\[no-release\]/
       install:
         - ./scripts/verify-git-tags.sh
+        - travis_retry travis_wait 20 mvn install -q -PenterpriseDocker
+        - travis_retry travis_wait 20 mvn install -q -f tests/tas-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
       script:
         # Use full history for release
         - git checkout -B "${TRAVIS_BRANCH}"
@@ -53,7 +57,4 @@ jobs:
         - git config user.email "${GIT_EMAIL}"
         # Skip building of release commits
         - cat /home/travis/build/Alfresco/acs-packaging/docker-alfresco/test/docker-alfresco-all-amps-test/target/war/alfresco/WEB-INF/classes/alfresco/version.properties
-        - travis_wait 35 mvn --batch-mode -q -X -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=repo-4736-0 -DdevelopmentVersion=6.3.0-SNAPSHOT -DskipTests -Darguments="-DskipTests" clean release:clean release:prepare release:perform
-    - stage: publish
-      name: "publish"
-      install:
+        - travis_wait 35 mvn --batch-mode -q -X -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=repo-4736-0 -DdevelopmentVersion=6.3.0-SNAPSHOT -DskipTests -Darguments="-DskipTests" release:clean release:prepare release:perform
