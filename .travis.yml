@@ -49,8 +49,6 @@ jobs:
       if: fork = false AND (branch = feature/repo-4736-release_stage OR branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message !~ /\[no-release\]/
       install:
         - ./scripts/verify-git-tags.sh
-        - travis_retry travis_wait 20 mvn install -q -PenterpriseDocker
-        - travis_retry travis_wait 20 mvn install -q -f tests/tas-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
       script:
         # Use full history for release
         - git checkout -B "${TRAVIS_BRANCH}"
