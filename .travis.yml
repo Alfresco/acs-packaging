@@ -43,7 +43,6 @@ jobs:
         - git checkout -B "${TRAVIS_BRANCH}"
         # Add email to link commits to user
         - git config user.email "${GIT_EMAIL}"
-        # Login to quay.io
-        - docker login quay.io -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
+#        - docker login quay.io -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
         # Skip building of release commits
-        - travis_wait 30 mvn --batch-mode -q -X -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=repo-4736-4 -DdevelopmentVersion=6.3.0-SNAPSHOT -DskipTests -Darguments="-DskipTests" -Prelease release:clean release:prepare release:perform
+        - travis_wait 30 mvn --batch-mode -q -X -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=repo-4736-5 -DdevelopmentVersion=6.3.0-SNAPSHOT -DskipTests -Darguments="-DskipTests -X" -Prelease release:clean release:prepare release:perform
