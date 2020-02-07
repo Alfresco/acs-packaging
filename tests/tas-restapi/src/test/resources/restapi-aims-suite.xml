@@ -17,6 +17,7 @@
                 <exclude name="renditions"/>
                 <exclude name="auth"/>
                 <exclude name="audit"/>
+                <exclude name="ldap"/>
 			</run>
 		</groups>
         <packages>

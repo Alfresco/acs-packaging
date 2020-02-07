@@ -18,5 +18,6 @@
         <suite-file path="test-suites/part1-suite.xml"/>
         <suite-file path="test-suites/part2-suite.xml"/>
         <suite-file path="test-suites/part3-suite.xml"/>
+        <suite-file path="test-suites/ldap-suite.xml"/>
     </suite-files>
 </suite>

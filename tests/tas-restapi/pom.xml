@@ -29,9 +29,9 @@
 
     <profiles>
         <profile>
-            <id>run-restapi-ais</id>
+            <id>run-restapi-aims</id>
             <properties>
-                <suiteXmlFile>${project.basedir}/src/test/resources/restapi-ais-suite.xml</suiteXmlFile>
+                <suiteXmlFile>${project.basedir}/src/test/resources/restapi-aims-suite.xml</suiteXmlFile>
             </properties>
         </profile>
         <profile>
@@ -50,6 +50,12 @@
             <id>run-restapi-part3</id>
             <properties>
                 <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/part3-suite.xml</suiteXmlFile>
+            </properties>
+        </profile>
+        <profile>
+            <id>run-restapi-ldap</id>
+            <properties>
+                <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/ldap-suite.xml</suiteXmlFile>
             </properties>
         </profile>
     </profiles>

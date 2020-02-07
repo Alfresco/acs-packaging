@@ -38,6 +38,10 @@
             <artifactId>alfresco-enterprise-crypto</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.activiti</groupId>
+            <artifactId>activiti-repo-connector</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-trashcan-cleaner</artifactId>
         </dependency>

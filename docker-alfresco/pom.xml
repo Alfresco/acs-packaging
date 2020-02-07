@@ -63,8 +63,8 @@
         </dependency>
         <dependency>
             <groupId>org.alfresco.integrations</groupId>
-            <artifactId>alfresco-googledocs-repo</artifactId>
-            <version>${alfresco.googledocs.version}</version>
+            <artifactId>alfresco-googledrive-repo-enterprise</artifactId>
+            <version>${alfresco.googledrive.version}</version>
             <type>amp</type>
         </dependency>
     </dependencies>
@@ -191,8 +191,8 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.alfresco.integrations</groupId>
-                                    <artifactId>alfresco-googledocs-repo</artifactId>
-                                    <version>${alfresco.googledocs.version}</version>
+                                    <artifactId>alfresco-googledrive-repo-enterprise</artifactId>
+                                    <version>${alfresco.googledrive.version}</version>
                                     <type>amp</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
