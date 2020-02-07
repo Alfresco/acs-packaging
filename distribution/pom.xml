@@ -61,17 +61,6 @@
         </dependency>
         <!-- SOLR Distribution: Run Alfresco Search Services Separately -->
         <!-- SHARE Distribution -->
-        <dependency>
-            <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-content-services-share-distribution</artifactId>
-            <type>zip</type>
-            <exclusions>
-                <exclusion>
-                    <groupId>*</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
     </dependencies>
 
     <build>
@@ -99,12 +88,6 @@
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-repository</artifactId>
                                     <includes>alfresco/keystore/**</includes>
-                                </artifactItem>
-
-                                <artifactItem>
-                                    <groupId>org.alfresco</groupId>
-                                    <artifactId>alfresco-content-services-share-distribution</artifactId>
-                                    <type>zip</type>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>

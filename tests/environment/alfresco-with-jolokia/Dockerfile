@@ -9,7 +9,7 @@ ARG USERID=33000
 USER root
 
 RUN mkdir ${TOMCAT_DIR}/webapps/jolokia && \
-    curl -o /tmp/jolokia.war http://search.maven.org/remotecontent?filepath=org/jolokia/jolokia-war-unsecured/1.6.2/jolokia-war-unsecured-1.6.2.war && \
+    curl -o /tmp/jolokia.war https://repo1.maven.org/maven2/org/jolokia/jolokia-war-unsecured/1.6.2/jolokia-war-unsecured-1.6.2.war && \
     cd ${TOMCAT_DIR}/webapps/jolokia && \
     jar xvf /tmp/jolokia.war && \
     cd ${TOMCAT_DIR} && \
