@@ -10,7 +10,7 @@ fi
 
 WAIT_INTERVAL=1
 COUNTER=0
-TIMEOUT=5000
+TIMEOUT=300
 t0=$(date +%s)
 
 echo "Waiting for alfresco to start"
