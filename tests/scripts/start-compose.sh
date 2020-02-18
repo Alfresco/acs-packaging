@@ -11,7 +11,7 @@ fi
 echo "Starting ACS stack in ${DOCKER_COMPOSE_PATH}"
 
 # .env files are picked up from project directory correctly on docker-compose 1.23.0+
-docker-compose --file "${DOCKER_COMPOSE_PATH}" --project-directory $(dirname "${DOCKER_COMPOSE_PATH}") up -d
+docker-compose --file "${DOCKER_COMPOSE_PATH}" --project-directory $(dirname "${DOCKER_COMPOSE_PATH}") up
 
 if [ $? -eq 0 ]
 then
