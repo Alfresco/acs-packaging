@@ -18,7 +18,6 @@ branches:
   only:
     - master
     - /support\/.*/
-    - fix/REPO-4709_remove-cloud-sync
 
 # This should not be required on community build
 before_install:
