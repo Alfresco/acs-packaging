@@ -91,21 +91,12 @@ public abstract class AuditTest extends RestTest
         restClient.assertStatusCodeIs(HttpStatus.OK);
     }
 
-    protected RestAuditAppModel getSyncRestAuditAppModel(UserModel userModel) throws Exception
-    {
-        restAuditCollection = restClient.authenticateUser(userModel).withCoreAPI().usingAudit().getAuditApplications();
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        restAuditCollection.assertThat().entriesListIsNotEmpty();
-        RestAuditAppModel syncRestAuditAppModel = restAuditCollection.getEntries().get(0).onModel();
-        return syncRestAuditAppModel;
-    }
-
     protected RestAuditAppModel getTaggingRestAuditAppModel(UserModel userModel) throws Exception
     {
         restAuditCollection = restClient.authenticateUser(userModel).withCoreAPI().usingAudit().getAuditApplications();
         restClient.assertStatusCodeIs(HttpStatus.OK);
         restAuditCollection.assertThat().entriesListIsNotEmpty();
-        RestAuditAppModel taggingRestAuditAppModel = restAuditCollection.getEntries().get(1).onModel();
+        RestAuditAppModel taggingRestAuditAppModel = restAuditCollection.getEntries().get(0).onModel();
         return taggingRestAuditAppModel;
     }
 

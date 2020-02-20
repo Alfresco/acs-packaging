@@ -10,34 +10,6 @@ import org.testng.annotations.Test;
 public class PutAuditTests extends AuditTest
 {
 
-    @Test(groups = { TestGroup.REST_API, TestGroup.AUDIT, TestGroup.REGRESSION })
-    @TestRail(section = { TestGroup.REST_API,
-            TestGroup.AUDIT }, executionType = ExecutionType.REGRESSION, description = "Verify that the admin user can enable/disable sync application auditing")
-    public void enableDisableSyncApplicationAuditingAsAdminUser() throws Exception
-    {
-        // disable sync audit app
-        syncRestAuditAppModel = getSyncRestAuditAppModel(adminUser);
-        restClient.authenticateUser(adminUser).withCoreAPI().usingAudit().updateAuditApp(syncRestAuditAppModel, "isEnabled",
-                "false");
-
-        // check isEnabled=false
-        syncRestAuditAppModel = getSyncRestAuditAppModel(adminUser);
-        syncRestAuditAppModel.assertThat().field("isEnabled").is(false);
-        syncRestAuditAppModel.assertThat().field("name").is("Alfresco Sync Service");
-        syncRestAuditAppModel.assertThat().field("id").is("sync");
-
-        // enable sync audit app
-        restClient.authenticateUser(adminUser).withCoreAPI().usingAudit().updateAuditApp(syncRestAuditAppModel, "isEnabled",
-                "true");
-
-        // check isEnabled=true
-        syncRestAuditAppModel = getSyncRestAuditAppModel(adminUser);
-        syncRestAuditAppModel.assertThat().field("isEnabled").is(true);
-        syncRestAuditAppModel.assertThat().field("name").is("Alfresco Sync Service");
-        syncRestAuditAppModel.assertThat().field("id").is("sync");
-
-    }
-
     @Test(groups = { TestGroup.REST_API, TestGroup.AUDIT, TestGroup.SANITY })
     @TestRail(section = { TestGroup.REST_API,
             TestGroup.AUDIT }, executionType = ExecutionType.SANITY, description = "Verify that the admin user can enable/disable tagging application auditing")
@@ -66,26 +38,6 @@ public class PutAuditTests extends AuditTest
 
     }
 
-    @Test(groups = { TestGroup.REST_API, TestGroup.AUDIT, TestGroup.REGRESSION })
-    @TestRail(section = { TestGroup.REST_API,
-            TestGroup.AUDIT }, executionType = ExecutionType.REGRESSION, description = "Verify that the normal user can't enable/disable sync application auditing")
-    public void enableDisableSyncApplicationAuditingAsNormalUser() throws Exception
-    {
-        // disable sync audit app
-        syncRestAuditAppModel = getSyncRestAuditAppModel(adminUser);
-        restClient.authenticateUser(userModel).withCoreAPI().usingAudit().updateAuditApp(syncRestAuditAppModel, "isEnabled",
-                "false");
-
-        // permission denied
-        restClient.assertStatusCodeIs(HttpStatus.FORBIDDEN);
-
-        // enable sync audit app
-        restClient.authenticateUser(userModel).withCoreAPI().usingAudit().updateAuditApp(syncRestAuditAppModel, "isEnabled",
-                "true");
-
-        // permission denied
-        restClient.assertStatusCodeIs(HttpStatus.FORBIDDEN);
-    }
 
     @Test(groups = { TestGroup.REST_API, TestGroup.AUDIT, TestGroup.SANITY })
     @TestRail(section = { TestGroup.REST_API,
