@@ -45,7 +45,6 @@ jobs:
         - git config user.email "${GIT_EMAIL}"
         - docker login quay.io -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
         # Skip building of release commits
-#        - travis_wait 30 mvn --batch-mode -X -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=repo-4736-5 -DdevelopmentVersion=6.3.0-SNAPSHOT -DskipTests -Darguments="-DskipTests -X" -Prelease release:clean release:prepare release:perform
-#        - travis_wait 30 mvn -B -DskipTests -DreleaseVersion=repo-4736-7 -DdevelopmentVersion=6.3.0-SNAPSHOT -DdryRun=true -Prelease release:clean release:prepare
-#        - travis_wait 30 mvn -B -DskipTests -Prelease clean install # this built and deployed successfully when release wa bound to install phasw
-        - travis_wait 30 mvn -B -DskipTests -Darguments="-DskipTests" -Prelease -X -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DdevelopmentVersion=6.3.0-SNAPSHOT -DreleaseVersion=repo-4736-8 -DdryRun release:clean release:prepare
+#        - travis_wait 30 mvn --batch-mode -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=repo-4736-5 -DdevelopmentVersion=6.3.0-SNAPSHOT -DskipTests -Darguments="-DskipTests" -Prelease release:clean release:prepare release:perform  # As on bamboo - Doesn't work
+#        - travis_wait 30 mvn -B -DskipTests -Prelease clean install # this built and deployed successfully when release wa bound to install phase
+        - travis_wait 30 mvn -B -DskipTests -Darguments="-DskipTests" -Prelease -X -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DdevelopmentVersion=6.3.0-SNAPSHOT -DreleaseVersion=repo-4736-8 -DdryRun release:clean release:prepare # Try running f8 on install phase (configured in the plugin's release profile) together with the release plugin in dryRun mode - Worked or not??
