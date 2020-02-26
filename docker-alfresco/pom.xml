@@ -343,6 +343,12 @@
                                         <dockerFileDir>${project.basedir}/</dockerFileDir>
                                     </build>
                                 </image>
+                                <!--<image>-->
+                                    <!--<name>${image.name}:${project.version}</name>-->
+                                    <!--<build>-->
+                                        <!--<dockerFileDir>${project.basedir}/</dockerFileDir>-->
+                                    <!--</build>-->
+                                <!--</image>-->
                             </images>
                         </configuration>
                         <executions>
