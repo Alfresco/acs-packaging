@@ -4,13 +4,13 @@
     <groupId>org.alfresco.tas</groupId>
     <artifactId>content-repository-webdav-test</artifactId>
     <name>content-repository-webdav-test</name>
-    <version>6.3.0-SNAPSHOT</version>
+    <version>repo-4736-8</version>
     <packaging>jar</packaging>
 
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>content-repository-tas-tests-parent</artifactId>
-        <version>6.3.0-SNAPSHOT</version>
+        <version>repo-4736-8</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 

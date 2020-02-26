@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>acs-packaging</artifactId>
-        <version>6.3.0-SNAPSHOT</version>
+        <version>repo-4736-8</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -354,7 +354,7 @@
                         <executions>
                             <execution>
                                 <id>build-push-image</id>
-                                <!--<phase>deploy</phase>-->
+                                <phase>deploy</phase>
                                 <goals>
                                     <goal>build</goal>
                                     <goal>push</goal>
