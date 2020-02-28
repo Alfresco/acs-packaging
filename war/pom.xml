@@ -38,23 +38,16 @@
             <artifactId>alfresco-enterprise-crypto</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.activiti</groupId>
+            <artifactId>activiti-repo-connector</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-trashcan-cleaner</artifactId>
         </dependency>
         <dependency>
             <groupId>xalan</groupId>
             <artifactId>xalan</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-modeler</groupId>
-            <artifactId>commons-modeler</artifactId>
-            <version>2.0.1</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging-api</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>
@@ -227,14 +220,8 @@
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.10.19</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.shale</groupId>
-            <artifactId>shale-test</artifactId>
-            <version>1.0.5</version>
+            <artifactId>mockito-core</artifactId>
+            <version>3.2.4</version>
             <scope>test</scope>
         </dependency>
         <dependency>

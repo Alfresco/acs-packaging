@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="REST-API ACS AIS" preserve-order="true">
+	<listeners>
+        <listener class-name="org.alfresco.utility.report.HtmlReportListener"/>
+        <listener class-name="org.alfresco.utility.testrail.TestRailExecutorListener"/>
+        <listener class-name="org.alfresco.utility.testng.OSTestMethodSelector"/>
+	</listeners>
+
+	<test name="Sanity tests with AIS">
+		<groups>
+			<run>
+                <include name="sanity" />
+                <exclude name="regression" />
+                <exclude name="core"/>
+                <exclude name="require-solr" />
+                <exclude name="renditions"/>
+                <exclude name="auth"/>
+                <exclude name="audit"/>
+                <exclude name="ldap"/>
+			</run>
+		</groups>
+        <packages>
+            <package name="org.alfresco.rest.*"/>
+        </packages>
+	</test>
+</suite>

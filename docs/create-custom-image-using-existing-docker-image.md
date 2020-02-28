@@ -43,12 +43,32 @@ mvn clean install
 ### Apply AMPs to the latest Community repository image.
 FROM alfresco/alfresco-content-repository-community:latest
 
+# Default user and group are used to setup permissions for Tomcat process, see parent Dockerfile: Alfresco/acs-community-packaging/docker-alfresco/Dockerfile
+ARG GROUPNAME=Alfresco
+ARG USERNAME=alfresco
+ARG TOMCAT_DIR=/usr/local/tomcat
+
+# Alfresco user does not have permissions to modify webapps or configuration. Switch to root.
+# The access will be fixed after all operations are done.
+USER root
+
 ### Copy the AMPs from build context to the appropriate location for your application server
-COPY amps /usr/local/tomcat/amps
+COPY amps ${TOMCAT_DIR}/amps
 
 ### Install AMPs on alfresco
-RUN java -jar /usr/local/tomcat/alfresco-mmt/alfresco-mmt*.jar install \
-              /usr/local/tomcat/amps/alfresco-bulk-import-*.amp /usr/local/tomcat/webapps/alfresco -nobackup -force
+RUN java -jar ${TOMCAT_DIR}/alfresco-mmt/alfresco-mmt*.jar install \
+              ${TOMCAT_DIR}/amps ${TOMCAT_DIR}/webapps/alfresco -directory -nobackup -force
+
+# All files in the tomcat folder must be owned by root user and Alfresco group as mentioned in the parent Dockerfile
+RUN chgrp -R ${GROUPNAME} ${TOMCAT_DIR}/webapps && \
+    find ${TOMCAT_DIR}/webapps -type d -exec chmod 0750 {} \; && \
+    find ${TOMCAT_DIR}/webapps -type f -exec chmod 0640 {} \; && \
+    chmod -R g+r ${TOMCAT_DIR}/webapps && \
+    chgrp -R ${GROUPNAME} ${TOMCAT_DIR}
+
+# Switching back to alfresco user after having added amps files to run the container as non-root
+USER ${USERNAME}
+
 ```
 
 ** Note: ** It's not necessary to build the .amp file if you can download it via a network (FTP/HTTP/HTTPS), since the COPY command can be replaced by CURL/WGET.
@@ -118,6 +138,15 @@ alfresco-custom-image                            (Dir)
 ### Apply AMPs to the latest Enterprise repository image.
 FROM alfresco/alfresco-content-repository:latest
 
+# Default user and group are used to setup permissions for Tomcat process, see parent Dockerfile: Alfresco/acs-community-packaging/docker-alfresco/Dockerfile
+ARG GROUPNAME=Alfresco
+ARG USERNAME=alfresco
+ARG TOMCAT_DIR=/usr/local/tomcat
+
+# Alfresco user does not have permissions to modify webapps or configuration. Switch to root.
+# The access will be fixed after all operations are done.
+USER root
+
 ### Copy the keystore from build context to the appropriate location for your application server
 COPY keystore /usr/local/tomcat/keystore
 
@@ -151,6 +180,21 @@ RUN java -jar /usr/local/tomcat/alfresco-mmt/alfresco-mmt*.jar install \
 
 ### Enable SSL by adding the proper Connector to server.xml (using a very hard to understand SED command)
 RUN sed -i "s/\    <\/Engine>/\n\    <\/Engine>\n\    <Connector\ port=\"8443\"\n\               protocol=\"org.apache.coyote.http11.Http11Nio2Protocol\"\n\               sslImplementationName=\"org.apache.tomcat.util.net.jsse.JSSEImplementation\"\n\               maxThreads=\"150\"\n\               SSLEnabled=\"true\">\n\        <SSLHostConfig certificateVerification=\"required\" \n\                       truststoreFile=\"\/usr\/local\/tomcat\/keystore\/ssl.keystore\/ssl.truststore\"\n\                       truststorePassword=\"truststorePass\"\n\                       truststoreType=\"JCEKS\" >\n\            <Certificate certificateKeystoreFile=\"\/usr\/local\/tomcat\/keystore\/ssl.keystore\/ssl.keystore\"\n\                         certificateKeystorePassword=\"keystorePass\"\n\                         certificateKeystoreType=\"JCEKS\" \/>\n\        <\/SSLHostConfig>\n\    <\/Connector>/g" /usr/local/tomcat/conf/server.xml
+
+# All files in the tomcat folder must be owned by root user and Alfresco group as mentioned in the parent Dockerfile
+RUN chgrp -R ${GROUPNAME} ${TOMCAT_DIR}/webapps && \
+    find ${TOMCAT_DIR}/webapps -type d -exec chmod 0750 {} \; && \
+    find ${TOMCAT_DIR}/webapps -type f -exec chmod 0640 {} \; && \
+    find ${TOMCAT_DIR}/keystore -type d -exec chmod 0750 {} \; && \
+    find ${TOMCAT_DIR}/keystore -type f -exec chmod 0640 {} \; && \
+    chmod g+rx ${TOMCAT_DIR}/conf && \
+    chmod -R g+r ${TOMCAT_DIR}/conf && \
+    chmod -R g+r ${TOMCAT_DIR}/webapps && \
+    chgrp -R ${GROUPNAME} ${TOMCAT_DIR}
+
+# Switching back to alfresco user after having added amps files to run the container as non-root
+USER ${USERNAME}
+
 ```
 
 * Open a Terminal and run the following command to build the custom docker repository image.
@@ -170,6 +214,15 @@ docker push customrepository/custom-alfresco-repository:customTag
 ```bash
 ### Apply AMPs to the latest Share image (at this moment).
 FROM alfresco/alfresco-share:6.0.0-rc2
+
+# Default user and group are used to setup permissions for Tomcat process, see parent Dockerfile: Alfresco/acs-community-packaging/docker-alfresco/Dockerfile
+ARG GROUPNAME=Alfresco
+ARG USERNAME=alfresco
+ARG TOMCAT_DIR=/usr/local/tomcat
+
+# Alfresco user does not have permissions to modify webapps or configuration. Switch to root.
+# The access will be fixed after all operations are done.
+USER root
 
 ### Copy the keystore build context to the appropriate location for your application server
 COPY keystore /usr/local/tomcat/keystore
@@ -206,6 +259,21 @@ RUN java -jar /usr/local/tomcat/alfresco-mmt/alfresco-mmt*.jar install \
 
 ### Enable SSL by adding the proper Connector to server.xml (using a very hard to understand SED command)
 RUN sed -i "s/\    <\/Engine>/\n\    <\/Engine>\n\    <Connector\ port=\"8443\"\n\               protocol=\"org.apache.coyote.http11.Http11Nio2Protocol\"\n\               sslImplementationName=\"org.apache.tomcat.util.net.jsse.JSSEImplementation\"\n\               maxThreads=\"150\"\n\               SSLEnabled=\"true\">\n\        <SSLHostConfig certificateVerification=\"required\" \n\                       truststoreFile=\"\/usr\/local\/tomcat\/keystore\/ssl.keystore\/ssl.truststore\"\n\                       truststorePassword=\"truststorePass\"\n\                       truststoreType=\"JCEKS\" >\n\            <Certificate certificateKeystoreFile=\"\/usr\/local\/tomcat\/keystore\/ssl.keystore\/ssl.keystore\"\n\                         certificateKeystorePassword=\"keystorePass\"\n\                         certificateKeystoreType=\"JCEKS\" \/>\n\        <\/SSLHostConfig>\n\    <\/Connector>/g" /usr/local/tomcat/conf/server.xml
+
+# All files in the tomcat folder must be owned by root user and Alfresco group as mentioned in the parent Dockerfile
+RUN chgrp -R ${GROUPNAME} ${TOMCAT_DIR}/webapps && \
+    find ${TOMCAT_DIR}/webapps -type d -exec chmod 0750 {} \; && \
+    find ${TOMCAT_DIR}/webapps -type f -exec chmod 0640 {} \; && \
+    find ${TOMCAT_DIR}/keystore -type d -exec chmod 0750 {} \; && \
+    find ${TOMCAT_DIR}/keystore -type f -exec chmod 0640 {} \; && \
+    find ${TOMCAT_DIR}/shared -type d -exec chmod 0750 {} \; && \
+    find ${TOMCAT_DIR}/shared -type f -exec chmod 0640 {} \; && \
+    chmod -R g+r ${TOMCAT_DIR}/webapps && \
+    chgrp -R ${GROUPNAME} ${TOMCAT_DIR}
+
+# Switching back to alfresco user after having added amps files to run the container as non-root
+USER ${USERNAME}
+
 ```
 
 * Open a Terminal and run the following command to build the custom docker repository image.

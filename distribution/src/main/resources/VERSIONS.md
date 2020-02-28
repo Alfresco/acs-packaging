@@ -9,8 +9,8 @@ This file lists the recommended components for this Service Pack. Use it along w
 |---|---|---|
 | Alfresco Content Services | @project.version@ |
 | Alfresco Share | @alfresco.share.version@ |
-| Alfresco Search Services | 1.4.0 |
-| Alfresco Insight Engine | 1.4.0 |
+| Alfresco Search Services | 1.4.1 |
+| Alfresco Insight Engine | 1.4.1 |
 | Alfresco Desktop Sync Service | @alfresco.desktop-sync.version@ |
 | Alfresco Transform Service | 1.1.0 |
 | Document Transformation Engine | @alfresco.transformation-engine.version@ |

@@ -145,6 +145,10 @@ supportedSourceAndTargetList.
 Media Types, which refer to the Media Types this pipeline transformer
 can transform from and to, additionally you can set the priority and the
 maxSourceSizeBytes see [Supported Source and Target List](https://github.com/Alfresco/alfresco-transform-core/blob/master/docs/engine_config.md#supported-source-and-target-list).
+If blank, this indicates that all possible combinations are supported.
+This is the cartesian product of all source types to the first
+intermediate type and all target types from the last intermediate type.
+Any combinations supported by the first transformer are excluded.
 * **transformOptions** - A list of references to options required by
 the pipeline transformer.
 
@@ -315,6 +319,11 @@ periodically.
 transform.service.cronExpression=4 30 0/1 * * ?
 transform.service.initialAndOnError.cronExpression=0/10 * * * * ?
 ```
+
+## ATS Configuration
+### Configure a T-Engine as a Remote Transform
+
+Please follow the steps described in [Alfresco Transform Service Docs](https://github.com/Alfresco/alfresco-transform-service/blob/master/docs/custom-t-engine.md).
 
 ## Creating a T-Engine
 
