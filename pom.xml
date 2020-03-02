@@ -65,7 +65,7 @@
         <alfresco.alfresco-share-services.version>6.1.1.1</alfresco.alfresco-share-services.version>
 
         <!-- Alfresco GoogleDocs integration version -->
-        <alfresco.googledocs.version>3.1.0</alfresco.googledocs.version>
+        <alfresco.googledocs.version>3.1.0.1</alfresco.googledocs.version>
 
         <!-- Alfresco S3 Connector integration version -->
         <alfresco.s3connector.version>2.3.0</alfresco.s3connector.version>
