@@ -129,7 +129,7 @@ matrix:
       if: fork = false # AIMS docker image requires access to quay.io
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
-        - docker login quay.io -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
+        - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
         # AIMS cannot be configured via localhost
         - export HOST_IP=$(ip address show | grep -E "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v 127.0.0.1 | awk '{ print $2 }' | head -n 1 )
         - export HOST_IP=$(echo ${HOST_IP%/*})
@@ -142,7 +142,7 @@ matrix:
       if: fork = false # AIMS docker image requires access to quay.io
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
-        - docker login quay.io -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
+        - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
         # AIMS cannot be configured via localhost
         - export HOST_IP=$(ip address show | grep -E "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v 127.0.0.1 | awk '{ print $2 }' | head -n 1 )
         - export HOST_IP=$(echo ${HOST_IP%/*})
@@ -154,7 +154,7 @@ matrix:
       jdk: openjdk11
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
-        - docker login quay.io -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
+        - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-sync-service.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
