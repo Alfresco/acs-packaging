@@ -47,8 +47,8 @@ jobs:
         - mvn --batch-mode -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=6.3.0-test-release-repo-4736-1 -DdevelopmentVersion=6.3.0-SNAPSHOT -DskipTests -Darguments="-DskipTests" -Prelease release:clean release:prepare release:perform
       deploy:
        - provider: s3
-         access_key_id: ${AWS_ACCESS_KEY_ID}
-         secret_access_key: ${AWS_SECRET_ACCESS_KEY}
+         access_key_id: ${AWS_STAGING_ACCESS_KEY}
+         secret_access_key: ${AWS_STAGING_SECRET_KEY}
          bucket: "alfresco-artefacts-staging/alfresco-content-services/snapshots/test/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}/"
          skip_cleanup: true
          acl: private
