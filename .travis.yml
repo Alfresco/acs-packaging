@@ -43,9 +43,10 @@ jobs:
         - git checkout -B "${TRAVIS_BRANCH}"
         # Add email to link commits to user
         - git config user.email "${GIT_EMAIL}"
-        - docker login quay.io -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}
+#        - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
         # Skip building of release commits
 #        - travis_wait 30 mvn --batch-mode -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=repo-4736-5 -DdevelopmentVersion=6.3.0-SNAPSHOT -DskipTests -Darguments="-DskipTests" -Prelease release:clean release:prepare release:perform  # As on bamboo - Result: Doesn't work, single error without cause "Error while trying to build the image"
-#        - travis_wait 30 mvn -B -DskipTests -Prelease clean install # This built and deployed the image to quay successfully when release was bound to install phase in the f8 plugin's release profile config
+        - mvn -B -DskipTests -Prelease clean install # This built and deployed the image to quay successfully when release was bound to install phase in the f8 plugin's release profile config
 #        - travis_wait 30 mvn -B -DskipTests -Darguments="-DskipTests" -Prelease -X -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DdevelopmentVersion=6.3.0-SNAPSHOT -DreleaseVersion=repo-4736-8 -DdryRun release:clean release:prepare # Try running f8 on install phase (configured in the plugin's release profile) together with the maven release plugin in dryRun mode - Result: no errors, but image didn't get pushed to quay
 #        - travis_wait 30 mvn -B -DskipTests -Prelease -X deploy # Run this after manually incrementing project version to repo-4736-8 - Result: building of the image still fails, this time with an error pointing to the "# Install amps on alfresco.war" step in the docker file
+#        - travis_wait 30 mvn --batch-mode -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=6.3.0-SNAPSHOT-repo-4736-0 -DdevelopmentVersion=6.3.0-SNAPSHOT -DskipTests -Darguments="-DskipTests" -Prelease release:clean release:prepare release:perform
