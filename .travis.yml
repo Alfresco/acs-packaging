@@ -44,17 +44,18 @@ jobs:
         # Add email to link commits to user
         - git config user.email "${GIT_EMAIL}"
         # Skip building of release commits
-        - mvn --batch-mode -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=6.3.0-test-release-repo-4736-1 -DdevelopmentVersion=6.3.0-SNAPSHOT -DskipTests -Darguments="-DskipTests" -Prelease release:clean release:prepare release:perform
+#        - mvn --batch-mode -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=6.3.0-test-release-repo-4736-2 -DdevelopmentVersion=6.3.0-SNAPSHOT -DskipTests -Darguments="-DskipTests" -Prelease release:clean release:prepare release:perform
+        - mvn clean install -DskipTests -Prelease
       deploy:
        - provider: s3
          access_key_id: ${AWS_STAGING_ACCESS_KEY}
          secret_access_key: ${AWS_STAGING_SECRET_KEY}
-         bucket: "alfresco-artefacts-staging/alfresco-content-services/snapshots/test/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}/"
+         bucket: "alfresco-artefacts-staging/alfresco-content-services/snapshots/test/ek/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}/"
          skip_cleanup: true
          acl: private
          glob: war/target/alfresco.war
          on:
-           all_branches:true
-#         condition: $TRAVIS_BRANCH =~ need this???
+           all_branches: true
+#          condition: $TRAVIS_BRANCH =~ need this???
       after_deploy:
-       - "echo alfresco-artefacts-staging/alfresco-content-services/snapshots/test/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}/alfresco.war\n"
+       - echo "alfresco-artefacts-staging/alfresco-content-services/snapshots/test/ek/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}/alfresco.war"
