@@ -46,6 +46,11 @@ jobs:
         # Skip building of release commits
 #        - mvn --batch-mode -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=6.3.0-test-release-repo-4736-2 -DdevelopmentVersion=6.3.0-SNAPSHOT -DskipTests -Darguments="-DskipTests" -Prelease release:clean release:prepare release:perform
         - mvn clean install -DskipTests -Prelease
+      before_deploy:
+        # Move the final artifacts to a single folder (deploy_dir) to be copied to S3
+        - mkdir -p deploy_dir
+        - cp war/target/alfresco.war deploy_dir
+        - cp distribution/target/*-distribution*.zip deploy_dir
       deploy:
        - provider: s3
          access_key_id: ${AWS_STAGING_ACCESS_KEY}
@@ -55,7 +60,7 @@ jobs:
          upload-dir: "alfresco-content-services/snapshots/test/ek/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}"
          skip_cleanup: true
          acl: private
-         glob: war/target/alfresco.war
+         local_dir: deploy_dir
          on:
            all_branches: true
 #          condition: $TRAVIS_BRANCH =~ need this???
