@@ -108,7 +108,7 @@
         <alfresco.desktop-sync.version>3.3.1</alfresco.desktop-sync.version>
 
         <!-- Alfresco Alfresco Intelligence Services (AIS) -->
-        <alfresco.ais.version>1.1.1</alfresco.ais.version>
+        <alfresco.ais.version>1.1.2</alfresco.ais.version>
 
         <installer.version.name>${project.version}</installer.version.name>
         <alfresco.package.name>alfresco</alfresco.package.name>
