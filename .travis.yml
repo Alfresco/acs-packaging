@@ -52,7 +52,7 @@ jobs:
          secret_access_key: ${AWS_STAGING_SECRET_KEY}
          region: "eu-west-1"
          bucket: "alfresco-artefacts-staging"
-         upload-dir: "/alfresco-content-services/snapshots/test/ek/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}/"
+         upload-dir: "alfresco-content-services/snapshots/test/ek/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}"
          skip_cleanup: true
          acl: private
          glob: war/target/alfresco.war
