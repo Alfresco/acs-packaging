@@ -37,6 +37,11 @@ services:
 
         -Dcors.enabled=true
         -Dcors.allowed.origins=http://localhost:4200
+
+        -Dmetadata-keystore.password=mp6yc0UD9e
+        -Dmetadata-keystore.aliases=metadata
+        -Dmetadata-keystore.metadata.password=oKIWzVdEdA
+        -Dmetadata-keystore.metadata.algorithm=DESede
         "
     ports:
       - 8082:8080
