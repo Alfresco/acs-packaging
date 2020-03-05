@@ -18,6 +18,7 @@ branches:
   only:
     - master
     - /support\/.*/
+    - /feature/REPO-4969_testRemDuplicates
 
 # This should not be required on community build
 before_install:
