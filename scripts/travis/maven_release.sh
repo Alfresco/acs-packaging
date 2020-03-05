@@ -8,16 +8,13 @@ development_version=$DEVELOPMENT_VERSION
 commit_release_version=$(extract_option "version" "$TRAVIS_COMMIT_MESSAGE")
 commit_develop_version=$(extract_option "next-version" "$TRAVIS_COMMIT_MESSAGE")
 
-#Remove (only) this echo
-echo "Travis commit message echo: $TRAVIS_COMMIT_MESSAGE"
-
-if [ -n $commit_release_version ]
+if [ ! -z "$commit_release_version" ]
 then
     echo "Setting release version from commit message: $commit_release_version"
     release_version=$commit_release_version
 fi
 
-if [ -n $commit_develop_version ]
+if [ ! -z "$commit_develop_version" ]
 then
     echo "Setting next development version from commit message: $commit_release_version"
     development_version=$commit_develop_version

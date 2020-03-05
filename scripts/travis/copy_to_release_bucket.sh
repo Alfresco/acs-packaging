@@ -9,7 +9,7 @@ source scripts/travis/common_functions.sh
 # Get versions from the commit message if provided as [version=vvv]
 release_version=$RELEASE_VERSION
 commit_release_version=$(extract_option "version" "$TRAVIS_COMMIT_MESSAGE")
-if [ -n $commit_release_version ]
+if [ ! -z "$commit_release_version" ]
 then
     echo "Setting release version from commit message: $commit_release_version"
     release_version=$commit_release_version
