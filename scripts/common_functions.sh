@@ -1,8 +1,9 @@
 #!/bin/bash
 
-# Extracts value for an option from a commit message where the commit message consists of a
-# whitespace separated list of options (or other words). The options have to follow a format:
-# [option1=value1] [option2=value2]
+# Extracts value for an option from a commit message where the commit message includes of a
+# whitespace separated list of options. The options have to follow a format: [option1=value1] [option2=value2]
+# $1 - the option name, this will be substituted as [$1=value1]
+# $2 - the commit message to extract values from
 function extract_option {
     option="$1"
     commit_message="$2"

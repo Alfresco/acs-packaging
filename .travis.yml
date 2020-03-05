@@ -73,9 +73,9 @@ jobs:
          skip_cleanup: true
          acl: private
          local_dir: deploy_dir
-#         on:
-#           all_branches: true
-#           condition: $TRAVIS_BRANCH =~ need this???
+         on:
+           all_branches: true
+           condition: $TRAVIS_BRANCH =~ need this???
       after_deploy:
        - echo "alfresco-artefacts-staging/alfresco-content-services/snapshots/test/ek/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}/alfresco.war"
        - ./scripts/print-artifact-locations.sh ${TRAVIS_BRANCH} ${TRAVIS_BUILD_NUMBER}
@@ -91,9 +91,9 @@ jobs:
       delpoy:
        - provider: script
          script:  ./scripts/travis/copy_to_release_bucket.sh ${TRAVIS_BUILD_NUMBER} ${TRAVIS_BRANCH} ${RELEASE_VERSION}
-#         on:
-#           all_branches: true
-#           condition: $TRAVIS_BRANCH =~ need this???
+         on:
+           all_branches: true
+           condition: $TRAVIS_BRANCH =~ need this???
 
 
 
