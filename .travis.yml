@@ -13,7 +13,7 @@ cache:
     - $HOME/.m2
 # the cache can grow constantly
 before_cache:
-  - rm -rf $HOME/.m2/repository/org/alfresco
+  - rm -rf $HOME/.m2/repository/org/alfresco/content-services*
 
 branches:
   only:
@@ -26,7 +26,6 @@ env:
     # Must be in the format <alfresco-version>-<additional_versioning> ie. 6.3.0-repo-xxxx-x or 6.3.0-A-x
     - RELEASE_VERSION=6.3.0-test-release-repo-4736-1
     - DEVELOPMENT_VERSION=6.3.0-SNAPSHOT
-    - TEST_VAR=original
 
 stages:
 #  - test
@@ -39,15 +38,12 @@ before_install:
 
 jobs:
   include:
-
     - name: "Release"
       stage: release
       if: fork = false AND (branch = feature/repo-4736-release_stage OR branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[release\]/
       before_script:
         - ./scripts/verify-git-tags.sh
       script:
-        - echo "TEST ECHO VARS $RELEASE_VERSION $DEVELOPMENT_VERSION $TEST_VAR"
-        - TEST_VAR="updated"
         # Use full history for release
         - git checkout -B "${TRAVIS_BRANCH}"
         # Add email to link commits to user
@@ -85,8 +81,7 @@ jobs:
       if: fork = false AND (branch = feature/repo-4736-release_stage OR branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[publish\]/
       # Nothing to build/install as we are just copying from S3 buckets
       install: skip
-      script:
-        - echo "TEST ECHO VARS $RELEASE_VERSION $DEVELOPMENT_VERSION $TEST_VAR"
+      script: skip
       before_deploy: pip install awscli
       delpoy:
        - provider: script

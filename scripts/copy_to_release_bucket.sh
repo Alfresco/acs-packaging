@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 set -ev
 
-#!/bin/bash
 #
 # Copy from S3 Release bucket to S3 eu.dl bucket
 #
