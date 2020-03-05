@@ -21,8 +21,15 @@ branches:
     - /support\/.*/
     - feature/repo-4736-release_stage
 
+env:
+  global:
+    # Must be in the format <alfresco-version>-<additional_versioning> ie. 6.3.0-repo-xxxx-x or 6.3.0-A-x
+    - RELEASE_VERSION=6.3.0-test-release-repo-4736-1
+    - DEVELOPMENT_VERSION=6.3.0-SNAPSHOT
+    - TEST_VAR=original
+
 stages:
-  - test
+#  - test
   - release
   - publish
 
@@ -32,10 +39,6 @@ before_install:
 
 jobs:
   include:
-    - name: "Test"
-      stage: test
-      script:
-        - echo "This is where the tests will  run."
 
     - name: "Release"
       stage: release
@@ -43,13 +46,18 @@ jobs:
       before_script:
         - ./scripts/verify-git-tags.sh
       script:
+        - echo "TEST ECHO VARS $RELEASE_VERSION $DEVELOPMENT_VERSION $TEST_VAR"
+        - TEST_VAR="updated"
         # Use full history for release
         - git checkout -B "${TRAVIS_BRANCH}"
         # Add email to link commits to user
         - git config user.email "${GIT_EMAIL}"
         # Skip building of release commits
-#        - mvn --batch-mode -q -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=6.3.0-test-release-repo-4736-1 -DdevelopmentVersion=6.3.0-SNAPSHOT -DskipTests -Darguments="-DskipTests" -Prelease release:clean release:prepare release:perform
+#        - mvn --batch-mode -q -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=${RELEASE_VERSION} -DdevelopmentVersion=${DEVELOPMENT_VERSION} -DskipTests -Darguments="-DskipTests" -Prelease release:clean release:prepare release:perform
         - mvn clean install -DskipTests -Prelease
+#        - ./scripts/maven_release.sh
+      after_failure:
+        - mvn release:rollback -DscmCommentPrefix="[maven-release-plugin][skip ci] "
       before_deploy:
         # Move the final artifacts to a single folder (deploy_dir) to be copied to S3
         - mkdir -p deploy_dir
@@ -75,16 +83,13 @@ jobs:
     - name: "Copy to S3 Release Bucket"
       stage: publish
       if: fork = false AND (branch = feature/repo-4736-release_stage OR branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[publish\]/
-      deploy:
-       - provider: s3
-         access_key_id: "${AWS_ACCESS_KEY_ID}"
-         secret_access_key: "${AWS_SECRET_ACCESS_KEY}"
-         region: "eu-west-1"
-         bucket: "eu.dl.alfresco.com"
-         #upload-dir: "release/enterprise/ek/ACS/${release_version:0:3}/$release_version/$build_number"
-         upload-dir: "release/enterprise/ek/ACS/${TRAVIS_BRANCH}/RELEASE_VERSION/${TRAVIS_BUILD_NUMBER}"
-         skip_cleanup: true
-         local_dir: deploy_dir
-         on:
-           all_branches: true
-           #condition: $TRAVIS_BRANCH =~ need this??? - maybe limit to support/SP, support/HF only?
+      # Nothing to build/install as we are just copying from S3 buckets
+      install: skip
+      script:
+        - echo "TEST ECHO VARS $RELEASE_VERSION $DEVELOPMENT_VERSION $TEST_VAR"
+      before_deploy: pip install awscli
+      delpoy:
+        - provider: script
+          script:  ./scripts/travis/copy_to_release_bucket.sh ${TRAVIS_BUILD_NUMBER} ${TRAVIS_BRANCH} ${RELEASE_VERSION}
+          on:
+            branch: master
