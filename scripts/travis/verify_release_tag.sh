@@ -1,13 +1,23 @@
 #!/usr/bin/env bash
 set -e
+source scripts/travis/common_functions.sh
+
+# Get versions from the commit message if provided as [version=vvv]
+release_version=$RELEASE_VERSION
+commit_release_version=$(extract_option "version" "$TRAVIS_COMMIT_MESSAGE")
+if [ -n $commit_release_version ]
+then
+    echo "Setting release version from commit message: $commit_release_version"
+    release_version=$commit_release_version
+fi
 
 # get the image name from the pom file
 alfresco_docker_image=$(mvn help:evaluate -f ./docker-alfresco/pom.xml -Dexpression=image.name -q -DforceStdout)
-if [ -v ${RELEASE_VERSION} ]; then
+if [ -v ${release_version} ]; then
     echo "Please provide a RELEASE_VERSION in the format <acs-version>-<additional-info> (6.3.0-EA or 6.3.0-SNAPSHOT)"
     exit -1
 fi
-docker_image_full_name="$alfresco_docker_image:$RELEASE_VERSION"
+docker_image_full_name="$alfresco_docker_image:$release_version"
 
 function docker_image_exists() {
   local image_full_name="$1"; shift

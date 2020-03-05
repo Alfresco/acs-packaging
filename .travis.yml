@@ -42,7 +42,7 @@ jobs:
       stage: release
       if: fork = false AND (branch = feature/repo-4736-release_stage OR branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[release\]/
       before_script:
-        - ./scripts/verifyReleaseTag.sh
+        - ./scripts/travis/verify_release_tag.sh
       script:
 #        # Use full history for release
 #        - git checkout -B "${TRAVIS_BRANCH}"
@@ -51,7 +51,7 @@ jobs:
         # Skip building of release commits
 #        - mvn -q --batch-mode -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=${RELEASE_VERSION} -DdevelopmentVersion=${DEVELOPMENT_VERSION} -DskipTests -Darguments="-DskipTests" -Prelease release:clean release:prepare release:perform
 #        - mvn -q clean install -DskipTests -Prelease
-        - ./scripts/maven_release.sh
+        - ./scripts/travis/maven_release.sh
       after_failure:
         - mvn -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" release:rollback -DscmCommentPrefix="[maven-release-plugin][skip ci] "
       before_deploy:
@@ -83,7 +83,7 @@ jobs:
       delpoy:
        - provider: script
          script:
-           - ./scripts/copy_to_release_bucket.sh
+           - ./scripts/travis/copy_to_release_bucket.sh
          on:
            all_branches: true
 
