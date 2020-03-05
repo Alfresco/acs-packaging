@@ -12,7 +12,7 @@ version: "3"
 
 services:
   alfresco:
-    image: alfresco/alfresco-content-repository-all-amps-test
+    image: alfresco/alfresco-content-repository-all-amps-test1
     environment:
       CATALINA_OPTS : "-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n"
       JAVA_OPTS :

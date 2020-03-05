@@ -163,14 +163,14 @@
                                 </goals>
                                 <configuration>
                                     <artifactItems>
-                                        <artifactItem>
+                                        <!-- <artifactItem>
                                             <groupId>org.alfresco</groupId>
                                             <artifactId>alfresco-share-services</artifactId>
                                             <version>${alfresco.alfresco-share-services.version}</version>
                                             <type>amp</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                        </artifactItem>
+                                        </artifactItem> -->
                                         <artifactItem>
                                             <groupId>org.alfresco.aos-module</groupId>
                                             <artifactId>alfresco-aos-module</artifactId>
@@ -397,7 +397,7 @@
                         <configuration>
                             <images>
                                 <image>
-                                    <name>alfresco/alfresco-content-repository-all-amps-test:latest</name>
+                                    <name>alfresco/alfresco-content-repository-all-amps-test1:latest</name>
                                     <build>
                                         <dockerFileDir>${project.basedir}/</dockerFileDir>
                                     </build>
