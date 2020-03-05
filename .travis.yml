@@ -24,7 +24,7 @@ branches:
 env:
   global:
     # Must be in the format <alfresco-version>-<additional_versioning> ie. 6.3.0-repo-xxxx-x or 6.3.0-A-x
-    - RELEASE_VERSION=6.3.0-test-release-repo-4736-2
+    - RELEASE_VERSION=6.3.0-test-release-repo-4736-1
     - DEVELOPMENT_VERSION=6.3.0-SNAPSHOT
 
 stages:
@@ -52,7 +52,7 @@ jobs:
 #        - mvn -q clean install -DskipTests -Prelease
         - ./scripts/maven_release.sh
       after_failure:
-        - mvn release:rollback -DscmCommentPrefix="[maven-release-plugin][skip ci] "
+        - mvn -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" release:rollback -DscmCommentPrefix="[maven-release-plugin][skip ci] "
       before_deploy:
         # Move the final artifacts to a single folder (deploy_dir) to be copied to S3
         - mkdir -p deploy_dir

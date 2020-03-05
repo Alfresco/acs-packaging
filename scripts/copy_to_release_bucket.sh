@@ -27,4 +27,3 @@ $DESTINATION\n"
 
 aws s3 cp --acl private $SOURCE/alfresco.war $DESTINATION/alfresco.war
 aws s3 cp --acl private $SOURCE/alfresco-content-services-distribution-$RELEASE_VERSION.zip $DESTINATION/alfresco-content-services-distribution-$RELEASE_VERSION.zip
-#aws s3 cp --acl private $SOURCE/alfresco-content-services-distribution-6.3.0-SNAPSHOT.zip $DESTINATION/alfresco-content-services-distribution-$RELEASE_VERSION.zip
