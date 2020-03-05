@@ -50,8 +50,8 @@ jobs:
         - git config user.email "${GIT_EMAIL}"
         # Skip building of release commits
 #        - mvn -q --batch-mode -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=${RELEASE_VERSION} -DdevelopmentVersion=${DEVELOPMENT_VERSION} -DskipTests -Darguments="-DskipTests" -Prelease release:clean release:prepare release:perform
-        - mvn -q clean install -DskipTests -Prelease
-#        - ./scripts/maven_release.sh
+#        - mvn -q clean install -DskipTests -Prelease
+        - ./scripts/maven_release.sh
       after_failure:
         - mvn release:rollback -DscmCommentPrefix="[maven-release-plugin][skip ci] "
       before_deploy:
