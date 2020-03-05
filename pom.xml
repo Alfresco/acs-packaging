@@ -15,7 +15,7 @@
         <connection>scm:git:https://github.com/Alfresco/acs-packaging.git</connection>
         <developerConnection>scm:git:https://github.com/Alfresco/acs-packaging.git</developerConnection>
         <url>https://github.com/Alfresco/acs-packaging</url>
-        <tag>acs-packaging-6.3.0-test-release-repo-4736-1</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <distributionManagement>
