@@ -53,8 +53,8 @@ jobs:
         # Add email to link commits to user
         - git config user.email "${GIT_EMAIL}"
         # Skip building of release commits
-#        - mvn --batch-mode -q -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=${RELEASE_VERSION} -DdevelopmentVersion=${DEVELOPMENT_VERSION} -DskipTests -Darguments="-DskipTests" -Prelease release:clean release:prepare release:perform
-        - mvn clean install -DskipTests -Prelease
+#        - mvn -q --batch-mode -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=${RELEASE_VERSION} -DdevelopmentVersion=${DEVELOPMENT_VERSION} -DskipTests -Darguments="-DskipTests" -Prelease release:clean release:prepare release:perform
+        - mvn -q clean install -DskipTests -Prelease
 #        - ./scripts/maven_release.sh
       after_failure:
         - mvn release:rollback -DscmCommentPrefix="[maven-release-plugin][skip ci] "
@@ -73,9 +73,9 @@ jobs:
          skip_cleanup: true
          acl: private
          local_dir: deploy_dir
-         on:
-           all_branches: true
-#          condition: $TRAVIS_BRANCH =~ need this???
+#         on:
+#           all_branches: true
+#           condition: $TRAVIS_BRANCH =~ need this???
       after_deploy:
        - echo "alfresco-artefacts-staging/alfresco-content-services/snapshots/test/ek/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}/alfresco.war"
        - ./scripts/print-artifact-locations.sh ${TRAVIS_BRANCH} ${TRAVIS_BUILD_NUMBER}
@@ -89,7 +89,27 @@ jobs:
         - echo "TEST ECHO VARS $RELEASE_VERSION $DEVELOPMENT_VERSION $TEST_VAR"
       before_deploy: pip install awscli
       delpoy:
-        - provider: script
-          script:  ./scripts/travis/copy_to_release_bucket.sh ${TRAVIS_BUILD_NUMBER} ${TRAVIS_BRANCH} ${RELEASE_VERSION}
-          on:
-            branch: master
+       - provider: script
+         script:  ./scripts/travis/copy_to_release_bucket.sh ${TRAVIS_BUILD_NUMBER} ${TRAVIS_BRANCH} ${RELEASE_VERSION}
+#         on:
+#           all_branches: true
+#           condition: $TRAVIS_BRANCH =~ need this???
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
