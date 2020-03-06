@@ -72,7 +72,6 @@ jobs:
          local_dir: deploy_dir
          on:
            all_branches: true
-           condition: $TRAVIS_BRANCH =~ need this???
 
     - name: "Copy to S3 Release Bucket"
       stage: publish
