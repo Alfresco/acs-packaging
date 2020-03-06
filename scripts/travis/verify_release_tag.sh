@@ -5,6 +5,7 @@ set -e
 if [ -z ${RELEASE_VERSION} ] || [ -z ${DEVELOPMENT_VERSION} ];
     then echo "Please provide a Release and Development verison in the format <acs-version>-<additional-info> (6.3.0-EA or 6.3.0-SNAPSHOT)"
          exit -1
+fi
 ##############
 
 # get the image name from the pom file
