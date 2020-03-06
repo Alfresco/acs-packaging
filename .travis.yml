@@ -41,7 +41,7 @@ jobs:
     - name: "Release"
       stage: release
       if: fork = false AND (branch = feature/repo-4736-release_stage OR branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[release\]/
-#      install: travis_wait mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -q
+      install: true # Skip half an hour wait for the built in install job
       before_script:
         - ./scripts/travis/verify_release_tag.sh
       script:
