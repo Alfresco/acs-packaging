@@ -45,10 +45,10 @@ jobs:
         - ./scripts/travis/verify_release_tag.sh
       script:
         - echo "release version= ${RELEASE_VERSION}, development version= ${DEVELOPMENT_VERSION}, git user= ${GIT_USERNAME}"
-#        # Use full history for release
-#        - git checkout -B "${TRAVIS_BRANCH}"
-#        # Add email to link commits to user
-#        - git config user.email "${GIT_EMAIL}"
+        # Use full history for release
+        - git checkout -B "${TRAVIS_BRANCH}"
+        # Add email to link commits to user
+        - git config user.email "${GIT_EMAIL}"
         # Skip building of release commits
         - mvn -q --batch-mode -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=${RELEASE_VERSION} -DdevelopmentVersion=${DEVELOPMENT_VERSION} -DskipTests -Darguments="-DskipTests" -Prelease release:clean release:prepare release:perform
 #        - mvn -q clean install -DskipTests -Prelease
