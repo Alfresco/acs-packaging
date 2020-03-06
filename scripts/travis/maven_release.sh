@@ -5,8 +5,8 @@ source scripts/travis/common_functions.sh
 # Get versions from the commit message if provided as [version=vvv] or [next-version=vvv]
 release_version=$RELEASE_VERSION
 development_version=$DEVELOPMENT_VERSION
-commit_release_version=$(extract_option "version" "$TRAVIS_COMMIT_MESSAGE")
-commit_develop_version=$(extract_option "next-version" "$TRAVIS_COMMIT_MESSAGE")
+export commit_release_version=$(extract_option "version" "$TRAVIS_COMMIT_MESSAGE")
+export commit_develop_version=$(extract_option "next-version" "$TRAVIS_COMMIT_MESSAGE")
 
 if [ ! -z "$commit_release_version" ]
 then
@@ -20,7 +20,8 @@ then
     development_version=$commit_develop_version
 fi
 
-scm_path=$(mvn help:evaluate -Dexpression=project.scm.url -q -DforceStdout)
+export scm_path=$(mvn help:evaluate -Dexpression=project.scm.url -q -DforceStdout)
+
 # Use full history for release
 git checkout -B "${TRAVIS_BRANCH}"
 # Add email to link commits to user
@@ -29,7 +30,7 @@ git config user.email "${GIT_EMAIL}"
 if [ -z ${release_version} ] || [ -z ${development_version} ];
     then echo "Please provide a Release and Development verison in the format <acs-version>-<additional-info> (6.3.0-EA or 6.3.0-SNAPSHOT)"
          exit -1
-else   
+else
     mvn --batch-mode -q \
     -Dusername="${GIT_USERNAME}" \
     -Dpassword="${GIT_PASSWORD}" \

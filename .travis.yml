@@ -24,7 +24,7 @@ branches:
 env:
   global:
     # Must be in the format <alfresco-version>-<additional_versioning> ie. 6.3.0-repo-xxxx-x or 6.3.0-A-x
-    - RELEASE_VERSION=6.3.0-test-release-repo-4736-2
+    - RELEASE_VERSION=6.3.0-test-release-repo-4736-3
     - DEVELOPMENT_VERSION=6.3.0-SNAPSHOT
 
 stages:
@@ -51,7 +51,9 @@ jobs:
         # Skip building of release commits
 #        - mvn -q --batch-mode -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=${RELEASE_VERSION} -DdevelopmentVersion=${DEVELOPMENT_VERSION} -DskipTests -Darguments="-DskipTests" -Prelease release:clean release:prepare release:perform
 #        - mvn -q clean install -DskipTests -Prelease
-        - ./scripts/travis/maven_release.sh
+#        - travis_wait 30 ./scripts/travis/maven_release.sh
+        - echo "release version= ${release_version}, development version= ${development_version}, git user= ${GIT_USERNAME}"
+        - travis_wait 30 mvn --batch-mode -q -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=${release_version} -DdevelopmentVersion=${development_version} -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Dbuild-name="${TRAVIS_BUILD_STAGE_NAME}" -Dversion.edition="Enterprise" -Dscm-path=${scm_path} -DscmCommentPrefix="[maven-release-plugin][skip ci]" -DskipTests "-Darguments=-DskipTests -Dversion.edition=Enterprise -Dbuild-number=${TRAVIS_BUILD_NUMBER} '-Dbuild-name=${TRAVIS_BUILD_STAGE_NAME}' -Dscm-path=${scm_path} " release:clean release:prepare release:perform -Prelease
       after_failure:
         - mvn -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" release:rollback -DscmCommentPrefix="[maven-release-plugin][skip ci] "
       before_deploy:

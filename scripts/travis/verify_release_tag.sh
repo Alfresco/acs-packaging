@@ -2,13 +2,37 @@
 set -e
 source scripts/travis/common_functions.sh
 
-#TODO Remove (only) this echo
 
-echo "Travis commit message echo: $TRAVIS_COMMIT_MESSAGE"
+################################################# remove
+# Get versions from the commit message if provided as [version=vvv] or [next-version=vvv]
+release_version=$RELEASE_VERSION
+development_version=$DEVELOPMENT_VERSION
+export commit_release_version=$(extract_option "version" "$TRAVIS_COMMIT_MESSAGE")
+export commit_develop_version=$(extract_option "next-version" "$TRAVIS_COMMIT_MESSAGE")
+
+if [ ! -z "$commit_release_version" ]
+then
+    echo "Setting release version from commit message: $commit_release_version"
+    release_version=$commit_release_version
+fi
+
+if [ ! -z "$commit_develop_version" ]
+then
+    echo "Setting next development version from commit message: $commit_release_version"
+    development_version=$commit_develop_version
+fi
+
+export scm_path=$(mvn help:evaluate -Dexpression=project.scm.url -q -DforceStdout)
+
+# Use full history for release
+git checkout -B "${TRAVIS_BRANCH}"
+# Add email to link commits to user
+git config user.email "${GIT_EMAIL}"
+#################################################
 
 # Get versions from the commit message if provided as [version=vvv]
 release_version=$RELEASE_VERSION
-commit_release_version=$(extract_option "version" " $TRAVIS_COMMIT_MESSAGE")
+commit_release_version=$(extract_option "version" "$TRAVIS_COMMIT_MESSAGE")
 if [ ! -z "$commit_release_version" ]; then
     echo "Setting release version from commit message: $commit_release_version"
     release_version=$commit_release_version
