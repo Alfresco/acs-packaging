@@ -1,3 +1,13 @@
+<h1>        6.1.0.8
+</h1>
+<h2>
+  Hot Fix Request 
+</h2>
+<ul>
+  <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21394'>MNT-21394</a>] -         Edit in Microsoft Office from ADW opens MS Excel documents then immediately prompts that a newer version exists.
+  </li>
+</ul>
+
 <h1>        6.1.0.1
 </h1>
 <h2>
