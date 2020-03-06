@@ -50,7 +50,7 @@ jobs:
         # Add email to link commits to user
         - git config user.email "${GIT_EMAIL}"
         # Skip building of release commits
-        - mvn -q --batch-mode -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=${RELEASE_VERSION} -DdevelopmentVersion=${DEVELOPMENT_VERSION} -DskipTests -Darguments="-DskipTests" -Prelease release:clean release:prepare release:perform
+        - mvn -q --batch-mode -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=${RELEASE_VERSION} -DdevelopmentVersion=${DEVELOPMENT_VERSION} -DskipTests -Darguments="-DskipTests -DdryRun" -Prelease -DdryRun release:clean release:prepare release:perform
 #        - mvn -q clean install -DskipTests -Prelease
 #        - travis_wait 30 ./scripts/travis/maven_release.sh
 #        - travis_wait 30 mvn --batch-mode -q -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=${release_version} -DdevelopmentVersion=${development_version} -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Dbuild-name="${TRAVIS_BUILD_STAGE_NAME}" -Dversion.edition="Enterprise" -Dscm-path=${scm_path} -DscmCommentPrefix="[maven-release-plugin][skip ci]" -DskipTests "-Darguments=-DskipTests -Dversion.edition=Enterprise -Dbuild-number=${TRAVIS_BUILD_NUMBER} '-Dbuild-name=${TRAVIS_BUILD_STAGE_NAME}' -Dscm-path=${scm_path} " release:clean release:prepare release:perform -Prelease
