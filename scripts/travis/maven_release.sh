@@ -15,8 +15,8 @@ else
     mvn --batch-mode -q \
     -Dusername="${GIT_USERNAME}" \
     -Dpassword="${GIT_PASSWORD}" \
-    -DreleaseVersion=6.3.0-test-release-repo-4736-4 \
-    -DdevelopmentVersion=6.3.0-test-1-SNAPSHOT \
+    -DreleaseVersion=${RELEASE_VERSION} \
+    -DdevelopmentVersion=${DEVELOPMENT_VERSION} \
     -Dbuild-number=${TRAVIS_BUILD_NUMBER} \
     -Dbuild-name="${TRAVIS_BUILD_STAGE_NAME}" \
     -Dversion.edition="Enterprise" \

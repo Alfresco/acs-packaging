@@ -21,11 +21,11 @@ branches:
     - /support\/.*/
     - feature/repo-4736-release_stage
 
-#env:
-#  global:
-#    # Must be in the format <alfresco-version>-<additional_versioning> ie. 6.3.0-repo-xxxx-x or 6.3.0-A-x
-#    - RELEASE_VERSION=6.3.0-test-release-repo-4736-4
-#    - DEVELOPMENT_VERSION=6.3.0-SNAPSHOT
+env:
+  global:
+    # Must be in the format <alfresco-version>-<additional_versioning> ie. 6.3.0-repo-xxxx-x or 6.3.0-A-x
+    - RELEASE_VERSION=6.3.0-test-release-repo-4736-4
+    - DEVELOPMENT_VERSION=6.3.0-test-1-SNAPSHOT
 
 #stages:
 ##  - test
