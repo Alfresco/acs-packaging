@@ -24,7 +24,7 @@ branches:
 env:
   global:
     # Must be in the format <alfresco-version>-<additional_versioning> ie. 6.3.0-repo-xxxx-x or 6.3.0-A-x
-    - RELEASE_VERSION=6.3.0-test-release-repo-4736-5
+    - RELEASE_VERSION=6.3.0-test-release-repo-4736-6
     - DEVELOPMENT_VERSION=6.3.0-test-1-SNAPSHOT
 
 #stages:
@@ -41,7 +41,7 @@ jobs:
     - name: "Release"
       stage: release
       if: fork = false AND (branch = feature/repo-4736-release_stage OR branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[release\]/
-      install: true # Skip half an hour wait for the built in install job
+      install: true # Skip default maven install
       before_script:
         - ./scripts/travis/verify_release_tag.sh
       script:
@@ -53,40 +53,40 @@ jobs:
         # Skip building of release commits
 #        - mvn -X --batch-mode -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=${RELEASE_VERSION} -DdevelopmentVersion=${DEVELOPMENT_VERSION} -DskipTests -Darguments="-DskipTests -DdryRun" -Prelease -DdryRun release:clean release:prepare release:perform
 #        - mvn clean install -DskipTests -Prelease
-        - travis_wait 30 bash scripts/travis/maven_release.sh
+        - travis_wait 40 bash scripts/travis/maven_release.sh
 #        - mvn --batch-mode -X -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=${RELEASE_VERSION} -DdevelopmentVersion=${DEVELOPMENT_VERSION} -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Dbuild-name="${TRAVIS_BUILD_STAGE_NAME}" -Dversion.edition="Enterprise" -Dscm-path=${scm_path} -DscmCommentPrefix="[maven-release-plugin][skip ci]" -DskipTests "-Darguments=-DskipTests -Dversion.edition=Enterprise -Dbuild-number=${TRAVIS_BUILD_NUMBER} '-Dbuild-name=${TRAVIS_BUILD_STAGE_NAME}' -Dscm-path=${scm_path} " release:clean release:prepare release:perform -Prelease
-#      before_deploy:
-#        # Move the final artifacts to a single folder (deploy_dir) to be copied to S3
-#        - mkdir -p deploy_dir
-#        - cp war/target/alfresco.war deploy_dir
-#        - cp distribution/target/*-distribution*.zip deploy_dir
-#      deploy:
-#       - provider: s3
-#         access_key_id: ${AWS_STAGING_ACCESS_KEY}
-#         secret_access_key: ${AWS_STAGING_SECRET_KEY}
-#         region: "eu-west-1"
-#         bucket: "alfresco-artefacts-staging"
-#         upload-dir: "alfresco-content-services/snapshots/test/ek/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}"
-#         skip_cleanup: true
-#         acl: private
-#         local_dir: deploy_dir
-#         on:
-#           all_branches: true
-#           condition: $TRAVIS_BRANCH =~ need this???
-#
-#    - name: "Copy to S3 Release Bucket"
-#      stage: publish
-#      if: fork = false AND (branch = feature/repo-4736-release_stage OR branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[publish\]/
-#      # Nothing to build/install as we are just copying from S3 buckets
-#      install: skip
-#      script: skip
-#      before_deploy: pip install awscli
-#      delpoy:
-#       - provider: script
-#         script:
-#           - ./scripts/travis/copy_to_release_bucket.sh
-#         on:
-#           all_branches: true
+      before_deploy:
+        # Move the final artifacts to a single folder (deploy_dir) to be copied to S3
+        - mkdir -p deploy_dir
+        - cp war/target/alfresco.war deploy_dir
+        - cp distribution/target/*-distribution*.zip deploy_dir
+      deploy:
+       - provider: s3
+         access_key_id: ${AWS_STAGING_ACCESS_KEY}
+         secret_access_key: ${AWS_STAGING_SECRET_KEY}
+         region: "eu-west-1"
+         bucket: "alfresco-artefacts-staging"
+         upload-dir: "alfresco-content-services/snapshots/test/ek/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}"
+         skip_cleanup: true
+         acl: private
+         local_dir: deploy_dir
+         on:
+           all_branches: true
+           condition: $TRAVIS_BRANCH =~ need this???
+
+    - name: "Copy to S3 Release Bucket"
+      stage: publish
+      if: fork = false AND (branch = feature/repo-4736-release_stage OR branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[publish\]/
+      # Nothing to build/install as we are just copying from S3 buckets
+      install: true
+      script: skip
+      before_deploy: pip install awscli
+      delpoy:
+       - provider: script
+         script:
+           - ./scripts/travis/copy_to_release_bucket.sh
+         on:
+           all_branches: true
 
 
 
