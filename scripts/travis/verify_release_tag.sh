@@ -1,50 +1,19 @@
 #!/usr/bin/env bash
 set -e
-source scripts/travis/common_functions.sh
 
-
-################################################# remove
-# Get versions from the commit message if provided as [version=vvv] or [next-version=vvv]
-release_version=$RELEASE_VERSION
-development_version=$DEVELOPMENT_VERSION
-export commit_release_version=$(extract_option "version" "$TRAVIS_COMMIT_MESSAGE")
-export commit_develop_version=$(extract_option "next-version" "$TRAVIS_COMMIT_MESSAGE")
-
-if [ ! -z "$commit_release_version" ]
-then
-    echo "Setting release version from commit message: $commit_release_version"
-    release_version=$commit_release_version
-fi
-
-if [ ! -z "$commit_develop_version" ]
-then
-    echo "Setting next development version from commit message: $commit_release_version"
-    development_version=$commit_develop_version
-fi
-
-export scm_path=$(mvn help:evaluate -Dexpression=project.scm.url -q -DforceStdout)
-
-# Use full history for release
-git checkout -B "${TRAVIS_BRANCH}"
-# Add email to link commits to user
-git config user.email "${GIT_EMAIL}"
-#################################################
-
-# Get versions from the commit message if provided as [version=vvv]
-release_version=$RELEASE_VERSION
-commit_release_version=$(extract_option "version" "$TRAVIS_COMMIT_MESSAGE")
-if [ ! -z "$commit_release_version" ]; then
-    echo "Setting release version from commit message: $commit_release_version"
-    release_version=$commit_release_version
-fi
+############## Copied from maven release sh
+if [ -z ${RELEASE_VERSION} ] || [ -z ${DEVELOPMENT_VERSION} ];
+    then echo "Please provide a Release and Development verison in the format <acs-version>-<additional-info> (6.3.0-EA or 6.3.0-SNAPSHOT)"
+         exit -1
+##############
 
 # get the image name from the pom file
 alfresco_docker_image=$(mvn help:evaluate -f ./docker-alfresco/pom.xml -Dexpression=image.name -q -DforceStdout)
-if [ -v ${release_version} ]; then
+if [ -v ${RELEASE_VERSION} ]; then
     echo "Please provide a RELEASE_VERSION in the format <acs-version>-<additional-info> (6.3.0-EA or 6.3.0-SNAPSHOT)"
     exit -1
 fi
-docker_image_full_name="$alfresco_docker_image:$release_version"
+docker_image_full_name="$alfresco_docker_image:$RELEASE_VERSION"
 
 function docker_image_exists() {
   local image_full_name="$1"; shift

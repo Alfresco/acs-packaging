@@ -27,10 +27,10 @@ env:
     - RELEASE_VERSION=6.3.0-test-release-repo-4736-3
     - DEVELOPMENT_VERSION=6.3.0-SNAPSHOT
 
-stages:
-#  - test
-  - release
-  - publish
+#stages:
+##  - test
+#  - release
+#  - publish
 
 # This should not be required on community build
 before_install:
@@ -44,18 +44,16 @@ jobs:
       before_script:
         - ./scripts/travis/verify_release_tag.sh
       script:
+        - echo "release version= ${RELEASE_VERSION}, development version= ${DEVELOPMENT_VERSION}, git user= ${GIT_USERNAME}"
 #        # Use full history for release
 #        - git checkout -B "${TRAVIS_BRANCH}"
 #        # Add email to link commits to user
 #        - git config user.email "${GIT_EMAIL}"
         # Skip building of release commits
-#        - mvn -q --batch-mode -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=${RELEASE_VERSION} -DdevelopmentVersion=${DEVELOPMENT_VERSION} -DskipTests -Darguments="-DskipTests" -Prelease release:clean release:prepare release:perform
+        - mvn -q --batch-mode -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=${RELEASE_VERSION} -DdevelopmentVersion=${DEVELOPMENT_VERSION} -DskipTests -Darguments="-DskipTests" -Prelease release:clean release:prepare release:perform
 #        - mvn -q clean install -DskipTests -Prelease
 #        - travis_wait 30 ./scripts/travis/maven_release.sh
-        - echo "release version= ${release_version}, development version= ${development_version}, git user= ${GIT_USERNAME}"
-        - travis_wait 30 mvn --batch-mode -q -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=${release_version} -DdevelopmentVersion=${development_version} -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Dbuild-name="${TRAVIS_BUILD_STAGE_NAME}" -Dversion.edition="Enterprise" -Dscm-path=${scm_path} -DscmCommentPrefix="[maven-release-plugin][skip ci]" -DskipTests "-Darguments=-DskipTests -Dversion.edition=Enterprise -Dbuild-number=${TRAVIS_BUILD_NUMBER} '-Dbuild-name=${TRAVIS_BUILD_STAGE_NAME}' -Dscm-path=${scm_path} " release:clean release:prepare release:perform -Prelease
-      after_failure:
-        - mvn -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" release:rollback -DscmCommentPrefix="[maven-release-plugin][skip ci] "
+#        - travis_wait 30 mvn --batch-mode -q -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=${release_version} -DdevelopmentVersion=${development_version} -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Dbuild-name="${TRAVIS_BUILD_STAGE_NAME}" -Dversion.edition="Enterprise" -Dscm-path=${scm_path} -DscmCommentPrefix="[maven-release-plugin][skip ci]" -DskipTests "-Darguments=-DskipTests -Dversion.edition=Enterprise -Dbuild-number=${TRAVIS_BUILD_NUMBER} '-Dbuild-name=${TRAVIS_BUILD_STAGE_NAME}' -Dscm-path=${scm_path} " release:clean release:prepare release:perform -Prelease
       before_deploy:
         # Move the final artifacts to a single folder (deploy_dir) to be copied to S3
         - mkdir -p deploy_dir
@@ -74,20 +72,20 @@ jobs:
          on:
            all_branches: true
 #           condition: $TRAVIS_BRANCH =~ need this???
-
-    - name: "Copy to S3 Release Bucket"
-      stage: publish
-      if: fork = false AND (branch = feature/repo-4736-release_stage OR branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[publish\]/
-      # Nothing to build/install as we are just copying from S3 buckets
-      install: skip
-      script: skip
-      before_deploy: pip install awscli
-      delpoy:
-       - provider: script
-         script:
-           - ./scripts/travis/copy_to_release_bucket.sh
-         on:
-           all_branches: true
+#
+#    - name: "Copy to S3 Release Bucket"
+#      stage: publish
+#      if: fork = false AND (branch = feature/repo-4736-release_stage OR branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[publish\]/
+#      # Nothing to build/install as we are just copying from S3 buckets
+#      install: skip
+#      script: skip
+#      before_deploy: pip install awscli
+#      delpoy:
+#       - provider: script
+#         script:
+#           - ./scripts/travis/copy_to_release_bucket.sh
+#         on:
+#           all_branches: true
 
 
 
