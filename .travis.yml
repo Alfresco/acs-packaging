@@ -43,9 +43,9 @@ jobs:
       if: fork = false AND (branch = feature/repo-4736-release_stage OR branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[release\]/
       install: true # Skip half an hour wait for the built in install job
       before_script:
-#        - ./scripts/travis/verify_release_tag.sh
+        - ./scripts/travis/verify_release_tag.sh
       script:
-#        - echo "release version= ${RELEASE_VERSION}, development version= ${DEVELOPMENT_VERSION}"
+        - echo "release version= ${RELEASE_VERSION}, development version= ${DEVELOPMENT_VERSION}"
         # Use full history for release
         - git checkout -B "${TRAVIS_BRANCH}"
         # Add email to link commits to user
