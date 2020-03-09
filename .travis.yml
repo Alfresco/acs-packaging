@@ -24,13 +24,13 @@ branches:
 env:
   global:
     # Must be in the format <alfresco-version>-<additional_versioning> ie. 6.3.0-repo-xxxx-x or 6.3.0-A-x
-    - RELEASE_VERSION=6.3.0-test-release-repo-4736-7
+    - RELEASE_VERSION=6.3.0-test-release-repo-4736-8
     - DEVELOPMENT_VERSION=6.3.0-test-1-SNAPSHOT
 
-#stages:
-##  - test
-#  - release
-#  - publish
+stages:
+#  - test
+  - release
+  - publish
 
 # This should not be required on community build
 before_install:
@@ -38,7 +38,7 @@ before_install:
 
 jobs:
   include:
-    - name: "Release"
+    - name: "Release and Copy to S3 Staging Bucket"
       stage: release
       if: fork = false AND (branch = feature/repo-4736-release_stage OR branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[release\]/
       install: true # Skip default maven install
@@ -82,8 +82,7 @@ jobs:
       before_deploy: pip install awscli
       deploy:
        - provider: script
-         script:
-           - bash scripts/travis/copy_to_release_bucket.sh
+         script: bash scripts/travis/copy_to_release_bucket.sh
          on:
            all_branches: true
 
