@@ -26,7 +26,7 @@ else
 
 #    mvn -X --batch-mode -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=${RELEASE_VERSION} -DdevelopmentVersion=${DEVELOPMENT_VERSION} -DskipTests -Darguments="-DskipTests" -Prelease release:clean release:prepare release:perform
 
-    mvn --batch-mode -X -DdryRun \
+    mvn --batch-mode -X \
     -DskipTests \
     -Dusername="${GIT_USERNAME}" \
     -Dpassword="${GIT_PASSWORD}" \
@@ -36,6 +36,6 @@ else
     -Dbuild-name="${TRAVIS_BUILD_STAGE_NAME}" \
     -Dversion.edition="Enterprise" \
     -DscmCommentPrefix="[maven-release-plugin][skip ci]" \
-    "-Darguments=-DskipTests -DdryRun -Dversion.edition=Enterprise -Dbuild-number=${TRAVIS_BUILD_NUMBER} '-Dbuild-name=${TRAVIS_BUILD_STAGE_NAME}'" \
+    "-Darguments=-DskipTests -Dversion.edition=Enterprise -Dbuild-number=${TRAVIS_BUILD_NUMBER} '-Dbuild-name=${TRAVIS_BUILD_STAGE_NAME}'" \
     -Prelease release:clean release:prepare release:perform
 fi
