@@ -28,7 +28,7 @@ env:
     - DEVELOPMENT_VERSION=6.3.0-test-1-SNAPSHOT
 
 stages:
-#  - test
+  - test
   - release
   - publish
 
