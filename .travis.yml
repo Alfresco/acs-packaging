@@ -24,7 +24,7 @@ branches:
 env:
   global:
     # Must be in the format <alfresco-version>-<additional_versioning> ie. 6.3.0-repo-xxxx-x or 6.3.0-A-x
-    - RELEASE_VERSION=6.3.0-test-release-repo-4736-11
+    - RELEASE_VERSION=6.3.0-test-release-repo-4736-12
     - DEVELOPMENT_VERSION=6.3.0-test-1-SNAPSHOT
 
 stages:
@@ -189,14 +189,8 @@ jobs:
       #      install: true # Skip default maven install
       install: travis_wait 40 mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
       before_script:
-        - ./scripts/travis/verify_release_tag.sh
+        - bash scripts/travis/verify_release_tag.sh
       script:
-        - echo "release version= ${RELEASE_VERSION}, development version= ${DEVELOPMENT_VERSION}"
-        # Use full history for release
-        - git checkout -B "${TRAVIS_BRANCH}"
-        # Add email to link commits to user
-        - git config user.email "${GIT_EMAIL}"
-        # Skip building of release commits
         - travis_wait 60 bash scripts/travis/maven_release.sh
       before_deploy:
         # Move the final artifacts to a single folder (deploy_dir) to be copied to S3
