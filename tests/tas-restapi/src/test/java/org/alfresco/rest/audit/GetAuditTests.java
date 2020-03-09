@@ -25,11 +25,6 @@ public class GetAuditTests extends AuditTest
         restAuditAppModel.assertThat().field("name").is("alfresco-access");
         restAuditAppModel.assertThat().field("id").is("alfresco-access");
 
-        syncRestAuditAppModel = getSyncRestAuditAppModel(adminUser);
-        syncRestAuditAppModel.assertThat().field("isEnabled").is(true);
-        syncRestAuditAppModel.assertThat().field("name").is("Alfresco Sync Service");
-        syncRestAuditAppModel.assertThat().field("id").is("sync");
-
         taggingRestAuditAppModel = getTaggingRestAuditAppModel(adminUser);
         taggingRestAuditAppModel.assertThat().field("isEnabled").is(true);
         taggingRestAuditAppModel.assertThat().field("name").is("Alfresco Tagging Service");
