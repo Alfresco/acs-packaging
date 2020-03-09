@@ -24,7 +24,7 @@ branches:
 env:
   global:
     # Must be in the format <alfresco-version>-<additional_versioning> ie. 6.3.0-repo-xxxx-x or 6.3.0-A-x
-    - RELEASE_VERSION=6.3.0-test-release-repo-4736-9
+    - RELEASE_VERSION=6.3.0-test-release-repo-4736-10
     - DEVELOPMENT_VERSION=6.3.0-test-1-SNAPSHOT
 
 stages:
@@ -41,7 +41,8 @@ jobs:
     - name: "Release and Copy to S3 Staging Bucket"
       stage: release
       if: fork = false AND (branch = feature/repo-4736-release_stage OR branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[release\]/
-      install: true # Skip default maven install
+#      install: true # Skip default maven install
+      install: travis_wait 40 mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
       before_script:
         - ./scripts/travis/verify_release_tag.sh
       script:
@@ -51,10 +52,7 @@ jobs:
         # Add email to link commits to user
         - git config user.email "${GIT_EMAIL}"
         # Skip building of release commits
-#        - mvn -X --batch-mode -DscmCommentPrefix="[maven-release-plugin][skip ci] " -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=${RELEASE_VERSION} -DdevelopmentVersion=${DEVELOPMENT_VERSION} -DskipTests -Darguments="-DskipTests -DdryRun" -Prelease -DdryRun release:clean release:prepare release:perform
-#        - mvn clean install -DskipTests -Prelease
         - travis_wait 60 bash scripts/travis/maven_release.sh
-#        - mvn --batch-mode -X -Dusername="${GIT_USERNAME}" -Dpassword="${GIT_PASSWORD}" -DreleaseVersion=${RELEASE_VERSION} -DdevelopmentVersion=${DEVELOPMENT_VERSION} -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Dbuild-name="${TRAVIS_BUILD_STAGE_NAME}" -Dversion.edition="Enterprise" -Dscm-path=${scm_path} -DscmCommentPrefix="[maven-release-plugin][skip ci]" -DskipTests "-Darguments=-DskipTests -Dversion.edition=Enterprise -Dbuild-number=${TRAVIS_BUILD_NUMBER} '-Dbuild-name=${TRAVIS_BUILD_STAGE_NAME}' -Dscm-path=${scm_path} " release:clean release:prepare release:perform -Prelease
       before_deploy:
         # Move the final artifacts to a single folder (deploy_dir) to be copied to S3
         - mkdir -p deploy_dir
