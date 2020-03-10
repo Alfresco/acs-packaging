@@ -28,6 +28,11 @@
                 <groupId>org.codehaus.woodstox</groupId>
                 <artifactId>woodstox-core-asl</artifactId>
               </exclusion>
+              <!-- REPO-5009 Excluded to avoid duplicated classes with javax.jws:javax.jws-api -->
+              <exclusion>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-ws-metadata_2.0_spec</artifactId>
+              </exclusion>
             </exclusions>
         </dependency>
         <dependency>
