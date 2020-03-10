@@ -28,7 +28,7 @@ env:
     - DEVELOPMENT_VERSION=6.3.0-test-1-SNAPSHOT
 
 stages:
-  - test
+  - name: test
     if: commit_message !~ /\[skip-tests\]/
   - release
   - publish
@@ -39,7 +39,8 @@ before_install:
 
 jobs:
   include:
-    - name: "WhiteSource scan"
+    - stage: test
+      name: "WhiteSource scan"
       # only on support branches or master and if it is not a PR
       if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request
       install:
