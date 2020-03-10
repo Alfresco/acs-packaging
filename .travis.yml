@@ -24,11 +24,12 @@ branches:
 env:
   global:
     # Must be in the format <alfresco-version>-<additional_versioning> ie. 6.3.0-repo-xxxx-x or 6.3.0-A-x
-    - RELEASE_VERSION=6.3.0-test-release-repo-4736-12
+    - RELEASE_VERSION=6.3.0-test-release-repo-4736-13
     - DEVELOPMENT_VERSION=6.3.0-test-1-SNAPSHOT
 
 stages:
   - test
+    if: commit_message !~ /\[skip-tests\]/
   - release
   - publish
 
@@ -186,9 +187,10 @@ jobs:
     - name: "Release and Copy to S3 Staging Bucket"
       stage: release
       if: fork = false AND (branch = feature/repo-4736-release_stage OR branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[release\]/
-      #      install: true # Skip default maven install
+      # Download the maven cache in case the previous test stage is skipped to prevent timeouts during release
       install: travis_wait 40 mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
       before_script:
+        # Check that the release has not already been done
         - bash scripts/travis/verify_release_tag.sh
       script:
         - travis_wait 60 bash scripts/travis/maven_release.sh
@@ -203,15 +205,17 @@ jobs:
           secret_access_key: ${AWS_STAGING_SECRET_KEY}
           region: "eu-west-1"
           bucket: "alfresco-artefacts-staging"
-          upload_dir: "alfresco-content-services/snapshots/test/ek/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}"
+          upload_dir: "alfresco-content-services/release/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}"
           skip_cleanup: true
           acl: private
           local_dir: deploy_dir
           on:
             all_branches: true
+      after_deploy:
+        - echo "Finished release and deployed to https://s3.console.aws.amazon.com/s3/buckets/alfresco-artefacts-staging/alfresco-content-services/release/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}"
     - name: "Copy to S3 Release Bucket"
       stage: publish
-      if: fork = false AND (branch = feature/repo-4736-release_stage OR branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[publish\]/
+      if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[publish\]/
       # Nothing to build/install as we are just copying from S3 buckets
       install: true
       script: skip

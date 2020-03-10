@@ -11,14 +11,8 @@ then
   exit -1
 fi
 
-
-bamboo_stage=release
-
-SOURCE=s3://alfresco-artefacts-staging/alfresco-content-services/snapshots/test/ek/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}
-DESTINATION=s3://eu.dl.alfresco.com/release/enterprise/ek/ACS/${RELEASE_VERSION:0:3}/$RELEASE_VERSION/$TRAVIS_BUILD_NUMBER
-
-#SOURCE=s3://alfresco-artefacts-staging/alfresco-content-services/release/$TRAVIS_BRANCH/$TRAVIS_BUILD_NUMBER
-#DESTINATION=s3://eu.dl.alfresco.com/release/enterprise/ACS/${RELEASE_VERSION:0:3}/$RELEASE_VERSION/$TRAVIS_BUILD_NUMBER
+SOURCE=s3://alfresco-artefacts-staging/alfresco-content-services/release/$TRAVIS_BRANCH/$TRAVIS_BUILD_NUMBER
+DESTINATION=s3://eu.dl.alfresco.com/release/enterprise/ACS/${RELEASE_VERSION:0:3}/$RELEASE_VERSION/$TRAVIS_BUILD_NUMBER
 
 
 echo "
