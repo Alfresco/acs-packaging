@@ -26,7 +26,6 @@ branches:
 before_install:
   - "cp .travis.settings.xml $HOME/.m2/settings.xml"
   - wget https://repo1.maven.org/maven2/com/veracode/vosp/api/wrappers/vosp-api-wrappers-java/$VERACODE_WRAPPER_VERSION/vosp-api-wrappers-java-$VERACODE_WRAPPER_VERSION.jar
-  - sha1sum -c <<< "$VERACODE_WAPPER_SHA1 vosp-api-wrappers-java-$VERACODE_WRAPPER_VERSION.jar"
 
 matrix:
   include:
