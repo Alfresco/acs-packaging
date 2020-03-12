@@ -18,6 +18,7 @@ branches:
   only:
     - master
     - /support\/.*/
+    - fix/REPO-4906_veracode-static-scan
 
 # This should not be required on community build
 before_install:
@@ -169,3 +170,4 @@ matrix:
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-all-amps-test.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
         - travis_wait 20 mvn install -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+
