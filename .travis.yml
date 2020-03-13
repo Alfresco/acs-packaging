@@ -20,7 +20,6 @@ branches:
   only:
     - master
     - /support\/.*/
-    - fix/REPO-4906_veracode-static-scan
 
 # This should not be required on community build
 before_install:
