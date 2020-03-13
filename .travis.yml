@@ -19,13 +19,12 @@ branches:
   only:
     - master
     - /support\/.*/
-    - feature/repo-4736-release_stage
 
 env:
   global:
-    # Must be in the format <alfresco-version>-<additional_versioning> ie. 6.3.0-repo-xxxx-x or 6.3.0-A-x
-    - RELEASE_VERSION=6.3.0-test-release-repo-4736-13
-    - DEVELOPMENT_VERSION=6.3.0-SNAPSHOT
+    # Release version has to start with real version (6.3.0-....) for the docker image to build successfully.
+    - RELEASE_VERSION=
+    - DEVELOPMENT_VERSION=
 
 stages:
   - name: test
@@ -187,7 +186,7 @@ jobs:
 
     - name: "Release and Copy to S3 Staging Bucket"
       stage: release
-      if: fork = false AND (branch = feature/repo-4736-release_stage OR branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[release\]/
+      if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[release\]/
       # Download the maven cache in case the previous test stage is skipped to prevent timeouts during release
       install: travis_wait 40 mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
       before_script:
