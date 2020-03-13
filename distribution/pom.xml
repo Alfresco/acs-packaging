@@ -43,6 +43,11 @@
                 <groupId>javax.xml.bind</groupId>
                 <artifactId>jaxb-api</artifactId>
               </exclusion>
+              <!-- Duplicates classes from jakarta.annotation:jakarta.annotation-api -->
+              <exclusion>
+                <groupId>javax.annotation</groupId>
+                <artifactId>javax.annotation-api</artifactId>
+              </exclusion>
             </exclusions>
         </dependency>
         <dependency>
