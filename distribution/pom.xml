@@ -38,6 +38,16 @@
                 <groupId>javax.transaction</groupId>
                 <artifactId>jta</artifactId>
               </exclusion>
+              <!-- Duplicates classes from jakarta.xml.bind:jakarta.xml.bind-api -->
+              <exclusion>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+              </exclusion>
+              <!-- Duplicates classes from jakarta.annotation:jakarta.annotation-api -->
+              <exclusion>
+                <groupId>javax.annotation</groupId>
+                <artifactId>javax.annotation-api</artifactId>
+              </exclusion>
             </exclusions>
         </dependency>
         <dependency>
