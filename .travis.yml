@@ -26,8 +26,6 @@ env:
     # Release version has to start with real version (6.3.0-....) for the docker image to build successfully.
     - RELEASE_VERSION=
     - DEVELOPMENT_VERSION=
-    # Vercode static scan version
-    - DATE=`date +"%Y-%m-%d-%H%M"`
 
 stages:
   - name: test
@@ -191,9 +189,10 @@ jobs:
       jdk: openjdk11
       install:
         - travis_retry travis_wait 30 mvn -q install -f war/pom.xml
+      before_install:
+        - bash scripts/veracode/static_analysis_init.sh
       script:
-        - java -jar vosp-api-wrappers-java-$VERACODE_WRAPPER_VERSION.jar -vid $VERACODE_API_ID -vkey $VERACODE_API_KEY
-          -action uploadandscan -appname "ACS Repository" -sandboxname "ACS Repo Team Sandbox" -createprofile false -filepath war/target/alfresco.war -version "$TRAVIS_JOB_ID - $TRAVIS_JOB_NUMBER $DATE"
+        - bash scripts/veracode/static_analysis.sh
     - name: "Release and Copy to S3 Staging Bucket"
       stage: release
       if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[release\]/
