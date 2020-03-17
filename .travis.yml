@@ -4,8 +4,6 @@ sudo: required
 language: java
 jdk:
   - openjdk11
-env:
-  - DATE=`date +"%Y-%m-%d-%H%M"`
 
 services:
   - docker
@@ -21,8 +19,10 @@ branches:
   only:
     - master
     - /support\/.*/
+    - fix/REPO-4906_veracode-static-scan
 
 env:
+  - DATE=`date +"%Y-%m-%d-%H%M"`
   global:
     # Release version has to start with real version (6.3.0-....) for the docker image to build successfully.
     - RELEASE_VERSION=
