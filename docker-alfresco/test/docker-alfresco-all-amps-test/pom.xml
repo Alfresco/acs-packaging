@@ -67,8 +67,8 @@
         </dependency>
         <dependency>
             <groupId>org.alfresco.integrations</groupId>
-            <artifactId>alfresco-googledocs-repo</artifactId>
-            <version>${alfresco.googledocs.version}</version>
+            <artifactId>alfresco-googledrive-repo-enterprise</artifactId>
+            <version>${alfresco.googledrive.version}</version>
             <type>amp</type>
         </dependency>
         <dependency>
@@ -191,16 +191,16 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.alfresco.integrations</groupId>
-                                    <artifactId>alfresco-googledocs-repo</artifactId>
-                                    <version>${alfresco.googledocs.version}</version>
+                                    <artifactId>alfresco-googledrive-repo-enterprise</artifactId>
+                                    <version>${alfresco.googledrive.version}</version>
                                     <type>amp</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.alfresco.integrations</groupId>
-                                    <artifactId>alfresco-googledocs-share</artifactId>
-                                    <version>${alfresco.googledocs.version}</version>
+                                    <artifactId>alfresco-googledrive-share</artifactId>
+                                    <version>${alfresco.googledrive.version}</version>
                                     <type>amp</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
@@ -228,7 +228,7 @@
                                     <type>amp</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
-                                </artifactItem>                               
+                                </artifactItem>
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-glacier-connector-repo</artifactId>
