@@ -4,7 +4,15 @@ export ALFRESCO_URL=$1
 
 if [ -z "$ALFRESCO_URL" ]
 then
-  echo "Please provide the Alfresco URL to check, for example: \"${0##*/} http://localhost:8080/alfresco\""
+  echo "Please provide the Alfresco URL to check as first argument for the script, for example: \"${0##*/} http://localhost:8080/alfresco /path/to/docker-compose.yml\""
+  exit 1
+fi
+
+export DOCKER_COMPOSE_PATH=$2
+
+if [ -z "$DOCKER_COMPOSE_PATH" ]
+then
+  echo "Please provide path to docker-compose.yml as a second argument for the script: \"${0##*/} http://localhost:8080/alfresco /path/to/docker-compose.yml\""
   exit 1
 fi
 
@@ -29,6 +37,6 @@ else
    echo "Alfresco Could not start in time."
    ALFCONTAINER=docker ps -a | grep alfresco-content-repository | awk '{ print $1 }'
    echo "Last 200 lines from alfresco.log on container $ALFCONTAINER:"
-   docker-compose logs --tail=200 $ALFCONTAINER
+   docker-compose --file "${DOCKER_COMPOSE_PATH}" logs --tail=200 $ALFCONTAINER
    exit 1
 fi
