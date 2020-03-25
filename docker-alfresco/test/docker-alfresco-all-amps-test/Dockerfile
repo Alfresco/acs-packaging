@@ -4,7 +4,7 @@ FROM alfresco/alfresco-content-repository:${image.tag}
 
 ARG TOMCAT_DIR=/usr/local/tomcat
 ARG GROUPNAME=Alfresco
-ARG USERNAME=alfresco
+ARG IMAGEUSERNAME=alfresco
 
 USER root
 
@@ -28,4 +28,4 @@ RUN sed -i -e "s_log4j.appender.File.File\=alfresco.log_log4j.appender.File.File
     chmod -R g+r ${TOMCAT_DIR}/webapps && \
     chgrp -R ${GROUPNAME} ${TOMCAT_DIR}
 
-USER ${USERNAME}
+USER ${IMAGEUSERNAME}
