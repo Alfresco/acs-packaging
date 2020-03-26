@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+set -e
 echo "=========================== Starting Static Analysis Script ==========================="
 
 java -jar vosp-api-wrappers-java-$VERACODE_WRAPPER_VERSION.jar -vid $VERACODE_API_ID -vkey $VERACODE_API_KEY \
