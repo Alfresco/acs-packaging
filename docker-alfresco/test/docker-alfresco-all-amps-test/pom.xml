@@ -189,16 +189,16 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
-                                <!-- <artifactItem>
+<!--                                 <artifactItem>
                                     <groupId>org.alfresco.integrations</groupId>
                                     <artifactId>alfresco-googledrive-repo-enterprise</artifactId>
                                     <version>${alfresco.googledrive.version}</version>
                                     <type>amp</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.alfresco.integrations</groupId>
+                                </artifactItem> -->
+<!--                                 <artifactItem>
+                                   <groupId>org.alfresco.integrations</groupId>
                                     <artifactId>alfresco-googledrive-share</artifactId>
                                     <version>${alfresco.googledrive.version}</version>
                                     <type>amp</type>
