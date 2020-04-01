@@ -117,7 +117,7 @@
         <alfresco.package.name>alfresco</alfresco.package.name>
         <alfresco.distribution.name>${alfresco.package.name}-distribution</alfresco.distribution.name>
 
-        <dependency.postgresql.version>42.2.11</dependency.postgresql.version>
+        <dependency.postgresql.version>42.2.12</dependency.postgresql.version>
         <dependency.mariadb.version>2.6.0</dependency.mariadb.version>
 
         <!-- Private docker registry -->
