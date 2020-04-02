@@ -34,11 +34,11 @@
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <dependency.alfresco-enterprise-remote-api.version>8.101</dependency.alfresco-enterprise-remote-api.version>
-        <dependency.alfresco-enterprise-repository.version>8.103</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-remote-api.version>8.129</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-enterprise-remote-api.version>8.107</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>8.110</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-remote-api.version>8.137</dependency.alfresco-remote-api.version>
         <dependency.alfresco-repository.version>search-1915-3</dependency.alfresco-repository.version>
-        <dependency.alfresco-data-model.version>8.96</dependency.alfresco-data-model.version>
+        <dependency.alfresco-data-model.version>8.99</dependency.alfresco-data-model.version>
         <dependency.alfresco-core.version>search-1915-7</dependency.alfresco-core.version>
 
         <dependency.alfresco-hb-data-sender.version>1.0.12</dependency.alfresco-hb-data-sender.version>
@@ -60,7 +60,7 @@
         <dependency.fabric8.version>4.4.0</dependency.fabric8.version>
         <dependency.jackson.version>2.10.3</dependency.jackson.version>
         <dependency.jackson-databind.version>2.10.1</dependency.jackson-databind.version>
-        <dependency.cxf.version>3.3.5</dependency.cxf.version>
+        <dependency.cxf.version>3.3.6</dependency.cxf.version>
         <dependency.axiom.version>1.2.22</dependency.axiom.version>
 
         <!-- Alfresco Share version -->
@@ -68,10 +68,10 @@
         <alfresco.alfresco-share-services.version>6.2.1-A4</alfresco.alfresco-share-services.version>
 
         <!-- Alfresco GoogleDocs integration version -->
-        <alfresco.googledrive.version>3.2.0-A4</alfresco.googledrive.version>
+        <alfresco.googledrive.version>3.2.0-RC1</alfresco.googledrive.version>
 
         <!-- Alfresco S3 Connector integration version -->
-        <alfresco.s3connector.version>3.0.0</alfresco.s3connector.version>
+        <alfresco.s3connector.version>3.0.0.1</alfresco.s3connector.version>
 
         <!-- Alfresco Glacier Connector Repo version -->
         <alfresco.glacier-connector.version>2.0.0</alfresco.glacier-connector.version>
@@ -116,7 +116,7 @@
         <alfresco.package.name>alfresco</alfresco.package.name>
         <alfresco.distribution.name>${alfresco.package.name}-distribution</alfresco.distribution.name>
 
-        <dependency.postgresql.version>42.2.11</dependency.postgresql.version>
+        <dependency.postgresql.version>42.2.12</dependency.postgresql.version>
         <dependency.mariadb.version>2.6.0</dependency.mariadb.version>
 
         <!-- Private docker registry -->
@@ -125,7 +125,7 @@
         <dependency.tas-utility.version>3.0.20</dependency.tas-utility.version>
         <dependency.rest-assured.version>3.3.0</dependency.rest-assured.version>
         <dependency.javax.json.version>1.1.4</dependency.javax.json.version>
-        <dependency.tas-restapi.version>1.35</dependency.tas-restapi.version>
+        <dependency.tas-restapi.version>1.37</dependency.tas-restapi.version>
         <dependency.tas-cmis.version>1.13</dependency.tas-cmis.version>
         <dependency.tas-email.version>1.8</dependency.tas-email.version>
         <dependency.tas-webdav.version>1.6</dependency.tas-webdav.version>
