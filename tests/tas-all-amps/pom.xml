@@ -307,22 +307,22 @@
 <!--                                            <overWrite>false</overWrite>-->
 <!--                                            <outputDirectory>${project.build.directory}/amps_share</outputDirectory>-->
 <!--                                        </artifactItem>-->
-                                        <artifactItem>
-                                            <groupId>org.alfresco</groupId>
-                                            <artifactId>alfresco-document-transformation-engine-repo</artifactId>
-                                            <version>${alfresco.transformation-engine.version}</version>
-                                            <type>amp</type>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                        </artifactItem>
-                                        <artifactItem>
-                                            <groupId>org.alfresco</groupId>
-                                            <artifactId>alfresco-document-transformation-engine-share</artifactId>
-                                            <version>${alfresco.transformation-engine.version}</version>
-                                            <type>amp</type>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
-                                        </artifactItem>
+<!--                                        <artifactItem>-->
+<!--                                            <groupId>org.alfresco</groupId>-->
+<!--                                            <artifactId>alfresco-document-transformation-engine-repo</artifactId>-->
+<!--                                            <version>${alfresco.transformation-engine.version}</version>-->
+<!--                                            <type>amp</type>-->
+<!--                                            <overWrite>false</overWrite>-->
+<!--                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>-->
+<!--                                        </artifactItem>-->
+<!--                                        <artifactItem>-->
+<!--                                            <groupId>org.alfresco</groupId>-->
+<!--                                            <artifactId>alfresco-document-transformation-engine-share</artifactId>-->
+<!--                                            <version>${alfresco.transformation-engine.version}</version>-->
+<!--                                            <type>amp</type>-->
+<!--                                            <overWrite>false</overWrite>-->
+<!--                                            <outputDirectory>${project.build.directory}/amps_share</outputDirectory>-->
+<!--                                        </artifactItem>-->
                                         <artifactItem>
                                             <groupId>org.alfresco</groupId>
                                             <artifactId>alfresco-governance-services-enterprise-repo</artifactId>
