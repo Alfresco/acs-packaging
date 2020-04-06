@@ -34,16 +34,16 @@
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <dependency.alfresco-enterprise-remote-api.version>8.104</dependency.alfresco-enterprise-remote-api.version>
-        <dependency.alfresco-enterprise-repository.version>8.107</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-remote-api.version>8.135</dependency.alfresco-remote-api.version>
-        <dependency.alfresco-repository.version>8.145</dependency.alfresco-repository.version>
-        <dependency.alfresco-data-model.version>8.97</dependency.alfresco-data-model.version>
+        <dependency.alfresco-enterprise-remote-api.version>8.109</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>8.113</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-remote-api.version>8.139</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-repository.version>8.148</dependency.alfresco-repository.version>
+        <dependency.alfresco-data-model.version>8.99</dependency.alfresco-data-model.version>
 
         <dependency.alfresco-core.version>8.27</dependency.alfresco-core.version>
 
         <dependency.alfresco-hb-data-sender.version>1.0.12</dependency.alfresco-hb-data-sender.version>
-        <dependency.activiti-repo-connector.version>1.2</dependency.activiti-repo-connector.version>
+        <dependency.activiti-repo-connector.version>1.3</dependency.activiti-repo-connector.version>
 
         <dependency.alfresco-spring-encryptor.version>6.1</dependency.alfresco-spring-encryptor.version>
         <dependency.alfresco-enterprise-crypto.version>6.2</dependency.alfresco-enterprise-crypto.version>
@@ -69,10 +69,10 @@
         <alfresco.alfresco-share-services.version>6.2.1-A4</alfresco.alfresco-share-services.version>
 
         <!-- Alfresco GoogleDocs integration version -->
-        <alfresco.googledrive.version>3.2.0-A4</alfresco.googledrive.version>
+        <alfresco.googledrive.version>3.2.0-RC1</alfresco.googledrive.version>
 
         <!-- Alfresco S3 Connector integration version -->
-        <alfresco.s3connector.version>3.0.0</alfresco.s3connector.version>
+        <alfresco.s3connector.version>3.0.0.1</alfresco.s3connector.version>
 
         <!-- Alfresco Glacier Connector Repo version -->
         <alfresco.glacier-connector.version>2.0.0</alfresco.glacier-connector.version>
@@ -117,7 +117,7 @@
         <alfresco.package.name>alfresco</alfresco.package.name>
         <alfresco.distribution.name>${alfresco.package.name}-distribution</alfresco.distribution.name>
 
-        <dependency.postgresql.version>42.2.11</dependency.postgresql.version>
+        <dependency.postgresql.version>42.2.12</dependency.postgresql.version>
         <dependency.mariadb.version>2.6.0</dependency.mariadb.version>
 
         <!-- Private docker registry -->
