@@ -7,7 +7,7 @@
   <parent>
       <groupId>org.alfresco</groupId>
       <artifactId>acs-packaging</artifactId>
-      <version>6.3.0-SNAPSHOT</version>
+      <version>7.0-SNAPSHOT</version>
       <relativePath>../../../pom.xml</relativePath>
   </parent>
 
@@ -189,31 +189,31 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
-                                <artifactItem>
+<!--                                 <artifactItem>
                                     <groupId>org.alfresco.integrations</groupId>
                                     <artifactId>alfresco-googledrive-repo-enterprise</artifactId>
                                     <version>${alfresco.googledrive.version}</version>
                                     <type>amp</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.alfresco.integrations</groupId>
+                                </artifactItem> -->
+<!--                                 <artifactItem>
+                                   <groupId>org.alfresco.integrations</groupId>
                                     <artifactId>alfresco-googledrive-share</artifactId>
                                     <version>${alfresco.googledrive.version}</version>
                                     <type>amp</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
+                                </artifactItem> -->
+<!--                                 <artifactItem>
                                     <groupId>org.alfresco.integrations</groupId>
                                     <artifactId>alfresco-s3-connector</artifactId>
                                     <version>${alfresco.s3connector.version}</version>
                                     <type>amp</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
+                                </artifactItem> -->
+                                <!-- <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-ai-repo</artifactId>
                                     <version>${alfresco.ais.version}</version>
@@ -228,23 +228,23 @@
                                     <type>amp</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
+                                </artifactItem> -->
+<!--                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-glacier-connector-repo</artifactId>
                                     <version>${alfresco.glacier-connector.version}</version>
                                     <type>amp</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
+                                </artifactItem> -->
+<!--                                 <artifactItem>
                                     <groupId>org.alfresco.integrations</groupId>
                                     <artifactId>alfresco-azure-connector</artifactId>
                                     <version>${alfresco.azure-connector.version}</version>
                                     <type>amp</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                </artifactItem>
+                                </artifactItem> -->
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-centera-connector</artifactId>
@@ -253,7 +253,7 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
-                                <artifactItem>
+                               <!--  <artifactItem>
                                     <groupId>org.alfresco.integrations</groupId>
                                     <artifactId>alfresco-content-connector-for-salesforce-repo</artifactId>
                                     <version>${alfresco.salesforce-connector.version}</version>
@@ -268,7 +268,7 @@
                                     <type>amp</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
-                                </artifactItem>
+                                </artifactItem> -->
                                 <artifactItem>
                                     <groupId>org.alfresco.module.KofaxAddon</groupId>
                                     <artifactId>kofaxaddon</artifactId>
@@ -277,15 +277,15 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
-                                <artifactItem>
+<!--                                 <artifactItem>
                                     <groupId>org.alfresco.services.sync</groupId>
                                     <artifactId>alfresco-device-sync-repo</artifactId>
                                     <version>${alfresco.desktop-sync.version}</version>
                                     <type>amp</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
+                                </artifactItem> -->
+<!--                                 <artifactItem>
                                     <groupId>org.alfresco.saml</groupId>
                                     <artifactId>alfresco-saml-repo</artifactId>
                                     <version>${alfresco.saml.version}</version>
@@ -300,8 +300,8 @@
                                     <type>amp</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
+                                </artifactItem> -->
+<!--                                 <artifactItem>
                                     <groupId>org.alfresco.mediamanagement</groupId>
                                     <artifactId>alfresco-mm-repo</artifactId>
                                     <version>${alfresco.mm.version}</version>
@@ -316,8 +316,8 @@
                                     <type>amp</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
+                                </artifactItem> -->
+<!--                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-document-transformation-engine-repo</artifactId>
                                     <version>${alfresco.transformation-engine.version}</version>
@@ -332,7 +332,7 @@
                                     <type>amp</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
-                                </artifactItem>
+                                </artifactItem> -->
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-governance-services-enterprise-repo</artifactId>

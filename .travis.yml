@@ -163,15 +163,15 @@ jobs:
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
         - travis_wait 40 mvn install -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-tas-cmis-tests-with-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
-    - name: "Sync Service TAS tests"
-      jdk: openjdk11
-      install:
-        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
-        - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
-        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-sync-service.yml
-        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 20 mvn install -f tests/tas-sync-service/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+    # - name: "Sync Service TAS tests"
+    #   jdk: openjdk11
+    #   install:
+    #     - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+    #     - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
+    #     - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-sync-service.yml
+    #     - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+    #   script:
+    #     - travis_wait 20 mvn install -f tests/tas-sync-service/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
     - name: "All AMPs tests"
       jdk: openjdk11
       install:
