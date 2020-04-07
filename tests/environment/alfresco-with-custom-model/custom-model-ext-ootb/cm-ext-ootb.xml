@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Definition of new Model -->
+
+<!-- The important part here is the name - Note: the use of the my: namespace
+     which is defined further on in the document -->
+<model name="mywf:customModel" xmlns="http://www.alfresco.org/model/dictionary/1.0">
+
+	<!-- Optional meta-data about the model -->
+	<description>Example Custom Model</description>
+	<author>Alfresco Documentation Team</author>
+	<version>1.0</version>
+
+	<!-- Imports are required to allow references to definitions in other models -->
+	<imports>
+		<!-- Import Alfresco Dictionary Definitions -->
+		<import uri="http://www.alfresco.org/model/dictionary/1.0" prefix="d"/>
+		<!-- Import Alfresco Content Domain Model Definitions -->
+		<import uri="http://www.alfresco.org/model/content/1.0" prefix="cm"/>
+        <import uri="http://www.alfresco.org/model/workflow/1.0" prefix="wf"/>
+	</imports>
+
+	<namespaces>
+		<namespace uri="http://www.mycompany.com/model/content/1.0" prefix="mywf"/>
+	</namespaces>
+
+	<constraints>
+		<!-- The following are the lists of restricted values used by Type and Aspect properties -->
+	</constraints>
+
+	<types>
+		<!-- Definition of new Content Types -->
+	</types>
+
+	<aspects>
+		<!-- Definition of new Content Aspect: Image Classification -->
+	</aspects>
+
+</model>
