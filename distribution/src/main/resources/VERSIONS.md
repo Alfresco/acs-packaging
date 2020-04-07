@@ -73,7 +73,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Database Connectors
 | Component | Recommended | Also Available |
 |---|---|---|
-| MySQL connector | 5.1.47 |
+| MySQL connector | @dependency.mysql.version@ |
 | MariaDB Java Client | 2.2.5 |
 | PostgreSQL | @dependency.postgresql.version@ |
 | Oracle JDBC ojdbc8 | 12.2.0.1 |
