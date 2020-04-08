@@ -19,6 +19,7 @@ branches:
   only:
     - master
     - /support\/.*/
+    - fix/MNT-21339
 
 env:
   global:
