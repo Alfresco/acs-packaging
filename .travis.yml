@@ -58,9 +58,9 @@ jobs:
         - export KUBERNETES_VERSION=1.14.8
         - curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v${KUBERNETES_VERSION}/bin/linux/amd64/kubectl
         - chmod +x kubectl && sudo mv kubectl /usr/local/bin/
-        - kubectl config set-cluster default-cluster --server=${K8S_DEV_API_URL} &&
-        - kubectl config set-credentials default-admin --token=${K8S_DEV_API_TOKEN} &&
-        - kubectl config set-context default-system --cluster=default-cluster --user=default-admin &&
+        - kubectl config set-cluster default-cluster --server=${K8S_DEV_API_URL}
+        - kubectl config set-credentials default-admin --token=${K8S_DEV_API_TOKEN}
+        - kubectl config set-context default-system --cluster=default-cluster --user=default-admin
         - kubectl config use-context default-system
         - export PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
         - export IMAGE_TAG="$PROJECT_VERSION-master-${TRAVIS_BUILD_NUMBER}"
