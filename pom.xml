@@ -632,12 +632,12 @@
                 <version>${alfresco.kofax.version}</version>
                 <type>amp</type>
             </dependency>
-            <dependency>
-                <groupId>org.alfresco.services.sync</groupId>
-                <artifactId>alfresco-device-sync-repo</artifactId>
-                <version>${alfresco.desktop-sync.version}</version>
-                <type>amp</type>
-            </dependency>
+<!--            <dependency>-->
+<!--                <groupId>org.alfresco.services.sync</groupId>-->
+<!--                <artifactId>alfresco-device-sync-repo</artifactId>-->
+<!--                <version>${alfresco.desktop-sync.version}</version>-->
+<!--                <type>amp</type>-->
+<!--            </dependency>-->
             <dependency>
                 <groupId>org.alfresco.saml</groupId>
                 <artifactId>alfresco-saml-share</artifactId>
