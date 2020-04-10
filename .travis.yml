@@ -15,10 +15,10 @@ cache:
 before_cache:
   - rm -rf $HOME/.m2/repository/org/alfresco/content-services*
 
-branches:
-  only:
-    - master
-    - /support\/.*/
+#branches:
+#  only:
+#    - master
+#    - /support\/.*/
 
 env:
   global:
@@ -27,6 +27,7 @@ env:
     - DEVELOPMENT_VERSION=
 
 stages:
+  - pipelineImage
   - name: test
     if: commit_message !~ /\[skip tests\]/
   - release
@@ -192,6 +193,16 @@ jobs:
         - bash scripts/veracode/static_analysis_init.sh
       script:
         - bash scripts/veracode/static_analysis.sh
+    - name: "Build & Publish Development Image for Pipeline"
+      stage: pipelineImage
+      if: fork = false AND (branch = master) AND type != pull_request
+      jdk: openjdk11
+      before_install:
+        - export TRAVIS_TAG="release-$(git rev-parse --short ${TRAVIS_COMMIT})"
+      install:
+        - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
+        - travis_retry travis_wait 20 mvn install -q -PenterpriseDocker
+        - travis_retry travis_wait 20 mvn install -q -f docker-alfresco/pom.xml -PpipelineImage -Dcommit.hash=$TRAVIS_TAG
     - name: "Release and Copy to S3 Staging Bucket"
       stage: release
       if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[release\]/
