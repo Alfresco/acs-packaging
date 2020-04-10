@@ -47,7 +47,7 @@ jobs:
       if: fork = false AND (branch = master OR branch = feature/ACS-29-onepipeline) AND type != pull_request
       jdk: openjdk11
       before_script:
-        - export IMAGE_TAG="master-${TRAVIS_BUILD_NUMBER})"
+        - export IMAGE_TAG="master-${TRAVIS_BUILD_NUMBER}"
         - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
       script:
         - travis_retry travis_wait 40 mvn clean install -q -PpipelineImage -Dcommit.hash=$IMAGE_TAG -DskipTests=true -Dmaven.javadoc.skip=true
@@ -63,7 +63,7 @@ jobs:
         - kubectl config set-context default-system --cluster=default-cluster --user=default-admin &&
         - kubectl config use-context default-system
         - export PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-        - export IMAGE_TAG="$PROJECT_VERSION-master-${TRAVIS_BUILD_NUMBER})"
+        - export IMAGE_TAG="$PROJECT_VERSION-master-${TRAVIS_BUILD_NUMBER}"
       script:
         - kubectl set image deployment/aae-alfresco-cs-repository alfresco-content-services="quay.io/alfresco/alfresco-content-repository:$IMAGE_TAG"
     - stage: pipelineIntegration
