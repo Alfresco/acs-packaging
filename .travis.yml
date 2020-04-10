@@ -28,10 +28,10 @@ env:
 
 stages:
   - pipeline_image
-  - name: test
-    if: commit_message !~ /\[skip tests\]/
-  - release
-  - publish
+#  - name: test
+#    if: commit_message !~ /\[skip tests\]/
+#  - release
+#  - publish
 
 # This should not be required on community build
 before_install:
