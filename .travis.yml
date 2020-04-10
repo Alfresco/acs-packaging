@@ -41,11 +41,11 @@ jobs:
   include:
     - stage: pipeline_image
       name: "Build & Publish Development Image for Pipeline"
-      if: fork = false AND (branch = master) AND type != pull_request
+      if: fork = false AND (branch = master OR branch = feature/ACS-29-onepipeline) AND type != pull_request
       jdk: openjdk11
-      before_install:
+      before_script:
         - export TRAVIS_TAG="release-$(git rev-parse --short ${TRAVIS_COMMIT})"
-      install:
+      script:
         - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
         - travis_retry travis_wait 20 mvn install -q -PenterpriseDocker
         - travis_retry travis_wait 20 mvn install -q -f docker-alfresco/pom.xml -Ppipeline_image -Dcommit.hash=$TRAVIS_TAG
