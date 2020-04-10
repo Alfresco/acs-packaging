@@ -27,7 +27,7 @@ env:
     - DEVELOPMENT_VERSION=
 
 stages:
-  - pipelineImage
+  - pipeline_image
   - name: test
     if: commit_message !~ /\[skip tests\]/
   - release
@@ -193,8 +193,8 @@ jobs:
         - bash scripts/veracode/static_analysis_init.sh
       script:
         - bash scripts/veracode/static_analysis.sh
-    - name: "Build & Publish Development Image for Pipeline"
-      stage: pipelineImage
+    - stage: pipeline_image
+      name: "Build & Publish Development Image for Pipeline"
       if: fork = false AND (branch = master) AND type != pull_request
       jdk: openjdk11
       before_install:
@@ -202,7 +202,7 @@ jobs:
       install:
         - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
         - travis_retry travis_wait 20 mvn install -q -PenterpriseDocker
-        - travis_retry travis_wait 20 mvn install -q -f docker-alfresco/pom.xml -PpipelineImage -Dcommit.hash=$TRAVIS_TAG
+        - travis_retry travis_wait 20 mvn install -q -f docker-alfresco/pom.xml -Ppipeline_image -Dcommit.hash=$TRAVIS_TAG
     - name: "Release and Copy to S3 Staging Bucket"
       stage: release
       if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[release\]/
