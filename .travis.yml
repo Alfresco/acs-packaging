@@ -227,7 +227,7 @@ jobs:
       jdk: openjdk11
       install:
         - ./tests/scripts/wait-for-alfresco-start.sh "http://${K8S_DEV_HOST}/alfresco"
-        - TEST_VERSION="r$(git rev-parse --short ${TRAVIS_COMMIT})-b${TRAVIS_BUILD_NUMBER}"
+        - TEST_VERSION="$(git rev-parse --short ${TRAVIS_COMMIT})"
       script: |
          curl -v http://${K8S_DEV_HOST}/alfresco/ | grep $TEST_VERSION
 #        travis_wait 60 mvn install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-part1 -Dalfresco.server=${K8S_DEV_HOST} -Dalfresco.port=80 -Denvironment=default -DrunBugs=false
