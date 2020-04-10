@@ -50,7 +50,7 @@ jobs:
         - export IMAGE_TAG="master-${TRAVIS_BUILD_NUMBER}"
         - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
       script:
-        - travis_retry travis_wait 40 mvn clean install -q -PpipelineImage -Dcommit.hash=$IMAGE_TAG -DskipTests=true -Dmaven.javadoc.skip=true
+        - travis_retry travis_wait 40 mvn clean install -q -PpipelineImage -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Dcommit.hash=$IMAGE_TAG -DskipTests=true -Dmaven.javadoc.skip=true
     - stage: pipelineDeploy
       name: "Deploy to K8S Development Env"
       if: fork = false AND (branch = master OR branch = feature/ACS-29-onepipeline) AND type != pull_request
