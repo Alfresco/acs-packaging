@@ -30,7 +30,6 @@ env:
 stages:
   - pipelineImage
   - pipelineDeploy
-#  - pipelineIntegration
   - name: test
     if: commit_message !~ /\[skip tests\]/
   - release
@@ -45,18 +44,16 @@ jobs:
       name: "Build & Publish Development Image for Pipeline"
       if: fork = false AND (branch = master OR branch = feature/ACS-29-onepipeline) AND type != pull_request
       jdk: openjdk11
-      before_install:
+      before_script:
         - export IMAGE_TAG="${TRAVIS_BRANCH}-$(git rev-parse --short ${TRAVIS_COMMIT})"
-      install:
         - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
       script:
         - travis_retry travis_wait 40 mvn clean install -q -PpipelineImage -Dcommit.hash=$IMAGE_TAG -DskipTests=true -Dmaven.javadoc.skip=true
     - stage: pipelineDeploy
-      name: Deploy to K8S Development Env
+      name: "Deploy to K8S Development Env"
       if: fork = false AND (branch = master OR branch = feature/ACS-29-onepipeline) AND type != pull_request
-      env:
-        - KUBERNETES_VERSION=1.14.8
       before_script:
+        - export KUBERNETES_VERSION=1.14.8
         - curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/v${KUBERNETES_VERSION}/bin/linux/amd64/kubectl &&
         chmod +x kubectl && sudo mv kubectl /usr/local/bin/
         - kubectl config set-cluster default-cluster --server=${K8S_DEV_API_URL} &&
@@ -65,31 +62,8 @@ jobs:
         kubectl config use-context default-system
         - export PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
         - export IMAGE_TAG="$PROJECT_VERSION-${TRAVIS_BRANCH}-$(git rev-parse --short ${TRAVIS_COMMIT})"
-      script: kubectl set image deployment/aae-alfresco-cs-repository alfresco-content-services="quay.io/alfresco/alfresco-content-repository:$IMAGE_TAG"
-#    - name: Trigger Integration Tests on Development Env
-#      stage: pipelineIntegration
-#      script: |
-#        body='{
-#         "request": {
-#         "message": "Alfresco Content Repository - $TRAVIS_COMMIT_MESSAGE",
-#         "branch":"develop",
-#         "config": {
-#           "merge_mode": "deep_merge",
-#           "env": {
-#             "jobs": [
-#               "TEST=ACSIntegration"
-#             ]
-#           },
-#           "script": "Running Tests"
-#          }
-#        }}'
-#        curl -s --fail -X POST \
-#          -H "Content-Type: application/json" \
-#          -H "Accept: application/json" \
-#          -H "Travis-API-Version: 3" \
-#          -H "Authorization: token ${TRAVIS_API_TOKEN}" \
-#          -d "$body" \
-#          https://api.travis-ci.com/repo/travis-ci%2Ftravis-core/requests
+      script:
+        - kubectl set image deployment/aae-alfresco-cs-repository alfresco-content-services="quay.io/alfresco/alfresco-content-repository:$IMAGE_TAG"
     - stage: test
       name: "WhiteSource scan"
       # only on support branches or master and if it is not a PR
