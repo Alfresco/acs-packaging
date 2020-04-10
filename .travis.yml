@@ -48,7 +48,7 @@ jobs:
       install:
         - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
       script:
-        - travis_retry travis_wait 40 mvn clean install -PpipelineImage -Dcommit.hash=$TRAVIS_TAG -DskipTests=true -Dmaven.javadoc.skip=true
+        - travis_retry travis_wait 40 mvn clean install -q -PpipelineImage -Dcommit.hash=$TRAVIS_TAG -DskipTests=true -Dmaven.javadoc.skip=true
     - stage: test
       name: "WhiteSource scan"
       # only on support branches or master and if it is not a PR
