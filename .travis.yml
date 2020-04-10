@@ -28,7 +28,7 @@ env:
     - DEVELOPMENT_VERSION=
 
 stages:
-  - pipeline_image
+  - pipelineImage
   - name: test
     if: commit_message !~ /\[skip tests\]/
   - release
@@ -39,7 +39,7 @@ before_install:
   - "cp .travis.settings.xml $HOME/.m2/settings.xml"
 jobs:
   include:
-    - stage: pipeline_image
+    - stage: pipelineImage
       name: "Build & Publish Development Image for Pipeline"
       if: fork = false AND (branch = master OR branch = feature/ACS-29-onepipeline) AND type != pull_request
       jdk: openjdk11
@@ -49,7 +49,7 @@ jobs:
         - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
         - travis_retry travis_wait 60 mvn install -q -PenterpriseDocker
       script:
-        - travis_retry travis_wait 40 mvn install -q -f docker-alfresco/pom.xml -Ppipeline_image -Dcommit.hash=$TRAVIS_TAG
+        - travis_retry travis_wait 40 mvn install -q -f docker-alfresco/pom.xml -PpipelineImage -Dcommit.hash=$TRAVIS_TAG
     - stage: test
       name: "WhiteSource scan"
       # only on support branches or master and if it is not a PR
