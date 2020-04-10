@@ -30,7 +30,7 @@ env:
 stages:
   - pipelineImage
   - pipelineDeploy
-#  - pipelineIntegration
+  - pipelineIntegration
   - name: test
     if: commit_message !~ /\[skip tests\]/
   - release
@@ -39,6 +39,7 @@ stages:
 # This should not be required on community build
 before_install:
   - "cp .travis.settings.xml $HOME/.m2/settings.xml"
+
 jobs:
   include:
     - stage: pipelineImage
@@ -46,7 +47,7 @@ jobs:
       if: fork = false AND (branch = master OR branch = feature/ACS-29-onepipeline) AND type != pull_request
       jdk: openjdk11
       before_script:
-        - export IMAGE_TAG="${TRAVIS_BRANCH}-$(git rev-parse --short ${TRAVIS_COMMIT})"
+        - export IMAGE_TAG="master-${TRAVIS_BUILD_NUMBER})"
         - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
       script:
         - travis_retry travis_wait 40 mvn clean install -q -PpipelineImage -Dcommit.hash=$IMAGE_TAG -DskipTests=true -Dmaven.javadoc.skip=true
@@ -62,12 +63,17 @@ jobs:
         - kubectl config set-context default-system --cluster=default-cluster --user=default-admin &&
         - kubectl config use-context default-system
         - export PROJECT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-        - export IMAGE_TAG="$PROJECT_VERSION-${TRAVIS_BRANCH}-$(git rev-parse --short ${TRAVIS_COMMIT})"
+        - export IMAGE_TAG="$PROJECT_VERSION-master-${TRAVIS_BUILD_NUMBER})"
       script:
         - kubectl set image deployment/aae-alfresco-cs-repository alfresco-content-services="quay.io/alfresco/alfresco-content-repository:$IMAGE_TAG"
-#    - name: Trigger Integration Tests on Development Env
-#      stage: pipelineIntegration
-#      script: |
+    - stage: pipelineIntegration
+      name: "Trigger RestApi Tests on Development Env"
+      if: fork = false AND (branch = master OR branch = feature/ACS-29-onepipeline) AND type != pull_request
+      jdk: openjdk11
+      install:
+        - ./tests/scripts/wait-for-alfresco-start.sh "http://${K8S_DEV_HOST}/alfresco"
+      script: |
+        travis_wait 60 mvn install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-part1 -Dalfresco.server=${K8S_DEV_HOST} -Dalfresco.port=80 -Denvironment=default -DrunBugs=false
 #        body='{
 #         "request": {
 #         "message": "Alfresco Content Repository - $TRAVIS_COMMIT_MESSAGE",
