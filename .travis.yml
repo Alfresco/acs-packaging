@@ -47,8 +47,8 @@ jobs:
         - export TRAVIS_TAG="release-$(git rev-parse --short ${TRAVIS_COMMIT})"
       script:
         - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
-        - travis_retry travis_wait 20 mvn install -q -PenterpriseDocker
-        - travis_retry travis_wait 20 mvn install -q -f docker-alfresco/pom.xml -Ppipeline_image -Dcommit.hash=$TRAVIS_TAG
+        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+        - travis_retry travis_wait 40 mvn install -q -f docker-alfresco/pom.xml -Ppipeline_image -Dcommit.hash=$TRAVIS_TAG
     - stage: test
       name: "WhiteSource scan"
       # only on support branches or master and if it is not a PR
