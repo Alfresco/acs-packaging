@@ -110,21 +110,6 @@ public class GetProcessesFullTests extends RestTest
             .and().entriesListContains("id", task1.getProcessId());
     }
 
-    @Bug(id = "REPO-1958")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW,TestGroup.PROCESSES }, executionType = ExecutionType.REGRESSION, 
-            description = "Verify user cannot get processes when using an invalid orderBy parameter")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.PROCESSES, TestGroup.REGRESSION })
-    public void getProcessesWithInvalidOrderByParameter() throws Exception
-    {
-        restClient.authenticateUser(userWhoStartsTask).withParams("orderBy=test")
-                .withWorkflowAPI().getProcesses();
-        restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST).assertLastError()
-            .containsErrorKey(String.format(RestErrorModel.INVALID_ORDERBY, "test", "processDefinitionId, startUserId, startActivityId,startedAt, id, completed, processDefinitionKey"))
-            .containsSummary(String.format(RestErrorModel.INVALID_ORDERBY, "test", "processDefinitionId, startUserId, startActivityId,startedAt, id, completed, processDefinitionKey"))
-            .stackTraceIs(RestErrorModel.STACKTRACE)
-            .descriptionURLIs(RestErrorModel.RESTAPIEXPLORER);
-    }
-
     @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW,TestGroup.PROCESSES }, executionType = ExecutionType.REGRESSION, 
             description = "Verify user cannot get processes when using an invalid parameter in where clause")
     @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.PROCESSES, TestGroup.REGRESSION })

@@ -435,34 +435,4 @@ public class RemoveSiteMemberTests extends RestTest
                 .descriptionURLIs(RestErrorModel.RESTAPIEXPLORER)
                 .stackTraceIs(RestErrorModel.STACKTRACE);
     }
-
-    @TestRail(section = {TestGroup.REST_API, TestGroup.SITES }, executionType = ExecutionType.REGRESSION,
-            description = "Verify that admin can not delete a site member twice and gets status code 404 for the second attempt")
-    @Test(groups = { TestGroup.REST_API, TestGroup.SITES, TestGroup.REGRESSION })
-    @Bug(id="ACE-5447")
-    public void adminIsNotAbleToRemoveSiteMemberTwice() throws Exception
-    {
-        restClient.authenticateUser(adminUserModel).withCoreAPI().usingSite(publicSiteModel)
-                .deleteSiteMember(usersWithRoles.getOneUserWithRole(UserRole.SiteContributor));
-        restClient.assertStatusCodeIs(HttpStatus.NO_CONTENT);
-        restClient.authenticateUser(adminUserModel).withCoreAPI().usingSite(publicSiteModel)
-                .deleteSiteMember(usersWithRoles.getOneUserWithRole(UserRole.SiteContributor));
-        restClient.assertStatusCodeIs(HttpStatus.NOT_FOUND).assertLastError()
-                .containsSummary(RestErrorModel.ENTITY_NOT_FOUND);
-        dataUser.addUserToSite(usersWithRoles.getOneUserWithRole(UserRole.SiteContributor), publicSiteModel, UserRole.SiteContributor);
-    }
-
-    @TestRail(section = {TestGroup.REST_API, TestGroup.SITES }, executionType = ExecutionType.REGRESSION,
-            description = "Verify admin is not able to remove from site a user that created a member request that was not accepted yet")
-    @Test(groups = { TestGroup.REST_API, TestGroup.SITES, TestGroup.REGRESSION })
-    @Bug(id="ACE-5447")
-    public void adminIsNotAbleToRemoveFromSiteANonExistingMember() throws Exception
-    {
-        UserModel newMember = dataUser.createRandomTestUser();
-        restClient.authenticateUser(newMember).withCoreAPI().usingAuthUser().addSiteMembershipRequest(publicSiteModel);
-
-        restClient.authenticateUser(adminUserModel).withCoreAPI().usingSite(moderatedSiteModel).deleteSiteMember(newMember);
-        restClient.assertStatusCodeIs(HttpStatus.NOT_FOUND).assertLastError()
-                .containsSummary(RestErrorModel.ENTITY_NOT_FOUND);
-    }
 }

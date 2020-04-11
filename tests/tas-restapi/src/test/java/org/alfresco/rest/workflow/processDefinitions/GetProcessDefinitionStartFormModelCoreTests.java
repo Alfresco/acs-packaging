@@ -42,39 +42,4 @@ public class GetProcessDefinitionStartFormModelCoreTests extends RestTest
                 .assertThat().entriesListIsNotEmpty();
         restClient.assertStatusCodeIs(HttpStatus.OK);
     }
-
-    @Bug(id = "ALF-20187")
-    @TestRail(section = { TestGroup.REST_API,  TestGroup.WORKFLOW, TestGroup.PROCESS_DEFINITION },
-            executionType = ExecutionType.REGRESSION,
-            description = "Verify if get request returns status code 404 when invalid processDefinitionId is used")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.PROCESS_DEFINITION, TestGroup.REGRESSION })
-    public void getStartFormModelUsingInvalidProcessDefinitionId() throws Exception
-    {
-        randomProcessDefinition = allProcessDefinitions.getOneRandomEntry().onModel();
-        randomProcessDefinition.setId("invalidID");
-
-        restClient.authenticateUser(adminUser).withWorkflowAPI()
-                .usingProcessDefinitions(randomProcessDefinition).getProcessDefinitionStartFormModel();
-        restClient.assertStatusCodeIs(HttpStatus.NOT_FOUND)
-                .assertLastError().containsSummary(String.format("no deployed process definition found with id '%s'", "invalidID"))
-                .containsErrorKey(RestErrorModel.API_DEFAULT_ERRORKEY)
-                .descriptionURLIs(RestErrorModel.RESTAPIEXPLORER)
-                .stackTraceIs(RestErrorModel.STACKTRACE);
-    }
-
-    @Bug(id = "ALF-20187")
-    @TestRail(section = { TestGroup.REST_API,  TestGroup.WORKFLOW, TestGroup.PROCESS_DEFINITION },
-            executionType = ExecutionType.REGRESSION,
-            description = "Verify if get request returns status code 404 when empty processDefinitionId is used")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.PROCESS_DEFINITION, TestGroup.REGRESSION })
-    public void getStartFormModelUsingEmptyProcessDefinitionId() throws Exception
-    {
-        randomProcessDefinition = allProcessDefinitions.getOneRandomEntry().onModel();
-        randomProcessDefinition.setId("");
-
-        restClient.authenticateUser(adminUser).withWorkflowAPI()
-                .usingProcessDefinitions(randomProcessDefinition).getProcessDefinitionStartFormModel();
-        restClient.assertStatusCodeIs(HttpStatus.NOT_FOUND)
-                .assertLastError().containsSummary("no deployed process definition found with id ''");
-    }
 }

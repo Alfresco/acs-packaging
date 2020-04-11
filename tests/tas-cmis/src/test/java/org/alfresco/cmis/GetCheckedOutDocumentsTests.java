@@ -81,17 +81,6 @@ public class GetCheckedOutDocumentsTests extends CmisTest
                         .and().assertThat().sessioDoesNotHaveCheckedOutDocument(testFile);
     }
     
-    @Bug(id="MNT-17357")
-    @TestRail(section = {"cmis-api"}, executionType= ExecutionType.REGRESSION,
-            description = "Verify site collaborator is able to get checked out documents created by manager")
-    @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS})
-    public void collaboratorShouldGetCheckedOutDocumentsFromFolderCreatedByManager() throws Exception
-    {
-        cmisApi.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteCollaborator))
-            .usingResource(testFolder)
-                .assertThat().folderHasCheckedOutDocument(testFile);
-    }
-    
     @TestRail(section = {"cmis-api"}, executionType= ExecutionType.REGRESSION,
             description = "Verify site collaborator is able to get checked out documents created by himslef")
     @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS})
@@ -106,17 +95,6 @@ public class GetCheckedOutDocumentsTests extends CmisTest
                             .assertThat().sessionHasCheckedOutDocument(collaboratorFile);
     }
     
-    @Bug(id="MNT-17357")
-    @TestRail(section = {"cmis-api"}, executionType= ExecutionType.REGRESSION,
-            description = "Verify site contributor is able to get checked out documents created by manager")
-    @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS})
-    public void contributorShouldGetCheckedOutDocumentsFromFolderCreatedByManager() throws Exception
-    {
-        cmisApi.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteContributor))
-            .usingResource(testFolder)
-                .assertThat().folderHasCheckedOutDocument(testFile);
-    }
-    
     @TestRail(section = {"cmis-api"}, executionType= ExecutionType.REGRESSION,
             description = "Verify site collaborator is able to get checked out documents created by himslef")
     @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS})
@@ -129,17 +107,6 @@ public class GetCheckedOutDocumentsTests extends CmisTest
                     .usingResource(testFolder)
                         .assertThat().folderHasCheckedOutDocument(contributorFile)
                             .assertThat().sessionHasCheckedOutDocument(contributorFile);
-    }
-    
-    @Bug(id="MNT-17357")
-    @TestRail(section = {"cmis-api"}, executionType= ExecutionType.REGRESSION,
-            description = "Verify site collaborator is able to get checked out documents created by manager")
-    @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS})
-    public void consumerShouldGetCheckedOutDocumentsFromFolderCreatedByManager() throws Exception
-    {
-        cmisApi.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteContributor))
-            .usingResource(testFolder)
-                .assertThat().folderHasCheckedOutDocument(testFile);
     }
 
     @TestRail(section = {"cmis-api"}, executionType= ExecutionType.REGRESSION,

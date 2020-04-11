@@ -137,33 +137,6 @@ public class AddTaskVariablesTestsBulk2 extends RestTest
         restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST).assertLastError().containsSummary("Unsupported type of variable: 'd:char'.");
     }
 
-    @Bug(id = "ACE-5674")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION, description = "Adding task variable is falling in case invalid type prefix is provided")
-    public void failedAddingTaskVariableIfInvalidTypePrefixIsProvided() throws Exception
-    {
-        RestVariableModel invalidVariableModel = RestVariableModel.getRandomTaskVariableModel("local", "ddm:text");
-        taskModel.setId(taskId);
-        
-        restClient.withWorkflowAPI().usingTask(taskModel).addTaskVariable(invalidVariableModel);
-        restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST).assertLastError().containsSummary("Namespace prefix ddm is not mapped to a namespace URI");
-    }
-    
-    @Bug(id = "ACE-5674")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION, 
-    description = "Adding multiple task variable is falling in case invalid type prefix is provided")
-    public void failedAddingMultipleTaskVariableIfInvalidTypePrefixIsProvided() throws Exception
-    {
-        RestVariableModel invalidVariableModel = RestVariableModel.getRandomTaskVariableModel("local", "ddm:text");
-        taskModel.setId(taskId);
-        variableModel1 = RestVariableModel.getRandomTaskVariableModel("global", "d:text");
-        variableModel = RestVariableModel.getRandomTaskVariableModel("local", "d:text");
-        
-        restClient.withWorkflowAPI().usingTask(taskModel).addTaskVariables(invalidVariableModel,variableModel1, variableModel);
-        restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST).assertLastError().containsSummary("Namespace prefix ddm is not mapped to a namespace URI");
-    }
-
     @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
     @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION, description = "Adding task variable is falling in case invalid scope is provided")
     public void failedAddingTaskVariableIfInvalidScopeIsProvided() throws Exception

@@ -111,23 +111,6 @@ public class GetTaskCandidatesRegressionTests extends  RestTest
                 .assertLastError().containsSummary(RestErrorModel.PERMISSION_WAS_DENIED);
     }
 
-    @Bug(id="MNT-17438")
-    @Test(groups = {TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION,
-            description = "Get task candidates with skip count parameter")
-    public void getTaskCandidatesWithSkipCount() throws Exception
-    {
-        taskModel = dataWorkflow.usingUser(userModel)
-                .usingSite(siteModel)
-                .usingResource(fileModel).createPooledReviewTaskAndAssignTo(group);
-        candidateModels = restClient.authenticateUser(userModel).withWorkflowAPI()
-                              .usingParams("skipCount=1").usingTask(taskModel).getTaskCandidates();
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        candidateModels.assertThat()
-            .entriesListIsNotEmpty()
-                .and().paginationField("count").is("0");
-    }
-
     @Test(groups = {TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
     @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION,
             description = "Get task candidates with max items parameter set to 0")

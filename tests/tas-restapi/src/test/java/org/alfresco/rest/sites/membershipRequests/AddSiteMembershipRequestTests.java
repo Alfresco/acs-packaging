@@ -146,7 +146,7 @@ public class AddSiteMembershipRequestTests extends RestTest
         UserModel newMember = dataUser.createRandomTestUser();
         restClient.authenticateUser(newMember).withCoreAPI().usingMe().addSiteMembershipRequest("");
         restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST)
-                .assertLastError().containsSummary(String.format(RestErrorModel.NO_CONTENT, "No content to map due to end-of-input"));
+                .assertLastError().containsSummary(String.format(RestErrorModel.NO_CONTENT, "No content to map to Object due to end of input"));
     }
 
     @Test(groups = { TestGroup.REST_API, TestGroup.PEOPLE, TestGroup.REGRESSION })
@@ -228,16 +228,6 @@ public class AddSiteMembershipRequestTests extends RestTest
         restClient.withCoreAPI().usingUser(newMember).addSiteMembershipRequest(privateSite);
         restClient.assertStatusCodeIs(HttpStatus.NOT_FOUND)
                 .assertLastError().containsSummary(String.format(RestErrorModel.ENTITY_NOT_FOUND, newMember.getUsername()));
-    }
-
-    @Bug(id="ACE-2413")
-    @Test(groups = { TestGroup.REST_API, TestGroup.PEOPLE, TestGroup.REGRESSION })
-    @TestRail(section = { TestGroup.REST_API, TestGroup.PEOPLE }, executionType = ExecutionType.REGRESSION, description = "Verify addSiteMembershipRequest Rest API status code is 400 for an invalid user id")
-    public void addSiteMembershipRequestReturns400ForEmptyUserId() throws Exception
-    {
-        restClient.authenticateUser(adminUser).withCoreAPI()
-                .usingUser(new UserModel("", "password")).addSiteMembershipRequest(publicSite);
-        restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST);
     }
 
     @Test(groups = { TestGroup.REST_API, TestGroup.PEOPLE, TestGroup.REGRESSION })

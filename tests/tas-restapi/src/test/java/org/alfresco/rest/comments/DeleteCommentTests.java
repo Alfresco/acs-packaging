@@ -192,27 +192,6 @@ public class DeleteCommentTests extends RestTest
     }
 
     @TestRail(section = { TestGroup.REST_API,TestGroup.COMMENTS }, 
-            executionType = ExecutionType.REGRESSION, description = "Verify Contributor user deletes comment created by self"
-            + " and status code is 204. Check with getComments for validation")
-    @Test(groups = { TestGroup.REST_API, TestGroup.COMMENTS, TestGroup.REGRESSION })
-    @Bug(id = "ACE-4614")
-    public void contributorIsAbleToDeleteCommentCreatedBySelf() throws Exception
-    {
-        FileModel file = dataContent.usingSite(siteModel).usingUser(adminUserModel).createContent(DocumentType.TEXT_PLAIN);
-  
-        commentModel = restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteContributor))
-            .withCoreAPI().usingResource(file).addComment(commentText);
-        restClient.assertStatusCodeIs(HttpStatus.CREATED);
-        restClient.withCoreAPI().usingResource(file).deleteComment(commentModel);
-        restClient.assertStatusCodeIs(HttpStatus.NO_CONTENT);
-        
-        comments = restClient.authenticateUser(adminUserModel).withCoreAPI().usingResource(file).getNodeComments();
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        comments.assertThat().entriesListDoesNotContain("content", commentText);
-        comments.getPagination().assertThat().field("totalItems").is("0").and().field("count").is("0");
-    }
-
-    @TestRail(section = { TestGroup.REST_API,TestGroup.COMMENTS }, 
             executionType = ExecutionType.REGRESSION, description = "Verify Consumer user cannot delete comment created by admin"
             + " and status code is 403. Check with getComments for validation and check default error model schema.")
     @Test(groups = { TestGroup.REST_API, TestGroup.COMMENTS, TestGroup.REGRESSION })

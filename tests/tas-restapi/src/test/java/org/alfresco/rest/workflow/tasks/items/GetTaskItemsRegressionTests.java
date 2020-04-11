@@ -139,42 +139,6 @@ public class GetTaskItemsRegressionTests extends RestTest
                 .assertThat().field("mimeType").contains(fileModel.getFileType().mimeType);
     }
 
-    @Bug(id="MNT-17438")
-    @Test(groups = {TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION,
-            description = "Verify that user who started the process can get task items with skip count parameter")
-    public void getTaskItemsWithSkipCount() throws Exception
-    {
-        restClient.authenticateUser(userWhoStartsTask);
-        taskModel = dataWorkflow.usingUser(userWhoStartsTask).usingSite(siteModel).usingResource(fileModel).createNewTaskAndAssignTo(assignee);
-        FileModel document1 = dataContent.usingSite(siteModel).createContent(DocumentType.XML);
-        restClient.withWorkflowAPI().usingTask(taskModel).addTaskItem(document1);
-        itemModels = restClient.authenticateUser(userWhoStartsTask).withWorkflowAPI()
-                .usingParams("skipCount=1").usingTask(taskModel).getTaskItems();
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        itemModels.assertThat()
-                .entriesListIsNotEmpty()
-                .and().paginationField("count").is("1");
-    }
-
-    @Bug(id="MNT-17438")
-    @Test(groups = {TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION,
-            description = "Verify that user who started the process can get task items with max items parameter")
-    public void getTaskItemsWithMaxItems() throws Exception
-    {
-        restClient.authenticateUser(userWhoStartsTask);
-        taskModel = dataWorkflow.usingUser(userWhoStartsTask).usingSite(siteModel).usingResource(fileModel).createNewTaskAndAssignTo(assignee);
-        FileModel document1 = dataContent.usingSite(siteModel).createContent(DocumentType.XML);
-        restClient.withWorkflowAPI().usingTask(taskModel).addTaskItem(document1);
-        itemModels = restClient.authenticateUser(userWhoStartsTask).withWorkflowAPI()
-                .usingParams("maxItems=1").usingTask(taskModel).getTaskItems();
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        itemModels.assertThat()
-                .entriesListIsNotEmpty()
-                .and().paginationField("count").is("1");
-    }
-
     @Test(groups = {TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
     @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION,
             description = "Verify that user who started the process can get task items with valid properties")

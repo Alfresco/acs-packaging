@@ -173,24 +173,6 @@ public class GetSiteMembershipRequestTests extends RestTest
                 .containsSummary(String.format(RestErrorModel.RELATIONSHIP_NOT_FOUND, siteCreator.getUsername(), inexistentSite.getId()));
     }
 
-    @Bug(id = "ACE-2413")
-    @Test(groups = { TestGroup.REST_API, TestGroup.PEOPLE, TestGroup.REGRESSION })
-    @TestRail(section = { TestGroup.REST_API, TestGroup.PEOPLE }, executionType = ExecutionType.REGRESSION,
-            description = "Verify if person ID field is empty user can't get site membership requests on moderated site and response is not found (400)")
-    public void emptyPersonIdCantGetModeratedSiteMembershipRequests() throws Exception
-    {
-        UserModel emptyUser = new UserModel("", "password");
-        restClient.authenticateUser(siteCreator).withCoreAPI().usingAuthUser().addSiteMembershipRequest(moderatedSite);
-        restClient.authenticateUser(siteCreator).withCoreAPI().usingUser(emptyUser).getSiteMembershipRequest(moderatedSite);
-
-        restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST)
-                .assertLastError()
-                .containsErrorKey(RestErrorModel.API_DEFAULT_ERRORKEY)
-                .containsSummary(String.format("The entity with id: personId is null. was not found"))
-                .descriptionURLIs(RestErrorModel.RESTAPIEXPLORER)
-                .stackTraceIs(RestErrorModel.STACKTRACE);
-    }
-
     @TestRail(section = { TestGroup.REST_API, TestGroup.PEOPLE }, executionType = ExecutionType.REGRESSION,
             description = "Approve site membership request then verify get site membership requests - response is 404")
     @Test(groups = { TestGroup.REST_API, TestGroup.PEOPLE, TestGroup.REGRESSION })

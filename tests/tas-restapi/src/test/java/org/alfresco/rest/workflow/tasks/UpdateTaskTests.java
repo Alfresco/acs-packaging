@@ -242,28 +242,6 @@ public class UpdateTaskTests extends RestTest
     }
 
     @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
-    @Bug(id = "REPO-2062")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION,
-            description = "Verify task owner cannot complete task with invalid name - Bad Request(400))")
-    public void taskOwnerCannotCompleteTaskWithInvalidName() throws Exception
-    {
-        JsonObject inputJson = JsonBodyGenerator.defineJSON()
-                .add("state", "completed")
-                .add("variables", JsonBodyGenerator.defineJSONArray()
-                        .add(JsonBodyGenerator.defineJSON()
-                                .add("name", "bpmx_priorityx")
-                                .add("type", "d:int")
-                                .add("value", 1)
-                                .add("scope", "global").build())
-                ).build();
-
-        restTaskModel = restClient.authenticateUser(owner)
-                .withParams("select=state,variables").withWorkflowAPI().usingTask(taskModel).updateTask(inputJson);
-        restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST)
-                .assertLastError().containsSummary(String.format(RestErrorModel.UNSUPPORTED_TYPE,"bpm_priorityx"));
-    }
-
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
     @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION,
             description = "Verify task owner cannot complete task with invalid Type - Bad Request(400))")
     public void taskOwnerCannotCompleteTaskWithInvalidType() throws Exception
@@ -282,28 +260,6 @@ public class UpdateTaskTests extends RestTest
                 .withParams("select=state,variables").withWorkflowAPI().usingTask(taskModel).updateTask(inputJson);
         restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST)
                 .assertLastError().containsSummary(String.format(RestErrorModel.UNSUPPORTED_TYPE,"d_int"));
-    }
-
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
-    @Bug(id = "REPO-2062")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION,
-            description = "Verify task owner cannot complete task with invalid value - Bad Request(400))")
-    public void taskOwnerCannotCompleteTaskWithInvalidValue() throws Exception
-    {
-        JsonObject inputJson = JsonBodyGenerator.defineJSON()
-                .add("state", "completed")
-                .add("variables", JsonBodyGenerator.defineJSONArray()
-                        .add(JsonBodyGenerator.defineJSON()
-                                .add("name", "bpmx_priority")
-                                .add("type", "d:int")
-                                .add("value", "text")
-                                .add("scope", "global").build())
-                ).build();
-
-        restTaskModel = restClient.authenticateUser(owner)
-                .withParams("select=state,variables").withWorkflowAPI().usingTask(taskModel).updateTask(inputJson);
-        restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST)
-                .assertLastError().containsSummary(String.format(RestErrorModel.UNSUPPORTED_TYPE, "text"));
     }
 
     @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
@@ -385,39 +341,6 @@ public class UpdateTaskTests extends RestTest
         restTaskModel.assertThat().field("id").is(taskModel.getId())
                 .and().field("state").is("delegated")
                 .and().field("assignee").is(assigneeUser.getUsername());
-    }
-
-
-    @Bug(id = "REPO-2063")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION,
-            description = "Verify task assignee cannot delegate task to task owner -  (400)")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
-    public void taskAssigneeCannotDelegateTaskToTaskOwner() throws Exception
-    {
-        JsonObject inputJson = JsonBodyGenerator.defineJSON()
-                .add("state", "delegated")
-                .add("assignee", owner.getUsername()).build();
-
-        restTaskModel = restClient.authenticateUser(assigneeUser)
-                .withParams("select=state,assignee").withWorkflowAPI().usingTask(taskModel).updateTask(inputJson);
-        restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST);
-    }
-
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
-    @Bug(id = "REPO-2063")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION,
-            description = "Verify task assignee cannot delegate task to invalid assignee - (400)")
-    public void taskAssigneeCannotDelegateTaskToInvalidAssignee() throws Exception
-    {
-        UserModel invalidAssignee = new UserModel("invalidAssignee", "password");
-
-        JsonObject inputJson = JsonBodyGenerator.defineJSON()
-                .add("state", "delegated")
-                .add("assignee", invalidAssignee.getUsername()).build();
-
-        restTaskModel = restClient.authenticateUser(assigneeUser)
-                .withParams("select=state,assignee").withWorkflowAPI().usingTask(taskModel).updateTask(inputJson);
-        restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST);
     }
 
     @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
@@ -587,28 +510,6 @@ public class UpdateTaskTests extends RestTest
         restTaskModel = restClient.authenticateUser(owner).withParams("select=state").withWorkflowAPI().usingTask(taskModel).updateTask("unclaimed");
         restClient.assertStatusCodeIs(HttpStatus.OK);
         restTaskModel.assertThat().field("id").is(taskModel.getId()).and().field("state").is("unclaimed");
-    }
-
-    @Bug(id = "REPO-1924")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW,
-            TestGroup.TASKS }, executionType = ExecutionType.REGRESSION, description = "Verify owner can not update task from delegated to completed and response is 422")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
-    public void taskOwnerCanNotUpdateTaskFromDelegatedToCompleted() throws Exception
-    {
-        restClient.authenticateUser(owner).withParams("select=state,assignee").withWorkflowAPI().usingTask(taskModel);
-        HashMap<String, String> body = new HashMap<String, String>();
-        body.put("state", "delegated");
-        body.put("assignee", assigneeUser.getUsername());
-        String postBody = JsonBodyGenerator.keyValueJson(body);
-        RestRequest request = RestRequest.requestWithBody(HttpMethod.PUT, postBody, "tasks/{taskId}?{parameters}", taskModel.getId(),
-                restClient.getParameters());
-        restTaskModel = restClient.processModel(RestTaskModel.class, request);
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        restTaskModel.assertThat().field("id").is(taskModel.getId()).and().field("state").is("delegated").and().field("assignee")
-                .is(assigneeUser.getUsername());
-
-        restClient.authenticateUser(owner).withParams("select=state").withWorkflowAPI().usingTask(taskModel).updateTask("completed");
-        restClient.assertStatusCodeIs(HttpStatus.UNPROCESSABLE_ENTITY).assertLastError().containsSummary(RestErrorModel.DELEGATED_TASK_CAN_NOT_BE_COMPLETED);
     }
 
     @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW,
@@ -1354,38 +1255,6 @@ public class UpdateTaskTests extends RestTest
                 .stackTraceIs(RestErrorModel.STACKTRACE);
     }
 
-    @Bug(id = "REPO-1982")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION,
-            description = "Verify that task can be updated from delegated to unclaimed by task creator")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
-    public void taskCreatorCanUpdateTaskFromDelegatedToUnclaimed() throws Exception
-    {
-        JsonObject inputJson = JsonBodyGenerator.defineJSON().add("state", "delegated").add("assignee", assigneeUser.getUsername()).build();
-        restTaskModel = restClient.authenticateUser(adminUser).withParams("select=state,assignee").withWorkflowAPI().usingTask(taskModel).updateTask(inputJson);
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        restTaskModel.assertThat().field("id").is(taskModel.getId()).and().field("state").is("delegated");
-
-        restTaskModel = restClient.authenticateUser(owner).withParams("select=state").withWorkflowAPI().usingTask(taskModel).updateTask("unclaimed");
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        restTaskModel.assertThat().field("id").is(taskModel.getId()).and().field("state").is("unclaimed");
-    }
-
-    @Bug(id = "REPO-1982")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION,
-            description = "Verify that task can be updated from delegated to unclaimed by task assignee")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
-    public void taskAssigneeCanUpdateTaskFromDelegatedToUnclaimed() throws Exception
-    {
-        JsonObject inputJson = JsonBodyGenerator.defineJSON().add("state", "delegated").add("assignee", assigneeUser.getUsername()).build();
-        restTaskModel = restClient.authenticateUser(adminUser).withParams("select=state,assignee").withWorkflowAPI().usingTask(taskModel).updateTask(inputJson);
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        restTaskModel.assertThat().field("id").is(taskModel.getId()).and().field("state").is("delegated");
-
-        restTaskModel = restClient.authenticateUser(assigneeUser).withParams("select=state").withWorkflowAPI().usingTask(taskModel).updateTask("unclaimed");
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        restTaskModel.assertThat().field("id").is(taskModel.getId()).and().field("state").is("unclaimed");
-    }
-
     @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION,
             description = "Verify that task cannot be updated from delegated to claimed since it is already claimed by task creator")
     @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
@@ -1417,44 +1286,6 @@ public class UpdateTaskTests extends RestTest
         restTaskModel = restClient.authenticateUser(assigneeUser).withParams("select=state").withWorkflowAPI().usingTask(taskModel).updateTask("claimed");
         restClient.assertStatusCodeIs(HttpStatus.OK);
         restTaskModel.assertThat().field("id").is(taskModel.getId()).and().field("state").is("delegated");
-    }
-
-    @Bug(id = "REPO-1924")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION,
-            description = "Verify that task can be updated from delegated to completed by task creator")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
-    public void taskCreatorCanUpdateTaskFromDelegatedToCompleted() throws Exception
-    {
-        JsonObject inputJson = JsonBodyGenerator.defineJSON().add("state", "delegated").add("assignee", assigneeUser.getUsername()).build();
-        restTaskModel = restClient.authenticateUser(adminUser).withParams("select=state,assignee").withWorkflowAPI().usingTask(taskModel).updateTask(inputJson);
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        restTaskModel.assertThat().field("id").is(taskModel.getId()).and().field("state").is("delegated");
-
-        restTaskModel = restClient.authenticateUser(owner).withParams("select=state").withWorkflowAPI().usingTask(taskModel).updateTask("completed");
-        restClient.assertStatusCodeIs(HttpStatus.UNPROCESSABLE_ENTITY).assertLastError()
-                .containsErrorKey(RestErrorModel.API_DEFAULT_ERRORKEY)
-                .containsSummary(RestErrorModel.DELEGATED_TASK_CAN_NOT_BE_COMPLETED)
-                .descriptionURLIs(RestErrorModel.RESTAPIEXPLORER)
-                .stackTraceIs(RestErrorModel.STACKTRACE);
-    }
-
-    @Bug(id = "REPO-1924")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION,
-            description = "Verify that task can be updated from delegated to completed by task assignee")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
-    public void taskAssigneeCanUpdateTaskFromDelegatedToCompleted() throws Exception
-    {
-        JsonObject inputJson = JsonBodyGenerator.defineJSON().add("state", "delegated").add("assignee", assigneeUser.getUsername()).build();
-        restTaskModel = restClient.authenticateUser(adminUser).withParams("select=state,assignee").withWorkflowAPI().usingTask(taskModel).updateTask(inputJson);
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        restTaskModel.assertThat().field("id").is(taskModel.getId()).and().field("state").is("delegated");
-
-        restTaskModel = restClient.authenticateUser(assigneeUser).withParams("select=state").withWorkflowAPI().usingTask(taskModel).updateTask("completed");
-        restClient.assertStatusCodeIs(HttpStatus.UNPROCESSABLE_ENTITY).assertLastError()
-                .containsErrorKey(RestErrorModel.API_DEFAULT_ERRORKEY)
-                .containsSummary(RestErrorModel.DELEGATED_TASK_CAN_NOT_BE_COMPLETED)
-                .descriptionURLIs(RestErrorModel.RESTAPIEXPLORER)
-                .stackTraceIs(RestErrorModel.STACKTRACE);
     }
 
     @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION,

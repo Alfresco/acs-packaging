@@ -185,33 +185,6 @@ public class DeleteRatingTests extends RestTest
         restClient.assertStatusCodeIs(HttpStatus.UNAUTHORIZED);
     }
 
-    @TestRail(section = { TestGroup.REST_API,TestGroup.RATINGS }, executionType = ExecutionType.REGRESSION, description = "Verify one user is not able to remove rating added by another user")
-    @Test(groups = { TestGroup.REST_API, TestGroup.RATINGS, TestGroup.REGRESSION })
-    @Bug(id = "ACE-5459")
-    public void oneUserIsNotAbleToDeleteRatingsOfAnotherUser() throws Exception
-    {
-        FolderModel folderModel = dataContent.usingUser(adminUser).usingSite(siteModel).createFolder();
-        FileModel document = dataContent.usingUser(adminUser).usingResource(folderModel).createContent(DocumentType.TEXT_PLAIN);        
-        UserModel userA = dataUser.createRandomTestUser();
-        UserModel userB = dataUser.createRandomTestUser();
-
-        restClient.authenticateUser(userA);
-
-        restClient.withCoreAPI().usingResource(document).likeDocument();
-        restClient.withCoreAPI().usingResource(document).rateStarsToDocument(5);
-
-        restClient.authenticateUser(userB);
-
-        restClient.withCoreAPI().usingResource(document).deleteLikeRating();
-        restClient.assertStatusCodeIs(HttpStatus.FORBIDDEN).assertLastError().containsSummary(RestErrorModel.PERMISSION_WAS_DENIED);
-
-        restClient.withCoreAPI().usingResource(document).deleteFiveStarRating();
-        restClient.assertStatusCodeIs(HttpStatus.FORBIDDEN).assertLastError().containsSummary(RestErrorModel.PERMISSION_WAS_DENIED);
-        restClient.withCoreAPI().usingResource(document).getRatings()
-                .assertNodeIsLiked()
-                .assertNodeHasFiveStarRating();
-    }
-
     @TestRail(section = { TestGroup.REST_API, TestGroup.RATINGS }, 
             executionType = ExecutionType.REGRESSION, description = "Verify that if ratingId provided is unknown status code returned is 400")
     @Test(groups = { TestGroup.REST_API, TestGroup.RATINGS, TestGroup.REGRESSION })
@@ -238,30 +211,6 @@ public class DeleteRatingTests extends RestTest
         document.setNodeRef("random_value");
         restClient.authenticateUser(adminUser).withCoreAPI().usingResource(document).deleteLikeRating();
         restClient.assertStatusCodeIs(HttpStatus.NOT_FOUND).assertLastError().containsSummary(String.format(RestErrorModel.ENTITY_NOT_FOUND, "random_value"));
-    }
-
-    @TestRail(section = { TestGroup.REST_API, TestGroup.RATINGS }, 
-            executionType = ExecutionType.REGRESSION, description = "Delete rating stars for a document that was not rated")
-    @Test(groups = { TestGroup.REST_API, TestGroup.RATINGS, TestGroup.REGRESSION })
-    @Bug(id = "MNT-17181")
-    public void deleteStarsForANotRatedDocument() throws Exception
-    {
-        FolderModel folderModel = dataContent.usingUser(adminUser).usingSite(siteModel).createFolder();
-        FileModel document = dataContent.usingUser(adminUser).usingResource(folderModel).createContent(DocumentType.TEXT_PLAIN);
-        restClient.authenticateUser(adminUser).withCoreAPI().usingResource(document).deleteFiveStarRating();
-        restClient.assertStatusCodeIs(HttpStatus.NOT_FOUND);
-    }
-
-    @TestRail(section = { TestGroup.REST_API, TestGroup.RATINGS }, 
-            executionType = ExecutionType.REGRESSION, description = "Delete like rating for a document that was not liked")
-    @Test(groups = { TestGroup.REST_API, TestGroup.RATINGS, TestGroup.REGRESSION })
-    @Bug(id = "MNT-17181")
-    public void deleteLikeForANotLikedDocument() throws Exception
-    {
-        FolderModel folderModel = dataContent.usingUser(adminUser).usingSite(siteModel).createFolder();
-        FileModel document = dataContent.usingUser(adminUser).usingResource(folderModel).createContent(DocumentType.TEXT_PLAIN);
-        restClient.authenticateUser(adminUser).withCoreAPI().usingResource(document).deleteLikeRating();
-        restClient.assertStatusCodeIs(HttpStatus.NOT_FOUND);
     }
 
     @TestRail(section = { TestGroup.REST_API, TestGroup.RATINGS }, 
@@ -297,140 +246,6 @@ public class DeleteRatingTests extends RestTest
         restClient.assertStatusCodeIs(HttpStatus.CREATED);
 
         returnedRatingModel.assertThat().field("myRating").is("5").and().field("id").is("fiveStar").and().field("aggregate").isNotEmpty();
-    }
-
-    @TestRail(section = { TestGroup.REST_API, TestGroup.RATINGS }, 
-            executionType = ExecutionType.REGRESSION, description = "Verify site manager is not able to remove rating added by another user")
-    @Test(groups = { TestGroup.REST_API, TestGroup.RATINGS, TestGroup.REGRESSION })
-    @Bug(id = "ACE-5459")
-    public void deleteDocumentRatingUsingManager() throws Exception
-    {
-        FolderModel folderModel = dataContent.usingUser(adminUser).usingSite(siteModel).createFolder();
-        FileModel document = dataContent.usingUser(adminUser).usingResource(folderModel).createContent(DocumentType.TEXT_PLAIN);
-
-        restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteCollaborator)).withCoreAPI().usingResource(document).rateStarsToDocument(5);
-        restClient.withCoreAPI().usingResource(document).likeDocument();
-
-        restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteManager)).withCoreAPI().usingResource(document).deleteFiveStarRating();
-        restClient.assertStatusCodeIs(HttpStatus.FORBIDDEN).assertLastError().containsSummary(RestErrorModel.PERMISSION_WAS_DENIED);
-        restClient.withCoreAPI().usingResource(document).deleteLikeRating();
-        restClient.assertStatusCodeIs(HttpStatus.FORBIDDEN).assertLastError().containsSummary(RestErrorModel.PERMISSION_WAS_DENIED);
-
-        restClient.withCoreAPI().usingResource(document).getRatings()
-                .assertNodeIsLiked()
-                .assertNodeHasFiveStarRating();
-    }
-    
-    @TestRail(section = { TestGroup.REST_API,TestGroup.RATINGS }, 
-            executionType = ExecutionType.REGRESSION, description = "Verify site contributor is not able to remove rating added by another user")
-    @Test(groups = { TestGroup.REST_API, TestGroup.RATINGS, TestGroup.REGRESSION })
-    @Bug(id = "ACE-5459")
-    public void contributorIsNotAbleToDeleteRatingsOfAnotherUser() throws Exception
-    {
-        FolderModel folderModel = dataContent.usingUser(adminUser).usingSite(siteModel).createFolder();
-        FileModel document = dataContent.usingUser(adminUser).usingResource(folderModel).createContent(DocumentType.TEXT_PLAIN);
-
-        restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteManager)).withCoreAPI().usingResource(document).rateStarsToDocument(5);
-        restClient.withCoreAPI().usingResource(document).likeDocument();
-
-        restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteContributor)).withCoreAPI().usingResource(document).deleteFiveStarRating();
-        restClient.assertStatusCodeIs(HttpStatus.FORBIDDEN).assertLastError().containsSummary(RestErrorModel.PERMISSION_WAS_DENIED);
-        restClient.withCoreAPI().usingResource(document).deleteLikeRating();
-        restClient.assertStatusCodeIs(HttpStatus.FORBIDDEN).assertLastError().containsSummary(RestErrorModel.PERMISSION_WAS_DENIED);
-
-        restClient.withCoreAPI().usingResource(document).getRatings()
-                .assertNodeIsLiked()
-                .assertNodeHasFiveStarRating();
-    }
-
-    @TestRail(section = { TestGroup.REST_API,TestGroup.RATINGS },
-            executionType = ExecutionType.REGRESSION, description = "Verify site collaborator is not able to remove rating added by another user")
-    @Test(groups = { TestGroup.REST_API, TestGroup.RATINGS, TestGroup.REGRESSION })
-    @Bug(id = "ACE-5459")
-    public void collaboratorIsNotAbleToDeleteRatingsOfAnotherUser() throws Exception
-    {
-        FolderModel folderModel = dataContent.usingUser(adminUser).usingSite(siteModel).createFolder();
-        FileModel document = dataContent.usingUser(adminUser).usingResource(folderModel).createContent(DocumentType.TEXT_PLAIN);
-
-        restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteManager)).withCoreAPI().usingResource(document).rateStarsToDocument(5);
-        restClient.withCoreAPI().usingResource(document).likeDocument();
-
-        restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteCollaborator)).withCoreAPI().usingResource(document).deleteFiveStarRating();
-        restClient.assertStatusCodeIs(HttpStatus.FORBIDDEN).assertLastError().containsSummary(RestErrorModel.PERMISSION_WAS_DENIED);
-        restClient.withCoreAPI().usingResource(document).deleteLikeRating();
-        restClient.assertStatusCodeIs(HttpStatus.FORBIDDEN).assertLastError().containsSummary(RestErrorModel.PERMISSION_WAS_DENIED);
-
-        restClient.withCoreAPI().usingResource(document).getRatings()
-                .assertNodeIsLiked()
-                .assertNodeHasFiveStarRating();
-    }
-
-    @TestRail(section = { TestGroup.REST_API,TestGroup.RATINGS },
-            executionType = ExecutionType.REGRESSION, description = "Verify site consumer is not able to remove rating added by another user")
-    @Test(groups = { TestGroup.REST_API, TestGroup.RATINGS, TestGroup.REGRESSION })
-    @Bug(id = "ACE-5459")
-    public void consumerIsNotAbleToDeleteRatingsOfAnotherUser() throws Exception
-    {
-        FolderModel folderModel = dataContent.usingUser(adminUser).usingSite(siteModel).createFolder();
-        FileModel document = dataContent.usingUser(adminUser).usingResource(folderModel).createContent(DocumentType.TEXT_PLAIN);
-
-        restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteManager)).withCoreAPI().usingResource(document).rateStarsToDocument(5);
-        restClient.withCoreAPI().usingResource(document).likeDocument();
-
-        restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteConsumer)).withCoreAPI().usingResource(document).deleteFiveStarRating();
-        restClient.assertStatusCodeIs(HttpStatus.FORBIDDEN).assertLastError().containsSummary(RestErrorModel.PERMISSION_WAS_DENIED);
-        restClient.withCoreAPI().usingResource(document).deleteLikeRating();
-        restClient.assertStatusCodeIs(HttpStatus.FORBIDDEN).assertLastError().containsSummary(RestErrorModel.PERMISSION_WAS_DENIED);
-
-        restClient.withCoreAPI().usingResource(document).getRatings()
-                .assertNodeIsLiked()
-                .assertNodeHasFiveStarRating();
-    }
-
-    @TestRail(section = { TestGroup.REST_API, TestGroup.RATINGS },
-            executionType = ExecutionType.REGRESSION, description = "Delete rating stars twice")
-    @Test(groups = { TestGroup.REST_API, TestGroup.RATINGS, TestGroup.REGRESSION })
-    @Bug(id = "MNT-17181")
-    public void deleteStarsTwice() throws Exception
-    {
-        FolderModel folderModel = dataContent.usingUser(adminUser).usingSite(siteModel).createFolder();
-        FileModel document = dataContent.usingUser(adminUser).usingResource(folderModel).createContent(DocumentType.TEXT_PLAIN);
-
-        restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteManager))
-                .withCoreAPI().usingResource(document).rateStarsToDocument(5);
-
-        restClient.withCoreAPI().usingResource(document).deleteFiveStarRating();
-        restClient.assertStatusCodeIs(HttpStatus.NO_CONTENT);
-
-        returnedRatingModelCollection = restClient.withCoreAPI().usingResource(document).getRatings();
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        returnedRatingModelCollection.assertNodeHasNoFiveStarRating();
-
-        restClient.authenticateUser(adminUser).withCoreAPI().usingResource(document).deleteFiveStarRating();
-        restClient.assertStatusCodeIs(HttpStatus.NOT_FOUND);
-    }
-
-    @TestRail(section = { TestGroup.REST_API, TestGroup.RATINGS },
-            executionType = ExecutionType.REGRESSION, description = "Delete like rating twice")
-    @Test(groups = { TestGroup.REST_API, TestGroup.RATINGS, TestGroup.REGRESSION })
-    @Bug(id = "MNT-17181")
-    public void deleteLikeTwice() throws Exception
-    {
-        FolderModel folderModel = dataContent.usingUser(adminUser).usingSite(siteModel).createFolder();
-        FileModel document = dataContent.usingUser(adminUser).usingResource(folderModel).createContent(DocumentType.TEXT_PLAIN);
-
-        restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteManager));
-        restClient.withCoreAPI().usingResource(document).likeDocument();
-
-        restClient.withCoreAPI().usingResource(document).deleteLikeRating();
-        restClient.assertStatusCodeIs(HttpStatus.NO_CONTENT);
-
-        returnedRatingModelCollection = restClient.withCoreAPI().usingResource(document).getRatings();
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        returnedRatingModelCollection.assertNodeIsNotLiked();
-
-        restClient.authenticateUser(adminUser).withCoreAPI().usingResource(document).deleteLikeRating();
-        restClient.assertStatusCodeIs(HttpStatus.NOT_FOUND);
     }
 
     @TestRail(section = { TestGroup.REST_API, TestGroup.RATINGS },

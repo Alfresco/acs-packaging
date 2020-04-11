@@ -212,45 +212,6 @@ public class SharedLinksSanityTests extends RestTest
         restClient.assertStatusCodeIs(HttpStatus.OK);
     }
 
-    /**
-     * ATS does not support text -> img (doclib)
-     */
-    @TestRail(section = { TestGroup.REST_API, TestGroup.SHAREDLINKS }, executionType = ExecutionType.SANITY, description = "Sanity tests for GET /renditions, GET /renditions/{renditionId} and GET /renditions/{renditionId}/content endpoints")
-    @Test(groups = { TestGroup.REST_API, TestGroup.SHAREDLINKS, TestGroup.SANITY, TestGroup.RENDITIONS, TestGroup.NOT_SUPPORTED_BY_ATS })
-    public void testGetSharedLinkRendition() throws Exception
-    {
-        sharedLink7 = restClient.authenticateUser(testUser1).withCoreAPI().usingSharedLinks().createSharedLink(file7);
-        restClient.assertStatusCodeIs(HttpStatus.CREATED);
-        restClient.withCoreAPI().usingNode(file7).createNodeRenditionIfNotExists("doclib");
-        restClient.withCoreAPI().usingNode(file7).createNodeRendition("pdf");
-        restClient.assertStatusCodeIs(HttpStatus.ACCEPTED);
-
-        // GET /renditions: wait until all renditions are created and GET all entries
-        Utility.sleep(500, 50000, () ->
-        {
-            nodeRenditionInfoCollection = restClient.authenticateUser(testUser1).withCoreAPI().usingSharedLinks().getSharedLinkRenditions(sharedLink7);
-            restClient.assertStatusCodeIs(HttpStatus.OK);
-
-            nodeRenditionInfoCollection.assertThat().entriesListCountIs(2);
-            nodeRenditionInfoCollection.getEntryByIndex(0).assertThat().field("id").is("doclib").and()
-                                                                       .field("status").is("CREATED");
-            nodeRenditionInfoCollection.getEntryByIndex(1).assertThat().field("id").is("pdf").and()
-                                                                       .field("status").is("CREATED");
-        });
-
-        // GET /renditions/{renditionId}: get specific rendition information for the file with shared link
-        nodeRenditionInfo = restClient.authenticateUser(testUser1).withCoreAPI().usingSharedLinks().getSharedLinkRendition(sharedLink7, "pdf");
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        nodeRenditionInfo.assertThat().field("id").is("pdf").and()
-                                      .field("status").is("CREATED");
-
-        // GET /renditions/{renditionId}/content: get the rendition content for file with shared link
-        restClient.authenticateUser(testUser1).withCoreAPI().usingSharedLinks().getSharedLinkRenditionContent(sharedLink7, "pdf");
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        restClient.assertHeaderValueContains("Content-Type","application/pdf;charset=UTF-8");
-        Assert.assertTrue(restClient.onResponse().getResponse().body().asInputStream().available() > 0);
-    }
-
     @TestRail(section = { TestGroup.REST_API, TestGroup.SHAREDLINKS }, executionType = ExecutionType.SANITY, description = "Sanity tests for Range reuest header on   GET shared-links/{sharedId}/renditions/{renditionId}/content endpoints")
     @Test(groups = { TestGroup.REST_API, TestGroup.SHAREDLINKS, TestGroup.SANITY, TestGroup.RENDITIONS })
     public void testGetVerifyRangeReguestOnSharedLinks() throws Exception

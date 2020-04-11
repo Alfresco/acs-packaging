@@ -341,21 +341,6 @@ public class GetFavoriteTests extends RestTest
                 .containsErrorKey(RestErrorModel.ENTITY_NOT_FOUND_ERRORKEY);
     }
 
-    @Bug(id = "ACE-2413")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.FAVORITES },
-            executionType = ExecutionType.REGRESSION, description = "Verify get favorite site when person id is empty")
-    @Test(groups = { TestGroup.REST_API, TestGroup.FAVORITES, TestGroup.REGRESSION })
-    public void getFavoriteSiteWithEmptyUserId() throws Exception {
-
-        restClient.withCoreAPI().usingUser(adminUserModel).addSiteToFavorites(siteModel);
-        UserModel someUser = new UserModel("", DataUser.PASSWORD);
-
-        restClient.authenticateUser(adminUserModel).withCoreAPI().usingUser(someUser).getFavorite(siteModel.getGuid());
-        restClient.assertStatusCodeIs(HttpStatus.NOT_FOUND).assertLastError()
-                .containsSummary(String.format(RestErrorModel.ENTITY_NOT_FOUND, someUser.getUsername()))
-                .statusCodeIs(HttpStatus.BAD_REQUEST);
-    }
-
     @TestRail(section = { TestGroup.REST_API, TestGroup.FAVORITES },
             executionType = ExecutionType.REGRESSION, description = "Verify get favorite site when favorite id does't exist")
     @Test(groups = { TestGroup.REST_API, TestGroup.FAVORITES, TestGroup.REGRESSION })

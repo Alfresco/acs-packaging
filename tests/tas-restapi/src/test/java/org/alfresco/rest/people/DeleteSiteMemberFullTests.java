@@ -149,25 +149,7 @@ public class DeleteSiteMemberFullTests extends RestTest
         restClient.assertStatusCodeIs(HttpStatus.UNPROCESSABLE_ENTITY).assertLastError()
             .containsSummary(String.format(RestErrorModel.NOT_SUFFICIENT_PERMISSIONS, privateSiteModel.getId()));
     }
-    
-    @Test(groups = { TestGroup.REST_API, TestGroup.PEOPLE, TestGroup.REGRESSION })
-    @TestRail(section = { TestGroup.REST_API, TestGroup.PEOPLE }, executionType = ExecutionType.REGRESSION, description = "Verify admin is not able to remove same user twice and response is 400")
-    @Bug(id="ACE-5447")
-    public void adminIsNotAbleToRemoveSameUserTwice() throws Exception
-    {
-        restClient.authenticateUser(adminUserModel).withCoreAPI().usingUser(usersWithRolesPublicSite.getOneUserWithRole(UserRole.SiteCollaborator)).deleteSiteMember(publicSiteModel);
-        restClient.assertStatusCodeIs(HttpStatus.NO_CONTENT);
-        restClient.authenticateUser(adminUserModel).withCoreAPI().usingUser(usersWithRolesPublicSite.getOneUserWithRole(UserRole.SiteCollaborator)).deleteSiteMember(publicSiteModel);
-        restClient.assertStatusCodeIs(HttpStatus.NOT_FOUND).assertLastError().containsSummary(RestErrorModel.ENTITY_NOT_FOUND);
-        restClient.authenticateUser(adminUserModel).withCoreAPI().usingSite(publicSiteModel).addPerson(usersWithRolesPublicSite.getOneUserWithRole(UserRole.SiteCollaborator));
-        Utility.sleep(300, 30000, () -> restClient.withCoreAPI().usingSite(publicSiteModel)
-                .getSiteMembers().assertThat()
-                .entriesListContains("id",
-                        usersWithRolesPublicSite.getOneUserWithRole(UserRole.SiteCollaborator).getUsername())
-                .when().getSiteMember(usersWithRolesPublicSite.getOneUserWithRole(UserRole.SiteCollaborator).getUsername())
-                .assertSiteMemberHasRole(UserRole.SiteCollaborator));
-    }
-    
+
     @Test(groups = { TestGroup.REST_API, TestGroup.PEOPLE, TestGroup.REGRESSION })
     @TestRail(section = { TestGroup.REST_API, TestGroup.PEOPLE }, executionType = ExecutionType.REGRESSION, description = "Verify single manager is not able to delete himself and response is 400")
     public void lastManagerIsNotAbleToDeleteHimself() throws Exception
@@ -196,18 +178,6 @@ public class DeleteSiteMemberFullTests extends RestTest
         restClient.authenticateUser(usersWithRolesPublicSite.getOneUserWithRole(UserRole.SiteManager)).withCoreAPI().usingSite(publicSiteModel).addPerson(adminUserModel);
         Utility.sleep(300, 30000, () -> restClient.withCoreAPI().usingSite(publicSiteModel)
                 .getSiteMembers().assertThat().entriesListContains("id", adminUserModel.getUsername()));
-    }
-    
-    @Test(groups = { TestGroup.REST_API, TestGroup.PEOPLE, TestGroup.REGRESSION })
-    @TestRail(section = { TestGroup.REST_API, TestGroup.PEOPLE }, executionType = ExecutionType.REGRESSION, description = "Verify admin is not able to remove from site a user that created a member request that was not accepted yet")
-    @Bug(id="ACE-5447")
-    public void adminIsNotAbleToRemoveFromSiteANonExistingMember() throws Exception
-    {
-        UserModel newMember = dataUser.createRandomTestUser();
-        restClient.authenticateUser(newMember).withCoreAPI().usingAuthUser().addSiteMembershipRequest(moderatedSiteModel);
-        restClient.authenticateUser(adminUserModel).withCoreAPI().usingUser(newMember).deleteSiteMember(moderatedSiteModel);
-        restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST).assertLastError()
-            .containsSummary(RestErrorModel.ENTITY_NOT_FOUND);
     }
     
 }

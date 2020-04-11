@@ -144,17 +144,6 @@ public class AddProcessItemCoreTests extends RestTest
         restClient.assertStatusCodeIs(HttpStatus.NOT_FOUND).assertLastError()
                 .containsSummary(String.format(RestErrorModel.ENTITY_NOT_FOUND, "invalidProcessId"));
     }
-
-    @Bug(id = "REPO-1937")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.PROCESSES }, executionType = ExecutionType.REGRESSION, 
-            description = "Adding process item is falling in case of invalid body item is provided")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.PROCESSES, TestGroup.REGRESSION })
-    public void failedAddingProcessItemIfInvalidItemBodyIsProvided() throws Exception
-    {
-        document.setNodeRef("invalidNodeRef");
-        processItem = restClient.withWorkflowAPI().usingProcess(processModel).addProcessItem(document);
-        restClient.assertStatusCodeIs(HttpStatus.NOT_FOUND).assertLastError().containsSummary(String.format(RestErrorModel.ENTITY_NOT_FOUND, "invalidId"));
-    }   
     
     @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.PROCESSES }, executionType = ExecutionType.REGRESSION,
             description = "Adding multiple process items is falling in case of empty body item value is provided")

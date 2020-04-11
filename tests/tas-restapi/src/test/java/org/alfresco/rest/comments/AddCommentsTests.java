@@ -163,22 +163,6 @@ public class AddCommentsTests extends RestTest
     }
     
     @TestRail(section={TestGroup.REST_API, TestGroup.COMMENTS}, executionType= ExecutionType.REGRESSION,
-            description= "Verify User can't add comments to a node that exists but is not a document or a folder and status code is 405")
-    @Test(groups = { TestGroup.REST_API, TestGroup.COMMENTS, TestGroup.REGRESSION })
-    @Bug(id = "MNT-16904")
-    public void userCanNotAddCommentsOnLink() throws Exception
-    { 
-        LinkModel link = dataLink.usingAdmin().usingSite(siteModel).createRandomLink();
-        FileModel fileWithNodeRefFromLink = FileModel.getRandomFileModel(FileType.TEXT_PLAIN);
-        fileWithNodeRefFromLink.setNodeRef(link.getNodeRef());
-        
-        restClient.authenticateUser(adminUserModel).withCoreAPI()
-                .usingResource(fileWithNodeRefFromLink).addComments(comment1,comment2);
-        restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST)
-                .assertLastError().containsSummary(RestErrorModel.UNABLE_TO_LOCATE);
-    }
-    
-    @TestRail(section={TestGroup.REST_API, TestGroup.COMMENTS}, executionType= ExecutionType.REGRESSION,
             description= "Verify User can add comments with the same content as one existing comment")
     @Test(groups = { TestGroup.REST_API, TestGroup.COMMENTS, TestGroup.REGRESSION })
     public void userCanAddCommentWithTheSameContentAsExistingOne() throws Exception

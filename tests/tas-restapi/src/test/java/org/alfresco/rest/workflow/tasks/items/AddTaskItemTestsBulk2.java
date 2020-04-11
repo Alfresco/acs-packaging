@@ -71,65 +71,6 @@ public class AddTaskItemTestsBulk2 extends RestTest
                   .stackTraceIs(RestErrorModel.STACKTRACE);;
     }
 
-    @Bug(id = "ACE-5683")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION, 
-    description = "Adding task item, is falling in case invalid itemBody is provided")
-    public void failedAddingTaskItemIfInvalidItemBodyIsProvided() throws Exception
-    {
-        fileModel.setNodeRef("invalidNodeRef");
-        restClient.authenticateUser(userModel).withWorkflowAPI().usingTask(taskModel).addTaskItem(fileModel);
-
-        restClient.assertStatusCodeIs(HttpStatus.NOT_FOUND).assertLastError()
-                  .containsSummary(String.format(RestErrorModel.ENTITY_NOT_FOUND, "invalidNodeRef"))
-                  .containsErrorKey(RestErrorModel.NOT_FOUND_ERRORKEY)
-                  .descriptionURLIs(RestErrorModel.RESTAPIEXPLORER)
-                  .stackTraceIs(RestErrorModel.STACKTRACE);
-    }
-    
-    @Bug(id = "ACE-5683")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION, 
-     description = "Adding multiple task item, is falling in case invalid itemBody is provided")
-    public void failedAddingMultipleTaskItemIfInvalidItemBodyIsProvided() throws Exception
-    {
-        fileModel.setNodeRef("invalidNodeRef");
-        restClient.authenticateUser(userModel).withWorkflowAPI().usingTask(taskModel)
-                              .addTaskItems(fileModel, fileModel1);
-
-        restClient.assertStatusCodeIs(HttpStatus.NOT_FOUND).assertLastError()
-                  .containsSummary(String.format(RestErrorModel.ENTITY_NOT_FOUND, "invalidNodeRef"))
-                  .containsErrorKey(RestErrorModel.NOT_FOUND_ERRORKEY)
-                  .descriptionURLIs(RestErrorModel.RESTAPIEXPLORER)
-                  .stackTraceIs(RestErrorModel.STACKTRACE);;
-    }
-
-    @Bug(id = "ACE-5675")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION, 
-    description = "Adding task item is falling in case empty item body is provided")
-    public void failedAddingTaskItemIfEmptyItemBodyIsProvided() throws Exception
-    {
-        fileModel.setNodeRef("");
-        restClient.authenticateUser(userModel).withWorkflowAPI().usingTask(taskModel).addTaskItem(fileModel);
-
-        // TODO - expected error message to be added
-        restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST).assertLastError().containsSummary("");
-    }
-    
-    @Bug(id = "ACE-5675")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION, 
-       description = "Adding multiple task item is falling in case empty item body is provided")
-    public void failedAddingMultipleTaskItemIfEmptyItemBodyIsProvided() throws Exception
-    {
-        fileModel.setNodeRef("");
-        restClient.authenticateUser(userModel).withWorkflowAPI().usingTask(taskModel).addTaskItems(fileModel, fileModel1);
-
-        // TODO - expected error message to be added
-        restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST).assertLastError().containsSummary("");
-    }
-
     @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
     @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION, 
     description = "Adding task item is falling in case invalid task id is provided")
@@ -159,17 +100,4 @@ public class AddTaskItemTestsBulk2 extends RestTest
                   .descriptionURLIs(RestErrorModel.RESTAPIEXPLORER)
                   .stackTraceIs(RestErrorModel.STACKTRACE);
     }
-
-    @Bug(id = "ACE-5675")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION, 
-    description = "Adding task item is falling in case incomplete body type is provided")
-    public void failedAddingTaskVariableIfIncompleteBodyIsProvided() throws Exception
-    {
-        RestRequest request = RestRequest.requestWithBody(HttpMethod.POST, "{}", "tasks/{taskId}/items", taskId);
-        restClient.processModel(RestVariableModel.class, request);
-
-        // TODO - expected error message to be added
-        restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST).assertLastError().containsSummary("");
-    }    
 }

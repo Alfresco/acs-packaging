@@ -147,23 +147,6 @@ public class AddCommentTests extends RestTest
                   .withCoreAPI().usingResource(file).addComment(comment);                  
         restClient.assertStatusCodeIs(HttpStatus.NOT_FOUND).assertLastError().containsSummary(String.format(RestErrorModel.ENTITY_NOT_FOUND, file.getNodeRef()));
     }
-
-    @TestRail(section = { TestGroup.REST_API, TestGroup.COMMENTS }, executionType = ExecutionType.REGRESSION, 
-            description = "Verify that request using nodeId that is neither document or folder returns 405")
-    @Bug(id = "MNT-16904")
-    @Test(groups = { TestGroup.REST_API, TestGroup.COMMENTS, TestGroup.REGRESSION })
-    public void addCommentUsingResourceThatIsNotFileOrFolder() throws Exception
-    {
-        comment = RandomData.getRandomName("comment1");
-        LinkModel link = dataLink.usingAdmin().usingSite(siteModel).createRandomLink();
-        FileModel fileWithNodeRefFromLink = FileModel.getRandomFileModel(FileType.TEXT_PLAIN);
-        fileWithNodeRefFromLink = dataContent.usingSite(siteModel).usingUser(adminUserModel).createContent(CMISUtil.DocumentType.TEXT_PLAIN);
-        fileWithNodeRefFromLink.setNodeRef(link.getNodeRef());
-
-        restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteManager))
-                .withCoreAPI().usingResource(fileWithNodeRefFromLink).addComment(comment);
-        restClient.assertStatusCodeIs(HttpStatus.METHOD_NOT_ALLOWED);
-    }
     
     @TestRail(section = { TestGroup.REST_API, TestGroup.COMMENTS }, executionType = ExecutionType.REGRESSION, 
             description = "Verify that adding comment using empty content returns 400 status code")

@@ -86,25 +86,6 @@ public class AddProcessVariableCoreTests extends RestTest
                   .descriptionURLIs(RestErrorModel.RESTAPIEXPLORER)
                   .stackTraceIs(RestErrorModel.STACKTRACE);
     }
-   
-    @Bug(id = "REPO-1938")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.PROCESSES }, executionType = ExecutionType.REGRESSION, 
-            description = "Adding process variable is falling in case invalid type prefix is provided")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.PROCESSES, TestGroup.REGRESSION })
-    public void failedAddingProcessVariableIfInvalidTypePrefixIsProvided() throws Exception
-    {
-        variableModel = RestProcessVariableModel.getRandomProcessVariableModel("ddt:text");
-
-        processModel = restClient.authenticateUser(adminUser).withWorkflowAPI().getProcesses().getOneRandomEntry().onModel();
-        restClient.withWorkflowAPI().usingProcess(processModel).updateProcessVariable(variableModel);
-
-        restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST)
-                  .assertLastError()
-                  .containsErrorKey(RestErrorModel.API_DEFAULT_ERRORKEY)
-                  .containsSummary(String.format(RestErrorModel.INVALID_NAMEPACE_PREFIX, "ddt"))
-                  .descriptionURLIs(RestErrorModel.RESTAPIEXPLORER)
-                  .stackTraceIs(RestErrorModel.STACKTRACE);
-    }
 
     @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.PROCESSES }, executionType = ExecutionType.REGRESSION, 
             description = "Adding process variable is falling in case invalid value is provided")

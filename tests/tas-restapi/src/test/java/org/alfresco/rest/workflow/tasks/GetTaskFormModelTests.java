@@ -158,28 +158,6 @@ public class GetTaskFormModelTests extends RestTest
                     .fieldsCount().is(2);
         }
 
-    @Bug(id = "MNT-17438")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION,
-            description = "Verify admin gets task form model with valid skipCount parameter applied using REST API and status code is OK (200)")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
-    public void getTaskFormModelWithValidSkipCount() throws Exception
-    {
-        taskModel = dataWorkflow.usingUser(userModel).usingSite(siteModel).usingResource(fileModel).createNewTaskAndAssignTo(userModel);
-        returnedCollection = restClient.authenticateUser(adminUser)
-                .withWorkflowAPI().usingTask(taskModel).getTaskFormModel();
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        RestFormModel firstTaskFormModel = returnedCollection.getEntries().get(0).onModel();
-        RestFormModel secondTaskFormModel = returnedCollection.getEntries().get(1).onModel();
-
-        RestFormModelsCollection formModelsWithSkipCount = restClient.withParams("skipCount=2").withWorkflowAPI().usingTask(taskModel).getTaskFormModel();
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        formModelsWithSkipCount
-                .assertThat().entriesListDoesNotContain("name", firstTaskFormModel.getName())
-                .assertThat().entriesListDoesNotContain("name", secondTaskFormModel.getName())
-                .assertThat().entriesListCountIs(returnedCollection.getEntries().size()-2);
-        formModelsWithSkipCount.assertThat().paginationField("skipCount").is("2");
-    }
-
     @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION,
             description = "Verify admin doesn't get task form model with negative skipCount parameter applied using REST API")
     @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
@@ -204,28 +182,6 @@ public class GetTaskFormModelTests extends RestTest
         restClient.authenticateUser(adminUser).withParams("skipCount=A").withWorkflowAPI().usingTask(taskModel).getTaskFormModel();
         restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST).assertLastError()
                 .containsSummary(String.format(RestErrorModel.INVALID_SKIPCOUNT, "A"));
-    }
-
-    @Bug(id = "MNT-17438")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION,
-            description = "Verify admin gets task form model with valid maxItems parameter applied using REST API and status code is OK (200)")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
-    public void getTaskFormModelWithValidMaxItems() throws Exception
-    {
-        taskModel = dataWorkflow.usingUser(userModel).usingSite(siteModel).usingResource(fileModel).createNewTaskAndAssignTo(userModel);
-        returnedCollection = restClient.authenticateUser(adminUser)
-                .withWorkflowAPI().usingTask(taskModel).getTaskFormModel();
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        RestFormModel firstTaskFormModel = returnedCollection.getEntries().get(0).onModel();
-        RestFormModel secondTaskFormModel = returnedCollection.getEntries().get(1).onModel();
-
-        RestFormModelsCollection formModelsWithMaxItems = restClient.withParams("maxItems=2").withWorkflowAPI().usingTask(taskModel).getTaskFormModel();
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        formModelsWithMaxItems
-                .assertThat().entriesListContains("name", firstTaskFormModel.getName())
-                .assertThat().entriesListContains("name", secondTaskFormModel.getName())
-                .assertThat().entriesListCountIs(2);
-        formModelsWithMaxItems.assertThat().paginationField("maxItems").is("2");
     }
 
     @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION,

@@ -160,54 +160,6 @@ public class NodesLockTests extends RestTest
                 .assertThat().field("properties").contains("lockType=READ_ONLY_LOCK");
     }
 
-    @Bug(id = "MNT-17612", status = Status.FIXED, description = "AccessDeniedException in AOS Edit Offline Upload New Version")
-    @Test(groups = { TestGroup.REST_API, TestGroup.NODES, TestGroup.REGRESSION })
-    @TestRail(section = { TestGroup.REST_API, TestGroup.NODES }, executionType = ExecutionType.REGRESSION,
-            description = "Verify Collaborator can lock PERSISTENT after EPHEMERAL lock made by same user")
-    public void lockEphemeralAndRelockPersistentSameUser() throws Exception
-    {
-        STEP("1. Adds a file in the site by administrator.");
-        file1 = dataContent.usingUser(adminUser).usingSite(publicSite).createContent(DocumentType.TEXT_PLAIN);
-
-        STEP("2. Verify with admin that the file is not locked.");
-        RestNodeModel file1Model1 = restClient.authenticateUser(adminUser).withCoreAPI().usingNode(file1).usingParams("include=isLocked").getNode();
-        file1Model1.assertThat().field("isLocked").is(false);
-
-        STEP("3. Lock the file using mode EPHEMERAL with user1 (POST nodes/{nodeId}/lock).");
-        RestNodeLockBodyModel lockBodyModel = new RestNodeLockBodyModel();
-        lockBodyModel.setLifetime("EPHEMERAL");
-        lockBodyModel.setTimeToExpire(2);
-        lockBodyModel.setType("FULL");
-        restClient.authenticateUser(user1).withCoreAPI().usingNode(file1).usingParams("include?isLocked").lockNode(lockBodyModel);
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-
-        STEP("4. Verify with user1 that the file is locked.");
-        RestNodeModel file1Model2 = restClient.authenticateUser(user1).withCoreAPI().usingNode(file1).usingParams("include=isLocked").getNode();
-        file1Model2.assertThat().field("isLocked").is(true)
-                .assertThat().field("properties").contains("lockLifetime=EPHEMERAL")
-                .assertThat().field("properties").contains("lockType=READ_ONLY_LOCK");
-
-        STEP("5. Lock the file using mode PERSISTENT with user1 while the file is still locked");
-        RestNodeLockBodyModel lockBodyModel2 = new RestNodeLockBodyModel();
-        lockBodyModel2.setLifetime("PERSISTENT");
-        lockBodyModel2.setTimeToExpire(20);
-        lockBodyModel2.setType("ALLOW_OWNER_CHANGES");
-        RestNodeModel file1Model3 = restClient.authenticateUser(user1).withCoreAPI().usingNode(file1).usingParams("include=isLocked").lockNode(lockBodyModel2);
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        file1Model3.assertThat().field("isLocked").is(true)
-                .assertThat().field("properties").contains("lockLifetime=EPHEMERAL")
-                .assertThat().field("properties").contains("lockType=READ_ONLY_LOCK");
-
-        STEP("6. Verify that the file is locked PERSISTENT only after EPHEMERAL lock has expired");
-        Utility.sleep(500, 5000, () ->
-        {
-            RestNodeModel file1Model4 = restClient.authenticateUser(user1).withCoreAPI().usingNode(file1).usingParams("include=isLocked").getNode();
-            file1Model4.assertThat().field("isLocked").is(true)
-                    .assertThat().field("properties").contains("lockLifetime=PERSISTENT")
-                    .assertThat().field("properties").contains("lockType=WRITE_LOCK");
-        });
-    }
-
     @Test(groups = { TestGroup.REST_API, TestGroup.NODES, TestGroup.REGRESSION })
     @TestRail(section = { TestGroup.REST_API, TestGroup.NODES }, executionType = ExecutionType.REGRESSION,
             description = "Verify Collaborator can not lock EPHEMERAL after PERSISTENT lock made by different user")
@@ -322,50 +274,6 @@ public class NodesLockTests extends RestTest
             file1Model3.assertThat().field("isLocked").is(true)
                     .assertThat().field("properties").contains("lockLifetime=EPHEMERAL")
                     .assertThat().field("properties").contains("lockType=READ_ONLY_LOCK");
-        });
-    }
-
-//  TODO: uncomment this:  @Bug(id = "MNT-17612", status = Status.FIXED, description = "AccessDeniedException in AOS Edit Offline Upload New Version")
-    @Bug(id = "REPO-4790")
-    @Test(groups = { TestGroup.REST_API, TestGroup.NODES, TestGroup.REGRESSION })
-    @TestRail(section = { TestGroup.REST_API, TestGroup.NODES }, executionType = ExecutionType.REGRESSION,
-            description = "Verify Collaborator can lock PERSISTENT after EPHEMERAL lock made by another user is expired")
-    public void lockEphemeralAndRelockPersistentAfterExpiredLockDifferentUser() throws Exception
-    {
-        STEP("1. Adds a file in the site by administrator.");
-        file1 = dataContent.usingUser(adminUser).usingSite(publicSite).createContent(DocumentType.TEXT_PLAIN);
-
-        STEP("2. Verify with admin that the file is not locked.");
-        RestNodeModel file1Model1 = restClient.authenticateUser(adminUser).withCoreAPI().usingNode(file1).usingParams("include=isLocked").getNode();
-        file1Model1.assertThat().field("isLocked").is(false);
-
-        STEP("3. Lock the file using mode EPHEMERAL with user1 (POST nodes/{nodeId}/lock).");
-        RestNodeLockBodyModel lockBodyModel = new RestNodeLockBodyModel();
-        lockBodyModel.setLifetime("EPHEMERAL");
-        lockBodyModel.setTimeToExpire(1);
-        lockBodyModel.setType("FULL");
-        restClient.authenticateUser(user1).withCoreAPI().usingNode(file1).usingParams("include?isLocked").lockNode(lockBodyModel);
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-
-        STEP("4. Verify with user1 that the file is locked.");
-        RestNodeModel file1Model2 = restClient.authenticateUser(user1).withCoreAPI().usingNode(file1).usingParams("include=isLocked").getNode();
-        file1Model2.assertThat().field("isLocked").is(true)
-                .assertThat().field("properties").contains("lockLifetime=EPHEMERAL")
-                .assertThat().field("properties").contains("lockType=READ_ONLY_LOCK");
-
-        STEP("5. Lock the file using mode PERSISTENT with user2 after the first lock has expired");
-        RestNodeLockBodyModel lockBodyModel2 = new RestNodeLockBodyModel();
-        lockBodyModel2.setLifetime("PERSISTENT");
-        lockBodyModel2.setTimeToExpire(20);
-        lockBodyModel2.setType("ALLOW_OWNER_CHANGES");
-        Utility.sleep(500, 5000, () ->
-        {
-            RestNodeModel file1Model3 = restClient.authenticateUser(user2).withCoreAPI().usingNode(file1).usingParams("include=isLocked").lockNode(lockBodyModel2);
-            restClient.assertStatusCodeIs(HttpStatus.OK);
-            file1Model3.assertThat().field("isLocked").is(true)
-                    .assertThat().field("properties").contains("lockLifetime=PERSISTENT")
-                    .assertThat().field("properties").contains("lockType=WRITE_LOCK");
-
         });
     }
 
@@ -570,50 +478,6 @@ public class NodesLockTests extends RestTest
             file1Model3.assertThat().field("isLocked").is(true)
                     .assertThat().field("properties").contains("lockLifetime=EPHEMERAL")
                     .assertThat().field("properties").contains("lockType=READ_ONLY_LOCK");
-        });
-    }
-
-//  TODO: uncomment this:    @Bug(id = "MNT-17612", status = Status.FIXED, description = "AccessDeniedException in AOS Edit Offline Upload New Version")
-    @Bug(id = "REPO-4809")
-    @Test(groups = { TestGroup.REST_API, TestGroup.NODES, TestGroup.REGRESSION })
-    @TestRail(section = { TestGroup.REST_API, TestGroup.NODES }, executionType = ExecutionType.REGRESSION,
-            description = "Verify Collaborator can lock PERSISTENT after EPHEMERAL lock made by same user is expired")
-    public void lockEphemeralAndRelockPersistentAfterExpiredLockSameUser() throws Exception
-    {
-        STEP("1. Adds a file in the site by administrator.");
-        file1 = dataContent.usingUser(adminUser).usingSite(publicSite).createContent(DocumentType.TEXT_PLAIN);
-
-        STEP("2. Verify with admin that the file is not locked.");
-        RestNodeModel file1Model1 = restClient.authenticateUser(adminUser).withCoreAPI().usingNode(file1)
-                .usingParams("include=isLocked").getNode();
-        file1Model1.assertThat().field("isLocked").is(false);
-
-        STEP("3. Lock the file using mode EPHEMERAL with user1 (POST nodes/{nodeId}/lock).");
-        RestNodeLockBodyModel lockBodyModel = new RestNodeLockBodyModel();
-        lockBodyModel.setLifetime("EPHEMERAL");
-        lockBodyModel.setTimeToExpire(1);
-        lockBodyModel.setType("FULL");
-        restClient.authenticateUser(user1).withCoreAPI().usingNode(file1).usingParams("include?isLocked").lockNode(lockBodyModel);
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-
-        STEP("4. Verify with useer1 that the file is locked.");
-        RestNodeModel file1Model2 = restClient.authenticateUser(user1).withCoreAPI().usingNode(file1).usingParams("include=isLocked").getNode();
-        file1Model2.assertThat().field("isLocked").is(true)
-                .assertThat().field("properties").contains("lockLifetime=EPHEMERAL")
-                .assertThat().field("properties").contains("lockType=READ_ONLY_LOCK");
-
-        STEP("5. Lock the file using mode PERSISTENT with user1 while the first lock has expired");
-        RestNodeLockBodyModel lockBodyModel2 = new RestNodeLockBodyModel();
-        lockBodyModel2.setLifetime("PERSISTENT");
-        lockBodyModel2.setTimeToExpire(20);
-        lockBodyModel2.setType("ALLOW_OWNER_CHANGES");
-        Utility.sleep(500, 5000, () ->
-        {
-            RestNodeModel file1Model3 = restClient.authenticateUser(user1).withCoreAPI().usingNode(file1).usingParams("include=isLocked").lockNode(lockBodyModel2);
-            restClient.assertStatusCodeIs(HttpStatus.OK);
-            file1Model3.assertThat().field("isLocked").is(true)
-                    .assertThat().field("properties").contains("lockLifetime=PERSISTENT")
-                    .assertThat().field("properties").contains("lockType=WRITE_LOCK");
         });
     }
 

@@ -69,21 +69,6 @@ public class GetPeopleActivitiesFullTests extends RestTest
                 .and().field("objectId").is(fileInSite1.getNodeRefWithoutVersion());
     }
 
-    @Bug(id = "REPO-1911")
-    @Test(groups = { TestGroup.REST_API, TestGroup.PEOPLE, TestGroup.ACTIVITIES, TestGroup.REGRESSION })
-    @TestRail(section = { TestGroup.REST_API,TestGroup.PEOPLE,TestGroup.ACTIVITIES }, executionType = ExecutionType.REGRESSION, description = "Verify user cannot get activities for empty user with Rest API and response is 400")
-    public void userCannotGetPeopleActivitiesForEmptyPersonId() throws Exception
-    {
-        UserModel emptyUserName = new UserModel("", "password");
-        
-        restActivityModelsCollection = restClient.authenticateUser(userModel).withCoreAPI().usingUser(emptyUserName).getPersonActivities();
-        restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST)
-            .assertLastError().containsErrorKey(RestErrorModel.ENTITY_NOT_FOUND_ERRORKEY)
-                                .containsSummary(RestErrorModel.LOCAL_NAME_CONSISTANCE)
-                                .stackTraceIs(RestErrorModel.STACKTRACE)
-                                .descriptionURLIs(RestErrorModel.RESTAPIEXPLORER);
-    }
-
     @Test(groups = { TestGroup.REST_API, TestGroup.PEOPLE, TestGroup.ACTIVITIES, TestGroup.REGRESSION })
     @TestRail(section = { TestGroup.REST_API,TestGroup.PEOPLE,TestGroup.ACTIVITIES }, executionType = ExecutionType.REGRESSION, description = "Verify user gets its activities for siteId specified in siteId parameter using me with Rest API and response is successful")
     public void userGetItsPeopleActivitiesForASpecificSite() throws Exception

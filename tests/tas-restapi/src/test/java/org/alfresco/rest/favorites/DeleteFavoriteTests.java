@@ -176,97 +176,6 @@ public class DeleteFavoriteTests extends RestTest
         restClient.assertStatusCodeIs(HttpStatus.NO_CONTENT);
     }
 
-    @Bug(id="ACE-5588")
-    @TestRail(section = { TestGroup.REST_API,TestGroup.FAVORITES }, executionType = ExecutionType.REGRESSION,
-            description = "Verify user doesn't have permission to delete favorites of admin user with Rest API and status code is 404")
-    @Test(groups = { TestGroup.REST_API, TestGroup.FAVORITES, TestGroup.REGRESSION })
-    public void userIsNotAbleToDeleteFavoritesOfAdminUser() throws Exception
-    {
-        restClient.authenticateUser(adminUserModel).withCoreAPI().usingAuthUser().addSiteToFavorites(siteModel);
-        
-        restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteConsumer))
-                  .withCoreAPI().usingAuthUser().deleteSiteFromFavorites(siteModel)
-                  .assertStatusCodeIs(HttpStatus.FORBIDDEN).assertLastError().containsSummary(RestErrorModel.PERMISSION_WAS_DENIED);
-    }
-
-    @Bug(id="ACE-5588")
-    @TestRail(section = { TestGroup.REST_API,TestGroup.FAVORITES }, executionType = ExecutionType.REGRESSION,
-            description = "Verify admin user doesn't have permission to delete favorites of another user with Rest API and status code is 404")
-    @Test(groups = { TestGroup.REST_API, TestGroup.FAVORITES, TestGroup.REGRESSION })
-    public void adminIsNotAbleToDeleteFavoritesOfASiteMember() throws Exception
-    {
-        restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteCollaborator))
-                .withCoreAPI().usingAuthUser().addSiteToFavorites(siteModel);
-
-        restClient.authenticateUser(adminUserModel)
-                .withCoreAPI().usingAuthUser().deleteSiteFromFavorites(siteModel)
-                .assertStatusCodeIs(HttpStatus.FORBIDDEN)
-                .assertLastError()
-                .containsSummary(RestErrorModel.PERMISSION_WAS_DENIED);
-    }
-
-    @Bug(id="ACE-5588")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.FAVORITES }, executionType = ExecutionType.REGRESSION,
-            description = "Verify user doesn't have permission to delete favorites of another user with Rest API and status code is 404")
-    @Test(groups = { TestGroup.REST_API, TestGroup.FAVORITES, TestGroup.REGRESSION })
-    public void consumerIsNotAbleToDeleteFavoritesOfAnotherUser() throws Exception
-    {
-        restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteCollaborator)).withCoreAPI()
-                .usingAuthUser().addSiteToFavorites(siteModel);
-
-        restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteConsumer)).withCoreAPI()
-                .usingAuthUser().deleteSiteFromFavorites(siteModel)
-                .assertStatusCodeIs(HttpStatus.FORBIDDEN).assertLastError().containsSummary(RestErrorModel.PERMISSION_WAS_DENIED);
-    }
-
-    @Bug(id="ACE-5588")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.FAVORITES }, executionType = ExecutionType.REGRESSION,
-            description = "Verify consumer user doesn't have permission to delete favorites of another user with Rest API and status code is 404")
-    @Test(groups = { TestGroup.REST_API, TestGroup.FAVORITES, TestGroup.REGRESSION })
-    public void collaboratorIsNotAbleToDeleteFavoriteOfAnotherUser() throws Exception
-    {
-        restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteConsumer)).withCoreAPI()
-                .usingAuthUser().addSiteToFavorites(siteModel);
-
-        restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteCollaborator)).withCoreAPI()
-                .usingAuthUser().deleteSiteFromFavorites(siteModel)
-                .assertStatusCodeIs(HttpStatus.FORBIDDEN)
-                .assertLastError()
-                .containsSummary(RestErrorModel.PERMISSION_WAS_DENIED);
-    }
-
-    @Bug(id="ACE-5588")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.FAVORITES }, executionType = ExecutionType.REGRESSION,
-            description = "Verify contributor user doesn't have permission to delete favorites of another user with Rest API and status code is 404")
-    @Test(groups = { TestGroup.REST_API, TestGroup.FAVORITES, TestGroup.REGRESSION })
-    public void contributorIsNotAbleToDeleteFavoriteOfAnotherUser() throws Exception
-    {
-        restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteCollaborator)).withCoreAPI()
-                .usingAuthUser().addSiteToFavorites(siteModel);
-
-        restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteContributor)).withCoreAPI()
-                .usingAuthUser().deleteSiteFromFavorites(siteModel)
-                .assertStatusCodeIs(HttpStatus.FORBIDDEN)
-                .assertLastError()
-                .containsSummary(RestErrorModel.PERMISSION_WAS_DENIED);
-    }
-
-    @Bug(id="ACE-5588")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.FAVORITES }, executionType = ExecutionType.REGRESSION,
-            description = "Verify contributor user doesn't have permission to delete favorites of another user with Rest API and status code is 404")
-    @Test(groups = { TestGroup.REST_API, TestGroup.FAVORITES, TestGroup.REGRESSION })
-    public void adminIsNotAbleToDeleteFavoriteOfAnotherUser() throws Exception
-    {
-        UserModel user = dataUser.createRandomTestUser();
-        restClient.authenticateUser(user).withCoreAPI().usingAuthUser().addSiteToFavorites(siteModel);
-
-        restClient.authenticateUser(adminUserModel).withCoreAPI()
-                .usingAuthUser().deleteSiteFromFavorites(siteModel)
-                .assertStatusCodeIs(HttpStatus.FORBIDDEN)
-                .assertLastError()
-                .containsSummary(RestErrorModel.PERMISSION_WAS_DENIED);
-    }
-
     @TestRail(section = { TestGroup.REST_API, TestGroup.FAVORITES }, executionType = ExecutionType.REGRESSION,
             description = "Verify that status code is 404 if PersonID is incorrect - favorite file.")
     @Test(groups = { TestGroup.REST_API, TestGroup.FAVORITES, TestGroup.REGRESSION})
@@ -279,19 +188,6 @@ public class DeleteFavoriteTests extends RestTest
                 .deleteFileFromFavorites(fileModel).assertStatusCodeIs(HttpStatus.NOT_FOUND)
                 .assertLastError()
                 .containsSummary(String.format(RestErrorModel.ENTITY_NOT_FOUND, "inexistent"));
-    }
-
-    @Bug(id="ACE-2413")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.FAVORITES }, executionType = ExecutionType.REGRESSION,
-            description = "Verify that status code is 404 if PersonID is empty - favorite file.")
-    @Test(groups = { TestGroup.REST_API, TestGroup.FAVORITES, TestGroup.REGRESSION})
-    public void deleteFavoriteIfPersonIdIsEmpty() throws Exception
-    {
-        restClient.authenticateUser(adminUserModel).withCoreAPI().usingUser(adminUserModel).addSiteToFavorites(siteModel);
-        restClient.withCoreAPI().usingAuthUser().addFileToFavorites(fileModel);
-
-        restClient.withCoreAPI().usingUser(new UserModel ("", ""))
-                .deleteFileFromFavorites(fileModel).assertStatusCodeIs(HttpStatus.BAD_REQUEST);
     }
 
     @TestRail(section = { TestGroup.REST_API, TestGroup.FAVORITES }, executionType = ExecutionType.REGRESSION,

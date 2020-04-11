@@ -139,25 +139,6 @@ public class AddProcessVariablesFullTests extends RestTest
                   .descriptionURLIs(RestErrorModel.RESTAPIEXPLORER)
                   .stackTraceIs(RestErrorModel.STACKTRACE);
     }
-    
-    @Bug(id = "REPO-1938")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.PROCESSES }, executionType = ExecutionType.REGRESSION, 
-            description = "Adding process variables is falling in case invalid type prefix is provided")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.PROCESSES, TestGroup.REGRESSION })
-    public void failedAddingProcessVariableIfInvalidTypePrefixIsProvided() throws Exception
-    {
-        variableModel = RestProcessVariableModel.getRandomProcessVariableModel("ddt:text");
-        restProcessModel = restClient.authenticateUser(adminUser).withWorkflowAPI().getProcesses()
-                .getProcessModelByProcessDefId(processModel.getId());
-
-        restClient.withWorkflowAPI().usingProcess(restProcessModel).addProcessVariable(variableModel);
-        restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST)
-                  .assertLastError()
-                  .containsSummary(String.format(RestErrorModel.INVALID_NAMEPACE_PREFIX, "ddt"))
-                  .containsErrorKey(RestErrorModel.API_DEFAULT_ERRORKEY)
-                  .descriptionURLIs(RestErrorModel.RESTAPIEXPLORER)
-                  .stackTraceIs(RestErrorModel.STACKTRACE);
-    }
 
     @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.PROCESSES }, executionType = ExecutionType.REGRESSION, 
             description = "Adding process variables is falling in case invalid value is provided")
@@ -240,27 +221,6 @@ public class AddProcessVariablesFullTests extends RestTest
                 .assertThat().entriesListContains("value", variableModel.getValue());
     }
 
-    @Bug(id="REPO-1987")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.PROCESSES }, executionType = ExecutionType.REGRESSION,
-            description = "Adding process variables is falling in case invalid name is provided: symbols")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.PROCESSES, TestGroup.REGRESSION })
-    public void failedAddingProcessVariableWithSymbolsInName() throws Exception
-    {
-        restProcessModel = restClient.authenticateUser(adminUser).withWorkflowAPI().getProcesses()
-                .getProcessModelByProcessDefId(processModel.getId());
-        variableModel = RestProcessVariableModel.getRandomProcessVariableModel("d:text");
-        variableModel.setName("123_%^&: õÈ,Ì,Ò");     
-
-        processVariable = restClient.withWorkflowAPI().usingProcess(restProcessModel).addProcessVariable(variableModel);
-        restClient.assertStatusCodeIs(HttpStatus.CREATED);
-        processVariable.assertThat().field("name").is(variableModel.getName())
-                       .and().field("type").is(variableModel.getType())
-                       .and().field("value").is(variableModel.getValue());
-
-        restClient.withWorkflowAPI().usingProcess(restProcessModel).getProcessVariables()
-                .assertThat().entriesListContains("name", variableModel.getName()); 
-    }
-
     @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW,TestGroup.PROCESSES }, executionType = ExecutionType.REGRESSION,
             description = "Add two process variables using by the user involved in the process.")
     @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.PROCESSES, TestGroup.REGRESSION })
@@ -311,29 +271,6 @@ public class AddProcessVariablesFullTests extends RestTest
         restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST)
                   .assertLastError().containsSummary(String.format(RestErrorModel.UNSUPPORTED_TYPE, "d:string"))
                   .containsErrorKey(String.format(RestErrorModel.UNSUPPORTED_TYPE, "d:string"))
-                  .descriptionURLIs(RestErrorModel.RESTAPIEXPLORER)
-                  .stackTraceIs(RestErrorModel.STACKTRACE);
-    }
-
-    @Bug(id = "REPO-1938")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW,TestGroup.PROCESSES }, executionType = ExecutionType.REGRESSION,
-            description = "Add two process variables using by the user involved in the process.")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.PROCESSES, TestGroup.REGRESSION })
-    public void failledAddingMultipleProcessVariablesInvalidTypePrefix() throws Exception
-    {
-        variableModel = RestProcessVariableModel.getRandomProcessVariableModel("d:text");
-        variableModel.setType("e:text");
-        variableModel2 = RestProcessVariableModel.getRandomProcessVariableModel("d:text");
-        restProcessModel = restClient.authenticateUser(adminUser).withWorkflowAPI().getProcesses()
-                .getProcessModelByProcessDefId(processModel.getId());
-
-        processVariableCollection = restClient.authenticateUser(assignee).withWorkflowAPI().usingProcess(restProcessModel)
-                                    .addProcessVariables(variableModel, variableModel2);
-
-        restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST)
-                  .assertLastError()
-                  .containsSummary(String.format(RestErrorModel.INVALID_NAMEPACE_PREFIX, "e"))
-                  .containsErrorKey(RestErrorModel.API_DEFAULT_ERRORKEY)
                   .descriptionURLIs(RestErrorModel.RESTAPIEXPLORER)
                   .stackTraceIs(RestErrorModel.STACKTRACE);
     }

@@ -273,24 +273,6 @@ public class GetCommentsTests extends RestTest
     }
     
     @TestRail(section={TestGroup.REST_API, TestGroup.COMMENTS}, executionType= ExecutionType.REGRESSION,
-            description= "Verify that if contributor adds one comment, it will be returned in getComments response")
-    @Test(groups = { TestGroup.REST_API, TestGroup.COMMENTS, TestGroup.REGRESSION })
-    @Bug(id = "ACE-4614")
-    public void addCommentWithContributorAndCheckThatCommentIsReturned() throws Exception
-    {
-        file = dataContent.usingSite(siteModel).usingUser(adminUserModel).createContent(DocumentType.TEXT_PLAIN);
-        restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteContributor))
-            .withCoreAPI().usingResource(file).addComment(comment);
-        restClient.assertStatusCodeIs(HttpStatus.CREATED);
-        
-        comments = restClient.authenticateUser(adminUserModel).withCoreAPI().usingResource(file).getNodeComments();
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        comments.assertThat().entriesListContains("content", comment)
-            .getPagination().assertThat().field("totalItems").is("1")
-            .assertThat().field("count").is("1");
-    }
-    
-    @TestRail(section={TestGroup.REST_API, TestGroup.COMMENTS}, executionType= ExecutionType.REGRESSION,
             description= "Verify that consumer cannot add a comment and no comments will be returned in getComments response")
     @Test(groups = { TestGroup.REST_API, TestGroup.COMMENTS, TestGroup.REGRESSION })
     public void addCommentWithConsumerAndCheckThatCommentIsNotReturned() throws Exception

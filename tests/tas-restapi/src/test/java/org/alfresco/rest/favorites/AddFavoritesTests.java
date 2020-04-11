@@ -94,19 +94,6 @@ public class AddFavoritesTests extends RestTest
         restPersonFavoritesModel.assertThat().field("targetGuid").is(siteModel.getGuid());
     }
 
-    @Bug(id = "MNT-17157")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.FAVORITES }, executionType = ExecutionType.REGRESSION,
-            description = "Check that if a favorite already exists with the specified id status code is 404")
-    @Test(groups = { TestGroup.REST_API, TestGroup.FAVORITES, TestGroup.REGRESSION })
-    public void addFavoriteTwice() throws Exception
-    {
-        SiteModel site = dataSite.usingUser(usersWithRoles.getOneUserWithRole(UserRole.SiteManager)).createPublicRandomSite();
-        restClient.authenticateUser(adminUserModel).withCoreAPI().usingAuthUser().addSiteToFavorites(site);
-        restClient.assertStatusCodeIs(HttpStatus.CREATED);
-        restClient.withCoreAPI().usingAuthUser().addSiteToFavorites(site);
-        restClient.assertStatusCodeIs(HttpStatus.CONFLICT);
-    }
-
     @TestRail(section = { TestGroup.REST_API, TestGroup.FAVORITES }, executionType = ExecutionType.SANITY,
             description = "Add to favorites a file for a Manager, check it was added")
     @Test(groups = { TestGroup.REST_API, TestGroup.FAVORITES, TestGroup.SANITY })
@@ -416,33 +403,5 @@ public class AddFavoritesTests extends RestTest
         restClient.authenticateUser(adminUserModel).withCoreAPI().usingAuthUser().addFolderToFavorites(newFolder);
         restClient.assertStatusCodeIs(HttpStatus.NOT_FOUND).assertLastError().containsSummary(String.format(RestErrorModel.RELATIONSHIP_NOT_FOUND,
                 adminUserModel.getUsername(), siteModel.getGuid()));
-    }
-
-    @Bug(id = "REPO-1061")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.FAVORITES }, executionType = ExecutionType.REGRESSION,
-            description = "Check that if user does not have permission to favorite a site status code is 404")
-    @Test(groups = { TestGroup.REST_API, TestGroup.FAVORITES, TestGroup.REGRESSION })
-    public void verifyFavoriteASiteIfTheUserDoesNotHavePermission() throws Exception
-    {
-        SiteModel privateSite = dataSite.usingUser(adminUserModel).createPrivateRandomSite();
-        restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteManager))
-                .withCoreAPI().usingAuthUser().addSiteToFavorites(privateSite);
-        restClient.assertStatusCodeIs(HttpStatus.NOT_FOUND).assertLastError().containsSummary(String.format(RestErrorModel.ENTITY_NOT_FOUND, privateSite.getGuid()))
-                .descriptionURLIs(RestErrorModel.RESTAPIEXPLORER)
-                .containsErrorKey(RestErrorModel.NOT_FOUND_ERRORKEY)
-                .stackTraceIs(RestErrorModel.STACKTRACE);
-    }
-
-    @Bug(id = "REPO-4000")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.FAVORITES }, executionType = ExecutionType.REGRESSION,
-            description = "Verify the response of favorite a sie with empty body at request")
-    @Test(groups = { TestGroup.REST_API, TestGroup.FAVORITES, TestGroup.REGRESSION })
-    public void verifyFavoriteASiteWithEmptyBody() throws Exception
-    {
-        restClient.authenticateUser(adminUserModel).withCoreAPI();
-        RestRequest request = RestRequest.requestWithBody(HttpMethod.POST, "", "people/{personId}/favorites", adminUserModel.getUsername());
-        restClient.processModel(RestPersonFavoritesModel.class, request);
-        restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST).assertLastError()
-                .containsSummary(String.format(RestErrorModel.NO_CONTENT, "No content to map due to end-of-input"));
     }
 }

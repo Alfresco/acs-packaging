@@ -62,23 +62,6 @@ public class GetTasksTests extends RestTest
 
     @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.SANITY })
     @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.SANITY, description = "Verify candidate user that claims the task gets its existing tasks with Rest API and response is successfull (200)")
-    @Bug(id = "MNT-16967")
-    public void candidateUserGetsItsTasks() throws Exception
-    {
-        UserModel userModel1 = dataUser.createRandomTestUser();
-        UserModel userModel2 = dataUser.createRandomTestUser();
-        GroupModel group = dataGroup.createRandomGroup();
-
-        dataGroup.addListOfUsersToGroup(group, userModel1, userModel2);
-        dataWorkflow.usingUser(userModel).usingSite(siteModel).usingResource(fileModel).createPooledReviewTaskAndAssignTo(group);
-
-        taskModels = restClient.authenticateUser(userModel1).withWorkflowAPI().getTasks();
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        taskModels.assertThat().entriesListIsNotEmpty();
-    }
-
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.SANITY })
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.SANITY, description = "Verify candidate user that claims the task gets its existing tasks with Rest API and response is successfull (200)")
     public void candidateUserThatClaimsTaskGetsItsTasks() throws Exception
     {
         UserModel userModel1 = dataUser.createRandomTestUser();

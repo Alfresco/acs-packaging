@@ -72,21 +72,7 @@ public class SetContentTests extends CmisTest
             .then().authenticateUser(UserModel.getRandomUserModel())
                 .setContent(someContent);
     }
-    
-    @Bug(id="ACE-5614")
-    @Test(groups = { TestGroup.REGRESSION , TestGroup.CMIS})
-    @TestRail(section = {"cmis-api" }, executionType = ExecutionType.REGRESSION,
-                description = "Verify site manager is able to set content to a document with no content with overwrite parameter set to false with CMIS")
-    public void siteManagerCanSetContentWithFalseOverwriteToDocWithNoContent() throws Exception
-    {
-        FileModel newFile = FileModel.getRandomFileModel(FileType.TEXT_PLAIN);
-        cmisApi.authenticateUser(siteManager).usingSite(publicSite)
-            .createFile(newFile).assertThat().existsInRepo()
-            .and().assertThat().contentLengthIs(0)
-            .then().setContent(someContent, false).and()
-                .and().assertThat().contentIs(someContent);
-    }
-    
+
     @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS}, expectedExceptions=CmisContentAlreadyExistsException.class)
     @TestRail(section = {"cmis-api" }, executionType = ExecutionType.REGRESSION, 
                 description = "Verify site manager is not able to set content to a document with content with overwrite parameter set to false with CMIS")

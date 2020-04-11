@@ -293,28 +293,6 @@ public class UpdateCommentTests extends RestTest
     }
 
     @TestRail(section={TestGroup.REST_API, TestGroup.COMMENTS}, executionType= ExecutionType.REGRESSION,
-            description= "Update comment with Contributor then call getComments and check new comment is listed")
-    @Test(groups = { TestGroup.REST_API, TestGroup.COMMENTS, TestGroup.REGRESSION })
-    @Bug(id = "ACE-4614")
-    public void updateCommentWithContributorCallGetComments() throws Exception
-    {
-        FileModel file = dataContent.usingSite(siteModel).usingUser(adminUserModel).createContent(DocumentType.TEXT_PLAIN);
-        
-        commentModel = restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteContributor))
-        .withCoreAPI().usingResource(file).addComment(firstComment);
-        restClient.assertStatusCodeIs(HttpStatus.CREATED);
-        
-        restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteContributor)).withCoreAPI().usingResource(file).updateComment(commentModel, updatedComment);
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        
-        comments = restClient.authenticateUser(adminUserModel).withCoreAPI().usingResource(file).getNodeComments();
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        comments.assertThat().entriesListContains("content", updatedComment)
-            .and().entriesListDoesNotContain("content", firstComment)
-            .and().paginationField("totalItems").is("1");
-    }
-
-    @TestRail(section={TestGroup.REST_API, TestGroup.COMMENTS}, executionType= ExecutionType.REGRESSION,
             description= "Update comment with Collaborator then call getComments and check new comment is listed")
     @Test(groups = { TestGroup.REST_API, TestGroup.COMMENTS, TestGroup.REGRESSION })
     public void updateCommentWithCollaboratorCallGetComments() throws Exception

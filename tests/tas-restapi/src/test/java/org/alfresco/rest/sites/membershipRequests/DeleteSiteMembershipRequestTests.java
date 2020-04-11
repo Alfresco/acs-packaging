@@ -86,56 +86,6 @@ public class DeleteSiteMembershipRequestTests extends RestTest
         restClient.assertStatusCodeIs(HttpStatus.NO_CONTENT);
     }
 
-    @Test(groups = { TestGroup.REST_API, TestGroup.PEOPLE, TestGroup.REGRESSION })
-    @Bug(id = "REPO-1946")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.PEOPLE }, executionType = ExecutionType.REGRESSION, description = "Verify collaborator user is not able to delete site memebership request")
-    public void collaboratorCannotDeleteSiteMembershipRequest() throws  Exception
-    {
-        siteMember = dataUser.createRandomTestUser();
-        restClient.authenticateUser(siteMember).withCoreAPI().usingAuthUser().addSiteMembershipRequest(moderatedSite);
-        
-        restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteCollaborator)).withCoreAPI().usingUser(siteMember)
-                .deleteSiteMembershipRequest(moderatedSite);
-        restClient.assertStatusCodeIs(HttpStatus.FORBIDDEN).assertLastError().containsSummary(RestErrorModel.PERMISSION_WAS_DENIED);
-    }
-
-    @Test(groups = { TestGroup.REST_API, TestGroup.PEOPLE, TestGroup.REGRESSION })
-    @Bug(id = "REPO-1946")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.PEOPLE }, executionType = ExecutionType.REGRESSION, description = "Verify contributor user is not able to delete site memebership request")
-    public void contributorCannotDeleteSiteMembershipRequest() throws  Exception
-    {
-        siteMember = dataUser.createRandomTestUser();
-        restClient.authenticateUser(siteMember).withCoreAPI().usingAuthUser().addSiteMembershipRequest(moderatedSite);
-
-        restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteContributor)).withCoreAPI().usingUser(siteMember)
-                .deleteSiteMembershipRequest(moderatedSite);
-        restClient.assertStatusCodeIs(HttpStatus.FORBIDDEN).assertLastError().containsSummary(RestErrorModel.PERMISSION_WAS_DENIED);
-    }
-
-    @Test(groups = { TestGroup.REST_API, TestGroup.PEOPLE, TestGroup.SANITY })
-    @Bug(id = "REPO-1946")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.PEOPLE }, executionType = ExecutionType.SANITY, description = "Verify consumer user is not able to delete site memebership request")
-    public void consumerCannotDeleteSiteMembershipRequest() throws  Exception
-    {
-        siteMember = dataUser.createRandomTestUser();
-        restClient.authenticateUser(siteMember).withCoreAPI().usingAuthUser().addSiteMembershipRequest(moderatedSite);
-        restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteConsumer)).withCoreAPI().usingUser(siteMember)
-                .deleteSiteMembershipRequest(moderatedSite);
-        restClient.assertStatusCodeIs(HttpStatus.FORBIDDEN).assertLastError().containsSummary(RestErrorModel.PERMISSION_WAS_DENIED);
-    }
-
-    @Test(groups = { TestGroup.REST_API, TestGroup.PEOPLE, TestGroup.REGRESSION })
-    @Bug(id = "REPO-1946")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.PEOPLE }, executionType = ExecutionType.REGRESSION, description = "Verify random user is not able to delete site memebership request")
-    public void randomUserCanNotDeleteSiteMembershipRequest() throws  Exception
-    {
-        siteMember = dataUser.createRandomTestUser();
-        restClient.authenticateUser(siteMember).withCoreAPI().usingAuthUser().addSiteMembershipRequest(moderatedSite);
-
-        restClient.authenticateUser(dataUser.createRandomTestUser()).withCoreAPI().usingUser(siteMember).deleteSiteMembershipRequest(moderatedSite);
-        restClient.assertStatusCodeIs(HttpStatus.FORBIDDEN).assertLastError().containsSummary(RestErrorModel.PERMISSION_WAS_DENIED);
-    }
-
     @Test(groups = { TestGroup.REST_API, TestGroup.PEOPLE, TestGroup.SANITY })    
     @TestRail(section = { TestGroup.REST_API, TestGroup.SITES }, executionType = ExecutionType.SANITY, description = "Failed authentication get site member call returns status code 401")
 //    @Bug(id = "MNT-16904")
@@ -186,17 +136,6 @@ public class DeleteSiteMembershipRequestTests extends RestTest
         SiteModel inexistentSite = new SiteModel("");
         restClient.authenticateUser(adminUserModel).withCoreAPI().usingUser(adminUserModel).deleteSiteMembershipRequest(inexistentSite);
         restClient.assertStatusCodeIs(HttpStatus.METHOD_NOT_ALLOWED).assertLastError().containsSummary(RestErrorModel.DELETE_EMPTY_ARGUMENT);
-    }
-
-    @Bug(id = "REPO-1946")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.PEOPLE }, executionType = ExecutionType.REGRESSION,
-            description = "Verify contributor user is not able to remove a site memebership request of admin to a moderated site and response is 404")
-    @Test(groups = { TestGroup.REST_API, TestGroup.PEOPLE, TestGroup.REGRESSION })
-    public void contributorIsNotAbleToDeleteSiteMembershipRequestOfAdminToAModeratedSite() throws  Exception
-    {
-        restClient.authenticateUser(adminUserModel).withCoreAPI().usingAuthUser().addSiteMembershipRequest(moderatedSite);
-        restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteContributor)).withCoreAPI().usingUser(adminUserModel).deleteSiteMembershipRequest(secondModeratedSite);
-        restClient.assertStatusCodeIs(HttpStatus.FORBIDDEN).assertLastError().containsSummary(RestErrorModel.PERMISSION_WAS_DENIED);
     }
 
     @TestRail(section = { TestGroup.REST_API, TestGroup.PEOPLE }, executionType = ExecutionType.REGRESSION,
@@ -272,23 +211,6 @@ public class DeleteSiteMembershipRequestTests extends RestTest
                 .assertLastError()
                 .containsErrorKey(RestErrorModel.RELATIONSHIP_NOT_FOUND_ERRORKEY)
                 .containsSummary(String.format(RestErrorModel.RELATIONSHIP_NOT_FOUND, userWithRejectedRequests.getUsername(), secondModeratedSite.getId()))
-                .descriptionURLIs(RestErrorModel.RESTAPIEXPLORER)
-                .stackTraceIs(RestErrorModel.STACKTRACE);
-    }
-
-    @Bug(id="ACE-2413")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.PEOPLE }, executionType = ExecutionType.REGRESSION,
-            description = "Verify user is not able to remove a site memebership request-  empty person id and response is 400")
-    @Test(groups = { TestGroup.REST_API, TestGroup.PEOPLE, TestGroup.REGRESSION })
-    public void adminIsNotAbleToDeleteSiteMembershipRequestEmptyPersonID() throws Exception
-    {
-        UserModel emptyPersonId = new UserModel("", "password");
-        restClient.authenticateUser(adminUserModel).withCoreAPI().usingUser(emptyPersonId).deleteSiteMembershipRequest(moderatedSite);
-
-        restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST)
-                .assertLastError()
-                .containsErrorKey(RestErrorModel.API_DEFAULT_ERRORKEY)
-                .containsSummary(RestErrorModel.ENTITY_NOT_FOUND)
                 .descriptionURLIs(RestErrorModel.RESTAPIEXPLORER)
                 .stackTraceIs(RestErrorModel.STACKTRACE);
     }

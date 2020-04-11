@@ -57,22 +57,6 @@ public class UpdateSiteMemberTests extends RestTest
             .containsSummary(String.format("The current user does not have permissions to modify the membership details of the site %s.", publicSite.getTitle()));        
     }
     
-    @Bug(id = "REPO-1832")
-    @Test(groups = { TestGroup.REST_API, TestGroup.SITES, TestGroup.REGRESSION })
-    @TestRail(section = {TestGroup.REST_API, TestGroup.SITES }, executionType = ExecutionType.REGRESSION, 
-            description = "Verify that collaborator is not able to update site member and gets status code FORBIDDEN (403)")
-    public void collaboratorIsNotAbleToUpdateSiteMemberWithTheSameRole() throws Exception
-    {
-        userToBeUpdated = dataUser.createRandomTestUser();
-        dataUser.addUserToSite(userToBeUpdated, publicSite, UserRole.SiteConsumer);
-        userToBeUpdated.setUserRole(UserRole.SiteConsumer);
-        restClient.authenticateUser(publicSiteUsers.getOneUserWithRole(UserRole.SiteCollaborator));
-        restClient.withCoreAPI().usingSite(publicSite).updateSiteMember(userToBeUpdated);
-        restClient.assertStatusCodeIs(HttpStatus.UNPROCESSABLE_ENTITY);
-        restClient.assertLastError()
-            .containsSummary(String.format("The current user does not have permissions to modify the membership details of the site %s.", publicSite.getTitle()));        
-    }
-    
     @Test(groups = { TestGroup.REST_API, TestGroup.SITES, TestGroup.REGRESSION })
     @TestRail(section = {TestGroup.REST_API, TestGroup.SITES }, executionType = ExecutionType.REGRESSION, 
             description = "Verify that contributor is not able to update site member and gets status code FORBIDDEN (403)")
@@ -171,23 +155,6 @@ public class UpdateSiteMemberTests extends RestTest
                 .usingSite(publicSite).updateSiteMember(nonexistentUser);
         restClient.assertStatusCodeIs(HttpStatus.NOT_FOUND)
                 .assertLastError().containsSummary(String.format(RestErrorModel.ENTITY_NOT_FOUND, nonexistentUser.getUsername()));
-    }
-
-    @Bug(id="REPO-1941")
-    @Test(groups = { TestGroup.REST_API, TestGroup.SITES, TestGroup.REGRESSION })
-    @TestRail(section={TestGroup.REST_API, TestGroup.SITES}, executionType= ExecutionType.REGRESSION,
-            description= "Verify if a manager is able to downgrade to contributor using -me- string in place of personId.")
-    public void updateSiteManagerToSiteContributorUsingMe() throws Exception
-    {
-        UserModel meManager = dataUser.createRandomTestUser();
-        dataUser.addUserToSite(meManager, publicSite, UserRole.SiteManager);
-        UserModel meUser = new UserModel("-me-", "password");
-        meUser.setUserRole(UserRole.SiteContributor);
-        updatedMember = restClient.authenticateUser(meManager).withCoreAPI()
-                .usingSite(publicSite).updateSiteMember(meUser);
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        updatedMember.assertThat().field("id").is(meManager.getUsername())
-                .and().field("role").is(meUser.getUserRole());
     }
 
     @Test(groups = { TestGroup.REST_API, TestGroup.SITES, TestGroup.REGRESSION })
@@ -522,8 +489,8 @@ public class UpdateSiteMemberTests extends RestTest
         RestRequest request = RestRequest.requestWithBody(HttpMethod.PUT, "", "sites/{siteId}/members/{personId}", publicSite.getId(), siteCollaborator.getUsername());
         restClient.processModel(RestSiteMemberModel.class, request);
         restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST).assertLastError()
-                .containsSummary(String.format(RestErrorModel.NO_CONTENT, "No content to map due to end-of-input"))
-                .containsErrorKey(String.format(RestErrorModel.NO_CONTENT, "No content to map due to end-of-input"))
+                .containsSummary(String.format(RestErrorModel.NO_CONTENT, "No content to map to Object due to end of input"))
+                .containsErrorKey(String.format(RestErrorModel.NO_CONTENT, "No content to map to Object due to end of input"))
                 .descriptionURLIs(RestErrorModel.RESTAPIEXPLORER)
                 .stackTraceIs(RestErrorModel.STACKTRACE);
     }

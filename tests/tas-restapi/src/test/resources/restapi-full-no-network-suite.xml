@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="REST API" preserve-order="true">
+    <listeners>
+        <listener class-name="org.alfresco.utility.report.HtmlReportListener"></listener>
+        <listener class-name="org.alfresco.utility.testrail.TestRailExecutorListener"></listener>
+        <listener class-name="org.alfresco.utility.testng.OSTestMethodSelector"></listener>
+    </listeners>
+
+    <test name="Use SOLR Indexing">
+        <groups>
+            <run>
+                <include name="require-solr" />
+                <exclude name="demo"></exclude>
+                <exclude name="unit"></exclude>
+                <exclude name="require-share"></exclude>
+                <exclude name="require-transformation"></exclude>
+                <exclude name="require-jmx"></exclude>
+                <exclude name="networks"></exclude>
+                <exclude name="all_amps"></exclude>
+                <exclude name="renditions-regression"></exclude>
+            </run>
+        </groups>
+        <packages>
+            <package name="org.alfresco.rest.*"></package>
+        </packages>
+    </test>
+
+    <test name="ACS Community Tests">
+        <groups>
+            <run>
+                <include name="sanity" />
+                <include name="regression" />
+                <exclude name="demo"></exclude>
+                <exclude name="unit"></exclude>
+                <exclude name="require-share"></exclude>
+                <exclude name="require-jmx"></exclude>
+                <exclude name="require-solr" />
+                <exclude name="networks"></exclude>
+                <exclude name="all_amps"></exclude>
+            </run>
+        </groups>
+        <packages>
+            <package name="org.alfresco.rest.*"></package>
+        </packages>
+    </test>
+</suite> <!-- Suite -->

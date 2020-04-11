@@ -269,18 +269,6 @@ public class GetRatingsTests extends RestTest
                 .and().field("count").is("1").and().field("maxItems").is("1");
     }
 
-    @Bug(id = "REPO-1831")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.RATINGS }, executionType = ExecutionType.REGRESSION,
-            description = "Get ratings for a document to which authenticated user does not have access")
-    @Test(groups = { TestGroup.REST_API, TestGroup.RATINGS, TestGroup.REGRESSION })
-    public void userIsNotAbleToGetRatingsOfDocumentToWhichItHasNoAccess() throws Exception
-    {
-        SiteModel privateSite = dataSite.usingAdmin().createPrivateRandomSite();
-        FileModel file = dataContent.usingSite(privateSite).usingAdmin().createContent(CMISUtil.DocumentType.TEXT_PLAIN);
-        restRatingModelsCollection = restClient.authenticateUser(userModel).withCoreAPI().usingResource(file).getRatings();
-        restRatingModelsCollection.assertThat().entriesListIsEmpty();
-    }
-
     @TestRail(section = { TestGroup.REST_API, TestGroup.RATINGS }, executionType = ExecutionType.REGRESSION,
             description = "Check high value for skipCount parameter")
     @Test(groups = { TestGroup.REST_API, TestGroup.RATINGS, TestGroup.REGRESSION })

@@ -114,24 +114,6 @@ public class GetTaskTests extends RestTest
 
     }
 
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.SANITY })
-    @Bug(id = "MNT-17051")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW,
-            TestGroup.TASKS }, executionType = ExecutionType.SANITY, description = "Verify involved user in a task without claim it gets the task with Rest API and response is successfull (200)")
-    public void involvedUserWithoutClaimTaskGetsTask() throws Exception
-    {
-        UserModel userModel1 = dataUser.createRandomTestUser();
-        UserModel userModel2 = dataUser.createRandomTestUser();
-        GroupModel group = dataGroup.createRandomGroup();
-        dataGroup.addListOfUsersToGroup(group, userModel1, userModel2);
-        TaskModel taskModel = dataWorkflow.usingUser(userModel).usingSite(siteModel).usingResource(fileModel).createPooledReviewTaskAndAssignTo(group);
-        dataWorkflow.usingUser(userModel1).claimTask(taskModel);
-
-        restTaskModel = restClient.authenticateUser(userModel2).withWorkflowAPI().usingTask(taskModel).getTask();
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        restTaskModel.assertThat().field("id").is(taskModel.getId()).and().field("description").is(taskModel.getMessage());
-    }
-
     @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
     @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, 
         executionType = ExecutionType.REGRESSION, description = "Verify user who started a task gets the task with empty taskId with Rest API")

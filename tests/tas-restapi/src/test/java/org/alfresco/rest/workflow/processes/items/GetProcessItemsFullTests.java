@@ -49,29 +49,6 @@ public class GetProcessItemsFullTests extends RestTest
         items.assertThat().entriesListIsEmpty();
     }
 
-    @Bug(id = "REPO-1989")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.PROCESSES }, executionType = ExecutionType.REGRESSION,
-            description = "Get process items for process with valid skipCount parameter")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.PROCESSES, TestGroup.REGRESSION})
-    public void getProcessItemsWithValidSkipCount() throws Exception
-    {
-        processModel = restClient.authenticateUser(userWhoStartsTask).withWorkflowAPI().addProcess("activitiAdhoc", assignee, false, CMISUtil.Priority.Normal);
-        restClient.withWorkflowAPI().usingProcess(processModel).addProcessItem(document1);
-        restClient.assertStatusCodeIs(HttpStatus.CREATED);
-        restClient.withWorkflowAPI().usingProcess(processModel).addProcessItem(document2);
-        restClient.assertStatusCodeIs(HttpStatus.CREATED);
-        restClient.withWorkflowAPI().usingProcess(processModel).addProcessItem(document3);
-        restClient.assertStatusCodeIs(HttpStatus.CREATED);
-
-        items = restClient.authenticateUser(assignee).withParams("skipCount=2").withWorkflowAPI().usingProcess(processModel).getProcessItems();
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        items.assertThat().entriesListContains("name", document3.getName())
-                .assertThat().entriesListDoesNotContain("name", document1.getName())
-                .assertThat().entriesListDoesNotContain("name", document2.getName())
-                .assertThat().entriesListCountIs(1)
-                .assertThat().paginationField("skipCount").is("2");
-    }
-
     @TestRail(section = { TestGroup.REST_API, TestGroup.PROCESSES }, executionType = ExecutionType.REGRESSION,
             description = "Get process items for process with negative skipCount")
     @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.PROCESSES, TestGroup.REGRESSION})
@@ -96,29 +73,6 @@ public class GetProcessItemsFullTests extends RestTest
         restClient.authenticateUser(assignee).withParams("skipCount=A").withWorkflowAPI().usingProcess(processModel).getProcessItems();
         restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST).assertLastError()
                 .containsSummary(String.format(RestErrorModel.INVALID_SKIPCOUNT, "A"));
-    }
-
-    @Bug(id = "MNT-17438")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.PROCESSES }, executionType = ExecutionType.REGRESSION,
-            description = "Get process items for process with valid maxItems parameter")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.PROCESSES, TestGroup.REGRESSION})
-    public void getProcessItemsWithValidMaxItems() throws Exception
-    {
-        processModel = restClient.authenticateUser(userWhoStartsTask).withWorkflowAPI().addProcess("activitiAdhoc", assignee, false, CMISUtil.Priority.Normal);
-        restClient.withWorkflowAPI().usingProcess(processModel).addProcessItem(document1);
-        restClient.assertStatusCodeIs(HttpStatus.CREATED);
-        restClient.withWorkflowAPI().usingProcess(processModel).addProcessItem(document2);
-        restClient.assertStatusCodeIs(HttpStatus.CREATED);
-        restClient.withWorkflowAPI().usingProcess(processModel).addProcessItem(document3);
-        restClient.assertStatusCodeIs(HttpStatus.CREATED);
-
-        items = restClient.authenticateUser(assignee).withParams("maxItems=2").withWorkflowAPI().usingProcess(processModel).getProcessItems();
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        items.assertThat().entriesListDoesNotContain("name", document3.getName())
-                .assertThat().entriesListContains("name", document1.getName())
-                .assertThat().entriesListContains("name", document2.getName())
-                .assertThat().entriesListCountIs(2)
-                .assertThat().paginationField("maxItems").is("2");
     }
 
     @TestRail(section = { TestGroup.REST_API, TestGroup.PROCESSES }, executionType = ExecutionType.REGRESSION,

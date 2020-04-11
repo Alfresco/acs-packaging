@@ -68,21 +68,6 @@ public class AddProcessCoreTests extends RestTest
         restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST);
     }
 
-    @Bug(id = "REPO-1936")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW,TestGroup.PROCESSES }, 
-            executionType = ExecutionType.REGRESSION, description = "Verify start new process with invalid request body using REST API returns status code is Bad Request (400)")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.PROCESSES, TestGroup.REGRESSION })
-    public void startNewProcessWithInvalidProcessDefInProcessBody() throws JsonToModelConversionException, Exception
-    {
-        adminUser = dataUser.getAdminUser();
-        assignee = dataUser.createRandomTestUser();
-
-        restClient.authenticateUser(adminUser).withWorkflowAPI();
-        RestRequest request = RestRequest.requestWithBody(HttpMethod.POST, "{\"processDefinitionKey\":\"activitiAdhoc\"}", "processes");
-        restClient.processModel(RestProcessModel.class, request);
-        restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST);
-    }
-
     @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW,TestGroup.PROCESSES }, 
             executionType = ExecutionType.REGRESSION, description = "Verify start new process with invalid request body using REST API returns status code is Bad Request (400)")
     @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.PROCESSES, TestGroup.REGRESSION })

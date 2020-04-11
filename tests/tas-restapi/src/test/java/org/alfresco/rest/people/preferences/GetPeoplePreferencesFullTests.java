@@ -96,19 +96,4 @@ public class GetPeoplePreferencesFullTests extends RestTest
         restPreferenceModelsCollection.assertThat().paginationField("skipCount").is("100");
         restPreferenceModelsCollection.assertThat().entriesListIsEmpty();
     }
-    
-    @Bug(id = "REPO-1911")
-    @Test(groups = { TestGroup.REST_API, TestGroup.PEOPLE, TestGroup.PREFERENCES, TestGroup.REGRESSION })
-    @TestRail(section = { TestGroup.REST_API, TestGroup.PEOPLE,TestGroup.PREFERENCES }, executionType = ExecutionType.REGRESSION, description = "Verify user cannot get preferences for empty user with Rest API and response is 400")
-    public void userGetsItsPeoplePreferencesForEmptyPersonId() throws Exception
-    {
-        UserModel emptyUserName = new UserModel("", "password");
-        
-        restPreferenceModelsCollection = restClient.authenticateUser(user1).withCoreAPI().usingUser(emptyUserName).getPersonPreferences();
-        restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST)
-        .assertLastError().containsErrorKey(RestErrorModel.ENTITY_NOT_FOUND_ERRORKEY)
-                            .containsSummary(RestErrorModel.LOCAL_NAME_CONSISTANCE)
-                            .stackTraceIs(RestErrorModel.STACKTRACE)
-                            .descriptionURLIs(RestErrorModel.RESTAPIEXPLORER);
-    }
 }

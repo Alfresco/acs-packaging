@@ -228,19 +228,6 @@ public class AddFavoriteSiteTests extends RestTest
         restClient.assertStatusCodeIs(HttpStatus.CREATED);
     }
 
-    @Bug(id="ACE-2413")
-    @Test(groups = { TestGroup.REST_API, TestGroup.PEOPLE, TestGroup.REGRESSION})
-    @TestRail(section = { TestGroup.REST_API, TestGroup.PEOPLE }, executionType = ExecutionType.REGRESSION,
-            description = "Verify empty user is not able to add a site from favorites and response is (400)")
-    public void emptyUserIsNotAbleToRemoveFavoriteSite() throws Exception
-    {
-        UserModel emptyUser = new UserModel("", "password");
-        restClient.authenticateUser(adminUser).withCoreAPI().usingUser(emptyUser).addFavoriteSite(publicSite);
-
-        restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST)
-                .assertLastError().containsSummary(String.format(RestErrorModel.ENTITY_NOT_FOUND, "emptyUser"));
-    }
-
     @Test(groups = { TestGroup.REST_API, TestGroup.PEOPLE, TestGroup.REGRESSION})
     @TestRail(section = { TestGroup.REST_API, TestGroup.PEOPLE }, executionType = ExecutionType.REGRESSION,
             description = "Verify inexistent user is not able to add a site from favorites and response is (404)")
@@ -257,23 +244,6 @@ public class AddFavoriteSiteTests extends RestTest
                 .stackTraceIs(RestErrorModel.STACKTRACE);
     }
 
-    @Bug(id="REPO-1827")
-    @Test(groups = { TestGroup.REST_API, TestGroup.PEOPLE, TestGroup.REGRESSION})
-    @TestRail(section = { TestGroup.REST_API, TestGroup.PEOPLE }, executionType = ExecutionType.REGRESSION,
-            description = "Verify user is not able to add a favorite site when the 'id' is empty - status code (400)")
-    public void userAddFavoriteSiteWithEmptySiteId() throws Exception
-    {
-        publicSite.setId("");
-        restClient.authenticateUser(userModel).withCoreAPI().usingAuthUser().addFavoriteSite(publicSite);
-
-        restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST);
-        restClient.assertLastError()
-                .containsSummary("siteId is null")
-                .descriptionURLIs(RestErrorModel.RESTAPIEXPLORER)
-                .stackTraceIs(RestErrorModel.STACKTRACE)
-                .containsErrorKey(RestErrorModel.ENTITY_NOT_FOUND_ERRORKEY);
-    }
-
     @Test(groups = { TestGroup.REST_API, TestGroup.PEOPLE, TestGroup.REGRESSION})
     @TestRail(section = { TestGroup.REST_API,TestGroup.PEOPLE }, executionType = ExecutionType.REGRESSION,
             description = "Verify admin user doesn't have permission to add a favorite site of another user with Rest API and status code is 403")
@@ -283,22 +253,6 @@ public class AddFavoriteSiteTests extends RestTest
         dataUser.usingUser(userModel).addUserToSite(collaboratorUser, publicSite, UserRole.SiteCollaborator);
         restClient.authenticateUser(collaboratorUser)
                 .withCoreAPI().usingUser(adminUser).addFavoriteSite(publicSite);
-
-        restClient.assertStatusCodeIs(HttpStatus.FORBIDDEN)
-                .assertLastError()
-                .containsSummary(RestErrorModel.PERMISSION_WAS_DENIED);
-    }
-
-    @Bug(id="MNT-17338")
-    @Test(groups = { TestGroup.REST_API, TestGroup.PEOPLE, TestGroup.REGRESSION})
-    @TestRail(section = { TestGroup.REST_API,TestGroup.PEOPLE }, executionType = ExecutionType.REGRESSION,
-            description = "Verify admin user doesn't have permission to add a favorite site of another user with Rest API and status code is 403")
-    public void userIsNotAbleToAddFavoriteSiteOfAdmin() throws Exception
-    {
-        UserModel consumerUser = dataUser.usingAdmin().createRandomTestUser();
-        dataUser.usingUser(userModel).addUserToSite(consumerUser, publicSite, UserRole.SiteConsumer);
-        restClient.authenticateUser(adminUser)
-                .withCoreAPI().usingUser(consumerUser).addFavoriteSite(publicSite);
 
         restClient.assertStatusCodeIs(HttpStatus.FORBIDDEN)
                 .assertLastError()

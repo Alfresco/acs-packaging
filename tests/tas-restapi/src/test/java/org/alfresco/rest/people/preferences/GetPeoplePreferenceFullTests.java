@@ -114,54 +114,6 @@ public class GetPeoplePreferenceFullTests extends RestTest
                         PreferenceName.SITES_FAVORITES_PREFIX.toString()));
      }
     
-    @Test(groups = { TestGroup.REST_API, TestGroup.PEOPLE, TestGroup.REGRESSION })
-    @TestRail(section = { TestGroup.REST_API, TestGroup.PEOPLE,TestGroup.PREFERENCES }, executionType = ExecutionType.REGRESSION, 
-        description = "Change one preference for an user then perform get call")
-    @Bug(id = "REPO-1922")
-    public void changePreferenceThenPerformGetPreferenceCall() throws Exception
-    {
-        UserModel newUser = dataUser.createRandomTestUser();
-        SiteModel site = dataSite.usingUser(newUser).createPublicRandomSite();
-        
-        dataSite.usingUser(newUser).usingSite(site).addSiteToFavorites();
-        
-        FileModel fileFavorite = new FileModel("favoriteFile", FileType.TEXT_PLAIN);
-        fileFavorite = dataContent.usingSite(site).createContent(fileFavorite);
-        dataContent.getContentActions().setFileAsFavorite(newUser.getUsername(), newUser.getPassword(), site.getId(), String.format("%s.%s", fileFavorite.getName(), fileFavorite.getFileType().extension));
-        
-        FolderModel folderFavorite = new FolderModel("favoriteFolder");
-        folderFavorite = dataContent.usingSite(site).createFolder(folderFavorite);
-        dataContent.getContentActions().setFolderAsFavorite(newUser.getUsername(), newUser.getPassword(), site.getId(), folderFavorite.getName());
-        
-        dataSite.usingUser(newUser).usingSite(site).removeSiteFromFavorites();
-        dataContent.getContentActions().removeFavorite(newUser.getUsername(), newUser.getPassword(), site.getId(), folderFavorite.getName());
-        dataContent.getContentActions().removeFavorite(newUser.getUsername(), newUser.getPassword(), site.getId(), Paths.get(fileFavorite.getCmisLocation()).getFileName().toString());
-        
-        restPreferenceModel = restClient.authenticateUser(newUser).withCoreAPI().usingAuthUser()
-                .getPersonPreferenceInformation(PreferenceName.FOLDERS_FAVORITES_PREFIX.toString());
-        restClient.assertLastError().containsSummary(
-                String.format("The relationship resource was not found for the" + " entity with id: %s and a relationship id of %s", newUser.getUsername(),
-                        PreferenceName.FOLDERS_FAVORITES_PREFIX.toString()));
-        
-        restPreferenceModel = restClient.authenticateUser(newUser).withCoreAPI().usingAuthUser()
-                .getPersonPreferenceInformation(PreferenceName.SITES_FAVORITES_PREFIX.toString());
-        restClient.assertLastError().containsSummary(
-                String.format("The relationship resource was not found for the" + " entity with id: %s and a relationship id of %s", newUser.getUsername(),
-                        PreferenceName.SITES_FAVORITES_PREFIX.toString()));
-        
-        restPreferenceModel = restClient.authenticateUser(newUser).withCoreAPI().usingAuthUser()
-                .getPersonPreferenceInformation(PreferenceName.DOCUMENTS_FAVORITES_PREFIX.toString());
-        restClient.assertLastError().containsSummary(
-                String.format("The relationship resource was not found for the" + " entity with id: %s and a relationship id of %s", newUser.getUsername(),
-                        PreferenceName.DOCUMENTS_FAVORITES_PREFIX.toString()));
-        
-        restPreferenceModel = restClient.authenticateUser(newUser).withCoreAPI().usingAuthUser()
-                .getPersonPreferenceInformation(PreferenceName.FOLDERS_FAVORITES_PREFIX.toString());
-        restClient.assertLastError().containsSummary(
-                String.format("The relationship resource was not found for the" + " entity with id: %s and a relationship id of %s", newUser.getUsername(),
-                        PreferenceName.FOLDERS_FAVORITES_PREFIX.toString()));
-     }
-    
     @Test(groups = { TestGroup.REST_API, TestGroup.PEOPLE, TestGroup.PREFERENCES, TestGroup.REGRESSION })
     @TestRail(section = { TestGroup.REST_API, TestGroup.PEOPLE, TestGroup.PREFERENCES }, executionType = ExecutionType.REGRESSION, 
         description = "Verify admin is able to get preference of another user")

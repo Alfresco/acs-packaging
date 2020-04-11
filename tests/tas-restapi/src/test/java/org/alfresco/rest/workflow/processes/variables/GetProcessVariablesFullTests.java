@@ -58,25 +58,6 @@ public class GetProcessVariablesFullTests extends RestTest
                 .assertThat().field("value").is(CMISUtil.Priority.Normal.getLevel());
     }
 
-    @Bug(id = "MNT-17438")
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW,TestGroup.PROCESSES }, executionType = ExecutionType.REGRESSION,
-            description = "Verify get all process variables with valid skip count parameter applied.")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.PROCESSES, TestGroup.REGRESSION })
-    public void getProcessVariablesWithValidSkipCount() throws Exception
-    {
-        variables = restClient.authenticateUser(admin).withWorkflowAPI().usingProcess(processModel).getProcessVariables();
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        variables.assertThat().entriesListIsNotEmpty();
-
-        RestProcessVariableCollection variablesSkipped = restClient.authenticateUser(admin).withParams("skipCount=2").withWorkflowAPI().usingProcess(processModel).getProcessVariables();
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        variablesSkipped
-                .assertThat().entriesListDoesNotContain("name", variables.getEntries().get(0).onModel().getName())
-                .assertThat().entriesListDoesNotContain("name", variables.getEntries().get(1).onModel().getName())
-                .assertThat().entriesListCountIs(variables.getEntries().size()-2)
-                .assertThat().paginationField("skipCount").is("2");
-    }
-
     @TestRail(section = { TestGroup.REST_API,TestGroup.WORKFLOW, TestGroup.PROCESSES }, executionType = ExecutionType.REGRESSION,
             description = "Verify get all process variables with negative skip count parameter applied.")
     @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.PROCESSES, TestGroup.REGRESSION })
@@ -99,25 +80,6 @@ public class GetProcessVariablesFullTests extends RestTest
         restClient.authenticateUser(admin).withParams("skipCount=A").withWorkflowAPI().usingProcess(processModel).getProcessVariables();
         restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST).assertLastError()
                 .containsSummary(String.format(RestErrorModel.INVALID_SKIPCOUNT, "A"));
-    }
-
-    @Bug(id = "MNT-17438")
-    @TestRail(section = { TestGroup.REST_API,TestGroup.WORKFLOW, TestGroup.PROCESSES }, executionType = ExecutionType.REGRESSION,
-            description = "Verify get all process variables with valid maxItems parameter applied.")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.PROCESSES, TestGroup.REGRESSION })
-    public void getProcessVariablesWithValidMaxItems() throws Exception
-    {
-        variables = restClient.authenticateUser(admin).withWorkflowAPI().usingProcess(processModel).getProcessVariables();
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        variables.assertThat().entriesListIsNotEmpty();
-
-        RestProcessVariableCollection variablesSkipped = restClient.authenticateUser(admin).withParams("maxItems=2").withWorkflowAPI().usingProcess(processModel).getProcessVariables();
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        variablesSkipped
-                .assertThat().entriesListContains("name", variables.getEntries().get(0).onModel().getName())
-                .assertThat().entriesListContains("name", variables.getEntries().get(1).onModel().getName())
-                .assertThat().entriesListCountIs(2)
-                .assertThat().paginationField("maxItems").is("2");
     }
 
     @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW,TestGroup.PROCESSES }, executionType = ExecutionType.REGRESSION,

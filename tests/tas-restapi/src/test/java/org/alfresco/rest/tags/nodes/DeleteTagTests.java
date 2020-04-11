@@ -197,23 +197,6 @@ public class DeleteTagTests extends TagsDataPrep
     }
 
     @TestRail(section = { TestGroup.REST_API, TestGroup.TAGS },
-            executionType = ExecutionType.REGRESSION, description = "Verify Manager user can't delete deleted tag.")
-    @Test(groups = { TestGroup.REST_API, TestGroup.TAGS, TestGroup.REGRESSION })
-    @Bug(id = "ACE-5455")
-    public void managerCannotDeleteDeletedTag() throws Exception
-    {
-        tag = restClient.authenticateUser(adminUserModel)
-                .withCoreAPI().usingResource(document).addTag(RandomData.getRandomName("tag"));
-
-        restClient.authenticateUser(usersWithRoles.getOneUserWithRole(UserRole.SiteManager))
-                .withCoreAPI().usingResource(document).deleteTag(tag);
-        restClient.assertStatusCodeIs(HttpStatus.NO_CONTENT);
-
-        restClient.withCoreAPI().usingResource(document).deleteTag(tag);
-        restClient.assertStatusCodeIs(HttpStatus.NOT_FOUND);
-    }
-
-    @TestRail(section = { TestGroup.REST_API, TestGroup.TAGS },
             executionType = ExecutionType.REGRESSION, description = "Verify Collaborator user can delete long tag.")
     @Test(groups = { TestGroup.REST_API, TestGroup.TAGS, TestGroup.REGRESSION })
     public void userCollaboratorCanDeleteLongTag() throws Exception

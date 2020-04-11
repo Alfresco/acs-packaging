@@ -171,34 +171,6 @@ public class GetTaskVariablesTests extends RestTest
         variableModels.assertThat().entriesListContains("scope", "global")
                 .and().paginationField("totalItems").is("30");
     }
-
-    @Bug(id="MNT-17438")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION,
-            description = "Verify user gets task with 'maxItems' parameter")
-    public void getTaskVariablesWithMaxItems() throws Exception
-    {
-        taskModel = dataWorkflow.usingUser(userWhoStartsTask).usingSite(siteModel).usingResource(fileModel).createNewTaskAndAssignTo(assignee);
-        variableModels = restClient.authenticateUser(userWhoStartsTask)
-                .withWorkflowAPI().usingParams("maxItems=2").usingTask(taskModel).getTaskVariables();
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        variableModels.assertThat().entriesListIsNotEmpty()
-                .and().paginationField("count").is("2");
-    }
-    
-    @Bug(id="MNT-17438")
-    @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
-    @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION,
-            description = "Verify user gets task with 'skipCount' parameter")
-    public void getTaskVariablesWithSkipCount() throws Exception
-    {
-        taskModel = dataWorkflow.usingUser(userWhoStartsTask).usingSite(siteModel).usingResource(fileModel).createNewTaskAndAssignTo(assignee);
-        variableModels = restClient.authenticateUser(userWhoStartsTask)
-                .withWorkflowAPI().usingParams("skipCount=10").usingTask(taskModel).getTaskVariables();
-        restClient.assertStatusCodeIs(HttpStatus.OK);
-        variableModels.assertThat().entriesListIsNotEmpty()
-                .and().paginationField("count").is("20");
-    }
     
     @Test(groups = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS, TestGroup.REGRESSION })
     @TestRail(section = { TestGroup.REST_API, TestGroup.WORKFLOW, TestGroup.TASKS }, executionType = ExecutionType.REGRESSION,
