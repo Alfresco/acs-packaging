@@ -30,16 +30,6 @@ public class SmtpConnectionTests extends SMTPTest
     {
         smtpProtocol.authenticateUser(dataUser.getAdminUser()).and().assertThat().smtpIsConnected();
     }
-    
-    @TestRail(section = { TestGroup.PROTOCOLS, TestGroup.SMTP }, executionType = ExecutionType.SANITY,
-            description = "Port is successfully changed to another value than default")
-    @Test(groups = { TestGroup.PROTOCOLS, TestGroup.SMTP, TestGroup.REQUIRE_JMX, TestGroup.SANITY })
-    public void updateSmtpServerPort() throws Exception
-    {
-        smtpProtocol.withJMX().updateSmtpServerPort(1125);
-        Assert.assertEquals(smtpProtocol.withJMX().getSmtpServerPort(), 1125);
-        smtpProtocol.authenticateUser(dataUser.getAdminUser(), 1125).and().assertThat().smtpIsConnected();
-    }
 
     @TestRail(section = { TestGroup.PROTOCOLS, TestGroup.SMTP }, executionType = ExecutionType.REGRESSION,
             description = "Verify user cannot connect to SMTP when maximum server connections is set to a negative value")

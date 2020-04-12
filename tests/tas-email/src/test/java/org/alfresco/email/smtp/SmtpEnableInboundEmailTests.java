@@ -360,51 +360,6 @@ public class SmtpEnableInboundEmailTests extends SMTPTest
                 .sendMail();
     }
 
-    @Bug(id = "ACE-5712")
-    @TestRail(section = { TestGroup.PROTOCOLS, TestGroup.SMTP }, executionType = ExecutionType.REGRESSION,
-            description = "Set Email Authentication Group to EMAIL_CONTRIBUTORS and set SMTP Authentication Enabled to true and add a user to a other group." +
-                    "Email is not sent successfully with that user")
-    @Test(groups = { TestGroup.PROTOCOLS, TestGroup.SMTP, TestGroup.REQUIRE_JMX, TestGroup.CORE }, expectedExceptions=SMTPSendFailedException.class)
-    public void emailIsNotSentSuccessfullyToUserAddedToNewGroupNotSetForAuthGroup1() throws Exception
-    {
-        UserModel testUser1 = dataUser.createRandomTestUser();
-        GroupModel group = dataGroup.createRandomGroup();
-        dataGroup.addListOfUsersToGroup(group, testUser1);
-        testSite = dataSite.usingUser(testUser1).createIMAPSite();
-        testFolder = dataContent.usingUser(testUser1).usingSite(testSite).createFolder();
-        String alias = dataContent.usingSite(testSite).usingResource(testFolder).addEmailAlias("alias" + System.currentTimeMillis());
-        smtpProtocol.withJMX().updateSmtpEmailAuthenticationGroup(GroupModel.getEmailContributorsGroup().getDisplayName());
-        smtpProtocol.authenticateUser(testUser1).and()
-                .composeMessage()
-                .withRecipients(alias + "@tas-alfresco.com")
-                .withSubject("subject")
-                .withBody("body")
-                .sendMail();
-    }
-    
-    @Bug(id = "ACE-5712")
-    @TestRail(section = { TestGroup.PROTOCOLS, TestGroup.SMTP }, executionType = ExecutionType.REGRESSION,
-            description = "Set Email Authentication Group to EMAIL_CONTRIBUTORS and set SMTP Authentication Enabled to false and add a user to a other group." +
-                    "Email is not sent successfully with that user")
-    @Test(groups = { TestGroup.PROTOCOLS, TestGroup.SMTP, TestGroup.REQUIRE_JMX, TestGroup.CORE })
-    public void emailIsSentSuccessfullyToUserAddedToNewGroupNotSetForAuthGroup2() throws Exception
-    {
-        UserModel testUser1 = dataUser.createRandomTestUser();
-        GroupModel group = dataGroup.createRandomGroup();
-        dataGroup.addListOfUsersToGroup(group, testUser1);
-        testSite = dataSite.usingUser(testUser1).createIMAPSite();
-        testFolder = dataContent.usingUser(testUser1).usingSite(testSite).createFolder();
-        String alias = dataContent.usingSite(testSite).usingResource(testFolder).addEmailAlias("alias" + System.currentTimeMillis());
-        smtpProtocol.withJMX().disableSmtpAuthentication();
-        smtpProtocol.withJMX().updateSmtpEmailAuthenticationGroup(GroupModel.getEmailContributorsGroup().getDisplayName());
-        smtpProtocol.authenticateUser(testUser1).and()
-                .composeMessage()
-                .withRecipients(alias + "@tas-alfresco.com")
-                .withSubject("subject")
-                .withBody("body")
-                .sendMail();
-    }
-
     @TestRail(section = { TestGroup.PROTOCOLS, TestGroup.SMTP }, executionType = ExecutionType.REGRESSION,
             description = "Set Transport Layer Security (TLS) to Required. Email is not sent.")
     @Test(groups = { TestGroup.PROTOCOLS, TestGroup.SMTP, TestGroup.REQUIRE_JMX, TestGroup.CORE }, expectedExceptions=SMTPSendFailedException.class,

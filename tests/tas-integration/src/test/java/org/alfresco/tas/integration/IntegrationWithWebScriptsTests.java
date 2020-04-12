@@ -79,36 +79,6 @@ public class IntegrationWithWebScriptsTests extends IntegrationTest
         dataUser.usingAdmin().deleteUser(disabledUserPerson);
         dataUser.usingAdmin().deleteUser(enabledUserPerson);
     }
-    
-    @Test(groups = { TestGroup.INTEGRATION, TestGroup.REST_API, TestGroup.FULL, TestGroup.ENTERPRISE})
-    @Bug (id ="MNT-19514", status=Bug.Status.FIXED)
-    @TestRail(section = { TestGroup.INTEGRATION,
-            TestGroup.REST_API }, executionType = ExecutionType.REGRESSION, description = "Verify deauthorized users receives HTTP 401 when making api calls")
-    public void verifyDeauthorizedUserReceives401() throws Exception
-    {
-        STEP("1.Create one authorized user");
-        UserModel user =dataUser.createRandomTestUser();
-        restAPI.authenticateUser(user).withCoreAPI().getSites();
-        restAPI.assertStatusCodeIs(HttpStatus.OK);
-
-        STEP("2.Deauthorize the user");
-        String deauthorizeUserWebScript = "alfresco/s/api/deauthorize";
-        String body = JsonBodyGenerator.defineJSON().add("username", user.getUsername()).build().toString();
-        RestAssured.basePath = "";
-        restAPI.configureRequestSpec().setBasePath(RestAssured.basePath);
-        RestRequest request = RestRequest.requestWithBody(HttpMethod.POST, body, deauthorizeUserWebScript);
-        restAPI.authenticateUser(dataUser.getAdminUser()).process(request);
-        restAPI.assertStatusCodeIs(HttpStatus.OK);
-        logger.info(String.format("User %s deauthorized successfully", user.getUsername()));
-
-        STEP("3.Assert deauthorized user receives http 401");
-        restAPI.authenticateUser(user).withCoreAPI().getSites();
-        restAPI.assertStatusCodeIs(HttpStatus.UNAUTHORIZED);
-        
-        String briefSummary = restAPI.onResponse().getResponse().jsonPath().get("error.briefSummary").toString();
-        String errorMessage = String.format("The user %s could not perform that action", user.getUsername());
-        Assert.assertTrue(briefSummary.endsWith(errorMessage));
-    }
 
     @Test(groups = { TestGroup.INTEGRATION, TestGroup.REST_API, TestGroup.FULL, TestGroup.ENTERPRISE})
     @TestRail(section = { TestGroup.INTEGRATION,

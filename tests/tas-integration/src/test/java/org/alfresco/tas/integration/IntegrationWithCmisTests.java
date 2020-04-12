@@ -72,41 +72,6 @@ public class IntegrationWithCmisTests extends IntegrationTest
         }
     }
 
-    @Test(groups = { TestGroup.INTEGRATION, TestGroup.CMIS, TestGroup.CORE })
-    @TestRail(section = { TestGroup.INTEGRATION,
-            TestGroup.CMIS }, executionType = ExecutionType.REGRESSION, description = "Verify content and thumbnail of TIF files are retrieved by CMIS ")
-    @Bug(id = "REPO-2042", description = "Should fail only on MAC OS System and Linux")
-    public void verifyContentAndThumbnailForTifFile() throws Exception
-    {
-        STEP("1. Create user, site and a folder ");
-        FolderModel folder = FolderModel.getRandomFolderModel();
-        folder = dataContent.usingUser(user).usingSite(site).createFolder(folder);
-
-        STEP("2. Upload existing TIF file using RESTAPI");
-        restAPI.authenticateUser(user).configureRequestSpec().addMultiPart("filedata", Utility.getResourceTestDataFile("my-file.tif"));
-
-        RestNodeModel fileNode = restAPI.authenticateUser(user).withCoreAPI().usingNode(folder).createNode();
-        restAPI.assertStatusCodeIs(HttpStatus.CREATED);
-        FileModel file = new FileModel("my-file.tif");
-        file.setCmisLocation(folder.getCmisLocation() + "/my-file.tif");
-        file.setNodeRef(fileNode.getId());
-
-        STEP("3. Create thumbnail and content of TIF files using file");
-        restAPI.withCoreAPI().usingNode(file).createNodeRendition("pdf");
-        restAPI.assertStatusCodeIs(HttpStatus.ACCEPTED);
-        restAPI.withCoreAPI().usingNode(file).createNodeRendition("doclib");
-        restAPI.assertStatusCodeIs(HttpStatus.ACCEPTED);
-
-        STEP("4. Verify thumbnail and content of TIF files are created using RESTAPI");
-        cmisAPI.authenticateUser(user).usingSite(site).usingResource(folder).usingResource(file).assertThat().contentContains("Adobe Photoshop CC 2015");
-        RestRenditionInfoModel renditionInfo = restAPI.withCoreAPI().usingNode(file).getNodeRendition("pdf");
-        restAPI.assertStatusCodeIs(HttpStatus.OK);
-        renditionInfo.assertThat().field("status").is("CREATED");
-        renditionInfo = restAPI.withCoreAPI().usingNode(file).getNodeRendition("doclib");
-        restAPI.assertStatusCodeIs(HttpStatus.OK);
-        renditionInfo.assertThat().field("status").is("CREATED");
-    }
-
     @Test(groups = { TestGroup.INTEGRATION, TestGroup.CMIS, TestGroup.FULL })
     @TestRail(section = { TestGroup.INTEGRATION,
             TestGroup.CMIS }, executionType = ExecutionType.REGRESSION, description = "Verify getChildren action for a large number of files from CMIS returns only unique values with few retries")

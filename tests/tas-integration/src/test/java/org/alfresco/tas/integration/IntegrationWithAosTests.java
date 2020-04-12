@@ -49,40 +49,4 @@ public class IntegrationWithAosTests extends IntegrationTest
         restAPI.process(request);
         restAPI.assertStatusCodeIs(HttpStatus.BAD_REQUEST);
     }
-    
-    @Bug(id = "REPO-2172", status = Status.FIXED)
-    @Test(groups = { TestGroup.INTEGRATION, TestGroup.AOS, TestGroup.FULL, TestGroup.SSO })
-    @TestRail(section = { TestGroup.INTEGRATION, TestGroup.AOS }, 
-        executionType = ExecutionType.REGRESSION, description = "Non domain user can login to aos through Kerberos successfully.")
-    public void nonDomainKerberosUserCanLoginSuccessfulInAos() throws Exception {
-
-            STEP("1. Perform a GET request of aos using a non-domain kerberos user");
-            String webDavUrl = "alfresco/aos";
-
-            RestAssured.basePath = "";
-            restAPI.configureRequestSpec().setBasePath(RestAssured.basePath);
-            RestRequest request = RestRequest.simpleRequest(HttpMethod.GET, webDavUrl);
-            RestHtmlResponse response = restAPI.authenticateUser(dataUser.getAdminUser()).processHtmlResponse(request);
-            restAPI.assertStatusCodeIs(HttpStatus.OK);
-            response.assertPathInHtmlBodyEquals("html.body.table.tr[1].td[0].text()", "Shared");
-            response.assertPathInHtmlBodyEquals("html.body.table.tr[2].td[0].text()", "Imap Attachments");
-    }
-    
-    @Bug(id = "REPO-2172", status = Status.FIXED)
-    @Test(groups = { TestGroup.INTEGRATION, TestGroup.WEBDAV, TestGroup.FULL, TestGroup.SSO })
-    @TestRail(section = { TestGroup.INTEGRATION, TestGroup.WEBDAV }, 
-        executionType = ExecutionType.REGRESSION, description = "Non domain user can login to webdav through Kerberos successfully.")
-    public void nonDomainKerberosUserCanLoginSuccessfulInWebDav() throws Exception {
-
-            STEP("1. Perform a GET request of webdav using a non-domain kerberos user");
-            String webDavUrl = "alfresco/webdav";
-
-            RestAssured.basePath = "";
-            restAPI.configureRequestSpec().setBasePath(RestAssured.basePath);
-            RestRequest request = RestRequest.simpleRequest(HttpMethod.GET, webDavUrl);
-            RestHtmlResponse response = restAPI.authenticateUser(dataUser.getAdminUser()).processHtmlResponse(request);
-            restAPI.assertStatusCodeIs(HttpStatus.OK);
-            response.assertPathInHtmlBodyEquals("html.body.table.tr.td[0].text()", "Directory listing for /");
-            response.assertPathInHtmlBodyEquals("html.body.table.tr.td.find{it.@class=='textData'}[0].text()", "Shared");
-    }
 }
