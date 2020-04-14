@@ -19,6 +19,7 @@ branches:
   only:
     - master
     - /support\/.*/
+    - test\/dev_release
 
 env:
   global:
