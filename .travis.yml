@@ -23,8 +23,8 @@ branches:
 env:
   global:
     # Release version has to start with real version (6.3.0-....) for the docker image to build successfully.
-    - RELEASE_VERSION=
-    - DEVELOPMENT_VERSION=
+    - RELEASE_VERSION=6.3.0-SNAPSHOT-TEST-DEV-0
+    - DEVELOPMENT_VERSION=6.3.0-SNAPSHOT
 
 stages:
   - name: test
@@ -194,7 +194,7 @@ jobs:
         - bash scripts/veracode/static_analysis.sh
     - name: "Release and Copy to S3 Staging Bucket"
       stage: release
-      if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[release\]/
+      if: fork = false AND (branch = master OR branch = test/dev_release OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[release\]/
       # Download the maven cache in case the previous test stage is skipped to prevent timeouts during release
       install: travis_wait 40 mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
       before_script:
