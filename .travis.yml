@@ -22,7 +22,7 @@ branches:
     - feature/REPO-5040_event-generator
 
 env:
-  - RELEASE_VERSION=7.0.0-EVENTS_1 DEVELOPMENT_VERSION=6.3.0-SNAPSHOT
+  - RELEASE_VERSION=7.0.0-EVENTS2 DEVELOPMENT_VERSION=6.3.0-SNAPSHOT
 
 stages:
   - name: test
