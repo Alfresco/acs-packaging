@@ -13,7 +13,7 @@ then the following libraries will show up as having vulnerabilities.
 
 We have verified that the vulnerabilities in these libraries cannot be exploited within the ACS repository.
 
-<h3>not-yet-commons-ssl-0.3.9<h3>
+<h3>not-yet-commons-ssl-0.3.9</h3>
 
 <a href='https://vuln.whitesourcesoftware.com/vulnerability/CVE-2014-3604/'>CVE-2014-3604</a>: Certificates.java in Not Yet Commons SSL before 0.3.15 does not properly verify that the server hostname 
 matches a domain name in the subject's Common Name (CN) field of the X.509 certificate, which allows man-in-the-middle 
