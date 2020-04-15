@@ -4,6 +4,27 @@
   New Features
 </h2>
 
+<h2>
+  Security
+</h2>
+
+If you run the repository war file through a security Scanner like WhiteSource, Veracode SourceClear, Nexus IQ or others, 
+then the following libraries will show up as having vulnerabilities.
+
+We have verified that the vulnerabilities in these libraries cannot be exploited within the ACS repository.
+
+<h3>not-yet-commons-ssl-0.3.9<h3>
+
+<a href='https://vuln.whitesourcesoftware.com/vulnerability/CVE-2014-3604/'>CVE-2014-3604</a>: Certificates.java in Not Yet Commons SSL before 0.3.15 does not properly verify that the server hostname 
+matches a domain name in the subject's Common Name (CN) field of the X.509 certificate, which allows man-in-the-middle 
+attackers to spoof SSL servers via an arbitrary valid certificate.
+
+Customer action required:
+
+The vulnerable method is not directly used in the codebase so this vulnerability does not affect the ACS product.
+Only customer extensions that use the method.
+
+If your custom extension is bringing in this library, you might be affected by this vulnerability.
 
 
 <h1>        6.2.0
