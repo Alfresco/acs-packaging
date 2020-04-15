@@ -180,22 +180,6 @@
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
             <version>2.3.2</version>
-            <exclusions>
-                <!-- Duplicate classes from com.sun.activation:jakarta.activation-->
-                <exclusion>
-                    <groupId>jakarta.activation</groupId>
-                    <artifactId>jakarta.activation-api</artifactId>
-                </exclusion>
-                <!-- Duplicate classes from com.sun.xml.bind:jaxb-core-->
-                <exclusion>
-                    <groupId>org.glassfish.jaxb</groupId>
-                    <artifactId>txw2</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sun.istack</groupId>
-                    <artifactId>istack-commons-runtime</artifactId>
-                </exclusion>  
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>javax.xml.soap</groupId>
@@ -237,7 +221,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>3.3.3</version>
+            <version>3.2.4</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -274,21 +258,6 @@
         </resources>
         <pluginManagement>
             <plugins>
-                <!-- Specify the source version to get around a "feature" in JDK 11.0.2 currently used by travis-->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.2.0</version>
-                    <configuration>
-                        <source>${maven.build.sourceVersion}</source>
-                    </configuration>
-                </plugin>
-                <!-- Ensure consistent maven-release-plugin version-->
-                <plugin>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>2.5.3</version>
-                </plugin>
-
                 <plugin>
                     <groupId>org.eclipse.m2e</groupId>
                     <artifactId>lifecycle-mapping</artifactId>
@@ -347,7 +316,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
-                <version>3.1.0</version>
+                <version>3.0.0</version>
                 <executions>
                     <execution>
                         <phase>validate</phase>

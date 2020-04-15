@@ -8,7 +8,7 @@ ARG resource_path=target
 # Set default user information
 ARG GROUPNAME=Alfresco
 ARG GROUPID=1000
-ARG IMAGEUSERNAME=alfresco
+ARG USERNAME=alfresco
 ARG USERID=33000
 
 # Set default environment args
@@ -82,7 +82,7 @@ RUN curl -o /tmp/${JAVA_PROFILER}.zip "https://www.yourkit.com/download/docker/$
 RUN mkdir -p ${TOMCAT_DIR}/conf/Catalina/localhost && \
     mkdir -p ${TOMCAT_DIR}/alf_data && \
     groupadd -g ${GROUPID} ${GROUPNAME} && \
-    useradd -u ${USERID} -G ${GROUPNAME} ${IMAGEUSERNAME} && \
+    useradd -u ${USERID} -G ${GROUPNAME} ${USERNAME} && \
     chgrp -R ${GROUPNAME} ${TOMCAT_DIR} && \
     chmod g+rx ${TOMCAT_DIR}/conf && \
     chmod -R g+r ${TOMCAT_DIR}/conf && \
@@ -107,4 +107,4 @@ EXPOSE 10001
 # For remote debug
 EXPOSE 8000
 
-USER ${IMAGEUSERNAME}
+USER ${USERNAME}

@@ -12,7 +12,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Alfresco Search Services | 1.4.1 |
 | Alfresco Insight Engine | 1.4.1 |
 | Alfresco Desktop Sync Service | @alfresco.desktop-sync.version@ |
-| Alfresco Transform Service | 1.1.1 |
+| Alfresco Transform Service | 1.1.0 |
 | Document Transformation Engine | @alfresco.transformation-engine.version@ |
 | Alfresco File Transfer Receiver | 6.2.1 |
 | Alfresco Module Management Tool | 6.0 |
@@ -73,7 +73,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Database Connectors
 | Component | Recommended | Also Available |
 |---|---|---|
-| MySQL connector | @dependency.mysql.version@ |
+| MySQL connector | 5.1.47 |
 | MariaDB Java Client | 2.2.5 |
 | PostgreSQL | @dependency.postgresql.version@ |
 | Oracle JDBC ojdbc8 | 12.2.0.1 |
