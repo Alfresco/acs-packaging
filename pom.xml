@@ -83,7 +83,7 @@
         <alfresco.centera-connector.version>2.2.1</alfresco.centera-connector.version>
 
         <!-- Alfresco Salesforce Connector version -->
-        <alfresco.salesforce-connector.version>2.2.0-EA1</alfresco.salesforce-connector.version>
+        <alfresco.salesforce-connector.version>2.1.0.1</alfresco.salesforce-connector.version>
 
         <!-- Alfresco Kofax Connector version -->
         <alfresco.kofax.version>2.0.0</alfresco.kofax.version>
