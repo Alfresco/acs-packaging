@@ -10,7 +10,8 @@ version: "3"
 
 services:
   alfresco:
-    image: alfresco/alfresco-content-repository:latest
+    build:
+      context: ./alfresco-with-jolokia
     environment:
       CATALINA_OPTS : "-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n"
       JAVA_OPTS :
@@ -41,6 +42,26 @@ services:
         -Dftp.port=1221
         -Dcors.enabled=true
         -Dcors.allowed.origins=http://localhost:4200
+
+        -Dauthentication.chain=alfrescoNtlm1:alfrescoNtlm,ldap1:ldap
+        -Dldap.authentication.active=true
+        -Dldap.authentication.java.naming.security.authentication=simple
+        -Dldap.authentication.allowGuestLogin=false
+        -Dldap.authentication.userNameFormat=\"cn=%s,ou=users,dc=alfness,dc=com\"
+        -Dldap.authentication.java.naming.provider.url=ldap://authentication:389
+        -Dldap.authentication.defaultAdministratorUserNames=\"cn=admin,dc=alfness,dc=com\"
+        -Dldap.authentication.authenticateFTP=false
+        -Dldap.synchronization.active=true
+        -Dsynchronization.allowDeletions=false
+        -Dldap.synchronization.java.naming.security.authentication=simple
+        -Dldap.synchronization.java.naming.security.principal=\"cn=admin,dc=alfness,dc=com\"
+        -Dldap.synchronization.java.naming.security.credentials=Alf1234
+        -Dldap.synchronization.groupSearchBase=\"ou=groups,dc=alfness,dc=com\"
+        -Dldap.synchronization.userSearchBase=\"ou=users,dc=alfness,dc=com\"
+        -Dldap.synchronization.defaultHomeFolderProvider=userHomesHomeFolderProvider
+        -Dldap.synchronization.queryBatchSize=10
+        -Dldap.synchronization.groupQuery=\"(objectclass=posixGroup)\"
+        -Dldap.synchronization.groupMemberAttributeName=memberUid
         "
     ports:
       - 8082:8080
@@ -81,3 +102,14 @@ services:
       - 5672:5672 # AMQP
       - 61616:61616 # OpenWire
       - 61613:61613 # STOMP
+
+  authentication:
+    build:
+      context: ./ldap-container
+    environment:
+      - LDAP_ORGANISATION=AlfNess
+      - LDAP_DOMAIN=alfness.com
+      - LDAP_ADMIN_PASSWORD=Alf1234
+    ports:
+      - 389:389
+      - 636:636
