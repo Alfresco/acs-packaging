@@ -85,9 +85,6 @@
         <!-- Alfresco Salesforce Connector version -->
         <alfresco.salesforce-connector.version>2.2.0-EA1</alfresco.salesforce-connector.version>
 
-        <!-- Alfresco Kofax Connector version -->
-        <alfresco.kofax.version>2.0.0</alfresco.kofax.version>
-
         <!-- SAML Single Sign-On (SSO) for Alfresco Content Services -->
         <alfresco.saml.version>1.2.0</alfresco.saml.version>
 
@@ -624,12 +621,6 @@
                 <groupId>org.alfresco.integrations</groupId>
                 <artifactId>alfresco-content-connector-for-salesforce-share</artifactId>
                 <version>${alfresco.salesforce-connector.version}</version>
-                <type>amp</type>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco.module.KofaxAddon</groupId>
-                <artifactId>kofaxaddon</artifactId>
-                <version>${alfresco.kofax.version}</version>
                 <type>amp</type>
             </dependency>
             <dependency>
