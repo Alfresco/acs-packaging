@@ -1,12 +1,21 @@
 package org.alfresco.rest.nodes;
 
+import javax.json.Json;
+import javax.json.JsonObject;
+
+import org.alfresco.dataprep.CMISUtil;
 import org.alfresco.rest.RestTest;
+import org.alfresco.rest.core.RestWrapper;
 import org.alfresco.rest.model.RestNodeBodyMoveCopyModel;
 import org.alfresco.rest.model.RestNodeModel;
 import org.alfresco.rest.model.builder.NodesBuilder;
 import org.alfresco.rest.model.builder.NodesBuilder.NodeDetail;
+import org.alfresco.utility.constants.UserRole;
+import org.alfresco.utility.data.DataUser;
 import org.alfresco.utility.model.ContentModel;
+import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.TestGroup;
+import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
 import org.springframework.http.HttpStatus;
@@ -52,5 +61,44 @@ public class NodesTests extends RestTest
          *     - file
          */
         response.assertThat().field("parentId").is(destinationFolder.getId());
+    }
+
+    @TestRail(section = { TestGroup.REST_API, TestGroup.REGRESSION, TestGroup.NODES, TestGroup.SANITY },
+        executionType = ExecutionType.SANITY,
+        description = "Verify 403 is received for files where the user lacks permissions.")
+    @Test(groups = {TestGroup.REST_API, TestGroup.REGRESSION, TestGroup.NODES, TestGroup.SANITY})
+    public void siteConsumerWillGet403OnFileWithDisabledInherittedPermissions() throws Exception
+    {
+        // https://issues.alfresco.com/jira/browse/REPO-4859
+
+        // Authenticate as admin to fulfill the preconditions
+        UserModel adminUser = dataContent.getAdminUser();
+        RestWrapper restWrapper = this.restClient.authenticateUser(adminUser);
+
+        // Create the file using CMIS
+        FileModel file = dataContent.usingUser(adminUser).usingSite(testSite)
+            .createContent(CMISUtil.DocumentType.TEXT_PLAIN);
+
+        // Add a consumer user via CMIS
+        DataUser.ListUserWithRoles listUserWithRoles = dataUser.usingUser(adminUser)
+            .addUsersWithRolesToSite(testSite, UserRole.SiteConsumer);
+
+
+        // Disable the permission inheritance
+        JsonObject activateModelJson = Json.createObjectBuilder().add("permissions",
+            Json.createObjectBuilder().add("isInheritanceEnabled", false))
+            .build();
+
+        restWrapper.withCoreAPI().usingNode(file).updateNode(activateModelJson.toString());
+        restWrapper.assertStatusCodeIs(HttpStatus.OK);
+
+        // Authenticate as the consumer user
+        UserModel consumerUser = listUserWithRoles.getOneUserWithRole(UserRole.SiteConsumer);
+
+        // Assert the consumer gets  a 403
+        restClient.authenticateUser(consumerUser).withCoreAPI()
+            .usingNode(file).getNodeContent();
+
+        restWrapper.assertStatusCodeIs(HttpStatus.FORBIDDEN);
     }
 }
