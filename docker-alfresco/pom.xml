@@ -573,5 +573,5 @@
             </build>
         </profile>
     </profiles>
-    <properties>3.4.0-SNAPSHOT</properties>
+
 </project>
