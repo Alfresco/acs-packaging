@@ -78,7 +78,6 @@ services:
 
   alfresco-core-aio:
     image: alfresco/alfresco-transform-core-aio:${TRANSFORMERS_TAG}
-    mem_limit: 1g
     environment:
       JAVA_OPTS: " -Xms256m -Xmx512m"
       ACTIVEMQ_URL: "nio://activemq:61616"
