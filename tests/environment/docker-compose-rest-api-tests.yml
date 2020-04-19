@@ -32,9 +32,9 @@ services:
         -Dsolr.base.url=/solr
         -Dindex.subsystem.name=solr6
 
-        -DlocalTransform.core-aio.url=http://alfresco-core-aio:8090/
+        -DlocalTransform.core-aio.url=http://transform-core-aio:8090/
 
-        -DlegacyTransform.core-aio.url=http://alfresco-core-aio:8090/
+        -DlegacyTransform.core-aio.url=http://transform-core-aio:8090/
 
         -Dcors.enabled=true
         -Dcors.allowed.origins=http://localhost:4200,http://localhost:8080
@@ -76,7 +76,7 @@ services:
     ports:
       - 8083:8983 #Browser port
 
-  alfresco-core-aio:
+  transform-core-aio:
     image: alfresco/alfresco-transform-core-aio:${TRANSFORMERS_TAG}
     environment:
       JAVA_OPTS: " -Xms256m -Xmx512m"
