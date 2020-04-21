@@ -392,14 +392,6 @@
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                         </artifactItem>
                                         <artifactItem>
-                                            <groupId>org.alfresco.integrations</groupId>
-                                            <artifactId>alfresco-azure-connector</artifactId>
-                                            <version>${alfresco.azure-connector.version}</version>
-                                            <type>amp</type>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                        </artifactItem>
-                                        <artifactItem>
                                             <groupId>org.alfresco</groupId>
                                             <artifactId>alfresco-centera-connector</artifactId>
                                             <version>${alfresco.centera-connector.version}</version>
@@ -447,6 +439,7 @@
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                         </artifactItem>
+<!--                                        Commented out since latest outlook connector (2.6.1) is not compatible with ACS 6.3 -->
 <!--                                        <artifactItem>-->
 <!--                                            <groupId>org.alfresco</groupId>-->
 <!--                                            <artifactId>alfresco-outlook-repository</artifactId>-->
@@ -506,9 +499,6 @@
                 <!-- Alfresco Glacier Connector Repo version -->
                 <alfresco.glacier-connector.version>2.0.0</alfresco.glacier-connector.version>
 
-                <!-- Alfresco Content Connector for Azure version -->
-                <alfresco.azure-connector.version>1.0</alfresco.azure-connector.version>
-
                 <!-- Alfresco Centera Connector version -->
                 <alfresco.centera-connector.version>2.2.1</alfresco.centera-connector.version>
 
@@ -518,7 +508,7 @@
                 <!-- SAML Single Sign-On (SSO) for Alfresco Content Services -->
                 <alfresco.saml.version>1.2.0</alfresco.saml.version>
 
-                <!-- Alfresco Outlook Integration !!! not in here-->
+                <!-- Alfresco Outlook Integration -->
                 <alfresco.outlook.version>2.6.1</alfresco.outlook.version>
 
                 <!-- Document Transformation Engine -->
