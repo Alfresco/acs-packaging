@@ -447,14 +447,14 @@
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                         </artifactItem>
-                                        <artifactItem>
-                                            <groupId>org.alfresco</groupId>
-                                            <artifactId>alfresco-outlook-repository</artifactId>
-                                            <version>${alfresco.outlook.version}</version>
-                                            <type>amp</type>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                        </artifactItem>
+<!--                                        <artifactItem>-->
+<!--                                            <groupId>org.alfresco</groupId>-->
+<!--                                            <artifactId>alfresco-outlook-repository</artifactId>-->
+<!--                                            <version>${alfresco.outlook.version}</version>-->
+<!--                                            <type>amp</type>-->
+<!--                                            <overWrite>false</overWrite>-->
+<!--                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>-->
+<!--                                        </artifactItem>-->
                                         <artifactItem>
                                             <groupId>org.alfresco</groupId>
                                             <artifactId>alfresco-governance-services-enterprise-repo</artifactId>
