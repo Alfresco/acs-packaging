@@ -18,6 +18,7 @@ import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisPermissionDeniedException;
 import org.springframework.http.HttpStatus;
 import org.testng.annotations.Test;
 
@@ -66,7 +67,7 @@ public class NodesTests extends RestTest
     @TestRail(section = { TestGroup.REST_API, TestGroup.REGRESSION, TestGroup.NODES, TestGroup.SANITY },
         executionType = ExecutionType.SANITY,
         description = "Verify 403 is received for files where the user lacks permissions.")
-    @Test(groups = {TestGroup.REST_API, TestGroup.REGRESSION, TestGroup.NODES, TestGroup.SANITY})
+    @Test(groups = {TestGroup.REST_API, TestGroup.REGRESSION, TestGroup.NODES, TestGroup.SANITY}, expectedExceptions = CmisPermissionDeniedException.class)
     public void siteConsumerWillGet403OnFileWithDisabledInherittedPermissions() throws Exception
     {
         // https://issues.alfresco.com/jira/browse/REPO-4859
@@ -96,10 +97,16 @@ public class NodesTests extends RestTest
         // Authenticate as the consumer user
         UserModel consumerUser = listUserWithRoles.getOneUserWithRole(UserRole.SiteConsumer);
 
-        // Assert the consumer gets  a 403
+        // Assert the consumer gets a 403 VIA REST Call
         restClient.authenticateUser(consumerUser).withCoreAPI()
             .usingNode(file).getNodeContent();
-
         restWrapper.assertStatusCodeIs(HttpStatus.FORBIDDEN);
+
+        // Assert the consumer gets a 403 VIA CMIS
+        dataContent
+            .usingUser(consumerUser)
+            .usingSite(testSite)
+            .getCMISDocument(file.getCmisLocation());
+
     }
 }
