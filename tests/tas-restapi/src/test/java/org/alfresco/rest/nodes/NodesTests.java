@@ -1,10 +1,14 @@
 package org.alfresco.rest.nodes;
 
+import static org.junit.Assert.assertEquals;
+
 import javax.json.Json;
 import javax.json.JsonObject;
 
 import org.alfresco.dataprep.CMISUtil;
 import org.alfresco.rest.RestTest;
+import org.alfresco.rest.core.RestRequest;
+import org.alfresco.rest.core.RestResponse;
 import org.alfresco.rest.core.RestWrapper;
 import org.alfresco.rest.model.RestNodeBodyMoveCopyModel;
 import org.alfresco.rest.model.RestNodeModel;
@@ -18,8 +22,11 @@ import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.testng.annotations.Test;
+
+import io.restassured.RestAssured;
 
 /**
  * Handles tests related to api-explorer/#!/nodes
@@ -77,13 +84,14 @@ public class NodesTests extends RestTest
 
         // Create the file using CMIS
         testSite = dataSite.createPublicRandomSite();
-        FileModel file = dataContent.usingUser(adminUser).usingSite(testSite)
+        FileModel file = dataContent
+            .usingUser(adminUser)
+            .usingSite(testSite)
             .createContent(CMISUtil.DocumentType.TEXT_PLAIN);
 
         // Add a consumer user via CMIS
         DataUser.ListUserWithRoles listUserWithRoles = dataUser.usingUser(adminUser)
             .addUsersWithRolesToSite(testSite, UserRole.SiteConsumer);
-
 
         // Disable the permission inheritance
         JsonObject activateModelJson = Json.createObjectBuilder().add("permissions",
@@ -97,8 +105,21 @@ public class NodesTests extends RestTest
         UserModel consumerUser = listUserWithRoles.getOneUserWithRole(UserRole.SiteConsumer);
 
         // Assert the consumer gets a 403 VIA REST Call
-        restClient.authenticateUser(consumerUser).withCoreAPI()
+        restClient
+            .authenticateUser(consumerUser)
+            .withCoreAPI()
             .usingNode(file).getNodeContent();
         restWrapper.assertStatusCodeIs(HttpStatus.FORBIDDEN);
+
+        // Assert the consumer gets a 403 VIA CMIS API
+        // Implement the CMIS call as it is not supported under .withCMISApi()
+        // This is done similar to {@link IntegrationWithCmisTests#verifyGetChildrenReturnsUniqueValues}
+        RestAssured.basePath = "alfresco/api/-default-/public/cmis/versions/1.1/browser";
+        restWrapper.configureRequestSpec().setBasePath(RestAssured.basePath);
+
+        RestRequest request = RestRequest.simpleRequest(HttpMethod.GET,
+            "/root/Sites/" + testSite.getTitle() + "/documentLibrary/" + file.getName() + "?cmisselector=object&succinct=true");
+        RestResponse response = restWrapper.authenticateUser(consumerUser).process(request);
+        assertEquals("403", response.getStatusCode());
     }
 }
