@@ -10,6 +10,10 @@
   New Features
 </h2>
 
+<ul>
+  <li>[<a href='https://issues.alfresco.com/jira/browse/REPO-4919'>REPO-4919</a>] -         Upgrade LibreOffice from 6.1.6 to 6.3.5
+</ul>
+
 <h2>
   Security
 </h2>
