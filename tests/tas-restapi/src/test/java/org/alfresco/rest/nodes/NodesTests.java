@@ -105,11 +105,12 @@ public class NodesTests extends RestTest
         UserModel consumerUser = listUserWithRoles.getOneUserWithRole(UserRole.SiteConsumer);
 
         // Assert the consumer gets a 403 VIA REST Call
-        restClient
-            .authenticateUser(consumerUser)
-            .withCoreAPI()
+        RestResponse restApiResponse = restClient.authenticateUser(consumerUser).withCoreAPI()
             .usingNode(file).getNodeContent();
-        restWrapper.assertStatusCodeIs(HttpStatus.FORBIDDEN);
+
+        int restApiStatusCode = restApiResponse.getResponse().getStatusCode();
+        logger.info("REST API call response status code is: " + restApiStatusCode);
+        assertEquals(HttpStatus.FORBIDDEN.value(), restApiStatusCode);
 
         // Assert the consumer gets a 403 VIA CMIS API
         // Implement the CMIS call as it is not supported under .withCMISApi()
@@ -119,7 +120,10 @@ public class NodesTests extends RestTest
 
         RestRequest request = RestRequest.simpleRequest(HttpMethod.GET,
             "/root/Sites/" + testSite.getTitle() + "/documentLibrary/" + file.getName() + "?cmisselector=object&succinct=true");
-        RestResponse response = restWrapper.authenticateUser(consumerUser).process(request);
-        assertEquals("403", response.getStatusCode());
+        RestResponse cmisApiResponse = restWrapper.authenticateUser(consumerUser).process(request);
+
+        int cmisApiStatusCode = cmisApiResponse.getResponse().getStatusCode();
+        logger.info("CMIS API call response status code is: " + cmisApiStatusCode);
+        assertEquals(HttpStatus.FORBIDDEN.value(), cmisApiStatusCode);
     }
 }
