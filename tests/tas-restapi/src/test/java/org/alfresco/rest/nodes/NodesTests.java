@@ -70,10 +70,10 @@ public class NodesTests extends RestTest
         response.assertThat().field("parentId").is(destinationFolder.getId());
     }
 
-    @TestRail(section = { TestGroup.REST_API, TestGroup.REGRESSION, TestGroup.NODES, TestGroup.SANITY },
+    @TestRail(section = { TestGroup.SANITY },
         executionType = ExecutionType.SANITY,
         description = "Verify 403 is received for files where the user lacks permissions.")
-    @Test(groups = {TestGroup.REST_API, TestGroup.REGRESSION, TestGroup.NODES, TestGroup.SANITY})
+    @Test(groups = {TestGroup.SANITY})
     public void siteConsumerWillGet403OnFileWithDisabledInherittedPermissions() throws Exception
     {
         // https://issues.alfresco.com/jira/browse/REPO-4859
