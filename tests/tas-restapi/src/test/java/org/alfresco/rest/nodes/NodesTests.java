@@ -76,6 +76,7 @@ public class NodesTests extends RestTest
         RestWrapper restWrapper = this.restClient.authenticateUser(adminUser);
 
         // Create the file using CMIS
+        testSite = dataSite.createPublicRandomSite();
         FileModel file = dataContent.usingUser(adminUser).usingSite(testSite)
             .createContent(CMISUtil.DocumentType.TEXT_PLAIN);
 
