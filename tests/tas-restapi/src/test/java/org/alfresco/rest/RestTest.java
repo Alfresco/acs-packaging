@@ -61,6 +61,7 @@ public abstract class RestTest extends AbstractTestNGSpringContextTests
     @Autowired
     protected WorkflowService workflow;
 
+    @Autowired
     protected SiteModel testSite;
 
     @BeforeSuite(alwaysRun = true)
