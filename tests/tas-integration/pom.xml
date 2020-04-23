@@ -33,7 +33,7 @@
         <profile>
             <id>run-ldap</id>
             <properties>
-                <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/ldap-suite.xml</suiteXmlFile>
+                <suiteXmlFile>${project.basedir}/src/test/resources/ldap-suite.xml</suiteXmlFile>
             </properties>
         </profile>
     </profiles>
