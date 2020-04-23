@@ -102,7 +102,7 @@ public class UpdatePropertiesTests extends CmisTest
     
     @TestRail(section = {"cmis-api"}, executionType = ExecutionType.REGRESSION,
                 description = "Verify that deleted user is not able to update properties with CMIS")
-    @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS}, expectedExceptions=CmisUnauthorizedException.class)
+    @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS}, expectedExceptions=CmisPermissionDeniedException.class)
     public void deletedUserCannotUpdateFileProperties() throws Exception
     {
         propertyNameValue = RandomData.getRandomAlphanumeric();
