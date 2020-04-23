@@ -113,7 +113,7 @@ public class UpdatePropertiesTests extends CmisTest
             .usingResource(shared)
                 .createFile(testFile).and().assertThat().existsInRepo();
         dataUser.deleteUser(toBeDeleted);
-        cmisApi.authenticateUser(toBeDeleted);
+        Thread.sleep(65 * 1000);
         cmisApi.updateProperty("cmis:name", propertyNameValue);
     }
     
