@@ -9,7 +9,7 @@
 
     <test name="LDAP">
         <packages>
-            <package name="oorg.alfresco.tas.integration.subsystems.ldap.*"/>
+            <package name="org.alfresco.tas.integration.subsystems.ldap.*"/>
         </packages>
     </test>
 </suite>
