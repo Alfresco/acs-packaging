@@ -29,6 +29,15 @@
         <dependency.javax.mail.version>1.6.2</dependency.javax.mail.version>
     </properties>
 
+    <profiles>
+        <profile>
+            <id>run-ldap</id>
+            <properties>
+                <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/ldap-suite.xml</suiteXmlFile>
+            </properties>
+        </profile>
+    </profiles>
+
     <dependencies>
         <dependency>
             <groupId>org.alfresco.tas</groupId>
