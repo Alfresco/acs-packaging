@@ -34,10 +34,10 @@
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <dependency.alfresco-enterprise-remote-api.version>7.66</dependency.alfresco-enterprise-remote-api.version>
-        <dependency.alfresco-enterprise-repository.version>7.88</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-remote-api.version>7.123</dependency.alfresco-remote-api.version>
-        <dependency.alfresco-repository.version>7.169</dependency.alfresco-repository.version>
+        <dependency.alfresco-enterprise-remote-api.version>7.67</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>7.90</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-remote-api.version>7.125</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-repository.version>7.171</dependency.alfresco-repository.version>
         <dependency.alfresco-data-model.version>8.50.11</dependency.alfresco-data-model.version>
         <dependency.alfresco-core.version>7.31</dependency.alfresco-core.version>
 
@@ -64,8 +64,8 @@
         <dependency.axiom.version>1.2.22</dependency.axiom.version>
 
         <!-- Alfresco Share version -->
-        <alfresco.share.version>6.2.1-A4</alfresco.share.version>
-        <alfresco.alfresco-share-services.version>6.2.1-A4</alfresco.alfresco-share-services.version>
+        <alfresco.share.version>6.2.1-RC2</alfresco.share.version>
+        <alfresco.alfresco-share-services.version>6.2.1-RC2</alfresco.alfresco-share-services.version>
 
         <!-- Alfresco GoogleDocs integration version -->
         <alfresco.googledrive.version>3.2.0-RC3</alfresco.googledrive.version>
