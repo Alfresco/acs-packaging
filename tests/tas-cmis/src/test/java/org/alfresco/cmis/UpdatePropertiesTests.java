@@ -99,7 +99,8 @@ public class UpdatePropertiesTests extends CmisTest
             .createFile(testFile).assertThat().existsInRepo()
                 .then().updateProperty("cmis:fakeProp", propertyNameValue);
     }
-    
+
+    @Bug(id = "REPO-4859")
     @TestRail(section = {"cmis-api"}, executionType = ExecutionType.REGRESSION,
                 description = "Verify that deleted user is not able to update properties with CMIS")
     @Test(groups = { TestGroup.REGRESSION, TestGroup.CMIS}, expectedExceptions=CmisUnauthorizedException.class)
