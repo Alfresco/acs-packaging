@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
+echo "${QUAY_PASSWORD}" | docker login -u="alfresco+bamboo" --password-stdin quay.io
+
 # Use full history for release
 git checkout -B "${TRAVIS_BRANCH}"
 # Add email to link commits to user

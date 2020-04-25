@@ -19,11 +19,12 @@ branches:
   only:
     - master
     - /support\/.*/
+    - test/release1
 
 env:
   global:
     # Release version has to start with real version (6.2.x-....) for the docker image to build successfully.
-    - RELEASE_VERSION=6.2.1-RC2
+    - RELEASE_VERSION=TEST1
     - DEVELOPMENT_VERSION=6.2.1-SNAPSHOT
 
 stages:
@@ -192,11 +193,9 @@ jobs:
         - bash scripts/veracode/static_analysis.sh
     - name: "Release and Copy to S3 Staging Bucket"
       stage: release
-      if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[release\]/
+      if: fork = false AND (branch = test/release1 OR branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[release\]/
       # Download the maven cache in case the previous test stage is skipped to prevent timeouts during release
-      install:
-        - travis_wait 40 mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-        - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
+      install: travis_wait 40 mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
       before_script:
         # Check that the release has not already been done
         - bash scripts/travis/verify_release_tag.sh
