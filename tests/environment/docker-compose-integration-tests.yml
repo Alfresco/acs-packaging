@@ -10,8 +10,7 @@ version: "3"
 
 services:
   alfresco:
-    build:
-      context: ./alfresco-with-jolokia
+    image: alfresco/alfresco-content-repository:latest
     environment:
       CATALINA_OPTS : "-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n"
       JAVA_OPTS :
