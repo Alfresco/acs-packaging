@@ -34,12 +34,12 @@
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <dependency.alfresco-enterprise-remote-api.version>8.124</dependency.alfresco-enterprise-remote-api.version>
-        <dependency.alfresco-enterprise-repository.version>8.123</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-remote-api.version>8.147</dependency.alfresco-remote-api.version>
-        <dependency.alfresco-repository.version>8.161</dependency.alfresco-repository.version>
-        <dependency.alfresco-data-model.version>8.103</dependency.alfresco-data-model.version>
-        <dependency.alfresco-core.version>8.29</dependency.alfresco-core.version>
+        <dependency.alfresco-enterprise-remote-api.version>8.131</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>8.128</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-remote-api.version>8.153</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-repository.version>8.168</dependency.alfresco-repository.version>
+        <dependency.alfresco-data-model.version>8.105</dependency.alfresco-data-model.version>
+        <dependency.alfresco-core.version>8.30</dependency.alfresco-core.version>
 
         <dependency.alfresco-hb-data-sender.version>1.0.12</dependency.alfresco-hb-data-sender.version>
         <dependency.activiti-repo-connector.version>1.5</dependency.activiti-repo-connector.version>
@@ -64,8 +64,8 @@
         <dependency.axiom.version>1.2.22</dependency.axiom.version>
 
         <!-- Alfresco Share version -->
-        <alfresco.share.version>6.2.1-A4</alfresco.share.version>
-        <alfresco.alfresco-share-services.version>6.2.1-A4</alfresco.alfresco-share-services.version>
+        <alfresco.share.version>6.2.1-RC1</alfresco.share.version>
+        <alfresco.alfresco-share-services.version>6.2.1-RC1</alfresco.alfresco-share-services.version>
 
         <!-- Alfresco GoogleDocs integration version -->
         <alfresco.googledrive.version>3.2.0-RC3</alfresco.googledrive.version>
@@ -303,7 +303,7 @@
             <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
-                <version>2.10.5</version>
+                <version>2.10.6</version>
             </dependency>
             <dependency>
                 <groupId>commons-httpclient</groupId>
