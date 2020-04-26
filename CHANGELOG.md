@@ -39,6 +39,7 @@ Only customer extensions that use the method.
 If your custom extension is bringing in this library, you might be affected by this vulnerability.
 
 
+
 <h1>        6.2.0
 </h1>
 <h2>
