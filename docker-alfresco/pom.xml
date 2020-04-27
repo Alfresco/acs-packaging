@@ -367,14 +367,14 @@
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                         </artifactItem>
-                                        <artifactItem>
-                                            <groupId>org.alfresco.integrations</groupId>
-                                            <artifactId>alfresco-s3-connector</artifactId>
-                                            <version>${alfresco.s3connector.version}</version>
-                                            <type>amp</type>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                        </artifactItem>
+<!--                                        <artifactItem>-->
+<!--                                            <groupId>org.alfresco.integrations</groupId>-->
+<!--                                            <artifactId>alfresco-s3-connector</artifactId>-->
+<!--                                            <version>${alfresco.s3connector.version}</version>-->
+<!--                                            <type>amp</type>-->
+<!--                                            <overWrite>false</overWrite>-->
+<!--                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>-->
+<!--                                        </artifactItem>-->
                                         <artifactItem>
                                             <groupId>org.alfresco</groupId>
                                             <artifactId>alfresco-ai-repo</artifactId>
@@ -383,14 +383,14 @@
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                         </artifactItem>
-                                        <artifactItem>
-                                            <groupId>org.alfresco</groupId>
-                                            <artifactId>alfresco-glacier-connector-repo</artifactId>
-                                            <version>${alfresco.glacier-connector.version}</version>
-                                            <type>amp</type>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                        </artifactItem>
+<!--                                        <artifactItem>-->
+<!--                                            <groupId>org.alfresco</groupId>-->
+<!--                                            <artifactId>alfresco-glacier-connector-repo</artifactId>-->
+<!--                                            <version>${alfresco.glacier-connector.version}</version>-->
+<!--                                            <type>amp</type>-->
+<!--                                            <overWrite>false</overWrite>-->
+<!--                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>-->
+<!--                                        </artifactItem>-->
                                         <artifactItem>
                                             <groupId>org.alfresco</groupId>
                                             <artifactId>alfresco-centera-connector</artifactId>
@@ -493,11 +493,11 @@
                 <!-- Alfresco GoogleDocs integration version -->
                 <alfresco.googledrive.version>3.2.0-RC3</alfresco.googledrive.version>
 
-                <!-- Alfresco S3 Connector integration version -->
-                <alfresco.s3connector.version>3.0.0.1</alfresco.s3connector.version>
+<!--                &lt;!&ndash; Alfresco S3 Connector integration version &ndash;&gt;-->
+<!--                <alfresco.s3connector.version>3.0.0.1</alfresco.s3connector.version>-->
 
-                <!-- Alfresco Glacier Connector Repo version -->
-                <alfresco.glacier-connector.version>2.0.0</alfresco.glacier-connector.version>
+<!--                &lt;!&ndash; Alfresco Glacier Connector Repo version &ndash;&gt;-->
+<!--                <alfresco.glacier-connector.version>2.0.0</alfresco.glacier-connector.version>-->
 
                 <!-- Alfresco Centera Connector version -->
                 <alfresco.centera-connector.version>2.2.1</alfresco.centera-connector.version>
