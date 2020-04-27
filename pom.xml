@@ -527,6 +527,12 @@
             </dependency>
             <dependency>
                 <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-content-services-share-distribution</artifactId>
+                <version>${alfresco.share.version}</version>
+                <type>zip</type>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
                 <artifactId>alfresco-share-services</artifactId>
                 <version>${alfresco.alfresco-share-services.version}</version>
                 <type>amp</type>
