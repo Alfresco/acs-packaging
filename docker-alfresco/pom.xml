@@ -502,8 +502,8 @@
                 <!-- Alfresco Centera Connector version -->
                 <alfresco.centera-connector.version>2.2.1</alfresco.centera-connector.version>
 
-                <!-- Alfresco Salesforce Connector version -->
-                <alfresco.salesforce-connector.version>2.2.0-EA1</alfresco.salesforce-connector.version>
+<!--                &lt;!&ndash; Alfresco Salesforce Connector version &ndash;&gt;-->
+<!--                <alfresco.salesforce-connector.version>2.2.0-EA1</alfresco.salesforce-connector.version>-->
 
                 <!-- SAML Single Sign-On (SSO) for Alfresco Content Services -->
                 <alfresco.saml.version>1.2.0</alfresco.saml.version>
@@ -520,8 +520,8 @@
                 <!-- Alfresco Office Services Module -->
                 <alfresco.aos-module.version>1.3.1</alfresco.aos-module.version>
 
-                <!-- Alfresco Media Management Module -->
-                <alfresco.mm.version>1.4.0</alfresco.mm.version>
+<!--                &lt;!&ndash; Alfresco Media Management Module &ndash;&gt;-->
+<!--                <alfresco.mm.version>1.4.0</alfresco.mm.version>-->
 
                 <!-- Alfresco Desktop Sync Service Module -->
                 <alfresco.desktop-sync.version>3.3.2-SNAPSHOT</alfresco.desktop-sync.version>
