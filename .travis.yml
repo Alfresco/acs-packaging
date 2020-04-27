@@ -182,7 +182,7 @@ jobs:
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
         - travis_wait 20 mvn install -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 #    - name: "Veracode static code scan"
-#        # only on support branches or master and if it is not a PR
+#        # only on support branches or master and if it is not a PR 
 #      if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request
 #      jdk: openjdk11
 #      install:
