@@ -230,28 +230,6 @@ jobs:
         - TEST_VERSION="$(git rev-parse --short ${TRAVIS_COMMIT})"
       script: |
          curl -s http://${K8S_DEV_HOST}/alfresco/ | grep $TEST_VERSION > /dev/null
-#        travis_wait 60 mvn install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-part1 -Dalfresco.server=${K8S_DEV_HOST} -Dalfresco.port=80 -Denvironment=default -DrunBugs=false
-#        body='{
-#         "request": {
-#         "message": "Alfresco Content Repository - $TRAVIS_COMMIT_MESSAGE",
-#         "branch":"develop",
-#         "config": {
-#           "merge_mode": "deep_merge",
-#           "env": {
-#             "jobs": [
-#               "TEST=ACSIntegration"
-#             ]
-#           },
-#           "script": "Running Tests"
-#          }
-#        }}'
-#        curl -s --fail -X POST \
-#          -H "Content-Type: application/json" \
-#          -H "Accept: application/json" \
-#          -H "Travis-API-Version: 3" \
-#          -H "Authorization: token ${TRAVIS_API_TOKEN}" \
-#          -d "$body" \
-#          https://api.travis-ci.com/repo/travis-ci%2Ftravis-core/requests
     - name: "Release and Copy to S3 Staging Bucket"
       stage: release
       if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[release\]/

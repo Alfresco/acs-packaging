@@ -399,14 +399,14 @@
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                         </artifactItem>
-                                        <artifactItem>
-                                            <groupId>org.alfresco.integrations</groupId>
-                                            <artifactId>alfresco-content-connector-for-salesforce-repo</artifactId>
-                                            <version>${alfresco.salesforce-connector.version}</version>
-                                            <type>amp</type>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                        </artifactItem>
+<!--                                        <artifactItem>-->
+<!--                                            <groupId>org.alfresco.integrations</groupId>-->
+<!--                                            <artifactId>alfresco-content-connector-for-salesforce-repo</artifactId>-->
+<!--                                            <version>${alfresco.salesforce-connector.version}</version>-->
+<!--                                            <type>amp</type>-->
+<!--                                            <overWrite>false</overWrite>-->
+<!--                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>-->
+<!--                                        </artifactItem>-->
                                         <artifactItem>
                                             <groupId>org.alfresco.services.sync</groupId>
                                             <artifactId>alfresco-device-sync-repo</artifactId>
@@ -423,14 +423,14 @@
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                         </artifactItem>
-                                        <artifactItem>
-                                            <groupId>org.alfresco.mediamanagement</groupId>
-                                            <artifactId>alfresco-mm-repo</artifactId>
-                                            <version>${alfresco.mm.version}</version>
-                                            <type>amp</type>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                        </artifactItem>
+<!--                                        <artifactItem>-->
+<!--                                            <groupId>org.alfresco.mediamanagement</groupId>-->
+<!--                                            <artifactId>alfresco-mm-repo</artifactId>-->
+<!--                                            <version>${alfresco.mm.version}</version>-->
+<!--                                            <type>amp</type>-->
+<!--                                            <overWrite>false</overWrite>-->
+<!--                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>-->
+<!--                                        </artifactItem>-->
                                         <artifactItem>
                                             <groupId>org.alfresco</groupId>
                                             <artifactId>alfresco-document-transformation-engine-repo</artifactId>
