@@ -100,7 +100,5 @@ services:
       - KEYCLOAK_PASSWORD=admin
       - KEYCLOAK_IMPORT=/tmp/alfresco-realm.json
       - DB_VENDOR=h2
-    volumes:
-      - ./realms/alfresco-realm.json:/tmp/alfresco-realm.json
     ports:
       - 8999:8080
