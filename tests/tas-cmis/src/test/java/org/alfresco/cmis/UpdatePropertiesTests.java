@@ -113,8 +113,10 @@ public class UpdatePropertiesTests extends CmisTest
             .usingResource(shared)
                 .createFile(testFile).and().assertThat().existsInRepo();
         dataUser.deleteUser(toBeDeleted);
-        // Token will still be valid, just wait for it to expire
+        // Token will still be valid right after this call
+        // Just wait for it to expire
         Thread.sleep(120 * 1000);
+        
         cmisApi.updateProperty("cmis:name", propertyNameValue);
     }
     

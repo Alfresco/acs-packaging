@@ -23,8 +23,8 @@ branches:
 env:
   global:
     # Release version has to start with real version (6.3.0-....) for the docker image to build successfully.
-    - RELEASE_VERSION=
-    - DEVELOPMENT_VERSION=
+    - RELEASE_VERSION=6.3.0-A0
+    - DEVELOPMENT_VERSION=6.3.0-SNAPSHOT
 
 stages:
   - name: test
@@ -72,14 +72,6 @@ jobs:
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
         - travis_wait 60 mvn install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-part3 -Denvironment=default -DrunBugs=false
-    - name: "REST API TAS LDAP tests"
-      jdk: openjdk11
-      install:
-        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
-        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-rest-api-with-ldap.yml
-        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 60 mvn install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-ldap -Denvironment=default -DrunBugs=false
     - name: "CMIS TAS tests"
       jdk: openjdk11
       install:
@@ -96,6 +88,15 @@ jobs:
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
         - travis_wait 30 mvn install -f tests/tas-email/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+    - name: "LDAP TAS tests"
+      jdk: openjdk11
+      install:
+        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-with-ldap.yml
+        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+      script:
+        - travis_wait 60 mvn install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-ldap -Denvironment=default -DrunBugs=false
+        - travis_wait 10 mvn install -f tests/tas-integration/pom.xml -Prun-ldap -Denvironment=default -DrunBugs=false
     - name: "WebDAV TAS tests"
       jdk: openjdk11
       install:
@@ -194,7 +195,9 @@ jobs:
       stage: release
       if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[release\]/
       # Download the maven cache in case the previous test stage is skipped to prevent timeouts during release
-      install: travis_wait 40 mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+      install:
+        - travis_wait 40 mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+        - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
       before_script:
         # Check that the release has not already been done
         - bash scripts/travis/verify_release_tag.sh
