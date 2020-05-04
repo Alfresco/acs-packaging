@@ -186,7 +186,6 @@ jobs:
         # only on support branches or master and if it is not a PR
       # if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request
       jdk: openjdk11
-      bundler_args: --retry 6
       install:
         - travis_retry travis_wait 30 mvn -q install -f war/pom.xml
       before_install:
