@@ -1,8 +1,42 @@
-<h1>        6.3.0
+<h1>        7.0.0
 </h1>
 <h2>
   New Features
 </h2>
+
+<h1>        6.2.1
+</h1>
+<h2>
+  New Features
+</h2>
+
+<ul>
+  <li>[<a href='https://issues.alfresco.com/jira/browse/REPO-4919'>REPO-4919</a>] -         Upgrade LibreOffice from 6.1.6 to 6.3.5
+</ul>
+
+<h2>
+  Security
+</h2>
+
+<h3>OpenSAML module AMP</h3>
+
+If you run the OpenSAML module AMP file through a security Scanner like WhiteSource, Veracode SourceClear, Nexus IQ or others, 
+then the following libraries will show up as having vulnerabilities.
+
+We have verified that the vulnerabilities in these libraries cannot be exploited within the ACS repository.
+
+<h4>not-yet-commons-ssl-0.3.9</h4>
+
+<a href='https://vuln.whitesourcesoftware.com/vulnerability/CVE-2014-3604/'>CVE-2014-3604</a>: Certificates.java in Not Yet Commons SSL before 0.3.15 does not properly verify that the server hostname 
+matches a domain name in the subject's Common Name (CN) field of the X.509 certificate, which allows man-in-the-middle 
+attackers to spoof SSL servers via an arbitrary valid certificate.
+
+Customer action required:
+
+The vulnerable method is not directly used in the codebase so this vulnerability does not affect the ACS product.
+Only customer extensions that use the method.
+
+If your custom extension is bringing in this library, you might be affected by this vulnerability.
 
 
 
@@ -216,7 +250,7 @@
   </li>
   <li>
     <h4>ActiveMQ:</h4>
-    Alfresco ActiveMQ Docker images: <a href='https://github.com/Alfresco/alfresco-docker-activemq'>GitHub Repo</a> <a href='https://hub.docker.com/r/alfresco/alfresco-activemq/'>DockerHub Repo</a></p>
+    <p>Alfresco ActiveMQ Docker images: <a href='https://github.com/Alfresco/alfresco-docker-activemq'>GitHub Repo</a> <a href='https://hub.docker.com/r/alfresco/alfresco-activemq/'>DockerHub Repo</a></p>
   </li>
   <li>
     <h4>Transform Service:</h4>
@@ -269,7 +303,6 @@
     TransformService and RenditionService: All Java APIs related to TransformService and RenditionService have been deprecated; the ability to perform arbitrary transformations will be phased out as the new DBP Transform Service takes effect.  Renditions can be triggered using the existing repository REST API but will be processed asynchronously using the new services.<br/>
   </li>
 </ul>
-<h2>
 
 
 <h2>        Service Pack Request
