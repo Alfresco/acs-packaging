@@ -190,7 +190,7 @@ jobs:
       before_install:
         - bash scripts/veracode/static_analysis_init.sh
       script:
-        - bash scripts/veracode/static_analysis.sh
+        - travis_retry bash scripts/veracode/static_analysis.sh
     - name: "Release and Copy to S3 Staging Bucket"
       stage: release
       if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[release\]/
