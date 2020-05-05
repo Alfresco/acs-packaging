@@ -11,7 +11,18 @@
 </h2>
 
 <ul>
-  <li>[<a href='https://issues.alfresco.com/jira/browse/REPO-4919'>REPO-4919</a>] -         Upgrade LibreOffice from 6.1.6 to 6.3.5
+  <li>Transforms
+  
+  There is now a single all in one T-Engine that performs all the core transforms and has replaced the five
+  separate T-Engines for all but the largest deployments where it is still advisable to separate out
+  the different types of transform into their own images.
+  
+  More transforms are now supported by the newer transform architecture and all calls within the content repository
+  are now able to use it ([REPO-4791](https://issues.alfresco.com/jira/browse/REPO-4791)). Generally these calls exist
+  to support the Share application and are synchronous in nature. They now will try a Local transform before falling
+  back to a Legacy transformer, but cannot use the asynchronous Transform Service.
+  </li>
+  <li>[<a href='https://issues.alfresco.com/jira/browse/REPO-4919'>REPO-4919</a>] - Upgrade LibreOffice from 6.1.6 to 6.3.5
 </ul>
 
 <h2>
