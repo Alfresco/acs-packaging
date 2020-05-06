@@ -19,6 +19,7 @@ branches:
   only:
     - master
     - /support\/.*/
+    - fix/ACS-125
 
 env:
   global:
