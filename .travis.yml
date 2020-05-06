@@ -24,7 +24,7 @@ branches:
 env:
   global:
     # Release version has to start with real version (6.2.x-....) for the docker image to build successfully.
-    - RELEASE_VERSION=6.2.1-RC4
+    - RELEASE_VERSION=6.2.1-RC5
     - DEVELOPMENT_VERSION=6.2.1-SNAPSHOT
 
 stages:
@@ -191,7 +191,7 @@ jobs:
       before_install:
         - bash scripts/veracode/static_analysis_init.sh
       script:
-        - bash scripts/veracode/static_analysis.sh
+        - travis_retry bash scripts/veracode/static_analysis.sh
     - name: "Release and Copy to S3 Staging Bucket"
       stage: release
       if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request AND commit_message =~ /\[release\]/
