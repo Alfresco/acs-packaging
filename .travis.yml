@@ -19,7 +19,6 @@ branches:
   only:
     - master
     - /support\/.*/
-    - fix/ACS-125
 
 env:
   global:
@@ -117,7 +116,7 @@ jobs:
     - name: "Cluster tests"
       jdk: openjdk11
       install:
-        - travis_retry travis_wait 40 mvn install -PenterpriseDocker
+        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-cluster.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8081/alfresco"
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
