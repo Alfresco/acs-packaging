@@ -40,7 +40,7 @@ jobs:
     - stage: test
       name: "WhiteSource scan"
       # only on support branches or master and if it is not a PR
-      if: fork = false AND (branch = master OR branch =~ /support\/.*/ OR branch = fix/ACS-125) AND type != pull_request
+      if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request
       install:
         - travis_retry travis_wait 30 mvn -q install -f war/pom.xml
       script:
