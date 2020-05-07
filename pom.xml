@@ -3,7 +3,7 @@
     <artifactId>acs-packaging</artifactId>
     <packaging>pom</packaging>
     <name>Alfresco Content Services Packaging</name>
-    <version>6.2.1-SNAPSHOT</version>
+    <version>6.2.2-SNAPSHOT</version>
 
     <parent>
         <groupId>org.alfresco</groupId>
@@ -34,10 +34,10 @@
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <dependency.alfresco-enterprise-remote-api.version>7.74.0</dependency.alfresco-enterprise-remote-api.version>
-        <dependency.alfresco-enterprise-repository.version>7.96.0</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-remote-api.version>7.133.0</dependency.alfresco-remote-api.version>
-        <dependency.alfresco-repository.version>7.183.0</dependency.alfresco-repository.version>
+        <dependency.alfresco-enterprise-remote-api.version>7.75</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>7.97</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-remote-api.version>7.134</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-repository.version>7.185</dependency.alfresco-repository.version>
         <dependency.alfresco-data-model.version>8.50.14</dependency.alfresco-data-model.version>
         <dependency.alfresco-core.version>7.33</dependency.alfresco-core.version>
 
