@@ -104,7 +104,7 @@
         <alfresco.mm.version>1.4.0</alfresco.mm.version>
 
         <!-- Alfresco Desktop Sync Service Module -->
-        <alfresco.desktop-sync.version>3.3.2-RC2</alfresco.desktop-sync.version>
+        <alfresco.desktop-sync.version>3.3.2</alfresco.desktop-sync.version>
 
         <!-- Alfresco Alfresco Intelligence Services (AIS) -->
         <alfresco.ais.version>1.1.2</alfresco.ais.version>
