@@ -1,8 +1,141 @@
-<h1>        6.3.0
+<h1>        7.0.0
 </h1>
 <h2>
   New Features
 </h2>
+
+<h1>        6.2.1
+</h1>
+<h2>
+  New Features
+</h2>
+
+<ul>
+  <li>Transforms
+  
+  There is now a single all in one T-Engine that performs all the core transforms and has replaced the five
+  separate T-Engines for all but the largest deployments where it is still advisable to separate out
+  the different types of transform into their own images.
+  
+  More transforms are now supported by the newer transform architecture and all calls within the content repository
+  are now able to use it ([REPO-4791](https://issues.alfresco.com/jira/browse/REPO-4791)). Generally these calls exist
+  to support the Share application and are synchronous in nature. They now will try a Local transform before falling
+  back to a Legacy transformer, but cannot use the asynchronous Transform Service.
+  </li>
+  <li>[<a href='https://issues.alfresco.com/jira/browse/REPO-4919'>REPO-4919</a>] - Upgrade LibreOffice from 6.1.6 to 6.3.5
+</ul>
+
+<h2>        Service Pack Request
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-18345'>MNT-18345</a>] -         Feed Notifier encounters FTL template exception when user leaves a site
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19682'>MNT-19682</a>] -         Uploading document versions with different mime types leads to inconsistent preview generation
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19773'>MNT-19773</a>] -         Marker aspects are not copied to the version store
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19887'>MNT-19887</a>] -         Setting a non-responsive address or port for solr breaks admin console pages
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20053'>MNT-20053</a>] -         Is tagQuery.get.js missing support for facets with Solr6?
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20158'>MNT-20158</a>] -         Blank variables are not allowed in /usr/local/tomcat/shared/classes/alfresco/substitutor.sh
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20433'>MNT-20433</a>] -         Copying a file from a folder to the same folder appends &quot;Copy of&quot; text after file extension in the newly created file
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20671'>MNT-20671</a>] -         Alfresco DBP using the AWS EKS deployment method, inbound email port is unavailable for ACS
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20764'>MNT-20764</a>] -         Searches fail for users who are members of groups where the authorityName contains double quotes
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20916'>MNT-20916</a>] -         Log4j Configuration Hierarchy and Log Appenders can lead to missing log entries
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20932'>MNT-20932</a>] -         Unguarded access to a Pair value retrieved using nodeDao.getNodePair method which can return null
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21009'>MNT-21009</a>] -         Arbitrary Code Execution
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21037'>MNT-21037</a>] -         Empty labels not showing up in facet buckets
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21056'>MNT-21056</a>] -         The Words &quot;Receive&quot; and &quot;Receiving&quot; are Misspelled in some Properties Files
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21083'>MNT-21083</a>] -         Need confirmation on workaround - propTablesCleanupJobDetail job throws unhandled exception when running on huge tables
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21095'>MNT-21095</a>] -         [Security] CVE-2016-10750 - Hazelcast deserialization vulnerability
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21096'>MNT-21096</a>] -         [Security] CVE-2018-8039 - cxf-rt-transports-http-3.0.14 vulnerability
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21097'>MNT-21097</a>] -         [Security] - CVE-2014-0114 - commons-beanutils-1.7.0 vulnerability
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21098'>MNT-21098</a>] -         [Security] Multiple swagger-ui vulnerabilities
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21118'>MNT-21118</a>] -         Share Quickshare XSS
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21150'>MNT-21150</a>] -         Security: LDAP synced attributes can be changed using REST API or Share
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21162'>MNT-21162</a>] -         Share Version History Heading mistranslation as &quot;Last Version&quot; should be &quot;Latest Version&quot;
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21305'>MNT-21305</a>] -         ACS - Unable to retrieve comments for node using REST api after user deletion
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21313'>MNT-21313</a>] -         [Security] CVE-2018-5158 - XSS vulnerability in pdfjs
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21358'>MNT-21358</a>] -         [Security] CVE-2020-8840 - Jackson Databind
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21398'>MNT-21398</a>] -         Unable to override standard rendition definitions
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21417'>MNT-21417</a>] -         LDAP Sync not working on Alfresco 6.1 and 6.2 when making changes via admin UI
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21433'>MNT-21433</a>] -         Mistranslation of label text  in Search Manager Page
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21438'>MNT-21438</a>] -         [Security] Reflective XSS in Accept-Language header
+</li>
+</ul>
+    
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20871'>MNT-20871</a>] -         Edit in Microsoft has pop-up when path length is long for Excel files
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20992'>MNT-20992</a>] -         Audit API fails due to QName cannot be cast to java.util.Locale error
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21099'>MNT-21099</a>] -         License verification sometimes breaks bootstrap in a cluster
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21250'>MNT-21250</a>] -         The fix for MNT-20734 introduces a problem whereby files larger than 4MB cannot be downloaded
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21394'>MNT-21394</a>] -         Edit in Microsoft Office from ADW opens MS Excel documents then immediately prompts that a newer version exists.
+</li>
+</ul>
+                                                                                                                                                                                            
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20415'>MNT-20415</a>] -         HTML tags displayed on notification email for user added to site
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21041'>MNT-21041</a>] -         ACS Helm upgrade to update configuration values does not restart affected pods
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21042'>MNT-21042</a>] -         ACS Helm upgrade fails to perform rolling update with zero downtime
+</ul>
+
+<h2>
+  Security
+</h2>
+
+<h3>OpenSAML module AMP</h3>
+
+If you run the OpenSAML module AMP file through a security Scanner like WhiteSource, Veracode SourceClear, Nexus IQ or others, 
+then the following libraries will show up as having vulnerabilities.
+
+We have verified that the vulnerabilities in these libraries cannot be exploited within the ACS repository.
+
+<h4>not-yet-commons-ssl-0.3.9</h4>
+
+<a href='https://vuln.whitesourcesoftware.com/vulnerability/CVE-2014-3604/'>CVE-2014-3604</a>: Certificates.java in Not Yet Commons SSL before 0.3.15 does not properly verify that the server hostname 
+matches a domain name in the subject's Common Name (CN) field of the X.509 certificate, which allows man-in-the-middle 
+attackers to spoof SSL servers via an arbitrary valid certificate.
+
+Customer action required:
+
+The vulnerable method is not directly used in the codebase so this vulnerability does not affect the ACS product.
+Only customer extensions that use the method.
+
+If your custom extension is bringing in this library, you might be affected by this vulnerability.
 
 
 
@@ -216,7 +349,7 @@
   </li>
   <li>
     <h4>ActiveMQ:</h4>
-    Alfresco ActiveMQ Docker images: <a href='https://github.com/Alfresco/alfresco-docker-activemq'>GitHub Repo</a> <a href='https://hub.docker.com/r/alfresco/alfresco-activemq/'>DockerHub Repo</a></p>
+    <p>Alfresco ActiveMQ Docker images: <a href='https://github.com/Alfresco/alfresco-docker-activemq'>GitHub Repo</a> <a href='https://hub.docker.com/r/alfresco/alfresco-activemq/'>DockerHub Repo</a></p>
   </li>
   <li>
     <h4>Transform Service:</h4>
@@ -269,7 +402,6 @@
     TransformService and RenditionService: All Java APIs related to TransformService and RenditionService have been deprecated; the ability to perform arbitrary transformations will be phased out as the new DBP Transform Service takes effect.  Renditions can be triggered using the existing repository REST API but will be processed asynchronously using the new services.<br/>
   </li>
 </ul>
-<h2>
 
 
 <h2>        Service Pack Request
