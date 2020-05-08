@@ -34,12 +34,12 @@
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <dependency.alfresco-enterprise-remote-api.version>repo-4710-11</dependency.alfresco-enterprise-remote-api.version>
-        <dependency.alfresco-enterprise-repository.version>repo-4710-11</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-remote-api.version>repo-4710-11</dependency.alfresco-remote-api.version>
-        <dependency.alfresco-repository.version>repo-4710-11</dependency.alfresco-repository.version>
-        <dependency.alfresco-data-model.version>8.103</dependency.alfresco-data-model.version>
-        <dependency.alfresco-core.version>8.29</dependency.alfresco-core.version>
+        <dependency.alfresco-enterprise-remote-api.version>8.143</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>8.140</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-remote-api.version>8.161</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-repository.version>8.181</dependency.alfresco-repository.version>
+        <dependency.alfresco-data-model.version>8.111</dependency.alfresco-data-model.version>
+        <dependency.alfresco-core.version>8.32</dependency.alfresco-core.version>
 
         <dependency.alfresco-hb-data-sender.version>1.0.12</dependency.alfresco-hb-data-sender.version>
         <dependency.activiti-repo-connector.version>1.5</dependency.activiti-repo-connector.version>
@@ -55,19 +55,19 @@
         <dependency.gytheio.version>0.11.3</dependency.gytheio.version>
         <dependency.alfresco-log-sanitizer.version>0.2</dependency.alfresco-log-sanitizer.version>
 
-        <dependency.spring.version>5.2.5.RELEASE</dependency.spring.version>
+        <dependency.spring.version>5.2.6.RELEASE</dependency.spring.version>
         <dependency.fabric8.version>4.4.0</dependency.fabric8.version>
-        <dependency.jackson.version>2.10.3</dependency.jackson.version>
+        <dependency.jackson.version>2.11.0</dependency.jackson.version>
         <dependency.jackson-databind.version>2.10.1</dependency.jackson-databind.version>
         <dependency.cxf.version>3.3.6</dependency.cxf.version>
         <dependency.axiom.version>1.2.22</dependency.axiom.version>
 
         <!-- Alfresco Share version -->
-        <alfresco.share.version>6.2.1-A4</alfresco.share.version>
-        <alfresco.alfresco-share-services.version>6.2.1-A4</alfresco.alfresco-share-services.version>
+        <alfresco.share.version>6.2.1-RC2</alfresco.share.version>
+        <alfresco.alfresco-share-services.version>6.2.1-RC2</alfresco.alfresco-share-services.version>
 
         <!-- Alfresco GoogleDocs integration version -->
-        <alfresco.googledrive.version>3.2.0-RC3</alfresco.googledrive.version>
+        <alfresco.googledrive.version>3.2.0</alfresco.googledrive.version>
 
         <!-- Alfresco S3 Connector integration version -->
         <alfresco.s3connector.version>3.0.0.1</alfresco.s3connector.version>
@@ -83,9 +83,6 @@
 
         <!-- Alfresco Salesforce Connector version -->
         <alfresco.salesforce-connector.version>2.2.0-EA1</alfresco.salesforce-connector.version>
-
-        <!-- Alfresco Kofax Connector version -->
-        <alfresco.kofax.version>2.0.0</alfresco.kofax.version>
 
         <!-- SAML Single Sign-On (SSO) for Alfresco Content Services -->
         <alfresco.saml.version>1.2.0</alfresco.saml.version>
@@ -106,7 +103,7 @@
         <alfresco.mm.version>1.4.0</alfresco.mm.version>
 
         <!-- Alfresco Desktop Sync Service Module -->
-        <alfresco.desktop-sync.version>3.3.1</alfresco.desktop-sync.version>
+        <alfresco.desktop-sync.version>3.3.2</alfresco.desktop-sync.version>
 
         <!-- Alfresco Alfresco Intelligence Services (AIS) -->
         <alfresco.ais.version>1.1.2</alfresco.ais.version>
@@ -146,8 +143,7 @@
             <modules>
                 <module>war</module>
                 <module>docker-alfresco</module>
-                <!--<module>docker-alfresco/aws</module>-->
-                <!--<module>docker-alfresco/test/docker-alfresco-all-amps-test</module>-->
+                <module>docker-alfresco/aws</module>
             </modules>
         </profile>
         <profile>
@@ -160,7 +156,6 @@
                 <module>distribution</module>
                 <module>docker-alfresco</module>
                 <module>docker-alfresco/aws</module>
-                <module>docker-alfresco/test/docker-alfresco-all-amps-test</module>
             </modules>
         </profile>
         <profile>
@@ -286,7 +281,7 @@
             <dependency>
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
-                <version>2.10.5</version>
+                <version>2.10.6</version>
             </dependency>
             <dependency>
                 <groupId>commons-httpclient</groupId>
@@ -331,7 +326,7 @@
             <dependency>
                 <groupId>com.sun.xml.bind</groupId>
                 <artifactId>jaxb-impl</artifactId>
-                <version>2.3.2</version>
+                <version>2.3.3</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
@@ -509,6 +504,12 @@
             </dependency>
             <dependency>
                 <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-content-services-share-distribution</artifactId>
+                <version>${alfresco.share.version}</version>
+                <type>zip</type>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
                 <artifactId>alfresco-share-services</artifactId>
                 <version>${alfresco.alfresco-share-services.version}</version>
                 <type>amp</type>
@@ -604,12 +605,6 @@
                 <groupId>org.alfresco.integrations</groupId>
                 <artifactId>alfresco-content-connector-for-salesforce-share</artifactId>
                 <version>${alfresco.salesforce-connector.version}</version>
-                <type>amp</type>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco.module.KofaxAddon</groupId>
-                <artifactId>kofaxaddon</artifactId>
-                <version>${alfresco.kofax.version}</version>
                 <type>amp</type>
             </dependency>
             <dependency>

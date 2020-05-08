@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="REST API tests part3" preserve-order="true">
+<suite name="REST API tests with LDAP" preserve-order="true">
 	<listeners>
         <listener class-name="org.alfresco.utility.report.HtmlReportListener"/>
         <listener class-name="org.alfresco.utility.testrail.TestRailExecutorListener"/>
         <listener class-name="org.alfresco.utility.testng.OSTestMethodSelector"/>
 	</listeners>
 
-    <test name="Part3">
+    <test name="LDAP">
         <packages>
             <package name="org.alfresco.rest.ldap.*"/>
         </packages>

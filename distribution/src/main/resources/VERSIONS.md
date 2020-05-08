@@ -9,10 +9,10 @@ This file lists the recommended components for this Service Pack. Use it along w
 |---|---|---|
 | Alfresco Content Services | @project.version@ |
 | Alfresco Share | @alfresco.share.version@ |
-| Alfresco Search Services | 1.4.1 |
-| Alfresco Insight Engine | 1.4.1 |
+| Alfresco Search Services | 1.4.2 |
+| Alfresco Insight Engine | 1.4.2 |
 | Alfresco Desktop Sync Service | @alfresco.desktop-sync.version@ |
-| Alfresco Transform Service | 1.1.1 |
+| Alfresco Transform Service | 1.2.0 |
 | Document Transformation Engine | @alfresco.transformation-engine.version@ |
 | Alfresco File Transfer Receiver | 6.2.1 |
 | Alfresco Module Management Tool | 6.0 |
@@ -29,7 +29,6 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Alfresco Office Services | @alfresco.aos-module.version@ |
 | SAML Single Sign-On (SSO) for Alfresco Content Services | @alfresco.saml.version@ |
 | Alfresco Content Connector for Salesforce | @alfresco.salesforce-connector.version@ |
-| Alfresco Kofax Integration | @alfresco.kofax.version@ |
 | Alfresco S3 Connector | @alfresco.s3connector.version@ |
 | Alfresco Content Connector for Azure | @alfresco.azure-connector.version@ |
 | Alfresco EMC Centera Connector | @alfresco.centera-connector.version@ |
@@ -45,7 +44,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Component | Recommended | Also Available |
 |---|---|---|
 | ImageMagick | 7.0.7 |
-| LibreOffice | 6.1.6 |
+| LibreOffice | 6.3.5 |
 | Alfresco PDF Renderer | 1.1 |
 
 ##### Operating Systems
