@@ -108,6 +108,34 @@
 </ul>
 
 <h2>
+Share
+</h2>
+<ul>
+<li>MNT-20347 : Expand the ability of encrypting properties to also include the Kerberos HTTP service password in share-config-custom.xml
+</li>
+<li>MNT-21438 : [Security] Reflective XSS in Accept-Language header
+</li>
+<li>MNT-19820 : Share update hazelcast to be consistent with alfresco war implementation
+</li>
+<li>MNT-21162 : Share Version History Heading mistranslation as "Last Version" should be "Latest Version"
+</li>
+<li>MNT-21433 : Mistranslation of label text  in Search Manager Page
+</li>
+<li>MNT-21313 : [Security] CVE-2018-5158 - XSS vulnerability in pdfjs
+</li>
+<li>MNT-21150 : Security: LDAP synced attributes can be changed using REST API or Share
+</li>
+<li>MNT-21097 : CLONE - [Security] - CVE-2014-0114 - commons-beanutils-1.7.0 vulnerability
+</li>
+<li>MNT-21096 : [Security] CVE-2018-8039 - cxf-rt-transports-http-3.0.14 vulnerability
+</li>
+<li>MNT-21056 : The Words “Receive” and “Receiving” are Misspelled in some Properties Files
+</li>
+<li>MNT-20053 : update tagQuery.get.js to accomodate current and future versions of solr
+</li>
+</ul>
+
+<h2>
   Security
 </h2>
 
