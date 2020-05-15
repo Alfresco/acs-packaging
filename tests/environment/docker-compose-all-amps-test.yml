@@ -47,6 +47,11 @@ services:
         -Ds3.bucketName=bamboo-s3-conn-default
         -Ds3.autoLowerCaseBucketName=true
 
+        -Dcontent.remote.default.contentRefHandler.source.s3.bucketRegion=us-east-1
+        -Dcontent.remote.default.contentRefHandler.target.s3.bucketRegion=us-east-1
+        -Dcontent.transformer.AwsElasticTranscoder.s3.bucketRegion=us-east-1
+        -Dcontent.transformer.Zencoder.s3.bucketRegion=us-east-1
+
         -Dconnector.az.account.name=${AZURE_STORAGE_ACCOUNT_NAME}
         -Dconnector.az.account.key=${AZURE_STORAGE_ACCOUNT_KEY}
         -Dconnector.az.containerName=packaging-test-container
