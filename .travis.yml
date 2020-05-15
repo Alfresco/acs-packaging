@@ -19,7 +19,6 @@ branches:
   only:
     - master
     - /support\/.*/
-    - fix/ACS-22_code_enhance_6-2-N
 
 env:
   global:
