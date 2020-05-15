@@ -195,6 +195,7 @@
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
                                         </artifactItem>
+                                        <!-- Incompatible with MM 1.4.1-RC1. Jira issue -> https://issues.alfresco.com/jira/browse/REPO-5133
                                         <artifactItem>
                                             <groupId>org.alfresco.integrations</groupId>
                                             <artifactId>alfresco-s3-connector</artifactId>
@@ -202,7 +203,7 @@
                                             <type>amp</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                        </artifactItem>
+                                        </artifactItem>-->
                                         <artifactItem>
                                             <groupId>org.alfresco</groupId>
                                             <artifactId>alfresco-ai-repo</artifactId>
