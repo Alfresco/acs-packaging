@@ -86,6 +86,10 @@
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21438'>MNT-21438</a>] -         [Security] Reflective XSS in Accept-Language header
 </li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20347'>MNT-20347</a>] -         Expand the ability of encrypting properties to also include the Kerberos HTTP service password in share-config-custom.xml
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-19820'>MNT-19820</a>] -         Share update hazelcast to be consistent with alfresco war implementation
+</li>
 </ul>
     
 <h2>        Hot Fix Request
