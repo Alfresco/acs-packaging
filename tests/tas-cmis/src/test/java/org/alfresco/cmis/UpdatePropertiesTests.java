@@ -115,7 +115,7 @@ public class UpdatePropertiesTests extends CmisTest
         dataUser.deleteUser(toBeDeleted);
         // Token will still be valid right after this call
         // Just wait for it to expire
-        Thread.sleep(120 * 1000);
+        Thread.sleep(320 * 1000);
         
         cmisApi.updateProperty("cmis:name", propertyNameValue);
     }
