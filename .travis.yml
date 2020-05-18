@@ -22,6 +22,7 @@ branches:
   only:
     - master
     - /support\/.*/
+    - fix/ACS-22_code_enhance_6-0-N
 
 # This should not be required on community build
 before_install:
