@@ -597,12 +597,12 @@
                 <artifactId>alfresco-log-sanitizer</artifactId>
                 <version>${dependency.alfresco-log-sanitizer.version}</version>
             </dependency>
-<!--            <dependency>-->
-<!--                <groupId>org.alfresco.integrations</groupId>-->
-<!--                <artifactId>alfresco-s3-connector</artifactId>-->
-<!--                <version>${alfresco.s3connector.version}</version>-->
-<!--                <type>amp</type>-->
-<!--            </dependency>-->
+            <dependency>
+                <groupId>org.alfresco.integrations</groupId>
+                <artifactId>alfresco-s3-connector</artifactId>
+                <version>${alfresco.s3connector.version}</version>
+                <type>amp</type>
+            </dependency>
             <dependency>
                 <groupId>org.alfresco</groupId>
                 <artifactId>alfresco-glacier-connector-repo</artifactId>
