@@ -70,14 +70,14 @@ public class DiscoveryTests extends RestTest
                 "alfresco-aos-module",
                 "org.alfresco.integrations.google.docs",
                 "alfresco-trashcan-cleaner",
-                "org_alfresco_integrations_S3Connector",
+//                "org_alfresco_integrations_S3Connector",
                 "org_alfresco_module_xamconnector",
                 "alfresco-content-connector-for-salesforce-repo",
                 "alfresco-share-services",
                 "alfresco-saml-repo",
                 "org_alfresco_device_sync_repo",
                 "org_alfresco_mm_repo", "alfresco-ai-repo",
-                "alfresco-glacier-connector-repo",
+//                "alfresco-glacier-connector-repo",
                 "org.alfresco.module.TransformationServer");
 
         expectedModules.forEach(module ->
