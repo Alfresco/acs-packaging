@@ -38,9 +38,6 @@ services:
 
         -Ddsync.service.uris=http://localhost:8082/alfresco
 
-        -Dencryption.keystore.type=pkcs12
-        -Dencryption.cipherAlgorithm=AES/CBC/PKCS5Padding
-        -Dencryption.keyAlgorithm=AES
         -Dmetadata-keystore.password=mp6yc0UD9e
         -Dmetadata-keystore.aliases=metadata
         -Dmetadata-keystore.metadata.password=mp6yc0UD9e
