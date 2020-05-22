@@ -70,7 +70,7 @@ public class DiscoveryTests extends RestTest
                 "alfresco-aos-module",
                 "org.alfresco.integrations.google.docs",
                 "alfresco-trashcan-cleaner",
-//                "org_alfresco_integrations_S3Connector",
+                "org_alfresco_integrations_S3Connector",
                 "org_alfresco_module_xamconnector",
                 "alfresco-content-connector-for-salesforce-repo",
                 "alfresco-share-services",
