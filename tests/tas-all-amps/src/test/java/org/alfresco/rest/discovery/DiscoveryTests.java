@@ -77,7 +77,7 @@ public class DiscoveryTests extends RestTest
                 "alfresco-saml-repo",
                 "org_alfresco_device_sync_repo",
                 "org_alfresco_mm_repo", "alfresco-ai-repo",
-//                "alfresco-glacier-connector-repo",
+                "alfresco-glacier-connector-repo",
                 "org.alfresco.module.TransformationServer");
 
         expectedModules.forEach(module ->
