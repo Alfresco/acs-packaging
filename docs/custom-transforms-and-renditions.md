@@ -208,12 +208,12 @@ image. The failover transform is defined in the same file as a pipeline transfor
 {
   "transformers": [
     {
-      "transformerName": "libreofficeToPdf",
-      "transformerFailover" : [ "libreoffice", "libreofficeHtmlToPdfViaOdt" ],
+      "transformerName": "imgExtractOrImgCreate",
+      "transformerFailover" : [ "imgExtract", "imgCreate" ],
       "supportedSourceAndTargetList": [
-        {"sourceMediaType": "application/vnd.oasis.opendocument.graphics", "priority": 150, "targetMediaType": "application/pdf" },
+        {"sourceMediaType": "application/vnd.oasis.opendocument.graphics", "priority": 150, "targetMediaType": "image/png" },
         ...
-        {"sourceMediaType": "application/vnd.sun.xml.calc.template",       "priority": 150, "targetMediaType": "application/pdf" }
+        {"sourceMediaType": "application/vnd.sun.xml.calc.template",       "priority": 150, "targetMediaType": "image/png" }
       ]
     }
   ]
