@@ -150,7 +150,7 @@ If blank, this indicates that all possible combinations are supported.
 This is the cartesian product of all source types to the first
 intermediate type and all target types from the last intermediate type.
 Any combinations supported by the first transformer are excluded. They
-will allso have the priority from the first transform.
+will also have the priority from the first transform.
 * **transformOptions** - A list of references to options required by
 the pipeline transformer.
 
