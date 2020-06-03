@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>acs-packaging</artifactId>
-        <version>6.2.2-SNAPSHOT</version>
+        <version>6.2.2-A2</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 

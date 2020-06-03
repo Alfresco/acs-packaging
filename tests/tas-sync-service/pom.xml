@@ -4,13 +4,13 @@
     <groupId>org.alfresco.tas</groupId>
     <artifactId>content-repository-sync-service-test</artifactId>
     <name>content-repository-sync-service-test</name>
-    <version>6.2.2-SNAPSHOT</version>
+    <version>6.2.2-A2</version>
     <packaging>jar</packaging>
 
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>content-repository-tas-tests-parent</artifactId>
-        <version>6.2.2-SNAPSHOT</version>
+        <version>6.2.2-A2</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
