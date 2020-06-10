@@ -34,7 +34,7 @@
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <dependency.alfresco-enterprise-remote-api.version>8.165</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-remote-api.version>8.166</dependency.alfresco-enterprise-remote-api.version>
         <dependency.alfresco-enterprise-repository.version>8.157</dependency.alfresco-enterprise-repository.version>
         <dependency.alfresco-remote-api.version>8.180</dependency.alfresco-remote-api.version>
         <dependency.alfresco-repository.version>8.198</dependency.alfresco-repository.version>
