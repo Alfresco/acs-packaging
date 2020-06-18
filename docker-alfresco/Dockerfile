@@ -17,6 +17,10 @@ ARG JAVA_PROFILER=YourKit-JavaProfiler-2018.04-docker
 ARG JAVA_PROFILER_DIR=/usr/local/YourKit-JavaProfiler-2018.04
 ARG JAVA_PROFILER_RUNTIME_DIR=/tmp/Alfresco/yourkit
 
+# Use this variable to set Java Options that will not be passed as command line arguments to Java Process
+# This is specially recommended when setting passwords and other sensible data
+ENV JAVA_TOOL_OPTIONS $JAVA_TOOL_OPTIONS
+
 # Create prerequisite to store tools and properties
 RUN mkdir -p ${TOMCAT_DIR}/shared/classes/alfresco/extension/mimetypes && \
     mkdir -p ${TOMCAT_DIR}/shared/classes/alfresco/extension/transform/renditions && \
