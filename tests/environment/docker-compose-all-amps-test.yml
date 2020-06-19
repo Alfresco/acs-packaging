@@ -54,6 +54,7 @@ services:
         -Ds3.autoLowerCaseBucketName=true
 
         -Dconnector.az.account.name=${AZURE_STORAGE_ACCOUNT_NAME}
+        -Dconnector.az.authentication.mode=${AZURE_AUTHENTICATION_MODE}
         -Dconnector.az.account.key=${AZURE_STORAGE_ACCOUNT_KEY}
         -Dconnector.az.containerName=packaging-test-container
         -Dconnector.az.deleted.containerName=packaging-test-container-del
