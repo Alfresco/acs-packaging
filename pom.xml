@@ -64,8 +64,8 @@
         <dependency.axiom.version>1.2.22</dependency.axiom.version>
 
         <!-- Alfresco Share version -->
-        <alfresco.share.version>6.2.1</alfresco.share.version>
-        <alfresco.alfresco-share-services.version>6.2.1</alfresco.alfresco-share-services.version>
+        <alfresco.share.version>6.2.2-RC1</alfresco.share.version>
+        <alfresco.alfresco-share-services.version>6.2.2-RC1</alfresco.alfresco-share-services.version>
 
         <!-- Alfresco GoogleDocs integration version -->
         <alfresco.googledrive.version>3.2.0</alfresco.googledrive.version>
