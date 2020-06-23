@@ -86,7 +86,7 @@
         <alfresco.salesforce-connector.version>2.2.0-EA1</alfresco.salesforce-connector.version>
 
         <!-- SAML Single Sign-On (SSO) for Alfresco Content Services -->
-        <alfresco.saml.version>1.2.0</alfresco.saml.version>
+        <alfresco.saml.version>1.2.1-RC1</alfresco.saml.version>
 
         <!-- Alfresco Outlook Integration -->
         <alfresco.outlook.version>2.6.1</alfresco.outlook.version>
