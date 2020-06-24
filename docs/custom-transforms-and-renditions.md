@@ -196,6 +196,32 @@ or when the repository pods are restarted.
 > From Kubernetes documentation: Caution: If there are some files
 in the mountPath location, they will be deleted.
 
+### Overriding a transform
+In the same way as it is possible combine Local transforms into pipelines, it is also possible to override a
+previously defined transform in a file in the _local.transform.pipeline.config.dir_ directory. The last definition read
+wins. The configuration from T-Engines or the Transform Service is initially read followed by files in this directory.
+Files are read in alphanumeric order. So _0100-basePipelines.json_ is read before _0200-a-cutdown-libreoffice.json_. The
+following example removes most of the supported source to target media types form the standard _"libreoffice"_
+transform. This is not something you would normally want to do. It also changes the max size and priority of others.
+
+```json
+{
+  "transformers": [
+    {
+      "transformerName": "libreoffice",
+      "supportedSourceAndTargetList": [
+        {"sourceMediaType": "text/csv", "maxSourceSizeBytes": 1000, "targetMediaType": "text/html" },
+        {"sourceMediaType": "text/csv", "targetMediaType": "application/vnd.oasis.opendocument.spreadsheet" },
+        {"sourceMediaType": "text/csv", "targetMediaType": "application/vnd.oasis.opendocument.spreadsheet-template" },
+        {"sourceMediaType": "text/csv", "targetMediaType": "text/tab-separated-values" },
+        {"sourceMediaType": "text/csv", "priority": 45, "targetMediaType": "application/vnd.ms-excel" },
+        {"sourceMediaType": "text/csv", "priority": 155, "targetMediaType": "application/pdf" }
+      ]
+    }
+  ]
+}
+```
+
 ### Configure a custom rendition
 
 Renditions are a representation of source content in another form. A
