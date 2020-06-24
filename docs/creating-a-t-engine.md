@@ -3,7 +3,8 @@ For context see [Custom Transforms and Renditions](custom-transforms-and-renditi
 # Creating a T-Engine
 
 This page will describe how to develop, configure and run custom
-transformers running within a T-Engine.
+transformers running within a T-Engine. You may also find the alfresco-transformer-base
+[README](https://github.com/Alfresco/alfresco-transform-core/blob/master/alfresco-transformer-base/README.md) useful.
  
 We will use code from an example [alfresco-helloworld-transformer](https://github.com/Alfresco/alfresco-helloworld-transformer/tree/master/alfresco-helloworld-transformer-engine)
 project in GitHub. This T-Engine contains a single transformer but there
@@ -50,7 +51,7 @@ Maven project with the same folder structure. Key files:
   the Spring Boot application and generating the Docker image. It is
   likely you will need to change the artifact name and add extra dependencies.
 * [Application.java](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/alfresco-helloworld-transformer-engine/src/main/java/org/alfresco/transformer/Application.java)
-  The Application class defines an entry point for the Spring Boot
+  The Application class defines the entry point for the Spring Boot
   application.
 * [Dockerfile](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/alfresco-helloworld-transformer-engine/Dockerfile)
   The Dockerfile is needed by the **docker-maven-plugin** configured in
@@ -66,7 +67,7 @@ T-Engines must provide a */transform/config* end point for clients to
 determine what it supported. This is simply achieved by editing a JSON
 file. The following [engine_config.json](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/alfresco-helloworld-transformer-engine/src/main/resources/engine_config.json)
 is taken from the Hello World example, but there are other examples such
-as the one used by the [Tika T-Engine](https://github.com/Alfresco/alfresco-transform-core/blob/master/alfresco-docker-tika/src/main/resources/engine_config.json).
+as the one used by the [Tika T-Engine](https://github.com/Alfresco/alfresco-transform-core/blob/master/alfresco-transform-tika/alfresco-transform-tika/src/main/resources/tika_engine_config.json).
 
 
 ```json
@@ -101,10 +102,10 @@ as the one used by the [Tika T-Engine](https://github.com/Alfresco/alfresco-tran
   shared between T-Engines. In this example there is only one group of
   options called **helloWorldOptions**, which has just one option the
   **language**. Unless an option has a **"required": true** field it is
-  considered to be optional. If you look at the [Tika T-Engine](https://github.com/Alfresco/alfresco-transform-core/blob/master/alfresco-docker-tika/src/main/resources/engine_config.json)
+  considered to be optional. If you look at the [Tika T-Engine](https://github.com/Alfresco/alfresco-transform-core/blob/master/alfresco-transform-tika/alfresco-transform-tika/src/main/resources/tika_engine_config.json)
   file, you can see options may also be grouped. You don't need to
-  specify *sourceMimetype*, *targetMimetype*, *sourceExtension* or
-  *targetExtension* as options as these are automatically added.
+  specify *sourceMimetype*, *sourceExtension*, *sourceEncoding*, *targetMimetype*,
+  *targetExtension* or *timeout* as options as these are available to all transformers.
 
 * **transformers** - A list of transformer definitions.
   Each transformer definition should have a unique **transformerName**,
@@ -114,8 +115,8 @@ as the one used by the [Tika T-Engine](https://github.com/Alfresco/alfresco-tran
   specify references to 0 or more transformOptions.
   
 * **supportedSourceAndTargetList** is simply a list of source and target
-  Media Types that may be transformed, optionally specifying a
-  **maxSourceSizeBytes** value. In this case there is only one from
+  Media Types that may be transformed, optionally specifying
+  **maxSourceSizeBytes** and **priority** values. In this case there is only one from
   text to HTML and we have limited the source file size, to avoid
   transforming files that clearly don't contain names.
 
@@ -124,11 +125,17 @@ as the one used by the [Tika T-Engine](https://github.com/Alfresco/alfresco-tran
 T-Engines generally extend an AbstractTransformerController and provide
 implementations of the following methods. Take a look at the
 [HelloWorldController.java](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/alfresco-helloworld-transformer-engine/src/main/java/org/alfresco/transformer/HelloWorldController.java)
-example.
+example and the alfresco-transformer-base [README](https://github.com/Alfresco/alfresco-transform-core/blob/master/alfresco-transformer-base/README.md) useful.
+The AbstractTransformerController `/transform` endpoint handles ACS repository requests to Local Transforms over http
+and requests from the Transform Service via a message queue.
 
-#### transform
+#### transformImpl
 
 ```java
+    @Override
+    public void transformImpl(String transformName, String sourceMimetype, String targetMimetype,
+                              Map<String, String> transformOptions, File sourceFile, File targetFile)
+
 @PostMapping(value = "/transform", consumes = MULTIPART_FORM_DATA_VALUE)
 public ResponseEntity<Resource> transform(HttpServletRequest request,
                                               @RequestParam("file") MultipartFile sourceMultipartFile,
@@ -136,38 +143,16 @@ public ResponseEntity<Resource> transform(HttpServletRequest request,
                                               @RequestParam(value = "language") String language)
 ```
 
-The `/transform` endpoint handles ACS repository requests to Local
-Transforms over http. Generally it will:
-* prepare source and target files on disk using the supplied
-  MultipartFile and targetExtension. The Transformer Base will handle
-  the removal of these files.
-* perform the transform
-* send the result back
+
 
 Method parameters:
 
-* **sourceMultipartFile** - The file to be transformed from the
-transform request. This is always provided.
-* **targetExtension** - The target extension of the transformed file
-to be returned in the response. This is always provided.
-* **language** - This is the custom transform option defined for
-the example T-Engine.
-
-The `transform` method's signature will vary depending on
-the [T-Engine's configuration](#t-engine-configuration).
-The example T-Engine is configured to take a single `language`
-transform option, but the number of the `transform` method's
-parameters will have to match the transform options defined in [engine_config.json](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/alfresco-helloworld-transformer-engine/src/main/resources/engine_config.json).
-
-#####  processTransform
-
-```java
-public void processTransform(File sourceFile, File targetFile, Map<String, String> transformOptions, Long timeout)
-```
-
-This method handles requests from the Transform Service via a message
-queue. As it performs the same transform as the **transform** method
-they tend to both call a common method to perform the actual transform.
+* **transformName** the name of the transformer from the engine_config.json file that should be used.
+* **sourceMimetype** mimetype of the source
+* **targetMimetype** mimetype of the target
+* **transformOptions** transform options from the client
+* **sourceFile** the source as a file
+* **targetFile** the target as a file
 
 #####  getProbeTestTransform
 

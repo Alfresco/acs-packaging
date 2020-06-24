@@ -13,6 +13,12 @@ services:
     image: alfresco/alfresco-content-repository:latest
     environment:
       CATALINA_OPTS : "-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n"
+      JAVA_TOOL_OPTIONS: "
+        -Dmetadata-keystore.password=mp6yc0UD9e
+        -Dmetadata-keystore.aliases=metadata
+        -Dmetadata-keystore.metadata.password=mp6yc0UD9e
+        -Dmetadata-keystore.metadata.algorithm=AES
+      "
       JAVA_OPTS :
         "
         -Dalfresco.port=8082
@@ -40,11 +46,6 @@ services:
         -Dftp.port=1221
         -Dcors.enabled=true
         -Dcors.allowed.origins=http://localhost:4200
-
-        -Dmetadata-keystore.password=mp6yc0UD9e
-        -Dmetadata-keystore.aliases=metadata
-        -Dmetadata-keystore.metadata.password=mp6yc0UD9e
-        -Dmetadata-keystore.metadata.algorithm=AES
         "
     ports:
       - 8082:8080
