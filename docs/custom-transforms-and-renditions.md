@@ -199,10 +199,10 @@ in the mountPath location, they will be deleted.
 ### Overriding a transform
 In the same way as it is possible combine Local transforms into pipelines, it is also possible to override a
 previously defined transform in a file in the _local.transform.pipeline.config.dir_ directory. The last definition read
-wins. The configuration from T-Engines of the Transform Service are initially read followed by files in this directory.
+wins. The configuration from T-Engines or the Transform Service is initially read followed by files in this directory.
 Files are read in alphanumeric order. So _0100-basePipelines.json_ is read before _0200-a-cutdown-libreoffice.json_. The
 following example removes most of the supported source to target media types form the standard _"libreoffice"_
-transform, so this is not something you would normally want to do. It also changes the max size and priority of others.
+transform. This is not something you would normally want to do. It also changes the max size and priority of others.
 
 ```json
 {
