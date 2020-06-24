@@ -7,7 +7,7 @@ set -ev
 
 if [ -z ${RELEASE_VERSION} ];
 then
-  echo "Please provide a RELEASE_VERSION in the format <acs-version>-<additional-info> (7.0-EA or 7.0-SNAPSHOT)"
+  echo "Please provide a RELEASE_VERSION in the format <acs-version>-<additional-info> (7.0.0-EA or 7.0.0-SNAPSHOT)"
   exit -1
 fi
 
