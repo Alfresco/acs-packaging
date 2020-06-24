@@ -46,7 +46,7 @@
 
         <dependency.alfresco-spring-encryptor.version>6.1</dependency.alfresco-spring-encryptor.version>
         <dependency.alfresco-enterprise-crypto.version>6.2</dependency.alfresco-enterprise-crypto.version>
-        <dependency.alfresco-spring-webscripts.version>8.2</dependency.alfresco-spring-webscripts.version>
+        <dependency.alfresco-spring-webscripts.version>8.4</dependency.alfresco-spring-webscripts.version>
         <dependency.alfresco-mmt.version>6.0</dependency.alfresco-mmt.version>
         <dependency.alfresco-pdf-renderer.version>1.1</dependency.alfresco-pdf-renderer.version>
         <dependency.alfresco-trashcan-cleaner.version>2.3</dependency.alfresco-trashcan-cleaner.version>
