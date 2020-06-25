@@ -103,9 +103,11 @@ localTransform.helloworld.url=
 ### Configure a custom transform pipeline
 
 Local Transforms may be combined together in a pipeline to form a new
-transformer. A pipeline definition (JSON) defines the sequence of
+transform, where the output from one becomes the input to the next and
+so on. A pipeline definition (JSON) defines the sequence of
 transforms and intermediate Media Types. Like any other transformer, it
-specifies a list of supported source and target Media Types. The
+specifies a list of supported source and target Media Types. If you don't supply any,
+all possible combinations are assumed to be available. The
 definition may reuse the transformOptions of transformers in the
 pipeline, but typically will define its own subset of these.  
 
@@ -128,15 +130,14 @@ many may be defined in the same file.
         {"sourceMediaType": "text/plain", priority:45,  "targetMediaType": "text/plain" }
       ],
       "transformOptions": [
-        "helloWorldOptions",
-        "htmlOptions"
+        "helloWorldOptions"
       ]
     }
   ]
 }
 ```
 
-* **transformerName** - Try to create a unique name for the transformer.
+* **transformerName** - Try to create a unique name for the transform.
 * **transformerPipeline** - A list of transformers in the pipeline.
 The **targetMediaType** specifies the intermediate Media Types between
 transformers. There is no final targetMediaType as this comes from the
@@ -148,7 +149,8 @@ maxSourceSizeBytes see [Supported Source and Target List](https://github.com/Alf
 If blank, this indicates that all possible combinations are supported.
 This is the cartesian product of all source types to the first
 intermediate type and all target types from the last intermediate type.
-Any combinations supported by the first transformer are excluded.
+Any combinations supported by the first transformer are excluded. They
+will also have the priority from the first transform.
 * **transformOptions** - A list of references to options required by
 the pipeline transformer.
 
@@ -196,6 +198,61 @@ or when the repository pods are restarted.
 > From Kubernetes documentation: Caution: If there are some files
 in the mountPath location, they will be deleted.
 
+### Configure custom failover transforms
+
+A failover transform, simply provides a list of transforms to be
+attempted one after another until one succeeds. For example, you may have a fast transform that simply
+```json
+{
+  "transformers": [
+    {
+      "transformerName": "imgExtractOrImgCreate",
+      "transformerFailover" : [ "imgExtract", "imgCreate" ],
+      "supportedSourceAndTargetList": [
+        {"sourceMediaType": "application/vnd.oasis.opendocument.graphics", "priority": 150, "targetMediaType": "image/png" },
+        ...
+        {"sourceMediaType": "application/vnd.sun.xml.calc.template",       "priority": 150, "targetMediaType": "image/png" }
+      ]
+    }
+  ]
+}
+```
+* **transformerName** - Try to create a unique name for the transform.
+* **transformerFaillover** - A list of transformers to try.
+* **supportedSourceAndTargetList** - The supported source and target
+Media Types, which refer to the Media Types this failover transformer
+can transform from and to, additionally you can set the priority and the
+maxSourceSizeBytes see [Supported Source and Target List](https://github.com/Alfresco/alfresco-transform-core/blob/master/docs/engine_config.md#supported-source-and-target-list).
+Unlike pipelines, it must not be blank.
+* **transformOptions** - A list of references to options required by
+the pipeline transformer.
+
+### Overriding a transform
+In the same way as it is possible combine Local transforms into pipelines, it is also possible to override a
+previously defined transform in a file in the _local.transform.pipeline.config.dir_ directory. The last definition read
+wins. The configuration from T-Engines or the Transform Service is initially read followed by files in this directory.
+Files are read in alphanumeric order. So _0100-basePipelines.json_ is read before _0200-a-cutdown-libreoffice.json_. The
+following example removes most of the supported source to target media types form the standard _"libreoffice"_
+transform. This is not something you would normally want to do. It also changes the max size and priority of others.
+
+```json
+{
+  "transformers": [
+    {
+      "transformerName": "libreoffice",
+      "supportedSourceAndTargetList": [
+        {"sourceMediaType": "text/csv", "maxSourceSizeBytes": 1000, "targetMediaType": "text/html" },
+        {"sourceMediaType": "text/csv", "targetMediaType": "application/vnd.oasis.opendocument.spreadsheet" },
+        {"sourceMediaType": "text/csv", "targetMediaType": "application/vnd.oasis.opendocument.spreadsheet-template" },
+        {"sourceMediaType": "text/csv", "targetMediaType": "text/tab-separated-values" },
+        {"sourceMediaType": "text/csv", "priority": 45, "targetMediaType": "application/vnd.ms-excel" },
+        {"sourceMediaType": "text/csv", "priority": 155, "targetMediaType": "application/pdf" }
+      ]
+    }
+  ]
+}
+```
+
 ### Configure a custom rendition
 
 Renditions are a representation of source content in another form. A
@@ -220,7 +277,7 @@ values that will be passed to a transformer and the target Media Type.
 * **options** - The list of transform option names and values
 corresponding to the transform options defined in
 [T-Engine configuration](creating-a-t-engine.md#t-engine-configuration).
-If you specify **sourceEncoding** or **sourceNodeRef** without a value,
+If you specify **sourceNodeRef** without a value,
 the system will automatically add the values at run time. 
 
 Just like Pipeline Definitions, custom Rendition Definitions need to be placed

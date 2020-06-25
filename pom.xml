@@ -34,11 +34,11 @@
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <dependency.alfresco-enterprise-remote-api.version>8.177</dependency.alfresco-enterprise-remote-api.version>
-        <dependency.alfresco-enterprise-repository.version>8.174</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-remote-api.version>8.195</dependency.alfresco-remote-api.version>
-        <dependency.alfresco-repository.version>8.219</dependency.alfresco-repository.version>
-        <dependency.alfresco-data-model.version>8.127</dependency.alfresco-data-model.version>
+        <dependency.alfresco-enterprise-remote-api.version>8.180</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>8.178</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-remote-api.version>8.197</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-repository.version>8.223</dependency.alfresco-repository.version>
+        <dependency.alfresco-data-model.version>8.128</dependency.alfresco-data-model.version>
         <dependency.alfresco-core.version>8.35</dependency.alfresco-core.version>
 
         <dependency.alfresco-hb-data-sender.version>1.0.12</dependency.alfresco-hb-data-sender.version>
@@ -46,7 +46,7 @@
 
         <dependency.alfresco-spring-encryptor.version>6.1</dependency.alfresco-spring-encryptor.version>
         <dependency.alfresco-enterprise-crypto.version>6.2</dependency.alfresco-enterprise-crypto.version>
-        <dependency.alfresco-spring-webscripts.version>8.2</dependency.alfresco-spring-webscripts.version>
+        <dependency.alfresco-spring-webscripts.version>8.4</dependency.alfresco-spring-webscripts.version>
         <dependency.alfresco-mmt.version>6.0</dependency.alfresco-mmt.version>
         <dependency.alfresco-pdf-renderer.version>1.1</dependency.alfresco-pdf-renderer.version>
         <dependency.alfresco-trashcan-cleaner.version>2.3</dependency.alfresco-trashcan-cleaner.version>
