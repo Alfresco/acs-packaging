@@ -79,7 +79,7 @@ public class DiscoveryTests extends RestTest
                 // TODO uncomment this amp once https://issues.alfresco.com/jira/browse/DESKTOPAPP-185 is done
                 //"org_alfresco_device_sync_repo",
                 "org_alfresco_mm_repo", "alfresco-ai-repo",
-                "alfresco-glacier-connector-repo",
+                "alfresco-glacier-connector-repo"
                 // TODO uncomment this amp once https://issues.alfresco.com/jira/browse/MNT-21648 is done
                 //"org.alfresco.module.TransformationServer"
         );
