@@ -19,7 +19,6 @@ branches:
   only:
     - master
     - /support\/.*/
-    - fix/MNT-20557
 
 env:
   global:
