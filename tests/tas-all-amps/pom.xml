@@ -260,15 +260,14 @@
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
                                         </artifactItem>
-                                        <!-- TODO uncomment this amp once https://issues.alfresco.com/jira/browse/DESKTOPAPP-185 is done -->
-<!--                                        <artifactItem>
+                                        <artifactItem>
                                             <groupId>org.alfresco.services.sync</groupId>
                                             <artifactId>alfresco-device-sync-repo</artifactId>
                                             <version>${alfresco.desktop-sync.version}</version>
                                             <type>amp</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                        </artifactItem>-->
+                                        </artifactItem>
                                         <artifactItem>
                                             <groupId>org.alfresco.saml</groupId>
                                             <artifactId>alfresco-saml-repo</artifactId>
