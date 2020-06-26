@@ -71,20 +71,22 @@ public class DiscoveryTests extends RestTest
                 "org.alfresco.integrations.google.docs",
                 "alfresco-trashcan-cleaner",
                 "org_alfresco_integrations_S3Connector",
+                "org_alfresco_integrations_AzureConnector",
                 "org_alfresco_module_xamconnector",
                 "alfresco-content-connector-for-salesforce-repo",
                 "alfresco-share-services",
                 "alfresco-saml-repo",
                 "org_alfresco_device_sync_repo",
                 "org_alfresco_mm_repo", "alfresco-ai-repo",
+                "org_alfresco_module_rm", "alfresco-rm-enterprise-repo",
                 "alfresco-glacier-connector-repo",
                 "org.alfresco.module.TransformationServer");
 
         expectedModules.forEach(module ->
                 assertTrue(modules.contains(module), String.format("Expected module %s is not installed", module)));
 
-        // Check that all installed modules are in INSTALLED state
+        // Check that all installed modules are in INSTALLED and also UNKNOWN state as reported by some
         List<String> modulesStates = restClient.onResponse().getResponse().jsonPath().getList("entry.repository.modules.installState", String.class);
-        assertEquals("Number of amps installed should match expected", expectedModules.size(), Collections.frequency(modulesStates, "INSTALLED"));
+        assertEquals("Number of amps installed should match expected" + modulesStates, expectedModules.size(), Collections.frequency(modulesStates, "INSTALLED") + Collections.frequency(modulesStates, "UNKNOWN"));
     }
 }
