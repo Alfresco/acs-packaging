@@ -73,14 +73,17 @@ public class DiscoveryTests extends RestTest
                 "org_alfresco_integrations_S3Connector",
                 "org_alfresco_integrations_AzureConnector",
                 "org_alfresco_module_xamconnector",
-                "alfresco-content-connector-for-salesforce-repo",
+                // TODO uncomment this amp once https://issues.alfresco.com/jira/browse/APPS-219 is done
+                //"alfresco-content-connector-for-salesforce-repo",
                 "alfresco-share-services",
                 "alfresco-saml-repo",
                 "org_alfresco_device_sync_repo",
                 "org_alfresco_mm_repo", "alfresco-ai-repo",
                 "org_alfresco_module_rm", "alfresco-rm-enterprise-repo",
-                "alfresco-glacier-connector-repo",
-                "org.alfresco.module.TransformationServer");
+                "alfresco-glacier-connector-repo"
+                // TODO uncomment this amp once https://issues.alfresco.com/jira/browse/MNT-21648 is done
+                //"org.alfresco.module.TransformationServer"
+        );
 
         expectedModules.forEach(module ->
                 assertTrue(modules.contains(module), String.format("Expected module %s is not installed", module)));

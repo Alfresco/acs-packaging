@@ -4,13 +4,13 @@
     <groupId>org.alfresco.tas</groupId>
     <artifactId>content-repository-all-amps-test</artifactId>
     <name>content-repository-all-amps-test</name>
-    <version>6.3.0-SNAPSHOT</version>
+    <version>7.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>content-repository-tas-tests-parent</artifactId>
-        <version>6.3.0-SNAPSHOT</version>
+        <version>7.0.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -243,14 +243,15 @@
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                         </artifactItem>
-                                        <artifactItem>
+                                        <!-- TODO Uncomment this amp once a new release of it is done. See related Jira issue https://issues.alfresco.com/jira/browse/APPS-219 -->
+                                        <!--<artifactItem>
                                             <groupId>org.alfresco.integrations</groupId>
                                             <artifactId>alfresco-content-connector-for-salesforce-repo</artifactId>
                                             <version>${alfresco.salesforce-connector.version}</version>
                                             <type>amp</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                        </artifactItem>
+                                        </artifactItem>-->
                                         <artifactItem>
                                             <groupId>org.alfresco.integrations</groupId>
                                             <artifactId>alfresco-content-connector-for-salesforce-share</artifactId>
@@ -299,14 +300,15 @@
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
                                         </artifactItem>
-                                        <artifactItem>
+                                        <!-- TODO uncomment this amp once https://issues.alfresco.com/jira/browse/MNT-21648 is solved -->
+<!--                                        <artifactItem>
                                             <groupId>org.alfresco</groupId>
                                             <artifactId>alfresco-document-transformation-engine-repo</artifactId>
                                             <version>${alfresco.transformation-engine.version}</version>
                                             <type>amp</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                        </artifactItem>
+                                        </artifactItem>-->
                                         <artifactItem>
                                             <groupId>org.alfresco</groupId>
                                             <artifactId>alfresco-document-transformation-engine-share</artifactId>
