@@ -81,22 +81,6 @@ public final class ResourceBundleWrapper extends ResourceBundle implements Seria
    }
 
    /**
-    * Get the message service
-    *
-    * @return   MessageService  message service
-    */
-   private MessageService getMessageService()
-   {
-//       if (this.messageService == null && FacesContext.getCurrentInstance() != null)
-//       {
-//           this.messageService = (MessageService) FacesContextUtils.getRequiredWebApplicationContext(
-//                                       FacesContext.getCurrentInstance()).getBean(BEAN_RESOURCE_MESSAGE_SERVICE);
-//       }
-//       return this.messageService;
-      return null;
-   }
-
-   /**
     * Get a list of the delegate resource bundles
     *
     * @return   List<ResourceBundle>    list of delegate resource bundles
@@ -109,38 +93,6 @@ public final class ResourceBundleWrapper extends ResourceBundle implements Seria
 
          // Check for custom bundle (if any) - first try in the repo otherwise try the classpath
          ResourceBundle customBundle = null;
-
-         if (getMessageService() != null)
-         {
-             StoreRef storeRef = null;
-             String path = null;
-
-             try
-             {
-                String customName = null;
-                int idx = this.bundleName.lastIndexOf(".");
-                if (idx != -1)
-                {
-                   customName = this.bundleName.substring(idx+1, this.bundleName.length());
-                }
-                else
-                {
-                   customName = this.bundleName;
-                }
-
-                storeRef = Application.getStoreRef();
-
-                // TODO - make path configurable in one place ...
-                // Note: path here is XPath for selectNodes query
-                path = PATH + "/cm:" + customName;
-                customBundle = getMessageService().getRepoResourceBundle(Application.getStoreRef(), path, locale);
-             }
-             catch (Throwable t)
-             {
-                // for now ... ignore the error, cannot be found or read from repo
-                logger.debug("Custom Web Client properties not found: " + storeRef + path);
-             }
-         }
 
          if (customBundle == null)
          {
@@ -284,16 +236,6 @@ public final class ResourceBundleWrapper extends ResourceBundle implements Seria
    public static ResourceBundle getResourceBundle(String name, Locale locale)
    {
        return new ResourceBundleWrapper(locale, name);
-   }
-
-   /**
-    * Adds a resource bundle to the collection of custom bundles available
-    *
-    * @param name   the name of the resource bundle
-    */
-   public static void addResourceBundle(String name)
-   {
-       ResourceBundleWrapper.addedBundleNames.add(name);
    }
 
    /**

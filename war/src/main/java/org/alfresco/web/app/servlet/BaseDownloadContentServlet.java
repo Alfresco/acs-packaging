@@ -26,6 +26,7 @@
 package org.alfresco.web.app.servlet;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.SocketException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -88,12 +89,7 @@ public abstract class BaseDownloadContentServlet extends BaseServlet
    private static final String HEADER_CONTENT_DISPOSITION = "Content-Disposition";
    
    protected static final String MIMETYPE_OCTET_STREAM = "application/octet-stream";
-   
-   protected static final String MSG_ERROR_CONTENT_MISSING = "error_content_missing";
-   protected static final String MSG_ERROR_NOT_FOUND = "error_not_found";
-   
-   protected static final String URL_DIRECT        = "d";
-   protected static final String URL_DIRECT_LONG   = "direct";
+
    protected static final String URL_ATTACH        = "a";
    protected static final String URL_ATTACH_LONG   = "attach";
    protected static final String ARG_PROPERTY = "property";
@@ -123,7 +119,7 @@ public abstract class BaseDownloadContentServlet extends BaseServlet
     */
    protected void processDownloadRequest(HttpServletRequest req, HttpServletResponse res,
          boolean allowLogIn, boolean transmitContent)
-         throws ServletException, IOException
+         throws IOException
    {   
       Log logger = getLogger();
       String uri = req.getRequestURI();
@@ -164,8 +160,7 @@ public abstract class BaseDownloadContentServlet extends BaseServlet
          }
          catch (IllegalArgumentException e)
          {
-            Application.handleSystemError(getServletContext(), req, res, MSG_ERROR_NOT_FOUND,
-                  HttpServletResponse.SC_NOT_FOUND, logger);
+            prettyPrintError(req, res, MSG_ERROR_NOT_FOUND, HttpServletResponse.SC_NOT_FOUND, e.toString());
             return;
          }         
       }
@@ -174,7 +169,8 @@ public abstract class BaseDownloadContentServlet extends BaseServlet
          // a NodeRef must have been specified if no path has been found
          if (tokenCount < 6)
          {
-            throw new IllegalArgumentException("Download URL did not contain all required args: " + uri); 
+            prettyPrintError(req, res, MSG_BAD_REQUEST, HttpServletResponse.SC_BAD_REQUEST, "Download URL did not contain all required args: " + uri);
+            throw new IllegalArgumentException("Download URL did not contain all required args: " + uri);
          }
          
          // assume 'workspace' or other NodeRef based protocol for remaining URL elements
@@ -204,8 +200,7 @@ public abstract class BaseDownloadContentServlet extends BaseServlet
             }
             catch (FileNotFoundException e)
             {
-               Application.handleSystemError(getServletContext(), req, res, MSG_ERROR_NOT_FOUND,
-                     HttpServletResponse.SC_NOT_FOUND, logger);
+               prettyPrintError(req, res, MSG_ERROR_NOT_FOUND, HttpServletResponse.SC_NOT_FOUND, e.toString());
                return;
             }
          }
@@ -239,8 +234,7 @@ public abstract class BaseDownloadContentServlet extends BaseServlet
       // Check that the node still exists
       if (!nodeService.exists(nodeRef))
       {
-         Application.handleSystemError(getServletContext(), req, res, MSG_ERROR_NOT_FOUND,
-               HttpServletResponse.SC_NOT_FOUND, logger);
+         prettyPrintError(req, res, MSG_ERROR_NOT_FOUND, HttpServletResponse.SC_NOT_FOUND, "Node " + nodeRef.toString() + " does not exists");
          return;         
       }
 
@@ -271,10 +265,10 @@ public abstract class BaseDownloadContentServlet extends BaseServlet
             }
             res.setDateHeader(HEADER_LAST_MODIFIED, modified.getTime());
             res.setHeader(HEADER_CACHE_CONTROL, "must-revalidate, max-age=0");
-            res.setHeader(HEADER_ETAG, "\"" + Long.toString(modified.getTime()) + "\"");
+            res.setHeader(HEADER_ETAG, "\"" + modified.getTime() + "\"");
          }
          
-         if (attachment == true)
+         if (attachment)
          {
              setHeaderContentDisposition(req, res, filename);
          }
@@ -338,7 +332,7 @@ public abstract class BaseDownloadContentServlet extends BaseServlet
                            mimetype, req.getHeader(HEADER_USER_AGENT));
                   }
                }
-               if (processedRange == false)
+               if (!processedRange)
                {
                   if (logger.isDebugEnabled())
                      logger.debug("Sending complete file content...");
@@ -375,7 +369,7 @@ public abstract class BaseDownloadContentServlet extends BaseServlet
                         
                   // return the complete entity range
                   long size = reader.getSize();
-                  res.setHeader(HEADER_CONTENT_RANGE, "bytes 0-" + Long.toString(size-1L) + "/" + Long.toString(size));
+                  res.setHeader(HEADER_CONTENT_RANGE, "bytes 0-" + (size - 1L) + "/" + size);
                   res.setHeader(HEADER_CONTENT_LENGTH, Long.toString(size));
                   reader.getContent( res.getOutputStream() );
                }
@@ -432,23 +426,5 @@ public abstract class BaseDownloadContentServlet extends BaseServlet
          res.setHeader(HEADER_CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"");
       }
 
-   }
-      
-   /**
-    * Helper to generate a URL to a content node for downloading content from the server.
-    * 
-    * @param pattern The pattern to use for the URL
-    * @param ref     NodeRef of the content node to generate URL for (cannot be null)
-    * @param name    File name to return in the URL (cannot be null)
-    * 
-    * @return URL to download the content from the specified node
-    */
-   protected final static String generateUrl(String pattern, NodeRef ref, String name)
-   {
-      return MessageFormat.format(pattern, new Object[] {
-              ref.getStoreRef().getProtocol(),
-              ref.getStoreRef().getIdentifier(),
-              ref.getId(),
-              URLEncoder.encode(name) } );
    }
 }

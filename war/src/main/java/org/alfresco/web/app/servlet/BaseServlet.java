@@ -73,8 +73,11 @@ public abstract class BaseServlet extends HttpServlet
    
    /** forcing guess access is available on most servlets */
    private static final String ARG_GUEST    = "guest";
-   
-   private static final String MSG_ERROR_PERMISSIONS = "error_permissions";
+
+   protected static final String MSG_ERROR_CONTENT_MISSING = "error_content_missing";
+   protected static final String MSG_ERROR_PERMISSIONS = "Forbidden";
+   protected static final String MSG_ERROR_NOT_FOUND = "Not Found";
+   protected static final String MSG_BAD_REQUEST = "Bad Request";
    
    private static Log logger = LogFactory.getLog(BaseServlet.class);
 
@@ -185,8 +188,9 @@ public abstract class BaseServlet extends HttpServlet
          {
             if (logger.isDebugEnabled())
                logger.debug("Forwarding to error page...");
-            Application
-                  .handleSystemError(sc, req, res, MSG_ERROR_PERMISSIONS, HttpServletResponse.SC_FORBIDDEN, logger);
+            prettyPrintError(req, res, MSG_ERROR_PERMISSIONS, HttpServletResponse.SC_FORBIDDEN, "User does not ha");
+//            Application
+//                  .handleSystemError(sc, req, res, MSG_ERROR_PERMISSIONS, HttpServletResponse.SC_FORBIDDEN, logger);
          }
          return false;
       }
@@ -213,31 +217,49 @@ public abstract class BaseServlet extends HttpServlet
    public static void redirectToLoginPage(HttpServletRequest req, HttpServletResponse res, ServletContext sc, boolean sendRedirect)
          throws IOException
    {
-      // Pass the full requested URL as a parameter so the login page knows where to redirect to later
-      final String uri = req.getRequestURI();
-      String redirectURL = uri;
-
       // Alfresco Explorer was used as a default login page for servlets that extended BaseServlet
       // These page and Spring context was removed as part OF ACE-2091
       // If no ticket is provided then trow a login error.
       res.setContentType("text/html; charset=UTF-8");
       res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-      final PrintWriter out = res.getWriter();
-      out.println("<html><head>");
-      // Remove the auto refresh to avoid refresh loop, MNT-16931
-//      out.println("<meta http-equiv=\"Refresh\" content=\"0; url=" + redirectURL + "\">");
-      out.println("</head><body><p>Please <a href=\"" + redirectURL + "\">log in</a>.</p>");
-      out.println("</body></html>");
-      out.close();
+
+      prettyPrintError(req, res, "Unauthorized", HttpServletResponse.SC_UNAUTHORIZED, "Servlet expects an authenticated user.");
    }
-   
+
    /**
-    * Apply the headers required to disallow caching of the response in the browser
+    * Method introduced in Alfresco 6.0 for MNT-21602
+    * As part of ACE-2091 all error pages have been removed.
+    * This method pretty prints an error page instead of showing the stacktrace.
+    * @param req
+    * @param res
+    * @param message
+    * @param status
+    * @param actualCause
+    * @throws IOException
     */
-   public static void setNoCacheHeaders(HttpServletResponse res)
+   public static void prettyPrintError(HttpServletRequest req, HttpServletResponse res, String message, int status, String actualCause) throws IOException
    {
-      res.setHeader("Cache-Control", "no-cache");
-      res.setHeader("Pragma", "no-cache");
+      final PrintWriter out = res.getWriter();
+
+      out.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
+      out.println("<html><head>");
+      out.println("<link rel=\"stylesheet\" href=\"/alfresco/css/webscripts.css\" type=\"text/css\">");
+      out.println("</head><body>");
+      out.println("<table>\n" + "            <tbody><tr>\n"
+          + "               <td><img src=\"/alfresco/images/logo/AlfrescoLogo32.png\" alt=\"Alfresco\"></td>\n"
+          + "               <td><span class=\"title\">Servlet Status: " +  status +  " - " + message + "</span></td>\n"
+          + "            </tr>\n" + "         </tbody></table>");
+      out.println("<br>");
+      out.println("<table>\n"
+          + "            <tbody><tr><td>The Servlet <a href=\"" + req.getRequestURI() + "\">" + req.getRequestURI() + "</a> has responded with a status of " + status +" - " + message + ".</td></tr>\n"
+          + "         </tbody></table>");
+      out.println("<br>");
+      out.println("<table>\n"
+          + "            <tbody><tr><td>Cause: "+ actualCause + ".</td></tr>\n"
+          + "         </tbody></table>");
+      out.println("</body></html>");
+
+      out.close();
    }
 
    /**

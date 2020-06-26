@@ -79,9 +79,6 @@ public class DownloadContentServlet extends BaseDownloadContentServlet
 
    private static Log logger = LogFactory.getLog(DownloadContentServlet.class);
    
-   private static final String DOWNLOAD_URL  = "/d/" + URL_ATTACH + "/{0}/{1}/{2}/{3}";
-   private static final String BROWSER_URL   = "/d/" + URL_DIRECT + "/{0}/{1}/{2}/{3}";
-   
    @Override
    protected Log getLogger()
    {
@@ -124,7 +121,7 @@ public class DownloadContentServlet extends BaseDownloadContentServlet
     * @see javax.servlet.http.HttpServlet#doGet(HttpServletRequest, HttpServletResponse)
     */
    protected void doGet(final HttpServletRequest req, final HttpServletResponse res)
-      throws ServletException, IOException
+      throws IOException
    {
       if (logger.isDebugEnabled())
       {
@@ -150,35 +147,5 @@ public class DownloadContentServlet extends BaseDownloadContentServlet
          }
       };
       transactionService.getRetryingTransactionHelper().doInTransaction(processCallback, true);
-   }
-   
-   /**
-    * Helper to generate a URL to a content node for downloading content from the server.
-    * The content is supplied as an HTTP1.1 attachment to the response. This generally means
-    * a browser should prompt the user to save the content to specified location.
-    * 
-    * @param ref     NodeRef of the content node to generate URL for (cannot be null)
-    * @param name    File name to return in the URL (cannot be null)
-    * 
-    * @return URL to download the content from the specified node
-    */
-   public final static String generateDownloadURL(NodeRef ref, String name)
-   {
-      return generateUrl(DOWNLOAD_URL, ref, name);
-   }
-   
-   /**
-    * Helper to generate a URL to a content node for downloading content from the server.
-    * The content is supplied directly in the reponse. This generally means a browser will
-    * attempt to open the content directly if possible, else it will prompt to save the file.
-    * 
-    * @param ref     NodeRef of the content node to generate URL for (cannot be null)
-    * @param name    File name to return in the URL (cannot be null)
-    * 
-    * @return URL to download the content from the specified node
-    */
-   public final static String generateBrowserURL(NodeRef ref, String name)
-   {
-      return generateUrl(BROWSER_URL, ref, name);
    }
 }

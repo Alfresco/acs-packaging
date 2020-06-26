@@ -75,7 +75,6 @@ public final class AuthenticationHelper
 {
    /** session variables */
    public static final String AUTHENTICATION_USER = AuthenticationDriver.AUTHENTICATION_USER;
-   public static final String SESSION_USERNAME = "_alfLastUser";
    public static final String SESSION_INVALIDATED = "_alfSessionInvalid";
     public static final String LOGIN_EXTERNAL_AUTH = "_alfExternalAuth";
 
@@ -124,7 +123,6 @@ public final class AuthenticationHelper
     */
    public static AuthenticationStatus authenticate(
          ServletContext sc, HttpServletRequest req, HttpServletResponse res, boolean forceGuest)
-         throws IOException
    {
       return authenticate(sc, req, res, forceGuest, true);
    }
@@ -142,7 +140,6 @@ public final class AuthenticationHelper
     */
    public static AuthenticationStatus authenticate(
          ServletContext sc, HttpServletRequest req, HttpServletResponse res, boolean forceGuest, boolean allowGuest)
-         throws IOException
    {
       if (logger.isDebugEnabled())
           logger.debug("Authenticating the current user using session based Ticket information.");
@@ -219,7 +216,16 @@ public final class AuthenticationHelper
              logger.debug("Session invalidated - return to login screen.");
          return AuthenticationStatus.Failure;
       }
-      return AuthenticationStatus.Failure;
+      else
+      {
+          if (logger.isDebugEnabled())
+              logger.debug("The user is: " + user.getUserName());
+
+          // Set up the thread context
+          setupThread(sc, req, res, true);
+
+          return AuthenticationStatus.Success;
+      }
    }
 
    /**
@@ -229,7 +235,6 @@ public final class AuthenticationHelper
     */
    public static AuthenticationStatus authenticate(
          ServletContext context, HttpServletRequest httpRequest, HttpServletResponse httpResponse, String ticket)
-         throws IOException
    {
       if (logger.isDebugEnabled())
           logger.debug("Authenticate the current user using the supplied Ticket value.");
@@ -559,48 +564,6 @@ public final class AuthenticationHelper
          }
       }
       return user;
-   }
-
-   /**
-    * Setup the Alfresco auth cookie value.
-    *
-    * @param httpRequest
-    * @param httpResponse
-    * @param username
-    */
-   public static void setUsernameCookie(HttpServletRequest httpRequest, HttpServletResponse httpResponse, String username)
-   {
-      if (logger.isDebugEnabled())
-          logger.debug("Setting up the Alfresco auth cookie for " + username);
-      Cookie authCookie = getAuthCookie(httpRequest);
-      // Let's Base 64 encode the username so it is a legal cookie value
-      String encodedUsername;
-      try
-      {
-         encodedUsername = Base64.encodeBytes(username.getBytes("UTF-8"));
-         if (logger.isDebugEnabled())
-             logger.debug("Base 64 encode the username: " + encodedUsername);
-      }
-      catch (UnsupportedEncodingException e)
-      {
-         throw new RuntimeException(e);
-      }
-      if (authCookie == null)
-      {
-         if (logger.isDebugEnabled())
-             logger.debug("No Alfresco auth cookie wa found, creating new one.");
-         authCookie = new Cookie(COOKIE_ALFUSER, encodedUsername);
-      }
-      else
-      {
-         if (logger.isDebugEnabled())
-             logger.debug("Updating the previous Alfresco auth cookie value.");
-         authCookie.setValue(encodedUsername);
-      }
-      authCookie.setPath(httpRequest.getContextPath());
-      // TODO: make this configurable - currently 7 days (value in seconds)
-      authCookie.setMaxAge(60*60*24*7);
-      httpResponse.addCookie(authCookie);
    }
 
    /**
