@@ -189,8 +189,6 @@ public abstract class BaseServlet extends HttpServlet
             if (logger.isDebugEnabled())
                logger.debug("Forwarding to error page...");
             prettyPrintError(req, res, MSG_ERROR_PERMISSIONS, HttpServletResponse.SC_FORBIDDEN, "User does not ha");
-//            Application
-//                  .handleSystemError(sc, req, res, MSG_ERROR_PERMISSIONS, HttpServletResponse.SC_FORBIDDEN, logger);
          }
          return false;
       }
@@ -232,31 +230,36 @@ public abstract class BaseServlet extends HttpServlet
     * This method pretty prints an error page instead of showing the stacktrace.
     * @param req
     * @param res
-    * @param message
-    * @param status
+    * @param statusCodeDescriptor
+    * @param statusCodeValue
     * @param actualCause
     * @throws IOException
     */
-   public static void prettyPrintError(HttpServletRequest req, HttpServletResponse res, String message, int status, String actualCause) throws IOException
+   public static void prettyPrintError(HttpServletRequest req, HttpServletResponse res, String statusCodeDescriptor, int statusCodeValue, String actualCause)
+       throws IOException
    {
       final PrintWriter out = res.getWriter();
 
-      out.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
+      // Build HTML page as response.
+      out.println(
+          "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">");
       out.println("<html><head>");
+      // Add Alfresco webscript css.
       out.println("<link rel=\"stylesheet\" href=\"/alfresco/css/webscripts.css\" type=\"text/css\">");
       out.println("</head><body>");
+      // Add Alfresco logo, error status code and descriptor.
       out.println("<table>\n" + "            <tbody><tr>\n"
           + "               <td><img src=\"/alfresco/images/logo/AlfrescoLogo32.png\" alt=\"Alfresco\"></td>\n"
-          + "               <td><span class=\"title\">Servlet Status: " +  status +  " - " + message + "</span></td>\n"
+          + "               <td><span class=\"title\">Servlet Status: " + statusCodeValue + " - " + statusCodeDescriptor + "</span></td>\n"
           + "            </tr>\n" + "         </tbody></table>");
       out.println("<br>");
-      out.println("<table>\n"
-          + "            <tbody><tr><td>The Servlet <a href=\"" + req.getRequestURI() + "\">" + req.getRequestURI() + "</a> has responded with a status of " + status +" - " + message + ".</td></tr>\n"
-          + "         </tbody></table>");
+      out.println(
+          "<table>\n" + "            <tbody><tr><td>The Servlet <a href=\"" + req.getRequestURI() + "\">" + req.getRequestURI()
+              + "</a> has responded with a status of " + statusCodeValue + " - " + statusCodeDescriptor + ".</td></tr>\n"
+              + "         </tbody></table>");
       out.println("<br>");
-      out.println("<table>\n"
-          + "            <tbody><tr><td>Cause: "+ actualCause + ".</td></tr>\n"
-          + "         </tbody></table>");
+      out.println(
+          "<table>\n" + "            <tbody><tr><td>Cause: " + actualCause + ".</td></tr>\n" + "         </tbody></table>");
       out.println("</body></html>");
 
       out.close();
