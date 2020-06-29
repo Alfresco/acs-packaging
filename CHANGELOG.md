@@ -19,6 +19,12 @@
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21430'>MNT-21430</a>] -         ACS 6.2 - Enabling Repository CORS Fails as 2 JAR files are missing       
 </li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20091'>MNT-20091</a>] -         ACS Share document has an Taggable Aspect of value of Null added after editing title       
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-17907'>MNT-17907</a>] -         Outlook MSG mail CC addresses are not extracted correctly       
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21106'>MNT-21106</a>] -         CLONE - Shard groups are not displayed in admin console when using Solr6       
+</li>
 </ul>
 
 <h2>        Hot Fix Request
