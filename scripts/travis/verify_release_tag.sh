@@ -8,7 +8,7 @@ set -e
 # get the image name from the pom file
 alfresco_docker_image=$(mvn help:evaluate -f ./docker-alfresco/pom.xml -Dexpression=image.name -q -DforceStdout)
 if [ -v ${RELEASE_VERSION} ]; then
-    echo "Please provide a RELEASE_VERSION in the format <acs-version>-<additional-info> (6.3.0-EA or 6.3.0-SNAPSHOT)"
+    echo "Please provide a RELEASE_VERSION in the format <acs-version>-<additional-info> (7.0.0-EA or 7.0.0-SNAPSHOT)"
     exit -1
 fi
 docker_image_full_name="$alfresco_docker_image:$RELEASE_VERSION"
