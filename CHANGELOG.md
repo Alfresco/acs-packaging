@@ -19,6 +19,12 @@
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21430'>MNT-21430</a>] -         ACS 6.2 - Enabling Repository CORS Fails as 2 JAR files are missing       
 </li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20091'>MNT-20091</a>] -         ACS Share document has an Taggable Aspect of value of Null added after editing title       
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-17907'>MNT-17907</a>] -         Outlook MSG mail CC addresses are not extracted correctly       
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21106'>MNT-21106</a>] -         CLONE - Shard groups are not displayed in admin console when using Solr6       
+</li>
 </ul>
 
 <h2>        Hot Fix Request
@@ -29,35 +35,6 @@
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21514'>MNT-21514</a>] -         Performance Bottleneck in InMemoryTicketComponentImpl#getNewTicket
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-18308'>MNT-18308</a>] -         Changing permissions on a large site creates a large transaction causing solr to go out of memory
-</ul>
-
-<h2>        Bug
-</h2>
-<ul>
-<li>[<a href='https://issues.alfresco.com/jira/browse/ACS-284'>ACS-284</a>] -         AuthenticationUtil.runAs method should leave the security context as it found it
-</li>
-<li>[<a href='https://issues.alfresco.com/jira/browse/ACS-375'>ACS-375</a>] -         Security: XEE vulnerability in QueryRegisterComponentImpl
-</li>
-<li>[<a href='https://issues.alfresco.com/jira/browse/ACS-22'>ACS-22'</a>] -         Severe performance bottleneck in InMemoryTicketComponentImpl#getNewTicket
-</li>
-<li>[<a href='https://issues.alfresco.com/jira/browse/ACS-370'>ACS-370</a>] -          Security 6.2.2: Investigate if we are affected by CVE-2019-14262 in metadata-extractor-2.11.0
-</li>
-<li>[<a href='https://issues.alfresco.com/jira/browse/ACS-357'>ACS-357</a>] -         Security 6.2.2: Investigate if we are affected by CVE-2020-11612 in netty-codec 4.1.32
-</li>
-<li>[<a href='https://issues.alfresco.com/jira/browse/ACS-303'>ACS-303</a>] -         Security: 6.2.2: Assessment or update dom4j-2.1.1 (CVE-2020-10683)
-</li>
-<li>[<a href='https://issues.alfresco.com/jira/browse/ACS-302'>ACS-302</a>] -         Security: 6.2.2: Investigate if we are affected by CVE-2019-10094 in Tika 1.22
-</li>
-<li>[<a href='https://issues.alfresco.com/jira/browse/ACS-301'>ACS-301</a>] -         Security: 6.2.2: New AIMS release based on Keycloak 11 due to CVE-2020-1714
-</li>
-<li>[<a href='https://issues.alfresco.com/jira/browse/ACS-300'>ACS-300</a>] -         Security: 6.2.2: CVE-2020-1714 in keycloak 9.0.3
-</li>
-<li>[<a href='https://issues.alfresco.com/jira/browse/ACS-299'>ACS-299</a>] -         Security: 6.2.2: Mitigate or update spring-web-5.1.15 (CVE-2016-1000027)
-</li>
-<li>[<a href='https://issues.alfresco.com/jira/browse/ACS-296'>ACS-296</a>] -         Review (& fix) HIGH in alfresco-java-base image
-</li>
-<li>[<a href='https://issues.alfresco.com/jira/browse/ACS-295'>ACS-295</a>] -         List Version Renditions returns unexpected entry in list 
-</li>
 </ul>
 
 <h2>
@@ -89,6 +66,39 @@ The vulnerabilities listed above can be exploited when netty-codec-http is used 
 Note to custom extension providers:
 
 If you provide a custom extension to the ACS Repository that is using this functionality, the security of your custom extension might be affected by this vulnerability.
+
+<h4>netty-codec-4.1.32</h4>
+
+<a href='https://vuln.whitesourcesoftware.com/vulnerability/CVE-2020-11612/'>CVE-2020-11612</a>: The ZlibDecoders in Netty 4.1.x before 4.1.46 allow for unbounded memory allocation while decoding a ZlibEncoded byte stream. An attacker could send a large ZlibEncoded byte stream to the Netty server, forcing the server to allocate all of its free memory to a single decoder. (CVSS3 score: 9.8)
+
+This library is not used directly in the Alfresco Repository. It is required as a 2nd level transitive dependency for a library we are using. We have manually verified that the vulnerable code is not reachable from our own code. Details of this investigation can be provided on request.
+
+Note to custom extension providers:
+
+If you provide a custom extension to the ACS Repository that is either using this library directly or is using a library that depends on this library, the security of your custom extension might be affected by this vulnerability.
+
+<h4>spring-web-5.1.15</h4>
+<a href='https://vuln.whitesourcesoftware.com/vulnerability/CVE-2016-1000027/'>CVE-2016-1000027</a>: Spring Framework 4.1.4 suffers from a potential remote code execution (RCE) issue if used for Java deserialization of untrusted data. Depending on how the library is implemented within a product, this issue may or not occur, and authentication may be required. (CVSS3 score: 9.8)
+
+The ACS Repository does not use any of the problematic functionality in spring-web, so this vulnerability does not affect the ACS product security.
+
+Note to custom extension providers:
+
+If you provide a custom extension to the ACS Repository that is using this functionality, the security of your custom extension might be affected by this vulnerability.
+
+<h4>dom4j-2.1.1</h4>
+<a href='https://vuln.whitesourcesoftware.com/vulnerability/CVE-2020-10683/'>CVE-2020-10683</a>: dom4j allows external DTDs and External Entities by default, which might enable XXE attacks. (CVSS3 score: 9.8)
+
+The ACS Repository changes the system default XML factories to its own Alfresco XML Factory. This custom factory guarantees that all instances of DocumentBuilder and SAXParser are instantiated with a secure configuration by default. This includes SAXParser instances instantiated by dom4j.
+
+<h4>tika-core-1.21-20190624-alfresco-patched.jar</h4>
+<a href='https://vuln.whitesourcesoftware.com/vulnerability/CVE-2019-10094/'>CVE-2019-10094</a>: A carefully crafted package/compressed file that, when unzipped/uncompressed yields the same file (a quine), causes a StackOverflowError in Apache Tika's RecursiveParserWrapper.
+
+The ACS Repository is using Tika for multiple purposes in different locations. We have verified that none of this code is using the RecursiveParserWrapper, neither directly nor indirectly. Details of this investigation can be provided on request.
+
+Note to custom extension providers:
+
+If you provide a custom extension to the ACS Repository that is using Tika with the RecursiveParserWrapper, or if you are injecting a custom parser into our TikePoweredTransformer, the security of your custom extension might be affected by this vulnerability.
 <h1>        6.2.1
 </h1>
 <h2>
