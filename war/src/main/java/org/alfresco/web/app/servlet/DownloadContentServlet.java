@@ -49,7 +49,7 @@ import java.util.StringTokenizer;
  * The 'attach' or 'direct' element is used to indicate whether to display the stream directly
  * in the browser or download it as a file attachment.</p>
  * <p>
- * Since ACS 6.X, this Servlet redirects to GET /nodes/{nodeId} V1 REST API.
+ * Since ACS 6.X, this Servlet redirects to GET /nodes/{nodeId}/content V1 REST API.
  *
  * 
  * @author Kevin Roast
@@ -110,10 +110,10 @@ public class DownloadContentServlet extends HttpServlet
       // build noderef from the appropriate URL elements
       NodeRef nodeRef = new NodeRef(storeRef, id);
 
-      // build redirect URL to V1 GET /nodes/{nodeId}
+      // build redirect URL to V1 GET /nodes/{nodeId}/content
       String redirectUrl = String
-          .format("%s://%s:%s%s/api/-default-/public/alfresco/versions/1/nodes/%s/content?attachment=%b",
-              req.getScheme(), req.getServerName(), req.getServerPort(), req.getContextPath(), nodeRef.getId(), isAttachment);
+          .format("%s/api/-default-/public/alfresco/versions/1/nodes/%s/content?attachment=%b",
+              req.getContextPath(), nodeRef.getId(), isAttachment);
 
       if (logger.isDebugEnabled())
       {
