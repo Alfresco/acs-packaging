@@ -25,6 +25,8 @@
 </li>
 <li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21106'>MNT-21106</a>] -         CLONE - Shard groups are not displayed in admin console when using Solr6       
 </li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21487'>MNT-21487</a>] -         Switch from smaller schemas jar (poi-ooxml-schemas) to the full jar (ooxml-schemas)
+</li>
 </ul>
 
 <h2>        Hot Fix Request
