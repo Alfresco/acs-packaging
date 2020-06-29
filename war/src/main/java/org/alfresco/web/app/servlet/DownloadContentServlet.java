@@ -25,21 +25,16 @@
  */
 package org.alfresco.web.app.servlet;
 
-import org.alfresco.repo.transaction.RetryingTransactionHelper.RetryingTransactionCallback;
-import org.alfresco.service.ServiceRegistry;
 import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.StoreRef;
-import org.alfresco.service.transaction.TransactionService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.extensions.surf.util.URLDecoder;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.StringTokenizer;
 
 /**
@@ -49,30 +44,13 @@ import java.util.StringTokenizer;
  * The URL to the servlet should be generated thus:
  * <pre>/alfresco/download/attach/workspace/SpacesStore/0000-0000-0000-0000/myfile.pdf</pre>
  * or
- * <pre>/alfresco/download/direct/workspace/SpacesStore/0000-0000-0000-0000/myfile.pdf</pre>
- * or
- * <pre>/alfresco/download/[direct|attach]?path=/Company%20Home/MyFolder/myfile.pdf</pre>
- * The protocol, followed by either the store and Id (NodeRef) or instead specify a name based
- * encoded Path to the content, note that the filename element is used for mimetype lookup and
- * as the returning filename for the response stream.
+ * <pre>/alfresco/download/direct/workspace/SpacesStore/0000-0000-0000-0000/myfile.pdf</pre></p>
  * <p>
  * The 'attach' or 'direct' element is used to indicate whether to display the stream directly
- * in the browser or download it as a file attachment.
+ * in the browser or download it as a file attachment.</p>
  * <p>
- * By default, the download assumes that the content is on the
- * {@link org.alfresco.model.ContentModel#PROP_CONTENT content property}.<br>
- * To retrieve the content of a specific model property, use a 'property' arg, providing the workspace,
- * node ID AND the qualified name of the property.
- * <p>
- * Like most Alfresco servlets, the URL may be followed by a valid 'ticket' argument for authentication:
- * ?ticket=1234567890
- * <p>
- * And/or also followed by the "?guest=true" argument to force guest access login for the URL. If the 
- * guest=true parameter is used the current session will be logged out and the guest user logged in. 
- * Therefore upon completion of this request the current user will be "guest".
- * <p>
- * If the user attempting the request is not authorised to access the requested node the login page
- * will be redirected to.
+ * Since ACS 6.X, this Servlet redirects to GET /nodes/{nodeId} V1 REST API.
+ *
  * 
  * @author Kevin Roast
  * @author gavinc
@@ -118,8 +96,8 @@ public class DownloadContentServlet extends HttpServlet
 
       // attachment mode (either 'attach' or 'direct')
       String attachToken = t.nextToken();
-      boolean isAttachment = URL_ATTACH.equals(attachToken) || URL_ATTACH_LONG.equals(attachToken);
-      boolean isDirect = URL_DIRECT.equals(attachToken) || URL_DIRECT_LONG.equals(attachToken);
+      boolean isAttachment = URL_ATTACH.equalsIgnoreCase(attachToken) || URL_ATTACH_LONG.equalsIgnoreCase(attachToken);
+      boolean isDirect = URL_DIRECT.equalsIgnoreCase(attachToken) || URL_DIRECT_LONG.equalsIgnoreCase(attachToken);
       if (!(isAttachment || isDirect))
       {
          throw new IllegalArgumentException("Attachment mode is not properly specified: " + requestURI);
