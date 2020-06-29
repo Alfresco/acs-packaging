@@ -36,6 +36,28 @@
 <ul>
 <li>[<a href='https://issues.alfresco.com/jira/browse/ACS-284'>ACS-284</a>] -         AuthenticationUtil.runAs method should leave the security context as it found it
 </li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/ACS-375'>ACS-375</a>] -         Security: XEE vulnerability in QueryRegisterComponentImpl
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/ACS-22'>ACS-22'</a>] -         Severe performance bottleneck in InMemoryTicketComponentImpl#getNewTicket
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/ACS-370'>ACS-370</a>] -          Security 6.2.2: Investigate if we are affected by CVE-2019-14262 in metadata-extractor-2.11.0
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/ACS-357'>ACS-357</a>] -         Security 6.2.2: Investigate if we are affected by CVE-2020-11612 in netty-codec 4.1.32
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/ACS-303'>ACS-303</a>] -         Security: 6.2.2: Assessment or update dom4j-2.1.1 (CVE-2020-10683)
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/ACS-302'>ACS-302</a>] -         Security: 6.2.2: Investigate if we are affected by CVE-2019-10094 in Tika 1.22
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/ACS-301'>ACS-301</a>] -         Security: 6.2.2: New AIMS release based on Keycloak 11 due to CVE-2020-1714
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/ACS-300'>ACS-300</a>] -         Security: 6.2.2: CVE-2020-1714 in keycloak 9.0.3
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/ACS-299'>ACS-299</a>] -         Security: 6.2.2: Mitigate or update spring-web-5.1.15 (CVE-2016-1000027)
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/ACS-296'>ACS-296</a>] -         Review (& fix) HIGH in alfresco-java-base image
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/ACS-295'>ACS-295</a>] -         List Version Renditions returns unexpected entry in list 
+</li>
 </ul>
 
 <h2>
