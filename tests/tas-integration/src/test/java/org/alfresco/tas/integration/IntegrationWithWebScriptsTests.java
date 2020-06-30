@@ -1,7 +1,6 @@
 package org.alfresco.tas.integration;
 
 import static org.alfresco.utility.report.log.Step.STEP;
-import static org.testng.Assert.assertEquals;
 
 import io.restassured.RestAssured;
 import io.restassured.http.Cookie;
@@ -12,13 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import org.alfresco.rest.core.JsonBodyGenerator;
 import org.alfresco.rest.core.RestRequest;
-import org.alfresco.rest.core.RestResponse;
 import org.alfresco.rest.model.RestPersonModel;
 import org.alfresco.utility.Utility;
-import org.alfresco.utility.model.FileModel;
-import org.alfresco.utility.model.FileType;
-import org.alfresco.utility.model.FolderModel;
-import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.report.Bug;
