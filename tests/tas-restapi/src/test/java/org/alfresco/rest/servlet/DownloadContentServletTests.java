@@ -261,6 +261,36 @@ public class DownloadContentServletTests extends RestTest
 
     @TestRail(section = { TestGroup.REST_API },
         executionType = ExecutionType.REGRESSION,
+        description = "Verify DownloadContentServlet retrieve content using direct without specifying {storeType}.")
+    @Test(groups = { TestGroup.REST_API, TestGroup.FULL, TestGroup.ENTERPRISE})
+    @Bug(id ="MNT-21602", status=Bug.Status.FIXED)
+    public void verifyDCSDirectWithInvalidStoreType()
+    {
+        authenticateTestUser();
+        String downloadContentLessPathDirect = "alfresco/download/d/badWorkspace/SpacesStore/";
+        RestRequest request = RestRequest.simpleRequest(HttpMethod.GET,
+            downloadContentLessPathDirect + testContentFile.getNodeRef() + "/" + testContentFile.getName());
+        restClient.process(request);
+        restClient.assertStatusCodeIs(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @TestRail(section = { TestGroup.REST_API },
+        executionType = ExecutionType.REGRESSION,
+        description = "Verify DownloadContentServlet retrieve content using direct without specifying {storeType}.")
+    @Test(groups = { TestGroup.REST_API, TestGroup.FULL, TestGroup.ENTERPRISE})
+    @Bug(id ="MNT-21602", status=Bug.Status.FIXED)
+    public void verifyDCSDirectWithInvalidStoreId()
+    {
+        authenticateTestUser();
+        String downloadContentLessPathDirect = "alfresco/download/d/workspace/badSpacesStore/";
+        RestRequest request = RestRequest.simpleRequest(HttpMethod.GET,
+            downloadContentLessPathDirect + testContentFile.getNodeRef() + "/" + testContentFile.getName());
+        restClient.process(request);
+        restClient.assertStatusCodeIs(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @TestRail(section = { TestGroup.REST_API },
+        executionType = ExecutionType.REGRESSION,
         description = "Verify DownloadContentServlet retrieve content using attach without authentication.")
     @Test(groups = { TestGroup.REST_API, TestGroup.FULL, TestGroup.ENTERPRISE})
     @Bug(id ="MNT-21602", status=Bug.Status.FIXED)

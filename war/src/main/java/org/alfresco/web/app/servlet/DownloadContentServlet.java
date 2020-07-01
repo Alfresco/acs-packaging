@@ -25,7 +25,6 @@
  */
 package org.alfresco.web.app.servlet;
 
-import org.alfresco.service.cmr.repository.NodeRef;
 import org.alfresco.service.cmr.repository.StoreRef;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -103,17 +102,22 @@ public class DownloadContentServlet extends HttpServlet
          throw new IllegalArgumentException("Attachment mode is not properly specified: " + requestURI);
       }
 
-      // assume 'workspace' or other NodeRef based protocol for remaining URL elements
+      // allow only nodes from workspace://SpaceStore/ storeRef
       StoreRef storeRef = new StoreRef(URLDecoder.decode(t.nextToken()), URLDecoder.decode(t.nextToken()));
-      String id = URLDecoder.decode(t.nextToken());
+      boolean isWorkspaceStoreType = storeRef.getProtocol().equalsIgnoreCase("workspace");
+      boolean isSpacesStoreStoreId = storeRef.getIdentifier().equalsIgnoreCase("SpacesStore");
 
-      // build noderef from the appropriate URL elements
-      NodeRef nodeRef = new NodeRef(storeRef, id);
+      if (!isWorkspaceStoreType || !isSpacesStoreStoreId)
+      {
+         throw new IllegalArgumentException("Servlet accepts only nodes from workspace://SpaceStore/ storeRef: " + requestURI);
+      }
+
+      String nodeId = URLDecoder.decode(t.nextToken());
 
       // build redirect URL to V1 GET /nodes/{nodeId}/content
       String redirectUrl = String
           .format("%s/api/-default-/public/alfresco/versions/1/nodes/%s/content?attachment=%b",
-              req.getContextPath(), nodeRef.getId(), isAttachment);
+              req.getContextPath(), nodeId, isAttachment);
 
       if (logger.isDebugEnabled())
       {
