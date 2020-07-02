@@ -683,7 +683,7 @@
             <dependency>
                 <groupId>com.hazelcast</groupId>
                 <artifactId>hazelcast</artifactId>
-                <version>3.12.6</version>
+                <version>4.0.2</version>
             </dependency>
             <!-- Newer metadata-extractor, used in TIKA, see ACS-370 -->
             <dependency>
