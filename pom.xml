@@ -119,7 +119,7 @@
         <!-- Private docker registry -->
         <image.registry>quay.io</image.registry>
 
-        <dependency.tas-utility.version>3.0.21</dependency.tas-utility.version>
+        <dependency.tas-utility.version>3.0.23</dependency.tas-utility.version>
         <dependency.rest-assured.version>3.3.0</dependency.rest-assured.version>
         <dependency.javax.json.version>1.1.4</dependency.javax.json.version>
         <dependency.tas-restapi.version>1.43</dependency.tas-restapi.version>
