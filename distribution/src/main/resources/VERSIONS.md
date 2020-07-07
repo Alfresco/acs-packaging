@@ -65,7 +65,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Oracle | 18c  |
 | Oracle | 19c  |
 | PostgreSQL | 10.9 |
-| PostgreSQL | 11.4 |
+| PostgreSQL | 11.7 |
 | MariaDB | 10.2.18 |
 | Amazon Aurora | Latest |
 
