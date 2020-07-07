@@ -1,3 +1,15 @@
+<h1>        6.2.2.1
+</h1>
+
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21674'>MNT-21674</a>] -         CLONE - ScriptNode API's url & downloadUrl string/values does not work in ACS 6.x
+</li>
+</ul>
+
+
+
 <h1>        6.2.2
 </h1>
 
