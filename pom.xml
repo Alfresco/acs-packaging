@@ -38,7 +38,7 @@
         <dependency.alfresco-enterprise-repository.version>8.184</dependency.alfresco-enterprise-repository.version>
         <dependency.alfresco-remote-api.version>8.206</dependency.alfresco-remote-api.version>
         <dependency.alfresco-repository.version>8.230</dependency.alfresco-repository.version>
-        <dependency.alfresco-data-model.version>8.131</dependency.alfresco-data-model.version>
+        <dependency.alfresco-data-model.version>repo-5235-0</dependency.alfresco-data-model.version>
         <dependency.alfresco-core.version>8.36</dependency.alfresco-core.version>
 
         <dependency.alfresco-hb-data-sender.version>1.0.12</dependency.alfresco-hb-data-sender.version>
@@ -684,12 +684,6 @@
                 <groupId>com.hazelcast</groupId>
                 <artifactId>hazelcast</artifactId>
                 <version>3.12.6</version>
-            </dependency>
-            <!-- Newer metadata-extractor, used in TIKA, see ACS-370 -->
-            <dependency>
-                <groupId>com.drewnoakes</groupId>
-                <artifactId>metadata-extractor</artifactId>
-                <version>2.14.0</version>
             </dependency>
             <!-- upgrade dependency from TIKA -->
             <dependency>
