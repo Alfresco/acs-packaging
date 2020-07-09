@@ -1,0 +1,101 @@
+{
+    "clientId": "aos-saml",
+    "name": "aos-saml",
+    "adminUrl": "aos-saml",
+    "baseUrl": "http://@@REPO_HOST@@:@@AOS_PORT@@/alfresco",
+    "surrogateAuthRequired": false,
+    "enabled": true,
+    "clientAuthenticatorType": "client-secret",
+    "redirectUris": [
+        "*"
+    ],
+    "webOrigins": [],
+    "notBefore": 0,
+    "bearerOnly": false,
+    "consentRequired": false,
+    "standardFlowEnabled": true,
+    "implicitFlowEnabled": false,
+    "directAccessGrantsEnabled": false,
+    "serviceAccountsEnabled": false,
+    "publicClient": false,
+    "frontchannelLogout": true,
+    "protocol": "saml",
+    "attributes": {
+        "saml.assertion.signature": "false",
+        "saml.multivalued.roles": "false",
+        "saml.force.post.binding": "true",
+        "saml_single_logout_service_url_post": "http://@@REPO_HOST@@:@@AOS_PORT@@/alfresco/service/saml/-default-/aos/logout-request",
+        "saml.encrypt": "false",
+        "login_theme": "alfresco",
+        "saml.server.signature": "true",
+        "saml_idp_initiated_sso_url_name": "aos-saml",
+        "saml.server.signature.keyinfo.ext": "false",
+        "exclude.session.state.from.auth.response": "false",
+        "saml.signing.certificate": "MIIDezCCAmOgAwIBAgIEFiT/5TANBgkqhkiG9w0BAQsFADBuMQswCQYDVQQGEwJMTzEPMA0GA1UECBMGTG9uZG9uMQ8wDQYDVQQHEwZMb25kb24xETAPBgNVBAoTCEFsZnJlc2NvMREwDwYDVQQLEwhBbGZyZXNjbzEXMBUGA1UEAxMOTWFydGluIE11ZWxsZXIwHhcNMTkwODI3MTI0NjAxWhcNMTkxMTI1MTI0NjAxWjBuMQswCQYDVQQGEwJMTzEPMA0GA1UECBMGTG9uZG9uMQ8wDQYDVQQHEwZMb25kb24xETAPBgNVBAoTCEFsZnJlc2NvMREwDwYDVQQLEwhBbGZyZXNjbzEXMBUGA1UEAxMOTWFydGluIE11ZWxsZXIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDH30TyvpJKyH6OgAowafGaEaWZydN7XZ32reYNVFeNBjQw/VXxo8zbnsgUYAmZBXVGtnahVXOk6eiILIdXms/BtMmQTwqmKLrxZYUG6Yebf/HynNOONV7HEVprGY8E0v3JGa6K4lphwcwmIUj0XLxrck6nlB3Si2egwYPaQVcg/ovMYU+sG2dnC85VGoqjanV+ucyC9fpu4g7QHzxpAA7KdiJCq3zmC/XdB1xkClyqfu5X1FeZfcbuizzJ+8Era8LV1tLOKnTRwCPKckmhMe01wJXqueF6+UJzuUBN9ariCTJiKnu7wSw2gydV8rAryFT6txyc2pRW03qRM27A6IfbAgMBAAGjITAfMB0GA1UdDgQWBBRZ8s1JZDTDye2zhwM4nnsJXRPapTANBgkqhkiG9w0BAQsFAAOCAQEAbf8MDCf96lgzVAd3oOFwsejOilndcfcpWKDWBGuoeA8KmT2N/hF9gO7CPCm2nnzemvBcuSsY15q4bvF/FKJeaienmWqJLihhMQVt2FXejxLcyXTz9NCeMq5ztbO5vCYcCwOSMz+ZXEpgy70NJXkT34CO6E5WxfUeghyBjHhWt4c33asy3lUFtK6ZuDQGUFBO4cEGTfNsSZL03OqE3MhqzeBd350eJtj3mPtRuy7BLyiuHm+DKgaG1WQj0mqUQ9SBRbZ47Gk2oUfnArjG0AazUUxyRp82OSN/Gr38FC9yPNWBfqclwbyPpvM8U0zzrZRy30bQ1ilSn7NA78aW1zLq3A==",
+        "saml_single_logout_service_url_redirect": "",
+        "saml.signature.algorithm": "RSA_SHA256",
+        "saml_force_name_id_format": "false",
+        "tls.client.certificate.bound.access.tokens": "false",
+        "saml.client.signature": "true",
+        "saml.authnstatement": "true",
+        "display.on.consent.screen": "false",
+        "saml_name_id_format": "username",
+        "saml_signature_canonicalization_method": "http://www.w3.org/2001/10/xml-exc-c14n#",
+        "saml.onetimeuse.condition": "false"
+    },
+    "authenticationFlowBindingOverrides": {},
+    "fullScopeAllowed": true,
+    "nodeReRegistrationTimeout": -1,
+    "protocolMappers": [
+        {
+            "name": "X500 givenName",
+            "protocol": "saml",
+            "protocolMapper": "saml-user-property-mapper",
+            "consentRequired": false,
+            "config": {
+                "attribute.nameformat": "Basic",
+                "user.attribute": "firstName",
+                "attribute.name": "firstName"
+            }
+        },
+        {
+            "name": "X500 email",
+            "protocol": "saml",
+            "protocolMapper": "saml-user-property-mapper",
+            "consentRequired": false,
+            "config": {
+                "attribute.nameformat": "Basic",
+                "user.attribute": "Email",
+                "attribute.name": "Email"
+            }
+        },
+        {
+            "name": "X500 surname",
+            "protocol": "saml",
+            "protocolMapper": "saml-user-property-mapper",
+            "consentRequired": false,
+            "config": {
+                "attribute.nameformat": "Basic",
+                "user.attribute": "lastName",
+                "attribute.name": "lastName"
+            }
+        }
+    ],
+    "defaultClientScopes": [
+        "web-origins",
+        "role_list",
+        "profile",
+        "roles",
+        "email"
+    ],
+    "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access"
+    ],
+    "access": {
+        "view": true,
+        "configure": true,
+        "manage": true
+    }
+}

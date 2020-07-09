@@ -1,0 +1,58 @@
+# AUTO-GENERATED FILE - DO NOT EDIT!! Use ldapmodify.
+# CRC32 745edd1d
+dn: cn={7}mail
+objectClass: olcSchemaConfig
+cn: {7}mail
+olcAttributeTypes: {0}( 1.3.6.1.4.1.21103.1.1.13.1 NAME 'maildrop' DESC 'Mai
+ l addresses where mails are forwarded -- ie forwards' EQUALITY caseIgnoreMa
+ tch SUBSTR caseIgnoreSubstringsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{5
+ 12} )
+olcAttributeTypes: {1}( 1.3.6.1.4.1.21103.1.1.13.2 NAME 'mailalias' DESC 'Ma
+ il addresses accepted by this account -- ie aliases' EQUALITY caseIgnoreMat
+ ch SUBSTR caseIgnoreSubstringsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{51
+ 2} )
+olcAttributeTypes: {2}( 1.3.6.1.4.1.21103.1.1.13.3 NAME 'mailenable' DESC 'M
+ ail Account / Virtual alias validity' EQUALITY caseIgnoreMatch SUBSTR caseI
+ gnoreSubstringsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{8} )
+olcAttributeTypes: {3}( 1.3.6.1.4.1.21103.1.1.13.4 NAME 'mailbox' DESC 'Mail
+ box path where mails are delivered' EQUALITY caseIgnoreMatch SUBSTR caseIgn
+ oreSubstringsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{512} )
+olcAttributeTypes: {4}( 1.3.6.1.4.1.21103.1.1.13.5 NAME 'virtualdomain' DESC
+  'A mail domain name' EQUALITY caseIgnoreMatch SUBSTR caseIgnoreSubstringsM
+ atch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{512} )
+olcAttributeTypes: {5}( 1.3.6.1.4.1.21103.1.1.13.6 NAME 'virtualdomaindescri
+ ption' DESC 'Virtual domain description' EQUALITY caseIgnoreMatch SUBSTR ca
+ seIgnoreSubstringsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{512} )
+olcAttributeTypes: {6}( 1.3.6.1.4.1.21103.1.1.13.7 NAME 'mailuserquota' DESC
+  'Mailbox quota for a user in kilo-bytes' EQUALITY integerMatch SYNTAX 1.3.
+ 6.1.4.1.1466.115.121.1.27 SINGLE-VALUE )
+olcAttributeTypes: {7}( 1.3.6.1.4.1.21103.1.1.13.8 NAME 'mailhost' DESC 'The
+  mail server IP address or FQDN for a user' EQUALITY caseIgnoreIA5Match SUB
+ STR caseIgnoreIA5SubstringsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{256} 
+ SINGLE-VALUE )
+olcAttributeTypes: {8}( 1.3.6.1.4.1.21103.1.1.13.9 NAME 'mailaliasmember' DE
+ SC 'Member of a virtual alias' SUP distinguishedName )
+olcAttributeTypes: {9}( 1.3.6.1.4.1.21103.1.1.13.10 NAME 'mailproxy' DESC 'M
+ ail proxy' EQUALITY caseIgnoreIA5Match SUBSTR caseIgnoreIA5SubstringsMatch 
+ SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{256} SINGLE-VALUE )
+olcAttributeTypes: {10}( 1.3.6.1.4.1.21103.1.1.13.11 NAME 'mailhidden' DESC 
+ 'Mail Account hidden in address book' EQUALITY caseIgnoreMatch SUBSTR caseI
+ gnoreSubstringsMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15{8} )
+olcObjectClasses: {0}( 1.3.6.1.4.1.21103.1.2.13.1 NAME 'mailAccount' DESC 'M
+ ail Account' SUP top AUXILIARY MUST mail MAY ( mailalias $ maildrop $ maile
+ nable $ mailbox $ mailuserquota $ mailhost $ mailproxy $ mailhidden ) )
+olcObjectClasses: {1}( 1.3.6.1.4.1.21103.1.2.13.2 NAME 'mailDomain' DESC 'Do
+ main mail entry' SUP top STRUCTURAL MUST virtualdomain MAY ( virtualdomaind
+ escription $ mailuserquota ) )
+olcObjectClasses: {2}( 1.3.6.1.4.1.21103.1.2.13.3 NAME 'mailGroup' DESC 'Mai
+ l Group' SUP top AUXILIARY MUST mail MAY mailhidden )
+olcObjectClasses: {3}( 1.3.6.1.4.1.21103.1.2.13.4 NAME 'mailAlias' DESC 'Mai
+ l Alias' SUP top STRUCTURAL MUST mailalias MAY ( mail $ mailaliasmember $ m
+ ailenable ) )
+structuralObjectClass: olcSchemaConfig
+entryUUID: 803762ce-68cf-1039-97bd-abf572b4ea69
+creatorsName: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth
+createTimestamp: 20190911110316Z
+entryCSN: 20190911110316.613973Z#000000#000#000000
+modifiersName: gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth
+modifyTimestamp: 20190911110316Z
