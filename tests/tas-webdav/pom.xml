@@ -8,7 +8,7 @@
 
     <parent>
         <groupId>org.alfresco</groupId>
-        <artifactId>content-repository-tas-tests-parent</artifactId>
+        <artifactId>content-repository-tests</artifactId>
         <version>7.0.0-SNAPSHOT</version>
     </parent>
 
