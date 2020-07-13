@@ -190,7 +190,7 @@ jobs:
         - travis_retry travis_wait 20 mvn install -q -f tests/pipeline-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
         - mvn clean install -f ./tests/pipeline-all-amps/pom.xml deploy -Prelease
       script:
-        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-pipeline-amps-all.yml
+        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-pipeline-all-amps.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8080/alfresco"
 # Commented out for now for stability. See ACS-102
 #    - name: "Veracode static code scan"
