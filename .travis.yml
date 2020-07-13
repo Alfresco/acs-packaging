@@ -19,6 +19,7 @@ branches:
   only:
     - master
     - /support\/.*/
+    - /feature\/.*/
  
 env:
   global:
@@ -190,7 +191,7 @@ jobs:
         - mvn clean install -f tests/pipeline-all-amps/pom.xml deploy -Prelease
       script:
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-pipeline-amps-all.yml
-        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8080/alfresco"
 # Commented out for now for stability. See ACS-102
 #    - name: "Veracode static code scan"
 #        # only on support branches or master and if it is not a PR
