@@ -185,11 +185,12 @@ jobs:
         - travis_wait 20 mvn install -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
     - name: "Pipeline All AMPs tests"
       jdk: openjdk11
+      if: fork = false AND (branch = master OR branch =~ /feature\/.*/) AND type != pull_request
       install:
         # Build additional Docker image for repo and share for CI pipeline
-        - travis_retry travis_wait 20 mvn install -q -f tests/pipeline-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
+        - travis_retry travis_wait 20 mvn install -q -f tests/pipeline-all-amps/pom.xml -DskipTests
         - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
-        - mvn clean install -f ./tests/pipeline-all-amps/pom.xml deploy -Prelease
+        - travis_retry travis_wait 20 mvn clean install -f ./tests/pipeline-all-amps/pom.xml deploy -Prelease
       script:
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-pipeline-all-amps.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8080/alfresco"
