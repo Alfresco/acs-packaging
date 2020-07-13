@@ -35,14 +35,14 @@
         <image.tag>latest</image.tag>
 
         <dependency.alfresco-core.version>7.5.7</dependency.alfresco-core.version>
-        <dependency.alfresco-data-model.version>8.18.15</dependency.alfresco-data-model.version>
-        <dependency.alfresco-repository.version>6.56.65</dependency.alfresco-repository.version>
-        <dependency.alfresco-remote-api.version>6.39.53</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-data-model.version>8.18.16</dependency.alfresco-data-model.version>
+        <dependency.alfresco-repository.version>6.56.66</dependency.alfresco-repository.version>
+        <dependency.alfresco-remote-api.version>6.39.54</dependency.alfresco-remote-api.version>
     
         <dependency.alfresco-hb-data-sender.version>1.0.12</dependency.alfresco-hb-data-sender.version>
 
-        <dependency.alfresco-enterprise-repository.version>6.36.46</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-enterprise-remote-api.version>6.28.37</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>6.36.47</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-enterprise-remote-api.version>6.28.38</dependency.alfresco-enterprise-remote-api.version>
 
         <dependency.alfresco-spring-encryptor.version>6.1</dependency.alfresco-spring-encryptor.version>
         <dependency.alfresco-enterprise-crypto.version>6.1</dependency.alfresco-enterprise-crypto.version>
