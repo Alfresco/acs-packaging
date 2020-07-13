@@ -12,8 +12,11 @@
   </parent>
 
   <properties>
-    <image.name>alfresco/acs-amps-docker-repo</image.name>
+    <image.name>alfresco/alfresco-pipeline-all-amps-repo</image.name>
     <acs.version>6.2.2</acs.version>
+
+    <!-- Repo docker image tag to push -->
+    <repo_image.tag>6.2.2</repo_image.tag>
 
     <alfresco.alfresco-saml-repo.version>${alfresco.alfresco-saml.version}</alfresco.alfresco-saml-repo.version>
     <alfresco.alfresco-governance-services-enterprise-repo.version>${alfresco.alfresco-governance-services-enterprise.version}</alfresco.alfresco-governance-services-enterprise-repo.version>
@@ -308,7 +311,7 @@
             <configuration>
               <images>
                 <image>
-                  <name>${image.name}:${acs.version}</name>
+                  <name>${image.name}:${repo_image.tag}</name>
                   <registry>${image.registry}</registry>
                   <build>
                     <dockerFileDir>${project.basedir}/</dockerFileDir>

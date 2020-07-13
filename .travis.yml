@@ -182,6 +182,15 @@ jobs:
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-all-amps-test.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
         - travis_wait 20 mvn install -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+    - name: "Pipeline All AMPs tests"
+      jdk: openjdk11
+      install:
+        # Build additional Docker image for repo and share for CI pipeline
+        - travis_retry travis_wait 20 mvn install -q -f tests/pipeline-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
+        - mvn clean install -f tests/pipeline-all-amps/pom.xml deploy -Prelease
+      script:
+        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-pipeline-amps-all.yml
+        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
 # Commented out for now for stability. See ACS-102
 #    - name: "Veracode static code scan"
 #        # only on support branches or master and if it is not a PR

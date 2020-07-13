@@ -12,7 +12,7 @@ version: "2"
 
 services:
     alfresco:
-        image: quay.io/alfresco/acs-amps-docker-repo:6.2.2
+        image: quay.io/alfresco/alfresco-pipeline-all-amps-repo:6.2.2
         mem_limit: 1700m
         environment:
             JAVA_TOOL_OPTIONS: "
@@ -51,9 +51,9 @@ services:
                 -Dtransform.misc.url=http://transform-core-aio:8090/
                 -Dcsrf.filter.enabled=false
                 -Ddsync.service.uris=http://localhost:9090/alfresco
-                -Ds3.accessKey=default
-                -Ds3.secretKey=default
-                -Ds3.bucketName=default
+                -Ds3.accessKey=${AWS_ACCESS_KEY_ID}
+                -Ds3.secretKey=${AWS_SECRET_ACCESS_KEY}
+                -Ds3.bucketName=pipeline-amps-all
                 -Ds3.autoLowerCaseBucketName=true
                 -Ds3.bucketLocation=us-east-1
                 -Ds3.abortIncompleteMultipartUploadDays=1
@@ -103,7 +103,7 @@ services:
             - shared-file-store-volume:/tmp/Alfresco/sfs
 
     share:
-        image: quay.io/alfresco/acs-amps-docker-share:6.2.2
+        image: quay.io/alfresco/alfresco-pipeline-all-amps-share:6.2.2
         mem_limit: 1g
         environment:
             REPO_HOST: "alfresco"
