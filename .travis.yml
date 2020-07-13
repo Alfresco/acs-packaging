@@ -76,7 +76,6 @@ jobs:
       jdk: openjdk11
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
-        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-cmis-tests.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
         - travis_wait 40 mvn install -f tests/tas-cmis/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
@@ -104,7 +103,7 @@ jobs:
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-minimal.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
-        - travis_wait 20 mvn install -f tests/tas-webdav/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+        - travis_wait 20 mvn install -f tests/tas-webdav/pom.xml  -Denvironment=default -DrunBugs=false
     - name: "Integration TAS tests"
       jdk: openjdk11
       install:
