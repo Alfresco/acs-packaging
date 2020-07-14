@@ -183,9 +183,9 @@ jobs:
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-all-amps-test.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
         - travis_wait 20 mvn install -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
-    - name: "Pipeline All AMPs tests"
+    - name: "Pipeline All AMPs tests and push docker images"
       jdk: openjdk11
-      if: fork = false AND (branch = master OR branch =~ /feature\/.*/) AND type != pull_request
+      if: fork = false AND (branch = master OR branch =~ /feature\/.*/) AND commit_message =~ /\[releasepipeline\]/
       install:
         # Build additional Docker image for repo and share for CI pipeline
         - export TRAVIS_BUILD_NUMBER=${TRAVIS_BUILD_NUMBER}
