@@ -15,8 +15,8 @@
     <image.name>alfresco/alfresco-pipeline-all-amps-share</image.name>
     <share.version>6.2.2</share.version>
 
-    <!-- Repo docker image tag to push -->
-    <share_image.tag>6.2.2</share_image.tag>
+      <!-- Repo docker image tag to push with Travis build number -->
+      <TRAVIS_BUILD_NUMBER>${TRAVIS_BUILD_NUMBER}</TRAVIS_BUILD_NUMBER>
 
     <alfresco.alfresco-saml-share.version>${alfresco.alfresco-saml.version}</alfresco.alfresco-saml-share.version>
     <alfresco.alfresco-governance-services-enterprise-share.version>${alfresco.alfresco-governance-services-enterprise.version}</alfresco.alfresco-governance-services-enterprise-share.version>
@@ -155,7 +155,7 @@
                         <configuration>
                             <images>
                                 <image>
-                                    <name>${image.name}:${share_image.tag}</name>
+                                    <name>${image.name}:${TRAVIS_BUILD_NUMBER}-${share_image.tag}</name>
                                     <registry>${image.registry}</registry>
                                     <build>
                                         <dockerFileDir>${project.basedir}/</dockerFileDir>

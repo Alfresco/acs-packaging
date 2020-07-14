@@ -188,6 +188,7 @@ jobs:
       if: fork = false AND (branch = master OR branch =~ /feature\/.*/) AND type != pull_request
       install:
         # Build additional Docker image for repo and share for CI pipeline
+        - export TRAVIS_BUILD_NUMBER=${TRAVIS_BUILD_NUMBER}
         - travis_retry travis_wait 20 mvn install -q -f tests/pipeline-all-amps/pom.xml -DskipTests
         - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
         - travis_retry travis_wait 20 mvn clean install -f ./tests/pipeline-all-amps/pom.xml deploy -Prelease
