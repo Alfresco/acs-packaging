@@ -1,20 +1,11 @@
-# ACA Docker Image
+# ACS Pipeline-all-amps Repo & Share Docker Image
 
-Docker images are released to [docker hub](https://quay.io/repository/alfresco/alfresco-digital-workspace)
+The [pipeline-all-amps](../pipeline-all-amps) directory config has repo and share module with set of required amps. The new repo and share docker images has been released with top of some extra amps settings for CI/CD single pipeline process.
 
-## Environment Variables
+## Travis job to test and push docker images
 
-OAUTH2:
+acs-packaging repo [travis](../../.travis.yml) job `"Pipeline All AMPs tests and push docker images"` runs the tests and publishes the new docker image for repo and share with travis build number `Example: alfresco/alfresco-pipeline-all-amps-repo:3102:6.2.2`  
 
--   APP_CONFIG_AUTH_TYPE: ...
--   APP_CONFIG_OAUTH2_HOST: ...
--   APP_CONFIG_OAUTH2_CLIENTID: ...
--   APP_CONFIG_OAUTH2_REDIRECT_LOGIN: ...
--   APP_CONFIG_OAUTH2_REDIRECT_LOGOUT: ...
--   APP_CONFIG_OAUTH2_REDIRECT_SILENT_IFRAME_URI: ...
+To release new image, the commit message must contain `[release-pipeline]` to release images in master branch.
 
-APP Misc:
-
--   BASE_PATH: ...
--   APP_BASE_SHARE_URL: ...
--   SERVER_PATH: Server path (usefull if behind a reverse proxy). E.g.: `/workspace` . Defaults to `/`
+Docker images are released to [Quay docker repo](https://quay.io/repository/alfresco/alfresco-pipeline-all-amps-repo?tab=info) and [Quay docker share](https://quay.io/repository/alfresco/alfresco-pipeline-all-amps-share?tab=info)
