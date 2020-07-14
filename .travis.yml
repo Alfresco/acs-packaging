@@ -19,7 +19,7 @@ branches:
   only:
     - master
     - /support\/.*/
- 
+
 env:
   global:
     # Release version has to start with real version (7.0.0-....) for the docker image to build successfully.
