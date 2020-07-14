@@ -155,7 +155,7 @@
                         <configuration>
                             <images>
                                 <image>
-                                    <name>${image.name}:${TRAVIS_BUILD_NUMBER}-${acs.version}</name>
+                                    <name>${image.name}:${TRAVIS_BUILD_NUMBER}-${share.version}</name>
                                     <registry>${image.registry}</registry>
                                     <build>
                                         <dockerFileDir>${project.basedir}/</dockerFileDir>
