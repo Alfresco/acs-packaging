@@ -19,6 +19,7 @@ branches:
   only:
     - master
     - /support\/.*/
+    - /feature\/.*/
  
 env:
   global:
