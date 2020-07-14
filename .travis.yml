@@ -196,6 +196,7 @@ jobs:
         - export TRAVIS_BUILD_NUMBER=${TRAVIS_BUILD_NUMBER}
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-pipeline-all-amps.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8080/alfresco"
+        - docker ps
 # Commented out for now for stability. See ACS-102
 #    - name: "Veracode static code scan"
 #        # only on support branches or master and if it is not a PR
