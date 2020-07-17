@@ -19,7 +19,7 @@ branches:
   only:
     - master
     - /support\/.*/
-    - /feature\/.*/
+    - /feature\/acs-29_pipeline_acs_amps_docker
 env:
   global:
     # Release version has to start with real version (7.0.0-....) for the docker image to build successfully.
@@ -184,7 +184,8 @@ jobs:
         - travis_wait 20 mvn install -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
     - name: "Pipeline All AMPs tests and push docker images"
       jdk: openjdk11
-      if: fork = false AND (branch = master OR branch =~ /feature\/.*/) AND commit_message =~ /\[release-pipeline\]/
+      if: fork = false AND (branch = master OR branch = /feature\/acs-29_pipeline_acs_amps_docker) AND type != pull_request
+#      if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request
       install:
         # Build additional Docker image for repo and share for CI pipeline
         - export TRAVIS_BUILD_NUMBER=${TRAVIS_BUILD_NUMBER}
@@ -193,6 +194,7 @@ jobs:
         - travis_retry travis_wait 20 mvn clean install -f ./tests/pipeline-all-amps/pom.xml deploy -Prelease
       script:
         - export TRAVIS_BUILD_NUMBER=${TRAVIS_BUILD_NUMBER}
+        - export PROJECT_VERSION=${project.version}
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-pipeline-all-amps.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8080/alfresco"
         - docker ps

@@ -1,9 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.alfresco.onepipeline</groupId>
-  <artifactId>backend-parent</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <artifactId>pipeline-all-amps</artifactId>
   <packaging>pom</packaging>
+
+  <parent>
+    <groupId>org.alfresco</groupId>
+    <artifactId>content-repository-tas-tests-parent</artifactId>
+    <version>7.0.0-SNAPSHOT</version>
+  </parent>
 
   <distributionManagement>
     <repository>
@@ -16,16 +20,8 @@
     </snapshotRepository>
   </distributionManagement>
 
-  <properties>
-    <image.registry>quay.io</image.registry>
-    <fabric8.maven.version>4.4.0</fabric8.maven.version>
-
-    <alfresco.alfresco-saml.version>1.1.1</alfresco.alfresco-saml.version>
-    <alfresco.alfresco-governance-services-enterprise.version>3.3.1-RC1</alfresco.alfresco-governance-services-enterprise.version>
-  </properties>
-
   <modules>
-    <module>acs</module>
+    <module>repo</module>
     <module>share</module>
   </modules>
 

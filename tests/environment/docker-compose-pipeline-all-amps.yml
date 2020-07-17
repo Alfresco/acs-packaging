@@ -12,10 +12,9 @@ version: "2"
 
 services:
     alfresco:
-        image: alfresco/alfresco-pipeline-all-amps-repo:${TRAVIS_BUILD_NUMBER}-${REPO_IMAGE_TAG}
+        image: alfresco/alfresco-pipeline-all-amps-repo:${TRAVIS_BUILD_NUMBER}-${PROJECT_VERSION}-latest
         mem_limit: 1700m
         environment:
-            TRAVIS_BUILD_NUMBER: "${TRAVIS_BUILD_NUMBER}"
             JAVA_TOOL_OPTIONS: "
                 -Dmetadata-keystore.password=mp6yc0UD9e
                 -Dmetadata-keystore.aliases=metadata
@@ -104,7 +103,7 @@ services:
             - shared-file-store-volume:/tmp/Alfresco/sfs
 
     share:
-        image: alfresco/alfresco-pipeline-all-amps-share:${TRAVIS_BUILD_NUMBER}-${SHARE_IMAGE_TAG}
+        image: alfresco/alfresco-pipeline-all-amps-share:${TRAVIS_BUILD_NUMBER}-${PROJECT_VERSION}-latest
         mem_limit: 1g
         environment:
             REPO_HOST: "alfresco"

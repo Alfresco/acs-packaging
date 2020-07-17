@@ -1,67 +1,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>acs</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <artifactId>pipeline-repo</artifactId>
   <packaging>pom</packaging>
 
-  <parent>
-    <groupId>org.alfresco.onepipeline</groupId>
-    <artifactId>backend-parent</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <relativePath>../pom.xml</relativePath>
-  </parent>
+    <parent>
+        <groupId>org.alfresco</groupId>
+        <artifactId>pipeline-all-amps</artifactId>
+        <version>7.0.0-SNAPSHOT</version>
+    </parent>
 
   <properties>
     <image.name>alfresco/alfresco-pipeline-all-amps-repo</image.name>
-    <acs.version>6.2.2</acs.version>
 
     <!-- Repo docker image tag to push with Travis build number -->
     <TRAVIS_BUILD_NUMBER>${TRAVIS_BUILD_NUMBER}</TRAVIS_BUILD_NUMBER>
 
-    <alfresco.alfresco-saml-repo.version>${alfresco.alfresco-saml.version}</alfresco.alfresco-saml-repo.version>
-    <alfresco.alfresco-governance-services-enterprise-repo.version>${alfresco.alfresco-governance-services-enterprise.version}</alfresco.alfresco-governance-services-enterprise-repo.version>
-    <alfresco.alfresco-s3-connector.version>3.0.0</alfresco.alfresco-s3-connector.version>
-    <alfresco.alfresco-glacier-connector-repo.version>2.0.0</alfresco.alfresco-glacier-connector-repo.version>
     <alfresco.alfresco-rm-enterprise-rest-api-explorer.version>3.0.2</alfresco.alfresco-rm-enterprise-rest-api-explorer.version>
-
-    <!-- Alfresco GoogleDocs integration version -->
-    <alfresco.googledrive.version>3.2.0-RC3</alfresco.googledrive.version>
-
-    <!-- Alfresco S3 Connector integration version -->
-    <alfresco.s3connector.version>3.0.0.1</alfresco.s3connector.version>
-
-    <!-- Alfresco Glacier Connector Repo version -->
-    <alfresco.glacier-connector.version>2.0.0</alfresco.glacier-connector.version>
-
-    <!-- Alfresco Centera Connector version -->
-    <alfresco.centera-connector.version>2.2.1</alfresco.centera-connector.version>
-
-    <!-- Alfresco Salesforce Connector version -->
-    <alfresco.salesforce-connector.version>2.2.0-EA1</alfresco.salesforce-connector.version>
-
-    <!-- SAML Single Sign-On (SSO) for Alfresco Content Services -->
-    <alfresco.saml.version>1.2.0</alfresco.saml.version>
-
-    <!-- Alfresco Outlook Integration -->
-    <alfresco.outlook.version>2.6.1</alfresco.outlook.version>
-
-    <!-- Document Transformation Engine -->
-    <alfresco.transformation-engine.version>2.2.2</alfresco.transformation-engine.version>
-
-    <!-- Alfresco Governance Services (AGS) -->
-    <alfresco.ags.version>3.4.0-SNAPSHOT</alfresco.ags.version>
-
-    <!-- Alfresco Office Services Module -->
-    <alfresco.aos-module.version>1.3.1</alfresco.aos-module.version>
-
-    <!-- Alfresco Media Management Module -->
-    <alfresco.mm.version>1.4.0</alfresco.mm.version>
-
-    <!-- Alfresco Desktop Sync Service Module -->
-    <alfresco.desktop-sync.version>3.3.2-SNAPSHOT</alfresco.desktop-sync.version>
-
-    <!-- Alfresco Alfresco Intelligence Services (AIS) -->
-    <alfresco.ais.version>1.1.3-SNAPSHOT</alfresco.ais.version>
   </properties>
 
 <dependencyManagement>
@@ -69,25 +23,13 @@
     <dependency>
       <groupId>org.alfresco.saml</groupId>
       <artifactId>alfresco-saml-repo</artifactId>
-      <version>${alfresco.alfresco-saml-repo.version}</version>
+      <version>${alfresco.saml.version}</version>
       <type>amp</type>
     </dependency>
     <dependency>
       <groupId>org.alfresco</groupId>
       <artifactId>alfresco-governance-services-enterprise-repo</artifactId>
-      <version>${alfresco.alfresco-governance-services-enterprise-repo.version}</version>
-      <type>amp</type>
-    </dependency>
-    <dependency>
-      <groupId>org.alfresco.integrations</groupId>
-      <artifactId>alfresco-s3-connector</artifactId>
-      <version>${alfresco.alfresco-s3-connector.version}</version>
-      <type>amp</type>
-    </dependency>
-    <dependency>
-      <groupId>org.alfresco</groupId>
-      <artifactId>alfresco-glacier-connector-repo</artifactId>
-      <version>${alfresco.alfresco-glacier-connector-repo.version}</version>
+      <version>${alfresco.ags.version}</version>
       <type>amp</type>
     </dependency>
     <dependency>
@@ -112,12 +54,6 @@
       <groupId>org.alfresco</groupId>
       <artifactId>alfresco-centera-connector</artifactId>
       <version>${alfresco.centera-connector.version}</version>
-      <type>amp</type>
-    </dependency>
-    <dependency>
-      <groupId>org.alfresco.saml</groupId>
-      <artifactId>alfresco-saml-repo</artifactId>
-      <version>${alfresco.saml.version}</version>
       <type>amp</type>
     </dependency>
     <dependency>
@@ -150,6 +86,12 @@
       <version>${alfresco.desktop-sync.version}</version>
       <type>amp</type>
     </dependency>
+    <dependency>
+      <groupId>org.alfresco.integrations</groupId>
+      <artifactId>alfresco-googledrive-repo-enterprise</artifactId>
+      <version>${alfresco.googledrive.version}</version>
+      <type>amp</type>
+    </dependency>
   </dependencies>
 </dependencyManagement>
 
@@ -172,7 +114,7 @@
                 <artifactItem>
                   <groupId>org.alfresco.saml</groupId>
                   <artifactId>alfresco-saml-repo</artifactId>
-                  <version>${alfresco.alfresco-saml-repo.version}</version>
+                  <version>${alfresco.saml.version}</version>
                   <type>amp</type>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/amps</outputDirectory>
@@ -180,7 +122,7 @@
                 <artifactItem>
                   <groupId>org.alfresco</groupId>
                   <artifactId>alfresco-governance-services-enterprise-repo</artifactId>
-                  <version>${alfresco.alfresco-governance-services-enterprise-repo.version}</version>
+                  <version>${alfresco.ags.version}</version>
                   <type>amp</type>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/amps</outputDirectory>
@@ -238,8 +180,16 @@
                   <artifactItems>
                     <artifactItem>
                       <groupId>org.alfresco.integrations</groupId>
+                      <artifactId>alfresco-googledrive-repo-enterprise</artifactId>
+                      <version>${alfresco.googledrive.version}</version>
+                      <type>amp</type>
+                      <overWrite>false</overWrite>
+                      <outputDirectory>${project.build.directory}/amps</outputDirectory>
+                    </artifactItem>
+                    <artifactItem>
+                      <groupId>org.alfresco.integrations</groupId>
                       <artifactId>alfresco-s3-connector</artifactId>
-                      <version>${alfresco.alfresco-s3-connector.version}</version>
+                      <version>${alfresco.s3connector.version}</version>
                       <type>amp</type>
                       <overWrite>true</overWrite>
                       <outputDirectory>${project.build.directory}/amps</outputDirectory>
@@ -247,7 +197,7 @@
                     <artifactItem>
                       <groupId>org.alfresco</groupId>
                       <artifactId>alfresco-glacier-connector-repo</artifactId>
-                      <version>${alfresco.alfresco-glacier-connector-repo.version}</version>
+                      <version>${alfresco.glacier-connector.version}</version>
                       <type>amp</type>
                       <overWrite>false</overWrite>
                       <outputDirectory>${project.build.directory}/amps</outputDirectory>
@@ -268,7 +218,7 @@
           <plugin>
             <groupId>io.fabric8</groupId>
             <artifactId>fabric8-maven-plugin</artifactId>
-            <version>${fabric8.maven.version}</version>
+            <version>${dependency.fabric8.version}</version>
             <configuration>
               <images>
                 <image>
@@ -307,11 +257,11 @@
           <plugin>
             <groupId>io.fabric8</groupId>
             <artifactId>fabric8-maven-plugin</artifactId>
-            <version>${fabric8.maven.version}</version>
+            <version>${dependency.fabric8.version}</version>
             <configuration>
               <images>
                 <image>
-                  <name>${image.name}:${TRAVIS_BUILD_NUMBER}-${acs.version}</name>
+                  <name>${image.name}:${TRAVIS_BUILD_NUMBER}-${project.version}</name>
                   <registry>${image.registry}</registry>
                   <build>
                     <dockerFileDir>${project.basedir}/</dockerFileDir>

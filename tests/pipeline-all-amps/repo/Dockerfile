@@ -1,18 +1,15 @@
-FROM alfresco/alfresco-content-repository:${acs.version}
+FROM alfresco/alfresco-content-repository:${image.tag}
 
 USER root
 
-# SAML files
-COPY saml/keystore/saml.keystore /usr/local/tomcat/saml.keystore
-COPY saml/keystore/saml.properties /usr/local/tomcat/saml.properties
-COPY saml/my-custom-aos-sp.properties /usr/local/tomcat/shared/classes/alfresco/extension/subsystems/SAML/repository/aos/my-custom-aos-sp.properties
-COPY saml/my-custom-share-sp.properties /usr/local/tomcat/shared/classes/alfresco/extension/subsystems/SAML/share/share/my-custom-share-sp.properties
-COPY saml/my-custom-rest-api-sp.properties /usr/local/tomcat/shared/classes/alfresco/extension/subsystems/SAML/repository/rest-api/my-custom-rest-api-sp.properties
+ARG TOMCAT_DIR=/usr/local/tomcat
 
+# Copy the amps from build context to the appropriate location for your application server
 COPY target/amps/*.amp /usr/local/tomcat/amps/
 
-RUN java -jar /usr/local/tomcat/alfresco-mmt/alfresco-mmt*.jar install \
-  /usr/local/tomcat/amps /usr/local/tomcat/webapps/alfresco -directory -nobackup -force
+# Install amps on alfresco.war
+RUN java -jar ${TOMCAT_DIR}/alfresco-mmt/alfresco-mmt*.jar install \
+              ${TOMCAT_DIR}/amps ${TOMCAT_DIR}/webapps/alfresco -directory -nobackup -force
 
 ### Copy gs-api-explorer war into webapps folder
 COPY target/wars/rm-api-explorer.war /usr/local/tomcat/webapps/
