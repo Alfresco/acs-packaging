@@ -12,10 +12,6 @@
   <properties>
     <image.name>alfresco/alfresco-pipeline-all-amps-repo</image.name>
 
-    <!-- Repo docker image tag used to push/pull using Travis job -->
-    <TRAVIS_BUILD_NUMBER>${TRAVIS_BUILD_NUMBER}</TRAVIS_BUILD_NUMBER>
-    <PROJECT_VERSION>${project.version}</PROJECT_VERSION>
-
     <alfresco.alfresco-rm-enterprise-rest-api-explorer.version>3.0.2</alfresco.alfresco-rm-enterprise-rest-api-explorer.version>
   </properties>
 
