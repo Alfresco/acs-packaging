@@ -196,7 +196,6 @@ jobs:
       script:
         - export TRAVIS_BUILD_NUMBER=${TRAVIS_BUILD_NUMBER}
         - export PROJECT_VERSION=`mvn help:evaluate -f ./tests/pipeline-all-amps/pom.xml -Dexpression=project.version -q -DforceStdout`
-        - echo $${PROJECT_VERSION}
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-pipeline-all-amps.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8080/alfresco"
         - docker ps
