@@ -13,8 +13,9 @@
     <image.name>alfresco/alfresco-pipeline-all-amps-share</image.name>
     <image.tag>6.2.2</image.tag>
 
-    <!-- Repo docker image tag to push with Travis build number -->
+    <!-- Repo docker image tag used to push/pull using Travis job -->
     <TRAVIS_BUILD_NUMBER>${TRAVIS_BUILD_NUMBER}</TRAVIS_BUILD_NUMBER>
+    <PROJECT_VERSION>${project.version}</PROJECT_VERSION>
   </properties>
 
   <dependencyManagement>
