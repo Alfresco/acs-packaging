@@ -114,7 +114,7 @@
         <alfresco.distribution.name>${alfresco.package.name}-distribution</alfresco.distribution.name>
 
         <dependency.postgresql.version>42.2.14</dependency.postgresql.version>
-        <dependency.mariadb.version>2.6.0</dependency.mariadb.version>
+        <dependency.mariadb.version>2.6.1</dependency.mariadb.version>
 
         <!-- Private docker registry -->
         <image.registry>quay.io</image.registry>
