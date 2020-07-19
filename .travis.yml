@@ -19,6 +19,7 @@ branches:
   only:
     - master
     - /support\/.*/
+    - feature/REPO-5111_repo_build
 
 env:
   global:
