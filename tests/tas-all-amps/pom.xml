@@ -117,7 +117,7 @@
                                         <artifactItem>
                                             <groupId>org.alfresco</groupId>
                                             <artifactId>content-services</artifactId>
-                                            <version>${project.version}</version>
+                                            <version>${dependency.alfresco-enterprise-repo.version}</version>
                                             <type>war</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/war/alfresco</outputDirectory>
