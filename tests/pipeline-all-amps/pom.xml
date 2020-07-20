@@ -9,17 +9,6 @@
     <version>7.0.0-SNAPSHOT</version>
   </parent>
 
-  <distributionManagement>
-    <repository>
-      <id>alfresco-internal</id>
-      <url>https://artifacts.alfresco.com/nexus/content/repositories/enterprise-releases</url>
-    </repository>
-    <snapshotRepository>
-      <id>alfresco-internal-snapshot</id>
-      <url>https://artifacts.alfresco.com/nexus/content/repositories/enterprise-snapshots</url>
-    </snapshotRepository>
-  </distributionManagement>
-
   <modules>
     <module>repo</module>
     <module>share</module>

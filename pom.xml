@@ -173,6 +173,14 @@
                 <module>docker-alfresco</module>
             </modules>
         </profile>
+        <profile>
+            <id>pipeline</id>
+            <modules>
+                <module>war</module>
+                <module>docker-alfresco</module>
+                <module>tests/pipeline-all-amps</module>
+            </modules>
+        </profile>
     </profiles>
 
     <dependencyManagement>

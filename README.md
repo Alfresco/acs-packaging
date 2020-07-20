@@ -52,5 +52,3 @@ In this folder the distribution zip is built. It contains all the war files, lib
 ## How to
 
 * [Create a custom Docker image](docs/create-custom-image.md)
-
-## To Publish Pipeline-all-amps docker images, please check [pipeline-all-amps](docs/create-pipeline-all-amps-images.md)
