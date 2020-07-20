@@ -65,7 +65,7 @@ services:
 
     transform-router:
         mem_limit: 512m
-        image: quay.io/alfresco/alfresco-transform-router:1.2.0
+        image: quay.io/alfresco/alfresco-transform-router:1.3.1-A1
         environment:
           JAVA_OPTS: " -Xms256m -Xmx512m"
           ACTIVEMQ_URL: "nio://activemq:61616"
@@ -79,7 +79,7 @@ services:
           - activemq
 
     transform-core-aio:
-        image: alfresco/alfresco-transform-core-aio:2.2.1
+        image: alfresco/alfresco-transform-core-aio:2.3.2
         mem_limit: 1536m
         environment:
             JAVA_OPTS: " -Xms256m -Xmx1536m"
@@ -91,7 +91,7 @@ services:
         - activemq
 
     shared-file-store:
-        image: alfresco/alfresco-shared-file-store:0.7.0
+        image: alfresco/alfresco-shared-file-store:0.9.0
         mem_limit: 512m
         environment:
             JAVA_OPTS: " -Xms256m -Xmx512m"
@@ -119,7 +119,7 @@ services:
             TRAVIS_BUILD_NUMBER: "${TRAVIS_BUILD_NUMBER}"
 
     postgres:
-        image: postgres:11.4
+        image: postgres:11.7
         mem_limit: 512m
         environment:
             - POSTGRES_PASSWORD=alfresco
@@ -157,7 +157,7 @@ services:
             - 61613:61613 # STOMP
 
     digital-workspace:
-        image: quay.io/alfresco/alfresco-digital-workspace:1.5.0
+        image: quay.io/alfresco/alfresco-digital-workspace:1.6.0
         mem_limit: 128m
         environment:
             BASE_PATH: ./
@@ -176,7 +176,7 @@ services:
             - share
 
     sync-service:
-        image: quay.io/alfresco/service-sync:3.3.2
+        image: quay.io/alfresco/service-sync:3.3.3
         mem_limit: 1g
         environment:
             JAVA_OPTS : "
