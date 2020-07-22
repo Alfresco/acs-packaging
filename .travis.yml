@@ -20,11 +20,11 @@ branches:
     - master
     - /support\/.*/
     - feature/REPO-5111_repo_build
- 
+
 env:
   global:
     # Release version has to start with real version (7.0.0-....) for the docker image to build successfully.
-    - RELEASE_VERSION=7.0.0-A1
+    - RELEASE_VERSION=7.0.0-A2
     - DEVELOPMENT_VERSION=7.0.0-SNAPSHOT
 
 stages:
