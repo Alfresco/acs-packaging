@@ -24,6 +24,7 @@ if (("$COUNTER" < "$TIMEOUT")) ; then
    t1=$(date +%s)
    delta=$((($t1 - $t0)/60))
    echo "Alfresco Started in $delta minutes"
+   sleep 180
 else
    echo "Waited $COUNTER seconds"
    echo "Alfresco Could not start in time."
