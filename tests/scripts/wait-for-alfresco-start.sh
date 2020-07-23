@@ -12,6 +12,7 @@ WAIT_INTERVAL=1
 COUNTER=0
 TIMEOUT=300
 t0=$(date +%s)
+EXTRA_WAIT_INTERVAL=180
 
 echo "Waiting for alfresco to start"
 until $(curl --output /dev/null --silent --head --fail ${ALFRESCO_URL}) || [ "$COUNTER" -eq "$TIMEOUT" ]; do
@@ -23,7 +24,9 @@ done
 if (("$COUNTER" < "$TIMEOUT")) ; then
    t1=$(date +%s)
    delta=$((($t1 - $t0)/60))
-   echo "Alfresco Started in $delta minutes"
+   echo "Alfresco Started in $delta minutes, waiting for all the containers to initialise..."
+   sleep $EXTRA_WAIT_INTERVAL
+   echo "Waited $EXTRA_WAIT_INTERVAL seconds"
 else
    echo "Waited $COUNTER seconds"
    echo "Alfresco Could not start in time."
