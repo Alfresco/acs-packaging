@@ -26,6 +26,12 @@ services:
       # export HOST_IP=$(echo ${HOST_IP%/*})
       HOST_IP: ${HOST_IP}
       CATALINA_OPTS : "-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n"
+      JAVA_TOOL_OPTIONS: "
+        -Dmetadata-keystore.password=mp6yc0UD9e
+        -Dmetadata-keystore.aliases=metadata
+        -Dmetadata-keystore.metadata.password=mp6yc0UD9e
+        -Dmetadata-keystore.metadata.algorithm=AES
+      "
       JAVA_OPTS :
         "
         -Dalfresco.port=8082
@@ -51,11 +57,6 @@ services:
         -Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth
         -Didentity-service.realm=alfresco
         -Didentity-service.resource=alfresco
-
-        -Dmetadata-keystore.password=mp6yc0UD9e
-        -Dmetadata-keystore.aliases=metadata
-        -Dmetadata-keystore.metadata.password=mp6yc0UD9e
-        -Dmetadata-keystore.metadata.algorithm=AES
         "
     ports:
       - 8082:8080

@@ -14,6 +14,12 @@ services:
       context: ./alfresco-with-jolokia
     environment:
       CATALINA_OPTS : "-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n"
+      JAVA_TOOL_OPTIONS: "
+        -Dmetadata-keystore.password=mp6yc0UD9e
+        -Dmetadata-keystore.aliases=metadata
+        -Dmetadata-keystore.metadata.password=mp6yc0UD9e
+        -Dmetadata-keystore.metadata.algorithm=AES
+      "
       JAVA_OPTS :
         "
         -Ddb.driver=org.postgresql.Driver
@@ -49,11 +55,6 @@ services:
         -Demail.server.port=1126
         -Dsystem.usages.enabled=true
         -Dcsrf.filter.enabled=false
-
-        -Dmetadata-keystore.password=mp6yc0UD9e
-        -Dmetadata-keystore.aliases=metadata
-        -Dmetadata-keystore.metadata.password=mp6yc0UD9e
-        -Dmetadata-keystore.metadata.algorithm=AES
         "
     ports:
       - 8082:8080
