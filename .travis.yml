@@ -174,7 +174,8 @@ jobs:
     - name: "All AMPs tests"
       jdk: openjdk11
       install:
-        - travis_retry travis_wait 20 mvn install -q -PenterpriseDocker
+        # fullBuild profile builds additional Docker image for all-amps test
+        - travis_retry travis_wait 20 mvn install -q -PenterpriseDocker,fullBuild
         - travis_retry travis_wait 20 mvn install -q -f tests/tas-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
       script:
         - ./tests/scripts/checkLibraryDuplicates.sh ./tests/tas-all-amps/target/war/alfresco/WEB-INF/lib
