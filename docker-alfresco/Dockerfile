@@ -1,5 +1,3 @@
-# Fetch image based on Tomcat 8.5.43 and Java 11
-# More infos about this image: https://github.com/Alfresco/alfresco-docker-base-tomcat
 FROM alfresco/alfresco-enterprise-repo-base:latest
 
 # Set default docker_context. Will / Can be overriden with maven.
@@ -19,15 +17,18 @@ ARG JAVA_PROFILER_RUNTIME_DIR=/tmp/Alfresco/yourkit
 
 USER root
 
-# Copy the amps from build context to the appropriate location for your application server
-COPY ${resource_path}/amps ${TOMCAT_DIR}/amps
+# Copy api-explorer war
+COPY ${resource_path}/war/* ${TOMCAT_DIR}/webapps/
+
+# Copy in the share-services and device-sync amps
+COPY ${resource_path}/amps/* ${TOMCAT_DIR}/amps/
 
 # Install amps on alfresco.war
 RUN java -jar ${TOMCAT_DIR}/alfresco-mmt/alfresco-mmt*.jar install \
               ${TOMCAT_DIR}/amps \
               ${TOMCAT_DIR}/webapps/alfresco -directory -nobackup
 
-# The standard configuration is to have all Tomcat files owned by root with group GROUPNAME and whilst owner has read/write privileges, 
+# The standard configuration is to have all Tomcat files owned by root with group GROUPNAME and whilst owner has read/write privileges,
 # group only has restricted permissions and world has no permissions.
 RUN chgrp -R ${GROUPNAME} ${TOMCAT_DIR} && \
     chmod g+rx ${TOMCAT_DIR}/conf && \
@@ -47,10 +48,5 @@ RUN chgrp -R ${GROUPNAME} ${TOMCAT_DIR} && \
     mkdir -p ${JAVA_PROFILER_RUNTIME_DIR} && \
     chgrp -R ${GROUPNAME} ${JAVA_PROFILER_RUNTIME_DIR} && \
     chmod g+rwx ${JAVA_PROFILER_RUNTIME_DIR}
-
-EXPOSE 10001
-
-# For remote debug
-EXPOSE 8000
 
 USER ${IMAGEUSERNAME}

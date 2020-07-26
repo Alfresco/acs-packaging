@@ -15,48 +15,47 @@
         <resource_path>target</resource_path>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.alfresco</groupId>
-            <artifactId>api-explorer</artifactId>
-            <version>${dependency.alfresco-api-explorer.version}</version>
-            <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-mmt</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-server-root</artifactId>
-            <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-share-services</artifactId>
-            <type>amp</type>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco.aos-module</groupId>
-            <artifactId>alfresco-aos-module</artifactId>
-            <type>amp</type>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco.aos-module</groupId>
-            <artifactId>alfresco-vti-bin</artifactId>
-            <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco.integrations</groupId>
-            <artifactId>alfresco-googledrive-repo-enterprise</artifactId>
-            <version>${alfresco.googledrive.version}</version>
-            <type>amp</type>
-        </dependency>
-    </dependencies>
+<!--    <dependencies>-->
+<!--        <dependency>-->
+<!--            <groupId>org.alfresco</groupId>-->
+<!--            <artifactId>alfresco-mmt</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.alfresco</groupId>-->
+<!--            <artifactId>alfresco-server-root</artifactId>-->
+<!--            <type>war</type>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.postgresql</groupId>-->
+<!--            <artifactId>postgresql</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.alfresco.aos-module</groupId>-->
+<!--            <artifactId>alfresco-aos-module</artifactId>-->
+<!--            <type>amp</type>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.alfresco.aos-module</groupId>-->
+<!--            <artifactId>alfresco-vti-bin</artifactId>-->
+<!--            <type>war</type>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.alfresco.integrations</groupId>-->
+<!--            <artifactId>alfresco-googledrive-repo-enterprise</artifactId>-->
+<!--            <type>amp</type>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.alfresco</groupId>-->
+<!--            <artifactId>api-explorer</artifactId>-->
+<!--            <version>${dependency.alfresco-api-explorer.version}</version>-->
+<!--            <type>war</type>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.alfresco</groupId>-->
+<!--            <artifactId>alfresco-share-services</artifactId>-->
+<!--            <type>amp</type>-->
+<!--        </dependency>-->
+<!--    </dependencies>-->
 
     <build>
         <plugins>
@@ -97,13 +96,13 @@
                         </goals>
                         <configuration>
                             <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.alfresco</groupId>
-                                    <artifactId>content-services</artifactId>
-                                    <type>war</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/war/alfresco</outputDirectory>
-                                </artifactItem>
+<!--                                <artifactItem>-->
+<!--                                    <groupId>org.alfresco</groupId>-->
+<!--                                    <artifactId>content-services</artifactId>-->
+<!--                                    <type>war</type>-->
+<!--                                    <overWrite>false</overWrite>-->
+<!--                                    <outputDirectory>${project.build.directory}/war/alfresco</outputDirectory>-->
+<!--                                </artifactItem>-->
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>api-explorer</artifactId>
@@ -111,47 +110,46 @@
                                     <type>war</type>
                                     <outputDirectory>${project.build.directory}/war/api-explorer</outputDirectory>
                                 </artifactItem>
-                                <dependency>
-                                    <groupId>org.alfresco</groupId>
-                                    <artifactId>alfresco-server-root</artifactId>
-                                    <type>war</type>
-                                    <outputDirectory>${project.build.directory}/war/ROOT</outputDirectory>
-                                </dependency>
-                                <artifactItem>
-                                    <groupId>org.alfresco.aos-module</groupId>
-                                    <artifactId>alfresco-vti-bin</artifactId>
-                                    <version>${alfresco.aos-module.version}</version>
-                                    <type>war</type>
-                                    <outputDirectory>${project.build.directory}/war/_vti_bin</outputDirectory>
-                                </artifactItem>
+<!--                                <artifactItem>-->
+<!--                                    <groupId>org.alfresco</groupId>-->
+<!--                                    <artifactId>alfresco-server-root</artifactId>-->
+<!--                                    <type>war</type>-->
+<!--                                    <outputDirectory>${project.build.directory}/war/ROOT</outputDirectory>-->
+<!--                                </artifactItem>-->
+<!--                                <artifactItem>-->
+<!--                                    <groupId>org.alfresco.aos-module</groupId>-->
+<!--                                    <artifactId>alfresco-vti-bin</artifactId>-->
+<!--                                    <type>war</type>-->
+<!--                                    <outputDirectory>${project.build.directory}/war/_vti_bin</outputDirectory>-->
+<!--                                </artifactItem>-->
                             </artifactItems>
                         </configuration>
                     </execution>
-                    <execution>
-                        <id>copy-jdbc-connectors</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.postgresql</groupId>
-                                    <artifactId>postgresql</artifactId>
-                                    <type>jar</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/connector</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.alfresco</groupId>
-                                    <artifactId>alfresco-mmt</artifactId>
-                                    <type>jar</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/alfresco-mmt</outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
+<!--                    <execution>-->
+<!--                        <id>copy-jdbc-connectors</id>-->
+<!--                        <phase>process-resources</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>copy</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <artifactItems>-->
+<!--                                <artifactItem>-->
+<!--                                    <groupId>org.postgresql</groupId>-->
+<!--                                    <artifactId>postgresql</artifactId>-->
+<!--                                    <type>jar</type>-->
+<!--                                    <overWrite>false</overWrite>-->
+<!--                                    <outputDirectory>${project.build.directory}/connector</outputDirectory>-->
+<!--                                </artifactItem>-->
+<!--                                <artifactItem>-->
+<!--                                    <groupId>org.alfresco</groupId>-->
+<!--                                    <artifactId>alfresco-mmt</artifactId>-->
+<!--                                    <type>jar</type>-->
+<!--                                    <overWrite>false</overWrite>-->
+<!--                                    <outputDirectory>${project.build.directory}/alfresco-mmt</outputDirectory>-->
+<!--                                </artifactItem>-->
+<!--                            </artifactItems>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
                     <execution>
                         <id>copy-amps</id>
                         <phase>process-resources</phase>
@@ -168,22 +166,20 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.alfresco.aos-module</groupId>
-                                    <artifactId>alfresco-aos-module</artifactId>
-                                    <version>${alfresco.aos-module.version}</version>
-                                    <type>amp</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.alfresco.integrations</groupId>
-                                    <artifactId>alfresco-googledrive-repo-enterprise</artifactId>
-                                    <version>${alfresco.googledrive.version}</version>
-                                    <type>amp</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                </artifactItem>
+<!--                                <artifactItem>-->
+<!--                                    <groupId>org.alfresco.aos-module</groupId>-->
+<!--                                    <artifactId>alfresco-aos-module</artifactId>-->
+<!--                                    <type>amp</type>-->
+<!--                                    <overWrite>false</overWrite>-->
+<!--                                    <outputDirectory>${project.build.directory}/amps</outputDirectory>-->
+<!--                                </artifactItem>-->
+<!--                                <artifactItem>-->
+<!--                                    <groupId>org.alfresco.integrations</groupId>-->
+<!--                                    <artifactId>alfresco-googledrive-repo-enterprise</artifactId>-->
+<!--                                    <type>amp</type>-->
+<!--                                    <overWrite>false</overWrite>-->
+<!--                                    <outputDirectory>${project.build.directory}/amps</outputDirectory>-->
+<!--                                </artifactItem>-->
                                 <artifactItem>
                                     <groupId>org.alfresco.services.sync</groupId>
                                     <artifactId>alfresco-device-sync-repo</artifactId>

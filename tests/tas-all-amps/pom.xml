@@ -36,7 +36,6 @@
         <dependency>
             <groupId>org.alfresco.aos-module</groupId>
             <artifactId>alfresco-aos-module</artifactId>
-            <version>${alfresco.aos-module.version}</version>
             <type>amp</type>
         </dependency>
         <dependency>
@@ -172,7 +171,6 @@
                                         <artifactItem>
                                             <groupId>org.alfresco.aos-module</groupId>
                                             <artifactId>alfresco-aos-module</artifactId>
-                                            <version>${alfresco.aos-module.version}</version>
                                             <type>amp</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>
@@ -180,7 +178,6 @@
                                         <artifactItem>
                                             <groupId>org.alfresco.integrations</groupId>
                                             <artifactId>alfresco-googledrive-repo-enterprise</artifactId>
-                                            <version>${alfresco.googledrive.version}</version>
                                             <type>amp</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>
