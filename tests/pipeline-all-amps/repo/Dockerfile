@@ -1,4 +1,4 @@
-FROM alfresco/alfresco-content-repository:${image.tag}
+FROM alfresco/alfresco-content-repository:latest
 
 USER root
 

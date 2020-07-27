@@ -1,6 +1,6 @@
 # Fetch image based on Tomcat 8.5.43 and Java 11
 # More infos about this image: https://github.com/Alfresco/alfresco-docker-base-tomcat
-FROM alfresco/alfresco-content-repository:${image.tag}
+FROM alfresco/alfresco-content-repository:latest
 
 ARG TOMCAT_DIR=/usr/local/tomcat
 ARG ALF_GROUP=Alfresco
