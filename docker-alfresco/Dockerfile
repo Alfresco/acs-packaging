@@ -1,6 +1,6 @@
 # Fetch image based on Tomcat 8.5.43 and Java 11
 # More infos about this image: https://github.com/Alfresco/alfresco-docker-base-tomcat
-FROM alfresco/alfresco-base-tomcat:8.5.43-java-11-openjdk-centos-7
+FROM alfresco/alfresco-base-tomcat:8.5.51-java-11-openjdk-centos-7
 
 # Set default docker_context. Will / Can be overriden with maven.
 ARG resource_path=target
@@ -84,7 +84,7 @@ ARG KEYSTORE_PASSWORD=mp6yc0UD9e
 RUN mkdir ${TOMCAT_DIR}/shared/classes/alfresco/keystore && \
     keytool -genseckey -dname "$CERT_DNAME" -validity ${CERT_VALIDITY} -alias metadata -keyalg AES -keysize 256 -keystore ${TOMCAT_DIR}/shared/classes/alfresco/keystore/keystore -storetype pkcs12 -storepass ${KEYSTORE_PASSWORD}
 
-# The standard configuration is to have all Tomcat files owned by root with group GROUPNAME and whilst owner has read/write privileges, 
+# The standard configuration is to have all Tomcat files owned by root with group GROUPNAME and whilst owner has read/write privileges,
 # group only has restricted permissions and world has no permissions.
 RUN mkdir -p ${TOMCAT_DIR}/conf/Catalina/localhost && \
     mkdir -p ${TOMCAT_DIR}/alf_data && \
