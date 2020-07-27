@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+set -ev
 
 # Use full history for release
 git checkout -B "${TRAVIS_BRANCH}"
@@ -10,7 +10,7 @@ if [ -z ${RELEASE_VERSION} ] || [ -z ${DEVELOPMENT_VERSION} ];
     then echo "Please provide a Release and Development verison in the format <acs-version>-<additional-info> (7.0.0-EA or 7.0.0-SNAPSHOT)"
          exit -1
 else
-    mvn --batch-mode \
+    mvn -B \
     -PfullBuild,all-tas-tests \
     -DskipTests \
     -Dusername="${GIT_USERNAME}" \

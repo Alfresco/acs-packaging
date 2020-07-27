@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+set -ev
 
 #
 # Check that the version to be released does not already have a docker tag.
