@@ -389,6 +389,9 @@
                                     <name>alfresco/alfresco-content-repository-all-amps-test:latest</name>
                                     <build>
                                         <dockerFileDir>${project.basedir}/</dockerFileDir>
+                                        <buildOptions>
+                                            <squash>true</squash>
+                                        </buildOptions>
                                     </build>
                                 </image>
                             </images>
