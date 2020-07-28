@@ -9,40 +9,41 @@ pushd "$(dirname "${BASH_SOURCE[0]}")/../../"
 if ! [[ "${BRANCH}" =~ ^master$\|^release/.+$ ]] ; then
   # if BRANCH exists in the upstream project
 
-  if git ls-remote --exit-code --heads \
-  https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-community-repo.git \
-  "${BRANCH}" ; then
-
+  UPSTREAM_REPO="github.com/Alfresco/alfresco-community-repo.git"
+  if git ls-remote --exit-code --heads https://${GIT_USERNAME}:${GIT_PASSWORD}@${UPSTREAM_REPO} "${BRANCH}" ; then
     # clone and build the upstream repository
     pushd ..
 
     rm -rf alfresco-community-repo
     git clone -b ${BRANCH} https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-community-repo.git
     cd alfresco-community-repo
-    # todo set a custom branch version before the SNAPSHOT build?
-    mvn -B -V clean install -DskipTests -PcommunityDocker
+    mvn -B -V -q clean install -DskipTests -PcommunityDocker
+    UPSTREAM_VERSION=$(mvn -B -q help:evaluate -Dexpression=project.version -DforceStdout)
 
     popd
-    # todo update the parent dependency dependency so that it uses the locally-build SNAPSHOT version?
   fi
 
-  if git ls-remote --exit-code --heads \
-  https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-enterprise-repo.git \
-  "${BRANCH}" ; then
-
+  UPSTREAM_REPO="github.com/Alfresco/alfresco-enterprise-repo.git"
+  if [ ! -z ${UPSTREAM_VERSION} ] || \
+    git ls-remote --exit-code --heads https://${GIT_USERNAME}:${GIT_PASSWORD}@${UPSTREAM_REPO} "${BRANCH}" ; then
     # clone and build the upstream repository
     pushd ..
 
     rm -rf alfresco-enterprise-repo
     git clone -b ${BRANCH} https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-enterprise-repo.git
     cd alfresco-enterprise-repo
-    # todo set a custom branch version before the SNAPSHOT build?
-    mvn -B -V clean install -DskipTests -PenterpriseDocker
+    # update the parent dependency if needed
+    [ ! -z ${UPSTREAM_VERSION} ] && mvn -B versions:update-parent "-DparentVersion=(0,${UPSTREAM_VERSION}]" versions:commit
+    mvn -B -V -q clean install -DskipTests -PenterpriseDocker
+    UPSTREAM_VERSION=$(mvn -B -q help:evaluate -Dexpression=project.version -DforceStdout)
 
     popd
-    # todo update the parent dependency dependency so that it uses the locally-build SNAPSHOT version?
   fi
 fi
 
+# update the parent dependency if needed
+[ ! -z ${UPSTREAM_VERSION} ] && mvn -B versions:update-parent "-DparentVersion=(0,${UPSTREAM_VERSION}]" versions:commit
+
+# Build the current project also
 mvn -B -V -q install -DskipTests -PenterpriseDocker
 
