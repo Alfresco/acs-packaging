@@ -29,8 +29,8 @@ branches:
 env:
   global:
     # Release version has to start with real version (7.0.0-....) for the docker image to build successfully.
-    - RELEASE_VERSION=7.0.0-A2
-    - DEVELOPMENT_VERSION=7.0.0-SNAPSHOT
+    - RELEASE_VERSION=7.0.0-TEST1
+    - DEVELOPMENT_VERSION=7.0.0-TEST1-SNAPSHOT
 
 stages:
   - name: test
