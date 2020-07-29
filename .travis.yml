@@ -183,11 +183,9 @@ jobs:
       stage: release
       # Download the maven cache in case the previous test stage is skipped to prevent timeouts during release
       install: travis_wait 40 mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true
-      before_script:
-        # Check that the release has not already been done
-        - bash scripts/travis/verify_release_tag.sh
-      script:
-        - travis_wait 60 bash scripts/travis/maven_release.sh
+      # Check that the release has not already been done
+      before_script: bash scripts/travis/verify_release_tag.sh
+      script: travis_wait 60 bash scripts/travis/maven_release.sh
       before_deploy:
         # Move the final artifacts to a single folder (deploy_dir) to be copied to S3
         - mkdir -p deploy_dir
