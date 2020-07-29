@@ -276,7 +276,7 @@ public class IntegrationFullTests1 extends IntegrationTest
         site.assertThat().field("id").is(testSiteModerated.getId())
             .and().field("role").isNotEmpty();
     }
-    
+
     /**
      * Scenario 104
      * 1. Using CMIS create test user A1
