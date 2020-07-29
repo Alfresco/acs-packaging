@@ -38,11 +38,6 @@
     <dependencies>
         <dependency>
             <groupId>org.alfresco.tas</groupId>
-            <artifactId>cmis</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco.tas</groupId>
             <artifactId>alfresco-community-repo-cmis-test</artifactId>
             <classifier>tests</classifier>
             <scope>test</scope>
@@ -51,6 +46,11 @@
             <groupId>org.alfresco.tas</groupId>
             <artifactId>alfresco-enterprise-repo-cmis-test</artifactId>
             <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco.tas</groupId>
+            <artifactId>cmis</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>
