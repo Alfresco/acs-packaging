@@ -18,13 +18,13 @@ if ! [[ "${BRANCH}" =~ ^master$\|^release/.+$ ]] ; then
     git clone -b "${BRANCH}" "https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-community-repo.git"
     cd alfresco-community-repo
     mvn -B -V -q clean install -DskipTests -PcommunityDocker
-    UPSTREAM_VERSION=$(mvn -B -q help:evaluate -Dexpression=project.version -DforceStdout)
+    UPSTREAM_VERSION_COMM=$(mvn -B -q help:evaluate -Dexpression=project.version -DforceStdout)
 
     popd
   fi
 
   UPSTREAM_REPO="github.com/Alfresco/alfresco-enterprise-repo.git"
-  if [ -n "${UPSTREAM_VERSION}" ] || \
+  if [ -n "${UPSTREAM_VERSION_COMM}" ] || \
     git ls-remote --exit-code --heads "https://${GIT_USERNAME}:${GIT_PASSWORD}@${UPSTREAM_REPO}" "${BRANCH}" ; then
     # clone and build the upstream repository
     pushd ..
@@ -33,17 +33,21 @@ if ! [[ "${BRANCH}" =~ ^master$\|^release/.+$ ]] ; then
     git clone -b "${BRANCH}" "https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-enterprise-repo.git"
     cd alfresco-enterprise-repo
     # update the parent dependency if needed
-    [ -n "${UPSTREAM_VERSION}" ] && mvn -B versions:update-parent "-DparentVersion=(0,${UPSTREAM_VERSION}]" versions:commit
+    [ -n "${UPSTREAM_VERSION_COMM}" ] && mvn -B versions:update-parent "-DparentVersion=(0,${UPSTREAM_VERSION_COMM}]" versions:commit
     mvn -B -V -q clean install -DskipTests -PenterpriseDocker
-    UPSTREAM_VERSION=$(mvn -B -q help:evaluate -Dexpression=project.version -DforceStdout)
+    UPSTREAM_VERSION_ENT=$(mvn -B -q help:evaluate -Dexpression=project.version -DforceStdout)
 
     popd
   fi
 fi
 
 # update the parent dependency if needed
-[ -n "${UPSTREAM_VERSION}" ] && mvn -B versions:update-parent "-DparentVersion=(0,${UPSTREAM_VERSION}]" versions:commit
+[ -n "${UPSTREAM_VERSION_ENT}" ] && mvn -B versions:update-parent "-DparentVersion=(0,${UPSTREAM_VERSION_ENT}]" versions:commit
 
 # Build the current project also
-mvn -B -V -q install -DskipTests -PenterpriseDocker
+mvn -B -V -q install -DskipTests -PenterpriseDocker \
+  $(test -n "${UPSTREAM_VERSION_ENT}" && echo "-Ddependency.alfresco-enterprise-repo.version=${UPSTREAM_VERSION_ENT}") \
+  $(test -n "${UPSTREAM_VERSION_COMM}" && echo "-Ddependency.alfresco-community-repo.version=${UPSTREAM_VERSION_COMM}")
+
+
 
