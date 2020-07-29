@@ -49,7 +49,7 @@ before_install:
   - travis_retry mvn install -DskipTests -B -V
   - travis_retry mvn install -f packaging/tests/pom.xml -DskipTests -B -V
   - cd ../alfresco-enterprise-repo
-  - travis_retry mvn clean install -DskipTests -PenterpriseDocker -B -V
+  - travis_retry mvn install -DskipTests -PenterpriseDocker -B -V
   - travis_retry mvn install -f packaging/tests/pom.xml -DskipTests -B -V
   - popd
 
