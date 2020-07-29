@@ -1,3 +1,15 @@
+<h1>        6.2.1.2
+</h1>
+
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21731'>MNT-21731</a>] -         CLONE - Sensitive data hard-coded in configuration files in Alfresco Search Services
+</li>
+</ul>
+
+
+
 <h1>        6.2.1
 </h1>
 <h2>
