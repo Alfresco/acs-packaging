@@ -10,7 +10,7 @@ version: "3"
 services:
   alfresco:
     build:
-      context: ./alfresco-with-custom-model
+      context: ../alfresco-enterprise-repo/packaging/tests/environment/alfresco-with-custom-model
     environment:
       CATALINA_OPTS : "-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n"
       JAVA_TOOL_OPTIONS: "
