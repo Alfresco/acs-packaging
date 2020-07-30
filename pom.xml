@@ -34,12 +34,12 @@
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <dependency.alfresco-enterprise-remote-api.version>7.89</dependency.alfresco-enterprise-remote-api.version>
-        <dependency.alfresco-enterprise-repository.version>7.117</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-remote-api.version>7.149</dependency.alfresco-remote-api.version>
-        <dependency.alfresco-repository.version>7.209</dependency.alfresco-repository.version>
-        <dependency.alfresco-data-model.version>8.50.20</dependency.alfresco-data-model.version>
-        <dependency.alfresco-core.version>7.34</dependency.alfresco-core.version>
+        <dependency.alfresco-enterprise-remote-api.version>7.90</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>7.118</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-remote-api.version>7.150</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-repository.version>7.210</dependency.alfresco-repository.version>
+        <dependency.alfresco-data-model.version>8.50.21</dependency.alfresco-data-model.version>
+        <dependency.alfresco-core.version>7.35</dependency.alfresco-core.version>
 
         <dependency.alfresco-hb-data-sender.version>1.0.12</dependency.alfresco-hb-data-sender.version>
         <dependency.activiti-repo-connector.version>1.5</dependency.activiti-repo-connector.version>
