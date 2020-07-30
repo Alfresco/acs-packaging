@@ -28,6 +28,18 @@
     <dependencies>
         <dependency>
             <groupId>org.alfresco.tas</groupId>
+            <artifactId>alfresco-community-repo-webdav-test</artifactId>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco.tas</groupId>
+            <artifactId>alfresco-enterprise-repo-webdav-test</artifactId>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco.tas</groupId>
             <artifactId>webdav</artifactId>
             <scope>test</scope>
         </dependency>
