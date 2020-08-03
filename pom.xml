@@ -64,19 +64,19 @@
 
     <profiles>
         <profile>
-            <id>enterpriseDocker</id>
-            <modules>
-                <module>docker-alfresco</module>
-                <module>docker-alfresco/aws</module>
-            </modules>
-        </profile>
-        <profile>
             <id>fullBuild</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
                 <module>distribution</module>
+                <module>docker-alfresco</module>
+                <module>docker-alfresco/aws</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>enterpriseDocker</id>
+            <modules>
                 <module>docker-alfresco</module>
                 <module>docker-alfresco/aws</module>
             </modules>
