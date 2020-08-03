@@ -7,24 +7,11 @@ version: "3"
 
 # Add the following environment variable to CATALINA_OPTS to activate YourKit profiling agent on tomcat
 #-agentpath:/usr/local/YourKit-JavaProfiler-2018.04/bin/linux-x86-64/libyjpagent.so=delay=200000,listen=all,sessionname=$$HOSTNAME,dir=/tmp/Alfresco/yourkit,onexit=snapshot,periodicperf=600,periodicmem=600,probe_off=*
-#
-# The identity service address should be the same as the origin of the request ( eg localhost ) for testing
-# So identity-service.auth-server-url=http://<IP>:8999 should point to the right address
-# Otherwise, the requests to authenticate will fail
 
 services:
   alfresco:
-    build:
-      context: ./alfresco-with-jolokia
+    image: alfresco/alfresco-content-repository:latest
     environment:
-      # use 'export HOST_IP=xxx' for specifying the host ip before starting docker compose
-      # the following line will produce the result using 'ifconfig'
-      # export HOST_IP=$(ifconfig | grep -E "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v 127.0.0.1 | awk '{ print $2 }' | cut -f2 -d: | head -n1)
-      # the following 2 lines will produce the result using 'ip address show'
-      # The first line's output is "11.222.11.222/23"
-      # export HOST_IP=$(ip address show | grep -E "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v 127.0.0.1 | awk '{ print $2 }' | head -n 1 )
-      # export HOST_IP=$(echo ${HOST_IP%/*})
-      HOST_IP: ${HOST_IP}
       CATALINA_OPTS : "-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n"
       JAVA_TOOL_OPTIONS: "
         -Dmetadata-keystore.password=mp6yc0UD9e
@@ -40,31 +27,25 @@ services:
         -Ddb.username=alfresco
         -Ddb.password=alfresco
         -Ddb.url=jdbc:postgresql://postgres:5432/alfresco
+
         -Dsolr.host=solr6
         -Dsolr.port=8983
         -Dsolr.secureComms=none
         -Dsolr.base.url=/solr
         -Dindex.subsystem.name=solr6
+
         -Dalfresco.restApi.basicAuthScheme=true
-        -Dshare.host=localhost
         -Dmessaging.broker.url=\"failover:(tcp://activemq:61616)?timeout=3000&jms.useCompression=true\"
 
         -Dlocal.transform.service.enabled=false
         -Dlegacy.transform.service.enabled=false
 
-        -Dauthentication.chain=identity-service1:identity-service,alfrescoNtlm1:alfrescoNtlm
-        -Didentity-service.enable-basic-auth=true
-        -Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth
-        -Didentity-service.realm=alfresco
-        -Didentity-service.resource=alfresco
+        -Dcors.enabled=true
+        -Dcors.allowed.origins=http://localhost:4200
         "
     ports:
       - 8082:8080
       - 8000:8000
-    depends_on:
-      - alfresco-identity-service
-    links:
-      - alfresco-identity-service
 
   postgres:
     image: library/postgres:${POSTGRES_TAG}
@@ -98,15 +79,3 @@ services:
       - 5672:5672 # AMQP
       - 61616:61616 # OpenWire
       - 61613:61613 # STOMP
-
-  alfresco-identity-service:
-    image: quay.io/alfresco/alfresco-identity-service:${AIMS_TAG}
-    environment:
-      - KEYCLOAK_USER=admin
-      - KEYCLOAK_PASSWORD=admin
-      - KEYCLOAK_IMPORT=/tmp/alfresco-realm.json
-      - DB_VENDOR=h2
-    volumes:
-      - ./realms/alfresco-realm.json:/tmp/alfresco-realm.json
-    ports:
-      - 8999:8080
