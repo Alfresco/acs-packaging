@@ -25,7 +25,6 @@ branches:
     - /release\/.*/
     - feature/REPO-5111_repo_build
     - feature/ACS-457_travis-release-config
-    - feature/REPO-5266_dup_tas_code
 
 env:
   global:
@@ -172,9 +171,6 @@ jobs:
         - travis_wait 20 mvn -B install -f tests/tas-sync-service/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
     - name: "All AMPs tests"
-      # fullBuild profile builds additional Docker image for all-amps test
-      # TODO it doesn't really - can we delete it?
-      #install: travis_retry travis_wait 20 mvn -B -q install -DskipTest -PfullBuild
       before_script:
         - travis_retry travis_wait 20 mvn -B -q install -f tests/tas-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
       script:
