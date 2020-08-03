@@ -15,9 +15,9 @@ if ! [[ "${BRANCH}" =~ ^master$\|^release/.+$ ]] ; then
     pushd ..
 
     rm -rf alfresco-community-repo
-    git clone -b "${BRANCH}" "https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-community-repo.git"
+    git clone -b "${BRANCH}" --depth=1 "https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-community-repo.git"
     cd alfresco-community-repo
-    mvn -B -V -q clean install -DskipTests -PcommunityDocker
+    mvn -B -V -q clean install -DskipTests -Dmaven.javadoc.skip=true -PcommunityDocker
     mvn -B -V install -f packaging/tests/pom.xml -DskipTests
     UPSTREAM_VERSION_COMM=$(mvn -B -q help:evaluate -Dexpression=project.version -DforceStdout)
 
@@ -31,11 +31,11 @@ if ! [[ "${BRANCH}" =~ ^master$\|^release/.+$ ]] ; then
     pushd ..
 
     rm -rf alfresco-enterprise-repo
-    git clone -b "${BRANCH}" "https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-enterprise-repo.git"
+    git clone -b "${BRANCH}" --depth=1 "https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-enterprise-repo.git"
     cd alfresco-enterprise-repo
     # update the parent dependency if needed
     [ -n "${UPSTREAM_VERSION_COMM}" ] && mvn -B versions:update-parent "-DparentVersion=(0,${UPSTREAM_VERSION_COMM}]" versions:commit
-    mvn -B -V -q clean install -DskipTests -PenterpriseDocker
+    mvn -B -V -q clean install -DskipTests -Dmaven.javadoc.skip=true -PenterpriseDocker
     mvn -B -V install -f packaging/tests/pom.xml -DskipTests
     UPSTREAM_VERSION_ENT=$(mvn -B -q help:evaluate -Dexpression=project.version -DforceStdout)
 
