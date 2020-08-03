@@ -37,6 +37,8 @@
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
+        <upstream.image.tag>${dependency.alfresco-enterprise-repo.version}</upstream.image.tag>
+
         <alfresco.share.version>6.2.2</alfresco.share.version>
         <alfresco.alfresco-share-services.version>6.2.2</alfresco.alfresco-share-services.version>
         <dependency.alfresco-api-explorer.version>7.0.0-A1</dependency.alfresco-api-explorer.version>
