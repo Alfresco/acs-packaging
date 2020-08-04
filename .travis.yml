@@ -37,6 +37,8 @@ env:
 stages:
   - name: test
     if: commit_message !~ /\[skip tests\]/
+  - name: docker_latest
+    if: fork = false AND type != pull_request AND branch = master
   - name: release
     if: commit_message =~ /\[release\]/ AND fork = false AND type != pull_request AND (branch = master OR branch =~ /release\/.*/)
   - name: publish
@@ -47,8 +49,8 @@ install: travis_retry travis_wait 40 bash scripts/travis/build.sh
 
 jobs:
   include:
-    - stage: test
-      name: "WhiteSource scan"
+    - name: "WhiteSource scan"
+      stage: test
       # only on support branches or master and if it is not a PR
       if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request
       install: travis_retry travis_wait 30 mvn -B -q install -f war/pom.xml
@@ -187,11 +189,13 @@ jobs:
     #   before_install: bash scripts/veracode/static_analysis_init.sh
     #   script: travis_retry bash scripts/veracode/static_analysis.sh
 
+    - name: "Update Docker latest images"
+      stage: docker_latest
+      script: travis_retry travis_wait 30 mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true -Pinternal
+
     - name: "Release and Copy to S3 Staging Bucket"
       stage: release
-      # Download the maven cache in case the previous test stage is skipped to prevent timeouts during release
-      install: travis_wait 40 mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true
-      # Check that the release has not already been done
+      install: travis_retry travis_wait 40 mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true
       before_script: bash scripts/travis/verify_release_tag.sh
       script: travis_wait 60 bash scripts/travis/maven_release.sh
       before_deploy:
@@ -205,8 +209,8 @@ jobs:
           secret_access_key: ${AWS_STAGING_SECRET_KEY}
           region: "eu-west-1"
           bucket: "alfresco-artefacts-staging"
-          upload_dir: "alfresco-content-services/release/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}"
           skip_cleanup: true
+          upload_dir: "alfresco-content-services/release/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}"
           acl: private
           local_dir: deploy_dir
           on:
