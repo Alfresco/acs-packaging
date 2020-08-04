@@ -2,72 +2,46 @@
 set -ev
 pushd "$(dirname "${BASH_SOURCE[0]}")/../../"
 
-# reset variables to blank values
-unset UPSTREAM_VERSION_COMM
-unset UPSTREAM_VERSION_ENT
+source "$(dirname "${BASH_SOURCE[0]}")/build_functions.sh"
 
-# get the source branch name
-[ "${TRAVIS_PULL_REQUEST}" = "false" ] && BRANCH="${TRAVIS_BRANCH}" || BRANCH="${TRAVIS_PULL_REQUEST_BRANCH}"
+COM_DEPENDENCY_VERSION="$(evaluatePomProperty "dependency.alfresco-community-repo.version")"
+ENT_DEPENDENCY_VERSION="$(evaluatePomProperty "dependency.alfresco-enterprise-repo.version")"
 
-# if BRANCH is 'master' or 'release/'
-UPSTREAM_REPO="github.com/Alfresco/alfresco-community-repo.git"
-if [[ "${BRANCH}" =~ ^master$\|^release/.+$ ]] ; then
-  # clone the upstream repository tag
-  pushd ..
+# Either both the parent and the upstream dependency are the same, or else fail the build
+if [ "${COM_DEPENDENCY_VERSION}" != "$(evaluatePomProperty "project.parent.parent.version")" ]; then
+  printf "Upstream dependency version (%s) is different then the project parent version!\n" "${COM_DEPENDENCY_VERSION}"
+  exit 1
+fi
+if [ "${ENT_DEPENDENCY_VERSION}" != "$(evaluatePomProperty "project.parent.version")" ]; then
+  printf "Upstream dependency version (%s) is different then the project parent version!\n" "${ENT_DEPENDENCY_VERSION}"
+  exit 1
+fi
 
-  TAG=$(mvn -B -q help:evaluate -Dexpression=project.parent.parent.version -DforceStdout)
-  git clone -b "${TAG}" --depth=1 "https://${GIT_USERNAME}:${GIT_PASSWORD}@${UPSTREAM_REPO}"
+# Prevent merging of any SNAPSHOT dependencies into the master or the release/* branches
+if [[ isPullRequest && ( "${COM_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ || "${ENT_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ) && "${SOURCE_BRANCH}" =~ ^master$|^release/.+$ ]] ; then
+  printf "PRs with SNAPSHOT dependencies are not allowed into master or release branches\n"
+  exit 1
+fi
 
-  popd
+
+COM_UPSTREAM_REPO="github.com/Alfresco/alfresco-community-repo.git"
+# Search, checkout and build the same branch on the upstream project in case of SNAPSHOT dependencies
+# Otherwise just checkout the upstream dependency sources
+if [[ "${COM_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] ; then
+  pullAndBuildSameBranchOnUpstream "${COM_UPSTREAM_REPO}" "-PcommunityDocker"
 else
-  # if BRANCH is a feature branch AND if it exists in the upstream project
-  if git ls-remote --exit-code --heads "https://${GIT_USERNAME}:${GIT_PASSWORD}@${UPSTREAM_REPO}" "${BRANCH}" ; then
-    # clone and build the upstream repository
-    pushd ..
-
-    rm -rf alfresco-community-repo
-    git clone -b "${BRANCH}" --depth=1 "https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-community-repo.git"
-    cd alfresco-community-repo
-    mvn -B -V -q clean install -DskipTests -Dmaven.javadoc.skip=true -PcommunityDocker
-    mvn -B -V install -f packaging/tests/pom.xml -DskipTests
-    UPSTREAM_VERSION_COMM="$(mvn -B -q help:evaluate -Dexpression=project.version -DforceStdout)"
-
-    popd
-  fi
-
-  UPSTREAM_REPO="github.com/Alfresco/alfresco-enterprise-repo.git"
-  if [ -n "${UPSTREAM_VERSION_COMM}" ] || \
-    git ls-remote --exit-code --heads "https://${GIT_USERNAME}:${GIT_PASSWORD}@${UPSTREAM_REPO}" "${BRANCH}" ; then
-    # clone and build the upstream repository
-    pushd ..
-
-    rm -rf alfresco-enterprise-repo
-    git clone -b "${BRANCH}" --depth=1 "https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-enterprise-repo.git"
-    cd alfresco-enterprise-repo
-
-    # update the parent dependency if needed
-    [ -n "${UPSTREAM_VERSION_COMM}" ] && mvn -B versions:update-parent "-DparentVersion=(0,${UPSTREAM_VERSION_COMM}]" versions:commit
-    mvn -B -V -q clean install -DskipTests -Dmaven.javadoc.skip=true -PenterpriseDocker \
-      $(test -n "${UPSTREAM_VERSION_COMM}" && echo "-Ddependency.alfresco-community-repo.version=${UPSTREAM_VERSION_COMM}")
-    mvn -B -V install -f packaging/tests/pom.xml -DskipTests \
-      $(test -n "${UPSTREAM_VERSION_COMM}" && echo "-Ddependency.alfresco-community-repo.version=${UPSTREAM_VERSION_COMM}")
-
-    UPSTREAM_VERSION_ENT="$(mvn -B -q help:evaluate -Dexpression=project.version -DforceStdout)"
-
-    popd
-  fi
+  pullUpstreamTag "${COM_UPSTREAM_REPO}" "${COM_DEPENDENCY_VERSION}"
 fi
 
-# update the parent dependency if needed
-if [ -n "${UPSTREAM_VERSION_ENT}" ]; then
-  mvn -B versions:update-parent "-DparentVersion=(0,${UPSTREAM_VERSION_ENT}]" versions:commit
+ENT_UPSTREAM_REPO="github.com/Alfresco/alfresco-enterprise-repo.git"
+# Search, checkout and build the same branch on the upstream project in case of SNAPSHOT dependencies
+if [[ "${ENT_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] ; then
+  pullAndBuildSameBranchOnUpstream "${ENT_UPSTREAM_REPO}" \
+    "-PenterpriseDocker $([[ "${COM_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] && echo "-Dupstream.image.tag=latest")"
 fi
 
-# Build the current project also
+# Build the current project
 mvn -B -V -q install -DskipTests -PenterpriseDocker \
-  $(test -n "${UPSTREAM_VERSION_COMM}" && echo "-Ddependency.alfresco-community-repo.version=${UPSTREAM_VERSION_COMM}") \
-  $(test -n "${UPSTREAM_VERSION_ENT}"  && echo "-Ddependency.alfresco-enterprise-repo.version=${UPSTREAM_VERSION_ENT}") \
-  $(test -n "${UPSTREAM_VERSION_ENT}"  && echo "-Dupstream.image.tag=latest")
-
+  $([[ "${ENT_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] && echo "-Dupstream.image.tag=latest")
 
 
