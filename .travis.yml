@@ -19,7 +19,6 @@ branches:
   only:
     - master
     - /support\/.*/
-    - /fix\/.*/
 
 env:
   global:
@@ -185,7 +184,7 @@ jobs:
         - travis_wait 20 mvn install -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
     - name: "Pipeline All AMPs tests and push docker images"
       jdk: openjdk11
-      if: fork = false AND (branch = master OR branch =~ /fix\/.*/) AND type != pull_request
+      if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request
       install:
         # Build additional Docker image for repo and share for CI pipeline
         - travis_retry travis_wait 20 mvn install -q -PenterpriseDocker
