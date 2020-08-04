@@ -187,6 +187,7 @@ jobs:
       if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request
       install:
         # Build additional Docker image for repo and share for CI pipeline
+        - travis_retry travis_wait 20 mvn install -q -PenterpriseDocker
         - export TRAVIS_BUILD_NUMBER=${TRAVIS_BUILD_NUMBER}
         - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
         - travis_retry travis_wait 20 mvn clean install -Ppipeline
