@@ -24,7 +24,7 @@ on the `alfresco-community-repo` project.
 This project is the Enterprise equivalent of the [Community Packaging Project](https://github.com/Alfresco/acs-community-packaging).  Please ensure that you have the correct agreements in place and access to the Enterprise Maven artifacts.
 
 ### Build:
-* ```mvn clean install -PenterpriseDocker``` in the root of the project will build everything.
+* ```mvn clean install``` in the root of the project will build the distribution zip and two main docker images.
 
 ## Docker Alfresco
 On official releases, the image is published:
