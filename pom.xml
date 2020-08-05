@@ -34,11 +34,11 @@
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <dependency.alfresco-enterprise-remote-api.version>8.206</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-remote-api.version>8.207</dependency.alfresco-enterprise-remote-api.version>
         <dependency.alfresco-enterprise-repository.version>8.197</dependency.alfresco-enterprise-repository.version>
         <dependency.alfresco-remote-api.version>8.213</dependency.alfresco-remote-api.version>
         <dependency.alfresco-repository.version>8.262</dependency.alfresco-repository.version>
-        <dependency.alfresco-data-model.version>8.143</dependency.alfresco-data-model.version>
+        <dependency.alfresco-data-model.version>8.145</dependency.alfresco-data-model.version>
         <dependency.alfresco-core.version>8.43</dependency.alfresco-core.version>
 
         <dependency.alfresco-hb-data-sender.version>1.0.12</dependency.alfresco-hb-data-sender.version>
@@ -58,7 +58,7 @@
 
         <dependency.spring.version>5.2.8.RELEASE</dependency.spring.version>
         <dependency.fabric8.version>4.4.0</dependency.fabric8.version>
-        <dependency.jackson.version>2.11.1</dependency.jackson.version>
+        <dependency.jackson.version>2.11.2</dependency.jackson.version>
         <dependency.jackson-databind.version>2.10.1</dependency.jackson-databind.version>
         <dependency.cxf.version>3.3.7</dependency.cxf.version>
         <dependency.axiom.version>1.2.22</dependency.axiom.version>
@@ -104,7 +104,7 @@
         <alfresco.mm.version>1.4.2</alfresco.mm.version>
 
         <!-- Alfresco Desktop Sync Service Module -->
-        <alfresco.desktop-sync.version>3.3.3</alfresco.desktop-sync.version>
+        <alfresco.desktop-sync.version>3.3.3.1</alfresco.desktop-sync.version>
 
         <!-- Alfresco Alfresco Intelligence Services (AIS) -->
         <alfresco.ais.version>1.2.0</alfresco.ais.version>
