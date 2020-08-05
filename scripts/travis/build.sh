@@ -1,18 +1,14 @@
 #!/usr/bin/env bash
-set -ex
+set -ev
 pushd "$(dirname "${BASH_SOURCE[0]}")/../../"
 
 source "$(dirname "${BASH_SOURCE[0]}")/build_functions.sh"
 
-COM_DEPENDENCY_VERSION="$(evaluatePomProperty "dependency.alfresco-community-repo.version")"
-ENT_DEPENDENCY_VERSION="$(evaluatePomProperty "dependency.alfresco-enterprise-repo.version")"
+COM_DEPENDENCY_VERSION="$(retrievePomProperty "dependency.alfresco-community-repo.version")"
+ENT_DEPENDENCY_VERSION="$(retrievePomProperty "dependency.alfresco-enterprise-repo.version")"
 
 # Either both the parent and the upstream dependency are the same, or else fail the build
-if [ "${COM_DEPENDENCY_VERSION}" != "$(evaluatePomProperty "project.parent.parent.version")" ]; then
-  printf "Upstream dependency version (%s) is different then the project parent version!\n" "${COM_DEPENDENCY_VERSION}"
-  exit 1
-fi
-if [ "${ENT_DEPENDENCY_VERSION}" != "$(evaluatePomProperty "project.parent.version")" ]; then
+if [ "${ENT_DEPENDENCY_VERSION}" != "$(retrievePomParentVersion)" ]; then
   printf "Upstream dependency version (%s) is different then the project parent version!\n" "${ENT_DEPENDENCY_VERSION}"
   exit 1
 fi
@@ -38,6 +34,12 @@ ENT_UPSTREAM_REPO="github.com/Alfresco/alfresco-enterprise-repo.git"
 if [[ "${ENT_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] ; then
   pullAndBuildSameBranchOnUpstream "${ENT_UPSTREAM_REPO}" \
     "-PenterpriseDocker $([[ "${COM_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] && echo "-Dupstream.image.tag=latest")"
+fi
+
+# Either both the parent and the upstream dependency are the same, or else fail the build
+if [ "${COM_DEPENDENCY_VERSION}" != "$(evaluatePomProperty "project.parent.parent.version")" ]; then
+  printf "Upstream dependency version (%s) is different then the project parent version!\n" "${COM_DEPENDENCY_VERSION}"
+  exit 1
 fi
 
 # Build the current project
