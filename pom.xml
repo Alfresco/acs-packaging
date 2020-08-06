@@ -62,6 +62,7 @@
 
         <!-- Private docker registry -->
         <image.registry>quay.io</image.registry>
+
     </properties>
 
     <profiles>
@@ -94,6 +95,12 @@
             <modules>
                 <module>distribution</module>
                 <module>docker-alfresco</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>run</id>
+            <modules>
+                <module>dev</module>
             </modules>
         </profile>
     </profiles>
