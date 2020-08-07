@@ -20,14 +20,14 @@ branches:
     - master
     - /support\/.*/
     - feature/REPO-5111_repo_build
-    - feature/REPO-5266_dup_tas_code
+    - merge_to_7_0_0_A3
 
 env:
   global:
     - TAS_SCRIPTS=../alfresco-community-repo/packaging/tests/scripts
     - TAS_ENVIRONMENT=./tests/environment
     # Release version has to start with real version (7.0.0-....) for the docker image to build successfully.
-    - RELEASE_VERSION=7.0.0-A2
+    - RELEASE_VERSION=7.0.0-A3
     - DEVELOPMENT_VERSION=7.0.0-SNAPSHOT
 
 stages:
@@ -41,8 +41,8 @@ before_install:
   - pushd ..
   #  - git clone -b ${TRAVIS_BRANCH} https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-community-repo.git
   #  - git clone -b ${TRAVIS_BRANCH} https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-enterprise-repo.git
-  - git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-community-repo.git
-  - git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-enterprise-repo.git
+  - git clone -b merge_to_7_0_0_A3 https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-community-repo.git
+  - git clone -b merge_to_7_0_0_A3 https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-enterprise-repo.git
   - cd alfresco-community-repo
   - travis_retry mvn install -DskipTests -B -V
   - travis_retry mvn install -f packaging/tests/pom.xml -DskipTests -B -V
@@ -181,7 +181,7 @@ jobs:
         - export HOST_IP=$(ip address show | grep -E "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v 127.0.0.1 | awk '{ print $2 }' | head -n 1 )
         - export HOST_IP=$(echo ${HOST_IP%/*})
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-aims.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco" 180
       script:
         - travis_wait 60 mvn install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
 
@@ -195,7 +195,7 @@ jobs:
         - export HOST_IP=$(ip address show | grep -E "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v 127.0.0.1 | awk '{ print $2 }' | head -n 1 )
         - export HOST_IP=$(echo ${HOST_IP%/*})
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-aims.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco" 180
       script:
         - travis_wait 40 mvn install -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-tas-cmis-tests-with-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
 
@@ -220,6 +220,22 @@ jobs:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-all-amps-test.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
         - travis_wait 20 mvn install -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+	
+    - name: "Pipeline All AMPs tests and push docker images"
+      jdk: openjdk11
+      if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request
+      install:
+        # Build additional Docker image for repo and share for CI pipeline
+        - travis_retry travis_wait 20 mvn install -q -PenterpriseDocker
+        - export TRAVIS_BUILD_NUMBER=${TRAVIS_BUILD_NUMBER}
+        - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
+        - travis_retry travis_wait 20 mvn clean install -Ppipeline
+      script:
+        - export TRAVIS_BUILD_NUMBER=${TRAVIS_BUILD_NUMBER}
+        - export PROJECT_VERSION=`mvn help:evaluate -f ./tests/pipeline-all-amps/pom.xml -Dexpression=project.version -q -DforceStdout`
+        - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-pipeline-all-amps.yml
+        - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8080/alfresco"
+        - docker ps
 
 # Commented out for now for stability. See ACS-102
 #    - name: "Veracode static code scan"

@@ -38,8 +38,8 @@
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <alfresco.share.version>6.2.2</alfresco.share.version>
-        <alfresco.alfresco-share-services.version>6.2.2</alfresco.alfresco-share-services.version>
+        <alfresco.share.version>7.0.0-A1</alfresco.share.version>
+        <alfresco.alfresco-share-services.version>7.0.0-A1</alfresco.alfresco-share-services.version>
         <dependency.alfresco-api-explorer.version>7.0.0-A1</dependency.alfresco-api-explorer.version>
 
         <alfresco.s3connector.version>3.1.0-A1</alfresco.s3connector.version>
@@ -52,7 +52,7 @@
         <alfresco.transformation-engine.version>2.2.2</alfresco.transformation-engine.version>
         <alfresco.ags.version>3.3.1</alfresco.ags.version>
         <alfresco.mm.version>1.4.2</alfresco.mm.version>
-        <alfresco.desktop-sync.version>3.3.3</alfresco.desktop-sync.version>
+        <alfresco.desktop-sync.version>3.3.3.1</alfresco.desktop-sync.version>
         <alfresco.ais.version>1.2.0</alfresco.ais.version>
 
         <installer.version.name>${project.version}</installer.version.name>
@@ -94,6 +94,13 @@
             <modules>
                 <module>distribution</module>
                 <module>docker-alfresco</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>pipeline</id>
+            <modules>
+                <module>docker-alfresco</module>
+                <module>tests/pipeline-all-amps</module>
             </modules>
         </profile>
         <profile>
