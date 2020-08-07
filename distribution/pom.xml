@@ -198,6 +198,27 @@
                         </configuration>
                     </execution>
 
+                    <!-- Copy alfresco.war -->
+                    <execution>
+                        <id>copy-alfresco-war</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>content-services</artifactId>
+                                    <version>${dependency.alfresco-enterprise-repo.version}</version>
+                                    <type>war</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                    <destFileName>alfresco.war</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 
