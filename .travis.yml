@@ -67,7 +67,7 @@ jobs:
 
     - name: "REST API TAS tests part1"
       jdk: openjdk11
-      if: commit_message ~ /\[tas\]/
+      if: commit_message =~ /\[tas\]/
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-rest-api-tests.yml
@@ -77,7 +77,7 @@ jobs:
 
     - name: "REST API TAS tests part2"
       jdk: openjdk11
-      if: commit_message ~ /\[tas\]/
+      if: commit_message =~ /\[tas\]/
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-rest-api-tests.yml
@@ -87,7 +87,7 @@ jobs:
 
     - name: "REST API TAS tests part3"
       jdk: openjdk11
-      if: commit_message ~ /\[tas\]/
+      if: commit_message =~ /\[tas\]/
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-rest-api-tests.yml
@@ -97,7 +97,7 @@ jobs:
 
     - name: "CMIS TAS tests"
       jdk: openjdk11
-      if: commit_message ~ /\[tas\]/
+      if: commit_message =~ /\[tas\]/
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-tests.yml
@@ -107,7 +107,7 @@ jobs:
 
     - name: "Email TAS tests"
       jdk: openjdk11
-      if: commit_message ~ /\[tas\]/
+      if: commit_message =~ /\[tas\]/
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-email-tests.yml
@@ -117,7 +117,7 @@ jobs:
 
     - name: "WebDAV TAS tests"
       jdk: openjdk11
-      if: commit_message ~ /\[tas\]/
+      if: commit_message =~ /\[tas\]/
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-minimal.yml
@@ -127,7 +127,7 @@ jobs:
 
     - name: "Integration TAS tests"
       jdk: openjdk11
-      if: commit_message ~ /\[tas\]/
+      if: commit_message =~ /\[tas\]/
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-integration-tests.yml
@@ -137,7 +137,7 @@ jobs:
 
     - name: "LDAP TAS tests"
       jdk: openjdk11
-      if: commit_message ~ /\[tas\]/
+      if: commit_message =~ /\[tas\]/
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-with-ldap.yml
