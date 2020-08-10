@@ -19,7 +19,7 @@ branches:
   only:
     - master
     - /support\/.*/
-
+    - /feature\/.*/
 env:
   global:
     # Release version has to start with real version (7.0.0-....) for the docker image to build successfully.
@@ -184,10 +184,11 @@ jobs:
         - travis_wait 20 mvn install -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
     - name: "Pipeline All AMPs tests and push docker images"
       jdk: openjdk11
-      if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request
+      if: fork = false AND (branch = master OR branch =~ /feature\/.*/) AND type != pull_request
       install:
         # Build additional Docker image for repo and share for CI pipeline
         - export TRAVIS_BUILD_NUMBER=${TRAVIS_BUILD_NUMBER}
+        - travis_retry travis_wait 20 mvn install -q -PenterpriseDocker -Dbuild-number=${TRAVIS_BUILD_NUMBER}
         - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
         - travis_retry travis_wait 20 mvn clean install -Ppipeline
       script:
