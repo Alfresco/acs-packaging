@@ -20,7 +20,6 @@ branches:
     - master
     - /support\/.*/
     - feature/REPO-5111_repo_build
-    - merge_to_7_0_0_A3
 
 env:
   global:
@@ -41,8 +40,8 @@ before_install:
   - pushd ..
   #  - git clone -b ${TRAVIS_BRANCH} https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-community-repo.git
   #  - git clone -b ${TRAVIS_BRANCH} https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-enterprise-repo.git
-  - git clone -b merge_to_7_0_0_A3 https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-community-repo.git
-  - git clone -b merge_to_7_0_0_A3 https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-enterprise-repo.git
+  - git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-community-repo.git
+  - git clone https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-enterprise-repo.git
   - cd alfresco-community-repo
   - travis_retry mvn install -DskipTests -B -V
   - travis_retry mvn install -f packaging/tests/pom.xml -DskipTests -B -V
