@@ -189,6 +189,7 @@ jobs:
         # Build additional Docker image for repo and share for CI pipeline
         - travis_retry travis_wait 20 mvn install -q -PenterpriseDocker
         - export TRAVIS_BUILD_NUMBER=${TRAVIS_BUILD_NUMBER}
+        - travis_retry travis_wait 20 mvn install -q -PenterpriseDocker -Dbuild-number=${TRAVIS_BUILD_NUMBER}
         - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
         - travis_retry travis_wait 20 mvn clean install -Ppipeline
       script:
