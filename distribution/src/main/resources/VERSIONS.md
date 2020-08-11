@@ -81,7 +81,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Application Servers
 | Component | Recommended | Also Available |
 |---|---|---|
-| Tomcat | 8.5.43 |
+| Tomcat | 8.5.51 |
 
 ##### Client Operating Systems
 | Component | Recommended | Also Available |
