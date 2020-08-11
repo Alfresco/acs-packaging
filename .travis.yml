@@ -61,7 +61,7 @@ jobs:
         - java -jar wss-unified-agent.jar -apiKey ${WHITESOURCE_API_KEY} -c .wss-unified-agent.config -d ./war
 
     - name: "REST API TAS tests part1"
-      if: commit_message ~ /\[tas\]/
+      if: commit_message =~ /\[tas\]/
       before_script:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-rest-api-tests.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
@@ -69,7 +69,7 @@ jobs:
         - travis_wait 60 mvn -B install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-part1 -Denvironment=default -DrunBugs=false
 
     - name: "REST API TAS tests part2"
-      if: commit_message ~ /\[tas\]/
+      if: commit_message =~ /\[tas\]/
       before_script:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-rest-api-tests.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
@@ -77,7 +77,7 @@ jobs:
         - travis_wait 60 mvn -B install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-part2 -Denvironment=default -DrunBugs=false
 
     - name: "REST API TAS tests part3"
-      if: commit_message ~ /\[tas\]/
+      if: commit_message =~ /\[tas\]/
       before_script:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-rest-api-tests.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
@@ -85,7 +85,7 @@ jobs:
         - travis_wait 60 mvn -B install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-part3 -Denvironment=default -DrunBugs=false
 
     - name: "CMIS TAS tests"
-      if: commit_message ~ /\[tas\]/
+      if: commit_message =~ /\[tas\]/
       before_script:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-tests.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
@@ -93,7 +93,7 @@ jobs:
         - travis_wait 40 mvn -B install -f tests/tas-cmis/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
     - name: "Email TAS tests"
-      if: commit_message ~ /\[tas\]/
+      if: commit_message =~ /\[tas\]/
       before_script:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-email-tests.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
@@ -101,7 +101,7 @@ jobs:
         - travis_wait 30 mvn -B install -f tests/tas-email/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
     - name: "WebDAV TAS tests"
-      if: commit_message ~ /\[tas\]/
+      if: commit_message =~ /\[tas\]/
       before_script:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-minimal.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
@@ -109,7 +109,7 @@ jobs:
         - travis_wait 20 mvn -B install -f tests/tas-webdav/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
     - name: "Integration TAS tests"
-      if: commit_message ~ /\[tas\]/
+      if: commit_message =~ /\[tas\]/
       before_script:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-integration-tests.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
@@ -117,7 +117,7 @@ jobs:
         - travis_wait 30 mvn -B install -f tests/tas-integration/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
     - name: "LDAP TAS tests"
-      if: commit_message ~ /\[tas\]/
+      if: commit_message =~ /\[tas\]/
       before_script:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-with-ldap.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
@@ -151,7 +151,7 @@ jobs:
         # AIMS cannot be configured via localhost
         - export HOST_IP=$(hostname  -I | cut -f1 -d' ')
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-aims.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco" 180
       script:
         - travis_wait 60 mvn -B install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
 
@@ -161,7 +161,7 @@ jobs:
         # AIMS cannot be configured via localhost
         - export HOST_IP=$(hostname  -I | cut -f1 -d' ')
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-aims.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco" 180
       script:
         - travis_wait 40 mvn -B install -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-tas-cmis-tests-with-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
 
@@ -180,6 +180,18 @@ jobs:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-all-amps-test.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
         - travis_wait 20 mvn -B install -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+
+    - name: "Pipeline All AMPs tests and push docker images"
+      jdk: openjdk11
+      if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request
+      before_script:
+        # Build Docker images of repo and share for CI pipeline
+        - travis_retry travis_wait 20 mvn clean install -Ppipeline
+      script:
+        - export PROJECT_VERSION="$(mvn help:evaluate -f ./tests/pipeline-all-amps/pom.xml -Dexpression=project.version -q -DforceStdout)"
+        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
+        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco"
+        - docker ps
 
     # Commented out for now for stability. See ACS-102
     # - name: "Veracode static code scan"
