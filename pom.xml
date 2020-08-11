@@ -85,6 +85,13 @@
             </modules>
         </profile>
         <profile>
+            <id>internal</id>
+            <modules>
+                <module>docker-alfresco</module>
+                <module>docker-alfresco/aws</module>
+            </modules>
+        </profile>
+        <profile>
             <id>all-tas-tests</id>
             <modules>
                 <module>tests</module>
@@ -100,7 +107,6 @@
         <profile>
             <id>pipeline</id>
             <modules>
-                <module>docker-alfresco</module>
                 <module>tests/pipeline-all-amps</module>
             </modules>
         </profile>

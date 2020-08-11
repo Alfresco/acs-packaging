@@ -181,14 +181,12 @@ jobs:
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
         - travis_wait 20 mvn -B install -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
-    - name: "Pipeline All AMPs tests and push docker images"
-      jdk: openjdk11
-      if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request
+    - name: "Pipeline All AMPs tests"
+      if: fork = false AND type != pull_request
       before_script:
         # Build Docker images of repo and share for CI pipeline
         - travis_retry travis_wait 20 mvn clean install -Ppipeline
       script:
-        - export PROJECT_VERSION="$(mvn help:evaluate -f ./tests/pipeline-all-amps/pom.xml -Dexpression=project.version -q -DforceStdout)"
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco"
         - docker ps
@@ -203,7 +201,7 @@ jobs:
 
     - name: "Update Docker latest images"
       stage: docker_latest
-      script: travis_retry travis_wait 30 mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true -Pinternal
+      script: travis_retry travis_wait 30 mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true -Pinternal,pipeline
 
     - name: "Release and Copy to S3 Staging Bucket"
       stage: release
