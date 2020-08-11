@@ -52,6 +52,7 @@ jobs:
       jdk: openjdk11
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+        - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-rest-api-tests.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
@@ -60,6 +61,7 @@ jobs:
       jdk: openjdk11
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+        - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-rest-api-tests.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
@@ -68,6 +70,7 @@ jobs:
       jdk: openjdk11
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+        - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-rest-api-tests.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
@@ -76,6 +79,7 @@ jobs:
       jdk: openjdk11
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+        - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-cmis-tests.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
@@ -84,6 +88,7 @@ jobs:
       jdk: openjdk11
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+        - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-email-tests.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
@@ -92,6 +97,7 @@ jobs:
       jdk: openjdk11
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+        - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-with-ldap.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
@@ -101,6 +107,7 @@ jobs:
       jdk: openjdk11
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+        - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-minimal.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
@@ -109,6 +116,7 @@ jobs:
       jdk: openjdk11
       install:
         - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+        - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-integration-tests.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
@@ -179,6 +187,7 @@ jobs:
         - travis_retry travis_wait 20 mvn install -q -f tests/tas-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
       script:
         - ./tests/scripts/checkLibraryDuplicates.sh ./tests/tas-all-amps/target/war/alfresco/WEB-INF/lib
+        - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-all-amps-test.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
         - travis_wait 20 mvn install -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
