@@ -3,13 +3,13 @@
     <artifactId>acs-packaging</artifactId>
     <packaging>pom</packaging>
     <name>Alfresco Content Services Packaging</name>
-    <version>7.0.0-SNAPSHOT</version>
+    <version>7.0.0-TEST4-SNAPSHOT</version>
 
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-enterprise-repo</artifactId>
         <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
-        <version>8.300-SNAPSHOT</version>
+        <version>8.300-TEST2-SNAPSHOT</version>
     </parent>
 
     <scm>
@@ -31,12 +31,13 @@
     </distributionManagement>
 
     <properties>
-        <dependency.alfresco-community-repo.version>8.300-SNAPSHOT</dependency.alfresco-community-repo.version>
-        <dependency.alfresco-enterprise-repo.version>8.300-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
-
+        <dependency.alfresco-community-repo.version>8.300-TEST1-SNAPSHOT</dependency.alfresco-community-repo.version>
+        <dependency.alfresco-enterprise-repo.version>8.300-TEST2-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
         <!-- Set to "Enterprise Early Access" to add to the version.edition property in version.properties -->
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
+
+        <upstream.image.tag>${dependency.alfresco-enterprise-repo.version}</upstream.image.tag>
 
         <alfresco.share.version>7.0.0-A1</alfresco.share.version>
         <alfresco.alfresco-share-services.version>7.0.0-A1</alfresco.alfresco-share-services.version>
@@ -66,6 +67,17 @@
 
     <profiles>
         <profile>
+            <id>fullBuild</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>distribution</module>
+                <module>docker-alfresco</module>
+                <module>docker-alfresco/aws</module>
+            </modules>
+        </profile>
+        <profile>
             <id>enterpriseDocker</id>
             <modules>
                 <module>docker-alfresco</module>
@@ -73,12 +85,8 @@
             </modules>
         </profile>
         <profile>
-            <id>fullBuild</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+            <id>internal</id>
             <modules>
-                <module>distribution</module>
                 <module>docker-alfresco</module>
                 <module>docker-alfresco/aws</module>
             </modules>
@@ -99,7 +107,6 @@
         <profile>
             <id>pipeline</id>
             <modules>
-                <module>docker-alfresco</module>
                 <module>tests/pipeline-all-amps</module>
             </modules>
         </profile>

@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>acs-packaging</artifactId>
-        <version>7.0.0-SNAPSHOT</version>
+        <version>7.0.0-TEST4-SNAPSHOT</version>
     </parent>
 
     <dependencies>
@@ -198,6 +198,27 @@
                         </configuration>
                     </execution>
 
+                    <!-- Copy alfresco.war -->
+                    <execution>
+                        <id>copy-alfresco-war</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>content-services</artifactId>
+                                    <version>${dependency.alfresco-enterprise-repo.version}</version>
+                                    <type>war</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                    <destFileName>alfresco.war</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 

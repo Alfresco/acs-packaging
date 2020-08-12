@@ -1,4 +1,4 @@
-FROM alfresco/alfresco-enterprise-repo-base:latest
+FROM alfresco/alfresco-enterprise-repo-base:${upstream.image.tag}
 
 # Set default docker_context. Will / Can be overriden with maven.
 ARG resource_path=target

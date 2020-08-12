@@ -12,7 +12,7 @@ version: "2"
 
 services:
     alfresco:
-        image: quay.io/alfresco/alfresco-pipeline-all-amps-repo:${PROJECT_VERSION}-${TRAVIS_BUILD_NUMBER}
+        image: alfresco/alfresco-pipeline-all-amps-repo:latest
         mem_limit: 1700m
         environment:
             JAVA_TOOL_OPTIONS: "
@@ -103,7 +103,7 @@ services:
             - shared-file-store-volume:/tmp/Alfresco/sfs
 
     share:
-        image: quay.io/alfresco/alfresco-pipeline-all-amps-share:${PROJECT_VERSION}-${TRAVIS_BUILD_NUMBER}
+        image: alfresco/alfresco-pipeline-all-amps-share:latest
         mem_limit: 1g
         environment:
             REPO_HOST: "alfresco"
