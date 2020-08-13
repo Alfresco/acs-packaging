@@ -227,14 +227,14 @@
 <!--                                            <overWrite>false</overWrite>-->
 <!--                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>-->
 <!--                                        </artifactItem>-->
-                                        <artifactItem>
+                                        <!-- <artifactItem>
                                             <groupId>org.alfresco.integrations</groupId>
                                             <artifactId>alfresco-azure-connector</artifactId>
                                             <version>${alfresco.azure-connector.version}</version>
                                             <type>amp</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                        </artifactItem>
+                                        </artifactItem> -->
                                         <artifactItem>
                                             <groupId>org.alfresco</groupId>
                                             <artifactId>alfresco-centera-connector</artifactId>

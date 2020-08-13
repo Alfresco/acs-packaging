@@ -42,8 +42,8 @@ services:
         -Dcors.allowed.origins=http://localhost:4200
         -Ddir.contentstore=/usr/local/tomcat/alf_data/contentstore
         -Ddir.contentstore.deleted=/usr/local/tomcat/alf_data/contentstore.deleted
-        -Ds3.accessKey=default
-        -Ds3.secretKey=default
+        -Ds3.accessKey=${AWS_ACCESS_KEY}
+        -Ds3.secretKey=${AWS_SECRET_KEY}
         -Ds3.bucketName=bamboo-s3-conn-default
         -Ds3.autoLowerCaseBucketName=true
         -Dconnector.az.account.name=${AZURE_STORAGE_ACCOUNT_NAME}
