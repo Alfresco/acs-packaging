@@ -71,7 +71,7 @@ public class DiscoveryTests extends RestTest
                 "org.alfresco.integrations.google.docs",
                 "alfresco-trashcan-cleaner",
                 "org_alfresco_integrations_S3Connector",
-                "org_alfresco_integrations_AzureConnector",
+                //"org_alfresco_integrations_AzureConnector",
                 "org_alfresco_module_xamconnector",
                 // TODO uncomment this amp once https://issues.alfresco.com/jira/browse/APPS-219 is done
                 //"alfresco-content-connector-for-salesforce-repo",
@@ -79,8 +79,8 @@ public class DiscoveryTests extends RestTest
                 "alfresco-saml-repo",
                 "org_alfresco_device_sync_repo",
                 "org_alfresco_mm_repo", "alfresco-ai-repo",
-                "org_alfresco_module_rm", "alfresco-rm-enterprise-repo",
-                "alfresco-glacier-connector-repo"
+                "org_alfresco_module_rm", "alfresco-rm-enterprise-repo"
+                //"alfresco-glacier-connector-repo"
                 // TODO uncomment this amp once https://issues.alfresco.com/jira/browse/MNT-21648 is done
                 //"org.alfresco.module.TransformationServer"
         );
