@@ -1,6 +1,6 @@
 # Component Versions
 
-This file lists the recommended components for this Service Pack. Use it along with the [Supported Platforms Matrix](http://docs.alfresco.com/6.1/concepts/supported-platforms-ACS.html) and the [Alfresco Documentation](https://docs.alfresco.com/6.1/concepts/ch-upgrade.html) to apply selective component upgrades.
+This file lists the recommended components for this Service Pack. Use it along with the [Supported Platforms Matrix](http://docs.alfresco.com/7.0/concepts/supported-platforms-ACS.html) and the [Alfresco Documentation](https://docs.alfresco.com/7.0/concepts/ch-upgrade.html) to apply selective component upgrades.
 
 #### Alfresco Content Services @project.version@
 
@@ -22,7 +22,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Component | Recommended | Also Available |
 |---|---|---|
 | Alfresco Share Services | @alfresco.alfresco-share-services.version@ |
-| Alfresco Google Docs Integration | @alfresco.googledocs.version@ |
+| Alfresco Google Docs Integration | @alfresco.googledrive.version@ |
 | Alfresco Governance Services | @alfresco.ags.version@ |
 | Alfresco Media Management | @alfresco.mm.version@ |
 | Alfresco Intelligence Services | @alfresco.ais.version@ |
@@ -43,7 +43,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Utility Applications
 | Component | Recommended | Also Available |
 |---|---|---|
-| ImageMagick | 7.0.7 |
+| ImageMagick | 7.0.10 |
 | LibreOffice | 6.3.5 |
 | Alfresco PDF Renderer | 1.1 |
 
@@ -101,7 +101,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Java
 | Component | Recommended | Also Available |
 |---|---|---|
-| OpenJDK | 11.0.1 |
+| OpenJDK | 11.0.7 |
 
 ##### Message Broker
 | Component | Recommended | Also Available |
