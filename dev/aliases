@@ -1,0 +1,25 @@
+# Contains aliases to help build, test and control instances.
+# Names are based on those from the BAT project, used during ACS 6.x development.
+
+# Aliases to build the four main projects
+alias Rcom='(cd alfresco-community-repo  && mvn clean install -PcommunityDocker  -DskipTests=true -Dversion.edition=Community)'
+alias Rent='(cd alfresco-enterprise-repo && mvn clean install -PenterpriseDocker -DskipTests=true -Dmaven.javadoc.skip=true )'
+alias Pent='(cd acs-packaging            && mvn clean install -PenterpriseDocker)'
+alias Pcom='(cd acs-community-packaging  && mvn clean install -PcommunityDocker                   -Dmaven.javadoc.skip=true)'
+
+alias entd='Rcom && Rent && Pent'
+
+# Aliases to run/debug the enterprise tomcat development environment for enterprise.
+alias      entT='(cd acs-packaging && mvn      clean install -Prun,withShare)'
+alias      entO='(cd acs-packaging && mvn            install -Prun,withShare)'
+alias entTDebug='(cd acs-packaging && mvnDebug clean install -Prun,withShare)'
+alias       ent='entd && entT'
+
+# Clean up of docker images and content stores
+alias drm='docker rm -f $(docker ps -q)'
+alias arm='rm -rf `find . -name alf_data`'
+alias     envUp='docker-compose -f acs-packaging/dev/docker-compose.yml up'
+alias   envStop='docker-compose -f acs-packaging/dev/docker-compose.yml stop'
+alias   envKill='docker-compose -f acs-packaging/dev/docker-compose.yml kill'
+alias     envRm='docker-compose -f acs-packaging/dev/docker-compose.yml rm'
+
