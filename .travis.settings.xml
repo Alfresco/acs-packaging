@@ -25,15 +25,23 @@
                     <url>https://artifacts.alfresco.com/nexus/content/groups/public</url>
                 </pluginRepository>
             </pluginRepositories>
+            <properties>
+                <!-- WhiteSource token -->
+                <org.whitesource.orgToken>${env.WHITESOURCE_API_KEY}</org.whitesource.orgToken>
+            </properties>
         </profile>
     </profiles>
 
-
     <servers>
         <server>
-            <id>docker.io</id>
-            <username>${env.DOCKERHUB_USERNAME}</username>
-            <password>${env.DOCKERHUB_PASSWORD}</password>
+            <id>alfresco-public</id>
+            <username>${env.MAVEN_USERNAME}</username>
+            <password>${env.MAVEN_PASSWORD}</password>
+        </server>
+        <server>
+            <id>alfresco-internal</id>
+            <username>${env.MAVEN_USERNAME}</username>
+            <password>${env.MAVEN_PASSWORD}</password>
         </server>
         <server>
             <id>quay.io</id>
@@ -41,7 +49,12 @@
             <password>${env.QUAY_PASSWORD}</password>
         </server>
         <server>
-            <id>alfresco-internal</id>
+            <id>docker.io</id>
+            <username>${env.DOCKERHUB_USERNAME}</username>
+            <password>${env.DOCKERHUB_PASSWORD}</password>
+        </server>
+        <server>
+            <id>alfresco-internal-snapshot</id>
             <username>${env.MAVEN_USERNAME}</username>
             <password>${env.MAVEN_PASSWORD}</password>
         </server>
