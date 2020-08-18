@@ -3,15 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.alfresco.tas</groupId>
     <artifactId>content-repository-restapi-test</artifactId>
-    <name>content-repository-restapi-test</name>
-    <version>6.2.3-SNAPSHOT</version>
+    <name>restapi test</name>
     <packaging>jar</packaging>
 
     <parent>
         <groupId>org.alfresco</groupId>
-        <artifactId>content-repository-tas-tests-parent</artifactId>
-        <version>6.2.3-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <artifactId>content-repository-tests</artifactId>
+        <version>6.2.3-TEST4-SNAPSHOT</version>
     </parent>
 
     <developers>
@@ -61,6 +59,18 @@
     </profiles>
 
     <dependencies>
+        <dependency>
+            <groupId>org.alfresco.tas</groupId>
+            <artifactId>alfresco-enterprise-repo-restapi-test</artifactId>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco.tas</groupId>
+            <artifactId>alfresco-community-repo-restapi-test</artifactId>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.alfresco.tas</groupId>
             <artifactId>restapi</artifactId>
