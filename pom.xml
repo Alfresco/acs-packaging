@@ -80,7 +80,7 @@
         <alfresco.azure-connector.version>1.1</alfresco.azure-connector.version>
 
         <!-- Alfresco Centera Connector version -->
-        <alfresco.centera-connector.version>2.2.1</alfresco.centera-connector.version>
+        <alfresco.centera-connector.version>2.2.1-test1</alfresco.centera-connector.version>
 
         <!-- Alfresco Salesforce Connector version -->
         <alfresco.salesforce-connector.version>2.2.0-EA1</alfresco.salesforce-connector.version>
