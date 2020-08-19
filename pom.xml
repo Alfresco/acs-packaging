@@ -3,17 +3,18 @@
     <artifactId>acs-packaging</artifactId>
     <packaging>pom</packaging>
     <name>Alfresco Content Services Packaging</name>
-    <version>6.0.1.7-SNAPSHOT</version>
+    <version>6.0.1.7-TEST4-SNAPSHOT</version>
 
     <parent>
         <groupId>org.alfresco</groupId>
-        <artifactId>alfresco-super-pom</artifactId>
-        <version>10</version>
+        <artifactId>alfresco-enterprise-repo</artifactId>
+        <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
+        <version>6.56.15.300-TEST2-SNAPSHOT</version>
     </parent>
 
     <scm>
-        <connection>scm:git:git@github.com:Alfresco/acs-packaging.git</connection>
-        <developerConnection>scm:git:git@github.com:Alfresco/acs-packaging.git</developerConnection>
+        <connection>scm:git:https://github.com/Alfresco/acs-packaging.git</connection>
+        <developerConnection>scm:git:https://github.com/Alfresco/acs-packaging.git</developerConnection>
         <url>https://github.com/Alfresco/acs-packaging</url>
         <tag>HEAD</tag>
     </scm>
@@ -30,18 +31,13 @@
     </distributionManagement>
 
     <properties>
+        <dependency.alfresco-community-repo.version>6.56.15.300-TEST1-SNAPSHOT</dependency.alfresco-community-repo.version>
+        <dependency.alfresco-enterprise-repo.version>6.56.15.300-TEST2-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
         <!-- Set to "Enterprise Early Access" to add to the version.edition property in version.properties -->
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <dependency.alfresco-core.version>7.5</dependency.alfresco-core.version>
-        <dependency.alfresco-data-model.version>8.18</dependency.alfresco-data-model.version>
-        <dependency.alfresco-repository.version>6.56.15.9</dependency.alfresco-repository.version>
-        <dependency.alfresco-remote-api.version>6.39.7.3</dependency.alfresco-remote-api.version>
         <dependency.alfresco-hb-data-sender.version>1.0.10</dependency.alfresco-hb-data-sender.version>
-
-        <dependency.alfresco-enterprise-repository.version>6.36.8.5</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-enterprise-remote-api.version>6.28.8.4</dependency.alfresco-enterprise-remote-api.version>
 
         <dependency.alfresco-spring-encryptor.version>6.1</dependency.alfresco-spring-encryptor.version>
         <dependency.alfresco-enterprise-crypto.version>6.1</dependency.alfresco-enterprise-crypto.version>
