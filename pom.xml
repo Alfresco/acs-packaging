@@ -1,14 +1,15 @@
-            <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>acs-packaging</artifactId>
     <packaging>pom</packaging>
     <name>Alfresco Content Services Packaging</name>
-    <version>6.1.0.10-SNAPSHOT</version>
+    <version>6.1.0.10-TEST4-SNAPSHOT</version>
 
     <parent>
         <groupId>org.alfresco</groupId>
-        <artifactId>alfresco-super-pom</artifactId>
-        <version>10</version>
+        <artifactId>alfresco-enterprise-repo</artifactId>
+        <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
+        <version>7.33.12.300-TEST2-SNAPSHOT</version>
     </parent>
 
     <scm>
@@ -30,19 +31,13 @@
     </distributionManagement>
 
     <properties>
+        <dependency.alfresco-community-repo.version>7.33.12.300-TEST1-SNAPSHOT</dependency.alfresco-community-repo.version>
+        <dependency.alfresco-enterprise-repo.version>7.33.12.300-TEST2-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
         <!-- Set to "Enterprise Early Access" to add to the version.edition property in version.properties -->
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <dependency.alfresco-core.version>7.5.1.1</dependency.alfresco-core.version>
-        <dependency.alfresco-data-model.version>8.25.1</dependency.alfresco-data-model.version>
-
-        <dependency.alfresco-repository.version>7.33.12.1</dependency.alfresco-repository.version>
-        <dependency.alfresco-remote-api.version>7.34.1.1</dependency.alfresco-remote-api.version>
         <dependency.alfresco-hb-data-sender.version>1.0.9</dependency.alfresco-hb-data-sender.version>
-
-        <dependency.alfresco-enterprise-repository.version>7.25.1.1</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-enterprise-remote-api.version>7.20.1.2</dependency.alfresco-enterprise-remote-api.version>
 
         <dependency.alfresco-spring-encryptor.version>6.1</dependency.alfresco-spring-encryptor.version>
         <dependency.alfresco-enterprise-crypto.version>6.1</dependency.alfresco-enterprise-crypto.version>
