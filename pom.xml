@@ -83,7 +83,7 @@
         <alfresco.centera-connector.version>2.2.1</alfresco.centera-connector.version>
 
         <!-- Alfresco Salesforce Connector version -->
-        <alfresco.salesforce-connector.version>2.1.0.1</alfresco.salesforce-connector.version>
+        <alfresco.salesforce-connector.version>2.2.0</alfresco.salesforce-connector.version>
 
         <!-- SAML Single Sign-On (SSO) for Alfresco Content Services -->
         <alfresco.saml.version>1.2.1</alfresco.saml.version>
