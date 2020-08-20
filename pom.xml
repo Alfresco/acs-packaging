@@ -9,7 +9,7 @@
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-enterprise-repo</artifactId>
         <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
-        <version>6.56.5.300-TEST-TEST2-SNAPSHOT</version>
+        <version>6.56.5.300-TEST2-SNAPSHOT</version>
     </parent>
 
     <scm>
@@ -31,8 +31,8 @@
     </distributionManagement>
 
     <properties>
-        <dependency.alfresco-community-repo.version>6.56.5.300-TEST-TEST1-SNAPSHOT</dependency.alfresco-community-repo.version>
-        <dependency.alfresco-enterprise-repo.version>6.56.5.300-TEST-TEST2-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
+        <dependency.alfresco-community-repo.version>6.56.5.300-TEST1-SNAPSHOT</dependency.alfresco-community-repo.version>
+        <dependency.alfresco-enterprise-repo.version>6.56.5.300-TEST2-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
         <!-- Set to "Enterprise Early Access" to add to the version.edition property in version.properties -->
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
