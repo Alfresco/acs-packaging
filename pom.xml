@@ -31,106 +31,29 @@
     </distributionManagement>
 
     <properties>
-        <!-- Set to "Enterprise Early Access" to add to the version.edition property in version.properties -->
-        <version.edition>Enterprise</version.edition>
-        <image.tag>latest</image.tag>
+        <acs.version.label></acs.version.label> <!-- 6.2.2 -->
 
-        <dependency.alfresco-enterprise-remote-api.version>7.90</dependency.alfresco-enterprise-remote-api.version>
-        <dependency.alfresco-enterprise-repository.version>7.118</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-remote-api.version>7.150</dependency.alfresco-remote-api.version>
-        <dependency.alfresco-repository.version>7.214</dependency.alfresco-repository.version>
-        <dependency.alfresco-data-model.version>8.50.21</dependency.alfresco-data-model.version>
-        <dependency.alfresco-core.version>7.35</dependency.alfresco-core.version>
+        <dependency.alfresco-community-repo.version>7.300-TEST1-SNAPSHOT</dependency.alfresco-community-repo.version>
+        <dependency.alfresco-enterprise-repo.version>7.300-TEST2-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
 
-        <dependency.alfresco-hb-data-sender.version>1.0.12</dependency.alfresco-hb-data-sender.version>
-        <dependency.activiti-repo-connector.version>1.5</dependency.activiti-repo-connector.version>
-
-        <dependency.alfresco-spring-encryptor.version>6.1</dependency.alfresco-spring-encryptor.version>
-        <dependency.alfresco-enterprise-crypto.version>6.2</dependency.alfresco-enterprise-crypto.version>
-        <dependency.alfresco-spring-webscripts.version>7.16</dependency.alfresco-spring-webscripts.version>
-        <dependency.alfresco-mmt.version>6.0</dependency.alfresco-mmt.version>
-        <dependency.alfresco-pdf-renderer.version>1.1</dependency.alfresco-pdf-renderer.version>
-        <dependency.alfresco-trashcan-cleaner.version>2.3</dependency.alfresco-trashcan-cleaner.version>
-        <dependency.alfresco-jlan.version>7.1</dependency.alfresco-jlan.version>
-        <dependency.alfresco-server-root.version>6.0.1</dependency.alfresco-server-root.version>
-        <dependency.alfresco-api-explorer.version>6.2.1.1</dependency.alfresco-api-explorer.version>
-        <dependency.gytheio.version>0.11.6</dependency.gytheio.version>
-        <dependency.alfresco-log-sanitizer.version>0.2</dependency.alfresco-log-sanitizer.version>
-
-        <dependency.spring.version>5.1.15.RELEASE</dependency.spring.version>
-        <dependency.fabric8.version>4.4.0</dependency.fabric8.version>
-        <dependency.jackson.version>2.10.2</dependency.jackson.version>
-        <dependency.jackson-databind.version>2.10.1</dependency.jackson-databind.version>
-        <dependency.cxf.version>3.3.5</dependency.cxf.version>
-        <dependency.axiom.version>1.2.22</dependency.axiom.version>
-
-        <!-- Alfresco Share version -->
         <alfresco.share.version>6.2.2</alfresco.share.version>
         <alfresco.alfresco-share-services.version>6.2.2</alfresco.alfresco-share-services.version>
-
-        <!-- Alfresco GoogleDocs integration version -->
-        <alfresco.googledrive.version>3.2.0</alfresco.googledrive.version>
-
-        <!-- Alfresco S3 Connector integration version -->
+        <dependency.alfresco-api-explorer.version>6.2.1.1</dependency.alfresco-api-explorer.version>
+        <dependency.fabric8.version>4.4.0</dependency.fabric8.version>
         <alfresco.s3connector.version>3.1.0-RC2</alfresco.s3connector.version>
-
-        <!-- Alfresco Glacier Connector Repo version -->
         <alfresco.glacier-connector.version>2.0.0</alfresco.glacier-connector.version>
-
-        <!-- Alfresco Content Connector for Azure version -->
         <alfresco.azure-connector.version>1.1</alfresco.azure-connector.version>
-
-        <!-- Alfresco Centera Connector version -->
         <alfresco.centera-connector.version>2.2.1</alfresco.centera-connector.version>
-
-        <!-- Alfresco Salesforce Connector version -->
         <alfresco.salesforce-connector.version>2.1.0.1</alfresco.salesforce-connector.version>
-
-        <!-- SAML Single Sign-On (SSO) for Alfresco Content Services -->
         <alfresco.saml.version>1.2.1</alfresco.saml.version>
-
-        <!-- Alfresco Outlook Integration -->
         <alfresco.outlook.version>2.6.1</alfresco.outlook.version>
-
-        <!-- Document Transformation Engine -->
         <alfresco.transformation-engine.version>2.2.2</alfresco.transformation-engine.version>
-
-        <!-- Alfresco Governance Services (AGS) -->
         <alfresco.ags.version>3.3.1</alfresco.ags.version>
-
-        <!-- Alfresco Office Services Module -->
-        <alfresco.aos-module.version>1.3.1</alfresco.aos-module.version>
-
-        <!-- Alfresco Media Management Module -->
         <alfresco.mm.version>1.4.3-RC2</alfresco.mm.version>
-
-        <!-- Alfresco Desktop Sync Service Module -->
         <alfresco.desktop-sync.version>3.3.3.1</alfresco.desktop-sync.version>
-
-        <!-- Alfresco Alfresco Intelligence Services (AIS) -->
         <alfresco.ais.version>1.2.0</alfresco.ais.version>
 
-        <installer.version.name>${project.version}</installer.version.name>
-        <alfresco.package.name>alfresco</alfresco.package.name>
-        <alfresco.distribution.name>${alfresco.package.name}-distribution</alfresco.distribution.name>
-
-        <dependency.postgresql.version>42.2.14</dependency.postgresql.version>
-        <dependency.mariadb.version>2.6.0</dependency.mariadb.version>
-
-        <!-- Private docker registry -->
-        <image.registry>quay.io</image.registry>
-
-        <dependency.tas-utility.version>3.0.21</dependency.tas-utility.version>
-        <dependency.rest-assured.version>3.3.0</dependency.rest-assured.version>
-        <dependency.javax.json.version>1.1.4</dependency.javax.json.version>
-        <dependency.tas-restapi.version>1.43</dependency.tas-restapi.version>
-        <dependency.tas-cmis.version>1.13</dependency.tas-cmis.version>
-        <dependency.tas-email.version>1.8</dependency.tas-email.version>
-        <dependency.tas-webdav.version>1.6</dependency.tas-webdav.version>
-        <dependency.tas-ftp.version>1.5</dependency.tas-ftp.version>
-        <dependency.tas-dataprep.version>2.3</dependency.tas-dataprep.version>
-
-        <maven.build.sourceVersion>11</maven.build.sourceVersion>
+        <upstream.image.tag>${dependency.alfresco-enterprise-repo.version}</upstream.image.tag>
     </properties>
 
     <profiles>
@@ -274,17 +197,17 @@
             <dependency>
                 <groupId>org.alfresco.surf</groupId>
                 <artifactId>spring-surf-core-configservice</artifactId>
-                <version>${dependency.alfresco-spring-webscripts.version}</version>
+                <version>${dependency.webscripts.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.alfresco.surf</groupId>
                 <artifactId>spring-webscripts</artifactId>
-                <version>${dependency.alfresco-spring-webscripts.version}</version>
+                <version>${dependency.webscripts.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.alfresco.surf</groupId>
                 <artifactId>spring-webscripts-api</artifactId>
-                <version>${dependency.alfresco-spring-webscripts.version}</version>
+                <version>${dependency.webscripts.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.quartz-scheduler</groupId>
@@ -302,13 +225,7 @@
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpcore</artifactId>
-                <version>4.4.13</version>
-            </dependency>
-            <dependency>
-                <groupId>joda-time</groupId>
-                <artifactId>joda-time</artifactId>
-                <version>2.10.5</version>
-            </dependency>
+             </dependency>
             <dependency>
                 <groupId>commons-httpclient</groupId>
                 <artifactId>commons-httpclient</artifactId>
@@ -355,7 +272,6 @@
             <dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpclient</artifactId>
-                <version>4.5.11</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.xmlbeans</groupId>
