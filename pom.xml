@@ -33,6 +33,7 @@
     <properties>
         <dependency.alfresco-community-repo.version>8.300-TEST1-SNAPSHOT</dependency.alfresco-community-repo.version>
         <dependency.alfresco-enterprise-repo.version>8.300-TEST2-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
+
         <!-- Set to "Enterprise Early Access" to add to the version.edition property in version.properties -->
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
