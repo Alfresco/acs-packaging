@@ -34,12 +34,12 @@
         <version.edition>Enterprise</version.edition>
         <image.tag>latest</image.tag>
 
-        <dependency.alfresco-enterprise-remote-api.version>8.215</dependency.alfresco-enterprise-remote-api.version>
-        <dependency.alfresco-enterprise-repository.version>8.202</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-remote-api.version>8.219</dependency.alfresco-remote-api.version>
-        <dependency.alfresco-repository.version>8.267</dependency.alfresco-repository.version>
-        <dependency.alfresco-data-model.version>8.145</dependency.alfresco-data-model.version>
-        <dependency.alfresco-core.version>8.44</dependency.alfresco-core.version>
+        <dependency.alfresco-enterprise-remote-api.version>8.216</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>8.203</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-remote-api.version>8.222</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-repository.version>8.269</dependency.alfresco-repository.version>
+        <dependency.alfresco-data-model.version>8.147</dependency.alfresco-data-model.version>
+        <dependency.alfresco-core.version>8.45</dependency.alfresco-core.version>
 
         <dependency.alfresco-hb-data-sender.version>1.0.12</dependency.alfresco-hb-data-sender.version>
         <dependency.activiti-repo-connector.version>1.5</dependency.activiti-repo-connector.version>
@@ -101,7 +101,7 @@
         <alfresco.aos-module.version>1.3.1</alfresco.aos-module.version>
 
         <!-- Alfresco Media Management Module -->
-        <alfresco.mm.version>1.4.2</alfresco.mm.version>
+        <alfresco.mm.version>1.5.0-A1</alfresco.mm.version>
 
         <!-- Alfresco Desktop Sync Service Module -->
         <alfresco.desktop-sync.version>3.3.3.1</alfresco.desktop-sync.version>
