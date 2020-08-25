@@ -35,6 +35,9 @@
         <dependency.alfresco-enterprise-repo.version>8.300-TEST2-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
         <!-- Set to "Enterprise Early Access" to add to the version.edition property in version.properties -->
         <version.edition>Enterprise</version.edition>
+
+        <build-number>local</build-number>
+
         <image.tag>latest</image.tag>
 
         <upstream.image.tag>${dependency.alfresco-enterprise-repo.version}</upstream.image.tag>
