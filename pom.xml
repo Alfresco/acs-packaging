@@ -64,8 +64,8 @@
         <dependency.axiom.version>1.2.22</dependency.axiom.version>
 
         <!-- Alfresco Share version -->
-        <alfresco.share.version>7.0.0-A1</alfresco.share.version>
-        <alfresco.alfresco-share-services.version>7.0.0-A1</alfresco.alfresco-share-services.version>
+        <alfresco.share.version>7.0.0-A2</alfresco.share.version>
+        <alfresco.alfresco-share-services.version>7.0.0-A2</alfresco.alfresco-share-services.version>
 
         <!-- Alfresco GoogleDocs integration version -->
         <alfresco.googledrive.version>3.2.0</alfresco.googledrive.version>
@@ -83,7 +83,7 @@
         <alfresco.centera-connector.version>2.2.1</alfresco.centera-connector.version>
 
         <!-- Alfresco Salesforce Connector version -->
-        <alfresco.salesforce-connector.version>2.2.0-EA1</alfresco.salesforce-connector.version>
+        <alfresco.salesforce-connector.version>2.2.0</alfresco.salesforce-connector.version>
 
         <!-- SAML Single Sign-On (SSO) for Alfresco Content Services -->
         <alfresco.saml.version>1.2.1</alfresco.saml.version>
