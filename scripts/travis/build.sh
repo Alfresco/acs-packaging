@@ -19,12 +19,20 @@ if [[ $(isPullRequestBuild) && ( "${COM_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ||
   exit 1
 fi
 
+# Prevent release jobs from starting when there are SNAPSHOT upstream dependencies
 if [[ "${COM_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ || "${ENT_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] && [ "${TRAVIS_BUILD_STAGE_NAME,,}" = "release" ] ; then
   printf "Cannot release project with SNAPSHOT dependencies!\n"
   exit 1
 fi
 
 COM_UPSTREAM_REPO="github.com/Alfresco/alfresco-community-repo.git"
+
+# For release jobs, check if the upstream dependency is the latest tag on the upstream repository (on the same branch)
+if isBranchBuild && [ "${TRAVIS_BUILD_STAGE_NAME,,}" = "release" ] && [ "${COM_DEPENDENCY_VERSION}" = "$(retieveLatestTag "${COM_UPSTREAM_REPO}" "${TRAVIS_BRANCH}")" ] ; then
+  printf "Upstream dependency is not up to date with %s / %s\n" "${COM_UPSTREAM_REPO}" "${TRAVIS_BRANCH}"
+  exit 1
+fi
+
 # Search, checkout and build the same branch on the upstream project in case of SNAPSHOT dependencies
 # Otherwise just checkout the upstream dependency sources
 if [[ "${COM_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] ; then
@@ -34,6 +42,13 @@ else
 fi
 
 ENT_UPSTREAM_REPO="github.com/Alfresco/alfresco-enterprise-repo.git"
+
+# For release jobs, check if the upstream dependency is the latest tag on the upstream repository (on the same branch)
+if isBranchBuild && [ "${TRAVIS_BUILD_STAGE_NAME,,}" = "release" ] && [ "${ENT_DEPENDENCY_VERSION}" = "$(retieveLatestTag "${ENT_UPSTREAM_REPO}" "${TRAVIS_BRANCH}")" ] ; then
+  printf "Upstream dependency is not up to date with %s / %s\n" "${ENT_UPSTREAM_REPO}" "${TRAVIS_BRANCH}"
+  exit 1
+fi
+
 # Search, checkout and build the same branch on the upstream project in case of SNAPSHOT dependencies
 if [[ "${ENT_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] ; then
   pullAndBuildSameBranchOnUpstream "${ENT_UPSTREAM_REPO}" \
