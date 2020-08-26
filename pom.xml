@@ -55,17 +55,9 @@
 
     <profiles>
         <profile>
-            <id>enterprise</id>
-            <modules>
-                <module>war</module>
-            </modules>
-        </profile>
-        <profile>
             <id>enterpriseDocker</id>
             <modules>
-                <module>war</module>
                 <module>docker-alfresco</module>
-                <module>docker-alfresco/test/docker-alfresco-all-amps-test</module>
             </modules>
         </profile>
         <profile>
@@ -74,16 +66,81 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>war</module>
                 <module>distribution</module>
                 <module>docker-alfresco</module>
-                <module>docker-alfresco/test/docker-alfresco-all-amps-test</module>
             </modules>
         </profile>
     </profiles>
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>content-services</artifactId>
+                <version>${dependency.alfresco-enterprise-repo.version}</version>
+                <type>war</type>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-enterprise-repository</artifactId>
+                <version>${dependency.alfresco-enterprise-repo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-enterprise-repository</artifactId>
+                <version>${dependency.alfresco-enterprise-repo.version}</version>
+                <classifier>tests</classifier>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-enterprise-remote-api</artifactId>
+                <version>${dependency.alfresco-enterprise-repo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-enterprise-remote-api</artifactId>
+                <version>${dependency.alfresco-enterprise-repo.version}</version>
+                <classifier>tests</classifier>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.alfresco.tas</groupId>
+                <artifactId>alfresco-enterprise-repo-cmis-test</artifactId>
+                <version>${dependency.alfresco-enterprise-repo.version}</version>
+                <classifier>tests</classifier>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.tas</groupId>
+                <artifactId>alfresco-enterprise-repo-email-test</artifactId>
+                <version>${dependency.alfresco-enterprise-repo.version}</version>
+                <classifier>tests</classifier>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.tas</groupId>
+                <artifactId>alfresco-enterprise-repo-integration-test</artifactId>
+                <version>${dependency.alfresco-enterprise-repo.version}</version>
+                <classifier>tests</classifier>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.tas</groupId>
+                <artifactId>alfresco-enterprise-repo-restapi-test</artifactId>
+                <version>${dependency.alfresco-enterprise-repo.version}</version>
+                <classifier>tests</classifier>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.tas</groupId>
+                <artifactId>alfresco-enterprise-repo-webdav-test</artifactId>
+                <version>${dependency.alfresco-enterprise-repo.version}</version>
+                <classifier>tests</classifier>
+                <scope>test</scope>
+            </dependency>
+
             <dependency>
                 <groupId>org.alfresco</groupId>
                 <artifactId>alfresco-content-services-share-distribution</artifactId>
