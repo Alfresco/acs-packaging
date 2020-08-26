@@ -62,15 +62,14 @@
                   <overWrite>true</overWrite>
                   <outputDirectory>${project.build.directory}/amps</outputDirectory>
                 </artifactItem>
-<!--            The current version of Glacier Connector is not compatible with S3Connector 3.1.0               
-                 <artifactItem>
+                <artifactItem>
                   <groupId>org.alfresco</groupId>
                   <artifactId>alfresco-glacier-connector-repo</artifactId>
                   <version>${alfresco.glacier-connector.version}</version>
                   <type>amp</type>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                </artifactItem> -->
+                </artifactItem>
                 <artifactItem>
                   <groupId>org.alfresco.services.sync</groupId>
                   <artifactId>alfresco-device-sync-repo</artifactId>

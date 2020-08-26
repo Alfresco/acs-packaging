@@ -78,8 +78,8 @@ public class DiscoveryTests extends RestTest
                 "alfresco-saml-repo",
                 "org_alfresco_device_sync_repo",
                 "org_alfresco_mm_repo", "alfresco-ai-repo",
-                "org_alfresco_module_rm", "alfresco-rm-enterprise-repo"
-                //"alfresco-glacier-connector-repo"
+                "org_alfresco_module_rm", "alfresco-rm-enterprise-repo",
+                "alfresco-glacier-connector-repo"
                 // TODO uncomment this amp once https://issues.alfresco.com/jira/browse/MNT-21648 is done
                 //"org.alfresco.module.TransformationServer"
         );
