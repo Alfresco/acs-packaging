@@ -146,6 +146,7 @@
               <images>
                 <image>
                   <name>${image.name}:${image.tag}</name>
+                  <registry>${image.registry}</registry>
                   <build>
                     <dockerFileDir>${project.basedir}/</dockerFileDir>
                     <buildOptions>
