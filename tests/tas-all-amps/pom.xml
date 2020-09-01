@@ -40,8 +40,8 @@
         </dependency>
         <dependency>
             <groupId>org.alfresco.integrations</groupId>
-            <artifactId>alfresco-googledrive-repo-enterprise</artifactId>
-            <version>${alfresco.googledrive.version}</version>
+            <artifactId>alfresco-googledocs-repo</artifactId>
+            <version>${alfresco.googledocs.version}</version>
             <type>amp</type>
         </dependency>
 
@@ -178,16 +178,16 @@
                                         </artifactItem>
                                         <artifactItem>
                                             <groupId>org.alfresco.integrations</groupId>
-                                            <artifactId>alfresco-googledrive-repo-enterprise</artifactId>
-                                            <version>${alfresco.googledrive.version}</version>
+                                            <artifactId>alfresco-googledocs-repo</artifactId>
+                                            <version>${alfresco.googledocs.version}</version>
                                             <type>amp</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                         </artifactItem>
                                         <artifactItem>
                                             <groupId>org.alfresco.integrations</groupId>
-                                            <artifactId>alfresco-googledrive-share</artifactId>
-                                            <version>${alfresco.googledrive.version}</version>
+                                            <artifactId>alfresco-googledocs-share</artifactId>
+                                            <version>${alfresco.googledocs.version}</version>
                                             <type>amp</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
@@ -236,6 +236,14 @@
                                             <groupId>org.alfresco</groupId>
                                             <artifactId>alfresco-centera-connector</artifactId>
                                             <version>${alfresco.centera-connector.version}</version>
+                                            <type>amp</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>org.alfresco.integrations</groupId>
+                                            <artifactId>kofaxaddon</artifactId>
+                                            <version>${alfresco.kofax.version}</version>
                                             <type>amp</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>
