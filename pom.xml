@@ -31,8 +31,6 @@
     </distributionManagement>
 
     <properties>
-        <acs.version.label>2</acs.version.label> <!-- 6.2.2.<label> -->
-
         <dependency.alfresco-community-repo.version>7.199.300-TEST1-SNAPSHOT</dependency.alfresco-community-repo.version>
         <dependency.alfresco-enterprise-repo.version>7.199.300-TEST2-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
 
