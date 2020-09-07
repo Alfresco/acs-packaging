@@ -4,8 +4,8 @@
 # Aliases to build the four main projects
 alias Rcom='(cd alfresco-community-repo  && mvn clean install -PcommunityDocker  -DskipTests=true -Dversion.edition=Community)'
 alias Rent='(cd alfresco-enterprise-repo && mvn clean install -PenterpriseDocker -DskipTests=true -Dmaven.javadoc.skip=true )'
-alias Pent='(cd acs-packaging            && mvn clean install -PenterpriseDocker)'
-alias Pcom='(cd acs-community-packaging  && mvn clean install -PcommunityDocker                   -Dmaven.javadoc.skip=true)'
+alias Pent='(cd acs-packaging            && mvn clean install -PenterpriseDocker -Dupstream.image.tag=latest)'
+alias Pcom='(cd acs-community-packaging  && mvn clean install -PcommunityDocker  -Dmaven.javadoc.skip=true -Dupstream.image.tag=latest)'
 
 alias entd='Rcom && Rent && Pent'
 
