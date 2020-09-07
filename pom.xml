@@ -33,6 +33,7 @@
     <properties>
         <dependency.alfresco-community-repo.version>8.300-TEST1-SNAPSHOT</dependency.alfresco-community-repo.version>
         <dependency.alfresco-enterprise-repo.version>8.300-TEST2-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
+        <upstream.image.tag>${dependency.alfresco-enterprise-repo.version}</upstream.image.tag>
 
         <alfresco.share.version>7.0.0-A1</alfresco.share.version>
         <alfresco.alfresco-share-services.version>7.0.0-A1</alfresco.alfresco-share-services.version>
@@ -49,8 +50,6 @@
         <alfresco.mm.version>1.4.2</alfresco.mm.version>
         <alfresco.desktop-sync.version>3.3.3.1</alfresco.desktop-sync.version>
         <alfresco.ais.version>1.2.0</alfresco.ais.version>
-
-        <upstream.image.tag>${dependency.alfresco-enterprise-repo.version}</upstream.image.tag>
     </properties>
 
     <profiles>
