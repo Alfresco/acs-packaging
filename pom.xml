@@ -57,14 +57,14 @@
         <dependency.alfresco-log-sanitizer.version>0.2</dependency.alfresco-log-sanitizer.version>
 
         <dependency.spring.version>5.2.8.RELEASE</dependency.spring.version>
-        <dependency.fabric8.version>4.4.0</dependency.fabric8.version>
+        <dependency.fabric8.version>4.4.1</dependency.fabric8.version>
         <dependency.jackson.version>2.11.2</dependency.jackson.version>
-        <dependency.jackson-databind.version>2.10.1</dependency.jackson-databind.version>
+        <dependency.jackson-databind.version>2.11.2</dependency.jackson-databind.version>
         <dependency.cxf.version>3.3.7</dependency.cxf.version>
         <dependency.axiom.version>1.2.22</dependency.axiom.version>
 
         <!-- Alfresco Share version -->
-        <alfresco.share.version>7.0.0-M1</alfresco.share.version>
+        <alfresco.share.version>7.0.0-M2</alfresco.share.version>
         <alfresco.alfresco-share-services.version>7.0.0-M2</alfresco.alfresco-share-services.version>
 
         <!-- Alfresco GoogleDocs integration version -->
@@ -113,7 +113,7 @@
         <alfresco.package.name>alfresco</alfresco.package.name>
         <alfresco.distribution.name>${alfresco.package.name}-distribution</alfresco.distribution.name>
 
-        <dependency.postgresql.version>42.2.15</dependency.postgresql.version>
+        <dependency.postgresql.version>42.2.16</dependency.postgresql.version>
         <dependency.mariadb.version>2.6.2</dependency.mariadb.version>
 
         <!-- Private docker registry -->
@@ -122,7 +122,7 @@
         <dependency.tas-utility.version>3.0.21</dependency.tas-utility.version>
         <dependency.rest-assured.version>3.3.0</dependency.rest-assured.version>
         <dependency.javax.json.version>1.1.4</dependency.javax.json.version>
-        <dependency.tas-restapi.version>1.47</dependency.tas-restapi.version>
+        <dependency.tas-restapi.version>1.48</dependency.tas-restapi.version>
         <dependency.tas-cmis.version>1.13</dependency.tas-cmis.version>
         <dependency.tas-email.version>1.8</dependency.tas-email.version>
         <dependency.tas-webdav.version>1.6</dependency.tas-webdav.version>
@@ -334,7 +334,7 @@
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
-                <version>1.14</version>
+                <version>1.15</version>
             </dependency>
             <dependency>
                 <groupId>commons-collections</groupId>
