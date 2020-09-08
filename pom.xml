@@ -33,11 +33,11 @@
     <properties>
         <dependency.alfresco-community-repo.version>6.56.5.300-TEST1-SNAPSHOT</dependency.alfresco-community-repo.version>
         <dependency.alfresco-enterprise-repo.version>6.56.5.300-TEST2-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
-
-        <dependency.fabric8.version>3.5.37</dependency.fabric8.version>
+        <upstream.image.tag>${dependency.alfresco-enterprise-repo.version}</upstream.image.tag>
 
         <alfresco.share.version>6.0</alfresco.share.version>
         <alfresco.alfresco-share-services.version>6.0</alfresco.alfresco-share-services.version>
+        <dependency.fabric8.version>3.5.37</dependency.fabric8.version>
         <alfresco.googledocs.version>3.1.0</alfresco.googledocs.version>
         <alfresco.s3connector.version>2.2.0</alfresco.s3connector.version>
         <alfresco.centera-connector.version>2.2.0</alfresco.centera-connector.version>
@@ -49,8 +49,6 @@
         <alfresco.records-management.version>2.5.2</alfresco.records-management.version>
         <alfresco.mm.version>1.2.0</alfresco.mm.version>
         <alfresco.desktop-sync.version>3.0</alfresco.desktop-sync.version>
-
-        <upstream.image.tag>${dependency.alfresco-enterprise-repo.version}</upstream.image.tag>
     </properties>
 
     <profiles>
