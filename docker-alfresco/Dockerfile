@@ -3,10 +3,6 @@ FROM alfresco/alfresco-enterprise-repo-base:${upstream.image.tag}
 # Set default docker_context. Will / Can be overriden with maven.
 ARG resource_path=target
 
-# Set default user information
-ARG GROUPNAME=Alfresco
-ARG IMAGEUSERNAME=alfresco
-
 # Set default environment args
 ARG TOMCAT_DIR=/usr/local/tomcat
 
@@ -23,11 +19,9 @@ RUN java -jar ${TOMCAT_DIR}/alfresco-mmt/alfresco-mmt*.jar install \
               ${TOMCAT_DIR}/amps \
               ${TOMCAT_DIR}/webapps/alfresco -directory -nobackup
 
-# The standard configuration is to have all Tomcat files owned by root with group GROUPNAME and whilst owner has read/write privileges,
-# group only has restricted permissions and world has no permissions.
-RUN chgrp -R ${GROUPNAME} ${TOMCAT_DIR}/webapps && \
-    find ${TOMCAT_DIR}/webapps -type d -exec chmod 0750 {} \; && \
-    find ${TOMCAT_DIR}/webapps -type f -exec chmod 0640 {} \; && \
-    chmod -R g+r ${TOMCAT_DIR}/webapps
-
-USER ${IMAGEUSERNAME}
+# Make webapps folder read-only.
+RUN chmod -R =r /usr/local/tomcat/webapps && \
+# Add catalina.policy to ROOT.war and alfresco.war
+# Grant all security permissions to alfresco webapp because of numerous permissions required in order to work properly.
+# Grant only deployXmlPermission to ROOT webapp.
+    sed -i -e "\$a\grant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/alfresco\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};\ngrant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/ROOT\/-\" \{\n\    permission org.apache.catalina.security.DeployXmlPermission \"ROOT\";\n\};" /usr/local/tomcat/conf/catalina.policy
