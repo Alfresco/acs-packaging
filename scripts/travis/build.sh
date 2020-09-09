@@ -53,8 +53,9 @@ fi
 
 # Search, checkout and build the same branch on the upstream project in case of SNAPSHOT dependencies
 if [[ "${ENT_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] ; then
-  pullAndBuildSameBranchOnUpstream "${ENT_UPSTREAM_REPO}" \
-    "-PenterpriseDocker $([[ "${COM_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] && echo "-Dupstream.image.tag=latest")"
+  pullAndBuildSameBranchOnUpstream "${ENT_UPSTREAM_REPO}" "-PenterpriseDocker"
+else
+  pullUpstreamTagAndBuildDockerImage "${ENT_UPSTREAM_REPO}" "${ENT_DEPENDENCY_VERSION}" "-PenterpriseDocker"
 fi
 
 # Either both the parent and the upstream dependency are the same, or else fail the build
