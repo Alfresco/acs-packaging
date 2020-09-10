@@ -33,19 +33,16 @@
     <properties>
         <dependency.alfresco-community-repo.version>8.300-TEST2-SNAPSHOT</dependency.alfresco-community-repo.version>
         <dependency.alfresco-enterprise-repo.version>8.300-TEST3-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
-        <!-- Set to "Enterprise Early Access" to add to the version.edition property in version.properties -->
-        <version.edition>Enterprise</version.edition>
+        <upstream.image.tag>${dependency.alfresco-enterprise-repo.version}</upstream.image.tag>
+        <share.image.tag>${alfresco.share.version}</share.image.tag>
 
         <build-number>local</build-number>
 
         <image.tag>latest</image.tag>
 
-        <upstream.image.tag>${dependency.alfresco-enterprise-repo.version}</upstream.image.tag>
-
         <alfresco.share.version>7.0.0-A1</alfresco.share.version>
         <alfresco.alfresco-share-services.version>7.0.0-A1</alfresco.alfresco-share-services.version>
         <dependency.alfresco-api-explorer.version>7.0.0-A1</dependency.alfresco-api-explorer.version>
-
         <alfresco.s3connector.version>3.1.0-A1</alfresco.s3connector.version>
         <alfresco.glacier-connector.version>2.1.0-A2</alfresco.glacier-connector.version>
         <alfresco.azure-connector.version>1.1</alfresco.azure-connector.version>
@@ -58,14 +55,6 @@
         <alfresco.mm.version>1.4.2</alfresco.mm.version>
         <alfresco.desktop-sync.version>3.3.3.1</alfresco.desktop-sync.version>
         <alfresco.ais.version>1.2.0</alfresco.ais.version>
-
-        <installer.version.name>${project.version}</installer.version.name>
-        <alfresco.package.name>alfresco</alfresco.package.name>
-        <alfresco.distribution.name>${alfresco.package.name}-distribution</alfresco.distribution.name>
-
-        <!-- Private docker registry -->
-        <image.registry>quay.io</image.registry>
-
     </properties>
 
     <profiles>
