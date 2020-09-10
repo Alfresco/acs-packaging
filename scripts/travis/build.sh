@@ -38,7 +38,7 @@ fi
 # Search, checkout and build the same branch on the upstream project in case of SNAPSHOT dependencies
 # Otherwise just checkout the upstream dependency sources
 if [[ "${COM_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] ; then
-  pullAndBuildSameBranchOnUpstream "${COM_UPSTREAM_REPO}" "-PcommunityDocker"
+  pullAndBuildSameBranchOnUpstream "${COM_UPSTREAM_REPO}" "-Pcommunity"
 else
   pullUpstreamTag "${COM_UPSTREAM_REPO}" "${COM_DEPENDENCY_VERSION}"
 fi
