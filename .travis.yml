@@ -30,8 +30,8 @@ env:
     - TAS_SCRIPTS=../alfresco-community-repo/packaging/tests/scripts
     - TAS_ENVIRONMENT=./tests/environment
     # Release version has to start with real version (7.0.0-....) for the docker image to build successfully.
-    - RELEASE_VERSION=7.0.0-TEST4
-    - DEVELOPMENT_VERSION=7.0.0-TEST5-SNAPSHOT
+    - RELEASE_VERSION=7.0.0-TEST5
+    - DEVELOPMENT_VERSION=7.0.0-TEST6-SNAPSHOT
 
 stages:
   - name: test
@@ -39,7 +39,7 @@ stages:
   - name: docker_latest
     if: fork = false AND type != pull_request AND branch = master
   - name: release
-    if: commit_message =~ /\[release\]/ AND fork = false AND type != pull_request AND (branch = master OR branch =~ /release\/.*/)
+    if: commit_message =~ /\[release\]/ AND fork = false AND type != pull_request AND (branch = master OR branch =~ /release\/.*/ OR branch = feature/REPO-5111_repo_build)
   - name: publish
     if: commit_message =~ /\[publish\]/ AND fork = false AND type != pull_request AND (branch = master OR branch =~ /release\/.*/)
 
@@ -205,7 +205,6 @@ jobs:
 
     - name: "Release and Copy to S3 Staging Bucket"
       stage: release
-      install: travis_retry travis_wait 40 mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true
       before_script: bash scripts/travis/verify_release_tag.sh
       script: travis_wait 60 bash scripts/travis/maven_release.sh
       before_deploy:
