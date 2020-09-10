@@ -180,9 +180,8 @@ jobs:
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
         - travis_wait 20 mvn -B install -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
-    # TODO fix and enable this job
     - name: "Pipeline All AMPs tests"
-      if: false AND fork = false AND type != pull_request
+      if: fork = false AND type != pull_request
       before_script:
         # Build Docker images of repo and share for CI pipeline
         - travis_retry travis_wait 20 mvn -B clean install -Ppipeline
