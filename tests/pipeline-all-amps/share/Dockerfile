@@ -1,4 +1,4 @@
-FROM alfresco/alfresco-share:${share.image.tag}
+FROM quay.io/alfresco/alfresco-share:${share.image.tag}
 
 COPY target/amps/*.amp /usr/local/tomcat/amps_share/
 
