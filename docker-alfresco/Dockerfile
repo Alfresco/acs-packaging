@@ -13,7 +13,7 @@ ARG TOMCAT_DIR=/usr/local/tomcat
 USER root
 
 # Copy api-explorer war
-COPY ${resource_path}/war/* ${TOMCAT_DIR}/webapps/
+COPY ${resource_path}/war ${TOMCAT_DIR}/webapps/
 
 # Copy in the share-services and device-sync amps
 COPY ${resource_path}/amps/* ${TOMCAT_DIR}/amps/
@@ -25,7 +25,7 @@ RUN java -jar ${TOMCAT_DIR}/alfresco-mmt/alfresco-mmt*.jar install \
 
 # The standard configuration is to have all Tomcat files owned by root with group GROUPNAME and whilst owner has read/write privileges,
 # group only has restricted permissions and world has no permissions.
-RUN chgrp -R ${GROUPNAME} ${TOMCAT_DIR}/webapps && \
+RUN chgrp -R ${GROUPNAME} ${TOMCAT_DIR}/webapps ${TOMCAT_DIR}/amps && \
     find ${TOMCAT_DIR}/webapps -type d -exec chmod 0750 {} \; && \
     find ${TOMCAT_DIR}/webapps -type f -exec chmod 0640 {} \; && \
     chmod -R g+r ${TOMCAT_DIR}/webapps
