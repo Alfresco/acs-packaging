@@ -11,7 +11,7 @@
 
   <properties>
     <image.name>alfresco/alfresco-pipeline-all-amps-share</image.name>
-    <image.tag>6.2.2</image.tag>
+    <image.tag>latest</image.tag>
   </properties>
 
   <build>
