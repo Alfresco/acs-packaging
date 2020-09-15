@@ -108,7 +108,7 @@
 
   <profiles>
     <profile>
-      <id>pipeline</id>
+      <id>local</id>
       <build>
         <plugins>
           <plugin>
