@@ -50,7 +50,7 @@
         <alfresco.ags.version>3.3.1</alfresco.ags.version>
         <alfresco.mm.version>1.4.2</alfresco.mm.version>
         <alfresco.desktop-sync.version>3.3.3</alfresco.desktop-sync.version>
-        <alfresco.ais.version>1.2.0</alfresco.ais.version>
+        <alfresco.ais.version>1.2.1</alfresco.ais.version>
     </properties>
 
     <profiles>
