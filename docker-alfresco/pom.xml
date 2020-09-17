@@ -12,7 +12,6 @@
 
     <properties>
         <image.name>alfresco/alfresco-content-repository</image.name>
-        <resource_path>target</resource_path>
     </properties>
 
     <build>
@@ -226,5 +225,4 @@
             </build>
         </profile>
     </profiles>
-
 </project>
