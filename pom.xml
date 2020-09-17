@@ -55,6 +55,17 @@
 
     <profiles>
         <profile>
+            <id>fullBuild</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>distribution</module>
+                <module>docker-alfresco</module>
+                <module>docker-alfresco/aws</module>
+            </modules>
+        </profile>
+        <profile>
             <id>enterpriseDocker</id>
             <modules>
                 <module>docker-alfresco</module>
@@ -62,10 +73,7 @@
             </modules>
         </profile>
         <profile>
-            <id>fullBuild</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
+            <id>internal</id>
             <modules>
                 <module>distribution</module>
                 <module>docker-alfresco</module>
@@ -83,6 +91,12 @@
             <modules>
                 <module>distribution</module>
                 <module>docker-alfresco</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>run</id>
+            <modules>
+                <module>dev</module>
             </modules>
         </profile>
     </profiles>
