@@ -1,4 +1,4 @@
-FROM alfresco/alfresco-enterprise-repo-base:${upstream.image.tag}
+FROM alfresco/alfresco-content-repository:${image.tag}
 
 # Set default docker_context.
 ARG resource_path=target
@@ -12,11 +12,15 @@ ARG TOMCAT_DIR=/usr/local/tomcat
 
 USER root
 
-# Copy api-explorer war
-COPY ${resource_path}/war ${TOMCAT_DIR}/webapps/
+# Remove wars that are not required
+RUN rm -rf ${TOMCAT_DIR}/webapps/_vti_bin \
+           ${TOMCAT_DIR}/webapps/ROOT
 
-# Copy in the share-services and device-sync amps
+# Copy in the alfresco-s3-connector and alfresco-ai-repo amps
 COPY ${resource_path}/amps/* ${TOMCAT_DIR}/amps/
+
+# Copy in the extra mariadb connector
+COPY ${resource_path}/connector/* ${TOMCAT_DIR}/lib/
 
 # Install amps on alfresco.war
 RUN java -jar ${TOMCAT_DIR}/alfresco-mmt/alfresco-mmt*.jar install \
@@ -27,7 +31,7 @@ RUN java -jar ${TOMCAT_DIR}/alfresco-mmt/alfresco-mmt*.jar install \
 # group only has restricted permissions and world has no permissions.
 RUN chgrp -R ${GROUPNAME} ${TOMCAT_DIR}/webapps ${TOMCAT_DIR}/amps ${TOMCAT_DIR}/lib && \
     find ${TOMCAT_DIR}/webapps -type d -exec chmod 0750 {} \; && \
-    find ${TOMCAT_DIR}/webapps -type f -exec chmod 0640 {} \; && \
+    find ${TOMCAT_DIR}/webapps -type f -exec chmod 0641 {} \; && \
     chmod 664 ${TOMCAT_DIR}/amps/*
 
 USER ${IMAGEUSERNAME}
