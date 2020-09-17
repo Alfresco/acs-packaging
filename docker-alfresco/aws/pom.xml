@@ -6,93 +6,20 @@
 
     <parent>
         <groupId>org.alfresco</groupId>
-        <artifactId>acs-packaging</artifactId>
+        <artifactId>content-services-docker</artifactId>
         <version>6.2.0.7-TEST4-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <properties>
         <image.name>alfresco/alfresco-content-repository-aws</image.name>
-        <resource_path>aws/target</resource_path>
     </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-ai-repo</artifactId>
-            <version>${alfresco.ais.version}</version>
-            <type>amp</type>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco.integrations</groupId>
-            <artifactId>alfresco-s3-connector</artifactId>
-            <version>${alfresco.s3connector.version}</version>
-            <type>amp</type>
-        </dependency>
-        <dependency>
-            <groupId>org.mariadb.jdbc</groupId>
-            <artifactId>mariadb-java-client</artifactId>
-            <version>${dependency.mariadb.version}</version>
-        </dependency>
-    </dependencies>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <executions>
-                   <execution>
-                      <id>copy-licenses</id>
-                      <phase>process-resources</phase>
-                      <goals>
-                          <goal>copy-resources</goal>
-                      </goals>
-                      <configuration>
-                          <resources>
-                              <resource>
-                                  <!-- Extract licenses directory -->
-                                  <directory>../../distribution/src/main/resources/licenses</directory>
-                                  <filtering>false</filtering>
-                              </resource>
-                          </resources>
-                          <outputDirectory>${project.build.directory}/licenses</outputDirectory>
-                      </configuration>
-                   </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
-                    <execution>
-                        <id>unpack-resources</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.alfresco</groupId>
-                                    <artifactId>content-services</artifactId>
-                                    <version>${dependency.alfresco-enterprise-repo.version}</version>
-                                    <type>war</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/war/alfresco</outputDirectory>
-                                    <destFileName>alfresco.war</destFileName>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.alfresco</groupId>
-                                    <artifactId>api-explorer</artifactId>
-                                    <version>${dependency.alfresco-api-explorer.version}</version>
-                                    <type>war</type>
-                                    <outputDirectory>${project.build.directory}/war/api-explorer</outputDirectory>
-                                    <destFileName>api-explorer.war</destFileName>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
                     <execution>
                         <id>copy-resources</id>
                         <phase>process-resources</phase>
@@ -102,14 +29,6 @@
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
-                                    <groupId>org.postgresql</groupId>
-                                    <artifactId>postgresql</artifactId>
-                                    <version>${dependency.postgresql.version}</version>
-                                    <type>jar</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/connector</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
                                     <groupId>org.mariadb.jdbc</groupId>
                                     <artifactId>mariadb-java-client</artifactId>
                                     <version>${dependency.mariadb.version}</version>
@@ -117,62 +36,17 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/connector</outputDirectory>
                                 </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.alfresco</groupId>
-                                    <artifactId>alfresco-mmt</artifactId>
-                                    <type>jar</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/alfresco-mmt</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.alfresco</groupId>
-                                    <artifactId>alfresco-server-root</artifactId>
-                                    <type>war</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/server-root</outputDirectory>
-                                    <destFileName>ROOT.war</destFileName>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.alfresco.aos-module</groupId>
-                                    <artifactId>alfresco-vti-bin</artifactId>
-                                    <type>war</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/vti-bin</outputDirectory>
-                                    <destFileName>_vti_bin.war</destFileName>
-                                </artifactItem>
                             </artifactItems>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>copy-resources-amps</id>
+                        <id>copy-amps</id>
                         <phase>process-resources</phase>
                         <goals>
                             <goal>copy</goal>
                         </goals>
                         <configuration>
                             <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.alfresco</groupId>
-                                    <artifactId>alfresco-share-services</artifactId>
-                                    <version>${alfresco.alfresco-share-services.version}</version>
-                                    <type>amp</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.alfresco.aos-module</groupId>
-                                    <artifactId>alfresco-aos-module</artifactId>
-                                    <type>amp</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.alfresco.integrations</groupId>
-                                    <artifactId>alfresco-googledrive-repo-enterprise</artifactId>
-                                    <type>amp</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                </artifactItem>
                                 <artifactItem>
                                     <groupId>org.alfresco.integrations</groupId>
                                     <artifactId>alfresco-s3-connector</artifactId>
@@ -189,14 +63,6 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.alfresco.services.sync</groupId>
-                                    <artifactId>alfresco-device-sync-repo</artifactId>
-                                    <version>${alfresco.desktop-sync.version}</version>
-                                    <type>amp</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                </artifactItem>
                             </artifactItems>
                         </configuration>
                     </execution>
@@ -204,137 +70,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>enterpriseDocker</id>
-            <!-- builds "image:latest" locally -->
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>io.fabric8</groupId>
-                        <artifactId>fabric8-maven-plugin</artifactId>
-                        <configuration>
-                            <images>
-                                <image>
-                                    <name>${image.name}:${image.tag}</name>
-                                    <build>
-                                        <dockerFileDir>${project.basedir}/../</dockerFileDir>
-                                        <buildOptions>
-                                            <squash>true</squash>
-                                        </buildOptions>
-                                    </build>
-                                </image>
-                            </images>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>build-image</id>
-                                <phase>install</phase>
-                                <goals>
-                                    <goal>build</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <id>internal</id>
-            <!-- publishes "image:latest" on Quay & DockerHub -->
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>io.fabric8</groupId>
-                        <artifactId>fabric8-maven-plugin</artifactId>
-                        <configuration>
-                            <images>
-                                <!-- Quay image -->
-                                <image>
-                                    <name>${image.name}:${image.tag}</name>
-                                    <registry>${image.registry}</registry>
-                                    <build>
-                                        <dockerFileDir>${project.basedir}/../</dockerFileDir>
-                                        <buildOptions>
-                                            <squash>true</squash>
-                                        </buildOptions>
-                                    </build>
-                                </image>
-                                <!-- DockerHub image -->
-                                <image>
-                                    <name>${image.name}:${image.tag}</name>
-                                    <build>
-                                        <dockerFileDir>${project.basedir}/../</dockerFileDir>
-                                        <buildOptions>
-                                            <squash>true</squash>
-                                        </buildOptions>
-                                    </build>
-                                </image>
-                            </images>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>build-push-image</id>
-                                <phase>install</phase>
-                                <goals>
-                                    <goal>build</goal>
-                                    <goal>push</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <id>release</id>
-            <!-- publishes "image:release_version" on Quay & DockerHub -->
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>io.fabric8</groupId>
-                        <artifactId>fabric8-maven-plugin</artifactId>
-                        <configuration combine.self="override">
-                            <images>
-                                <!-- Quay image -->
-                                <image>
-                                    <name>${image.name}:${project.version}</name>
-                                    <registry>${image.registry}</registry>
-                                    <build>
-                                        <dockerFileDir>${project.basedir}/../</dockerFileDir>
-                                        <buildOptions>
-                                            <squash>true</squash>
-                                        </buildOptions>
-                                    </build>
-                                </image>
-                                <!-- DockerHub image -->
-                                <image>
-                                    <name>${image.name}:${project.version}</name>
-                                    <build>
-                                        <dockerFileDir>${project.basedir}/../</dockerFileDir>
-                                        <buildOptions>
-                                            <squash>true</squash>
-                                        </buildOptions>
-                                    </build>
-                                </image>
-                            </images>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>build-push-image</id>
-                                <phase>deploy</phase>
-                                <goals>
-                                    <goal>build</goal>
-                                    <goal>push</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>
