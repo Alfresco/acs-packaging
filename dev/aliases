@@ -2,12 +2,24 @@
 # Names are based on those from the BAT project, used during ACS 6.x development.
 
 # Aliases to build the four main projects
-alias Rcom='(cd alfresco-community-repo  && mvn clean install -PcommunityDocker  -DskipTests=true -Dversion.edition=Community)'
-alias Rent='(cd alfresco-enterprise-repo && mvn clean install -PenterpriseDocker -DskipTests=true -Dmaven.javadoc.skip=true )'
-alias Pent='(cd acs-packaging            && mvn clean install -PenterpriseDocker -Dupstream.image.tag=latest)'
-alias Pcom='(cd acs-community-packaging  && mvn clean install -PcommunityDocker  -Dmaven.javadoc.skip=true -Dupstream.image.tag=latest)'
+#alias Rcom='(cd alfresco-community-repo  && mvn clean install -PcommunityDocker  -DskipTests=true -Dversion.edition=Community)'
+#alias Rent='(cd alfresco-enterprise-repo && mvn clean install -PenterpriseDocker -DskipTests=true -Dmaven.javadoc.skip=true )'
+#alias Pent='(cd acs-packaging            && mvn clean install -PenterpriseDocker -Dupstream.image.tag=latest)'
+#alias Pcom='(cd acs-community-packaging  && mvn clean install -PcommunityDocker  -Dmaven.javadoc.skip=true -Dupstream.image.tag=latest)'
 
-alias entd='Rcom && Rent && Pent'
+alias Rcom='(cd alfresco-community-repo  && mvn clean install                    -DskipTests=true -Dversion.edition=Community)'
+alias Rent='(cd alfresco-enterprise-repo && mvn clean install                    -DskipTests=true -Dmaven.javadoc.skip=true )'
+alias Pent='(cd acs-packaging            && mvn clean install                    -Dupstream.image.tag=latest)'
+alias Pcom='(cd acs-community-packaging  && mvn clean install                    -Dmaven.javadoc.skip=true -Dupstream.image.tag=latest)'
+
+alias Rcomd='(cd alfresco-community-repo  && mvn clean install -PcommunityDocker  -DskipTests=true -Dversion.edition=Community)'
+alias Rentd='(cd alfresco-enterprise-repo && mvn clean install -PenterpriseDocker -DskipTests=true -Dmaven.javadoc.skip=true )'
+alias Pentd='(cd acs-packaging            && mvn clean install -PenterpriseDocker -Dupstream.image.tag=latest)'
+alias Pcomd='(cd acs-community-packaging  && mvn clean install -PcommunityDocker  -Dmaven.javadoc.skip=true -Dupstream.image.tag=latest)'
+
+alias entd='Rcom && Rentd && Pentd'
+alias comd='Rcomd && Pcomd'
+#alias ent='Rcom && Rent && Pent'
 
 # Aliases to run/debug the enterprise tomcat development environment for enterprise.
 alias      entT='(cd acs-packaging && mvn      clean install -Prun,withShare)'
