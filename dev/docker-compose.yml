@@ -1,4 +1,4 @@
-    # This docker-compose file will start up the environment needed for testing with T-Engines, T-Router, ActiveMQ etc.
+# This docker-compose file will start up the environment needed for testing with T-Engines, T-Router, ActiveMQ etc.
 # Based on the version in acs-deployment
 
 # Using version 2 as 3 does not support resource constraint options (cpu_*, mem_* limits) for non swarm mode in Compose
