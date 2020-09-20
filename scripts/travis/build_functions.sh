@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set +vx
 
 function isPullRequestBuild() {
   test "${TRAVIS_PULL_REQUEST}" != "false"
@@ -72,6 +73,22 @@ function pullUpstreamTag() {
   cloneRepo "${UPSTREAM_REPO}" "${TAG}"
 }
 
+function pullUpstreamTagAndBuildDockerImage() {
+  local UPSTREAM_REPO="${1}"
+  local TAG="${2}"
+  local EXTRA_BUILD_ARGUMENTS="${3}"
+
+  cloneRepo "${UPSTREAM_REPO}" "${TAG}"
+
+  pushd "$(dirname "${BASH_SOURCE[0]}")/../../../"
+
+  cd "$(basename "${UPSTREAM_REPO%.git}")"
+
+  mvn -B -V clean package -DskipTests -Dmaven.javadoc.skip=true "-Dimage.tag=${TAG}" ${EXTRA_BUILD_ARGUMENTS}
+
+  popd
+}
+
 function pullAndBuildSameBranchOnUpstream() {
   local UPSTREAM_REPO="${1}"
   local EXTRA_BUILD_ARGUMENTS="${2}"
@@ -97,8 +114,24 @@ function pullAndBuildSameBranchOnUpstream() {
   cd "$(basename "${UPSTREAM_REPO%.git}")"
 
   mvn -B -V -q clean install -DskipTests -Dmaven.javadoc.skip=true ${EXTRA_BUILD_ARGUMENTS}
-  mvn -B -V install -DskipTests -f packaging/tests/pom.xml
+  mvn -B -V -q install -DskipTests -f packaging/tests/pom.xml
 
   popd
 }
 
+function retieveLatestTag() {
+  local REPO="${1}"
+  local BRANCH="${2}"
+
+  local LOCAL_PATH="/tmp/$(basename "${REPO%.git}")"
+
+  git clone -q -b "${BRANCH}" "https://${GIT_USERNAME}:${GIT_PASSWORD}@${REPO}" "${LOCAL_PATH}"
+
+  pushd "${LOCAL_PATH}" >/dev/null
+  git describe --abbrev=0 --tags
+  popd >/dev/null
+
+  rm -rf "${LOCAL_PATH}"
+}
+
+set -vx
