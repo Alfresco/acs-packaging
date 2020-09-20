@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>pipeline-all-amps</artifactId>
-        <version>7.0.0-TEST4-SNAPSHOT</version>
+        <version>7.0.0-TEST8-SNAPSHOT</version>
     </parent>
 
   <properties>
@@ -103,37 +103,43 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>io.fabric8</groupId>
-        <artifactId>fabric8-maven-plugin</artifactId>
-        <configuration>
-          <images>
-            <image>
-              <name>${image.name}:${image.tag}</name>
-              <registry>${image.registry}</registry>
-              <build>
-                <dockerFileDir>${project.basedir}/</dockerFileDir>
-                <buildOptions>
-                  <squash>true</squash>
-                </buildOptions>
-              </build>
-            </image>
-          </images>
-        </configuration>
-        <executions>
-          <execution>
-            <id>build-image</id>
-            <phase>install</phase>
-            <goals>
-              <goal>build</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 
   <profiles>
+    <profile>
+      <id>local</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>fabric8-maven-plugin</artifactId>
+            <configuration combine.self="override">
+              <images>
+                <image>
+                  <name>${image.name}:${image.tag}</name>
+                  <build>
+                    <dockerFileDir>${project.basedir}/</dockerFileDir>
+                    <buildOptions>
+                      <squash>true</squash>
+                    </buildOptions>
+                  </build>
+                </image>
+              </images>
+            </configuration>
+            <executions>
+            <execution>
+                <id>build-image</id>
+                <phase>install</phase>
+                <goals>
+                  <goal>build</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>internal</id>
       <!-- publishes "image:latest" on Quay -->
@@ -146,6 +152,7 @@
               <images>
                 <image>
                   <name>${image.name}:${image.tag}</name>
+                  <registry>${image.registry}</registry>
                   <build>
                     <dockerFileDir>${project.basedir}/</dockerFileDir>
                     <buildOptions>

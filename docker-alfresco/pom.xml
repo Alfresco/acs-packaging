@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>acs-packaging</artifactId>
-        <version>7.0.0-TEST4-SNAPSHOT</version>
+        <version>7.0.0-TEST8-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -151,7 +151,7 @@
                                     </build>
                                 </image>
                                 <!-- DockerHub image -->
-                                <image>
+                                <!--<image>
                                     <name>${image.name}:${image.tag}</name>
                                     <build>
                                         <dockerFileDir>${project.basedir}/</dockerFileDir>
@@ -159,7 +159,7 @@
                                             <squash>true</squash>
                                         </buildOptions>
                                     </build>
-                                </image>
+                                </image>-->
                             </images>
                         </configuration>
                         <executions>
@@ -199,7 +199,7 @@
                                     </build>
                                 </image>
                                 <!-- DockerHub image -->
-                                <image>
+                                <!--<image>
                                     <name>${image.name}:${project.version}</name>
                                     <build>
                                         <dockerFileDir>${project.basedir}/</dockerFileDir>
@@ -207,7 +207,7 @@
                                             <squash>true</squash>
                                         </buildOptions>
                                     </build>
-                                </image>
+                                </image>-->
                             </images>
                         </configuration>
                         <executions>
