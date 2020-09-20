@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-set -ev
+echo "=========================== Starting Release Script ==========================="
+PS4="\[\e[35m\]+ \[\e[m\]"
+set -vex
+pushd "$(dirname "${BASH_SOURCE[0]}")/../../"
 
-RELEASE_VERSION=${1}
-DEVELOPMENT_VERSION=${2}
 
 if [ -z "${RELEASE_VERSION}" ] || [ -z "${DEVELOPMENT_VERSION}" ]; then
   echo "Please provide a Release and Development version in the format <acs-version>-<additional-info> (7.0.0-EA or 7.0.0-SNAPSHOT)"
@@ -23,4 +24,9 @@ mvn -B \
   -DscmCommentPrefix="[maven-release-plugin][skip ci] " \
   -Dusername="${GIT_USERNAME}" \
   -Dpassword="${GIT_PASSWORD}"
+
+
+popd
+set +vex
+echo "=========================== Finishing Release Script =========================="
 
