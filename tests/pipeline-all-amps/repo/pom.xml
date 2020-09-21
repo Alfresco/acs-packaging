@@ -90,7 +90,7 @@
                 <artifactItem>
                   <groupId>org.alfresco</groupId>
                   <artifactId>alfresco-rm-enterprise-rest-api-explorer</artifactId>
-                  <version>${dependency.alfresco-api-explorer.version}</version>
+                  <version>${alfresco.rm-enterprise-rest-api-explorer.version}</version>
                   <type>war</type>
                   <overWrite>false</overWrite>
                   <destFileName>rm-api-explorer.war</destFileName>
