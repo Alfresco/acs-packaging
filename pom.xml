@@ -33,12 +33,9 @@
     <properties>
         <dependency.alfresco-community-repo.version>6.56.15.300-TEST1-SNAPSHOT</dependency.alfresco-community-repo.version>
         <dependency.alfresco-enterprise-repo.version>6.56.15.300-TEST2-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
-        <upstream.image.tag>${dependency.alfresco-enterprise-repo.version}</upstream.image.tag>
+
+        <repo.image.tag>${dependency.alfresco-enterprise-repo.version}</repo.image.tag>
         <share.image.tag>${alfresco.share.version}</share.image.tag>
-
-        <build-number>local</build-number>
-
-        <image.tag>latest</image.tag>
 
         <alfresco.share.version>6.0.1.1</alfresco.share.version>
         <alfresco.alfresco-share-services.version>6.0.1.1</alfresco.alfresco-share-services.version>
