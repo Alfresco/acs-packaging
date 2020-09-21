@@ -183,7 +183,7 @@ jobs:
       if: fork = false AND type != pull_request
       before_script:
         # Build Docker images of repo and share for CI pipeline
-        - travis_retry travis_wait 20 mvn -B clean install -Ppipeline,local
+        - travis_retry travis_wait 20 mvn -B clean install -Plocal
       script:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco"
