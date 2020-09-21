@@ -69,7 +69,7 @@ fi
 
 # Build the current project
 mvn -B -V -q install -DskipTests -Dmaven.javadoc.skip=true -PenterpriseDocker \
-  $([[ "${ENT_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] && echo "-Dupstream.image.tag=latest")
+  $([[ "${ENT_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] && echo "-Drepo.image.tag=latest")
 
 
 popd

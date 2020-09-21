@@ -1,21 +1,70 @@
-# Contains aliases to help build, test and control instances.
-# Names are based on those from the BAT project, used during ACS 6.x development.
+# The aliases in this script provide simple commands to build projects, start tomcat and combinations of these. This
+# give the flexibility to only rebuild or repackage parts of the codebase that have changed.
+#
+# The Enterprise repo project depends on artifacts from the community repo project, but not any of its docker images.
+# Once the repository component has been built, it will need to be combined with other ACS components in one of the
+# packaging projects.
+#
+# When developing code, you will normally not be creating repository docker images, but will be creating war files and
+# then running them in a local tomcat instance. To provide the environment needed to do this you will need to start a
+# docker-compose environment to provide access to a databases and other ACS components.
+#
+# Aliases to build a sequence of projects and start tomcat - remember to start a CLEAN docker-compose environment - see envUp
+#   com - builds alfresco-community-repo & acs-community-packaging
+#   ent - builds alfresco-community-repo, alfresco-enterprise-repo & acs-community-packaging
+#
+# Aliases to build projects WITHOUT creating docker images
+#   comR - alfresco-community-repo
+#   entR - alfresco-enterprise-repo
+#   comP - acs-community-packaging
+#   entP - acs-packaging
+#
+# Aliases to build projects including DOCKER images
+#   comRD - alfresco-community-repo
+#   entRD - alfresco-enterprise-repo
+#   comPD - acs-community-packaging
+#   entPD - acs-packaging
 
-# Aliases to build the four main projects
-alias Rcom='(cd alfresco-community-repo  && mvn clean install -PcommunityDocker  -DskipTests=true -Dversion.edition=Community)'
-alias Rent='(cd alfresco-enterprise-repo && mvn clean install -PenterpriseDocker -DskipTests=true -Dmaven.javadoc.skip=true )'
-alias Pent='(cd acs-packaging            && mvn clean install -PenterpriseDocker -Dupstream.image.tag=latest)'
-alias Pcom='(cd acs-community-packaging  && mvn clean install -PcommunityDocker  -Dmaven.javadoc.skip=true -Dupstream.image.tag=latest)'
+# Aliases to start tomcat in a CLEAN environment - remember to start a docker-compose environment - see envUp
+#   comT - acs-community-packaging
+#   entT - acs-packaging
+#   comTDebug - acs-community-packaging (uses mvnDebug to allow a debugger to be attached)
+#   entTDebug - acs-packaging
 
-alias entd='Rcom && Rent && Pent'
+# Aliases to start tomcat REUSING an existing environment (database and alf_data directory)
+#   comO - acs-community-packaging
+#   entO - acs-packaging
+#   comODebug - acs-community-packaging (uses mvnDebug to allow a debugger to be attached)
+#   entODebug - acs-packaging
 
-# Aliases to run/debug the enterprise tomcat development environment for enterprise.
-alias      entT='(cd acs-packaging && mvn      clean install -Prun,withShare)'
-alias      entO='(cd acs-packaging && mvn            install -Prun,withShare)'
-alias entTDebug='(cd acs-packaging && mvnDebug clean install -Prun,withShare)'
-alias       ent='entd && entT'
+export TAG=6.2.3_latest
 
-# Clean up of docker images and content stores
+alias comR='(cd alfresco-community-repo  && mvn clean install                                                                          -DskipTests=true -Dversion.edition=Community)'
+alias entR='(cd alfresco-enterprise-repo && mvn clean install                                                                          -DskipTests=true -Dmaven.javadoc.skip=true )'
+alias entP='(cd acs-packaging            && mvn clean install)'
+alias comP='(cd acs-community-packaging  && mvn clean install                                                                          -Dmaven.javadoc.skip=true)'
+
+alias comRD="(cd alfresco-community-repo  && mvn clean install -PcommunityDocker  -Dimage.tag=$TAG                             -DskipTests=true -Dversion.edition=Community)"
+alias entRD="(cd alfresco-enterprise-repo && mvn clean install -PenterpriseDocker -Dimage.tag=$TAG                             -DskipTests=true -Dmaven.javadoc.skip=true )"
+alias comPD="(cd acs-community-packaging  && mvn clean install -PcommunityDocker  -Dimage.tag=$TAG -Drepo.image.tag=$TAG -Dmaven.javadoc.skip=true)"
+alias entPD="(cd acs-packaging            && mvn clean install -PenterpriseDocker -Dimage.tag=$TAG -Drepo.image.tag=$TAG)"
+
+alias comT='     (cd acs-community-packaging  && mvn      clean install -Prun,withShare -rf dev-tomcat)'
+alias comTDebug='(cd acs-community-packaging  && mvnDebug clean install -Prun,withShare -rf dev-tomcat)'
+alias comO='     (cd acs-community-packaging  && mvn      clean install -Prun,withShare -rf dev-acs-amps-overlay)'
+alias comODebug='(cd acs-community-packaging  && mvnDebug clean install -Prun,withShare -rf dev-acs-amps-overlay)'
+
+alias entT='     (cd acs-packaging            && mvn      clean install -Prun,withShare -rf dev-tomcat)'
+alias entTDebug='(cd acs-packaging            && mvnDebug clean install -Prun,withShare -rf dev-tomcat)'
+alias entO='     (cd acs-packaging            && mvn      clean install -Prun,withShare -rf dev-acs-amps-overlay)'
+alias entODebug='(cd acs-packaging            && mvnDebug clean install -Prun,withShare -rf dev-acs-amps-overlay)'
+
+alias com='comR && comP && comT'
+alias ent='comR && entR && entP && entT'
+alias comD='comRD && comPD'
+alias entD='comR && entRD && entPD'
+
+# Clean up of docker images and content stores (alf_data directories)
 alias drm='docker rm -f $(docker ps -q)'
 alias arm='rm -rf `find . -name alf_data`'
 alias     envUp='docker-compose -f acs-packaging/dev/docker-compose.yml up'
