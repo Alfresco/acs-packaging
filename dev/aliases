@@ -46,8 +46,8 @@ alias comP='(cd acs-community-packaging  && mvn clean install                   
 
 alias comRD="(cd alfresco-community-repo  && mvn clean install -PcommunityDocker  -Dimage.tag=$TAG                             -DskipTests=true -Dversion.edition=Community)"
 alias entRD="(cd alfresco-enterprise-repo && mvn clean install -PenterpriseDocker -Dimage.tag=$TAG                             -DskipTests=true -Dmaven.javadoc.skip=true )"
-alias comPD="(cd acs-community-packaging  && mvn clean install -PcommunityDocker  -Dimage.tag=$TAG -Dupstream.image.tag=$TAG -Dmaven.javadoc.skip=true)"
-alias entPD="(cd acs-packaging            && mvn clean install -PenterpriseDocker -Dimage.tag=$TAG -Dupstream.image.tag=$TAG)"
+alias comPD="(cd acs-community-packaging  && mvn clean install -PcommunityDocker  -Dimage.tag=$TAG -Drepo.image.tag=$TAG -Dmaven.javadoc.skip=true)"
+alias entPD="(cd acs-packaging            && mvn clean install -PenterpriseDocker -Dimage.tag=$TAG -Drepo.image.tag=$TAG)"
 
 alias comT='     (cd acs-community-packaging  && mvn      clean install -Prun,withShare -rf dev-tomcat)'
 alias comTDebug='(cd acs-community-packaging  && mvnDebug clean install -Prun,withShare -rf dev-tomcat)'
