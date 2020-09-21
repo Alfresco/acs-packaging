@@ -1,5 +1,5 @@
 
-FROM alfresco/alfresco-share:${image.tag}
+FROM alfresco/alfresco-share:7.0.0-M2
 
 COPY target/amps/*.amp /usr/local/tomcat/amps_share/
 
