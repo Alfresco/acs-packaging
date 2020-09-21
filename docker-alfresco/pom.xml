@@ -31,7 +31,7 @@
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>api-explorer</artifactId>
-                                    <version>${dependency.alfresco-api-explorer.version}</version>
+                                    <version>${alfresco.api-explorer.version}</version>
                                     <type>war</type>
                                     <outputDirectory>${project.build.directory}/war/api-explorer</outputDirectory>
                                 </artifactItem>
