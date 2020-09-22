@@ -36,13 +36,10 @@ services:
         -Dsolr.base.url=/solr
         -Dindex.subsystem.name=solr6
 
-        -DlocalTransform.core-aio.url=http://transform-core-aio:8090/
-
         -Dalfresco-pdf-renderer.url=http://transform-core-aio:8090/
-        -Djodconverter.url=http://transform-core-aio:8090/
-        -Dimg.url=http://transform-core-aio:8090/
-        -Dtika.url=http://transform-core-aio:8090/
-        -Dtransform.misc.url=http://transform-core-aio:8090/
+        -Djodconverter.url=http://transform-core-aio:8092/
+        -Dimg.url=http://transform-core-aio:8091/
+        -Dtika.url=http://transform-core-aio:8093/
 
         -Dcors.enabled=true
         -Dcors.allowed.origins=http://localhost:4200,http://localhost:8080
