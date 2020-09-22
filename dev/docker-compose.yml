@@ -6,7 +6,7 @@ version: "2"
 
 services:
     alfresco-pdf-renderer:
-        image: alfresco/alfresco-pdf-renderer:2.0.17
+        image: alfresco/alfresco-pdf-renderer:1.3
         mem_limit: 1g
         environment:
             JAVA_OPTS: " -Xms256m -Xmx512m"
@@ -18,7 +18,7 @@ services:
             - activemq
 
     imagemagick:
-        image: alfresco/alfresco-imagemagick:2.0.17
+        image: alfresco/alfresco-imagemagick:1.3
         mem_limit: 1g
         environment:
             JAVA_OPTS: " -Xms256m -Xmx512m"
@@ -30,7 +30,7 @@ services:
             - activemq
 
     libreoffice:
-        image: alfresco/alfresco-libreoffice:2.0.17
+        image: alfresco/alfresco-libreoffice:1.3
         mem_limit: 1g
         environment:
             JAVA_OPTS: " -Xms256m -Xmx512m"
@@ -42,7 +42,7 @@ services:
             - activemq
 
     tika:
-        image: alfresco/alfresco-tika:2.0.17
+        image: alfresco/alfresco-tika:1.3
         mem_limit: 1g
         environment:
             JAVA_OPTS: " -Xms256m -Xmx512m"
