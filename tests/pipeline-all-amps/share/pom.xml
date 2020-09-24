@@ -45,6 +45,30 @@
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/amps</outputDirectory>
                 </artifactItem>
+				<artifactItem>
+				  <groupId>org.alfresco</groupId>
+				  <artifactId>alfresco-ai-share</artifactId>
+				  <version>${alfresco.ais.version}</version>
+				  <type>amp</type>
+				  <overWrite>false</overWrite>
+				  <outputDirectory>${project.build.directory}/amps</outputDirectory>
+				</artifactItem>
+				<artifactItem>
+				  <groupId>org.alfresco</groupId>
+				  <artifactId>alfresco-outlook-share</artifactId>
+				  <version>${alfresco.outlook.version}</version>
+				  <type>amp</type>
+				  <overWrite>false</overWrite>
+				  <outputDirectory>${project.build.directory}/amps</outputDirectory>
+				</artifactItem>
+				<artifactItem>
+				  <groupId>org.alfresco</groupId>
+				  <artifactId>sap-content-connector-share</artifactId>
+				  <version>${alfresco.sap.version}</version>
+				  <type>amp</type>
+				  <overWrite>false</overWrite>
+				  <outputDirectory>${project.build.directory}/amps</outputDirectory>
+				</artifactItem>
               </artifactItems>
             </configuration>
           </execution>

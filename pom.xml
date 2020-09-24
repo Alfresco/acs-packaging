@@ -109,6 +109,9 @@
         <!-- Alfresco Alfresco Intelligence Services (AIS) -->
         <alfresco.ais.version>1.2.1</alfresco.ais.version>
 
+        <!-- Alfresco sap-->
+        <alfresco.sap.version>0.1.0</alfresco.sap.version>
+
         <installer.version.name>${project.version}</installer.version.name>
         <alfresco.package.name>alfresco</alfresco.package.name>
         <alfresco.distribution.name>${alfresco.package.name}-distribution</alfresco.distribution.name>
