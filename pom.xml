@@ -140,14 +140,6 @@
             </modules>
         </profile>
         <profile>
-            <id>enterpriseDocker</id>
-            <modules>
-                <module>war</module>
-                <module>docker-alfresco</module>
-                <module>docker-alfresco/aws</module>
-            </modules>
-        </profile>
-        <profile>
             <id>fullBuild</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
