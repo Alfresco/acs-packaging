@@ -1,3 +1,15 @@
+<h1>        6.2.1.3
+</h1>
+
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21859'>MNT-21859</a>] - [PAAS] Keys stored in metadata keystore cannot be rotated/changed - MNT-21028
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21875'>MNT-21875</a>] - [PaaS] Alfresco Content Services 7.0.0 M1 Distribution contains invalid Keystore
+</li>
+</ul>
+
 <h1>        6.2.1.2
 </h1>
 
