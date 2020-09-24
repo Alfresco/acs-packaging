@@ -21,6 +21,7 @@ ARG JAVA_PROFILER_RUNTIME_DIR=/tmp/Alfresco/yourkit
 RUN mkdir -p ${TOMCAT_DIR}/shared/classes/alfresco/extension/mimetypes && \
     mkdir -p ${TOMCAT_DIR}/shared/classes/alfresco/extension/transform/renditions && \
     mkdir -p ${TOMCAT_DIR}/shared/classes/alfresco/extension/transform/pipelines && \
+    mkdir -p ${TOMCAT_DIR}/shared/classes/alfresco/extension/keystore && \
     mkdir ${TOMCAT_DIR}/alfresco-mmt && \
     touch ${TOMCAT_DIR}/shared/classes/alfresco-global.properties
 
@@ -77,12 +78,8 @@ RUN curl -o /tmp/${JAVA_PROFILER}.zip "https://www.yourkit.com/download/docker/$
     jar xvf /tmp/${JAVA_PROFILER}.zip && \
     rm /tmp/${JAVA_PROFILER}.zip
 
-# Generate default keystore. Please generate new one for production systems
-ARG CERT_DNAME="CN=Alfresco Repository, OU=Unknown, O=Alfresco Software Ltd., L=Maidenhead, ST=UK, C=GB"
-ARG CERT_VALIDITY=36525
-ARG KEYSTORE_PASSWORD=mp6yc0UD9e
-RUN mkdir ${TOMCAT_DIR}/shared/classes/alfresco/keystore && \
-    keytool -genseckey -dname "$CERT_DNAME" -validity ${CERT_VALIDITY} -alias metadata -keyalg AES -keysize 256 -keystore ${TOMCAT_DIR}/shared/classes/alfresco/keystore/keystore -storetype pkcs12 -storepass ${KEYSTORE_PASSWORD}
+# Copy default keystore
+COPY ${resource_path}/distribution/keystore/metadata-keystore/keystore ${TOMCAT_DIR}/shared/classes/alfresco/extension/keystore/
 
 # The standard configuration is to have all Tomcat files owned by root with group GROUPNAME and whilst owner has read/write privileges, 
 # group only has restricted permissions and world has no permissions.

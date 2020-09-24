@@ -51,7 +51,7 @@ jobs:
     - name: "REST API TAS tests part1"
       jdk: openjdk11
       install:
-        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+        - travis_retry travis_wait 40 mvn install -q
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-rest-api-tests.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
@@ -59,7 +59,7 @@ jobs:
     - name: "REST API TAS tests part2"
       jdk: openjdk11
       install:
-        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+        - travis_retry travis_wait 40 mvn install -q
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-rest-api-tests.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
@@ -67,7 +67,7 @@ jobs:
     - name: "REST API TAS tests part3"
       jdk: openjdk11
       install:
-        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+        - travis_retry travis_wait 40 mvn install -q
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-rest-api-tests.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
@@ -75,7 +75,7 @@ jobs:
     - name: "CMIS TAS tests"
       jdk: openjdk11
       install:
-        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+        - travis_retry travis_wait 40 mvn install -q
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-cmis-tests.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
@@ -83,7 +83,7 @@ jobs:
     - name: "Email TAS tests"
       jdk: openjdk11
       install:
-        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+        - travis_retry travis_wait 40 mvn install -q
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-email-tests.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
@@ -91,7 +91,7 @@ jobs:
     - name: "LDAP TAS tests"
       jdk: openjdk11
       install:
-        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+        - travis_retry travis_wait 40 mvn install -q
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-with-ldap.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
@@ -100,7 +100,7 @@ jobs:
     - name: "WebDAV TAS tests"
       jdk: openjdk11
       install:
-        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+        - travis_retry travis_wait 40 mvn install -q
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-minimal.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
@@ -108,7 +108,7 @@ jobs:
     - name: "Integration TAS tests"
       jdk: openjdk11
       install:
-        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+        - travis_retry travis_wait 40 mvn install -q
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-integration-tests.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
@@ -116,7 +116,7 @@ jobs:
     - name: "Cluster tests"
       jdk: openjdk11
       install:
-        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+        - travis_retry travis_wait 40 mvn install -q
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-cluster.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8081/alfresco"
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
@@ -125,7 +125,7 @@ jobs:
     - name: "Node restart tests"
       jdk: openjdk11
       install:
-        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+        - travis_retry travis_wait 40 mvn install -q
       script:
         # Start Alfresco and test if it is running
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-node-restart.yml
@@ -140,7 +140,7 @@ jobs:
       jdk: openjdk11
       if: fork = false # AIMS docker image requires access to quay.io
       install:
-        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+        - travis_retry travis_wait 40 mvn install -q
         - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
         # AIMS cannot be configured via localhost
         - export HOST_IP=$(ip address show | grep -E "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v 127.0.0.1 | awk '{ print $2 }' | head -n 1 )
@@ -153,7 +153,7 @@ jobs:
       jdk: openjdk11
       if: fork = false # AIMS docker image requires access to quay.io
       install:
-        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+        - travis_retry travis_wait 40 mvn install -q
         - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
         # AIMS cannot be configured via localhost
         - export HOST_IP=$(ip address show | grep -E "([0-9]{1,3}\.){3}[0-9]{1,3}" | grep -v 127.0.0.1 | awk '{ print $2 }' | head -n 1 )
@@ -165,7 +165,7 @@ jobs:
     - name: "Sync Service TAS tests"
       jdk: openjdk11
       install:
-        - travis_retry travis_wait 40 mvn install -q -PenterpriseDocker
+        - travis_retry travis_wait 40 mvn install -q
         - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
         - ./tests/scripts/start-compose.sh ./tests/environment/docker-compose-sync-service.yml
         - ./tests/scripts/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
@@ -174,8 +174,7 @@ jobs:
     - name: "All AMPs tests"
       jdk: openjdk11
       install:
-        # fullBuild profile builds additional Docker image for all-amps test
-        - travis_retry travis_wait 20 mvn install -q -PenterpriseDocker,fullBuild
+        - travis_retry travis_wait 20 mvn install -q
         - travis_retry travis_wait 20 mvn install -q -f tests/tas-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
       script:
         - ./tests/scripts/checkLibraryDuplicates.sh ./tests/tas-all-amps/target/war/alfresco/WEB-INF/lib
@@ -187,9 +186,9 @@ jobs:
       if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request
       install:
         # Build additional Docker image for repo and share for CI pipeline
-        - travis_retry travis_wait 20 mvn install -q -PenterpriseDocker
+        - travis_retry travis_wait 20 mvn install -q
         - export TRAVIS_BUILD_NUMBER=${TRAVIS_BUILD_NUMBER}
-        - travis_retry travis_wait 20 mvn install -q -PenterpriseDocker -Dbuild-number=${TRAVIS_BUILD_NUMBER}
+        - travis_retry travis_wait 20 mvn install -q -Dbuild-number=${TRAVIS_BUILD_NUMBER}
         - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
         - travis_retry travis_wait 20 mvn clean install -Ppipeline
       script:
