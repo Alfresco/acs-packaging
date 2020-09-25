@@ -13,12 +13,6 @@ services:
       context: ./alfresco-with-custom-model
     environment:
       CATALINA_OPTS : "-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n"
-      JAVA_TOOL_OPTIONS: "
-        -Dmetadata-keystore.password=mp6yc0UD9e
-        -Dmetadata-keystore.aliases=metadata
-        -Dmetadata-keystore.metadata.password=mp6yc0UD9e
-        -Dmetadata-keystore.metadata.algorithm=AES
-      "
       JAVA_OPTS :
         "
         -Dalfresco.port=8081

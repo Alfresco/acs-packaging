@@ -14,12 +14,6 @@ services:
       context: ./alfresco-with-jolokia
     environment:
       CATALINA_OPTS : "-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n"
-      JAVA_TOOL_OPTIONS: "
-        -Dmetadata-keystore.password=mp6yc0UD9e
-        -Dmetadata-keystore.aliases=metadata
-        -Dmetadata-keystore.metadata.password=mp6yc0UD9e
-        -Dmetadata-keystore.metadata.algorithm=AES
-      "
       JAVA_OPTS :
         "
         -Ddb.driver=org.postgresql.Driver
@@ -34,10 +28,8 @@ services:
         -Dindex.subsystem.name=solr6
         -Dalfresco.restApi.basicAuthScheme=true
         -Dftp.enabled=false
-
         -Dlocal.transform.service.enabled=false
         -Dlegacy.transform.service.enabled=false
-
         -Dalfresco.host=localhost
         -Dalfresco.protocol=http
         -Dalfresco.port=8082
