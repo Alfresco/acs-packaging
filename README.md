@@ -13,7 +13,7 @@ The SNAPSHOT version of the artifacts is **never** published.
 ### Contributing guide
 Please use [this guide](CONTRIBUTING.md) to make a contribution to the project.
 
-This produces the docker images for alfresco-content-repository and the distribution zip for the entire Alfresco Content Services product.
+This project produces the docker images for alfresco-content-repository and the distribution zip for the Alfresco Content Services product.
 
 # General
 
