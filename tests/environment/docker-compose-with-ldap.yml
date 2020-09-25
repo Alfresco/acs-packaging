@@ -15,12 +15,6 @@ services:
     environment:
       CATALINA_OPTS : "-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n"
       # Some properties are built in Dockerfile because of cron expressions
-      JAVA_TOOL_OPTIONS: "
-        -Dmetadata-keystore.password=mp6yc0UD9e
-        -Dmetadata-keystore.aliases=metadata
-        -Dmetadata-keystore.metadata.password=mp6yc0UD9e
-        -Dmetadata-keystore.metadata.algorithm=AES
-      "
       JAVA_OPTS :
         "
         -Dalfresco.port=8082
@@ -31,26 +25,20 @@ services:
         -Ddb.url=jdbc:postgresql://postgres:5432/alfresco
         -Dalfresco.restApi.basicAuthScheme=true
         -Dmessaging.broker.url=\"failover:(tcp://activemq:61616)?timeout=3000&jms.useCompression=true\"
-
         -Dsolr.host=solr6
         -Dsolr.port=8983
         -Dsolr.secureComms=none
         -Dsolr.base.url=/solr
         -Dindex.subsystem.name=solr6
-
         -Dtransform.service.enabled=false
-
         -DlocalTransform.core-aio.url=http://transform-core-aio:8090/
-
         -Dalfresco-pdf-renderer.url=http://transform-core-aio:8090/
         -Djodconverter.url=http://transform-core-aio:8090/
         -Dimg.url=http://transform-core-aio:8090/
         -Dtika.url=http://transform-core-aio:8090/
         -Dtransform.misc.url=http://transform-core-aio:8090/
-
         -Dcors.enabled=false
         -Dcors.allowed.origins=http://localhost:4200,http://localhost:8080
-        
         -Dauthentication.chain=alfrescoNtlm1:alfrescoNtlm,ldap1:ldap
         -Dldap.authentication.active=true
         -Dldap.authentication.java.naming.security.authentication=simple
