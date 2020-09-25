@@ -201,7 +201,7 @@ jobs:
         - docker login quay.io -u ${QUAY_USERNAME} -p ${QUAY_PASSWORD}
       before_script:
         # Check that the release has not already been done
-        #- bash scripts/travis/verify_release_tag.sh
+        - bash scripts/travis/verify_release_tag.sh
       script:
         - travis_wait 60 bash scripts/travis/maven_release.sh
       before_deploy:
