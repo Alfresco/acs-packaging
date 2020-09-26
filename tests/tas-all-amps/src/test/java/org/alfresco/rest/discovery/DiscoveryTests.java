@@ -77,20 +77,36 @@ public class DiscoveryTests extends RestTest
                 "alfresco-share-services",
                 "alfresco-saml-repo",
                 "org_alfresco_device_sync_repo",
-                "org_alfresco_mm_repo", "alfresco-ai-repo",
+                "org_alfresco_mm_repo",
+                "alfresco-ai-repo",
 //                "alfresco-glacier-connector-repo",
                 "org.alfresco.module.TransformationServer");
+
+        // alfresco-saml-repo,
+        // org_alfresco_device_sync_repo,
+        // org_alfresco_module_xamconnector,
+        // org.alfresco.module.TransformationServer,
+        // alfresco-rm-enterprise-repo, x
+        // org.alfresco.module.KofaxAddon, x
+        // org_alfresco_module_rm, x
+        // alfresco-aos-module,
+        // org.alfresco.integrations.google.docs,
+        // alfresco-ai-repo,
+        // alfresco-share-services,
+        // org_alfresco_integrations_AzureConnector, x
+        // org_alfresco_mm_repo,
+        // alfresco-trashcan-cleaner,
+        // alfresco-content-connector-for-salesforce-repo
 
         expectedModules.forEach(module ->
                 assertTrue(modules.contains(module), String.format("Expected module %s is not installed", module)));
 
         // Check that all installed modules are in INSTALLED state
         List<String> modulesStates = restClient.onResponse().getResponse().jsonPath().getList("entry.repository.modules.installState", String.class);
+        String mods = restClient.onResponse().getResponse().jsonPath().getString("entry.repository.modules");
         if (expectedModules.size() != Collections.frequency(modulesStates, "INSTALLED"))
         {
-            StringJoiner sj = new StringJoiner(",");
-            modules.forEach(m->sj.add(m));
-            assertEquals("Number of amps installed should match expected ("+sj+")", expectedModules.size(), Collections.frequency(modulesStates, "INSTALLED"));
+            assertEquals("Number of amps installed ("+mods+") should match expected", expectedModules.size(), Collections.frequency(modulesStates, "INSTALLED"));
         }
     }
 }
