@@ -279,7 +279,7 @@
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
                                         </artifactItem>
-o                                    </artifactItems>
+                                    </artifactItems>
                                 </configuration>
                             </execution>
                         </executions>
