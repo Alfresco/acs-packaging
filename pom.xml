@@ -41,7 +41,6 @@
         <alfresco.alfresco-share-services.version>6.2.1</alfresco.alfresco-share-services.version>
         <alfresco.s3connector.version>3.0.0</alfresco.s3connector.version>
         <alfresco.api-explorer.version>6.2.1.1</alfresco.api-explorer.version>
-        <dependency.fabric8.version>4.4.0</dependency.fabric8.version>
         <alfresco.glacier-connector.version>2.0.0</alfresco.glacier-connector.version>
         <alfresco.azure-connector.version>1.0</alfresco.azure-connector.version>
         <alfresco.centera-connector.version>2.2.1</alfresco.centera-connector.version>
