@@ -6,6 +6,7 @@ import static org.testng.AssertJUnit.assertEquals;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.StringJoiner;
 
 import org.alfresco.rest.RestTest;
 import org.alfresco.rest.core.RestResponse;
@@ -85,6 +86,11 @@ public class DiscoveryTests extends RestTest
 
         // Check that all installed modules are in INSTALLED state
         List<String> modulesStates = restClient.onResponse().getResponse().jsonPath().getList("entry.repository.modules.installState", String.class);
-        assertEquals("Number of amps installed should match expected", expectedModules.size(), Collections.frequency(modulesStates, "INSTALLED"));
+        if (expectedModules.size() != Collections.frequency(modulesStates, "INSTALLED"))
+        {
+            StringJoiner sj = new StringJoiner(",");
+            modules.forEach(m->sj.add(m));
+            assertEquals("Number of amps installed should match expected ("+sj+")", expectedModules.size(), Collections.frequency(modulesStates, "INSTALLED"));
+        }
     }
 }
