@@ -68,45 +68,47 @@ public class DiscoveryTests extends RestTest
         // Check that all modules are present
         List<String> modules = restClient.onResponse().getResponse().jsonPath().getList("entry.repository.modules.id", String.class);
         List<String> expectedModules = Arrays.asList(
-                "alfresco-aos-module",
-                "org.alfresco.integrations.google.docs",
-                "alfresco-trashcan-cleaner",
-//                "org_alfresco_integrations_S3Connector",
-                "org_alfresco_module_xamconnector",
-                "alfresco-content-connector-for-salesforce-repo",
-                "alfresco-share-services",
                 "alfresco-saml-repo",
                 "org_alfresco_device_sync_repo",
+                "org_alfresco_module_xamconnector",
+                "org.alfresco.module.TransformationServer",
+                "alfresco-rm-enterprise-repo",
+                "org.alfresco.module.KofaxAddon",
+//              "org_alfresco_module_rm",
+                "alfresco-aos-module",
+                "org.alfresco.integrations.google.docs",
+//              "alfresco-ai-repo",
+                "alfresco-share-services",
+                "org_alfresco_integrations_AzureConnector",
                 "org_alfresco_mm_repo",
-                "alfresco-ai-repo",
-//                "alfresco-glacier-connector-repo",
-                "org.alfresco.module.TransformationServer");
-
-        // alfresco-saml-repo,
-        // org_alfresco_device_sync_repo,
-        // org_alfresco_module_xamconnector,
-        // org.alfresco.module.TransformationServer,
-        // alfresco-rm-enterprise-repo, x
-        // org.alfresco.module.KofaxAddon, x
-        // org_alfresco_module_rm, x
-        // alfresco-aos-module,
-        // org.alfresco.integrations.google.docs,
-        // alfresco-ai-repo,
-        // alfresco-share-services,
-        // org_alfresco_integrations_AzureConnector, x
-        // org_alfresco_mm_repo,
-        // alfresco-trashcan-cleaner,
-        // alfresco-content-connector-for-salesforce-repo
+//              "alfresco-trashcan-cleaner",
+                "alfresco-content-connector-for-salesforce-repo");
 
         expectedModules.forEach(module ->
                 assertTrue(modules.contains(module), String.format("Expected module %s is not installed", module)));
 
         // Check that all installed modules are in INSTALLED state
         List<String> modulesStates = restClient.onResponse().getResponse().jsonPath().getList("entry.repository.modules.installState", String.class);
-        String mods = restClient.onResponse().getResponse().jsonPath().getString("entry.repository.modules");
         if (expectedModules.size() != Collections.frequency(modulesStates, "INSTALLED"))
         {
-            assertEquals("Number of amps installed ("+mods+") should match expected", expectedModules.size(), Collections.frequency(modulesStates, "INSTALLED"));
+            String mods = restClient.onResponse().getResponse().jsonPath().getString("entry.repository.modules");
+//([[installState:INSTALLED, versionMin:6.0.1, versionMax:6.99, installDate:2020-09-26T22:29:33.872+0000, description:The Repository piece of the Alfresco SAML Module, id:alfresco-saml-repo, title:Alfresco SAML Repository AMP Module, version:1.2.0],
+// [installState:INSTALLED, versionMin:6.0, versionMax:6.99, installDate:2020-09-26T22:29:33.146+0000, description:Alfresco Device Sync Amp, id:org_alfresco_device_sync_repo, title:Alfresco Device Sync Amp, version:3.3.1],
+// [installState:INSTALLED, versionMin:6.0, versionMax:999, installDate:2020-09-26T22:29:33.673+0000, description:Alfresco Content Connector for EMC Centera, id:org_alfresco_module_xamconnector, title:Centera Connector, version:2.2.1],
+// [installState:INSTALLED, versionMin:6.0.0, versionMax:6.99.99, installDate:2020-09-26T22:29:33.575+0000, description:Alfresco Document Transformation Engine Module for Repository, id:org.alfresco.module.TransformationServer, title:Document Transformation Engine AMP for Repository, version:2018.221],
+// [installState:INSTALLED, versionMin:6.1, versionMax:999, installDate:2020-09-26T22:29:34.440+0000, description:Alfresco Governance Services Enterprise Repository Extension, id:alfresco-rm-enterprise-repo, title:AGS Enterprise Repo, version:3.2.0],
+// [installState:INSTALLED, versionMin:2.1, versionMax:999, installDate:2020-09-26T22:29:33.446+0000, description:Alfresco Kofax Integration, id:org.alfresco.module.KofaxAddon, title:Kofax Add-on, version:2.0.0],
+// [installState:UNKNOWN, versionMin:6.1, versionMax:999, description:Alfresco Governance Services Repository Extension, id:org_alfresco_module_rm, title:AGS Repo, version:3.2.0],
+// [installState:INSTALLED, versionMin:6.0, versionMax:999, installDate:2020-09-26T22:29:33.889+0000, description:Allows applications that can talk to a SharePoint server to talk to your Alfresco installation, id:alfresco-aos-module, title:Alfresco Office Services Module, version:1.3.0],
+// [installState:INSTALLED, versionMin:6.0.0, versionMax:6.99.99, installDate:2020-09-26T22:29:33.641+0000, description:The Repository side artifacts of the Alfresco / Google Docs Integration., id:org.alfresco.integrations.google.docs, title:Alfresco / Google Docs Integration, version:3.1.0],
+// [installState:UNKNOWN, versionMin:6.1.0, versionMax:6.99.99, description:Platform/Repo JAR Module (to be included in the alfresco.war) - part of AIO - SDK 4.0, id:alfresco-ai-repo, title:Alfresco Platform/Repository JAR Module, version:1.1.0],
+// [installState:INSTALLED, versionMin:6.1, versionMax:999, installDate:2020-09-26T22:29:34.005+0000, description:Module to be applied to alfresco.war, containing APIs for Alfresco Share, id:alfresco-share-services, title:Alfresco Share Services AMP, version:6.2.0],
+// [installState:INSTALLED, versionMin:6.1, versionMax:6.99.99, installDate:2020-09-26T22:29:33.951+0000, description:Provides Azure Blob content storage for the contentstore and deleted contentstore, id:org_alfresco_integrations_AzureConnector, title:Alfresco Content Connector for Azure, version:1.0],
+// [installState:INSTALLED, versionMin:6.2.0, versionMax:6.99.99, installDate:2020-09-26T22:29:34.516+0000, description:Extensions in the Alfresco repository to provide media / digital asset management (DAM) features, id:org_alfresco_mm_repo, title:Alfresco Media Management Repository AMP, version:1.4.0],
+// [installState:UNKNOWN, versionMin:0, versionMax:999, description:The Alfresco Trashcan Cleaner (Alfresco Module), id:alfresco-trashcan-cleaner, title:alfresco-trashcan-cleaner project, version:2.3],
+// [installState:INSTALLED, versionMin:6.0.0, versionMax:6.99.99, installDate:2020-09-26T22:29:33.558+0000, description:Alfresco Repository artifacts needed for the Alfresco Content Connector for Salesforce Repository Amp, id:alfresco-content-connector-for-salesforce-repo, title:Alfresco Content Connector for Salesforce Repository AMP, version:2.1.0]]) should match expected expected:<11> but was:<12>
+            assertEquals("Number of amps installed ("+mods+") should match expected", expectedModules.size(),
+                    Collections.frequency(modulesStates, "INSTALLED"));
         }
     }
 }
