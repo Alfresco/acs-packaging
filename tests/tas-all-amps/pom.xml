@@ -199,39 +199,6 @@
 <!--                                            <overWrite>false</overWrite>-->
 <!--                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>-->
 <!--                                        </artifactItem>-->
-                                            <!-- AIS was probably not supported in 6.0.x (it was added in 6.1.0) -->
-<!--                                        <artifactItem>-->
-<!--                                            <groupId>org.alfresco</groupId>-->
-<!--                                            <artifactId>alfresco-ai-repo</artifactId>-->
-<!--                                            <version>${alfresco.ais.version}</version>-->
-<!--                                            <type>amp</type>-->
-<!--                                            <overWrite>false</overWrite>-->
-<!--                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>-->
-<!--                                        </artifactItem>-->
-<!--                                        <artifactItem>-->
-<!--                                            <groupId>org.alfresco</groupId>-->
-<!--                                            <artifactId>alfresco-ai-share</artifactId>-->
-<!--                                            <version>${alfresco.ais.version}</version>-->
-<!--                                            <type>amp</type>-->
-<!--                                            <overWrite>false</overWrite>-->
-<!--                                            <outputDirectory>${project.build.directory}/amps_share</outputDirectory>-->
-<!--                                        </artifactItem>-->
-<!--                                        <artifactItem>-->
-<!--                                            <groupId>org.alfresco</groupId>-->
-<!--                                            <artifactId>alfresco-glacier-connector-repo</artifactId>-->
-<!--                                            <version>${alfresco.glacier-connector.version}</version>-->
-<!--                                            <type>amp</type>-->
-<!--                                            <overWrite>false</overWrite>-->
-<!--                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>-->
-<!--                                        </artifactItem>-->
-                                        <artifactItem>
-                                            <groupId>org.alfresco.integrations</groupId>
-                                            <artifactId>alfresco-azure-connector</artifactId>
-                                            <version>${alfresco.azure-connector.version}</version>
-                                            <type>amp</type>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                        </artifactItem>
                                         <artifactItem>
                                             <groupId>org.alfresco</groupId>
                                             <artifactId>alfresco-centera-connector</artifactId>
@@ -241,7 +208,7 @@
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                         </artifactItem>
                                         <artifactItem>
-                                            <groupId>org.alfresco.integrations</groupId>
+                                            <groupId>org.alfresco.module.KofaxAddon</groupId>
                                             <artifactId>kofaxaddon</artifactId>
                                             <version>${alfresco.kofax.version}</version>
                                             <type>amp</type>
@@ -322,16 +289,16 @@
                                         </artifactItem>
                                         <artifactItem>
                                             <groupId>org.alfresco</groupId>
-                                            <artifactId>alfresco-governance-services-enterprise-repo</artifactId>
-                                            <version>${alfresco.ags.version}</version>
+                                            <artifactId>alfresco-rm-enterprise-repo</artifactId>
+                                            <version>${alfresco.records-management.version}</version>
                                             <type>amp</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                         </artifactItem>
                                         <artifactItem>
                                             <groupId>org.alfresco</groupId>
-                                            <artifactId>alfresco-governance-services-enterprise-share</artifactId>
-                                            <version>${alfresco.ags.version}</version>
+                                            <artifactId>alfresco-rm-enterprise-share</artifactId>
+                                            <version>${alfresco.records-management.version}</version>
                                             <type>amp</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
