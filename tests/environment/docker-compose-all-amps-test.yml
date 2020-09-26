@@ -8,8 +8,6 @@ version: "3"
 # Add the following environment variable to CATALINA_OPTS to activate YourKit profiling agent on tomcat
 #-agentpath:/usr/local/YourKit-JavaProfiler-2018.04/bin/linux-x86-64/libyjpagent.so=delay=200000,listen=all,sessionname=$$HOSTNAME,dir=/tmp/Alfresco/yourkit,onexit=snapshot,periodicperf=600,periodicmem=600,probe_off=*
 
-# This docker-compose requires AZURE_STORAGE_ACCOUNT_NAME and AZURE_STORAGE_ACCOUNT_KEY environment variables to be set to startup
-
 services:
   alfresco:
     image: alfresco/alfresco-content-repository-all-amps-test
@@ -46,11 +44,6 @@ services:
         -Ds3.secretKey=default
         -Ds3.bucketName=bamboo-s3-conn-default
         -Ds3.autoLowerCaseBucketName=true
-
-        -Dconnector.az.account.name=${AZURE_STORAGE_ACCOUNT_NAME}
-        -Dconnector.az.account.key=${AZURE_STORAGE_ACCOUNT_KEY}
-        -Dconnector.az.containerName=packaging-test-container
-        -Dconnector.az.deleted.containerName=packaging-test-container-del
 
         -Dcentera.url=168.159.214.26
 
