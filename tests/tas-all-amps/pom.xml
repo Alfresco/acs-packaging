@@ -240,7 +240,7 @@
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                         </artifactItem>
                                         <artifactItem>
-                                            <groupId>org.alfresco.integrations</groupId>
+                                            <groupId>org.alfresco.module.KofaxAddon</groupId>
                                             <artifactId>kofaxaddon</artifactId>
                                             <version>${alfresco.kofax.version}</version>
                                             <type>amp</type>
