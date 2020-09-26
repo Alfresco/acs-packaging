@@ -40,7 +40,6 @@
         <alfresco.share.version>6.1.0.3</alfresco.share.version>
         <alfresco.alfresco-share-services.version>6.1.0.3</alfresco.alfresco-share-services.version>
         <alfresco.api-explorer.version>6.1.0</alfresco.api-explorer.version>
-        <dependency.fabric8.version>3.5.37</dependency.fabric8.version>
         <alfresco.googledocs.version>3.1.0</alfresco.googledocs.version>
         <alfresco.s3connector.version>2.2.1</alfresco.s3connector.version>
         <alfresco.centera-connector.version>2.2.1</alfresco.centera-connector.version>
