@@ -191,14 +191,14 @@
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
                                         </artifactItem>
-                                        <artifactItem>
-                                            <groupId>org.alfresco.integrations</groupId>
-                                            <artifactId>alfresco-s3-connector</artifactId>
-                                            <version>${alfresco.s3connector.version}</version>
-                                            <type>amp</type>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                        </artifactItem>
+<!--                                        <artifactItem>-->
+<!--                                            <groupId>org.alfresco.integrations</groupId>-->
+<!--                                            <artifactId>alfresco-s3-connector</artifactId>-->
+<!--                                            <version>${alfresco.s3connector.version}</version>-->
+<!--                                            <type>amp</type>-->
+<!--                                            <overWrite>false</overWrite>-->
+<!--                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>-->
+<!--                                        </artifactItem>-->
                                         <artifactItem>
                                             <groupId>org.alfresco</groupId>
                                             <artifactId>alfresco-centera-connector</artifactId>
@@ -263,14 +263,14 @@
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
                                         </artifactItem>
-                                        <artifactItem>
-                                            <groupId>org.alfresco</groupId>
-                                            <artifactId>alfresco-document-transformation-engine-repo</artifactId>
-                                            <version>${alfresco.transformation-engine.version}</version>
-                                            <type>amp</type>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                        </artifactItem>
+<!--                                        <artifactItem>-->
+<!--                                            <groupId>org.alfresco</groupId>-->
+<!--                                            <artifactId>alfresco-document-transformation-engine-repo</artifactId>-->
+<!--                                            <version>${alfresco.transformation-engine.version}</version>-->
+<!--                                            <type>amp</type>-->
+<!--                                            <overWrite>false</overWrite>-->
+<!--                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>-->
+<!--                                        </artifactItem>-->
                                         <artifactItem>
                                             <groupId>org.alfresco</groupId>
                                             <artifactId>alfresco-document-transformation-engine-share</artifactId>
