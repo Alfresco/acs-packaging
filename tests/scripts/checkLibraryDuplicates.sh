@@ -6,7 +6,9 @@
 # usually libraries with versions that don't follow naming/versioning standards.
 # e.g. geronimo-jms_2.0_spec-1.0-alpha-2.jar
 #      geronimo-jms_1.1_spec-1.1.1.jar
-WHITELIST="geronimo-jta"
+
+# gson added to the list just for 6.1.0 as this check did not exist before and we have: gson-2.3.1.jar gson-2.8.1.jar
+WHITELIST="geronimo-jta gson"
 
 lib_dir=$1
 multiple_version_lib_list=""
