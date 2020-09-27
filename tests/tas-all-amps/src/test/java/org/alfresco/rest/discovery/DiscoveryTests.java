@@ -70,7 +70,7 @@ public class DiscoveryTests extends RestTest
                 "alfresco-saml-repo",
 //                "org_alfresco_device_sync_repo",
                 "org_alfresco_module_xamconnector",
-                "org.alfresco.module.TransformationServer",
+//                "org.alfresco.module.TransformationServer",
 //                "alfresco-rm-enterprise-repo",
                 "org.alfresco.module.KofaxAddon",
 //              "org_alfresco_module_rm",
