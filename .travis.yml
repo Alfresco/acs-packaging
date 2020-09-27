@@ -63,15 +63,6 @@ jobs:
       script:
         - java -version
 
-    - name: "All AMPs tests"
-      before_script:
-        - travis_retry travis_wait 20 mvn -B -q install -f tests/tas-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
-      script:
-        - ./tests/scripts/checkLibraryDuplicates.sh ./tests/tas-all-amps/target/war/alfresco/WEB-INF/lib
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-all-amps-test.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-        - travis_wait 20 mvn -B install -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
-
     # Commented out for now for stability. See ACS-102
     # - name: "Veracode static code scan"
     #     # only on support branches or master and if it is not a PR
