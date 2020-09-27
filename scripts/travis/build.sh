@@ -36,7 +36,7 @@ if isBranchBuild && [ "${TRAVIS_BUILD_STAGE_NAME,,}" = "release" ] && [ "${COM_D
   exit 1
 fi
 
-# Search, checkout and build the same branch on the upstream project in case of SNAPSHOT dependencies
+# Search, checkout and build the same branch on the upstream project in case of SNAPSHOT  dependencies
 # Otherwise just checkout the upstream dependency sources
 if [[ "${COM_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] ; then
   pullAndBuildSameBranchOnUpstream "${COM_UPSTREAM_REPO}" "-Pcommunity"
