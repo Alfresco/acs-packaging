@@ -94,15 +94,16 @@ setupRemotes()
   fi
 }
 
-setupRemotes alfresco-core                  master alfresco-community-repo core
-setupRemotes alfresco-data-model            master alfresco-community-repo data-model
-setupRemotes alfresco-repository            master alfresco-community-repo repository
-setupRemotes alfresco-remote-api            master alfresco-community-repo remote-api
-setupRemotes acs-community-packaging        master alfresco-community-repo packaging
+#            source project                 branch   target project          module
+setupRemotes alfresco-core                  master   alfresco-community-repo core
+setupRemotes alfresco-data-model            master   alfresco-community-repo data-model
+setupRemotes alfresco-repository            master   alfresco-community-repo repository
+setupRemotes alfresco-remote-api            master   alfresco-community-repo remote-api
+setupRemotes acs-community-packaging        develop  alfresco-community-repo packaging
 
-setupRemotes alfresco-enterprise-repository master alfresco-enterprise-repo repository
-setupRemotes alfresco-enterprise-remote-api master alfresco-enterprise-repo remote-api
-setupRemotes acs-packaging                  master alfresco-enterprise-repo packaging
+setupRemotes alfresco-enterprise-repository master   alfresco-enterprise-repo repository
+setupRemotes alfresco-enterprise-remote-api master   alfresco-enterprise-repo remote-api
+setupRemotes acs-packaging                  master   alfresco-enterprise-repo packaging
 
 
 
