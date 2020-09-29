@@ -3,7 +3,7 @@
     <artifactId>acs-packaging</artifactId>
     <packaging>pom</packaging>
     <name>Alfresco Content Services Packaging</name>
-    <version>6.2.1.3-TEST4-SNAPSHOT</version>
+    <version>6.2.1.4-SNAPSHOT</version>
 
     <parent>
         <groupId>org.alfresco</groupId>
@@ -69,6 +69,7 @@
         <profile>
             <id>enterpriseDocker</id>
             <modules>
+                <module>distribution</module>
                 <module>docker-alfresco</module>
                 <module>docker-alfresco/aws</module>
             </modules>
