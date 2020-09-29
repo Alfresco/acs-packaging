@@ -4,13 +4,13 @@
     <groupId>org.alfresco.tas</groupId>
     <artifactId>content-repository-restapi-test</artifactId>
     <name>content-repository-restapi-test</name>
-    <version>6.2.2.3-SNAPSHOT</version>
+    <version>6.2.2.3</version>
     <packaging>jar</packaging>
 
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>content-repository-tas-tests-parent</artifactId>
-        <version>6.2.2.3-SNAPSHOT</version>
+        <version>6.2.2.3</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
