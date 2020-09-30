@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>acs-packaging</artifactId>
-        <version>7.0.0-TEST5-SNAPSHOT</version>
+        <version>7.0.0-TEST8-SNAPSHOT</version>
     </parent>
 
     <modules>
@@ -21,7 +21,6 @@
     </modules>
 
     <properties>
-        <!-- TAS tests require an old version -->
         <dependency.org-json.version>20170516</dependency.org-json.version>
     </properties>
 </project>

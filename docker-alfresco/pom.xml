@@ -7,12 +7,11 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>acs-packaging</artifactId>
-        <version>7.0.0-TEST5-SNAPSHOT</version>
+        <version>7.0.0-TEST8-SNAPSHOT</version>
     </parent>
 
     <properties>
         <image.name>alfresco/alfresco-content-repository</image.name>
-        <resource_path>target</resource_path>
     </properties>
 
     <build>
@@ -55,7 +54,7 @@
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>api-explorer</artifactId>
-                                    <version>${dependency.alfresco-api-explorer.version}</version>
+                                    <version>${alfresco.api-explorer.version}</version>
                                     <type>war</type>
                                     <outputDirectory>${project.build.directory}/war/api-explorer</outputDirectory>
                                 </artifactItem>
@@ -152,7 +151,7 @@
                                     </build>
                                 </image>
                                 <!-- DockerHub image -->
-                                <image>
+                                <!--<image>
                                     <name>${image.name}:${image.tag}</name>
                                     <build>
                                         <dockerFileDir>${project.basedir}/</dockerFileDir>
@@ -160,7 +159,7 @@
                                             <squash>true</squash>
                                         </buildOptions>
                                     </build>
-                                </image>
+                                </image>-->
                             </images>
                         </configuration>
                         <executions>
@@ -200,7 +199,7 @@
                                     </build>
                                 </image>
                                 <!-- DockerHub image -->
-                                <image>
+                                <!--<image>
                                     <name>${image.name}:${project.version}</name>
                                     <build>
                                         <dockerFileDir>${project.basedir}/</dockerFileDir>
@@ -208,7 +207,7 @@
                                             <squash>true</squash>
                                         </buildOptions>
                                     </build>
-                                </image>
+                                </image>-->
                             </images>
                         </configuration>
                         <executions>
@@ -226,5 +225,4 @@
             </build>
         </profile>
     </profiles>
-
 </project>

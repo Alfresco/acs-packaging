@@ -6,13 +6,11 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>pipeline-all-amps</artifactId>
-        <version>7.0.0-TEST5-SNAPSHOT</version>
+        <version>7.0.0-TEST8-SNAPSHOT</version>
     </parent>
 
   <properties>
     <image.name>alfresco/alfresco-pipeline-all-amps-repo</image.name>
-
-    <alfresco.alfresco-rm-enterprise-rest-api-explorer.version>3.0.2</alfresco.alfresco-rm-enterprise-rest-api-explorer.version>
   </properties>
 
   <build>
@@ -92,7 +90,7 @@
                 <artifactItem>
                   <groupId>org.alfresco</groupId>
                   <artifactId>alfresco-rm-enterprise-rest-api-explorer</artifactId>
-                  <version>${alfresco.alfresco-rm-enterprise-rest-api-explorer.version}</version>
+                  <version>${alfresco.rm-enterprise-rest-api-explorer.version}</version>
                   <type>war</type>
                   <overWrite>false</overWrite>
                   <destFileName>rm-api-explorer.war</destFileName>
@@ -103,37 +101,43 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>io.fabric8</groupId>
-        <artifactId>fabric8-maven-plugin</artifactId>
-        <configuration>
-          <images>
-            <image>
-              <name>${image.name}:${image.tag}</name>
-              <registry>${image.registry}</registry>
-              <build>
-                <dockerFileDir>${project.basedir}/</dockerFileDir>
-                <buildOptions>
-                  <squash>true</squash>
-                </buildOptions>
-              </build>
-            </image>
-          </images>
-        </configuration>
-        <executions>
-          <execution>
-            <id>build-image</id>
-            <phase>install</phase>
-            <goals>
-              <goal>build</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 
   <profiles>
+    <profile>
+      <id>local</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>io.fabric8</groupId>
+            <artifactId>fabric8-maven-plugin</artifactId>
+            <configuration combine.self="override">
+              <images>
+                <image>
+                  <name>${image.name}:${image.tag}</name>
+                  <build>
+                    <dockerFileDir>${project.basedir}/</dockerFileDir>
+                    <buildOptions>
+                      <squash>true</squash>
+                    </buildOptions>
+                  </build>
+                </image>
+              </images>
+            </configuration>
+            <executions>
+            <execution>
+                <id>build-image</id>
+                <phase>install</phase>
+                <goals>
+                  <goal>build</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <profile>
       <id>internal</id>
       <!-- publishes "image:latest" on Quay -->

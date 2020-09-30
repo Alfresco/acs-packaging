@@ -1,4 +1,4 @@
-Alfresco Content Services (Build: ${installer.version.name})
+Alfresco Content Services (Build: ${project.version})
 ==============================================
 
 Contains:

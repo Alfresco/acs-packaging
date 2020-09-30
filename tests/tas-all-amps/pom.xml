@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>content-repository-tests</artifactId>
-        <version>7.0.0-TEST5-SNAPSHOT</version>
+        <version>7.0.0-TEST8-SNAPSHOT</version>
     </parent>
 
     <developers>
@@ -116,7 +116,6 @@
                                         <artifactItem>
                                             <groupId>org.alfresco</groupId>
                                             <artifactId>content-services</artifactId>
-                                            <version>${dependency.alfresco-enterprise-repo.version}</version>
                                             <type>war</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/war/alfresco</outputDirectory>

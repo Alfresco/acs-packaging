@@ -113,7 +113,7 @@
                         <webapp>
                             <groupId>org.alfresco</groupId>
                             <artifactId>api-explorer</artifactId>
-                            <version>${dependency.alfresco-api-explorer.version}</version>
+                            <version>${alfresco.api-explorer.version}</version>
                             <contextPath>/api-explorer</contextPath>
                             <type>war</type>
                             <asWebapp>true</asWebapp>
