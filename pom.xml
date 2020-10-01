@@ -3,13 +3,13 @@
     <artifactId>acs-packaging</artifactId>
     <packaging>pom</packaging>
     <name>Alfresco Content Services Packaging</name>
-    <version>6.2.1.3-TEST4-SNAPSHOT</version>
+    <version>6.2.1.4-SNAPSHOT</version>
 
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-enterprise-repo</artifactId>
         <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
-        <version>7.183.300-TEST2</version>
+        <version>7.183.300-TEST3-SNAPSHOT</version>
     </parent>
 
     <scm>
@@ -31,8 +31,7 @@
     </distributionManagement>
 
     <properties>
-        <dependency.alfresco-community-repo.version>7.183.300-TEST1</dependency.alfresco-community-repo.version>
-        <dependency.alfresco-enterprise-repo.version>7.183.300-TEST2</dependency.alfresco-enterprise-repo.version>
+        <dependency.alfresco-enterprise-repo.version>7.183.300-TEST3</dependency.alfresco-enterprise-repo.version>
 
         <repo.image.tag>${dependency.alfresco-enterprise-repo.version}</repo.image.tag>
         <share.image.tag>${alfresco.share.version}</share.image.tag>
@@ -69,6 +68,7 @@
         <profile>
             <id>enterpriseDocker</id>
             <modules>
+                <module>distribution</module>
                 <module>docker-alfresco</module>
                 <module>docker-alfresco/aws</module>
             </modules>
@@ -133,6 +133,11 @@
                 <version>${dependency.alfresco-enterprise-repo.version}</version>
                 <classifier>tests</classifier>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-enterprise-repo-distribution</artifactId>
+                <version>${dependency.alfresco-enterprise-repo.version}</version>
             </dependency>
 
             <dependency>

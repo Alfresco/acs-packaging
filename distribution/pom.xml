@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>acs-packaging</artifactId>
-        <version>6.2.1.3-TEST4-SNAPSHOT</version>
+        <version>6.2.1.4-SNAPSHOT</version>
     </parent>
 
     <dependencies>
@@ -43,6 +43,7 @@
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>${dependency.postgresql.version}</version>
+            <scope>compile</scope>
         </dependency>
         <!-- Alfresco Pdf Renderer -->
         <dependency>
@@ -80,25 +81,55 @@
                 <filtering>true</filtering>
             </resource>
         </resources>
+
         <plugins>
+
+            <!-- Reconfigure default-resource to overwrite files, so enterprise resources overwrite
+                 community resources. The default is false. -->
             <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-resources</id>
+                        <configuration>
+                            <overwrite>true</overwrite>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Copy the enterprise's deployment resources in the validate phase, before default-resources
+                 copies this project's resources in the process-resources phase. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>extract-keystore</id>
+                        <id>unpack-licenses-and-keystore</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>alfresco-enterprise-repo-distribution</artifactId>
+                                    <type>jar</type>
+                                    <outputDirectory>${project.build.directory}/classes</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>extract-share-distribution</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack</goal>
                         </goals>
                         <configuration>
                             <artifactItems>
-                                <!-- Extract keystore from alfresco-repository -->
-                                <artifactItem>
-                                    <groupId>org.alfresco</groupId>
-                                    <artifactId>alfresco-repository</artifactId>
-                                    <includes>alfresco/keystore/**</includes>
-                                </artifactItem>
-
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-content-services-share-distribution</artifactId>
@@ -107,6 +138,7 @@
                             </artifactItems>
                         </configuration>
                     </execution>
+
                     <execution>
                         <id>extract-jlan-dll</id>
                         <phase>generate-resources</phase>
