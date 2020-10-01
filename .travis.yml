@@ -23,6 +23,7 @@ branches:
     - master
     - /support\/.*/
     - /release\/.*/
+    - feature/REPO-5271_621
 
 env:
   global:
