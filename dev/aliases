@@ -37,7 +37,7 @@
 #   comODebug - acs-community-packaging (uses mvnDebug to allow a debugger to be attached)
 #   entODebug - acs-packaging
 
-export TAG=6.2.0_latest
+export TAG=latest
 
 alias comR='(cd alfresco-community-repo  && mvn clean install                                                                          -DskipTests=true -Dversion.edition=Community)'
 alias entR='(cd alfresco-enterprise-repo && mvn clean install                                                                          -DskipTests=true -Dmaven.javadoc.skip=true )'
