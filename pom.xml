@@ -37,7 +37,7 @@
         <dependency.alfresco-enterprise-remote-api.version>7.93</dependency.alfresco-enterprise-remote-api.version>
         <dependency.alfresco-enterprise-repository.version>7.119</dependency.alfresco-enterprise-repository.version>
         <dependency.alfresco-remote-api.version>7.154</dependency.alfresco-remote-api.version>
-        <dependency.alfresco-repository.version>7.215</dependency.alfresco-repository.version>
+        <dependency.alfresco-repository.version>7.218</dependency.alfresco-repository.version>
         <dependency.alfresco-data-model.version>8.50.21</dependency.alfresco-data-model.version>
         <dependency.alfresco-core.version>7.35</dependency.alfresco-core.version>
 
@@ -71,10 +71,10 @@
         <alfresco.googledrive.version>3.2.0</alfresco.googledrive.version>
 
         <!-- Alfresco S3 Connector integration version -->
-        <alfresco.s3connector.version>3.1.0-A6</alfresco.s3connector.version>
+        <alfresco.s3connector.version>3.1.0</alfresco.s3connector.version>
 
         <!-- Alfresco Glacier Connector Repo version -->
-        <alfresco.glacier-connector.version>2.1.0-M1</alfresco.glacier-connector.version>
+        <alfresco.glacier-connector.version>2.1.0</alfresco.glacier-connector.version>
 
         <!-- Alfresco Content Connector for Azure version -->
         <alfresco.azure-connector.version>1.1</alfresco.azure-connector.version>
@@ -123,7 +123,7 @@
         <dependency.rest-assured.version>3.3.0</dependency.rest-assured.version>
         <dependency.javax.json.version>1.1.4</dependency.javax.json.version>
         <dependency.tas-restapi.version>1.43</dependency.tas-restapi.version>
-        <dependency.tas-cmis.version>1.13</dependency.tas-cmis.version>
+        <dependency.tas-cmis.version>1.14</dependency.tas-cmis.version>
         <dependency.tas-email.version>1.8</dependency.tas-email.version>
         <dependency.tas-webdav.version>1.6</dependency.tas-webdav.version>
         <dependency.tas-ftp.version>1.5</dependency.tas-ftp.version>
@@ -137,14 +137,6 @@
             <id>enterprise</id>
             <modules>
                 <module>war</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>enterpriseDocker</id>
-            <modules>
-                <module>war</module>
-                <module>docker-alfresco</module>
-                <module>docker-alfresco/aws</module>
             </modules>
         </profile>
         <profile>
