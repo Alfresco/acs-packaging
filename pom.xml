@@ -31,8 +31,7 @@
     </distributionManagement>
 
     <properties>
-        <dependency.alfresco-community-repo.version>7.183.300-TEST2-SNAPSHOT</dependency.alfresco-community-repo.version>
-        <dependency.alfresco-enterprise-repo.version>7.183.300-TEST3-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
+        <dependency.alfresco-enterprise-repo.version>7.183.300-TEST3</dependency.alfresco-enterprise-repo.version>
 
         <repo.image.tag>${dependency.alfresco-enterprise-repo.version}</repo.image.tag>
         <share.image.tag>${alfresco.share.version}</share.image.tag>
