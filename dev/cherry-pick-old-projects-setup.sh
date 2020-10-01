@@ -110,6 +110,8 @@ setupRemotes acs-packaging                  support/HF/6.2.1     alfresco-enterp
 # Add remotes and fetch original projects
 #
 
+echo
+echo
 cd $baseDir
 
 cd alfresco-community-repo
@@ -123,7 +125,6 @@ git fetch alfresco-core                       | grep -v 'new tag]'
 git fetch alfresco-data-model                 | grep -v 'new tag]'
 git fetch alfresco-repository                 | grep -v 'new tag]'
 git fetch alfresco-remote-api                 | grep -v 'new tag]'
-git fetch acs-community-packaging             | grep -v 'new tag]'
 cd ..
 
 cd alfresco-enterprise-repo
@@ -153,7 +154,6 @@ git remote remove alfresco-core
 git remote remove alfresco-data-model
 git remote remove alfresco-repository
 git remote remove alfresco-remote-api
-git remote remove acs-community-packaging
 git config --unset merge.renameLimit
 cd ..
 
@@ -163,3 +163,5 @@ git remote remove alfresco-enterprise-remote-api
 git remote remove acs-packaging
 git config --unset merge.renameLimit
 cd ..
+
+rm -rf $oldReposDir
