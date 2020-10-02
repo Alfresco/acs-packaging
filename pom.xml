@@ -71,6 +71,7 @@
         <profile>
             <id>enterpriseDocker</id>
             <modules>
+                <module>distribution</module>
                 <module>docker-alfresco</module>
                 <module>docker-alfresco/aws</module>
             </modules>
@@ -135,6 +136,11 @@
                 <version>${dependency.alfresco-enterprise-repo.version}</version>
                 <classifier>tests</classifier>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-enterprise-repo-distribution</artifactId>
+                <version>${dependency.alfresco-enterprise-repo.version}</version>
             </dependency>
 
             <dependency>
