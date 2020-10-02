@@ -31,7 +31,6 @@
     </distributionManagement>
 
     <properties>
-        <dependency.alfresco-community-repo.version>7.199.300-TEST1</dependency.alfresco-community-repo.version>
         <dependency.alfresco-enterprise-repo.version>7.199.300-TEST2</dependency.alfresco-enterprise-repo.version>
 
         <repo.image.tag>${dependency.alfresco-enterprise-repo.version}</repo.image.tag>
