@@ -57,8 +57,8 @@
 
         <dependency.spring.version>5.1.8.RELEASE</dependency.spring.version>
         <dependency.fabric8.version>3.5.37</dependency.fabric8.version>
-        <dependency.jackson.version>2.9.9</dependency.jackson.version>
-        <dependency.jackson-databind.version>2.11.2</dependency.jackson-databind.version>
+        <dependency.jackson.version>2.10.0</dependency.jackson.version>
+        <dependency.jackson-databind.version>2.10.0</dependency.jackson-databind.version>
         <dependency.camel.version>2.23.2</dependency.camel.version>
         <dependency.cxf.version>3.3.2</dependency.cxf.version>
 
