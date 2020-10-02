@@ -31,7 +31,6 @@
     </distributionManagement>
 
     <properties>
-        <dependency.alfresco-community-repo.version>7.300-TEST1</dependency.alfresco-community-repo.version>
         <dependency.alfresco-enterprise-repo.version>7.300-TEST2</dependency.alfresco-enterprise-repo.version>
 
         <repo.image.tag>${dependency.alfresco-enterprise-repo.version}</repo.image.tag>
@@ -71,6 +70,7 @@
         <profile>
             <id>enterpriseDocker</id>
             <modules>
+                <module>distribution</module>
                 <module>docker-alfresco</module>
                 <module>docker-alfresco/aws</module>
             </modules>
@@ -141,6 +141,11 @@
                 <version>${dependency.alfresco-enterprise-repo.version}</version>
                 <classifier>tests</classifier>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-enterprise-repo-distribution</artifactId>
+                <version>${dependency.alfresco-enterprise-repo.version}</version>
             </dependency>
 
             <dependency>

@@ -58,6 +58,13 @@
                                     <type>war</type>
                                     <outputDirectory>${project.build.directory}/war/api-explorer</outputDirectory>
                                 </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>alfresco-content-services-distribution</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>zip</type>
+                                    <outputDirectory>${project.build.directory}/distribution</outputDirectory>
+                                </artifactItem>
                             </artifactItems>
                         </configuration>
                     </execution>
