@@ -31,12 +31,7 @@
     </distributionManagement>
 
     <properties>
-<<<<<<< HEAD
-        <dependency.alfresco-community-repo.version>7.33.12.300-TEST1</dependency.alfresco-community-repo.version>
-        <dependency.alfresco-enterprise-repo.version>7.33.12.300-TEST2</dependency.alfresco-enterprise-repo.version>
-=======
         <dependency.alfresco-enterprise-repo.version>7.33.42.300-TEST3</dependency.alfresco-enterprise-repo.version>
->>>>>>> 0a2d0b3f... REPO-5358 Deployment modules should extend each other
 
         <repo.image.tag>${dependency.alfresco-enterprise-repo.version}</repo.image.tag>
         <share.image.tag>${alfresco.share.version}</share.image.tag>
