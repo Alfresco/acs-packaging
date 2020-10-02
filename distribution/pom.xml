@@ -84,8 +84,8 @@
 
         <plugins>
 
-            <!-- Reconfigure default-resource to overwrite files, so enterprise resources overwrite
-                 community resources. The default is false. -->
+            <!-- Reconfigure default-resource to overwrite files, so ACS resources overwrite
+                 enterprise resources. The default is false. -->
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>

@@ -98,7 +98,6 @@ setupRemotes alfresco-core                  support/HF/7.33.N    alfresco-commun
 setupRemotes alfresco-data-model            support/HF/8.50.14.N alfresco-community-repo data-model
 setupRemotes alfresco-repository            support/HF/7.183.N   alfresco-community-repo repository
 setupRemotes alfresco-remote-api            support/HF/7.133.N   alfresco-community-repo remote-api
-#setupRemotes acs-community-packaging        master               alfresco-community-repo packaging
 
 setupRemotes alfresco-enterprise-repository support/HF/7.96.N    alfresco-enterprise-repo repository
 setupRemotes alfresco-enterprise-remote-api support/HF/7.74.N    alfresco-enterprise-repo remote-api
