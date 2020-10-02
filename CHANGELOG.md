@@ -171,6 +171,9 @@ If your custom extension is bringing in this library, you might be affected by t
   <li>
     DB2 support was removed.
   </li>
+  <li>
+    Support for setting a custom Heartbeat data sending schedule was removed.
+  </li>
 </ul>
 
 <h2>        Documentation

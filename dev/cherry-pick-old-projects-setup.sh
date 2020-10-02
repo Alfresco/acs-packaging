@@ -111,6 +111,8 @@ setupRemotes acs-packaging                  master   alfresco-enterprise-repo pa
 # Add remotes and fetch original projects
 #
 
+echo
+echo
 cd $baseDir
 
 cd alfresco-community-repo
@@ -164,3 +166,5 @@ git remote remove alfresco-enterprise-remote-api
 git remote remove acs-packaging
 git config --unset merge.renameLimit
 cd ..
+
+rm -rf $oldReposDir
