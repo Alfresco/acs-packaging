@@ -53,6 +53,8 @@ services:
         -Dencryption.keystore.location=/usr/local/tomcat/shared/classes/alfresco/extension/keystore/keystore
         -Dmetadata-keystore.password=mp6yc0UD9e
         -Dmetadata-keystore.aliases=metadata
+        -Dmetadata-keystore.metadata.password=oKIWzVdEdA
+        -Dmetadata-keystore.metadata.algorithm=DESede
       "
       JAVA_OPTS :
         "
