@@ -173,16 +173,6 @@ jobs:
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
         - travis_wait 20 mvn -B install -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
-    - name: "Pipeline All AMPs tests"
-      if: fork = false AND type != pull_request
-      before_script:
-        # Build Docker images of repo and share for CI pipeline
-        - travis_retry travis_wait 20 mvn -B clean install -P,local
-      script:
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco"
-        - docker ps
-
     # Commented out for now for stability. See ACS-102
     # - name: "Veracode static code scan"
     #     # only on support branches or master and if it is not a PR
