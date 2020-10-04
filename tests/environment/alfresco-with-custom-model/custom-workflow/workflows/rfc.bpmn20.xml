@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn"
+   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+   xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema"
+   expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://alfresco.org">
+
+    <process isExecutable="true" id="companyRFC" name="Send a RFC for a controlled document">
+
+		<extensionElements>
+			<activiti:executionListener event="start"
+				class="org.alfresco.repo.workflow.activiti.listener.ScriptExecutionListener">
+				<activiti:field name="script">
+					<activiti:string><![CDATA[<import resource="classpath:alfresco/workflow-config/wf-rfc-settings.js">]]></activiti:string>					
+					<!--  activiti:string><![CDATA[<import resource="/Company Home/Data Dictionary/Scripts/wf-rfc-settings.js">]]></activiti:string-->
+				</activiti:field>
+			</activiti:executionListener>
+		</extensionElements>
+
+        <startEvent id="start"
+            activiti:formKey="companywf:submitRFCTask" />
+
+        <sequenceFlow id='flow1' 
+            sourceRef='start'
+            targetRef='reviewTask' />
+
+        <userTask id="reviewTask" name="Review RFC Task"
+            activiti:formKey="companywf:reviewRFCTask">
+           <extensionElements>
+               <activiti:taskListener event="create" class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+                  <activiti:field name="script">
+                     <activiti:string>
+                        if (typeof bpm_workflowDueDate != 'undefined') task.dueDate = bpm_workflowDueDate;
+                        if (typeof bpm_workflowPriority != 'undefined') task.priority = bpm_workflowPriority;
+                        // blank comment field
+                        task.setVariable("bpm_comment", ""); 
+                     </activiti:string>
+                  </activiti:field>
+               </activiti:taskListener>
+               <activiti:taskListener event="complete" class="org.alfresco.repo.workflow.activiti.tasklistener.ScriptTaskListener">
+                  <activiti:field name="script">
+                     <activiti:string>
+                       	execution.setVariable('wf_reviewOutcome', task.getVariable('wf_reviewOutcome'));
+                     </activiti:string>
+                  </activiti:field>
+               </activiti:taskListener>
+           </extensionElements>
+            <humanPerformer>
+                <resourceAssignmentExpression>
+                    <formalExpression>${bpm_assignee.properties.userName}</formalExpression>
+                </resourceAssignmentExpression>
+            </humanPerformer>
+        </userTask>
+
+        <sequenceFlow id='flow2' 
+        sourceRef='reviewTask'
+            targetRef='reviewDecision' />
+
+        <exclusiveGateway  id="reviewDecision" name="Review Decision" /> 
+
+        <sequenceFlow id='flow3' sourceRef='reviewDecision' targetRef='approved' >
+            <conditionExpression xsi:type="tFormalExpression">${wf_reviewOutcome == 'Approve RFC'}</conditionExpression>
+        </sequenceFlow>
+
+        <sequenceFlow id='flow4' 
+        sourceRef='reviewDecision'
+            targetRef='rejected' />
+
+       <serviceTask id="approved" name="RFC Approved" 	activiti:class="org.alfresco.repo.workflow.activiti.script.AlfrescoScriptDelegate"
+			activiti:async="true" activiti:exclusive="false">
+            <documentation>
+                The document was reviewed and approved.
+            </documentation>
+            <extensionElements>
+                   <activiti:field name="script">
+					<activiti:string><![CDATA[<import resource="classpath:alfresco/workflow-config/wf-rfc-outcome-email.js">]]></activiti:string>
+					<!--  activiti:string><![CDATA[<import resource="/Company Home/Data Dictionary/Scripts/wf-rfc-outcome-email.js">]]></activiti:string-->					                   
+                  </activiti:field>
+             </extensionElements>
+        </serviceTask>
+        
+       <serviceTask id="rejected" name="RFC Rejected" 	activiti:class="org.alfresco.repo.workflow.activiti.script.AlfrescoScriptDelegate"
+			activiti:async="true" activiti:exclusive="false">
+            <documentation>
+                The document was reviewed and rejected.
+            </documentation>
+            <extensionElements>
+                   <activiti:field name="script">
+					<activiti:string><![CDATA[<import resource="classpath:alfresco/workflow-config/wf-rfc-outcome-email.js">]]></activiti:string>
+					<!--  activiti:string><![CDATA[<import resource="/Company Home/Data Dictionary/Scripts/wf-rfc-outcome-email.js">]]></activiti:string-->	
+                  </activiti:field>
+             </extensionElements>
+        </serviceTask>        
+        
+        <sequenceFlow id='flow5' sourceRef='approved'
+            targetRef='end' />
+
+        <sequenceFlow id='flow6' sourceRef='rejected'
+            targetRef='end' />
+
+        <endEvent id="end" />
+
+    </process>
+    
+   <!-- Graphical representaion of diagram -->
+   <bpmndi:BPMNDiagram id="BPMNDiagram_activitiReview">
+      <bpmndi:BPMNPlane bpmnElement="activitiReview"
+         id="BPMNPlane_activitiReview">
+         <bpmndi:BPMNShape bpmnElement="start"
+            id="BPMNShape_start">
+            <omgdc:Bounds height="35" width="35" x="30" y="200"></omgdc:Bounds>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="reviewTask"
+            id="BPMNShape_reviewTask">
+            <omgdc:Bounds height="55" width="105" x="125"
+               y="190"></omgdc:Bounds>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="reviewDecision"
+            id="BPMNShape_reviewDecision">
+            <omgdc:Bounds height="40" width="40" x="290" y="197"></omgdc:Bounds>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="approved"
+            id="BPMNShape_approved">
+            <omgdc:Bounds height="55" width="105" x="390"
+               y="97"></omgdc:Bounds>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="rejected"
+            id="BPMNShape_rejected">
+            <omgdc:Bounds height="55" width="105" x="390"
+               y="297"></omgdc:Bounds>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="end" id="BPMNShape_end">
+            <omgdc:Bounds height="35" width="35" x="555" y="307"></omgdc:Bounds>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+            <omgdi:waypoint x="65" y="217"></omgdi:waypoint>
+            <omgdi:waypoint x="125" y="217"></omgdi:waypoint>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+            <omgdi:waypoint x="230" y="217"></omgdi:waypoint>
+            <omgdi:waypoint x="290" y="217"></omgdi:waypoint>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+            <omgdi:waypoint x="310" y="197"></omgdi:waypoint>
+            <omgdi:waypoint x="310" y="124"></omgdi:waypoint>
+            <omgdi:waypoint x="390" y="124"></omgdi:waypoint>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+            <omgdi:waypoint x="310" y="237"></omgdi:waypoint>
+            <omgdi:waypoint x="310" y="324"></omgdi:waypoint>
+            <omgdi:waypoint x="390" y="324"></omgdi:waypoint>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+            <omgdi:waypoint x="495" y="124"></omgdi:waypoint>
+            <omgdi:waypoint x="572" y="124"></omgdi:waypoint>
+            <omgdi:waypoint x="572" y="307"></omgdi:waypoint>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6">
+            <omgdi:waypoint x="495" y="324"></omgdi:waypoint>
+            <omgdi:waypoint x="555" y="324"></omgdi:waypoint>
+         </bpmndi:BPMNEdge>
+      </bpmndi:BPMNPlane>
+   </bpmndi:BPMNDiagram>
+
+</definitions>

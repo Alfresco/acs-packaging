@@ -64,7 +64,6 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Oracle | 12c  |
 | PostgreSQL | 10.1 |
 | MariaDB | 10.2.18 |
-| Amazon Aurora | Latest |
 
 ##### Database Connectors
 | Component | Recommended | Also Available |
