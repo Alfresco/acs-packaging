@@ -1,0 +1,106 @@
+# Development Tomcat Environment
+
+
+It is possible to use Docker containers to test your code, but it is normally more convenient to simply run the
+repository webapp (`alfresco.war`) in a tomcat instance.
+
+## Build -repo projects
+Build the `alfresco-community-repo` and `alfresco-enterprise-repo` projects (if you have not
+done so already), so that your changes are in the enterprise alfresco.war file.
+~~~
+$ cd alfresco-community-repo
+$ mvn clean install -PcommunityDocker  -DskipTests=true -Dversion.edition=Community
+$ cd ..
+
+$ cd alfresco-enterprise-repo
+$ mvn clean install -PenterpriseDocker -DskipTests=true -Dmaven.javadoc.skip=true
+$ cd ..
+~~~
+
+## Docker test environment
+The repository code will need to talk to other ACS components, such as a databases, message queue and transformers.
+The simplest way to create these, is to use the `docker-compose.yml` file in the `dev` directory.
+~~~
+$ cd acs-packaging
+$ docker-compose -f dev/docker-compose.yml up -d
+Creating dev_activemq_1          ... done
+Creating dev_shared-file-store_1 ... done
+Creating dev_solr6_1             ... done
+Creating dev_postgres_1          ... done
+Creating dev_transform-core-aio_1 ... done
+Creating dev_transform-router_1   ... done
+~~~
+
+## Alfresco Global Properties and Log4j
+Set any alfresco-global.properties or log4j properties you may need in the following files. They will be copied
+to the `dev/dev-acs-amps-overlay/target` directory. Other customisations may also be placed in the `extension` directory. 
+~~~
+dev/dev-tomcat/src/main/tomcat/shared/classes/alfresco/extension/custom-log4j.properties
+dev/dev-tomcat/src/main/tomcat/shared/classes/alfresco-global.properties
+~~~
+
+## Tomcat
+Create the development tomcat environment, apply AMPs on top of the repository code, and
+run tomcat. The `run` profile is what starts tomcat. The `withShare` applies
+the Share services AMP and adds the `share.war` to tomcat. 
+Once started, you will be able to access Share on `http://localhost:8080/share` and various repository
+endpoints via `http://localhost:8080/alfresco/`
+To attach a debugger to the
+repository code, change `mvn` to `mvnDebug` in the following command.
+~~~
+$ mvn clean install -Prun,withShare
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] Development Tomcat Environment                                     [pom]
+[INFO] Tomcat Configuration                                               [pom]
+[INFO] Content Services WAR with amps                                     [war]
+[INFO] 
+[INFO] ----------------< org.alfresco:alfresco-dev-tomcat-env >----------------
+[INFO] Building Development Tomcat Environment 7.0.0-SNAPSHOT             [1/3]
+[INFO] --------------------------------[ pom ]---------------------------------
+...
+INFO: Starting ProtocolHandler ["http-bio-8080"]
+~~~
+
+## Clean up
+When finished, kill the tomcat instance and stop the Docker instances. You will normally also
+remove the Docker containers, as you will need a clean database if you are going to issue
+another `mvn clean install` command.
+~~~
+$ ^C
+... Stopped 'sysAdmin' subsystem, ID: [sysAdmin, default]
+
+$ docker-compose -f dev/docker-compose.yml stop
+Stopping dev_transform-core-aio_1 ... done
+Stopping dev_transform-router_1   ... done
+Stopping dev_solr6_1              ... done
+Stopping dev_postgres_1           ... done
+Stopping dev_activemq_1           ... done
+Stopping dev_shared-file-store_1  ... done
+
+$ docker-compose -f dev/docker-compose.yml rm
+Going to remove dev_transform-core-aio_1, dev_transform-router_1, dev_solr6_1, dev_postgres_1, dev_activemq_1, dev_shared-file-store_1
+Are you sure? [yN] y
+Removing dev_transform-core-aio_1 ... done
+Removing dev_transform-router_1   ... done
+Removing dev_solr6_1              ... done
+Removing dev_postgres_1           ... done
+Removing dev_activemq_1           ... done
+Removing dev_shared-file-store_1  ... done
+~~~
+
+If you have not removed the containers, it is possible to restart the tomcat instance with
+a `mvn install` (no `clean`), but this may result in failures if there are incompatibilities
+between the code, database and content in `dev/dev-acs-amps-overlay/target/dev-instance/runtime/alf_data`.
+Any changes made to alfresco-global properties or log4j will not be picked up, unless you
+directly edit `dev/dev-acs-amps-overlay/target/dev-instance/tomcat/shared/classes/alfresco/extension/custom-log4j.properties`
+and `dev/dev-acs-amps-overlay/target/dev-instance/tomcat/shared/classes/alfresco-global.properties`, but they will be thrown away
+on the next `mvn clean`.
+
+## Aliases
+You may also find the aliases specified in the following file useful, as they may save you some typing.
+~~~
+$ source acs-packaging/dev/aliases
+~~~
