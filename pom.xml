@@ -7,8 +7,9 @@
 
     <parent>
         <groupId>org.alfresco</groupId>
-        <artifactId>alfresco-super-pom</artifactId>
-        <version>12</version>
+        <artifactId>alfresco-enterprise-repo</artifactId>
+        <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
+        <version>7.183.300-TEST4</version>
     </parent>
 
     <scm>
@@ -30,122 +31,52 @@
     </distributionManagement>
 
     <properties>
-        <!-- Set to "Enterprise Early Access" to add to the version.edition property in version.properties -->
-        <version.edition>Enterprise</version.edition>
-        <image.tag>latest</image.tag>
+        <dependency.alfresco-community-repo.version>7.183.300-TEST2</dependency.alfresco-community-repo.version>
+        <dependency.alfresco-enterprise-repo.version>7.183.300-TEST4</dependency.alfresco-enterprise-repo.version>
 
-        <dependency.alfresco-enterprise-remote-api.version>7.74.2</dependency.alfresco-enterprise-remote-api.version>
-        <dependency.alfresco-enterprise-repository.version>7.96.2</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-remote-api.version>7.133.1</dependency.alfresco-remote-api.version>
-        <dependency.alfresco-repository.version>7.183.4</dependency.alfresco-repository.version>
-        <dependency.alfresco-data-model.version>8.50.14.1</dependency.alfresco-data-model.version>
-        <dependency.alfresco-core.version>7.33.1</dependency.alfresco-core.version>
+        <repo.image.tag>${dependency.alfresco-enterprise-repo.version}</repo.image.tag>
+        <share.image.tag>${alfresco.share.version}</share.image.tag>
 
-        <dependency.alfresco-hb-data-sender.version>1.0.12</dependency.alfresco-hb-data-sender.version>
-        <dependency.activiti-repo-connector.version>1.5</dependency.activiti-repo-connector.version>
-
-        <dependency.alfresco-spring-encryptor.version>6.1</dependency.alfresco-spring-encryptor.version>
-        <dependency.alfresco-enterprise-crypto.version>6.2</dependency.alfresco-enterprise-crypto.version>
-        <dependency.alfresco-spring-webscripts.version>7.14</dependency.alfresco-spring-webscripts.version>
-        <dependency.alfresco-mmt.version>6.0</dependency.alfresco-mmt.version>
-        <dependency.alfresco-pdf-renderer.version>1.1</dependency.alfresco-pdf-renderer.version>
-        <dependency.alfresco-trashcan-cleaner.version>2.3</dependency.alfresco-trashcan-cleaner.version>
-        <dependency.alfresco-jlan.version>7.1</dependency.alfresco-jlan.version>
-        <dependency.alfresco-server-root.version>6.0.1</dependency.alfresco-server-root.version>
-        <dependency.alfresco-api-explorer.version>6.2.1.1</dependency.alfresco-api-explorer.version>
-        <dependency.gytheio.version>0.11.3</dependency.gytheio.version>
-        <dependency.alfresco-log-sanitizer.version>0.2</dependency.alfresco-log-sanitizer.version>
-
-        <dependency.spring.version>5.1.15.RELEASE</dependency.spring.version>
-        <dependency.fabric8.version>4.4.0</dependency.fabric8.version>
-        <dependency.jackson.version>2.10.2</dependency.jackson.version>
-        <dependency.jackson-databind.version>2.10.1</dependency.jackson-databind.version>
-        <dependency.cxf.version>3.3.5</dependency.cxf.version>
-        <dependency.axiom.version>1.2.22</dependency.axiom.version>
-
-        <!-- Alfresco Share version -->
         <alfresco.share.version>6.2.1</alfresco.share.version>
         <alfresco.alfresco-share-services.version>6.2.1</alfresco.alfresco-share-services.version>
-
-        <!-- Alfresco GoogleDocs integration version -->
-        <alfresco.googledrive.version>3.2.0</alfresco.googledrive.version>
-
-        <!-- Alfresco S3 Connector integration version -->
         <alfresco.s3connector.version>3.0.0</alfresco.s3connector.version>
-
-        <!-- Alfresco Glacier Connector Repo version -->
+        <alfresco.api-explorer.version>6.2.1.1</alfresco.api-explorer.version>
         <alfresco.glacier-connector.version>2.0.0</alfresco.glacier-connector.version>
-
-        <!-- Alfresco Content Connector for Azure version -->
         <alfresco.azure-connector.version>1.0</alfresco.azure-connector.version>
-
-        <!-- Alfresco Centera Connector version -->
         <alfresco.centera-connector.version>2.2.1</alfresco.centera-connector.version>
-
-        <!-- Alfresco Salesforce Connector version -->
         <alfresco.salesforce-connector.version>2.1.0.1</alfresco.salesforce-connector.version>
-
-        <!-- SAML Single Sign-On (SSO) for Alfresco Content Services -->
         <alfresco.saml.version>1.2.0</alfresco.saml.version>
-
-        <!-- Alfresco Outlook Integration -->
         <alfresco.outlook.version>2.6.1</alfresco.outlook.version>
-
-        <!-- Document Transformation Engine -->
         <alfresco.transformation-engine.version>2.2.2</alfresco.transformation-engine.version>
-
-        <!-- Alfresco Governance Services (AGS) -->
         <alfresco.ags.version>3.3.1</alfresco.ags.version>
-
-        <!-- Alfresco Office Services Module -->
-        <alfresco.aos-module.version>1.3.1</alfresco.aos-module.version>
-
-        <!-- Alfresco Media Management Module -->
         <alfresco.mm.version>1.4.1</alfresco.mm.version>
-
-        <!-- Alfresco Desktop Sync Service Module -->
         <alfresco.desktop-sync.version>3.3.2</alfresco.desktop-sync.version>
-
-        <!-- Alfresco Alfresco Intelligence Services (AIS) -->
         <alfresco.ais.version>1.1.2</alfresco.ais.version>
-
-        <installer.version.name>${project.version}</installer.version.name>
-        <alfresco.package.name>alfresco</alfresco.package.name>
-        <alfresco.distribution.name>${alfresco.package.name}-distribution</alfresco.distribution.name>
-
-        <dependency.postgresql.version>42.2.12</dependency.postgresql.version>
-        <dependency.mariadb.version>2.6.0</dependency.mariadb.version>
-
-        <!-- Private docker registry -->
-        <image.registry>quay.io</image.registry>
-
-        <dependency.tas-utility.version>3.0.20</dependency.tas-utility.version>
-        <dependency.rest-assured.version>3.3.0</dependency.rest-assured.version>
-        <dependency.javax.json.version>1.1.4</dependency.javax.json.version>
-        <dependency.tas-restapi.version>1.33</dependency.tas-restapi.version>
-        <dependency.tas-cmis.version>1.13</dependency.tas-cmis.version>
-        <dependency.tas-email.version>1.8</dependency.tas-email.version>
-        <dependency.tas-webdav.version>1.6</dependency.tas-webdav.version>
-        <dependency.tas-ftp.version>1.5</dependency.tas-ftp.version>
-        <dependency.tas-dataprep.version>2.3</dependency.tas-dataprep.version>
-
-        <maven.build.sourceVersion>11</maven.build.sourceVersion>
     </properties>
 
     <profiles>
-        <profile>
-            <id>enterprise</id>
-            <modules>
-                <module>war</module>
-            </modules>
-        </profile>
         <profile>
             <id>fullBuild</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <modules>
-                <module>war</module>
+                <module>distribution</module>
+                <module>docker-alfresco</module>
+                <module>docker-alfresco/aws</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>enterpriseDocker</id>
+            <modules>
+                <module>distribution</module>
+                <module>docker-alfresco</module>
+                <module>docker-alfresco/aws</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>internal</id>
+            <modules>
                 <module>distribution</module>
                 <module>docker-alfresco</module>
                 <module>docker-alfresco/aws</module>
@@ -160,9 +91,14 @@
         <profile>
             <id>release</id>
             <modules>
-                <module>war</module>
                 <module>distribution</module>
                 <module>docker-alfresco</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>run</id>
+            <modules>
+                <module>dev</module>
             </modules>
         </profile>
     </profiles>
@@ -171,349 +107,76 @@
         <dependencies>
             <dependency>
                 <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-core</artifactId>
-                <version>${dependency.alfresco-core.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-core</artifactId>
-                <version>${dependency.alfresco-core.version}</version>
-                <classifier>tests</classifier>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-data-model</artifactId>
-                <version>${dependency.alfresco-data-model.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-jlan-embed</artifactId>
-                <version>${dependency.alfresco-jlan.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-remote-api</artifactId>
-                <version>${dependency.alfresco-remote-api.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-remote-api</artifactId>
-                <version>${dependency.alfresco-remote-api.version}</version>
-                <classifier>tests</classifier>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-repository</artifactId>
-                <version>${dependency.alfresco-repository.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-repository</artifactId>
-                <version>${dependency.alfresco-repository.version}</version>
-                <classifier>tests</classifier>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-trashcan-cleaner</artifactId>
-                <version>${dependency.alfresco-trashcan-cleaner.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-heartbeat-data-sender</artifactId>
-                <version>${dependency.alfresco-hb-data-sender.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>xalan</groupId>
-                <artifactId>xalan</artifactId>
-                <version>2.7.2-alfresco</version>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-mmt</artifactId>
-                <version>${dependency.alfresco-mmt.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-pdf-renderer</artifactId>
-                <version>${dependency.alfresco-pdf-renderer.version}</version>
-                <classifier>linux</classifier>
-                <type>tgz</type>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-pdf-renderer</artifactId>
-                <version>${dependency.alfresco-pdf-renderer.version}</version>
-                <classifier>win64</classifier>
-                <type>tgz</type>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-pdf-renderer</artifactId>
-                <version>${dependency.alfresco-pdf-renderer.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-server-root</artifactId>
-                <version>${dependency.alfresco-server-root.version}</version>
+                <artifactId>content-services</artifactId>
+                <version>${dependency.alfresco-enterprise-repo.version}</version>
                 <type>war</type>
             </dependency>
             <dependency>
-                <groupId>org.alfresco.surf</groupId>
-                <artifactId>spring-surf-core-configservice</artifactId>
-                <version>${dependency.alfresco-spring-webscripts.version}</version>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-enterprise-repository</artifactId>
+                <version>${dependency.alfresco-enterprise-repo.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.alfresco.surf</groupId>
-                <artifactId>spring-webscripts</artifactId>
-                <version>${dependency.alfresco-spring-webscripts.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco.surf</groupId>
-                <artifactId>spring-webscripts-api</artifactId>
-                <version>${dependency.alfresco-spring-webscripts.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.quartz-scheduler</groupId>
-                <artifactId>quartz</artifactId>
-                <version>2.3.2</version>
-                <!-- exclude c3p0 -->
-                <!-- see https://issues.alfresco.com/jira/browse/REPO-3447 -->
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.mchange</groupId>
-                        <artifactId>*</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpcore</artifactId>
-                <version>4.4.13</version>
-            </dependency>
-            <dependency>
-                <groupId>joda-time</groupId>
-                <artifactId>joda-time</artifactId>
-                <version>2.10.5</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-httpclient</groupId>
-                <artifactId>commons-httpclient</artifactId>
-                <version>3.1-HTTPCLIENT-1265</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-logging</groupId>
-                <artifactId>commons-logging</artifactId>
-                <version>1.2</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-beanutils</groupId>
-                <artifactId>commons-beanutils</artifactId>
-                <version>1.9.4</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-codec</groupId>
-                <artifactId>commons-codec</artifactId>
-                <version>1.14</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-collections</groupId>
-                <artifactId>commons-collections</artifactId>
-                <version>3.2.2</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-digester</groupId>
-                <artifactId>commons-digester</artifactId>
-                <version>2.1</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-lang</groupId>
-                <artifactId>commons-lang</artifactId>
-                <version>2.6</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-fileupload</groupId>
-                <artifactId>commons-fileupload</artifactId>
-                <version>1.4</version>
-            </dependency>
-            <dependency>
-                <groupId>com.sun.xml.bind</groupId>
-                <artifactId>jaxb-impl</artifactId>
-                <version>2.3.2</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.httpcomponents</groupId>
-                <artifactId>httpclient</artifactId>
-                <version>4.5.11</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.xmlbeans</groupId>
-                <artifactId>xmlbeans</artifactId>
-                <version>3.0.2</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-aop</artifactId>
-                <version>${dependency.spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-beans</artifactId>
-                <version>${dependency.spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context</artifactId>
-                <version>${dependency.spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-context-support</artifactId>
-                <version>${dependency.spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-core</artifactId>
-                <version>${dependency.spring.version}</version>
-                <!-- exclude commons-logging which is brought in by spring-jcl -->
-                <!-- see https://issues.alfresco.com/jira/browse/REPO-4774 -->
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-jcl</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-expression</artifactId>
-                <version>${dependency.spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-jdbc</artifactId>
-                <version>${dependency.spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-jms</artifactId>
-                <version>${dependency.spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-orm</artifactId>
-                <version>${dependency.spring.version}</version>
-                <!-- exclude spring-jcl which is brought in by spring-orm -->
-                <!-- see https://issues.alfresco.com/jira/browse/REPO-4774 -->
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-jcl</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-tx</artifactId>
-                <version>${dependency.spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-web</artifactId>
-                <version>${dependency.spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework</groupId>
-                <artifactId>spring-webmvc</artifactId>
-                <version>${dependency.spring.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-core</artifactId>
-                <version>${dependency.jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>${dependency.jackson-databind.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-annotations</artifactId>
-                <version>${dependency.jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.fasterxml.jackson.dataformat</groupId>
-                <artifactId>jackson-dataformat-cbor</artifactId>
-                <version>${dependency.jackson.version}</version>
-            </dependency>
-            <!-- newer dependency from camel-jackson -->
-            <dependency>
-                <groupId>com.fasterxml.jackson.module</groupId>
-                <artifactId>jackson-module-jaxb-annotations</artifactId>
-                <version>${dependency.jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.codehaus.woodstox</groupId>
-                <artifactId>woodstox-core-asl</artifactId>
-                <version>4.4.1</version>
-            </dependency>
-            <!-- Newer cxf libs, see REPO-3131 -->
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-frontend-jaxws</artifactId>
-                <version>${dependency.cxf.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-                <version>${dependency.cxf.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-rs-client</artifactId>
-                <version>${dependency.cxf.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-transports-http</artifactId>
-                <version>${dependency.cxf.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-rt-ws-policy</artifactId>
-                <version>${dependency.cxf.version}</version>
-            </dependency>
-            <!-- newer version, see REPO-3133 -->
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-email</artifactId>
-                <version>1.5</version>
-            </dependency>
-            <!-- Make sure JUnit is not packaged -->
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.13</version>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-enterprise-repository</artifactId>
+                <version>${dependency.alfresco-enterprise-repo.version}</version>
+                <classifier>tests</classifier>
                 <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.alfresco.aos-module</groupId>
-                <artifactId>alfresco-aos-module</artifactId>
-                <version>${alfresco.aos-module.version}</version>
-                <type>amp</type>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-enterprise-remote-api</artifactId>
+                <version>${dependency.alfresco-enterprise-repo.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.alfresco.aos-module</groupId>
-                <artifactId>alfresco-aos-module-distributionzip</artifactId>
-                <version>${alfresco.aos-module.version}</version>
-                <type>zip</type>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-enterprise-remote-api</artifactId>
+                <version>${dependency.alfresco-enterprise-repo.version}</version>
+                <classifier>tests</classifier>
+                <scope>test</scope>
             </dependency>
             <dependency>
-                <groupId>org.alfresco.aos-module</groupId>
-                <artifactId>alfresco-vti-bin</artifactId>
-                <version>${alfresco.aos-module.version}</version>
-                <type>war</type>
+                <groupId>org.alfresco</groupId>
+                <artifactId>alfresco-enterprise-repo-distribution</artifactId>
+                <version>${dependency.alfresco-enterprise-repo.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.alfresco.tas</groupId>
+                <artifactId>alfresco-enterprise-repo-cmis-test</artifactId>
+                <version>${dependency.alfresco-enterprise-repo.version}</version>
+                <classifier>tests</classifier>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.tas</groupId>
+                <artifactId>alfresco-enterprise-repo-email-test</artifactId>
+                <version>${dependency.alfresco-enterprise-repo.version}</version>
+                <classifier>tests</classifier>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.tas</groupId>
+                <artifactId>alfresco-enterprise-repo-integration-test</artifactId>
+                <version>${dependency.alfresco-enterprise-repo.version}</version>
+                <classifier>tests</classifier>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.tas</groupId>
+                <artifactId>alfresco-enterprise-repo-restapi-test</artifactId>
+                <version>${dependency.alfresco-enterprise-repo.version}</version>
+                <classifier>tests</classifier>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.alfresco.tas</groupId>
+                <artifactId>alfresco-enterprise-repo-webdav-test</artifactId>
+                <version>${dependency.alfresco-enterprise-repo.version}</version>
+                <classifier>tests</classifier>
+                <scope>test</scope>
+            </dependency>
+
             <dependency>
                 <groupId>org.alfresco</groupId>
                 <artifactId>alfresco-content-services-share-distribution</artifactId>
@@ -548,64 +211,6 @@
                 <groupId>org.alfresco</groupId>
                 <artifactId>alfresco-wcmqs-client-api</artifactId>
                 <version>${alfresco.share.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-enterprise-crypto</artifactId>
-                <version>${dependency.alfresco-enterprise-crypto.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-enterprise-repository</artifactId>
-                <version>${dependency.alfresco-enterprise-repository.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-enterprise-remote-api</artifactId>
-                <version>${dependency.alfresco-enterprise-remote-api.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.activiti</groupId>
-                <artifactId>activiti-repo-connector</artifactId>
-                <version>${dependency.activiti-repo-connector.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-spring-encryptor</artifactId>
-                <version>${dependency.alfresco-spring-encryptor.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.ws.commons.axiom</groupId>
-                <artifactId>axiom-api</artifactId>
-                <version>${dependency.axiom.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.ws.commons.axiom</groupId>
-                <artifactId>axiom-impl</artifactId>
-                <version>${dependency.axiom.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-log-sanitizer</artifactId>
-                <version>${dependency.alfresco-log-sanitizer.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco.integrations</groupId>
-                <artifactId>alfresco-s3-connector</artifactId>
-                <version>${alfresco.s3connector.version}</version>
-                <type>amp</type>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-glacier-connector-repo</artifactId>
-                <version>${alfresco.glacier-connector.version}</version>
-                <type>amp</type>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-centera-connector</artifactId>
-                <version>${alfresco.centera-connector.version}</version>
-                <type>amp</type>
             </dependency>
             <dependency>
                 <groupId>org.alfresco.integrations</groupId>
@@ -660,34 +265,6 @@
                 <artifactId>alfresco-document-transformation-engine-share</artifactId>
                 <version>${alfresco.transformation-engine.version}</version>
                 <type>amp</type>
-            </dependency>
-            <!-- Enforce newer version -->
-            <dependency>
-                <groupId>org.bouncycastle</groupId>
-                <artifactId>bcprov-jdk15on</artifactId>
-                <version>1.64</version>
-            </dependency>
-            <dependency>
-                <groupId>org.bouncycastle</groupId>
-                <artifactId>bcmail-jdk15on</artifactId>
-                <version>1.64</version>
-            </dependency>
-            <dependency>
-                <groupId>com.hazelcast</groupId>
-                <artifactId>hazelcast</artifactId>
-                <version>3.12.6</version>
-            </dependency>
-            <!-- upgrade dependency from TIKA -->
-            <dependency>
-                <groupId>com.github.junrar</groupId>
-                <artifactId>junrar</artifactId>
-                <version>4.0.0</version>
-            </dependency>
-            <!-- upgrade dependency from TIKA -->
-            <dependency>
-                <groupId>org.jsoup</groupId>
-                <artifactId>jsoup</artifactId>
-                <version>1.12.2</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
