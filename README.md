@@ -1,6 +1,6 @@
 
 # Alfresco Content Services Enterprise Packaging
-This project is producing packaging for Alfresco Content Services Repository Enterprise.
+This project is producing packaging for Alfresco Content Services Enterprise.
 
 License rights for this program may be obtained from Alfresco Software, Ltd.
 pursuant to a written agreement and any use of this program without such an
@@ -8,18 +8,23 @@ agreement is prohibited.
 
 https://www.alfresco.com/legal/agreements and https://www.alfresco.com/terms-use
 
-The SNAPSHOT version of the artifacts is **never** published.
+The SNAPSHOT version of artifacts are **never** published.
 
 ### Contributing guide
 Please use [this guide](CONTRIBUTING.md) to make a contribution to the project.
 
-This produces the docker images for alfresco-content-repository and the distribution zip for the entire Alfresco Content Services product.
+This project creates the `alfresco-content-repository` docker image and the distribution zip
+for the Alfresco Content Services product. The image extends the `alfresco-enterprise-repo-base`
+image created in the `alfresco-enterprise-repo` project, in order to add ACS components that are
+are not directly part of the repository. The `alfresco-enterprise-repo` project in turn builds
+on the `alfresco-community-repo` project.
 
 # General
 
+This project is the Enterprise equivalent of the [Community Packaging Project](https://github.com/Alfresco/acs-community-packaging).  Please ensure that you have the correct agreements in place and access to the Enterprise Maven artifacts.
+
 ### Build:
-* ```mvn clean install``` in the root of the project will build everything.
-* This project is the Enterprise equivalent of the [Community Packaging Project](https://github.com/Alfresco/acs-community-packaging).  Please ensure that you have the correct agreements in place and access to the Enterprise Maven artifacts.
+* ```mvn clean install``` in the root of the project will build the distribution zip and two main docker images.
 
 ## Docker Alfresco
 On official releases, the image is published:
@@ -43,10 +48,10 @@ mvn clean install -Dskiptests -PenterpriseDocker
 which will create an image locally named: alfresco/alfresco-content-repository-aws:latest
 
 ### Docker-compose & Kubernetes
-Use the deployment project if you want the sample docker-compose or helm: https://github.com/Alfresco/acs-deployment
+Use the https://github.com/Alfresco/acs-deployment project as the basis for your own docker-compose or helm chart deployments. 
 
 ## Distribution zip
-In this folder the distribution zip is built. It contains all the war files, libraries, certificates and settings files you need, to deploy Alfresco Content Services on the supported application servers.
+The distribution zip contains the war files, libraries, certificates and settings files you need, to deploy Alfresco Content Services on the supported application servers.
 
 
 ## How to

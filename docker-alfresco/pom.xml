@@ -7,98 +7,18 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>acs-packaging</artifactId>
-        <version>7.0.0-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <version>7.0.0-TEST8-SNAPSHOT</version>
     </parent>
 
     <properties>
         <image.name>alfresco/alfresco-content-repository</image.name>
-        <resource_path>target</resource_path>
     </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.alfresco</groupId>
-            <artifactId>content-services</artifactId>
-            <version>${project.version}</version>
-            <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco</groupId>
-            <artifactId>api-explorer</artifactId>
-            <version>${dependency.alfresco-api-explorer.version}</version>
-            <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-mmt</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-server-root</artifactId>
-            <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${dependency.postgresql.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-share-services</artifactId>
-            <version>${alfresco.alfresco-share-services.version}</version>
-            <type>amp</type>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco.aos-module</groupId>
-            <artifactId>alfresco-aos-module</artifactId>
-            <version>${alfresco.aos-module.version}</version>
-            <type>amp</type>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco.aos-module</groupId>
-            <artifactId>alfresco-vti-bin</artifactId>
-            <version>${alfresco.aos-module.version}</version>
-            <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco.integrations</groupId>
-            <artifactId>alfresco-googledrive-repo-enterprise</artifactId>
-            <version>${alfresco.googledrive.version}</version>
-            <type>amp</type>
-        </dependency>
-    </dependencies>
 
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>3.1.0</version>
-                <executions>
-                   <execution>
-                      <id>copy-licenses</id>
-                      <phase>process-resources</phase>
-                      <goals>
-                          <goal>copy-resources</goal>
-                      </goals>
-                      <configuration>
-                          <resources>
-                              <resource>
-                                  <!-- Extract licenses directory -->
-                                  <directory>../distribution/src/main/resources/licenses</directory>
-                                  <filtering>false</filtering>
-                              </resource>
-                          </resources>
-                          <outputDirectory>${project.build.directory}/licenses</outputDirectory>
-                      </configuration>
-                   </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <version>3.1.2</version>
                 <executions>
                     <execution>
                         <id>unpack-war-files</id>
@@ -110,57 +30,10 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
-                                    <artifactId>content-services</artifactId>
-                                    <version>${project.version}</version>
-                                    <type>war</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/war/alfresco</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.alfresco</groupId>
                                     <artifactId>api-explorer</artifactId>
-                                    <version>${dependency.alfresco-api-explorer.version}</version>
+                                    <version>${alfresco.api-explorer.version}</version>
                                     <type>war</type>
                                     <outputDirectory>${project.build.directory}/war/api-explorer</outputDirectory>
-                                </artifactItem>
-                                <dependency>
-                                    <groupId>org.alfresco</groupId>
-                                    <artifactId>alfresco-server-root</artifactId>
-                                    <type>war</type>
-                                    <outputDirectory>${project.build.directory}/war/ROOT</outputDirectory>
-                                </dependency>
-                                <artifactItem>
-                                    <groupId>org.alfresco.aos-module</groupId>
-                                    <artifactId>alfresco-vti-bin</artifactId>
-                                    <version>${alfresco.aos-module.version}</version>
-                                    <type>war</type>
-                                    <outputDirectory>${project.build.directory}/war/_vti_bin</outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>copy-jdbc-connectors</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.postgresql</groupId>
-                                    <artifactId>postgresql</artifactId>
-                                    <version>${dependency.postgresql.version}</version>
-                                    <type>jar</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/connector</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.alfresco</groupId>
-                                    <artifactId>alfresco-mmt</artifactId>
-                                    <type>jar</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/alfresco-mmt</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
@@ -182,22 +55,6 @@
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
-                                    <groupId>org.alfresco.aos-module</groupId>
-                                    <artifactId>alfresco-aos-module</artifactId>
-                                    <version>${alfresco.aos-module.version}</version>
-                                    <type>amp</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.alfresco.integrations</groupId>
-                                    <artifactId>alfresco-googledrive-repo-enterprise</artifactId>
-                                    <version>${alfresco.googledrive.version}</version>
-                                    <type>amp</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                </artifactItem>
-                                <artifactItem>
                                     <groupId>org.alfresco.services.sync</groupId>
                                     <artifactId>alfresco-device-sync-repo</artifactId>
                                     <version>${alfresco.desktop-sync.version}</version>
@@ -210,34 +67,31 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <plugin>
-                <groupId>io.fabric8</groupId>
-                <artifactId>fabric8-maven-plugin</artifactId>
-                <version>${dependency.fabric8.version}</version>
-                <configuration>
-                    <images>
-                        <image>
-                            <name>${image.name}</name>
-                            <build>
-                                <dockerFileDir>${project.basedir}/</dockerFileDir>
-                            </build>
-                        </image>
-                    </images>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
     <profiles>
         <profile>
             <id>enterpriseDocker</id>
+            <!-- builds "image:latest" locally -->
             <build>
                 <plugins>
                     <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>fabric8-maven-plugin</artifactId>
-                        <version>${dependency.fabric8.version}</version>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>${image.name}:${image.tag}</name>
+                                    <build>
+                                        <dockerFileDir>${project.basedir}/</dockerFileDir>
+                                        <buildOptions>
+                                            <squash>true</squash>
+                                        </buildOptions>
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>build-image</id>
@@ -254,61 +108,35 @@
 
         <profile>
             <id>internal</id>
+            <!-- publishes "image:latest" on Quay & DockerHub -->
             <build>
                 <plugins>
                     <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>fabric8-maven-plugin</artifactId>
-                        <version>${dependency.fabric8.version}</version>
                         <configuration>
                             <images>
+                                <!-- Quay image -->
                                 <image>
                                     <name>${image.name}:${image.tag}</name>
                                     <registry>${image.registry}</registry>
                                     <build>
                                         <dockerFileDir>${project.basedir}/</dockerFileDir>
+                                        <buildOptions>
+                                            <squash>true</squash>
+                                        </buildOptions>
                                     </build>
                                 </image>
-                            </images>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>build-push-image</id>
-                                <phase>install</phase>
-                                <goals>
-                                    <goal>build</goal>
-                                    <goal>push</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
-        <profile>
-            <id>master</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>io.fabric8</groupId>
-                        <artifactId>fabric8-maven-plugin</artifactId>
-                        <version>${dependency.fabric8.version}</version>
-                        <configuration>
-                            <images>
-                                <image>
-                                    <name>${image.name}</name>
-                                    <registry>${image.registry}</registry>
+                                <!-- DockerHub image -->
+                                <!--<image>
+                                    <name>${image.name}:${image.tag}</name>
                                     <build>
                                         <dockerFileDir>${project.basedir}/</dockerFileDir>
+                                        <buildOptions>
+                                            <squash>true</squash>
+                                        </buildOptions>
                                     </build>
-                                </image>
-                                <image>
-                                    <name>${image.name}</name>
-                                    <build>
-                                        <dockerFileDir>${project.basedir}/</dockerFileDir>
-                                    </build>
-                                </image>
+                                </image>-->
                             </images>
                         </configuration>
                         <executions>
@@ -328,27 +156,35 @@
 
         <profile>
             <id>release</id>
+            <!-- publishes "image:release_version" on Quay & DockerHub -->
             <build>
                 <plugins>
                     <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>fabric8-maven-plugin</artifactId>
-                        <version>${dependency.fabric8.version}</version>
-                        <configuration>
+                        <configuration combine.self="override">
                             <images>
+                                <!-- Quay image -->
                                 <image>
                                     <name>${image.name}:${project.version}</name>
                                     <registry>${image.registry}</registry>
                                     <build>
                                         <dockerFileDir>${project.basedir}/</dockerFileDir>
+                                        <buildOptions>
+                                            <squash>true</squash>
+                                        </buildOptions>
                                     </build>
                                 </image>
-                                <image>
+                                <!-- DockerHub image -->
+                                <!--<image>
                                     <name>${image.name}:${project.version}</name>
                                     <build>
                                         <dockerFileDir>${project.basedir}/</dockerFileDir>
+                                        <buildOptions>
+                                            <squash>true</squash>
+                                        </buildOptions>
                                     </build>
-                                </image>
+                                </image>-->
                             </images>
                         </configuration>
                         <executions>
@@ -366,5 +202,4 @@
             </build>
         </profile>
     </profiles>
-
 </project>
