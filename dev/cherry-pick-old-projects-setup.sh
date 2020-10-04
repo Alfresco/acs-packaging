@@ -96,7 +96,7 @@ setupRemotes()
 
 setupRemotes alfresco-core                  support/HF/7.5.7.N   alfresco-community-repo core
 setupRemotes alfresco-data-model            support/HF/8.25.11.N alfresco-community-repo data-model
-setupRemotes alfresco-repository            support/HF/7.34.25.N alfresco-community-repo repository
+setupRemotes alfresco-repository            support/HF/7.33.42.N alfresco-community-repo repository
 setupRemotes alfresco-remote-api            support/HF/7.34.1.N  alfresco-community-repo remote-api
 
 setupRemotes alfresco-enterprise-repository support/HF/7.25.21.N alfresco-enterprise-repo repository
