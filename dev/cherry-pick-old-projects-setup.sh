@@ -97,7 +97,7 @@ setupRemotes()
 setupRemotes alfresco-core                  support/HF/7.5.7.N   alfresco-community-repo core
 setupRemotes alfresco-data-model            support/HF/8.25.11.N alfresco-community-repo data-model
 setupRemotes alfresco-repository            support/HF/7.33.42.N alfresco-community-repo repository
-setupRemotes alfresco-remote-api            support/HF/7.34.1.N  alfresco-community-repo remote-api
+setupRemotes alfresco-remote-api            support/HF/7.34.25.N  alfresco-community-repo remote-api
 
 setupRemotes alfresco-enterprise-repository support/HF/7.25.21.N alfresco-enterprise-repo repository
 setupRemotes alfresco-enterprise-remote-api support/HF/7.20.14.N alfresco-enterprise-repo remote-api
@@ -118,7 +118,6 @@ git remote add alfresco-core                  ../$oldReposDirName/alfresco-core
 git remote add alfresco-data-model            ../$oldReposDirName/alfresco-data-model
 git remote add alfresco-repository            ../$oldReposDirName/alfresco-repository
 git remote add alfresco-remote-api            ../$oldReposDirName/alfresco-remote-api
-git remote add acs-community-packaging        ../$oldReposDirName/acs-community-packaging
 git config merge.renameLimit 999999
 git fetch alfresco-core                       | grep -v 'new tag]'
 git fetch alfresco-data-model                 | grep -v 'new tag]'
