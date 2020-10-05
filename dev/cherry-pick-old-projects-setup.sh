@@ -118,7 +118,6 @@ git remote add alfresco-core                  ../$oldReposDirName/alfresco-core
 git remote add alfresco-data-model            ../$oldReposDirName/alfresco-data-model
 git remote add alfresco-repository            ../$oldReposDirName/alfresco-repository
 git remote add alfresco-remote-api            ../$oldReposDirName/alfresco-remote-api
-git remote add acs-community-packaging        ../$oldReposDirName/acs-community-packaging
 git config merge.renameLimit 999999
 git fetch alfresco-core                       | grep -v 'new tag]'
 git fetch alfresco-data-model                 | grep -v 'new tag]'
