@@ -80,7 +80,7 @@ public class DiscoveryTests extends RestTest
                 "org_alfresco_mm_repo", 
                 "alfresco-ai-repo",
                 "org_alfresco_module_rm", "alfresco-rm-enterprise-repo",
-                //"alfresco-glacier-connector-repo",
+                "alfresco-glacier-connector-repo",
                 "org.alfresco.module.TransformationServer");
 
         expectedModules.forEach(module ->
