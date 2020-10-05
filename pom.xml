@@ -36,13 +36,13 @@
 
         <dependency.alfresco-core.version>7.5.7</dependency.alfresco-core.version>
         <dependency.alfresco-data-model.version>8.18.16</dependency.alfresco-data-model.version>
-        <dependency.alfresco-repository.version>mnt-21871-6.0.n-1</dependency.alfresco-repository.version>
-        <dependency.alfresco-remote-api.version>mnt-21871-6.0.n-1</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-repository.version>mnt-21871-6.0.n-2</dependency.alfresco-repository.version>
+        <dependency.alfresco-remote-api.version>mnt-21871-6.0.n-2</dependency.alfresco-remote-api.version>
     
         <dependency.alfresco-hb-data-sender.version>1.0.12</dependency.alfresco-hb-data-sender.version>
 
-        <dependency.alfresco-enterprise-repository.version>mnt-21871-6.0.n-1</dependency.alfresco-enterprise-repository.version>
-        <dependency.alfresco-enterprise-remote-api.version>mnt-21871-6.0.n-1</dependency.alfresco-enterprise-remote-api.version>
+        <dependency.alfresco-enterprise-repository.version>mnt-21871-6.0.n-2</dependency.alfresco-enterprise-repository.version>
+        <dependency.alfresco-enterprise-remote-api.version>mnt-21871-6.0.n-2</dependency.alfresco-enterprise-remote-api.version>
 
         <dependency.alfresco-spring-encryptor.version>6.1</dependency.alfresco-spring-encryptor.version>
         <dependency.alfresco-enterprise-crypto.version>6.1</dependency.alfresco-enterprise-crypto.version>
@@ -57,8 +57,8 @@
 
         <dependency.spring.version>5.1.8.RELEASE</dependency.spring.version>
         <dependency.fabric8.version>3.5.37</dependency.fabric8.version>
-        <dependency.jackson.version>2.10.0</dependency.jackson.version>
-        <dependency.jackson-databind.version>2.10.0</dependency.jackson-databind.version>
+        <dependency.jackson.version>2.9.9</dependency.jackson.version>
+        <dependency.jackson-databind.version>2.9.10.6</dependency.jackson-databind.version>
         <dependency.camel.version>2.23.2</dependency.camel.version>
         <dependency.cxf.version>3.3.2</dependency.cxf.version>
 
