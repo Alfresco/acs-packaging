@@ -1,4 +1,4 @@
-FROM alfresco/alfresco-content-repository:${repo.image.tag}
+FROM alfresco/alfresco-content-repository-aws:${repo.image.tag}
 
 USER root
 
