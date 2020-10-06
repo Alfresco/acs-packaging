@@ -37,7 +37,7 @@
         <dependency.alfresco-core.version>7.5.7</dependency.alfresco-core.version>
         <dependency.alfresco-data-model.version>8.18.16</dependency.alfresco-data-model.version>
         <dependency.alfresco-repository.version>6.56.74</dependency.alfresco-repository.version>
-        <dependency.alfresco-remote-api.version>6.39.58</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-remote-api.version>6.39.56</dependency.alfresco-remote-api.version>
     
         <dependency.alfresco-hb-data-sender.version>1.0.12</dependency.alfresco-hb-data-sender.version>
 
