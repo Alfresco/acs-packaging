@@ -37,8 +37,8 @@
         <dependency.alfresco-core.version>7.5.8</dependency.alfresco-core.version>
         <dependency.alfresco-data-model.version>8.25.17</dependency.alfresco-data-model.version>
 
-        <dependency.alfresco-repository.version>7.33.87</dependency.alfresco-repository.version>
-        <dependency.alfresco-remote-api.version>7.34.57</dependency.alfresco-remote-api.version>
+        <dependency.alfresco-repository.version>7.33.88</dependency.alfresco-repository.version>
+        <dependency.alfresco-remote-api.version>7.34.58</dependency.alfresco-remote-api.version>
         <dependency.alfresco-hb-data-sender.version>1.0.12</dependency.alfresco-hb-data-sender.version>
 
         <dependency.alfresco-enterprise-repository.version>7.25.43</dependency.alfresco-enterprise-repository.version>
@@ -57,7 +57,7 @@
         <dependency.spring.version>5.1.8.RELEASE</dependency.spring.version>
         <dependency.fabric8.version>3.5.37</dependency.fabric8.version>
         <dependency.jackson.version>2.9.9</dependency.jackson.version>
-        <dependency.jackson-databind.version>2.9.10.3</dependency.jackson-databind.version>
+        <dependency.jackson-databind.version>2.9.10.6</dependency.jackson-databind.version>
         <dependency.cxf.version>3.3.2</dependency.cxf.version>
 
         <!-- Alfresco Share version -->
