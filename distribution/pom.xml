@@ -184,6 +184,7 @@
                     </execution>
 
                     <!-- Copy ROOT.war -->
+                    <!-- These wars were NOT included in previous versions, but probably should have been
                     <execution>
                         <id>copy-resources-war</id>
                         <phase>generate-resources</phase>
@@ -209,6 +210,7 @@
                             </artifactItems>
                         </configuration>
                     </execution>
+                    -->
 
                     <execution>
                         <id>copy-resources</id>
