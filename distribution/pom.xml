@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>alfresco-content-services-distribution</artifactId>
+    <name>Alfresco Content Services Distribution jar and zip</name>
     <packaging>jar</packaging>
-    <name>Alfresco Content Services Distribution zip</name>
 
     <parent>
         <groupId>org.alfresco</groupId>
@@ -58,7 +58,6 @@
             <classifier>win64</classifier>
             <type>tgz</type>
         </dependency>
-        <!-- SOLR Distribution: Run Alfresco Search Services Separately -->
         <!-- SHARE Distribution -->
         <dependency>
             <groupId>org.alfresco</groupId>
@@ -84,13 +83,14 @@
 
         <plugins>
 
-            <!-- Reconfigure default-resource to overwrite files, so enterprise resources overwrite
-                 community resources. The default is false. -->
+            <!-- Reconfigure default-resource to overwrite files, so ACS resources overwrite
+                 enterprise resources. The default is false. -->
             <plugin>
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
                     <execution>
                         <id>default-resources</id>
+                        <!-- runs in process-resources phase. -->
                         <configuration>
                             <overwrite>true</overwrite>
                         </configuration>
@@ -98,7 +98,7 @@
                 </executions>
             </plugin>
 
-            <!-- Copy the enterprise's deployment resources in the validate phase, before default-resources
+            <!-- Copy the enterprise's deployment resources in the generate-resources phase, before default-resources
                  copies this project's resources in the process-resources phase. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -106,7 +106,7 @@
                 <executions>
                     <execution>
                         <id>unpack-licenses-and-keystore</id>
-                        <phase>validate</phase>
+                        <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack</goal>
                         </goals>
@@ -158,9 +158,11 @@
                     </execution>
 
                     <!-- Copy ROOT.war -->
+                    <!-- This plugin <execution> must be before the "make-assembly" as it is in the same phase -->
                     <execution>
                         <id>copy-resources-war</id>
-                        <phase>generate-resources</phase>
+                        <!-- We want the wars in the zip but not the package's jar. -->
+                        <phase>package</phase>
                         <goals>
                             <goal>copy</goal>
                         </goals>
@@ -184,9 +186,11 @@
                         </configuration>
                     </execution>
 
+                    <!-- This plugin <execution> must be before the "make-assembly" as it is in the same phase -->
                     <execution>
                         <id>copy-resources</id>
-                        <phase>generate-resources</phase>
+                        <!-- We want this jar in the zip but not the package's jar. -->
+                        <phase>package</phase>
                         <goals>
                             <goal>copy</goal>
                         </goals>
@@ -202,6 +206,27 @@
                         </configuration>
                     </execution>
 
+                    <!-- Copy alfresco.war -->
+                    <execution>
+                        <id>copy-alfresco-war</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>content-services</artifactId>
+                                    <version>${dependency.alfresco-enterprise-repo.version}</version>
+                                    <type>war</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                    <destFileName>alfresco.war</destFileName>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 
