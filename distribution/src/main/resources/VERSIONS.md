@@ -8,6 +8,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Component | Recommended | Also Available |
 |---|---|---|
 | Alfresco Content Services | @project.version@ |
+| Alfresco Repository |@dependency.alfresco-enterprise-repo.version@ |
 | Alfresco Share | @alfresco.share.version@ |
 | Alfresco Search Services | 1.2.0 | 1.1.1 |
 | Alfresco Insight Engine | 1.0.0 |
