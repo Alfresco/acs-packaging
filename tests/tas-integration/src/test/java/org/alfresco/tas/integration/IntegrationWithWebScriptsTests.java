@@ -5,6 +5,7 @@ import static org.alfresco.utility.report.log.Step.STEP;
 import io.restassured.RestAssured;
 import io.restassured.http.Cookie;
 import io.restassured.response.Response;
+
 import java.net.URLDecoder;
 import java.util.HashMap;
 
@@ -34,9 +35,9 @@ public class IntegrationWithWebScriptsTests extends IntegrationTest
         STEP("1.Upload the CSV File that contains the users.");
         restAPI.authenticateUser(dataUser.getAdminUser()).configureRequestSpec().addMultiPart("filedata",
                 Utility.getResourceTestDataFile("userCSV.csv"));
-        String fileCreationWebScript = "alfresco/s/api/people/upload";
-        RestAssured.basePath = "";
+        RestAssured.basePath = "alfresco";
         restAPI.configureRequestSpec().setBasePath(RestAssured.basePath);
+        String fileCreationWebScript = "s/api/people/upload";
         RestRequest request = RestRequest.simpleRequest(HttpMethod.POST, fileCreationWebScript);
         restAPI.authenticateUser(dataUser.getAdminUser()).process(request);
         restAPI.assertStatusCodeIs(HttpStatus.OK);
@@ -92,10 +93,10 @@ public class IntegrationWithWebScriptsTests extends IntegrationTest
         restAPI.assertStatusCodeIs(HttpStatus.OK);
 
         STEP("2.Deauthorize the user");
-        String deauthorizeUserWebScript = "alfresco/s/api/deauthorize";
-        String body = JsonBodyGenerator.defineJSON().add("username", user.getUsername()).build().toString();
-        RestAssured.basePath = "";
+        RestAssured.basePath = "alfresco";
         restAPI.configureRequestSpec().setBasePath(RestAssured.basePath);
+        String deauthorizeUserWebScript = "s/api/deauthorize";
+        String body = JsonBodyGenerator.defineJSON().add("username", user.getUsername()).build().toString();
         RestRequest request = RestRequest.requestWithBody(HttpMethod.POST, body, deauthorizeUserWebScript);
         restAPI.authenticateUser(dataUser.getAdminUser()).process(request);
         restAPI.assertStatusCodeIs(HttpStatus.OK);
@@ -115,12 +116,12 @@ public class IntegrationWithWebScriptsTests extends IntegrationTest
             TestGroup.REST_API }, executionType = ExecutionType.REGRESSION, description = "Verify cluster check not blocked by CSRF filter")
     public void verifyClusterCheck() throws Exception
     {
-        RestAssured.basePath = "";
+        RestAssured.basePath = "alfresco";
         restAPI.configureRequestSpec().setBasePath(RestAssured.basePath);
         String csrfCookieName = "alf-csrftoken";
         String jsessionidCookieName = "JSESSIONID";
         STEP("1. Get alf-csrftoken and JSESSIONID cookies");
-        String validateClusterPage = "alfresco/s/enterprise/admin/admin-clustering";
+        String validateClusterPage = "s/enterprise/admin/admin-clustering";
         RestRequest request = RestRequest.simpleRequest(HttpMethod.GET, validateClusterPage);
         Response resp = restAPI.authenticateUser(dataUser.getAdminUser()).process(request).getResponse();
         String jsessionidCookieValue = resp.getCookies().get(jsessionidCookieName);
@@ -129,7 +130,7 @@ public class IntegrationWithWebScriptsTests extends IntegrationTest
         Assert.assertNotNull(jsessionidCookieValue, "JSESSIONID cookie (" + jsessionidCookieName + ") should be present");
 
         STEP("2. Make a POST request to admin console cluster validation");
-        String validateClusterWebscript = "alfresco/s/enterprise/admin/admin-clustering-test";
+        String validateClusterWebscript = "s/enterprise/admin/admin-clustering-test";
         // Post with empty body
         String body = JsonBodyGenerator.defineJSON().build().toString();
         request = RestRequest.requestWithBody(HttpMethod.POST, body, validateClusterWebscript);
@@ -148,7 +149,7 @@ public class IntegrationWithWebScriptsTests extends IntegrationTest
             TestGroup.REST_API }, executionType = ExecutionType.REGRESSION, description = "Verify that JSESSIONID remains the same")
     public void verifySessionPersistence() throws Exception
     {
-        RestAssured.basePath = "";
+        RestAssured.basePath = "alfresco";
         restAPI.configureRequestSpec().setBasePath(RestAssured.basePath);
         String jsessionidCookieName = "JSESSIONID";
         String csrfCookieName = "alf-csrftoken";
@@ -160,7 +161,7 @@ public class IntegrationWithWebScriptsTests extends IntegrationTest
         restAPI.configureRequestSpec()
                 .addHeader("Authorization", String.format("Basic %s", authHeaderEncoded))
                 .build();
-        String clusteringPage = "alfresco/s/enterprise/admin/admin-clustering";
+        String clusteringPage = "s/enterprise/admin/admin-clustering";
         RestRequest request = RestRequest.simpleRequest(HttpMethod.GET, clusteringPage);
         Response resp = restAPI.process(request).getResponse();
         String jsessionidCookieValue = resp.getCookies().get(jsessionidCookieName);
@@ -175,7 +176,7 @@ public class IntegrationWithWebScriptsTests extends IntegrationTest
                 .addHeader(csrfCookieName, URLDecoder.decode(csrfCookieValue, "UTF-8"))
                 .addHeader("Authorization", String.format("Basic %s", authHeaderEncoded))
                 .build();
-        String systemSettingPage = "alfresco/s/enterprise/admin/admin-systemsettings";
+        String systemSettingPage = "s/enterprise/admin/admin-systemsettings";
         request = RestRequest.simpleRequest(HttpMethod.GET, systemSettingPage);
         resp = restAPI.process(request).getResponse();
         List<String> setCookieHeaderValues = resp.getHeaders().getValues("Set-Cookie");
