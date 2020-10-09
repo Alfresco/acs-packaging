@@ -30,7 +30,6 @@
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-share-services</artifactId>
-            <version>${alfresco.alfresco-share-services.version}</version>
             <type>amp</type>
         </dependency>
         <dependency>
@@ -41,7 +40,6 @@
         <dependency>
             <groupId>org.alfresco.integrations</groupId>
             <artifactId>alfresco-googledrive-repo-enterprise</artifactId>
-            <version>${alfresco.googledrive.version}</version>
             <type>amp</type>
         </dependency>
 
@@ -213,14 +211,14 @@
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
                                         </artifactItem>
-<!--                                        <artifactItem>-->
-<!--                                            <groupId>org.alfresco</groupId>-->
-<!--                                            <artifactId>alfresco-glacier-connector-repo</artifactId>-->
-<!--                                            <version>${alfresco.glacier-connector.version}</version>-->
-<!--                                            <type>amp</type>-->
-<!--                                            <overWrite>false</overWrite>-->
-<!--                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>-->
-<!--                                        </artifactItem>-->
+                                        <artifactItem>
+                                            <groupId>org.alfresco</groupId>
+                                            <artifactId>alfresco-glacier-connector-repo</artifactId>
+                                            <version>${alfresco.glacier-connector.version}</version>
+                                            <type>amp</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>
+                                        </artifactItem>
                                         <!-- <artifactItem>
                                             <groupId>org.alfresco.integrations</groupId>
                                             <artifactId>alfresco-azure-connector</artifactId>

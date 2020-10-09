@@ -94,13 +94,13 @@ setupRemotes()
   fi
 }
 
-setupRemotes alfresco-core                  support/HF/7.N    alfresco-community-repo core
-setupRemotes alfresco-data-model            support/HF/8.50.N alfresco-community-repo data-model
-setupRemotes alfresco-repository            support/HF/7.N    alfresco-community-repo repository
-setupRemotes alfresco-remote-api            support/HF/7.N    alfresco-community-repo remote-api
+setupRemotes alfresco-core                  support/SP/7.N    alfresco-community-repo core
+setupRemotes alfresco-data-model            support/SP/8.50.N alfresco-community-repo data-model
+setupRemotes alfresco-repository            support/SP/7.N    alfresco-community-repo repository
+setupRemotes alfresco-remote-api            support/SP/7.N    alfresco-community-repo remote-api
 
-setupRemotes alfresco-enterprise-repository support/HF/7.N    alfresco-enterprise-repo repository
-setupRemotes alfresco-enterprise-remote-api support/HF/7.N    alfresco-enterprise-repo remote-api
+setupRemotes alfresco-enterprise-repository support/SP/7.N    alfresco-enterprise-repo repository
+setupRemotes alfresco-enterprise-remote-api support/SP/7.N    alfresco-enterprise-repo remote-api
 setupRemotes acs-packaging                  support/SP/6.2.N  alfresco-enterprise-repo packaging
 
 
@@ -118,7 +118,6 @@ git remote add alfresco-core                  ../$oldReposDirName/alfresco-core
 git remote add alfresco-data-model            ../$oldReposDirName/alfresco-data-model
 git remote add alfresco-repository            ../$oldReposDirName/alfresco-repository
 git remote add alfresco-remote-api            ../$oldReposDirName/alfresco-remote-api
-git remote add acs-community-packaging        ../$oldReposDirName/acs-community-packaging
 git config merge.renameLimit 999999
 git fetch alfresco-core                       | grep -v 'new tag]'
 git fetch alfresco-data-model                 | grep -v 'new tag]'
