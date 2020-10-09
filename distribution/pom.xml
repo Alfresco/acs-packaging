@@ -130,6 +130,13 @@
                         </goals>
                         <configuration>
                             <artifactItems>
+                                <!-- Extract keystore from alfresco-repository -->
+                                <artifactItem>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>alfresco-repository</artifactId>
+                                    <includes>alfresco/keystore/**</includes>
+                                </artifactItem>
+
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-content-services-share-distribution</artifactId>

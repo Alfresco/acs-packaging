@@ -72,6 +72,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | PostgreSQL | @dependency.postgresql.version@ |
 | Oracle JDBC ojdbc7 | 12.2.0.1 |
 | Microsoft JDBC Driver | 7.0 | 7.1
+| Amazon Aurora | Latest |
 
 ##### Application Servers
 | Component | Recommended | Also Available |
