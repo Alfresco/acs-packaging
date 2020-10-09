@@ -69,6 +69,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | PostgreSQL | 10.9 |
 | PostgreSQL | 11.4 |
 | MariaDB | 10.2.18 |
+| Amazon Aurora | Latest |
 
 ##### Database Connectors
 | Component | Recommended | Also Available |
