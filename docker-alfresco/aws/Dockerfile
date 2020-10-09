@@ -31,7 +31,7 @@ RUN java -jar ${TOMCAT_DIR}/alfresco-mmt/alfresco-mmt*.jar install \
 # group only has restricted permissions and world has no permissions.
 RUN chgrp -R ${GROUPNAME} ${TOMCAT_DIR}/webapps ${TOMCAT_DIR}/amps ${TOMCAT_DIR}/lib && \
     find ${TOMCAT_DIR}/webapps -type d -exec chmod 0750 {} \; && \
-    find ${TOMCAT_DIR}/webapps -type f -exec chmod 0641 {} \; && \
+    find ${TOMCAT_DIR}/webapps -type f -exec chmod 0640 {} \; && \
     chmod 664 ${TOMCAT_DIR}/amps/*
 
 USER ${IMAGEUSERNAME}
