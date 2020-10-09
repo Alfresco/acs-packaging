@@ -8,6 +8,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Component | Recommended | Also Available |
 |---|---|---|
 | Alfresco Content Services | @project.version@ |
+| Alfresco Repository |@dependency.alfresco-enterprise-repo.version@ |
 | Alfresco Share | @alfresco.share.version@ |
 | Alfresco Search Services | 1.1.1 |
 | Alfresco Desktop Sync Service | @alfresco.desktop-sync.version@ |
@@ -61,6 +62,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Oracle | 12c  |
 | PostgreSQL | 10.1 |
 | MariaDB | 10.2.11 |
+| Amazon Aurora | Latest |
 
 ##### Database Connectors
 | Component | Recommended | Also Available |
