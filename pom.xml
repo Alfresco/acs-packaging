@@ -3,7 +3,7 @@
     <artifactId>acs-packaging</artifactId>
     <packaging>pom</packaging>
     <name>Alfresco Content Services Packaging</name>
-    <version>6.2.2.2-TEST4-SNAPSHOT</version>
+    <version>6.2.2.4-SNAPSHOT</version>
 
     <parent>
         <groupId>org.alfresco</groupId>
