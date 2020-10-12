@@ -46,8 +46,8 @@ jobs:
   include:
     - name: "WhiteSource scan"
       stage: test
-      # only on support branches or master and if it is not a PR
-      if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request
+      # only on release branches or master and if it is not a PR
+      if: fork = false AND (branch = master OR branch =~ /release\/.*/) AND type != pull_request
       install: travis_retry travis_wait 30 mvn -B -q install -f war/pom.xml
       script:
         # Download the latest version of WhiteSource Unified Agent
@@ -58,14 +58,14 @@ jobs:
     - name: "Empty Job"
       # Exists so that the build takes place on feature branches
       stage: test
-      if: fork = false AND (branch != master AND branch !~ /support\/.*/) OR type == pull_request
+      if: fork = false AND (branch != master AND branch !~ /release\/.*/) OR type == pull_request
       script:
         - java -version
 
     # Commented out for now for stability. See ACS-102
     # - name: "Veracode static code scan"
-    #     # only on support branches or master and if it is not a PR
-    #   if: fork = false AND (branch = master OR branch =~ /support\/.*/) AND type != pull_request
+    #     # only on release branches or master and if it is not a PR
+    #   if: fork = false AND (branch = master OR branch =~ /release\/.*/) AND type != pull_request
     #   install: travis_retry travis_wait 30 mvn -B -q install -f war/pom.xml
     #   before_install: bash scripts/veracode/static_analysis_init.sh
     #   script: travis_retry bash scripts/veracode/static_analysis.sh
