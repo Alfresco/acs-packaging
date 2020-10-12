@@ -49,15 +49,15 @@ alias entRD="(cd alfresco-enterprise-repo && mvn clean install -PenterpriseDocke
 alias comPD="(cd acs-community-packaging  && mvn clean install -PcommunityDocker  -Dimage.tag=$TAG -Drepo.image.tag=$TAG -Dmaven.javadoc.skip=true)"
 alias entPD="(cd acs-packaging            && mvn clean install -PenterpriseDocker -Dimage.tag=$TAG -Drepo.image.tag=$TAG)"
 
-alias comT='     (cd acs-community-packaging  && mvn      clean install -Prun,withShare -rf dev-tomcat)'
-alias comTDebug='(cd acs-community-packaging  && mvnDebug clean install -Prun,withShare -rf dev-tomcat)'
-alias comO='     (cd acs-community-packaging  && mvn      clean install -Prun,withShare -rf dev-acs-amps-overlay)'
-alias comODebug='(cd acs-community-packaging  && mvnDebug clean install -Prun,withShare -rf dev-acs-amps-overlay)'
+alias comT='     (cd acs-community-packaging  && mvn      clean install -Prun,withShare)'
+alias comTDebug='(cd acs-community-packaging  && mvnDebug clean install -Prun,withShare)'
+alias comO='     (cd acs-community-packaging  && mvn            install -Prun,withShare -rf dev/dev-acs-amps-overlay)'
+alias comODebug='(cd acs-community-packaging  && mvnDebug       install -Prun,withShare -rf dev/dev-acs-amps-overlay)'
 
-alias entT='     (cd acs-packaging            && mvn      clean install -Prun,withShare -rf dev-tomcat)'
-alias entTDebug='(cd acs-packaging            && mvnDebug clean install -Prun,withShare -rf dev-tomcat)'
-alias entO='     (cd acs-packaging            && mvn      clean install -Prun,withShare -rf dev-acs-amps-overlay)'
-alias entODebug='(cd acs-packaging            && mvnDebug clean install -Prun,withShare -rf dev-acs-amps-overlay)'
+alias entT='     (cd acs-packaging            && mvn      clean install -Prun,withShare)'
+alias entTDebug='(cd acs-packaging            && mvnDebug clean install -Prun,withShare)'
+alias entO='     (cd acs-packaging            && mvn            install -Prun,withShare -rf dev/dev-acs-amps-overlay)'
+alias entODebug='(cd acs-packaging            && mvnDebug       install -Prun,withShare -rf dev/dev-acs-amps-overlay)'
 
 alias com='comR && comP && comT'
 alias ent='comR && entR && entP && entT'
