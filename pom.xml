@@ -9,7 +9,7 @@
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-enterprise-repo</artifactId>
         <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
-        <version>8.300-TEST8</version>
+        <version>8.300-TEST11-SNAPSHOT</version>
     </parent>
 
     <scm>
