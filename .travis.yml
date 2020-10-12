@@ -24,6 +24,7 @@ branches:
     - /support\/.*/
     - /release\/.*/
     - feature/REPO-5111_repo_build
+    - fix/MNT-21879
 
 env:
   global:
