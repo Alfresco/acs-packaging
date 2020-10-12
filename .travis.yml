@@ -21,17 +21,15 @@ before_cache: bash scripts/travis/cleanup_cache.sh
 branches:
   only:
     - master
-    - /support\/.*/
     - /release\/.*/
-    - feature/REPO-5271_622
 
 env:
   global:
     - TAS_SCRIPTS=../alfresco-community-repo/packaging/tests/scripts
     - TAS_ENVIRONMENT=./tests/environment
     # Release version has to start with real version (7.0.0-....) for the docker image to build successfully.
-    - RELEASE_VERSION=6.2.2.2
-    - DEVELOPMENT_VERSION=6.2.2.3-SNAPSHOT
+    - RELEASE_VERSION=6.2.2.3
+    - DEVELOPMENT_VERSION=6.2.2.4-SNAPSHOT
 
 stages:
   - name: test
