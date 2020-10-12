@@ -44,10 +44,10 @@ Create the development tomcat environment, apply AMPs on top of the repository c
 run tomcat. The `run` profile is what starts tomcat. The `withShare` applies
 the Share services AMP and adds the `share.war` to tomcat. 
 Once started, you will be able to access Share on `http://localhost:8080/share` and various repository
-endpoints via `http://localhost:8080/alfresco/`
-To attach a debugger to the
-repository code, change `mvn` to `mvnDebug` in the following command.
+endpoints via `http://localhost:8080/alfresco/`. `entT` is an alias for the
+following command and `entTDebug` will allow a debugger to be attached.
 ~~~
+$ # The alias entT is the same as the following mvn command. entTDebug may also be used.
 $ mvn clean install -Prun,withShare
 [INFO] Scanning for projects...
 [INFO] ------------------------------------------------------------------------
@@ -63,6 +63,13 @@ $ mvn clean install -Prun,withShare
 ...
 INFO: Starting ProtocolHandler ["http-bio-8080"]
 ~~~
+
+If you kill the tomcat instance (^C) and wish to restart it, use the following command
+or the `entO` alias, or `entODebug` to attach a debuger.
+~~~
+$ mvn install -Prun,withShare -rf dev-acs-amps-overlay
+~~~
+
 
 ## Clean up
 When finished, kill the tomcat instance and stop the Docker instances. You will normally also
