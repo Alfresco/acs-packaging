@@ -38,10 +38,10 @@ alias entP='(cd acs-packaging            && mvn clean install)'
 alias entRD="(cd alfresco-enterprise-repo && mvn clean install -PenterpriseDocker -Dimage.tag=$TAG                             -DskipTests=true -Dmaven.javadoc.skip=true )"
 alias entPD="(cd acs-packaging            && mvn clean install -PenterpriseDocker -Dimage.tag=$TAG -Drepo.image.tag=$TAG)"
 
-alias entT='     (cd acs-packaging            && mvn      clean install -Prun,withShare -rf dev-tomcat)'
-alias entTDebug='(cd acs-packaging            && mvnDebug clean install -Prun,withShare -rf dev-tomcat)'
-alias entO='     (cd acs-packaging            && mvn      clean install -Prun,withShare -rf dev-acs-amps-overlay)'
-alias entODebug='(cd acs-packaging            && mvnDebug clean install -Prun,withShare -rf dev-acs-amps-overlay)'
+alias entT='     (cd acs-packaging            && mvn      clean install -Prun,withShare)'
+alias entTDebug='(cd acs-packaging            && mvnDebug clean install -Prun,withShare)'
+alias entO='     (cd acs-packaging            && mvn            install -Prun,withShare -rf dev/dev-acs-amps-overlay)'
+alias entODebug='(cd acs-packaging            && mvnDebug       install -Prun,withShare -rf dev/dev-acs-amps-overlay)'
 
 alias ent='comR && entR && entP && entT'
 alias entD='comR && entRD && entPD'
