@@ -8,6 +8,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Component | Recommended | Also Available |
 |---|---|---|
 | Alfresco Content Services | @project.version@ |
+| Alfresco Repository |@dependency.alfresco-enterprise-repo.version@ |
 | Alfresco Share | @alfresco.share.version@ |
 | Alfresco Search Services | 2.0.0 |
 | Alfresco Insight Engine | 2.0.0 |
@@ -81,7 +82,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Application Servers
 | Component | Recommended | Also Available |
 |---|---|---|
-| Tomcat | 8.5.43 |
+| Tomcat | 8.5.51 |
 
 ##### Client Operating Systems
 | Component | Recommended | Also Available |
