@@ -38,8 +38,8 @@
         <dependency.alfresco-enterprise-repository.version>mnt-21871-7.0.N</dependency.alfresco-enterprise-repository.version>
         <dependency.alfresco-remote-api.version>mnt-21871-7.0.N</dependency.alfresco-remote-api.version>
         <dependency.alfresco-repository.version>mnt-21871-7.0.N</dependency.alfresco-repository.version>
-        <dependency.alfresco-data-model.version>8.154</dependency.alfresco-data-model.version>
-        <dependency.alfresco-core.version>8.49</dependency.alfresco-core.version>
+        <dependency.alfresco-data-model.version>8.158</dependency.alfresco-data-model.version>
+        <dependency.alfresco-core.version>8.50</dependency.alfresco-core.version>
 
         <dependency.alfresco-hb-data-sender.version>1.0.12</dependency.alfresco-hb-data-sender.version>
         <dependency.activiti-repo-connector.version>1.5</dependency.activiti-repo-connector.version>
