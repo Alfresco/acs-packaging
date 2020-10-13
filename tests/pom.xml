@@ -10,13 +10,14 @@
     </parent>
 
     <modules>
-        <module>tas-restapi</module>
-        <module>tas-cmis</module>
-        <module>tas-email</module>
-        <module>tas-webdav</module>
-        <module>tas-integration</module>
-        <module>tas-cluster</module>
-        <module>tas-all-amps</module>
+        <!-- Even the old TAS tests don't support Java 8 -->
+<!--        <module>tas-restapi</module>-->
+<!--        <module>tas-cmis</module>-->
+<!--        <module>tas-email</module>-->
+<!--        <module>tas-webdav</module>-->
+<!--        <module>tas-integration</module>-->
+<!--        <module>tas-cluster</module>-->
+<!--        <module>tas-all-amps</module>-->
     </modules>
 
     <properties>
