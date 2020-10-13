@@ -21,9 +21,8 @@ before_cache: bash scripts/travis/cleanup_cache.sh
 branches:
   only:
     - master
-    - /support\/.*/
     - /release\/.*/
-    - feature/REPO-5111_repo_build
+    - merge/700_A8
 
 env:
   global:
