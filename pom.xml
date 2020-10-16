@@ -37,7 +37,7 @@
         <repo.image.tag>${dependency.alfresco-enterprise-repo.version}</repo.image.tag>
         <share.image.tag>${alfresco.share.version}</share.image.tag>
 
-        <alfresco.share.version>7.0.0-A4</alfresco.share.version>
+        <alfresco.share.version>7.0.0-M2</alfresco.share.version>
         <alfresco.alfresco-share-services.version>7.0.0-A4</alfresco.alfresco-share-services.version>
         <alfresco.api-explorer.version>7.0.0-M1</alfresco.api-explorer.version>
         <alfresco.rm-enterprise-rest-api-explorer.version>3.0.2</alfresco.rm-enterprise-rest-api-explorer.version>
