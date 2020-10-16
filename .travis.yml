@@ -22,7 +22,6 @@ branches:
   only:
     - master
     - /release\/.*/
-    - feature/APPS-553
 
 env:
   global:
