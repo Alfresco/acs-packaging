@@ -24,7 +24,7 @@ public class DiscoveryTests extends RestTest
 
     @BeforeClass(alwaysRun = true)
     public void dataPreparation() throws Exception
-    {  
+    {
         adminModel = dataUser.getAdminUser();
         userModel = dataUser.createRandomTestUser();
     }
@@ -71,6 +71,7 @@ public class DiscoveryTests extends RestTest
                 "org.alfresco.integrations.google.docs",
                 "alfresco-trashcan-cleaner",
                 "org_alfresco_integrations_S3Connector",
+                //"org_alfresco_integrations_AzureConnector",
                 "org_alfresco_module_xamconnector",
                 "alfresco-content-connector-for-salesforce-repo",
                 "alfresco-share-services",
@@ -78,15 +79,17 @@ public class DiscoveryTests extends RestTest
                 "org_alfresco_device_sync_repo",
 //                "org_alfresco_mm_repo",
                 "alfresco-ai-repo",
+                "org_alfresco_module_rm", "alfresco-rm-enterprise-repo",
                 "alfresco-glacier-connector-repo"
-//                , "org.alfresco.module.TransformationServer" // this is the DTE not ATS
+                // TODO uncomment this amp once https://issues.alfresco.com/jira/browse/MNT-21648 is done
+                //"org.alfresco.module.TransformationServer" // this is the DTE not ATS
         );
 
         expectedModules.forEach(module ->
                 assertTrue(modules.contains(module), String.format("Expected module %s is not installed", module)));
 
-        // Check that all installed modules are in INSTALLED state
+        // Check that all installed modules are in INSTALLED and also UNKNOWN state as reported by some
         List<String> modulesStates = restClient.onResponse().getResponse().jsonPath().getList("entry.repository.modules.installState", String.class);
-        assertEquals("Number of amps installed should match expected", expectedModules.size(), Collections.frequency(modulesStates, "INSTALLED"));
+        assertEquals("Number of amps installed should match expected" + modulesStates, expectedModules.size(), Collections.frequency(modulesStates, "INSTALLED") + Collections.frequency(modulesStates, "UNKNOWN"));
     }
 }
