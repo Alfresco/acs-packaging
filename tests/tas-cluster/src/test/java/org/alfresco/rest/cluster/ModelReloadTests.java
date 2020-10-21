@@ -1,8 +1,5 @@
 package org.alfresco.rest.cluster;
 
-import java.util.Map;
-import javax.json.Json;
-import javax.json.JsonObject;
 import org.alfresco.rest.ClusterTest;
 import org.alfresco.rest.model.RestCustomModel;
 import org.alfresco.rest.model.RestNodeBodyModel;
@@ -12,11 +9,14 @@ import org.alfresco.utility.model.ContentModel;
 import org.alfresco.utility.model.CustomContentModel;
 import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.TestGroup;
-import org.alfresco.utility.report.Bug;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
 import org.springframework.http.HttpStatus;
 import org.testng.annotations.Test;
+
+import javax.json.Json;
+import javax.json.JsonObject;
+import java.util.Map;
 
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertFalse;
@@ -34,6 +34,7 @@ public class ModelReloadTests extends ClusterTest
     @Test(groups = { TestGroup.REST_API, TestGroup.CLUSTER, TestGroup.SANITY})
     public void testUploadActivateModel() throws Exception
     {
+        restClientServer1.configureServerEndpoint();
         restClientServer1.authenticateUser(dataContent.getAdminUser());
 
         RestNodeBodyModel modelNode = new RestNodeBodyModel();
@@ -99,6 +100,7 @@ public class ModelReloadTests extends ClusterTest
         assertNotNull(restCustomModel.getStatus());
         assertEquals("The model should be published on node1 now.", "ACTIVE", restCustomModel.getStatus());
 
+        restClientServer2.configureServerEndpoint();
         // Check the activation flag on the second node
         restClientServer2.authenticateUser(dataContent.getAdminUser());
         restNodeModel = restClientServer2.withCoreAPI()
@@ -123,6 +125,7 @@ public class ModelReloadTests extends ClusterTest
     @Test(groups = { TestGroup.REST_API, TestGroup.CLUSTER, TestGroup.SANITY})
     public void testUploadActivateHugeModel() throws Exception
     {
+        restClientServer1.configureServerEndpoint();
         restClientServer1.authenticateUser(dataContent.getAdminUser());
 
         RestNodeBodyModel modelNode = new RestNodeBodyModel();
@@ -188,6 +191,7 @@ public class ModelReloadTests extends ClusterTest
         assertNotNull(restCustomModel.getStatus());
         assertEquals("The model should be published on node1 now.", "ACTIVE", restCustomModel.getStatus());
 
+        restClientServer2.configureServerEndpoint();
         // Check the activation flag on the second node
         restClientServer2.authenticateUser(dataContent.getAdminUser());
         restNodeModel = restClientServer2.withCoreAPI()
