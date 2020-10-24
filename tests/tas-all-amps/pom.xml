@@ -277,24 +277,23 @@
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
                                         </artifactItem>
-                                        <!--
-                                        <artifactItem>
-                                            <groupId>org.alfresco.mediamanagement</groupId>
-                                            <artifactId>alfresco-mm-repo</artifactId>
-                                            <version>${alfresco.mm.version}</version>
-                                            <type>amp</type>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                        </artifactItem>
-                                        <artifactItem>
-                                            <groupId>org.alfresco.mediamanagement</groupId>
-                                            <artifactId>alfresco-mm-share</artifactId>
-                                            <version>${alfresco.mm.version}</version>
-                                            <type>amp</type>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
-                                        </artifactItem>
-                                        -->
+                                        <!-- MM is commented out, see SEARCH-2535 -->
+<!--                                        <artifactItem>-->
+<!--                                            <groupId>org.alfresco.mediamanagement</groupId>-->
+<!--                                            <artifactId>alfresco-mm-repo</artifactId>-->
+<!--                                            <version>${alfresco.mm.version}</version>-->
+<!--                                            <type>amp</type>-->
+<!--                                            <overWrite>false</overWrite>-->
+<!--                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>-->
+<!--                                        </artifactItem>-->
+<!--                                        <artifactItem>-->
+<!--                                            <groupId>org.alfresco.mediamanagement</groupId>-->
+<!--                                            <artifactId>alfresco-mm-share</artifactId>-->
+<!--                                            <version>${alfresco.mm.version}</version>-->
+<!--                                            <type>amp</type>-->
+<!--                                            <overWrite>false</overWrite>-->
+<!--                                            <outputDirectory>${project.build.directory}/amps_share</outputDirectory>-->
+<!--                                        </artifactItem>-->
                                         <!-- TODO uncomment this amp once https://issues.alfresco.com/jira/browse/MNT-21648 is solved -->
 <!--                                        <artifactItem>
                                             <groupId>org.alfresco</groupId>
