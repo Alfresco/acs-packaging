@@ -22,7 +22,6 @@ branches:
   only:
     - master
     - /release\/.*/
-    - feature/AAE-*
 
 env:
   global:
