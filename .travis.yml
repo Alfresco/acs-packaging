@@ -22,6 +22,7 @@ branches:
   only:
     - master
     - /release\/.*/
+    - feature/AAE-*
 
 env:
   global:
@@ -177,6 +178,7 @@ jobs:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco"
         - docker ps
+        - ./tests/pipeline-all-amps/verify_amps_applied.sh
 
     - name: "Update Docker latest images"
       stage: docker_latest
