@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 echo "=========================== Starting Verify Amps Applied Script ==========================="
 PS4="\[\e[35m\]+ \[\e[m\]"
+set -vex
 pushd "$(dirname "${BASH_SOURCE[0]}")/../../"
 
 ## Get List of Modules and Versions from /discovery endpoint
@@ -110,4 +111,5 @@ getModulesInstalled
 getExpectedModules
 
 popd
+set -vex
 echo "=========================== Finishing Verify Amps Applied Script =========================="
