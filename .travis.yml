@@ -179,6 +179,7 @@ jobs:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco"
         - docker ps
+        - curl -s -u admin:admin http://localhost:8080/alfresco/api/discovery
         - ./tests/pipeline-all-amps/verify_amps_applied.sh
 
     - name: "Update Docker latest images"
