@@ -6,9 +6,6 @@ Direct Access Links (v2)
 
 * https://issues.alfresco.com/jira/browse/ACS-566
 * https://issues.alfresco.com/jira/browse/ACS-595
-* https://issues.alfresco.com/jira/browse/ACS-415
-* https://issues.alfresco.com/jira/browse/ACS-117
-* https://issues.alfresco.com/jira/browse/ACS-580
 
 ___
 ## Purpose
@@ -87,7 +84,6 @@ The REST API configuration only affects the REST layer in ACS:
 
 
 #### Storage Connector Content Store (e.g. S3)
-TODO: replace quotes with markdown quotes
 Each content store (i.e. "_final_" content store, one that provides actual storage, as opposed to a
 _caching content store_), should have dedicated configuration options:
 * **`connector.s3.directAccessUrl.enabled=false`**
@@ -180,7 +176,7 @@ header will be set in the service layer logic and can't be controlled by the DAU
 ##### Open API Specs
 
 ```
-'/nodes/{nodeId}/request-content-url':    
+'/nodes/{nodeId}/request-direct-access-url':    
     post:    
       x-alfresco-since: "7.0.0"    
       tags:    
@@ -189,7 +185,7 @@ header will be set in the service layer logic and can't be controlled by the DAU
       description: |    
         **Note:** This endpoint is available in Alfresco 7.0 and newer versions.    
         Generate a direct access content url for the given **nodeId**.    
-      operationId: request-content-url    
+      operationId: request-direct-access-url    
       parameters:    
         - $ref: '#/parameters/nodeIdParam'    
         - in: body    
@@ -235,7 +231,12 @@ New "`requestContentDirectUrl`" methods must be added in multiple classes involv
 request flow, with varying signatures (arguments) depending on the information
 available/required at each step.
 
-TODO: Insert images
+![ACS - Class Diagram 1](images/dau-design-doc-class-diagram-acs-1.svg)
+![ACS - Class Diagram 2](images/dau-design-doc-class-diagram-acs-2.svg)
+![ACS - Class Diagram 3](images/dau-design-doc-class-diagram-acs-3.svg)
+![ACS - Class Diagram 4](images/dau-design-doc-class-diagram-acs-4.svg)
+![ACS - Class Diagram 5](images/dau-design-doc-class-diagram-acs-5.svg)
+![ACS - Class Diagram 6](images/dau-design-doc-class-diagram-acs-6.svg)
 
 _PlantUML:_
 ```puml
@@ -337,7 +338,7 @@ The **BaseContentStore** does not support Direct Access URLs, and it needs no ex
 modifications, as that behaviour is already covered by the default implementation of the
 ContentStore interface (in ACS).
 
-TODO: Insert images
+![Cloud Conenctor Base - Class Diagram](images/dau-design-doc-class-diagram-cloud-connector-base-1.svg)
 
 _PlantUML:_
 ```puml
@@ -352,8 +353,9 @@ package org.alfresco.integrations.connector {
 
 ##### S3 Connector
 
-TODO: Insert images
+![S3 Conenctor - Class Diagram](images/dau-design-doc-class-diagram-s3-connector-1.svg)
 
+_PlantUML:_
 ```puml
 @startuml
 package org.alfresco.integrations.connector {
@@ -393,7 +395,9 @@ In order to be able to request a Direct Access URLs 3 configurations must be set
 ### Service-layer flows
 #### Generic Flow
 
-TODO: Insert images
+![Generic flow - Sequence Diagram](images/dau-design-doc-sequence-diagram-generic-flow-1.svg)
+
+_PlantUML:_
 ```puml
 @startuml
 
@@ -568,7 +572,10 @@ _Code snippet:_
 ```
 
 #### S3 Content Store
-TODO: Insert images
+
+![S3 flow - Sequence Diagram](images/dau-design-doc-sequence-diagram-s3-flow-1.svg)
+
+_PlantUML:_
 ```puml
 @startuml
 
@@ -606,8 +613,9 @@ time (`alfresco.restApi.directAccessUrl.defaultExpiryTimeInSec`). The service la
 whether the expiry time must be reduced (for instance when the content store max expiry time is
 lower).
 
-TODO: Insert images
+![REST API flow - Sequence Diagram](images/dau-design-doc-sequence-diagram-rest-flow-1.svg)
 
+_PlantUML:_
 ```puml
 @startuml
 
@@ -642,11 +650,12 @@ end
 
 ### UI Client Integration example
 For downloading a file from ACS, a client application could implement a logic that first attempts
-to retrieve (and use) a Direct Access Link (".../request-content-url" endpoint) and if that
+to retrieve (and use) a Direct Access Link (".../request-direct-access-url" endpoint) and if that
 fails, it could default to using the standard Alfresco REST API (".../content" endpoints).  
 
-TODO: Insert images
+![UI integration - Sequence Diagram](images/dau-design-doc-sequence-diagram-ui-flow-1.svg)
 
+_PlantUML:_
 ```puml
 @startuml
 actor User
@@ -706,7 +715,7 @@ can be enabled on only one (or a subset) of those content stores.
 
 ___
 ## Performance and scalability
-Each call to one of the new `.../request-content-url` Alfresco REST endpoints results in the
+Each call to one of the new `.../request-direct-access-url` Alfresco REST endpoints results in the
 creation of a new (and separate) pre-signed URL for an AWS S3 object.
 
 The generation of a pre-signed URL is a purely AWS SDK **client-side operation** - meaning the
