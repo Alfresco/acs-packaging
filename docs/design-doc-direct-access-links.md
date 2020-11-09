@@ -272,7 +272,6 @@ available/required at each step.
 ![ACS - Class Diagram 3](images/dau-design-doc-class-diagram-acs-3.svg)
 ![ACS - Class Diagram 4](images/dau-design-doc-class-diagram-acs-4.svg)
 ![ACS - Class Diagram 5](images/dau-design-doc-class-diagram-acs-5.svg)
-![ACS - Class Diagram 6](images/dau-design-doc-class-diagram-acs-6.svg)
 
 _PlantUML:_
 ```puml
