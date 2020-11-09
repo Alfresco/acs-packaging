@@ -360,7 +360,7 @@ TrashcanEntityResource -[hidden]> TrashcanRenditionsRelation
 @enduml
 ```
 
->*Note:* We could use a separate "**DirectAccessUrlOptions**" class/object for passing around
+>**Note:** We could use a separate "**DirectAccessUrlOptions**" class/object for passing around
 > DAU-specific options such as `validFor` and `attachment`. Such an object could also be later
 > expanded (with new options/parameters) without breaking the existing APIs.
 
