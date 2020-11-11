@@ -258,7 +258,18 @@ header will be set in the service layer logic and can't be controlled by the DAU
 ```
 
 #### Discovery API
-TODO
+
+The Discovery API should provide status information about the Direct Access URLs feature
+ (enabled/disabled).
+
+A new field is required in its reply:
+`RepositoryInfo > StatusInfo > isDirectAccessUrlEnabled`.
+
+The new field should be **`true`** only when DAUs are enabled *system-wide* and DAUs are enabled on
+the *REST API* and when if there is at least one ContentStore which supports and has DAUs enabled.
+
+For the implementation, the `DiscoveryApiWebscript` should inject the `ContentService` bean
+and make use of its `isContentDirectUrlEnabled` method.
 
 #### Java API
 
@@ -284,11 +295,13 @@ package org.alfresco.service.cmr.repository {
     }
 
     interface ContentService {
+        {abstract} +isContentDirectUrlEnabled(): boolean
         {abstract} +requestContentDirectUrl(nodeRef: NodeRef, attachment: boolean, validForOp: Optional<Long>): DirectAccessUrl
     }
 }
 package org.aflresco.repo.content {
     class ContentServiceImpl {
+        +isContentDirectUrlEnabled(): boolean
         +requestContentDirectUrl(nodeRef: NodeRef, attachment: boolean, validForOp: Optional<Long>): DirectAccessUrl
     }
     interface ContentStore {
