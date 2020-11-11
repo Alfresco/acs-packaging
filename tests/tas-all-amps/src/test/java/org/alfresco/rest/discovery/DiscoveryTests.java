@@ -77,8 +77,6 @@ public class DiscoveryTests extends RestTest
                 "alfresco-share-services",
                 "alfresco-saml-repo",
                 "org_alfresco_device_sync_repo",
-                // Commented out, see SEARCH-2535
-//                "org_alfresco_mm_repo",
                 "alfresco-ai-repo",
                 "org_alfresco_module_rm", "alfresco-rm-enterprise-repo",
                 "alfresco-glacier-connector-repo"
