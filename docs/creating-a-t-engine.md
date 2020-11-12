@@ -19,6 +19,8 @@ technologies:
 * Maven
 * Docker
 
+Custom T-Engines may also be used to extract or embed Metadata, as they are just a specialist form of transform.
+For more information see (metadata-extract-embed.md)[metadata-extract-embed.md].
 
 ## Developing and Debugging T-Engines
 
