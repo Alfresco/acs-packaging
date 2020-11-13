@@ -4,6 +4,83 @@
   New Features
 </h2>
 
+<h2>        Libraries
+</h2>
+<ul>
+<li>PdfBox org.apache.pdfbox:pdfbox:2.0.21 removed - transforms are now performed in T-Engines</li>
+<li>PdfBox org.apache.pdfbox:fontbox:2.0.21 removed - transforms are now performed in T-Engines</li>
+<li>PdfBox org.apache.pdfbox:pdfbox-tools:2.0.21 removed - transforms are now performed in T-Engines</li>
+</ul>
+
+<h1>        6.2.2
+</h1>
+
+<h2>        Documentation
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20692'>MNT-20692</a>] -         AWS S3 Connector Manual Deployment - Document Minimum IAM Roles Necessary
+</li>
+</ul>
+
+<h2>        Service Pack Request
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21541'>MNT-21541</a>] -         Set default log level for Solr shard logging to "error"
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21511'>MNT-21511</a>] -         Kerberos SSO does not work correctly in Alfresco 6.2.0 Aikau 1.0.101.19 Config Module.xml was not found
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21363'>MNT-21363</a>] -         Create Site fails with Kerb SSO in 6.2
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21430'>MNT-21430</a>] -         ACS 6.2 - Enabling Repository CORS Fails as 2 JAR files are missing
+</li>
+</ul>
+
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21591'>MNT-21591</a>] -         Search queries fail due to "No available shards for solr query of store workspace://SpacesStore - trying non-dynamic configuration"
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21514'>MNT-21514</a>] -         Performance Bottleneck in InMemoryTicketComponentImpl#getNewTicket
+</li>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-18308'>MNT-18308</a>] -         Changing permissions on a large site creates a large transaction causing solr to go out of memory
+</ul>
+
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/ACS-284'>ACS-284</a>] -         AuthenticationUtil.runAs method should leave the security context as it found it
+</li>
+</ul>
+
+<h2>
+  Security
+</h2>
+<h3>Repository</h3>
+We have verified that the vulnerabilities in these libraries cannot be exploited within the ACS repository.
+
+<h4>log4j-1.2.17</h4>
+
+<a href='https://vuln.whitesourcesoftware.com/vulnerability/CVE-2019-17571/'>CVE-2019-17571</a>: SocketServer class that is vulnerable to deserialization of untrusted data (CVSS3 score: 9.8)
+
+The SocketServer class is not directly used in the Repository codebase, so this vulnerability does not affect the ACS product security.
+
+Note to custom extension providers:
+
+If you provide a custom extension to the ACS Repository that is using this functionality, the security of your custom extension might be affected by this vulnerability.
+
+<h4>netty-codec-http-4.1.32</h4>
+
+<a href='https://vuln.whitesourcesoftware.com/vulnerability/CVE-2019-16869/'>CVE-2019-16869</a>: Netty before 4.1.42.Final mishandles whitespace before the colon in HTTP headers (such as a "Transfer-Encoding : chunked" line), which leads to HTTP request smuggling. (CVSS3 score: 7.5)
+
+<a href='https://vuln.whitesourcesoftware.com/vulnerability/CVE-2019-20444/'>CVE-2019-20444</a>: HttpObjectDecoder.java in Netty before 4.1.44 allows an HTTP header that lacks a colon, which might be interpreted as a separate header with an incorrect syntax, or might be interpreted as an "invalid fold." (CVSS3 score: 9.1)
+
+<a href='https://vuln.whitesourcesoftware.com/vulnerability/CVE-2019-20445/'>CVE-2019-20445</a>: HttpObjectDecoder.java in Netty before 4.1.44 allows a Content-Length header to be accompanied by a second Content-Length header, or by a Transfer-Encoding header. (CVSS3 score: 9.1)
+
+The vulnerabilities listed above can be exploited when netty-codec-http is used for providing a HTTP server, which is not the case in our codebase.
+
+Note to custom extension providers:
+
+If you provide a custom extension to the ACS Repository that is using this functionality, the security of your custom extension might be affected by this vulnerability.
 <h1>        6.2.1
 </h1>
 <h2>
