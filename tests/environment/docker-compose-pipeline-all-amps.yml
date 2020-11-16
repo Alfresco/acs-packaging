@@ -64,8 +64,6 @@ services:
                 -Dsaml.sp.isEnabled=false
                 -Xms1500m -Xmx1500m
                 "
-        ports:
-          - 10001:10001
 
     transform-router:
         mem_limit: 512m
