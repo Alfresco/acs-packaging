@@ -179,6 +179,7 @@ jobs:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco"
         - curl -s -u 'admin':'admin' 'http://localhost:8080/alfresco'
+        - curl -s -u 'admin':'admin' 'http://localhost:10001/alfresco'
         - docker ps
         - ./tests/pipeline-all-amps/verify_amps_applied.sh
 
