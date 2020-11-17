@@ -1,3 +1,15 @@
+<h1>        6.2.2.6
+</h1>
+
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-22036'>MNT-22036</a>] -         REST API always applies versioning
+</li>
+</ul>
+
+
+
 <h1>        6.2.2.1
 </h1>
 
