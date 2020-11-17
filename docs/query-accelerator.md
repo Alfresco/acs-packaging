@@ -189,14 +189,56 @@ installation. The progress of the population of the table will be output to the 
 7. TODO: How does a user know when a table is fully populated and live?
 
 
-## Query Sets and Transaction Meta-Data Queries
+## Query Sets and Transaction Meta-Data Queries (TMDQ)
 
-### How to create a Query Set to support a Transactional Meta-Data Query
+Here we give an example of how to create a Query Set for a TMDQ.
+
+The following TMDQ selects all documents (cm:content) which have a dublincore aspect (cm:dublincore) and has a 
+publisher (cm:publisher) equal to 'Hachette Livre' and a type (cm:type) equal to 'Action'.
+
+```
+{
+   "query":{
+      "query":"select * from cmis:document as d join cm:dublincore as dc on d.cmis:objectId = dc.cmis:objectId where dc.cm:publisher = 'Hachette Livre' and dc.cm:type='Action'",
+      "language":"cmis"
+   }
+}
+```
+
+The following Query Set would be able to support the above TMDQ.
+
+```json
+{
+  "version": "1",
+  "tableName": "doc_dublincore",
+  "properties": [
+    {
+      "name": "cm:publisher",
+      "isIndex": true
+    },
+    {
+      "name": "cm:type",
+      "isIndex": true
+    }
+  ],
+  "aspects": [
+    {
+      "name": "cm:dublincore",
+      "isIndex": true
+    }
+  ],
+  "type": {
+      "name": "cm:content",
+      "isIndex": true
+  }
+}
+```
 
 
 
 ## Logging
 
+TODO: Show how to check the logging for the table population progress.
 
 
 ## Notes
