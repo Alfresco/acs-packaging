@@ -182,6 +182,7 @@ jobs:
         - curl -s -u 'admin':'admin' 'http://localhost:8080/alfresco'
         - curl -s -u 'admin':'admin' 'http://localhost:10001/alfresco'
         - docker ps
+        - docker logs $(docker ps -aqf ancestor=alfresco/alfresco-pipeline-all-amps-repo)
         - ./tests/pipeline-all-amps/verify_amps_applied.sh
 
 #    - name: "Update Docker latest images"
