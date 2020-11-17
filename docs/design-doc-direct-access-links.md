@@ -83,10 +83,11 @@ properties).
 ### Configurations
 
 #### System wide configuration (ACS)
-The ACS system-wide configuration take precedence over the other more specific settings (rest
-api, content-store):
+ACS system-wide configuration settings:
 * **`system.content.directAccessUrl.enabled=false`**
     - Controls whether this feature is available, system wide.
+    - For DAUs to work, the feature needs to be enabled both system-wide and on the individual
+     content-store.
 * **`system.content.directAccessUrl.defaultExpiryTimeInSec=30`**
     - Sets the default expiry time for the DAU across all Content Stores.
     - It’s value cannot exceed the system-wide max expiry time
@@ -176,11 +177,6 @@ Whether or not a client can request a Direct Access URL by using a REST endpoint
 the `alfresco.restApi.directAccessUrl.enabled` property. If the REST endpoint is disabled, but the
 feature is enabled system-wide and on the content-store, then the direct access URLs will only
 be usable by Java clients (only service-level requests will be possible).
-
-In terms of **expiry times** (both default & max), the rule of thumb is: the _system-wide_ settings
-take precedence over the _content-store_-specific or _rest-api_-specific configuration. The
-later-ones, for instance, can only further restrict the system-wide expiry time (if set), but never
-increase it. Basically, the smaller values will be used.
 
 
 ### API
