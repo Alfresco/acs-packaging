@@ -325,17 +325,22 @@ package org.alfresco.service.cmr.repository {
 
     interface ContentService {
         {abstract} +isContentDirectUrlEnabled(): boolean
-        {abstract} +requestContentDirectUrl(nodeRef: NodeRef, attachment: boolean, validForOp: Optional<Long>): DirectAccessUrl
+        {abstract} +isContentDirectUrlEnabled(nodeRef: NodeRef): boolean
+        +requestContentDirectUrl(nodeRef: NodeRef, attachment: boolean): DirectAccessUrl
+        {abstract} +requestContentDirectUrl(nodeRef: NodeRef, attachment: boolean, validFor: Long): DirectAccessUrl
     }
 }
 package org.aflresco.repo.content {
     class ContentServiceImpl {
         +isContentDirectUrlEnabled(): boolean
-        +requestContentDirectUrl(nodeRef: NodeRef, attachment: boolean, validForOp: Optional<Long>): DirectAccessUrl
+        +isContentDirectUrlEnabled(nodeRef: NodeRef): boolean
+        +requestContentDirectUrl(nodeRef: NodeRef, attachment: boolean, validFor: Long): DirectAccessUrl
     }
     interface ContentStore {
-        +requestContentDirectUrl(contentUrl: String, attachment: boolean, fileName: String, validForOp: Optional<Long>): DirectAccessUrl
-        +isDirectAccessSupported(): boolean
+        +isContentDirectUrlEnabled(): boolean
+        +isContentDirectUrlEnabled(nodeRef: NodeRef): boolean
+        +requestContentDirectUrl(contentUrl: String, attachment: boolean, fileName: String): DirectAccessUrl
+        +requestContentDirectUrl(contentUrl: String, attachment: boolean, fileName: String, validFor: Long): DirectAccessUrl
     }
 }
 ContentService <|-- ContentServiceImpl
@@ -343,22 +348,26 @@ ContentServiceImpl -[hidden]> ContentStore
 
 package org.alfresco.rest.api {
     interface Nodes {
-        +requestContentDirectUrl(nodeId: String, attachment: boolean, validForOp: Optional<Long>): DirectAccessUrl
-        {abstract} +requestContentDirectUrl(nodeRef: NodeRef, attachment: boolean, validForOp: Optional<Long>): DirectAccessUrl
+        +requestContentDirectUrl(nodeId: String, attachment: boolean): DirectAccessUrl
+        +requestContentDirectUrl(nodeId: String, attachment: boolean, validFor: Long): DirectAccessUrl
+        +requestContentDirectUrl(nodeRef: NodeRef, attachment: boolean): DirectAccessUrl
+        {abstract} +requestContentDirectUrl(nodeRef: NodeRef, attachment: boolean, validFor: Long): DirectAccessUrl
     }
     interface Renditions {
-        +requestContentDirectUrl(nodeId: String, versionId: String, renditionId: String, attachment: boolean, validForOp: Optional<Long>): DirectAccessUrl
-        {abstract} +requestContentDirectUrl(nodeRef: NodeRef, versionId: String, renditionId: String, attachment: boolean, validForOp: Optional<Long>): DirectAccessUrl
+        +requestContentDirectUrl(nodeId: String, versionId: String, renditionId: String, attachment: boolean): DirectAccessUrl
+        +requestContentDirectUrl(nodeId: String, versionId: String, renditionId: String, attachment: boolean, validFor: Long): DirectAccessUrl
+        +requestContentDirectUrl(nodeRef: NodeRef, versionId: String, renditionId: String, attachment: boolean): DirectAccessUrl
+        {abstract} +requestContentDirectUrl(nodeRef: NodeRef, versionId: String, renditionId: String, attachment: boolean, validFor Long): DirectAccessUrl
     }
 }
 
 package org.alfresco.rest.api.impl {
     class NodesImpl {
-        +requestContentDirectUrl(nodeRef: NodeRef, attachment: boolean, validForOp: Optional<Long>): DirectAccessUrl
+        +requestContentDirectUrl(nodeRef: NodeRef, attachment: boolean, validFor: Long): DirectAccessUrl
     }
 
     class RenditionsImpl {
-        +requestContentDirectUrl(nodeRef: NodeRef, versionId: String, renditionId: String, attachment: boolean, validForOp: Optional<Long>): DirectAccessUrl
+        +requestContentDirectUrl(nodeRef: NodeRef, versionId: String, renditionId: String, attachment: boolean, validFor: Long): DirectAccessUrl
     }
 }
 Nodes <|-- NodesImpl
@@ -422,7 +431,7 @@ _PlantUML:_
 @startuml
 package org.alfresco.integrations.connector {
     interface ServiceAdapter {
-        +requestDirectAccessUrl(contentUrl: String, attachment: boolean, fileName: String, validFor: long): DirectAccessUrl
+        {abstract} +requestContentDirectUrl(contentUrl: String, attachment: boolean, fileName: String, validFor: Long): DirectAccessUrl
     }
 }
 @enduml
@@ -437,12 +446,13 @@ _PlantUML:_
 @startuml
 package org.alfresco.integrations.connector {
     class AmazonS3ServiceAdapter {
-        +requestDirectAccessUrl(contentUrl: String, attachment: boolean, fileName: String, validFor: long): DirectAccessUrl
+        +requestContentDirectUrl(contentUrl: String, attachment: boolean, fileName: String, validFor: Long): DirectAccessUrl
     }
     
     class S3ContentStore {
-        +requestDirectAccessUrl(contentUrl: String, attachment: boolean, fileName: String, validForOp: Optional<Long>): DirectAccessUrl
-        +isDirectAccessSupported(): boolean
+        +isContentDirectUrlEnabled(): boolean
+        +isContentDirectUrlEnabled(contentUrl: String): boolean
+        +requestContentDirectUrl(contentUrl: String, attachment: boolean, fileName: String, validFor: Long): DirectAccessUrl
     }
 }
 @enduml
@@ -804,8 +814,10 @@ The Direct Access URL generation is a fairly simple and quick operation, not par
 computation-intensive (though it does involve a small cryptographic operation - the generated
 URLs are signed with the AWS credentials).
 
-It’s best if client applications request a DAU right before the actual download operation, or only after the intention of using the DAU is certain.
-Client applications should avoid generating DAUs for Alfresco content proactively, when the actual file download is unlikely to happen - especially if a large set of files is involved.
+It’s best if client applications request a DAU right before the actual download operation, or
+only after the intention of using the DAU is certain.
+Client applications should avoid generating DAUs for Alfresco content proactively, when the
+actual file download is unlikely to happen - especially if a large set of files is involved.
 
 >**Note:** Before generating a DAU we must check that the Node in Alfresco has content (e.g. it
 > must be an actual file with content, not a folder or a site).
