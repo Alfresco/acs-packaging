@@ -15,7 +15,8 @@ TIMEOUT=300
 t0=$(date +%s)
 
 echo "Waiting for alfresco to start"
-until $(curl --output /dev/null --head --fail ${ALFRESCO_URL}) || [ "$COUNTER" -eq "$TIMEOUT" ]; do
+status_code=$(curl --write-out '%{http_code}' --output /dev/null --head --fail ${ALFRESCO_URL})
+until [ $status_code != "200" ] || [ "$COUNTER" -eq "$TIMEOUT" ]; do
    printf '.'
    sleep $WAIT_INTERVAL
    COUNTER=$(($COUNTER+$WAIT_INTERVAL))
