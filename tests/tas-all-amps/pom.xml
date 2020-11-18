@@ -4,13 +4,13 @@
     <groupId>org.alfresco.tas</groupId>
     <artifactId>content-repository-all-amps-test</artifactId>
     <name>all-amps test</name>
-    <version>6.2.2.7-SNAPSHOT</version>
+    <version>6.2.2.7</version>
     <packaging>jar</packaging>
 
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>content-repository-tests</artifactId>
-        <version>6.2.2.7-SNAPSHOT</version>
+        <version>6.2.2.7</version>
     </parent>
 
     <developers>
