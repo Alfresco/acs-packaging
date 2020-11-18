@@ -177,8 +177,8 @@ jobs:
         - travis_retry travis_wait 20 mvn -B clean install -Ppipeline,local
       script:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco"
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/share"
+        - ./tests/pipeline-all-amps/wait-for-alfresco-start.sh "http://localhost:8080/alfresco"
+        - ./tests/pipeline-all-amps/wait-for-alfresco-start.sh "http://localhost:8080/share"
         - curl -s -u 'admin':'admin' 'http://localhost:8080/alfresco'
         - curl -s -u 'admin':'admin' 'http://localhost:10001/alfresco'
         - docker ps
