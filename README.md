@@ -1,3 +1,4 @@
+### The `support/HF/...` and `support/SP/...` branches are no longer used to release versions of Alfresco. We now use`release/...` branches. This is why this branch has been renamed with an `archive`suffix.   
 
 # Alfresco Content Services Enterprise Packaging
 This project is producing packaging for Alfresco Content Services Repository Enterprise.
