@@ -6,9 +6,9 @@ pushd "$(dirname "${BASH_SOURCE[0]}")/../../"
 
 ## Get List of Modules and Versions from /discovery endpoint
 
-export ACS_URL="https://develop-share.dev.alfresco.me/alfresco/api/discovery"
+export ACS_URL="https://localhost:8080/alfresco/api/discovery"
 export USERNAME='admin'
-export PASSWORD='Alfresco!12346789'
+export PASSWORD='admin'
 
 declare -a modules_id_installed=()
 
