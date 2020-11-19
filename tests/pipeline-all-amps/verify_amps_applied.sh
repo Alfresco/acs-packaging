@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 echo "=========================== Starting Verify Amps Applied Script ==========================="
 PS4="\[\e[35m\]+ \[\e[m\]"
-set -vex
+#set -vex
 pushd "$(dirname "${BASH_SOURCE[0]}")/../../"
 
 ## Get List of Modules and Versions from /discovery endpoint
 
-export ACS_URL="http://localhost:8080/alfresco/api/discovery"
+export ACS_URL="https://develop-share.dev.alfresco.me/alfresco/api/discovery"
 export USERNAME='admin'
-export PASSWORD='admin'
+export PASSWORD='Alfresco!12346789'
 
 declare -a modules_id_installed=()
 
@@ -111,5 +111,5 @@ getModulesInstalled
 getExpectedModules
 
 popd
-set -vex
+#set -vex
 echo "=========================== Finishing Verify Amps Applied Script =========================="
