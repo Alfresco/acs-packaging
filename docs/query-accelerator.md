@@ -25,8 +25,8 @@ high and generally indicates that there is something wrong with the data model d
 which has been upgraded to 7.0.0 that already contains hundreds of million documents.
 
 2. Multiple (zero or more but typically not more than 10) query set may be defined. Each will have its own name. It will 
-be possible to replace a query set with an new version or to remove it completely. The definition will include the 
-properties, document types or aspects applied to nodes and if necessary (for selected databases) the order of columns 
+be possible to replace a query set with an new version or to remove it completely. The definition can include the 
+properties, document type or aspects applied to nodes and if necessary (for selected databases) the order of columns 
 in compound indexes. The implementation will use one or more JSON files to define the query sets.
 
 3. The addition of new query sets, the replacement of an existing query set or complete removal will not require a 
@@ -127,7 +127,7 @@ You then need to update the version in the query set JSON config and then reques
 This will start a process that will replace the previous version of the query set.
 * A new version of the query set will be added to the internal query set registry.
 * A new version of the denormalised table will be created.
-* The denormalilsed table for the previous version will continue to exist until it has been replaced by the new version.
+* The denormalised table for the previous version will continue to exist until it has been replaced by the new version.
 * The new version of the denormalised table will be populated. This could take a considerable time depending on the scale 
 of the Alfresco installation.
 * When the population is completed
@@ -155,10 +155,15 @@ The query sets can be refreshed in the Alfresco Administration Console in Share.
 
 ![Relational Query Accelerator](images/RefreshQuerySet2.png "Relational Query Accelerator")
 
-3 Press the 'Refresh Query Set' button. This will start a refresh and you will see the following dialog.
+3 Press the 'Refresh Query Set' button. 
 
-![Refresh Query Set Dialog](images/RefreshQuerySet3.png "Refresh Query Set Dialog")
+If there are updates to the query sets you will see:
 
+![Refresh Started](images/RefreshQuerySetStarted.png "Refresh Started")
+
+If there are no updates to the query sets you will see:
+
+![Refresh Not Started](images/RefreshQuerySetNotStarted.png "Refresh Not Started")
 
 ## How to set-up the Query Accelerator for a new Alfresco installation
 
