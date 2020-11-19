@@ -95,7 +95,7 @@ The query set configurations define the denormalized tables that will be created
 }
 ```
 
-### Anatomy of the query set configuration
+### Query set configuration
 
 | Attribute        | Description |
 | ---------------- | ----------- |
