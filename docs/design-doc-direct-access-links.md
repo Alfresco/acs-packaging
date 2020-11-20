@@ -780,11 +780,12 @@ end
 >
 > Also, in terms of UI/UX, there's quite a bit of freedom in how a client app would visually make
 > use of the feature. For instance, it could change the behaviour of its download buttons to make
-> use of DAUs when their available (no visual changes, transparent to the user), or it could have
+> use of DAUs when they're available (no visual changes, transparent to the user), or it could have
 > different/separate buttons for standard Alfresco downloads and for DAU downloads, it could have
 > a share button/feature, it could have a combo button (a dropdown), etc.
 > All these options could also differ depending on the content, on the application page/view, on the
 > user settings, on the user permissions, application-wide settings, etc.
+
 
 When DAUs are enabled and available, an ACS client application can download a file through:
 * either the standard Alfresco REST API (".../content" endpoints),
