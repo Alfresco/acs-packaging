@@ -30,20 +30,18 @@ Table of Contents
       * [Multiple Content Stores](#multiple-content-stores)
       * [Encrypted stores](#encrypted-stores)
     * [REST API flow](#rest-api-flow)
-    * [UI Client Integration example](#ui-client-integration-example)
+    * [UI Client Integration example (OUT OF SCOPE)](#ui-client-integration-example-out-of-scope)
   * [Security threats and controls](#security-threats-and-controls)
   * [Performance and scalability](#performance-and-scalability)
-
-
-
-
 ___
-## Related JIRAs
 
+
+## Related JIRAs
 * https://issues.alfresco.com/jira/browse/ACS-566
 * https://issues.alfresco.com/jira/browse/ACS-595
-
 ___
+
+
 ## Purpose
 The main purpose of the _Direct Access URLs_ is to accelerate the local download of content.
 
@@ -54,8 +52,9 @@ Services could benefit from fast and direct content downloads).
 In order to leverage the fast/local download of content our client apps will need to be updated
 to access content directly from our cloud providers (S3/Azure Connectors). This would also allow
 us to profit from the CDN solution of the cloud provider (e.g. AWS CloudFront).
-
 ___
+
+
 ## Overview
 AWS S3 provides a way of generating
 [pre-signed URLs](https://docs.aws.amazon.com/AmazonS3/latest/dev/ShareObjectPreSignedURL.html)
@@ -152,7 +151,7 @@ _caching content store_), should have dedicated configuration options:
 > each and every store (e.g. `connector.s3store1.directAccessUrl.enabled`,
 > `connector.s3store2.directAccessUrl.enabled`, etc.).
 
-    
+
 #### Default Configuration
 By default, Direct Access URLs are disabled. Meaning the following configuration properties
 are **`false`**:
@@ -206,6 +205,9 @@ response header will be `attachment`.
 header will be set in the service layer logic and can't be controlled by the DAU client.
 
 ##### Open API Specs
+
+> Check the ACS-599 pull request on rest-api-explorer for the complete set REST API spec changes:
+> [https://github.com/Alfresco/rest-api-explorer/pull/109](https://github.com/Alfresco/rest-api-explorer/pull/109/files).
 
 ```
   '/nodes/{nodeId}/request-direct-access-url':
@@ -284,6 +286,11 @@ definitions:
         type: string
         format: date-time
         description: The direct access URL would become invalid when the expiry date is reached
+
+  Node:
+    properties:
+      isDirectLinkEnabled:
+        type: boolean
 ```
 
 #### Discovery API
@@ -293,6 +300,30 @@ The Discovery API should provide status information about the Direct Access URLs
 
 A new field is required in its reply:
 `RepositoryInfo > StatusInfo > isDirectAccessUrlEnabled`.
+
+![Discovery API - Class Diagram 1](images/dau-design-doc-class-diagram-discovery-api-1.svg)
+
+_PlantUML:_
+```puml
+@startuml
+package org.alfresco.rest.api.model {
+    class DiscoveryDetails {
+        repository: RepositoryInfo
+    }
+    
+    class RepositoryInfo {
+        status: StatusInfo
+    }
+    DiscoveryDetails *-- RepositoryInfo
+    
+    class StatusInfo {
+        isDirectAccessUrlEnabled: boolean
+    }
+    note right : new field
+    RepositoryInfo *-- StatusInfo
+}
+@enduml
+```
 
 The new field should be **`true`** only when DAUs are enabled *system-wide* and DAUs are enabled on
 the *REST API* and when if there is at least one ContentStore which supports and has DAUs enabled.
@@ -470,6 +501,8 @@ content type and extension. See [ACS-415](https://alfresco.atlassian.net/browse/
 > https://docs.aws.amazon.com/AmazonS3/latest/dev/ShareObjectPreSignedURL.html
 
 ___
+
+
 ## Main flows
 
 ### Enabling Direct Access URLs
@@ -735,10 +768,27 @@ end
 @enduml
 ```
 
-### UI Client Integration example
-For downloading a file from ACS, a client application could implement a logic that first attempts
-to retrieve (and use) a Direct Access Link (".../request-direct-access-url" endpoint) and if that
-fails, it could default to using the standard Alfresco REST API (".../content" endpoints).  
+### UI Client Integration example (OUT OF SCOPE)
+> :warning: In case of Alfresco Digital Workspace, the DAU feature would require changes in the
+> ADF download component(s). Such changes would affect every app that uses the components involved.
+
+> :warning: A detailed and well-defined UI design has to be application-specific, as the proposed
+> Direct Access URL APIs allow for quite a bit of flexibility in how a client application could
+> use this feature. A client application could make use of the discovery API, it could
+> interrogate information about each node's DAU availability, it could use a fallback mechanism,
+> or a combination of the those options.
+>
+> Also, in terms of UI/UX, there's quite a bit of freedom in how a client app would visually make
+> use of the feature. For instance, it could change the behaviour of its download buttons to make
+> use of DAUs when their available (no visual changes, transparent to the user), or it could have
+> different/separate buttons for standard Alfresco downloads and for DAU downloads, it could have
+> a share button/feature, it could have a combo button (a dropdown), etc.
+> All these options could also differ depending on the content, on the application page/view, on the
+> user settings, on the user permissions, application-wide settings, etc.
+
+When DAUs are enabled and available, an ACS client application can download a file through:
+* either the standard Alfresco REST API (".../content" endpoints),
+* or by retrieving and using a Direct Access Link (".../request-direct-access-url" endpoint).
 
 ![UI integration - Sequence Diagram](images/dau-design-doc-sequence-diagram-ui-flow-1.svg)
 
@@ -752,31 +802,59 @@ database "Cloud\n(AWS S3)" as Cloud
 
 
 autonumber
-User -> App ++ : Download file (Button)
 
-App -> ACS ++: Is DAU Available&Enabled (Discovery API)
+User -> App ++ : Load app in browser
+App -> App : init
+App -> ACS ++: Is DAU Enabled (Discovery API)
 return Yes / No
+deactivate App
 
-alt If DAU Available&Enabled
-    App --> ACS ++ : Request a Direct URL
-    return DAU / Failure
 
-    alt If DAU received
-        App -> Cloud ++ : Initiate download from the Direct URL
-        return File stream
-    else DAU request failed
-        autonumber 6
+
+alt If DAU Disabled (system-wide & on the REST API)
+    autonumber
+    User -> App ++ : Download file (Button)
+    App -> ACS ++ : Initiate download from ACS
+    return File stream
+    deactivate App
+end
+|||
+
+alt If DAU Enabled (system-wide & on the REST API)
+    autonumber
+    User -> App ++ : Download file (Button)
+    
+    App -> ACS ++ : Is Direct Link enabled on node
+    note right: GET {nodeId} info with\nisDirectLinkEnabled includes flag
+    return Yes / No
+    
+
+    alt DAU Enabled on node
+        App --> ACS ++ : Request a Direct URL
+        return DAU / Failure
+
+        alt If DAU received
+            App -> Cloud ++ : Initiate download from the Direct URL
+            return File stream
+            |||
+        else DAU request failed
+            |||
+            autonumber 6
+            App -> ACS ++ : Initiate download from ACS
+            return File stream
+        end
+        |||
+    else DAU Disabled on node
+        |||
+        autonumber 4
         App -> ACS ++ : Initiate download from ACS
         return File stream
     end
-|||
-else If DAU Disabled/Unavailable
-    autonumber 4
-    App -> ACS ++ : Initiate download from ACS
-    return File stream
 end
 
+|||
 deactivate App
+
 @enduml
 ```
 
@@ -784,6 +862,8 @@ deactivate App
 > cross-site requests from the client app domain to S3 are allowed. 
 
 ___
+
+
 ## Security threats and controls
 Once generated, the pre-signed URLs can be used by anyone that obtains them (either within or
 outside Alfresco).
@@ -799,8 +879,9 @@ before the download finishes.
 
 If Alfresco Repository uses (is configured with) multiple content stores, then the DAU feature
 can be enabled on only one (or a subset) of those content stores.
-
 ___
+
+
 ## Performance and scalability
 Each call to one of the new `.../request-direct-access-url` Alfresco REST endpoints results in the
 creation of a new (and separate) pre-signed URL for an AWS S3 object.
