@@ -45,7 +45,7 @@
         <alfresco.glacier-connector.version>2.1.0</alfresco.glacier-connector.version>
         <alfresco.azure-connector.version>1.1</alfresco.azure-connector.version>
         <alfresco.centera-connector.version>2.2.1</alfresco.centera-connector.version>
-        <alfresco.salesforce-connector.version>2.2.0</alfresco.salesforce-connector.version>
+        <alfresco.salesforce-connector.version>2.2.1-M1</alfresco.salesforce-connector.version>
         <alfresco.saml.version>1.2.1</alfresco.saml.version>
         <alfresco.outlook.version>2.7.0</alfresco.outlook.version>
         <alfresco.transformation-engine.version>2.2.2</alfresco.transformation-engine.version>
