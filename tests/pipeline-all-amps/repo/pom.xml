@@ -115,7 +115,7 @@
             <configuration combine.self="override">
               <images>
                 <image>
-                  <name>${image.name}:${image.tag}-testftp</name>
+                  <name>${image.name}:${image.tag}</name>
                   <build>
                     <dockerFileDir>${project.basedir}/</dockerFileDir>
                     <buildOptions>
@@ -149,7 +149,7 @@
             <configuration combine.self="override">
               <images>
                 <image>
-                  <name>${image.name}:${image.tag}-testftp</name>
+                  <name>${image.name}:${image.tag}</name>
                   <registry>${image.registry}</registry>
                   <build>
                     <dockerFileDir>${project.basedir}/</dockerFileDir>
