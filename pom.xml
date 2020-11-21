@@ -9,7 +9,7 @@
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-enterprise-repo</artifactId>
         <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
-        <version>8.335-SNAPSHOT</version>
+        <version>8.350-SNAPSHOT</version>
     </parent>
 
     <scm>
@@ -31,13 +31,13 @@
     </distributionManagement>
 
     <properties>
-        <dependency.alfresco-community-repo.version>8.329-SNAPSHOT</dependency.alfresco-community-repo.version>
-        <dependency.alfresco-enterprise-repo.version>8.335-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
+        <dependency.alfresco-community-repo.version>8.338-SNAPSHOT</dependency.alfresco-community-repo.version>
+        <dependency.alfresco-enterprise-repo.version>8.350-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
 
         <repo.image.tag>${dependency.alfresco-enterprise-repo.version}</repo.image.tag>
         <share.image.tag>${alfresco.share.version}</share.image.tag>
 
-        <alfresco.share.version>7.0.0-A7</alfresco.share.version>
+        <alfresco.share.version>7.0.0-A10</alfresco.share.version>
         <alfresco.alfresco-share-services.version>${alfresco.share.version}</alfresco.alfresco-share-services.version>
         <alfresco.api-explorer.version>7.0.0-M1</alfresco.api-explorer.version>
         <alfresco.rm-enterprise-rest-api-explorer.version>3.0.2</alfresco.rm-enterprise-rest-api-explorer.version>
@@ -45,7 +45,7 @@
         <alfresco.glacier-connector.version>2.1.0</alfresco.glacier-connector.version>
         <alfresco.azure-connector.version>1.1</alfresco.azure-connector.version>
         <alfresco.centera-connector.version>2.2.1</alfresco.centera-connector.version>
-        <alfresco.salesforce-connector.version>2.2.0</alfresco.salesforce-connector.version>
+        <alfresco.salesforce-connector.version>2.2.1-M1</alfresco.salesforce-connector.version>
         <alfresco.saml.version>1.2.1</alfresco.saml.version>
         <alfresco.outlook.version>2.7.0</alfresco.outlook.version>
         <alfresco.transformation-engine.version>2.2.2</alfresco.transformation-engine.version>

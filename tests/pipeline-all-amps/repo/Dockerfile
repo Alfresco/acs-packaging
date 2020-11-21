@@ -18,6 +18,14 @@ COPY target/wars/rm-api-explorer.war /usr/local/tomcat/webapps/
 RUN mkdir /usr/local/tomcat/webapps/rm-api-explorer && cd /usr/local/tomcat/webapps/rm-api-explorer && \
   jar -xvf /usr/local/tomcat/webapps/rm-api-explorer.war && rm -f /usr/local/tomcat/webapps/rm-api-explorer.war
 
+### Download and unpack jolokia
+RUN mkdir ${TOMCAT_DIR}/webapps/jolokia && \
+    curl -o /tmp/jolokia.war https://repo1.maven.org/maven2/org/jolokia/jolokia-war-unsecured/1.6.2/jolokia-war-unsecured-1.6.2.war && \
+    cd ${TOMCAT_DIR}/webapps/jolokia && \
+    jar xvf /tmp/jolokia.war && \
+    cd ${TOMCAT_DIR} && \
+    rm /tmp/jolokia.war
+
 # Grant all security permissions to jolokia and share in order to work properly.
 RUN sed -i -e "\$a\grant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/jolokia\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};\ngrant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/share\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};" /usr/local/tomcat/conf/catalina.policy
 
