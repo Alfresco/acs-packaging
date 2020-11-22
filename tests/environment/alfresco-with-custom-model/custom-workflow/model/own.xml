@@ -13,10 +13,12 @@
 
    <!-- Imports are required to allow references to definitions in other models -->   
    <imports>
-   	  <!-- Import Alfresco Dictionary Definitions -->
+   	<!-- Import Alfresco Dictionary Definitions -->
       <import uri="http://www.alfresco.org/model/dictionary/1.0" prefix="d"/>
       <!-- Import Alfresco Content Domain Model Definitions -->
       <import uri="http://www.alfresco.org/model/content/1.0" prefix="cm"/>
+      <!-- Import Alfresco BPM domain model -->
+      <import uri="http://www.alfresco.org/model/bpm/1.0" prefix="bpm"/>
    </imports>
 
    <!-- Introduction of new namespaces defined by this model -->

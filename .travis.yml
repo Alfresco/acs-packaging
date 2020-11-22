@@ -119,17 +119,21 @@ jobs:
       script:
         - travis_wait 20 mvn -B install -f tests/tas-cluster/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
-    - name: "Node restart tests"
+    - name: "Cluster Node restart tests"
       script:
         # Start Alfresco and test if it is running
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-node-restart.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8081/alfresco"
-        - ./tests/scripts/node-restart-test.sh
+        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+        - ./tests/scripts/node-restart-test.sh localhost 8081
+        - ./tests/scripts/node-restart-test.sh localhost 8082
         # Restart and test again
         - docker-compose --file ${TAS_ENVIRONMENT}/docker-compose-node-restart.yml stop
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-node-restart.yml no-clean-up
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8081/alfresco"
-        - ./tests/scripts/node-restart-test.sh
+        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+        - ./tests/scripts/node-restart-test.sh localhost 8081
+        - ./tests/scripts/node-restart-test.sh localhost 8082
 
     - name: "REST API TAS tests with AIMS"
       if: fork = false # AIMS docker image requires access to quay.io
