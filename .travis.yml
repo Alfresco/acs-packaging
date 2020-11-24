@@ -36,8 +36,8 @@ env:
 stages:
   - name: test
     if: commit_message !~ /\[skip tests\]/
-  - name: docker_latest
-    if: fork = false AND type != pull_request AND branch = master
+  - name: pipeline_images
+    if: fork = false AND type != pull_request AND (branch = master OR branch =~ /release\/.*/)
   - name: release
     if: commit_message =~ /\[release\]/ AND fork = false AND type != pull_request AND (branch = master OR branch =~ /release\/.*/ OR branch = feature/REPO-5111_repo_build)
   - name: publish
@@ -175,19 +175,19 @@ jobs:
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
         - travis_wait 20 mvn -B install -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
-    - name: "Pipeline All AMPs tests"
+    # Test local repo and share docker images that will be used in the single pipeline. Tag:latest
+    - name: "Single Pipeline image tests"
       if: fork = false AND type != pull_request
       before_script:
-        # Build Docker images of repo and share for CI pipeline
-        # - travis_retry travis_wait 20 mvn install -q -PenterpriseDocker -Dbuild-number=${TRAVIS_BUILD_NUMBER}
         - travis_retry travis_wait 20 mvn -B clean install -Ppipeline,local
       script:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco"
         - docker ps
 
-    - name: "Update Docker latest images"
-      stage: docker_latest
+    # Push repo and share docker images to quay for use in the single pipeline. Tag:<acs.version>-<build-number>
+    - name: "Push Single Pipeline images"
+      stage: pipeline_images
       script: travis_retry travis_wait 30 mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true -Pinternal,pipeline
 
     - name: "Release and Copy to S3 Staging Bucket"

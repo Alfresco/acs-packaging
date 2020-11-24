@@ -107,6 +107,7 @@
   <profiles>
     <profile>
       <id>local</id>
+      <!-- creates "image:latest" locally for testing -->
       <build>
         <plugins>
           <plugin>
@@ -140,7 +141,7 @@
     </profile>
     <profile>
       <id>internal</id>
-      <!-- publishes "image:latest" on Quay -->
+      <!-- publishes "image:<acs.version>-<build-number>" on Quay -->
       <build>
         <plugins>
           <plugin>
@@ -149,7 +150,7 @@
             <configuration combine.self="override">
               <images>
                 <image>
-                  <name>${image.name}:${image.tag}</name>
+                  <name>${image.name}:${acs.version}-${build-number}</name>
                   <registry>${image.registry}</registry>
                   <build>
                     <dockerFileDir>${project.basedir}/</dockerFileDir>
