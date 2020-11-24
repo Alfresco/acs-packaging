@@ -29,7 +29,7 @@ If not, the service with fallback to the Local transforms if they support the tr
 
 For more information see [Custom Transforms and Renditions](custom-transforms-and-renditions.md).
 
-The original *RenditionService* and *ThumbnailService* are now deprecated as they supports synchronous
+The original *RenditionService* and *ThumbnailService* are now deprecated as they support synchronous
 requests or have callbacks that must be processed on the same node. Local transforms support these older interfaces.
 Where the call is asynchronous (without a callback) the code has been modified to use the *RenditionService2* if there
 is an equivalent *RenditionDefinition2*.
