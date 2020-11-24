@@ -188,7 +188,7 @@ jobs:
     # Push repo and share docker images to quay for use in the single pipeline. Tag:<acs.version>-<build-number>
     - name: "Push Single Pipeline images"
       stage: pipeline_images
-      script: travis_retry travis_wait 30 mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true -Pinternal,pipeline
+      script: travis_retry travis_wait 30 mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Pinternal,pipeline
 
     - name: "Release and Copy to S3 Staging Bucket"
       stage: release
