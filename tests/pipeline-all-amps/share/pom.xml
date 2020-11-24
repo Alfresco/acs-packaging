@@ -11,6 +11,7 @@
 
   <properties>
     <image.name>alfresco/alfresco-pipeline-all-amps-share</image.name>
+    <acs.version>${acs.version.major}.${acs.version.minor}.${acs.version.revision}</acs.version>
   </properties>
 
   <build>
@@ -63,7 +64,7 @@
             <configuration combine.self="override">
               <images>
                 <image>
-                  <name>${image.name}:${image.tag}</name>
+                  <name>${image.name}:${acs.version}-${build-number}</name>
                   <build>
                     <dockerFileDir>${project.basedir}/</dockerFileDir>
                     <buildOptions>
@@ -88,7 +89,7 @@
     </profile>
     <profile>
       <id>internal</id>
-      <!-- publishes "image:latest" on Quay -->
+      <!-- publishes "image:<acs.version>-<build-number>" on Quay -->
       <build>
         <plugins>
           <plugin>
@@ -97,7 +98,7 @@
             <configuration combine.self="override">
               <images>
                 <image>
-                  <name>${image.name}:${image.tag}</name>
+                  <name>${image.name}:${acs.version}-${build-number}</name>
                   <registry>${image.registry}</registry>
                   <build>
                     <dockerFileDir>${project.basedir}/</dockerFileDir>
