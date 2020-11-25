@@ -36,7 +36,7 @@ env:
 stages:
   - name: test
     if: commit_message !~ /\[skip tests\]/
-  - name: pipeline_images
+  - name: docker_latest
     if: fork = false AND type != pull_request AND (branch = master OR branch =~ /release\/.*/)
   - name: release
     if: commit_message =~ /\[release\]/ AND fork = false AND type != pull_request AND (branch = master OR branch =~ /release\/.*/ OR branch = feature/REPO-5111_repo_build)
@@ -185,9 +185,8 @@ jobs:
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco"
         - docker ps
 
-    # Push repo and share docker images to quay for use in the single pipeline. Tag:<acs.version>-<build-number>
-    - name: "Push Single Pipeline images"
-      stage: pipeline_images
+    - name: "Update latest and Single Pipeline <acs>-<build> images"
+      stage: docker_latest
       script: travis_retry travis_wait 30 mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Pinternal,pipeline
 
     - name: "Release and Copy to S3 Staging Bucket"
