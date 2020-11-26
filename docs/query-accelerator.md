@@ -1,4 +1,4 @@
-# Query Accelerator
+# Query Accelerator - First Draft
 
 * PRODMAN : https://alfresco.atlassian.net/browse/PRODMAN-174
 * EPIC : https://alfresco.atlassian.net/browse/ACS-247
