@@ -44,7 +44,7 @@
         <dependency.fabric8.version>4.4.0</dependency.fabric8.version>
         <alfresco.s3connector.version>3.1.0</alfresco.s3connector.version>
         <alfresco.glacier-connector.version>2.1.0</alfresco.glacier-connector.version>
-        <alfresco.azure-connector.version>1.1</alfresco.azure-connector.version>
+        <alfresco.azure-connector.version>1.2.0-A2</alfresco.azure-connector.version>
         <alfresco.centera-connector.version>2.2.1</alfresco.centera-connector.version>
         <alfresco.salesforce-connector.version>2.1.0.1</alfresco.salesforce-connector.version>
         <alfresco.saml.version>1.2.1</alfresco.saml.version>
