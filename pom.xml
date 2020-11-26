@@ -31,7 +31,7 @@
     </distributionManagement>
 
     <properties>
-        <dependency.alfresco-community-repo.version>8.337</dependency.alfresco-community-repo.version>
+        <dependency.alfresco-community-repo.version>8.338</dependency.alfresco-community-repo.version>
         <dependency.alfresco-enterprise-repo.version>8.352</dependency.alfresco-enterprise-repo.version>
 
         <alfresco.share.version>7.0.0-A10</alfresco.share.version>
