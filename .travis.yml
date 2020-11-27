@@ -22,7 +22,7 @@ branches:
   only:
     - master
     - /release\/.*/
-    - feature/ACS-857-SP12n
+    - feature/ACS-857-62N
 
 env:
   global:
