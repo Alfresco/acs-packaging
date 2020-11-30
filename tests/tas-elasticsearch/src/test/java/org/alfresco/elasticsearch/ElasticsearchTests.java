@@ -60,8 +60,9 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
                           .createContent(new FileModel("test.txt", FileType.TEXT_PLAIN, "This is a test"));
     }
 
-    @TestRail(section = {
-            TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that Elasticsearch indexing works as expected.")
+    @TestRail(section = { TestGroup.SEARCH },
+              executionType = ExecutionType.REGRESSION,
+              description = "Verify that Elasticsearch indexing works as expected.")
     @Test(groups = { TestGroup.SEARCH })
     public void fileIndexed() throws Exception
     {
@@ -70,12 +71,13 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
             request.id(content.getNodeRef());
             GetResponse documentResponse = client.get(request, RequestOptions.DEFAULT);
             assertTrue(documentResponse.isExists());
-            assertEquals("This is a test", documentResponse.getSource().get("content"));
+            assertEquals(documentResponse.getSource().get("content"), "This is a test");
         });
     }
 
-    @TestRail(section = {
-            TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that Elasticsearch search works as expected.")
+    @TestRail(section = { TestGroup.SEARCH },
+              executionType = ExecutionType.REGRESSION,
+              description = "Verify that Elasticsearch search works as expected.")
     @Test(groups = { TestGroup.SEARCH })
     public void searchCanFindAFile() throws Exception
     {
@@ -87,7 +89,7 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
 
             //this test cannot work until SEARCH-2585 will be merged
             SearchResponse search = restClient.authenticateUser(testUser).withSearchAPI().search(query);
-            assertEquals(1, search.getEntries().size());
+            assertEquals(search.getEntries().size(), 1);
         });
     }
 

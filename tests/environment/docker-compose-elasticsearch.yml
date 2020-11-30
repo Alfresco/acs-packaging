@@ -85,7 +85,7 @@ services:
             - shared-file-store-volume:/tmp/Alfresco/sfs
 
     postgres:
-        image: postgres:11.7
+        image: postgres:${POSTGRES_TAG}
         mem_limit: 512m
         environment:
             - POSTGRES_PASSWORD=alfresco
@@ -96,7 +96,7 @@ services:
             - 5432:5432
 
     activemq:
-        image: alfresco/alfresco-activemq:5.15.8
+        image: alfresco/alfresco-activemq:${ACTIVEMQ_TAG}
         mem_limit: 1g
         ports:
             - 8161:8161 # Web Console
@@ -120,23 +120,9 @@ services:
         -   IPC_LOCK
         #    volumes:
         #      - elasticsearch-data:/usr/share/elasticsearch/data
-        ports:
-        -   9200:9200
-        -   9300:9300
-
-    kibana:
-        image: kibana:7.9.3
-        environment:
-        -   ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-        ports:
-        -   5601:5601
-        depends_on:
-        -   elasticsearch
 
     live-indexing-mediation:
         image: quay.io/alfresco/alfresco-elasticsearch-live-indexing-mediation:latest
-        ports:
-            - 8180:8180
         depends_on:
             - elasticsearch
             - alfresco
@@ -146,8 +132,6 @@ services:
     
     live-indexing-content:
         image: quay.io/alfresco/alfresco-elasticsearch-live-indexing-content:latest
-        ports:
-            - 8170:8170
         depends_on:
             - elasticsearch
             - alfresco
@@ -158,8 +142,6 @@ services:
 
     live-indexing-metadata:
         image: quay.io/alfresco/alfresco-elasticsearch-live-indexing-metadata:latest
-        ports:
-            - 8190:8190
         depends_on:
             - elasticsearch
             - alfresco
