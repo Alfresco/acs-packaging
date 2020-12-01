@@ -2,6 +2,7 @@ package org.alfresco.elasticsearch;
 
 import org.alfresco.rest.core.RestWrapper;
 import org.alfresco.rest.search.RestRequestQueryModel;
+import org.alfresco.rest.search.SearchNodeModel;
 import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.rest.search.SearchResponse;
 import org.alfresco.utility.Utility;
@@ -9,6 +10,7 @@ import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
 import org.alfresco.utility.model.*;
+import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
 import org.apache.http.HttpHost;
@@ -21,12 +23,14 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.client.indices.GetIndexRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.testng.Assert.*;
 
@@ -41,18 +45,24 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
     public DataContent dataContent;
     @Autowired
     public DataSite dataSite;
+
     @Autowired
-    protected RestWrapper restClient;
+    protected ServerHealth serverHealth;
+
+    @Autowired
+    protected RestWrapper client;
 
     private UserModel testUser;
     private FileModel content;
     private SiteModel siteModel;
-    private RestHighLevelClient client;
+    private RestHighLevelClient elasticClient;
 
     @BeforeClass(alwaysRun = true)
-    public void dataPreparation() throws Exception
+    public void dataPreparation()
     {
-        client = new RestHighLevelClient(RestClient.builder(new HttpHost("localhost", 9200, "http")));
+        serverHealth.assertServerIsOnline();
+
+        elasticClient = new RestHighLevelClient(RestClient.builder(new HttpHost("localhost", 9200, "http")));
         initIndex();
         testUser = dataUser.createRandomTestUser();
         siteModel = dataSite.usingUser(testUser).createPublicRandomSite();
@@ -69,7 +79,8 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
         Utility.sleep(1000, 10000, () -> {
             GetRequest request = new GetRequest(INDEX_NAME);
             request.id(content.getNodeRef());
-            GetResponse documentResponse = client.get(request, RequestOptions.DEFAULT);
+            GetResponse documentResponse = elasticClient.get(request, RequestOptions.DEFAULT);
+
             assertTrue(documentResponse.isExists());
             assertEquals(documentResponse.getSource().get("content"), "This is a test");
         });
@@ -87,9 +98,17 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
             queryReq.setQuery("test");
             query.setQuery(queryReq);
 
-            //this test cannot work until SEARCH-2585 will be merged
-            SearchResponse search = restClient.authenticateUser(testUser).withSearchAPI().search(query);
-            assertEquals(search.getEntries().size(), 1);
+            SearchResponse search = client.authenticateUser(testUser)
+                                            .withSearchAPI()
+                                            .search(query);
+
+            client.assertStatusCodeIs(HttpStatus.OK);
+
+            List<SearchNodeModel> entries = search.getEntries();
+            assertEquals(entries.size(), 1);
+            SearchNodeModel model = search.getEntries().get(0);
+
+            assertTrue(model.getModel().isFile());
         });
     }
 
@@ -107,7 +126,7 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
         DeleteIndexRequest request = new DeleteIndexRequest(indexName);
         try
         {
-            return client.indices().delete(request, RequestOptions.DEFAULT).isAcknowledged();
+            return elasticClient.indices().delete(request, RequestOptions.DEFAULT).isAcknowledged();
         } catch (IOException e)
         {
             throw new RuntimeException(e);
@@ -119,7 +138,7 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
         GetIndexRequest request = new GetIndexRequest(indexName);
         try
         {
-            return client.indices().exists(request, RequestOptions.DEFAULT);
+            return elasticClient.indices().exists(request, RequestOptions.DEFAULT);
         } catch (IOException e)
         {
             throw new RuntimeException(e);
@@ -131,7 +150,7 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
         CreateIndexRequest request = new CreateIndexRequest(indexName);
         try
         {
-            return client.indices().create(request, RequestOptions.DEFAULT).isAcknowledged();
+            return elasticClient.indices().create(request, RequestOptions.DEFAULT).isAcknowledged();
         } catch (IOException e)
         {
             throw new RuntimeException(e);
