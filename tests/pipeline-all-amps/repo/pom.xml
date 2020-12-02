@@ -46,14 +46,6 @@
                 </artifactItem>
                 <artifactItem>
                   <groupId>org.alfresco.integrations</groupId>
-                  <artifactId>alfresco-googledrive-repo-enterprise</artifactId>
-                  <version>${alfresco.googledrive.version}</version>
-                  <type>amp</type>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.alfresco.integrations</groupId>
                   <artifactId>alfresco-s3-connector</artifactId>
                   <version>${alfresco.s3connector.version}</version>
                   <type>amp</type>
@@ -64,14 +56,6 @@
                   <groupId>org.alfresco</groupId>
                   <artifactId>alfresco-glacier-connector-repo</artifactId>
                   <version>${alfresco.glacier-connector.version}</version>
-                  <type>amp</type>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                </artifactItem>
-                <artifactItem>
-                  <groupId>org.alfresco.services.sync</groupId>
-                  <artifactId>alfresco-device-sync-repo</artifactId>
-                  <version>${alfresco.desktop-sync.version}</version>
                   <type>amp</type>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/amps</outputDirectory>
