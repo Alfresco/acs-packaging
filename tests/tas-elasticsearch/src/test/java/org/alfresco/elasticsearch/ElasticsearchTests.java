@@ -28,6 +28,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -36,7 +37,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 @ContextConfiguration("classpath:alfresco-elasticsearch-context.xml")
 /**
@@ -69,6 +71,8 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
     private UserModel userSite2;
     private UserModel userMultiSite;
     private FileModel sampleContent;
+    private SiteModel siteModel1;
+    private SiteModel siteModel2;
 
     /**
      * Data will be prepared using the schema below:
@@ -94,8 +98,8 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
         userSite2 = dataUser.createRandomTestUser();
         userMultiSite = dataUser.createRandomTestUser();
 
-        SiteModel siteModel1 = dataSite.usingUser(userSite1).createPrivateRandomSite();
-        SiteModel siteModel2 = dataSite.usingUser(userSite2).createPrivateRandomSite();
+        siteModel1 = dataSite.usingUser(userSite1).createPrivateRandomSite();
+        siteModel2 = dataSite.usingUser(userSite2).createPrivateRandomSite();
 
         dataUser.addUserToSite(userSite2, siteModel1, UserRole.SiteContributor);
         dataUser.addUserToSite(userMultiSite, siteModel1, UserRole.SiteContributor);
@@ -107,6 +111,16 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
         createContent(FILE_3_NAME, "This is another file", siteModel1, userSite2);
         //remove the user from site, but he keeps ownership on FILE_3_NAME 
         dataUser.removeUserFromSite(userSite2, siteModel1);
+    }
+    
+    @AfterClass(alwaysRun=true)
+    public void cleanup(){
+        deleteIndex(INDEX_NAME);
+        dataSite.deleteSite(siteModel1);
+        dataSite.deleteSite(siteModel2);
+        dataUser.deleteUser(userSite1);
+        dataUser.deleteUser(userSite2);
+        dataUser.deleteUser(userMultiSite);
     }
 
     @TestRail(section = {
