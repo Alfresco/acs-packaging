@@ -42,7 +42,8 @@ import static org.testng.Assert.*;
 /**
  * In this test we are verifying end-to-end the indexing and search in Elasticsearch.
  * In order to test ACLs we created 2 sites and 3 users. 
- */ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
+ */ 
+public class ElasticsearchTests extends AbstractTestNGSpringContextTests
 {
     private static final String INDEX_NAME = "alfresco";
     private static final String FILE_0_NAME = "test.txt";
@@ -65,11 +66,22 @@ import static org.testng.Assert.*;
 
     private UserModel userSite1;
     private RestHighLevelClient elasticClient;
-    private SiteModel siteModel;
     private UserModel userSite2;
     private UserModel userMultiSite;
     private FileModel sampleContent;
 
+    /**
+     * Data will be prepared using the schema below:
+     * 
+     * Site1:
+     *  - Users: userSite1, userMultiSite
+     *  - Documents: FILE_0_NAME (owner: userSite2), FILE_1_NAME (owner: userSite2), FILE_3_NAME (owner: userSite1)
+     *  
+     * Site2:
+     *  - Users: userSite2, userMultiSite
+     *  - Documents: FILE_2_NAME (owner: userSite2)
+     *  
+     */
     @BeforeClass(alwaysRun = true)
     public void dataPreparation()
     {
@@ -82,19 +94,19 @@ import static org.testng.Assert.*;
         userSite2 = dataUser.createRandomTestUser();
         userMultiSite = dataUser.createRandomTestUser();
 
-        siteModel = dataSite.usingUser(userSite1).createPrivateRandomSite();
-        SiteModel otherSiteModel = dataSite.usingUser(userSite2).createPrivateRandomSite();
+        SiteModel siteModel1 = dataSite.usingUser(userSite1).createPrivateRandomSite();
+        SiteModel siteModel2 = dataSite.usingUser(userSite2).createPrivateRandomSite();
 
-        dataUser.addUserToSite(userSite2, siteModel, UserRole.SiteContributor);
-        dataUser.addUserToSite(userMultiSite, siteModel, UserRole.SiteContributor);
-        dataUser.addUserToSite(userMultiSite, otherSiteModel, UserRole.SiteContributor);
+        dataUser.addUserToSite(userSite2, siteModel1, UserRole.SiteContributor);
+        dataUser.addUserToSite(userMultiSite, siteModel1, UserRole.SiteContributor);
+        dataUser.addUserToSite(userMultiSite, siteModel2, UserRole.SiteContributor);
 
-        sampleContent = createContent(FILE_0_NAME, "This is a test", siteModel, userSite1);
-        createContent(FILE_1_NAME, "This is another file", siteModel, userSite1);
-        createContent(FILE_2_NAME, "This is another file", otherSiteModel, userSite2);
-        createContent(FILE_3_NAME, "This is another file", siteModel, userSite2);
+        sampleContent = createContent(FILE_0_NAME, "This is a test", siteModel1, userSite1);
+        createContent(FILE_1_NAME, "This is another file", siteModel1, userSite1);
+        createContent(FILE_2_NAME, "This is another file", siteModel2, userSite2);
+        createContent(FILE_3_NAME, "This is another file", siteModel1, userSite2);
         //remove the user from site, but he keeps ownership on FILE_3_NAME 
-        dataUser.removeUserFromSite(userSite2, siteModel);
+        dataUser.removeUserFromSite(userSite2, siteModel1);
     }
 
     @TestRail(section = {
