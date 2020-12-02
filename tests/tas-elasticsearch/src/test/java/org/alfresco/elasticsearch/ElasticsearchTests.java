@@ -42,14 +42,13 @@ import static org.testng.Assert.*;
 /**
  * In this test we are verifying end-to-end the indexing and search in Elasticsearch.
  * In order to test ACLs we created 2 sites and 3 users. 
- */
-public class ElasticsearchTests extends AbstractTestNGSpringContextTests
+ */ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
 {
-    public static final String INDEX_NAME = "alfresco";
-    public static final String FILE_0_NAME = "test.txt";
-    public static final String FILE_1_NAME = "another.txt";
-    public static final String FILE_2_NAME = "user1.txt";
-    public static final String FILE_3_NAME = "user1Old.txt";
+    private static final String INDEX_NAME = "alfresco";
+    private static final String FILE_0_NAME = "test.txt";
+    private static final String FILE_1_NAME = "another.txt";
+    private static final String FILE_2_NAME = "user1.txt";
+    private static final String FILE_3_NAME = "user1Old.txt";
 
     @Autowired
     public DataUser dataUser;
@@ -128,7 +127,7 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
 
             // this test must found only one documents, while documents in the system are four because 
             // only one contains the word "test".
-            assertResponseAndResult(search, "test.txt");
+            assertResponseAndResult(search, FILE_0_NAME);
         });
     }
 
@@ -145,7 +144,7 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
 
             SearchResponse search = client.authenticateUser(userSite1).withSearchAPI().search(query);
 
-            assertResponseAndResult(search, "test.txt", "another.txt", "user1Old.txt");
+            assertResponseAndResult(search, FILE_0_NAME, FILE_1_NAME, FILE_3_NAME);
 
         });
     }
@@ -165,7 +164,7 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
 
             //even if the user has access only to a site with 1 document the search will returns two documents 
             //because he is the owner of a document on a site where he hasn't any permission
-            assertResponseAndResult(search, "user1Old.txt", "user1.txt");
+            assertResponseAndResult(search, FILE_3_NAME, FILE_2_NAME);
         });
     }
 
@@ -182,7 +181,7 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
 
             SearchResponse search = client.authenticateUser(userMultiSite).withSearchAPI().search(query);
 
-            assertResponseAndResult(search, "test.txt", "another.txt", "user1Old.txt", "user1.txt");
+            assertResponseAndResult(search, FILE_0_NAME, FILE_1_NAME, FILE_3_NAME, FILE_2_NAME);
         });
     }
 
@@ -207,7 +206,8 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
         try
         {
             return elasticClient.indices().delete(request, RequestOptions.DEFAULT).isAcknowledged();
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             throw new RuntimeException(e);
         }
@@ -219,7 +219,8 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
         try
         {
             return elasticClient.indices().exists(request, RequestOptions.DEFAULT);
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             throw new RuntimeException(e);
         }
@@ -231,7 +232,8 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
         try
         {
             return elasticClient.indices().create(request, RequestOptions.DEFAULT).isAcknowledged();
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             throw new RuntimeException(e);
         }
