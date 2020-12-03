@@ -76,29 +76,78 @@ will be called depending on the target media type. The implementing class is cal
     }
 ~~~
 
+It is typical for the `extractMetadata` method to call another `extractMetadata` method on a sub class of
+`AbstractMetadataExtractor` as this class provide the bulk of the functionallity needed to configure metadata extraction
+or embedding.
+~~~
+    public void extractMetadata(String transformName, String sourceMimetype, String targetMimetype,
+                                Map<String, String> transformOptions,
+                                File sourceFile, File targetFile) throws Exception
+    {
+        AbstractMetadataExtractor extractor = ...
+        extractor.extractMetadata(sourceMimetype, transformOptions, sourceFile, targetFile);
+    }
+
+    // Similar code for embedMetadata
+~~~
+
 ### AbstractMetadataExtractor
-The `AbstractMetadataExtractor` may be extended to perform metadata extract and embed tasks. It has two abstract
-methods which need to be supplied:
+The `AbstractMetadataExtractor` may be extended to perform metadata extract and embed tasks, by overriding two methods
+in the sub classes:
 ~~~
-    public Map<String, Serializable> extractMetadata(String sourceMimetype, Map<String, String> transformOptions,
-                                                     File sourceFile) throws Exception;
     public abstract Map<String, Serializable> extractMetadata(String sourceMimetype, Map<String, String> transformOptions,
-                                                              File sourceFile) throws Exception;
+                                                                  File sourceFile) throws Exception;
+
+    public void embedMetadata(String sourceMimetype, String targetMimetype, Map<String, String> transformOptions,
+                              File sourceFile, File targetFile) throws Exception
+    {
+        // Default nothing, as embedding is not supported in most cases
+    }
 ~~~
+Method parameters:
 
-If a transform specifies that it can convert from a source mimetype {@code "<MIMETYPE>"} to {@code "alfresco-metadata-extract"}
- * (specified in the {@code engine_config.json}), it is indicating that it can extract metadata from {@code <MIMETYPE>}.
+* **sourceMimetype** mimetype of the source
+* **transformOptions** transform options from the client
+* **sourceFile** the source as a file
 
-The T-Engine's Controller class will call a method in a class that extends {@link AbstractMetadataExtractor}
- *   based on the source and target mediatypes in the normal way.</li>
- *   <li>The method extracts ALL available metadata is extracted from the document and then calls
- *   {@link #mapMetadataAndWrite(File, Map, Map)}.</li>
- *   <li>Selected values from the available metadata are mapped into content repository property names and values,
- *   depending on what is defined in a {@code "<classname>_metadata_extract.properties"} file.</li>
- *   <li>The selected values are set back to the content repository as a JSON representation of a Map, where the values
- *   are applied to the source node.</li>
- * </ul>
- * To support the same functionality as metadata extractors configured inside the content repository,
+* The `extractMetadata` should extract and return ALL available metadata from the sourceFile.
+* These values are then mapped into content repository property names and values, depending on what is defined in a
+  `<classname>_metadata_extract.properties`"}` file. Value may be discarded or a single value may even be used for
+  multiple properties.
+* The selected values are set back to the content repository as JSON as a mapping of fully qualified content repository
+  property names to values, where the values are applied to the source node.
+
+### overwritePolicy
+It is possible to specify how properties in the content repository will be set depending on the values extracted
+or the properties already set on the node. By default, `PRAGMATIC` is used. Generally you will not need to change this.
+Other values are described in [OverwritePolicy]().
+If you do wish to useTo
+
+change the the
+* CAUTIOUS Only set the extracted value if there is no value (null or otherwise) in the properties map.
+* EAGER Only set the new value if the extracted value is not null.
+* PRAGMATIC Only set the new value if the extracted value is not null and the content repository property does not exist
+or its value is null or empty.
+* PRUDENT Only set the new value if the extracted property is not null, there is no target key for the property,
+ the target value is null, the string representation of the target value is an empty string null extracted values are return in the 'modified' map.
+
+org.alfresco.repo.content.metadata.MetadataExtracter
+
+
+
+the extracted property is a media related one (eg Image, Audio or Video)
+
+### enableStringTagging
+
+
+### carryAspectProperties
+
+
+### stringTaggingSeparators
+
+
+
+* Historically content repository supported different modes the To support the same functionality as metadata extractors configured inside the content repository,
  * extra key value pairs may be returned from {@link #extractMetadata}. These are:
  * <ul>
  *     <li>{@code "sys:overwritePolicy"} which can specify the

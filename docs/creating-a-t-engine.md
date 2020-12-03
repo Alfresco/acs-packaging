@@ -152,7 +152,7 @@ Method parameters:
 
 The helloworld example does all the actual transform processing in this method for simplicity, but if you look at
 the core T-Engines, you will see they offload the actual work to a class which implements the  `Transform`
-interface. It has a `transform` method with the identical parameters. This provides a better separation of
+interface. It has a `transform` method with identical parameters. This provides a better separation of
 responsibilities, and the ability to combine transformers.
 ~~~
     default void transform(String transformName, String sourceMimetype, String targetMimetype,
