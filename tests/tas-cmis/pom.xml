@@ -25,7 +25,7 @@
         <suiteXmlFile>${project.basedir}/src/test/resources/cmis-suite.xml</suiteXmlFile>
         <cmis.binding>browser</cmis.binding>
         <cmis.basePath>/alfresco/api/-default-/public/cmis/versions/1.1/browser</cmis.basePath>
-        <excludedGroups></excludedGroups>
+        <excludedGroups />
     </properties>
 
     <profiles>

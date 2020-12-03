@@ -30,14 +30,14 @@ env:
     - TAS_SCRIPTS=../alfresco-community-repo/packaging/tests/scripts
     - TAS_ENVIRONMENT=./tests/environment
     # Release version has to start with real version (7.0.0-....) for the docker image to build successfully.
-    - RELEASE_VERSION=7.0.0-A9
+    - RELEASE_VERSION=7.0.0-A13
     - DEVELOPMENT_VERSION=7.0.0-SNAPSHOT
 
 stages:
   - name: test
     if: commit_message !~ /\[skip tests\]/
   - name: docker_latest
-    if: fork = false AND type != pull_request AND branch = master
+    if: fork = false AND type != pull_request AND (branch = master OR branch =~ /release\/.*/)
   - name: release
     if: commit_message =~ /\[release\]/ AND fork = false AND type != pull_request AND (branch = master OR branch =~ /release\/.*/ OR branch = feature/REPO-5111_repo_build)
   - name: publish
@@ -175,20 +175,19 @@ jobs:
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
         - travis_wait 20 mvn -B install -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
-    - name: "Pipeline All AMPs tests"
+    # Test local repo and share docker images that will be used in the single pipeline. Tag:latest
+    - name: "Single Pipeline image tests"
       if: fork = false AND type != pull_request
       before_script:
-        # Build Docker images of repo and share for CI pipeline
-        # - travis_retry travis_wait 20 mvn install -q -PenterpriseDocker -Dbuild-number=${TRAVIS_BUILD_NUMBER}
         - travis_retry travis_wait 20 mvn -B clean install -Ppipeline,local
       script:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco"
         - docker ps
 
-    - name: "Update Docker latest images"
+    - name: "Update latest and Single Pipeline <acs>-<build> images"
       stage: docker_latest
-      script: travis_retry travis_wait 30 mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true -Pinternal,pipeline
+      script: travis_retry travis_wait 30 mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Pinternal,pipeline
 
     - name: "Release and Copy to S3 Staging Bucket"
       stage: release
