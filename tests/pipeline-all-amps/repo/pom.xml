@@ -11,6 +11,7 @@
 
   <properties>
     <image.name>alfresco/alfresco-pipeline-all-amps-repo</image.name>
+    <image.suffix>-no-ags</image.suffix>
   </properties>
 
   <build>
@@ -36,14 +37,14 @@
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/amps</outputDirectory>
                 </artifactItem>
-<!--                <artifactItem>-->
-<!--                  <groupId>org.alfresco</groupId>-->
-<!--                  <artifactId>alfresco-governance-services-enterprise-repo</artifactId>-->
-<!--                  <version>${alfresco.ags.version}</version>-->
-<!--                  <type>amp</type>-->
-<!--                  <overWrite>false</overWrite>-->
-<!--                  <outputDirectory>${project.build.directory}/amps</outputDirectory>-->
-<!--                </artifactItem>-->
+               <!-- <artifactItem>
+                  <groupId>org.alfresco</groupId>
+                  <artifactId>alfresco-governanservices-enterprise-repo</artifactId>
+                  <version>${alfresco.ags.versi</version>
+                  <type>amp</type>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>${project.build.directory}/amps</outputDirectory>
+                </artifactItem> -->
                 <artifactItem>
                   <groupId>org.alfresco.integrations</groupId>
                   <artifactId>alfresco-s3-connector</artifactId>
@@ -134,7 +135,7 @@
             <configuration combine.self="override">
               <images>
                 <image>
-                  <name>${image.name}:${acs.version}-${build-number}</name>
+                  <name>${image.name}:${acs.version}${image.suffix}-${build-number}</name>
                   <registry>${image.registry}</registry>
                   <build>
                     <dockerFileDir>${project.basedir}/</dockerFileDir>
