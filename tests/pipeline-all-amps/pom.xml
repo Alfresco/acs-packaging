@@ -1,17 +1,89 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <artifactId>pipeline-all-amps</artifactId>
-  <packaging>pom</packaging>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>pipeline-all-amps</artifactId>
+    <packaging>pom</packaging>
 
-  <parent>
-    <groupId>org.alfresco</groupId>
-    <artifactId>content-repository-tests</artifactId>
-    <version>7.0.0-SNAPSHOT</version>
-  </parent>
+    <parent>
+        <groupId>org.alfresco</groupId>
+        <artifactId>content-repository-tests</artifactId>
+        <version>7.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
 
-  <modules>
-    <module>repo</module>
-    <module>share</module>
-  </modules>
+    <modules>
+        <module>repo</module>
+        <module>share</module>
+    </modules>
+
+    <properties>
+        <image.name>TO_BE_OVERRIDDEN</image.name>
+        <fabric8.skip>true</fabric8.skip>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>fabric8-maven-plugin</artifactId>
+                <configuration combine.self="override">
+                    <images>
+                        <image>
+                            <name>${image.name}:${project.version}</name>
+                            <registry>${image.registry}</registry>
+                            <build>
+                                <dockerFileDir>${project.basedir}/</dockerFileDir>
+                                <buildOptions>
+                                    <squash>true</squash>
+                                </buildOptions>
+                            </build>
+                        </image>
+                    </images>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>build-image</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>push-image</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>push</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>local</id>
+            <properties>
+                <!-- creates "image:latest" locally for testing -->
+                <dockerImageName>${image.name}:${image.tag}</dockerImageName>
+                <fabric8.skip.push>true</fabric8.skip.push>
+            </properties>
+        </profile>
+        <profile>
+            <id>internal</id>
+            <properties>
+                <!-- publishes "image:<acs.version>-<build-number>" on Quay -->
+                <dockerImageName>${image.name}:${acs.version}-${build-number}</dockerImageName>
+            </properties>
+        </profile>
+        <profile>
+            <id>release</id>
+            <properties>
+                <!-- publishes "image:release_version" on Quay -->
+                <dockerImageName>${image.name}:${project.version}</dockerImageName>
+            </properties>
+        </profile>
+    </profiles>
 
 </project>

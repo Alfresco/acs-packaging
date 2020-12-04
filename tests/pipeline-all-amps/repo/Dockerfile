@@ -1,4 +1,4 @@
-FROM alfresco/alfresco-content-repository:${image.tag}
+FROM alfresco/alfresco-enterprise-repo-base:${repo.image.tag}
 
 USER root
 
@@ -6,10 +6,6 @@ ARG TOMCAT_DIR=/usr/local/tomcat
 
 # Copy the amps from build context to the appropriate location for your application server
 COPY target/amps/*.amp ${TOMCAT_DIR}/amps/
-
-# Install amps on alfresco.war
-RUN java -jar ${TOMCAT_DIR}/alfresco-mmt/alfresco-mmt*.jar install \
-              ${TOMCAT_DIR}/amps ${TOMCAT_DIR}/webapps/alfresco -directory -nobackup -force
 
 ### Copy gs-api-explorer war into webapps folder
 COPY target/wars/rm-api-explorer.war ${TOMCAT_DIR}/webapps/
@@ -44,5 +40,14 @@ RUN chgrp -R Alfresco ${TOMCAT_DIR} && \
   chmod -R g+r ${TOMCAT_DIR}/webapps
 
 #Use the alfresco user
-USER alfresco
+#USER alfresco
 
+ENV TOMCAT_DIR=${TOMCAT_DIR}
+
+ENV ALFRESCO_AMPS=ALL
+ENV ALFRESCO_WEBAPP=alfresco
+ENV ALFRESCO_AMPS_DIR=$TOMCAT_DIR/amps
+
+COPY target/docker-entrypoint.sh /
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["catalina.sh", "run", "-security"]
