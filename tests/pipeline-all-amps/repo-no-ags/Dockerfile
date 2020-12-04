@@ -1,0 +1,48 @@
+FROM alfresco/alfresco-content-repository:${image.tag}
+
+USER root
+
+ARG TOMCAT_DIR=/usr/local/tomcat
+
+# Copy the amps from build context to the appropriate location for your application server
+COPY target/amps/*.amp ${TOMCAT_DIR}/amps/
+
+# Install amps on alfresco.war
+RUN java -jar ${TOMCAT_DIR}/alfresco-mmt/alfresco-mmt*.jar install \
+              ${TOMCAT_DIR}/amps ${TOMCAT_DIR}/webapps/alfresco -directory -nobackup -force
+
+### Copy gs-api-explorer war into webapps folder
+COPY target/wars/rm-api-explorer.war ${TOMCAT_DIR}/webapps/
+
+### Unpack rm-api-explorer.war
+RUN mkdir ${TOMCAT_DIR}/webapps/rm-api-explorer && cd ${TOMCAT_DIR}/webapps/rm-api-explorer && \
+  jar -xvf ${TOMCAT_DIR}/webapps/rm-api-explorer.war && rm -f ${TOMCAT_DIR}/webapps/rm-api-explorer.war
+
+### Turn on log4j debug frequently needed in the single pipeline
+RUN echo -e '\n\
+log4j.logger.org.alfresco.repo.content.transform.TransformerDebug=debug\n\
+' >> ${TOMCAT_DIR}/shared/classes/alfresco/extension/custom-log4j.properties
+
+
+### Download and unpack jolokia
+RUN mkdir ${TOMCAT_DIR}/webapps/jolokia && \
+    curl -o /tmp/jolokia.war https://repo1.maven.org/maven2/org/jolokia/jolokia-war-unsecured/1.6.2/jolokia-war-unsecured-1.6.2.war && \
+    cd ${TOMCAT_DIR}/webapps/jolokia && \
+    jar xvf /tmp/jolokia.war && \
+    cd ${TOMCAT_DIR} && \
+    rm /tmp/jolokia.war
+
+# Grant all security permissions to jolokia and share in order to work properly.
+RUN sed -i -e "\$a\grant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/jolokia\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};\ngrant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/share\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};" ${TOMCAT_DIR}/conf/catalina.policy
+
+## All files in the tomcat folder must be owned by root user and Alfresco group as mentioned in the parent Dockerfile
+RUN chgrp -R Alfresco ${TOMCAT_DIR} && \
+  find ${TOMCAT_DIR}/webapps -type d -exec chmod 0750 {} \; && \
+  find ${TOMCAT_DIR}/webapps -type f -exec chmod 0640 {} \; && \
+  find ${TOMCAT_DIR}/shared -type d -exec chmod 0750 {} \; && \
+  find ${TOMCAT_DIR}/shared -type f -exec chmod 0640 {} \; && \
+  chmod -R g+r ${TOMCAT_DIR}/webapps
+
+#Use the alfresco user
+USER alfresco
+

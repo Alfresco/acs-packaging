@@ -98,7 +98,7 @@
             <configuration combine.self="override">
               <images>
                 <image>
-                  <name>${image.name}:${acs.version}-${build-number}</name>
+                  <name>${image.name}:${acs.version}${pipelineImageSuffix}-${build-number}</name>
                   <registry>${image.registry}</registry>
                   <build>
                     <dockerFileDir>${project.basedir}/</dockerFileDir>

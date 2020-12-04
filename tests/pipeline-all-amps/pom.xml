@@ -11,6 +11,7 @@
 
   <modules>
     <module>repo</module>
+    <module>repo-no-ags</module>
     <module>share</module>
   </modules>
 
