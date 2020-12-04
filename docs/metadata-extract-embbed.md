@@ -13,8 +13,8 @@ still exists, so existing AMPs that add extractors will still work as long as th
 not an extractor in a T-Engine that claims to do the same task. The framework is deprecated and could
 well be removed in a future release.
 
-This page describes how to add a custom metadata extractor in a T-Engine and applies to both
-Community and Enterprise editions.
+This page describes how metadata extraction and embedding works, so that it is possible to add a
+custom T-Engine to do other types. This applies to both Community and Enterprise editions.
 
 It also decsribes the the various Tika based extractors that have been moved to the tika
 and all-in-one T-Engines. The Tika rather than the LibreOffice extractor has been used since
@@ -24,6 +24,15 @@ custom code was making use of it.
 A framework for embedding metadata into a file was provided as part of the content repository prior
 to ACS 7. This too still exists, but has been deprecated. Even though the content repository did not
 provide any out of the box implementations, the embedding framework of metadata via T-Engines exists.
+
+In the case of an extract, the T-Engine returns a JSON file that contains name value pairs. The names
+are fully qualified QNames of properties on the source node. The values are the metadata values extracted
+from the content. The transform defines the mapping of metadata values to properties. Once returned to
+the content repository, the properties are automatically set.
+
+In the case of an embed, the T-Engine takes name value pairs from the transform options, maps them to
+metadata values which are then updated in the supplied content. The content is then returned to the 
+content repository and the node is updated. 
 
 ## Just another transform
 Metadata extractors and embedders are just a specialist form of transform. The `targetMediaType`
@@ -117,47 +126,30 @@ Method parameters:
 * The selected values are set back to the content repository as JSON as a mapping of fully qualified content repository
   property names to values, where the values are applied to the source node.
 
+### <classname>_metadata_extract.properties
+
+TODO
+
 ### overwritePolicy
-It is possible to specify how properties in the content repository will be set depending on the values extracted
+It is possible to specify if properties in the content repository will be set depending on the values extracted
 or the properties already set on the node. By default, `PRAGMATIC` is used. Generally you will not need to change this.
-Other values are described in [OverwritePolicy]().
-If you do wish to useTo
-
-change the the
-* CAUTIOUS Only set the extracted value if there is no value (null or otherwise) in the properties map.
-* EAGER Only set the new value if the extracted value is not null.
-* PRAGMATIC Only set the new value if the extracted value is not null and the content repository property does not exist
-or its value is null or empty.
-* PRUDENT Only set the new value if the extracted property is not null, there is no target key for the property,
- the target value is null, the string representation of the target value is an empty string null extracted values are return in the 'modified' map.
-
-org.alfresco.repo.content.metadata.MetadataExtracter
-
-
-
-the extracted property is a media related one (eg Image, Audio or Video)
+Other values (`CAUTIOUS`, `EAGER`, `PRUDENT`) are described in [OverwritePolicy](https://github.com/Alfresco/alfresco-community-repo/blob/master/repository/src/main/java/org/alfresco/repo/content/metadata/MetadataExtracter.java#L70-L318).
+To use a different policy add `"sys:overwritePolicy"` with the required property to the Map returned from
+`extractMetadata`.
 
 ### enableStringTagging
 
+TODO
 
 ### carryAspectProperties
 
+TODO
 
 ### stringTaggingSeparators
 
+TODO
 
 
-* Historically content repository supported different modes the To support the same functionality as metadata extractors configured inside the content repository,
- * extra key value pairs may be returned from {@link #extractMetadata}. These are:
- * <ul>
- *     <li>{@code "sys:overwritePolicy"} which can specify the
- *     {@code org.alfresco.repo.content.metadata.MetadataExtracter.OverwritePolicy} name. Defaults to "PRAGMATIC".</li>
- *     <li>{@code "sys:enableStringTagging"} if {@code "true"} finds or creates tags for each string mapped to
- *     {@code cm:taggable}. Defaults to {@code "false"} to ignore mapping strings to tags.</li>
- *     <li>{@code "sys:carryAspectProperties"} </li>
- *     <li>{@code "sys:stringTaggingSeparators"} </li>
- * </ul>
- *
  * If a transform specifies that it can convert from {@code "<MIMETYPE>"} to {@code "alfresco-metadata-embed"}, it is
  * indicating that it can embed metadata in {@code <MIMETYPE>}.
  *
@@ -190,7 +182,7 @@ as it will go away in a future release. Possibly even in the lifetime of ACS 7. 
 code that currently exists as an AMP which expects to be able to modify the mappings of metadata in the
 content to repository properties, but from the repository side. This mapping is normally done in the T-Engine.
 
-TODO example of the mapping option (needed by RM)
+TODO example of the mapping option
 
 ### Extract Response
 The transformed content that is returned to the content repository is a json file that specifies which properties
@@ -200,8 +192,12 @@ TODO Example followed by explination
 
 ### Embed Request
 
+TODO
+
 ### Embed Response
 This is simply the source content with updated metadata.
+
+TODO
 
 ## Content repository
 
@@ -219,17 +215,11 @@ custom extensions should be moved to a custom T-Engine using code based on these
 
 
 ## Tika extractor
+
+
+
+TODO
+
  - list
  - config files (locations/overriding).
  - no spring config
-
-## Example extractor
-
-TODO dummy code that just returns hard coded values.
-
-## Overriding mappings on the repository side (deprecated)
-
-As described above it is possible to override the mapping of metadata to properties from the content repository.
-This is already deprecated and likely to be removed even in the ACS 7 lifetime, so should not be used.
-
-TODO explain how RM can do this. Possible we remove this section and the one above into the code used by RM.
