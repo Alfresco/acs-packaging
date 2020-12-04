@@ -37,10 +37,10 @@
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/amps</outputDirectory>
                 </artifactItem>
-               <!-- <artifactItem>
+                <!-- <artifactItem>
                   <groupId>org.alfresco</groupId>
-                  <artifactId>alfresco-governanservices-enterprise-repo</artifactId>
-                  <version>${alfresco.ags.versi</version>
+                  <artifactId>alfresco-governance-services-enterprise-repo</artifactId>
+                  <version>${alfresco.ags.version}</version>
                   <type>amp</type>
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.directory}/amps</outputDirectory>
