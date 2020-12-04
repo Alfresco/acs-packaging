@@ -32,7 +32,7 @@
 
     <properties>
         <dependency.alfresco-community-repo.version>8.343</dependency.alfresco-community-repo.version>
-        <dependency.alfresco-enterprise-repo.version>8.359</dependency.alfresco-enterprise-repo.version>
+        <dependency.alfresco-enterprise-repo.version>8.360</dependency.alfresco-enterprise-repo.version>
 
         <alfresco.share.version>7.0.0-A13</alfresco.share.version>
         <alfresco.alfresco-share-services.version>${alfresco.share.version}</alfresco.alfresco-share-services.version>
