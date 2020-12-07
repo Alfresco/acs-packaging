@@ -46,7 +46,7 @@
         <alfresco.saml.version>1.2.1</alfresco.saml.version>
         <alfresco.outlook.version>2.7.0</alfresco.outlook.version>
         <alfresco.transformation-engine.version>2.2.2</alfresco.transformation-engine.version>
-        <alfresco.ags.version>3.4.0</alfresco.ags.version>
+        <alfresco.ags.version>3.5.0-A1</alfresco.ags.version>
         <alfresco.mm.version>1.5.0-M2</alfresco.mm.version>
         <alfresco.desktop-sync.version>3.3.3.1</alfresco.desktop-sync.version>
         <alfresco.ais.version>1.2.1</alfresco.ais.version>
