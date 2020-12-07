@@ -16,10 +16,7 @@ well be removed in a future release.
 This page describes how metadata extraction and embedding works, so that it is possible to add a
 custom T-Engine to do other types. This applies to both Community and Enterprise editions.
 
-It also decsribes the the various Tika based extractors that have been moved to the tika
-and all-in-one T-Engines. The Tika rather than the LibreOffice extractor has been used since
-ACS 6.0.1. However, the code for LibreOffice has also been moved into a T-Engine in case any
-custom code was making use of it.
+It also lists the various extractors that have been moved to T-Engines.
 
 A framework for embedding metadata into a file was provided as part of the content repository prior
 to ACS 7. This too still exists, but has been deprecated. Even though the content repository did not
@@ -128,7 +125,32 @@ Method parameters:
 
 ### <classname>_metadata_extract.properties
 
-TODO
+The `AbstractMetadataExtractor` class reads the `<classname>_metadata_extract.properties` file, so that it knows how to
+map metadata returned from the sub class `extractMetadata` method onto crontent repository properties. The following is
+an example for an email (file extension eml):
+
+~~~
+#
+# RFC822MetadataExtractor - default mapping
+#
+
+# Namespaces
+namespace.prefix.imap=http://www.alfresco.org/model/imap/1.0
+namespace.prefix.cm=http://www.alfresco.org/model/content/1.0
+
+# Mappings
+messageFrom=imap:messageFrom, cm:originator
+messageTo=imap:messageTo, cm:addressee
+messageCc=imap:messageCc, cm:addressees
+messageSubject=imap:messageSubject, cm:title, cm:description, cm:subjectline
+messageSent=imap:dateSent, cm:sentdate
+messageReceived=imap:dateReceived
+Thread-Index=imap:threadIndex
+Message-ID=imap:messageId
+~~~
+As can be seen, the email's metadata for `messageFrom` (if available) will be used to set two properties in the content
+repository (if they exist): `imap:messageFrom`, `cm:originator`. The property names use namespace prefixes specified above.
+
 
 ### overwritePolicy
 It is possible to specify if properties in the content repository will be set depending on the values extracted
@@ -149,61 +171,37 @@ TODO
 
 TODO
 
-
- * If a transform specifies that it can convert from {@code "<MIMETYPE>"} to {@code "alfresco-metadata-embed"}, it is
- * indicating that it can embed metadata in {@code <MIMETYPE>}.
- *
- * The transform results in a new version of supplied source file that contains the metadata supplied in the transform
- * options.
- 
- ~~~
-    public abstract Map<String, Serializable> extractMetadata(String sourceMimetype, Map<String, String> transformOptions,
-                                                              File sourceFile) throws Exception;
-
-    public abstract Map<String, Serializable> extractMetadata(String sourceMimetype, Map<String, String> transformOptions,
-                                                              File sourceFile) throws Exception;
-~~~
-
 ### Extract Request
 
 
-The request from the content repository goes through `RenditionService2`, so will use the asynchronous Alfresco
-Transform Service if available and a synchronous Local transform if not.
+The request from the content repository to extract metadata goes through `RenditionService2`, so will use the asynchronous Alfresco
+Transform Service if available and synchronous Local transform if not.
 
 Normally the only transform option is a `timeout`, so the extractor code only has the source mimetype
-and content itself to work on. Although strongly discouraged it is possible for code running in the content repository
-to specify its own mapping of content metadata properties to repository properties.
+and content itself to work on. Although deprecated, it is possible for code running in the content repository
+to override the mapping of metadata to content properties, with an `extractMapping` option.
 
-
-TODO example
-
-Some requests optionally also contains a `extractMapping` option. This however is deprecated so should not be used
-as it will go away in a future release. Possibly even in the lifetime of ACS 7. It is there to support
-code that currently exists as an AMP which expects to be able to modify the mappings of metadata in the
-content to repository properties, but from the repository side. This mapping is normally done in the T-Engine.
-
-TODO example of the mapping option
+TODO
 
 ### Extract Response
 The transformed content that is returned to the content repository is a json file that specifies which properties
 should be updated on the source node.
 
-TODO Example followed by explination
+TODO
 
 ### Embed Request
 
 TODO
 
 ### Embed Response
-This is simply the source content with updated metadata.
-
-TODO
+This is simply the source content with updated metadata embeded. The content repository simply updated
+the content of the node with what is returned.
 
 ## Content repository
 
 ### Framework
 The ACS 6 framework for running metadata extractors and embedders still exists. An additional `AsynchronousExtractor`
-has been added to communicate with T-Engines from ACS 7. The `AsynchronousExtractor` handles the request and responce
+has been added to communicate with the `RenditionService2` from ACS 7. The `AsynchronousExtractor` handles the request and responce
 in a generic way allowing all the content type specific code to be moved to a T-Engine.
 
 ### XML framework
@@ -214,12 +212,26 @@ custom extensions should be moved to a custom T-Engine using code based on these
 * XPathMetadataExtracter
 
 
-## Tika extractor
+## Extractor that have be moved to T-Engines
 
+The following extractors exist now in T-Engines rather than the content repository:
 
+* OfficeMetadataExtractor
+* TikaAutoMetadataExtractor
+* DWGMetadataExtractor
+* OpenDocumentMetadataExtractor
+* PdfBoxMetadataExtractor
+* MailMetadataExtractor
+* PoiMetadataExtractor
+* TikaAudioMetadataExtractor
+* MP3MetadataExtractor
+* HtmlMetadataExtractor
+* RFC822MetadataExtractor
 
-TODO
+The LibreOffice extractor has also been moved to a T-Engine, even though Tika based extractors are  now used for all
+types it supported. This has been the case since ACS 6.0.1. It was moved into a T-Engine to simplify 
+moving any any custom code that may have extended it.
 
- - list
- - config files (locations/overriding).
- - no spring config
+The `Tika` based classes for extractors using configuration files or spring context files have been removed from the
+content repository as the preferred way to create extractors is via a T-Engine and these approaches require in process
+extensions.
