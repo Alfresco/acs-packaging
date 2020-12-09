@@ -7,14 +7,14 @@ ARG TOMCAT_DIR=/usr/local/tomcat
 # Copy the amps from build context to the appropriate location for your application server
 COPY target/amps/*.amp ${TOMCAT_DIR}/amps/
 
-### Copy gs-api-explorer war into webapps folder
+# Copy gs-api-explorer war into webapps folder
 COPY target/wars/rm-api-explorer.war ${TOMCAT_DIR}/webapps/
 
-### Unpack rm-api-explorer.war
+# Unpack rm-api-explorer.war
 RUN mkdir ${TOMCAT_DIR}/webapps/rm-api-explorer && cd ${TOMCAT_DIR}/webapps/rm-api-explorer && \
   jar -xvf ${TOMCAT_DIR}/webapps/rm-api-explorer.war && rm -f ${TOMCAT_DIR}/webapps/rm-api-explorer.war
 
-### Turn on log4j debug frequently needed in the single pipeline
+# Turn on log4j debug frequently needed in the single pipeline
 RUN echo -e '\n\
 log4j.logger.org.alfresco.repo.content.transform.TransformerDebug=debug\n\
 ' >> ${TOMCAT_DIR}/shared/classes/alfresco/extension/custom-log4j.properties

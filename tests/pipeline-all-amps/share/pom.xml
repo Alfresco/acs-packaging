@@ -2,8 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>pipeline-share</artifactId>
-    <packaging>pom</packaging>
 
     <parent>
         <groupId>org.alfresco</groupId>
@@ -11,10 +9,8 @@
         <version>7.0.0-SNAPSHOT</version>
     </parent>
 
-    <properties>
-        <image.name>alfresco/alfresco-pipeline-all-amps-share</image.name>
-        <fabric8.skip>false</fabric8.skip>
-    </properties>
+    <artifactId>alfresco-pipeline-all-amps-share</artifactId>
+    <packaging>pom</packaging>
 
     <build>
         <plugins>
@@ -83,6 +79,10 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>fabric8-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>
