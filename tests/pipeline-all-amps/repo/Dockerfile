@@ -1,4 +1,4 @@
-FROM quay.io/alfresco/alfresco-enterprise-repo-base:${repo.image.tag}
+FROM alfresco/alfresco-enterprise-repo-base:${repo.image.tag}
 
 USER root
 
