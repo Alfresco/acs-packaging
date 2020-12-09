@@ -20,7 +20,6 @@
     <properties>
         <image.name>TO_BE_OVERRIDDEN</image.name>
         <fabric8.skip>true</fabric8.skip>
-        <fabric8.build.jib>true</fabric8.build.jib>
         <docker.registry>${image.registry}</docker.registry>
     </properties>
 

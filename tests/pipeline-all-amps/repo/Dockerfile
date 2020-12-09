@@ -1,4 +1,4 @@
-FROM alfresco/alfresco-enterprise-repo-base:${repo.image.tag}
+FROM quay.io/alfresco/alfresco-enterprise-repo-base:${repo.image.tag}
 
 USER root
 
@@ -48,6 +48,6 @@ ENV ALFRESCO_AMPS=ALL
 ENV ALFRESCO_WEBAPP=alfresco
 ENV ALFRESCO_AMPS_DIR=$TOMCAT_DIR/amps
 
-COPY target/docker-entrypoint.sh /
+COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["catalina.sh", "run", "-security"]

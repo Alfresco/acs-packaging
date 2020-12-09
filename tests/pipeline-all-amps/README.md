@@ -23,8 +23,8 @@ To test locally in development, configure your maven settings as in the main pro
 
 ```shell
 BUILD_ENABLED=true
-(cd repo && BUILD_ENABLED=$BUILD_ENABLED ./run-repo.sh)
-(cd share && BUILD_ENABLED=$BUILD_ENABLED ./run-share.sh)
+(cd repo && BUILD_ENABLED=$BUILD_ENABLED ./run.sh)
+(cd share && BUILD_ENABLED=$BUILD_ENABLED ./run.sh)
 ```
 
 where `BUILD_ENABLED` can be set to false in following run to avoid executing maven. 

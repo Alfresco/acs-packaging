@@ -9,6 +9,6 @@ ENV ALFRESCO_AMPS=ALL
 ENV ALFRESCO_WEBAPP=share
 ENV ALFRESCO_AMPS_DIR=$TOMCAT_DIR/amps_share
 
-COPY target/docker-entrypoint.sh /
+COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["catalina.sh", "run", "-security"]
