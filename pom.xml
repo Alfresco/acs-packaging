@@ -37,8 +37,8 @@
         <repo.image.tag>${dependency.alfresco-enterprise-repo.version}</repo.image.tag>
         <share.image.tag>${alfresco.share.version}</share.image.tag>
 
-        <alfresco.share.version>6.2.2</alfresco.share.version>
-        <alfresco.alfresco-share-services.version>6.2.2</alfresco.alfresco-share-services.version>
+        <alfresco.share.version>6.2.2.2</alfresco.share.version>
+        <alfresco.alfresco-share-services.version>6.2.2.2</alfresco.alfresco-share-services.version>
         <alfresco.api-explorer.version>6.2.1.1</alfresco.api-explorer.version>
         <alfresco.s3connector.version>3.0.0</alfresco.s3connector.version>
         <alfresco.glacier-connector.version>2.0.0</alfresco.glacier-connector.version>
