@@ -7,6 +7,13 @@ ARG TOMCAT_DIR=/usr/local/tomcat
 # Copy the amps from build context to the appropriate location for your application server
 COPY target/amps/*.amp ${TOMCAT_DIR}/amps/
 
+# Copy api-explorer war into webapps folder
+COPY target/wars/api-explorer.war ${TOMCAT_DIR}/webapps/
+
+# Unpack  api-explorer
+RUN mkdir ${TOMCAT_DIR}/webapps/api-explorer && cd ${TOMCAT_DIR}/webapps/api-explorer && \
+  jar -xvf ${TOMCAT_DIR}/webapps/api-explorer.war && rm -f ${TOMCAT_DIR}/webapps/api-explorer.war
+
 # Copy gs-api-explorer war into webapps folder
 COPY target/wars/rm-api-explorer.war ${TOMCAT_DIR}/webapps/
 

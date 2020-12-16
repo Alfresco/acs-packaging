@@ -156,6 +156,15 @@
                                     <destFileName>rm-api-explorer.war</destFileName>
                                     <outputDirectory>${project.build.directory}/wars</outputDirectory>
                                 </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>api-explorer</artifactId>
+                                    <version>${alfresco.api-explorer.version}</version>
+                                    <type>war</type>
+                                    <overWrite>false</overWrite>
+                                    <destFileName>api-explorer.war</destFileName>
+                                    <outputDirectory>${project.build.directory}/wars</outputDirectory>
+                                </artifactItem>
                             </artifactItems>
                         </configuration>
                     </execution>
