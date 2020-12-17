@@ -1,6 +1,5 @@
 ---
 dist: xenial
-sudo: required
 language: java
 jdk: openjdk11
 
@@ -166,6 +165,13 @@ jobs:
       script:
         - travis_wait 20 mvn -B install -f tests/tas-sync-service/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
+    - name: "Elasticsearch TAS tests"
+      before_script:
+        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-elasticsearch.yml
+        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+      script:
+        - travis_wait 30 mvn -B install -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+
     - name: "All AMPs tests"
       before_script:
         - travis_retry travis_wait 20 mvn -B -q install -f tests/tas-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
@@ -205,7 +211,7 @@ jobs:
           secret_access_key: "${AWS_STAGING_SECRET_KEY}"
           bucket: "alfresco-artefacts-staging"
           region: "eu-west-1"
-          skip_cleanup: true
+          cleanup: false
           acl: private
           local_dir: "deploy_dir"
           upload_dir: "alfresco-content-services/release/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}"
