@@ -17,6 +17,7 @@
         <module>tas-integration</module>
         <module>tas-sync-service</module>
         <module>tas-all-amps</module>
+        <module>tas-elasticsearch</module>
     </modules>
 
     <properties>
