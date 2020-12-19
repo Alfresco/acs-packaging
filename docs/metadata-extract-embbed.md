@@ -177,48 +177,65 @@ TODO
 The request from the content repository to extract metadata goes through `RenditionService2`, so will use the asynchronous Alfresco
 Transform Service if available and synchronous Local transform if not.
 
-Normally the only transform option is a `timeout`, so the extractor code only has the source mimetype
+Normally the only transform options are `timeout` and `sourceEncoding`, so the extractor code only has the source mimetype
 and content itself to work on. Although deprecated, it is possible for code running in the content repository
 to override the default mapping of metadata to content properties, with an `extractMapping` transform option.
 An AMP should supply a class that implements the `MetadataExtractorPropertyMappingOverride` interface and add it to the
 `metadataExtractorPropertyMappingOverrides` property of the `extractor.Asynchronous` spring bean.
-of 
-
 ~~~
-public interface MetadataExtractorPropertyMappingOverride
-{
-    /**
-     * Indicates if the {@link #getExtractMapping(NodeRef)} will provide extract properties
-     * to override those in the T-Engine.
-     *
-     * @param sourceMimetype of the node.
-     * @return {@code true} if there will be override extract properties.
-     */
-    boolean match(String sourceMimetype);
+/**
+ * Overrides the default metadata mappings for PDF documents:
+ *
+ * <pre>
+ * author=cm:author
+ * title=cm:title
+ * subject=cm:description
+ * created=cm:created
+ * </pre>
+ * with:
+ * <pre>
+ * author=cm:author
+ * title=cm:title,cm:description
+ * </pre>
+ */
+public class PdfMetadataExtractorOverride implements MetadataExtractorPropertyMappingOverride {
+    @Override
+    public boolean match(String sourceMimetype) {
+        return MIMETYPE_PDF.equals(sourceMimetype);
+    }
 
-    /**
-     * Returns the extract mapping to be passed to the T-Engine.
-     *
-     * @param nodeRef of the node having its metadata extracted.
-     * @return the mapping of document properties to system properties
-     */
-    Map<String, Set<String>> getExtractMapping(NodeRef nodeRef);
+    @Override
+    public Map<String, Set<String>> getExtractMapping(NodeRef nodeRef) {
+        Map<String, Set<String>> mapping = new HashMap<>();
+        mapping.put("author", Collections.singleton("{http://www.alfresco.org/model/content/1.0}author"));
+        mapping.put("title",  Set.of("{http://www.alfresco.org/model/content/1.0}title",
+                                     "{http://www.alfresco.org/model/content/1.0}description"));
+        return mapping;
+    }
 }
 ~~~
-TODO
+Resulting in a request that contains the following transform options:
+~~~
+{timeout=20000, sourceEncoding=UTF-8} TODO
+~~~
 
 ### Extract Response
-The transformed content that is returned to the content repository is a json file that specifies which properties
+The transformed content that is returned to the content repository is json that specifies which properties
 should be updated on the source node.
 
-TODO
+~~~
+{"author"="Fred", "{http://www.alfresco.org/model/content/1.0}title"="Making Bread", "{http://www.alfresco.org/model/content/1.0}description"="Making Bread"}
+~~~
 
 ### Embed Request
-
-TODO
+An embed request simply contains a transform option called `"metadata"` that contains a map of metadata names to
+values, resulting in transform options like the following:
+~~~
+{timeout=20000, sourceEncoding="UTF-8", "metadata"={"author"="Fred", "title"="Making Bread"}}
+~~~
 
 ### Embed Response
-This is simply the source content with updated metadata embeded. The content repository simply updated
+This is simply the source content with the metadata embedded. The content repository updates
 the content of the node with what is returned.
 
 ## Content repository
