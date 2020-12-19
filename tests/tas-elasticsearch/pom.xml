@@ -2,8 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.alfresco.tas</groupId>
-    <artifactId>content-repository-cluster-test</artifactId>
-    <name>cluster test</name>
+    <artifactId>content-repository-elasticsearch-test</artifactId>
+    <name>Elasticsearch test</name>
     <packaging>jar</packaging>
 
     <parent>
@@ -13,10 +13,23 @@
     </parent>
 
     <properties>
-        <suiteXmlFile>${project.basedir}/src/test/resources/restapi-cluster-suite.xml</suiteXmlFile>
+        <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/elasticsearch-suite.xml</suiteXmlFile>
+        <alfresco-elasticsearch-shared.version>0.27</alfresco-elasticsearch-shared.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.alfresco.tas</groupId>
+            <artifactId>alfresco-enterprise-repo-restapi-test</artifactId>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco.tas</groupId>
+            <artifactId>alfresco-community-repo-restapi-test</artifactId>
+            <classifier>tests</classifier>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.alfresco.tas</groupId>
             <artifactId>restapi</artifactId>
@@ -36,6 +49,11 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-elasticsearch-shared</artifactId>
+            <version>${alfresco-elasticsearch-shared.version}</version>
         </dependency>
     </dependencies>
 

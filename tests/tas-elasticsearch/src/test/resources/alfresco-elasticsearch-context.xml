@@ -8,6 +8,6 @@
 
 	<context:annotation-config />
 	<context:component-scan base-package="org.alfresco" />
+	
 	<import resource="classpath:dataprep-context.xml" />
 </beans>
-
