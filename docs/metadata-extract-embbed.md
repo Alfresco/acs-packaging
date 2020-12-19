@@ -178,9 +178,10 @@ The request from the content repository to extract metadata goes through `Rendit
 Transform Service if available and synchronous Local transform if not.
 
 Normally the only transform options are `timeout` and `sourceEncoding`, so the extractor code only has the source mimetype
-and content itself to work on. Although deprecated, it is possible for code running in the content repository
-to override the default mapping of metadata to content properties, with an `extractMapping` transform option.
-An AMP should supply a class that implements the `MetadataExtractorPropertyMappingOverride` interface and add it to the
+and content itself to work on. Customisation of mapping should really be done in the T-Engine as described above.
+However, it is currently possible for code running in the content repository to override the default mapping of metadata
+to content properties, with an `extractMapping` transform option. This approach is deprecated and may be removed in
+a future minor ACS 7.x release. An AMP should supply a class that implements the `MetadataExtractorPropertyMappingOverride` interface and add it to the
 `metadataExtractorPropertyMappingOverrides` property of the `extractor.Asynchronous` spring bean.
 ~~~
 /**
@@ -216,22 +217,30 @@ public class PdfMetadataExtractorOverride implements MetadataExtractorPropertyMa
 ~~~
 Resulting in a request that contains the following transform options:
 ~~~
-{timeout=20000, sourceEncoding=UTF-8} TODO
+{"extractMapping":{
+   "author":["{http://www.alfresco.org/model/content/1.0}author"],
+   "title":["{http://www.alfresco.org/model/content/1.0}title",
+            "{http://www.alfresco.org/model/content/1.0}description"]},
+ "timeout":20000,
+ "sourceEncoding":"UTF-8"}
 ~~~
+
 
 ### Extract Response
 The transformed content that is returned to the content repository is json that specifies which properties
-should be updated on the source node.
+should be updated on the source node. For example:
 
 ~~~
-{"author"="Fred", "{http://www.alfresco.org/model/content/1.0}title"="Making Bread", "{http://www.alfresco.org/model/content/1.0}description"="Making Bread"}
+{"{http://www.alfresco.org/model/content/1.0}description":"Making Bread",
+ "{http://www.alfresco.org/model/content/1.0}title":"Making Bread",
+ "{http://www.alfresco.org/model/content/1.0}author":"Fred"}
 ~~~
 
 ### Embed Request
-An embed request simply contains a transform option called `"metadata"` that contains a map of metadata names to
+An embed request simply contains a transform option called `metadata` that contains a map of metadata names to
 values, resulting in transform options like the following:
 ~~~
-{timeout=20000, sourceEncoding="UTF-8", "metadata"={"author"="Fred", "title"="Making Bread"}}
+{"timeout":20000, "sourceEncoding":"UTF-8", "metadata":{"author":"Fred", "title":"Making Bread"}}
 ~~~
 
 ### Embed Response
