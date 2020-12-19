@@ -123,7 +123,7 @@ Method parameters:
 * The selected values are set back to the content repository as JSON as a mapping of fully qualified content repository
   property names to values, where the values are applied to the source node.
 
-### <classname>_metadata_extract.properties
+### &lt;classname>_metadata_extract.properties
 
 The `AbstractMetadataExtractor` class reads the `<classname>_metadata_extract.properties` file, so that it knows how to
 map metadata returned from the sub class `extractMetadata` method onto crontent repository properties. The following is
@@ -179,8 +179,32 @@ Transform Service if available and synchronous Local transform if not.
 
 Normally the only transform option is a `timeout`, so the extractor code only has the source mimetype
 and content itself to work on. Although deprecated, it is possible for code running in the content repository
-to override the mapping of metadata to content properties, with an `extractMapping` option.
+to override the default mapping of metadata to content properties, with an `extractMapping` transform option.
+An AMP should supply a class that implements the `MetadataExtractorPropertyMappingOverride` interface and add it to the
+`metadataExtractorPropertyMappingOverrides` property of the `extractor.Asynchronous` spring bean.
+of 
 
+~~~
+public interface MetadataExtractorPropertyMappingOverride
+{
+    /**
+     * Indicates if the {@link #getExtractMapping(NodeRef)} will provide extract properties
+     * to override those in the T-Engine.
+     *
+     * @param sourceMimetype of the node.
+     * @return {@code true} if there will be override extract properties.
+     */
+    boolean match(String sourceMimetype);
+
+    /**
+     * Returns the extract mapping to be passed to the T-Engine.
+     *
+     * @param nodeRef of the node having its metadata extracted.
+     * @return the mapping of document properties to system properties
+     */
+    Map<String, Set<String>> getExtractMapping(NodeRef nodeRef);
+}
+~~~
 TODO
 
 ### Extract Response
@@ -201,7 +225,7 @@ the content of the node with what is returned.
 
 ### Framework
 The ACS 6 framework for running metadata extractors and embedders still exists. An additional `AsynchronousExtractor`
-has been added to communicate with the `RenditionService2` from ACS 7. The `AsynchronousExtractor` handles the request and responce
+has been added to communicate with the `RenditionService2` from ACS 7. The AsynchronousExtractor handles the request and response
 in a generic way allowing all the content type specific code to be moved to a T-Engine.
 
 ### XML framework
@@ -228,7 +252,7 @@ The following extractors exist now in T-Engines rather than the content reposito
 * HtmlMetadataExtractor
 * RFC822MetadataExtractor
 
-The LibreOffice extractor has also been moved to a T-Engine, even though Tika based extractors are  now used for all
+The `LibreOffice` extractor has also been moved to a T-Engine, even though Tika based extractors are  now used for all
 types it supported. This has been the case since ACS 6.0.1. It was moved into a T-Engine to simplify 
 moving any any custom code that may have extended it.
 
