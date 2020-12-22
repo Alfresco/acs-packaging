@@ -185,7 +185,7 @@ jobs:
     - name: "Single Pipeline image tests"
       if: fork = false AND type != pull_request
       before_script:
-        - travis_retry travis_wait 20 mvn -B clean install -Ppipeline,local
+        - travis_retry travis_wait 20 mvn -B clean install -Ppipeline,local $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-repo.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Drepo.image.tag=latest')
       script:
         - docker images | grep pipeline
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
