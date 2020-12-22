@@ -153,26 +153,34 @@ repository (if they exist): `imap:messageFrom`, `cm:originator`. The property na
 
 
 ### overwritePolicy
-It is possible to specify if properties in the content repository will be set depending on the values extracted
-or the properties already set on the node. By default, `PRAGMATIC` is used. Generally you will not need to change this.
+It is possible to specify if properties in the content repository will be set if the extracted values are not null or if
+the properties are already have a value. By default, `PRAGMATIC` is used. Generally you will not need to change this.
 Other values (`CAUTIOUS`, `EAGER`, `PRUDENT`) are described in [OverwritePolicy](https://github.com/Alfresco/alfresco-community-repo/blob/master/repository/src/main/java/org/alfresco/repo/content/metadata/MetadataExtracter.java#L70-L318).
-To use a different policy add `"sys:overwritePolicy"` with the required property to the Map returned from
-`extractMetadata`.
-
-### enableStringTagging
-
-TODO
+To use a different policy add a `"sys:overwritePolicy"` value to the Map returned from
+the `extractMetadata` method of the class extending `AbstractMetadataExtractor` (described above).
 
 ### carryAspectProperties
 
-TODO
+When a property is extracted, which is part of an aspect, it is possible to remove all other
+properties in the same aspect that do not have an extracted value. In this way only extracted values will be set and
+any previously set aspect properties will be cleared. By default, this does not take place and newly extracted values
+are just added to the node's properties. To clear other aspect properties add `"sys:carryAspectProperties"`= `false` to
+the Map returned from the `extractMetadata` method.
+
+### enableStringTagging
+
+When a extracted property is taggable, it is possible to automatically extract tags from the value. By default, this is
+disabled, but may be enabled by adding `"sys:enableStringTagging"`= `true` to the Map returned from the `extractMetadata` method.
 
 ### stringTaggingSeparators
 
-TODO
+Assuming `enableStringTagging` is `true`, it is also possible to change the default separators of the tags in the value.
+The default separators are `,` `;` and `\|`. This is done by adding a `"sys:stringTaggingSeparators"` value to the Map
+returned from the `extractMetadata` method. Please note that escaping of characters takes place in both Java and json,
+so json response would look like `"sys:stringTaggingSeparators": ";,\",\",\\|"` if the code explicitly sets the default
+separators.
 
 ### Extract Request
-
 
 The request from the content repository to extract metadata goes through `RenditionService2`, so will use the asynchronous Alfresco
 Transform Service if available and synchronous Local transform if not.
@@ -240,7 +248,9 @@ should be updated on the source node. For example:
 An embed request simply contains a transform option called `metadata` that contains a map of metadata names to
 values, resulting in transform options like the following:
 ~~~
-{"timeout":20000, "sourceEncoding":"UTF-8", "metadata":{"author":"Fred", "title":"Making Bread"}}
+{"metadata":{"author":"Fred", "title":"Making Bread"},
+ "timeout":20000,
+ "sourceEncoding":"UTF-8"}
 ~~~
 
 ### Embed Response
