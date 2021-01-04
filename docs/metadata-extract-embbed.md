@@ -248,10 +248,16 @@ should be updated on the source node. For example:
 An embed request simply contains a transform option called `metadata` that contains a map of metadata names to
 values, resulting in transform options like the following:
 ~~~
-{"metadata":{"author":"Fred", "title":"Making Bread"},
+{"metadata":
+ {"{http://www.alfresco.org/model/content/1.0}author":"Fred",
+  "{http://www.alfresco.org/model/content/1.0}title":"Making Bread"
+  "{http://www.alfresco.org/model/content/1.0}helpers":["Jane","Paul"]},
  "timeout":20000,
  "sourceEncoding":"UTF-8"}
 ~~~
+Values are either a String, or a Collection of Strings. The mappings of these content repository
+properties to metadata properties is normally the reverse of those defined in the
+&lt;classname>_metadata_extract.properties file in the T-Engine.
 
 ### Embed Response
 This is simply the source content with the metadata embedded. The content repository updates
