@@ -9,7 +9,7 @@
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-enterprise-repo</artifactId>
         <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
-        <version>8.370</version>
+        <version>8.371</version>
     </parent>
 
     <scm>
@@ -31,8 +31,8 @@
     </distributionManagement>
 
     <properties>
-        <dependency.alfresco-community-repo.version>8.352</dependency.alfresco-community-repo.version>
-        <dependency.alfresco-enterprise-repo.version>8.370</dependency.alfresco-enterprise-repo.version>
+        <dependency.alfresco-community-repo.version>8.354</dependency.alfresco-community-repo.version>
+        <dependency.alfresco-enterprise-repo.version>8.371</dependency.alfresco-enterprise-repo.version>
 
         <alfresco.share.version>7.0.0-M3</alfresco.share.version>
         <alfresco.alfresco-share-services.version>${alfresco.share.version}</alfresco.alfresco-share-services.version>
@@ -250,6 +250,7 @@
                 <version>${alfresco.saml.version}</version>
                 <type>amp</type>
             </dependency>
+            <!-- Not available in ACS 7.0.0
             <dependency>
                 <groupId>org.alfresco.mediamanagement</groupId>
                 <artifactId>alfresco-mm-repo</artifactId>
@@ -262,6 +263,7 @@
                 <version>${alfresco.mm.version}</version>
                 <type>amp</type>
             </dependency>
+            -->
             <dependency>
                 <groupId>org.alfresco</groupId>
                 <artifactId>alfresco-document-transformation-engine-repo</artifactId>

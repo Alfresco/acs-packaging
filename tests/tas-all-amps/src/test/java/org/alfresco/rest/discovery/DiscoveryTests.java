@@ -81,7 +81,7 @@ public class DiscoveryTests extends RestTest
                 "org_alfresco_module_rm", "alfresco-rm-enterprise-repo",
                 "alfresco-glacier-connector-repo"
                 // TODO uncomment this amp once https://issues.alfresco.com/jira/browse/MNT-21648 is done
-                //"org.alfresco.module.TransformationServer"
+                //"org.alfresco.module.TransformationServer" // this is the DTE not ATS
         );
 
         expectedModules.forEach(module ->
