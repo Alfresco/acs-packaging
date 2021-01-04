@@ -250,7 +250,7 @@
                 <version>${alfresco.saml.version}</version>
                 <type>amp</type>
             </dependency>
-            <!--
+            <!-- Not available in ACS 7.0.0
             <dependency>
                 <groupId>org.alfresco.mediamanagement</groupId>
                 <artifactId>alfresco-mm-repo</artifactId>

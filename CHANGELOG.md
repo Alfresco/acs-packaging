@@ -15,6 +15,9 @@ new functionality or security patches in these libraries.
 <li>PdfBox org.apache.pdfbox:pdfbox:2.0.21 removed - transforms are now performed in T-Engines</li>
 <li>PdfBox org.apache.pdfbox:fontbox:2.0.21 removed - transforms are now performed in T-Engines</li>
 <li>PdfBox org.apache.pdfbox:pdfbox-tools:2.0.21 removed - transforms are now performed in T-Engines</li>
+
+<li>PdfBox org.apache.poi:poi:4.1.2 removed - transforms are now performed in T-Engines</li>
+<li>PdfBox org.apache.poi:ooxml-schemas:1.4 removed - transforms are now performed in T-Engines</li>
 </ul>
 
 <h1>        6.2.2
