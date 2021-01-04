@@ -53,19 +53,6 @@ services:
         ports:
             - 5432:5432
 
-# Used in IDE and cmd line tests which default to MySql
-#    mysql:
-#        image: mysql:5.7.19
-#        mem_limit: 512m
-#        environment:
-#            - MYSQL_ROOT_PASSWORD=alfresco
-#            - MYSQL_USER=alfresco
-#            - MYSQL_DATABASE=alfresco
-#            - MYSQL_PASSWORD=alfresco
-#        command: --max-connections=300
-#        ports:
-#            - 3306:3306
-
     solr6:
         image: quay.io/alfresco/insight-engine:2.0.0
         environment:

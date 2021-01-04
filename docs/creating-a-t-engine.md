@@ -318,7 +318,6 @@ log4j.logger.org.alfresco.repo.content.MimetypeMap=debug
 # For even more detailed debug
 log4j.logger.org.alfresco.enterprise.repo.rendition2.RemoteTransformClient=debug
 log4j.logger.org.alfresco.repo.rendition2.LocalTransformClient=debug
-log4j.logger.org.alfresco.repo.rendition2.LegacyTransformClient=debug
 
 log4j.logger.org.alfresco.repo.content.transform.LocalTransform=debug
 log4j.logger.org.alfresco.repo.rendition2=debug
