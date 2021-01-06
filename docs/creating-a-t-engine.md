@@ -19,6 +19,8 @@ technologies:
 * Maven
 * Docker
 
+Custom T-Engines may also be used to extract or embed Metadata, as they are just a specialist form of transform.
+For more information see (metadata-extract-embed.md)[metadata-extract-embed.md].
 
 ## Developing and Debugging T-Engines
 
@@ -122,7 +124,7 @@ as the one used by the [Tika T-Engine](https://github.com/Alfresco/alfresco-tran
 
 ### The Controller Class
 
-T-Engines generally extend an AbstractTransformerController and provide
+T-Engines generally extend the AbstractTransformerController and provide
 implementations of the following methods. Take a look at the
 [HelloWorldController.java](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/alfresco-helloworld-transformer-engine/src/main/java/org/alfresco/transformer/HelloWorldController.java)
 example and the alfresco-transformer-base [README](https://github.com/Alfresco/alfresco-transform-core/blob/master/alfresco-transformer-base/README.md) useful.
@@ -135,12 +137,6 @@ and requests from the Transform Service via a message queue.
     @Override
     public void transformImpl(String transformName, String sourceMimetype, String targetMimetype,
                               Map<String, String> transformOptions, File sourceFile, File targetFile)
-
-@PostMapping(value = "/transform", consumes = MULTIPART_FORM_DATA_VALUE)
-public ResponseEntity<Resource> transform(HttpServletRequest request,
-                                              @RequestParam("file") MultipartFile sourceMultipartFile,
-                                              @RequestParam(value = "targetExtension") String targetExtension,
-                                              @RequestParam(value = "language") String language)
 ```
 
 
@@ -153,6 +149,17 @@ Method parameters:
 * **transformOptions** transform options from the client
 * **sourceFile** the source as a file
 * **targetFile** the target as a file
+
+The helloworld example does all the actual transform processing in this method for simplicity, but if you look at
+the core T-Engines, you will see they offload the actual work to a class which implements the  `Transform`
+interface. It has a `transform` method with identical parameters. This provides a better separation of
+responsibilities, and the ability to combine transformers.
+~~~
+    default void transform(String transformName, String sourceMimetype, String targetMimetype,
+                           Map<String, String> transformOptions,
+                           File sourceFile, File targetFile) throws Exception {
+    }
+~~~
 
 #####  getProbeTestTransform
 
