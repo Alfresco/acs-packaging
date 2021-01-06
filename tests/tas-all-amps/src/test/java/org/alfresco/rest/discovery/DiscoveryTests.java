@@ -71,7 +71,7 @@ public class DiscoveryTests extends RestTest
                 "org.alfresco.integrations.google.docs",
                 "alfresco-trashcan-cleaner",
                 "org_alfresco_integrations_S3Connector",
-                //"org_alfresco_integrations_AzureConnector",
+                "org_alfresco_integrations_AzureConnector",
                 "org_alfresco_module_xamconnector",
                 "alfresco-content-connector-for-salesforce-repo",
                 "alfresco-share-services",
@@ -81,7 +81,7 @@ public class DiscoveryTests extends RestTest
                 "org_alfresco_module_rm", "alfresco-rm-enterprise-repo",
                 "alfresco-glacier-connector-repo"
                 // TODO uncomment this amp once https://issues.alfresco.com/jira/browse/MNT-21648 is done
-                //"org.alfresco.module.TransformationServer"
+                //"org.alfresco.module.TransformationServer" // this is the DTE not ATS
         );
 
         expectedModules.forEach(module ->

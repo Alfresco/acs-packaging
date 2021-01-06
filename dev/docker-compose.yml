@@ -19,7 +19,7 @@ services:
             - activemq
 
     transform-core-aio:
-        image: alfresco/alfresco-transform-core-aio:2.3.5
+        image: alfresco/alfresco-transform-core-aio:2.3.6
         mem_limit: 1g
         environment:
             JAVA_OPTS: " -Xms256m -Xmx512m"
@@ -52,19 +52,6 @@ services:
         command: postgres -c max_connections=300 -c log_min_messages=LOG
         ports:
             - 5432:5432
-
-# Used in IDE and cmd line tests which default to MySql
-#    mysql:
-#        image: mysql:5.7.19
-#        mem_limit: 512m
-#        environment:
-#            - MYSQL_ROOT_PASSWORD=alfresco
-#            - MYSQL_USER=alfresco
-#            - MYSQL_DATABASE=alfresco
-#            - MYSQL_PASSWORD=alfresco
-#        command: --max-connections=300
-#        ports:
-#            - 3306:3306
 
     solr6:
         image: quay.io/alfresco/insight-engine:2.0.0

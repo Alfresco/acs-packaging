@@ -41,13 +41,6 @@ This file lists the recommended components for this Service Pack. Use it along w
 |---|---|---|
 | MS Office | 2016 | 2013 |
 
-##### Utility Applications
-| Component | Recommended | Also Available |
-|---|---|---|
-| ImageMagick | 7.0.10 |
-| LibreOffice | 6.3.5 |
-| Alfresco PDF Renderer | 1.1 |
-
 ##### Operating Systems
 | Component | Recommended | Also Available |
 |---|---|---|

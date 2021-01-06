@@ -76,19 +76,16 @@ Media Types, Transformer 2 will be selected because it knows about all the suppl
 options. The definition may also specify that some options are required
 or grouped.
 
-### Enabling and disabling Legacy, Local or Transform Service transforms
+### Enabling and disabling Local or Transform Service transforms
 
-Legacy, Local or Transform Service transforms can be enabled or disabled
+Local or Transform Service transforms can be enabled or disabled
 independently of each other. The ACS repository will try to transform
-content using the Transform Service if possible, falling back to a Local
-Transform and failing that a Legacy Transform. This makes it possible to
-gradually migrate away from Legacy Transforms and to take advantage of
-the Transform Service if it is available. 
+content using the Transform Service if possible and falling back to a Local
+Transform. 
 
 ```properties
 transform.service.enabled=true
 local.transform.service.enabled=true
-legacy.transform.service.enabled=true
 ```
 
 Setting the enabled state to **false** will disable all of the transforms
