@@ -154,7 +154,7 @@ repository (if they exist): `imap:messageFrom`, `cm:originator`. The property na
 
 ### overwritePolicy
 It is possible to specify if properties in the content repository will be set if the extracted values are not null or if
-the properties are already have a value. By default, `PRAGMATIC` is used. Generally you will not need to change this.
+the properties already have a value. By default, `PRAGMATIC` is used. Generally you will not need to change this.
 Other values (`CAUTIOUS`, `EAGER`, `PRUDENT`) are described in [OverwritePolicy](https://github.com/Alfresco/alfresco-community-repo/blob/master/repository/src/main/java/org/alfresco/repo/content/metadata/MetadataExtracter.java#L70-L318).
 To use a different policy add a `"sys:overwritePolicy"` value to the Map returned from
 the `extractMetadata` method of the class extending `AbstractMetadataExtractor` (described above).

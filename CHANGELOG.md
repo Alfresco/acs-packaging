@@ -7,9 +7,9 @@
 <ul>
 <li>Metadata Extract
 
-The out of the box extraction of metadata is now generally performed asynchronously via a T-Engine connect to the
+The out of the box extraction of metadata is now generally performed asynchronously via a T-Engine connected to the
 repository either as part of the Alfresco Transform Service or as a Local transformer. This provides better security,
-saleability and reliability. The framework used for metadata extraction within the content repository remains,
+scalability and reliability. The framework used for metadata extraction within the content repository remains,
 allowing custom extractors / embedders of metadata to still function, as long as they don't extend the extractors
 that have been removed. Ideally such custom code should be gradually moved into a T-Engine. For more information see
 [Metadata Extractors](https://github.com/Alfresco/acs-packaging/blob/master/docs/metadata-extract-embbed.md).
