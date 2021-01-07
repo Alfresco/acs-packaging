@@ -25,6 +25,10 @@
 #   comPD - acs-community-packaging
 #   entPD - acs-packaging
 
+# Aliases to build projects including TAS tests, WITHOUT creating docker images
+#   comRS - alfresco-community-repo
+#   entRS - alfresco-enterprise-repo
+
 # Aliases to start tomcat in a CLEAN environment - remember to start a docker-compose environment - see envUp
 #   comT - acs-community-packaging
 #   entT - acs-packaging
@@ -48,6 +52,9 @@ alias comRD="(cd alfresco-community-repo  && mvn clean install -PcommunityDocker
 alias entRD="(cd alfresco-enterprise-repo && mvn clean install -PenterpriseDocker -Dimage.tag=$TAG                             -DskipTests=true -Dmaven.javadoc.skip=true )"
 alias comPD="(cd acs-community-packaging  && mvn clean install -PcommunityDocker  -Dimage.tag=$TAG -Drepo.image.tag=$TAG -Dmaven.javadoc.skip=true)"
 alias entPD="(cd acs-packaging            && mvn clean install -PenterpriseDocker -Dimage.tag=$TAG -Drepo.image.tag=$TAG)"
+
+alias comRS='(cd alfresco-community-repo  && mvn clean install -DskipTests=true -Dversion.edition=Community -Pall-tas-tests)'
+alias entRS='(cd alfresco-enterprise-repo && mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true   -Pall-tas-tests)'
 
 alias comT='     (cd acs-community-packaging  && mvn      clean install -Prun,withShare)'
 alias comTDebug='(cd acs-community-packaging  && mvnDebug clean install -Prun,withShare)'
