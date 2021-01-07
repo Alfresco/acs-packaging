@@ -205,6 +205,7 @@ jobs:
         - mkdir -p deploy_dir
         - cp distribution/target/alfresco.war deploy_dir
         - cp distribution/target/*-distribution*.zip deploy_dir
+        - ls -lA deploy_dir
       deploy:
         - provider: s3
           access_key_id: "${AWS_STAGING_ACCESS_KEY}"
