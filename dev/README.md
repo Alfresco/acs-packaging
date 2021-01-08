@@ -8,13 +8,13 @@ repository webapp (`alfresco.war`) in a tomcat instance.
 Build the `alfresco-community-repo` and `alfresco-enterprise-repo` projects (if you have not
 done so already), so that your changes are in the enterprise alfresco.war file.
 ~~~
+$ # The `comR` alias includes the following commands:
 $ cd alfresco-community-repo
-$ # The alias comR is the same as the following command:
 $ mvn clean install -PcommunityDocker  -DskipTests=true -Dversion.edition=Community
 $ cd ..
 
+$ # The `entR` alias is the same as the following commands:
 $ cd alfresco-enterprise-repo
-$ # The alias entR is the same as the following command:
 $ mvn clean install -PenterpriseDocker -DskipTests=true -Dmaven.javadoc.skip=true
 $ cd ..
 ~~~
@@ -23,6 +23,7 @@ $ cd ..
 The repository code will need to talk to other ACS components, such as a databases, message queue and transformers.
 The simplest way to create these, is to use the `docker-compose.yml` file in the `dev` directory.
 ~~~
+$ # The `envUp` alias is the same as the following commands:
 $ cd acs-packaging
 $ docker-compose -f dev/docker-compose.yml up -d
 Creating dev_activemq_1          ... done
@@ -31,6 +32,7 @@ Creating dev_solr6_1             ... done
 Creating dev_postgres_1          ... done
 Creating dev_transform-core-aio_1 ... done
 Creating dev_transform-router_1   ... done
+$ cd ..
 ~~~
 
 ## Alfresco Global Properties and Log4j
@@ -49,7 +51,8 @@ Once started, you will be able to access Share on `http://localhost:8080/share` 
 endpoints via `http://localhost:8080/alfresco/`. `entT` is an alias for the
 following command and `entTDebug` will allow a debugger to be attached.
 ~~~
-$ # The alias entT is the same as the following command. entTDebug may also be used.
+$ # The `entT` alias is the same as the following commands:
+$ cd acs-packaging
 $ mvn clean install -Prun,withShare
 [INFO] Scanning for projects...
 [INFO] ------------------------------------------------------------------------
@@ -64,6 +67,7 @@ $ mvn clean install -Prun,withShare
 [INFO] --------------------------------[ pom ]---------------------------------
 ...
 INFO: Starting ProtocolHandler ["http-bio-8080"]
+$ cd ..
 ~~~
 
 If you kill the tomcat instance (^C) and wish to restart it, use the following command
@@ -109,7 +113,9 @@ and `dev/dev-acs-amps-overlay/target/dev-instance/tomcat/shared/classes/alfresco
 on the next `mvn clean`.
 
 ## Aliases
-You may also find the aliases specified in the following file useful, as they may save you some typing.The also provide Maven commands for building Docker images local.
+You may also find the aliases specified in the following file useful, as they may save you some typing.
+
+Aliases ending in `D` provide Maven commands for building Docker images local.
 ~~~
 $ source acs-packaging/dev/aliases
 ~~~
