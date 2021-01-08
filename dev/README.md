@@ -9,10 +9,12 @@ Build the `alfresco-community-repo` and `alfresco-enterprise-repo` projects (if 
 done so already), so that your changes are in the enterprise alfresco.war file.
 ~~~
 $ cd alfresco-community-repo
+$ # The alias comR is the same as the following command:
 $ mvn clean install -PcommunityDocker  -DskipTests=true -Dversion.edition=Community
 $ cd ..
 
 $ cd alfresco-enterprise-repo
+$ # The alias entR is the same as the following command:
 $ mvn clean install -PenterpriseDocker -DskipTests=true -Dmaven.javadoc.skip=true
 $ cd ..
 ~~~
@@ -47,7 +49,7 @@ Once started, you will be able to access Share on `http://localhost:8080/share` 
 endpoints via `http://localhost:8080/alfresco/`. `entT` is an alias for the
 following command and `entTDebug` will allow a debugger to be attached.
 ~~~
-$ # The alias entT is the same as the following mvn command. entTDebug may also be used.
+$ # The alias entT is the same as the following command. entTDebug may also be used.
 $ mvn clean install -Prun,withShare
 [INFO] Scanning for projects...
 [INFO] ------------------------------------------------------------------------
@@ -107,7 +109,7 @@ and `dev/dev-acs-amps-overlay/target/dev-instance/tomcat/shared/classes/alfresco
 on the next `mvn clean`.
 
 ## Aliases
-You may also find the aliases specified in the following file useful, as they may save you some typing.
+You may also find the aliases specified in the following file useful, as they may save you some typing.The also provide Maven commands for building Docker images local.
 ~~~
 $ source acs-packaging/dev/aliases
 ~~~
