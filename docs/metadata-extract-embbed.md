@@ -245,7 +245,7 @@ should be updated on the source node. For example:
 ~~~
 
 ### Embed Request
-An embed request simply contains a transform option called `metadata` that contains a map of metadata names to
+An embed request simply contains a transform option called `metadata` that contains a map of property names to
 values, resulting in transform options like the following:
 ~~~
 {"metadata":
