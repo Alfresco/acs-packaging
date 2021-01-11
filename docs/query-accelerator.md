@@ -50,11 +50,15 @@ consistent, but will be simpler to implement, maintain and use in more situation
 
 * Enable the Query Accelerator by setting the property alfresco.queryAccelerator.enabled to true.
 * Define the location of the Query Accelerator configs by setting the property alfresco.queryAccelerator.config.path
+* Wait time after system startup before populating the tables. Default value is 60
+* The size of each population batch. Default value is 250000
 
 ### Properties example
 ```
 alfresco.queryAccelerator.enabled=true
 alfresco.queryAccelerator.config.path=alfresco/queryaccelerator
+alfresco.queryAccelerator.populator.startDelayMinutes=3
+alfresco.queryAccelerator.populator.workerBatchSize=250000
 ```
 
 
@@ -240,10 +244,99 @@ The following Query Set would be able to support the above TMDQ.
 ```
 
 
+## Query Set Status and Caching
+
+Each table version has one status, i.e. a table could have:
+tableA, version 1, OBSOLETE
+tableA, version 2, LIVE
+tableA, version 3, INPROGRESS
+
+Each status should only appear at most most for a given table, i.e. a table cannot have two “LIVE” versions.
+The query set cache contains all versions including obsolete and in-progress versions. This is to allow the “maintain table population” process to begin without having to wait for the initial table population to complete.
+
+Use case scenarios:
+
+Scenario 1: Add new table: tableA, v1 (no previous versions)
+|                          |   Registry and cache   |                      DB |
+| ------------------------ | :--------------------: | ----------------------: |
+| Before refresh:          |          empty         |                No table |
+| After refresh            | tableA, V1, INPROGRESS | V1 Created & populating |
+| After table populated    | tableA, V1, INPROGRESS |            V1 Populated |
+| After activate query set |    tableA, V1, LIVE    |            V1 Populated |
+
+Scenario 2a: Delete table: tableA (INPROGRESS)
+|                          |   Registry and cache   |                           DB |
+| ------------------------ | :--------------------: | ---------------------------: |
+| Before refresh:          | tableA, V1, INPROGRESS |      V1 Created & populating |
+| After refresh            |  tableA, V1, OBSOLETE  | V1 Stop population requested |
+| After population aborted |          empty         |           V1 Dropped from DB |
+
+Scenario 2b: Delete table: tableA (LIVE)
+|                 | Registry and cache |                 DB |
+| --------------- | :----------------: | -----------------: |
+| Before refresh: |  tableA, V1, LIVE  |       V1 Populated |
+| After refresh   |        empty       | V1 Dropped from DB |
+
+Scenario 2c: Delete table: tableA (Multiple versions)
+|                          |   Registry and cache   |                           DB |
+| ------------------------ | :--------------------: | ---------------------------: |
+| Before refresh:          |    tableA, V1, LIVE    |      V1 Created & populating |
+|                          | tableA, V2, INPROGRESS |      V2 Created & populating |
+| After refresh            |  tableA, V2, OBSOLETE  |           V1 Dropped from DB |
+|                          |                        | V2 Stop population requested |
+| After population aborted |          empty         |           V2 Dropped from DB |
+
+Scenario 3a: Upgrade table: tableA to V2 (previous version INPROGRESS)
+|                          |   Registry and cache   |                           DB |
+| ------------------------ | :--------------------: | ---------------------------: |
+| Before refresh:          | tableA, V1, INPROGRESS |      V1 Created & populating |
+| After refresh            |  tableA, V1, OBSOLETE  | V1 Stop population requested |
+|                          | tableA, V2, INPROGRESS |      V2 Created & populating |
+| After population aborted | tableA, V2, INPROGRESS |           V1 Dropped from DB |
+| After table populated    | tableA, V2, INPROGRESS |                 V2 Populated |
+| After activate query set |    tableA, V2, LIVE    |                 V2 Populated |
+NB: population aborted and population completed could happen in any order
+
+Scenario 3b: Upgrade table: tableA to V2 (previous version LIVE)
+|                          |   Registry and cache   |                      DB |
+| ------------------------ | :--------------------: | ----------------------: |
+| Before refresh:          |    tableA, V1, LIVE    |            V1 Populated |
+| After refresh            |    tableA, V1, LIVE    |            V1 Populated |
+|                          | tableA, V2, INPROGRESS | V2 Created & populating |
+| After table populated    |    tableA, V1, LIVE    |            V1 Populated |
+|                          | tableA, V2, INPROGRESS |            V2 Populated |
+| After activate query set |    tableA, V2, LIVE    |      V1 Dropped from DB |
+|                          |                        |            V2 Populated |
+
+Scenario 3c: Upgrade table: tableA to V3 (previous versions LIVE and INPROGRESS)
+|                          |   Registry and cache   |                           DB |
+| ------------------------ | :--------------------: | ---------------------------: |
+| Before refresh:          |    tableA, V1, LIVE    |                 V1 Populated |
+|                          | tableA, V2, INPROGRESS |      V2 Created & populating |
+| After refresh            |    tableA, V1, LIVE    |                 V1 Populated |
+|                          |  tableA, V2, OBSOLETE  | V2 Stop population requested |
+|                          | tableA, V3, INPROGRESS |      V3 Created & populating |
+| After population aborted |    tableA, V1, LIVE    |                 V1 Populated |
+|                          | tableA, V3, INPROGRESS |           V2 Dropped from DB |
+|                          |                        |      V3 Created & populating |
+| After table populated    |    tableA, V1, LIVE    |                 V1 Populated |
+|                          | tableA, V3, INPROGRESS |                 V3 Populated |
+| After activate query set |    tableA, V3, LIVE    |           V1 Dropped from DB |
+|                          |                        |                 V3 Populated |
+
+
+
+
+
 
 ## Logging
 
-TODO: Show how to check the logging for the table population progress.
+The admin console only informs whether updates were detected. For a more complete picture of the query sets configuration DEBUG logging must be used:
+```
+log4j.logger.org.alfresco.enterprise.repo.queryaccelerator.QuerySetConfigServiceImpl=debug
+log4j.logger.org.alfresco.enterprise.repo.queryaccelerator.QuerySetConfigFileFinder=debug
+log4j.logger.org.alfresco.enterprise.repo.queryaccelerator.QuerySetRegistryImpl=debug
+```
 
 
 ## Notes
