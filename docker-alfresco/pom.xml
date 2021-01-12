@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>content-services-docker</artifactId>
@@ -78,17 +79,11 @@
                 <plugins>
                     <plugin>
                         <groupId>io.fabric8</groupId>
-                        <artifactId>fabric8-maven-plugin</artifactId>
+                        <artifactId>docker-maven-plugin</artifactId>
                         <configuration>
                             <images>
                                 <image>
                                     <name>${image.name}:${image.tag}</name>
-                                    <build>
-                                        <dockerFileDir>${project.basedir}/</dockerFileDir>
-                                        <buildOptions>
-                                            <squash>true</squash>
-                                        </buildOptions>
-                                    </build>
                                 </image>
                             </images>
                         </configuration>
@@ -113,29 +108,17 @@
                 <plugins>
                     <plugin>
                         <groupId>io.fabric8</groupId>
-                        <artifactId>fabric8-maven-plugin</artifactId>
+                        <artifactId>docker-maven-plugin</artifactId>
                         <configuration>
                             <images>
                                 <!-- Quay image -->
                                 <image>
                                     <name>${image.name}:${image.tag}</name>
                                     <registry>${image.registry}</registry>
-                                    <build>
-                                        <dockerFileDir>${project.basedir}/</dockerFileDir>
-                                        <buildOptions>
-                                            <squash>true</squash>
-                                        </buildOptions>
-                                    </build>
                                 </image>
                                 <!-- DockerHub image -->
                                 <!--<image>
                                     <name>${image.name}:${image.tag}</name>
-                                    <build>
-                                        <dockerFileDir>${project.basedir}/</dockerFileDir>
-                                        <buildOptions>
-                                            <squash>true</squash>
-                                        </buildOptions>
-                                    </build>
                                 </image>-->
                             </images>
                         </configuration>
@@ -161,29 +144,17 @@
                 <plugins>
                     <plugin>
                         <groupId>io.fabric8</groupId>
-                        <artifactId>fabric8-maven-plugin</artifactId>
+                        <artifactId>docker-maven-plugin</artifactId>
                         <configuration combine.self="override">
                             <images>
                                 <!-- Quay image -->
                                 <image>
                                     <name>${image.name}:${project.version}</name>
                                     <registry>${image.registry}</registry>
-                                    <build>
-                                        <dockerFileDir>${project.basedir}/</dockerFileDir>
-                                        <buildOptions>
-                                            <squash>true</squash>
-                                        </buildOptions>
-                                    </build>
                                 </image>
                                 <!-- DockerHub image -->
                                 <!--<image>
                                     <name>${image.name}:${project.version}</name>
-                                    <build>
-                                        <dockerFileDir>${project.basedir}/</dockerFileDir>
-                                        <buildOptions>
-                                            <squash>true</squash>
-                                        </buildOptions>
-                                    </build>
                                 </image>-->
                             </images>
                         </configuration>
