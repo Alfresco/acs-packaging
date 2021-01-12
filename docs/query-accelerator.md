@@ -250,26 +250,28 @@ Each table version has one status, i.e. a table could have:
 tableA, version 1, OBSOLETE
 tableA, version 2, LIVE
 tableA, version 3, INPROGRESS
+tableA, version 4, NEW
 
 Each status should only appear at most most for a given table, i.e. a table cannot have two “LIVE” versions.
+The transition from NEW to INPROGRESS would normally happen almost immediately.
 The query set cache contains all versions including obsolete and in-progress versions. This is to allow the “maintain table population” process to begin without having to wait for the initial table population to complete.
 
 Use case scenarios:
 
 Scenario 1: Add new table: tableA, v1 (no previous versions)
-|                          |   Registry and cache   |                      DB |
-| ------------------------ | :--------------------: | ----------------------: |
-| Before refresh:          |          empty         |                No table |
-| After refresh            | tableA, V1, INPROGRESS | V1 Created & populating |
-| After table populated    | tableA, V1, INPROGRESS |            V1 Populated |
-| After activate query set |    tableA, V1, LIVE    |            V1 Populated |
+|                          |   Registry and cache       |                      DB |
+| ------------------------ | :------------------------: | ----------------------: |
+| Before refresh:          |          empty             |                No table |
+| After refresh            | tableA, V1, NEW-INPROGRESS | V1 Created & populating |
+| After table populated    | tableA, V1, NEW-INPROGRESS |            V1 Populated |
+| After activate query set |    tableA, V1, LIVE        |            V1 Populated |
 
 Scenario 2a: Delete table: tableA (INPROGRESS)
-|                          |   Registry and cache   |                           DB |
-| ------------------------ | :--------------------: | ---------------------------: |
-| Before refresh:          | tableA, V1, INPROGRESS |      V1 Created & populating |
-| After refresh            |  tableA, V1, OBSOLETE  | V1 Stop population requested |
-| After population aborted |          empty         |           V1 Dropped from DB |
+|                          |   Registry and cache       |                           DB |
+| ------------------------ | :------------------------: | ---------------------------: |
+| Before refresh:          | tableA, V1, NEW-INPROGRESS |      V1 Created & populating |
+| After refresh            |  tableA, V1, OBSOLETE      | V1 Stop population requested |
+| After population aborted |          empty             |           V1 Dropped from DB |
 
 Scenario 2b: Delete table: tableA (LIVE)
 |                 | Registry and cache |                 DB |
@@ -278,55 +280,52 @@ Scenario 2b: Delete table: tableA (LIVE)
 | After refresh   |        empty       | V1 Dropped from DB |
 
 Scenario 2c: Delete table: tableA (Multiple versions)
-|                          |   Registry and cache   |                           DB |
-| ------------------------ | :--------------------: | ---------------------------: |
-| Before refresh:          |    tableA, V1, LIVE    |      V1 Created & populating |
-|                          | tableA, V2, INPROGRESS |      V2 Created & populating |
-| After refresh            |  tableA, V2, OBSOLETE  |           V1 Dropped from DB |
-|                          |                        | V2 Stop population requested |
-| After population aborted |          empty         |           V2 Dropped from DB |
+|                          |   Registry and cache       |                           DB |
+| ------------------------ | :------------------------: | ---------------------------: |
+| Before refresh:          |    tableA, V1, LIVE        |      V1 Created & populating |
+|                          | tableA, V2, NEW-INPROGRESS |      V2 Created & populating |
+| After refresh            |  tableA, V2, OBSOLETE      |           V1 Dropped from DB |
+|                          |                            | V2 Stop population requested |
+| After population aborted |          empty             |           V2 Dropped from DB |
 
 Scenario 3a: Upgrade table: tableA to V2 (previous version INPROGRESS)
-|                          |   Registry and cache   |                           DB |
-| ------------------------ | :--------------------: | ---------------------------: |
-| Before refresh:          | tableA, V1, INPROGRESS |      V1 Created & populating |
-| After refresh            |  tableA, V1, OBSOLETE  | V1 Stop population requested |
-|                          | tableA, V2, INPROGRESS |      V2 Created & populating |
-| After population aborted | tableA, V2, INPROGRESS |           V1 Dropped from DB |
-| After table populated    | tableA, V2, INPROGRESS |                 V2 Populated |
-| After activate query set |    tableA, V2, LIVE    |                 V2 Populated |
+|                          |   Registry and cache       |                           DB |
+| ------------------------ | :-------------------------:| ---------------------------: |
+| Before refresh:          | tableA, V1, NEW-INPROGRESS |      V1 Created & populating |
+| After refresh            |  tableA, V1, OBSOLETE      | V1 Stop population requested |
+|                          | tableA, V2, NEW-INPROGRESS |      V2 Created & populating |
+| After population aborted | tableA, V2, NEW-INPROGRESS |           V1 Dropped from DB |
+| After table populated    | tableA, V2, NEW-INPROGRESS |                 V2 Populated |
+| After activate query set |    tableA, V2, LIVE        |                 V2 Populated |
+
 NB: population aborted and population completed could happen in any order
 
 Scenario 3b: Upgrade table: tableA to V2 (previous version LIVE)
-|                          |   Registry and cache   |                      DB |
-| ------------------------ | :--------------------: | ----------------------: |
-| Before refresh:          |    tableA, V1, LIVE    |            V1 Populated |
-| After refresh            |    tableA, V1, LIVE    |            V1 Populated |
-|                          | tableA, V2, INPROGRESS | V2 Created & populating |
-| After table populated    |    tableA, V1, LIVE    |            V1 Populated |
-|                          | tableA, V2, INPROGRESS |            V2 Populated |
-| After activate query set |    tableA, V2, LIVE    |      V1 Dropped from DB |
-|                          |                        |            V2 Populated |
+|                          |   Registry and cache       |                      DB |
+| ------------------------ | :------------------------: | ----------------------: |
+| Before refresh:          |    tableA, V1, LIVE        |            V1 Populated |
+| After refresh            |    tableA, V1, LIVE        |            V1 Populated |
+|                          | tableA, V2, NEW-INPROGRESS | V2 Created & populating |
+| After table populated    |    tableA, V1, LIVE        |            V1 Populated |
+|                          | tableA, V2, NEW-INPROGRESS |            V2 Populated |
+| After activate query set |    tableA, V2, LIVE        |      V1 Dropped from DB |
+|                          |                            |            V2 Populated |
 
 Scenario 3c: Upgrade table: tableA to V3 (previous versions LIVE and INPROGRESS)
-|                          |   Registry and cache   |                           DB |
-| ------------------------ | :--------------------: | ---------------------------: |
-| Before refresh:          |    tableA, V1, LIVE    |                 V1 Populated |
-|                          | tableA, V2, INPROGRESS |      V2 Created & populating |
-| After refresh            |    tableA, V1, LIVE    |                 V1 Populated |
-|                          |  tableA, V2, OBSOLETE  | V2 Stop population requested |
-|                          | tableA, V3, INPROGRESS |      V3 Created & populating |
-| After population aborted |    tableA, V1, LIVE    |                 V1 Populated |
-|                          | tableA, V3, INPROGRESS |           V2 Dropped from DB |
-|                          |                        |      V3 Created & populating |
-| After table populated    |    tableA, V1, LIVE    |                 V1 Populated |
-|                          | tableA, V3, INPROGRESS |                 V3 Populated |
-| After activate query set |    tableA, V3, LIVE    |           V1 Dropped from DB |
-|                          |                        |                 V3 Populated |
-
-
-
-
+|                          |   Registry and cache       |                           DB |
+| ------------------------ | :------------------------: | ---------------------------: |
+| Before refresh:          |    tableA, V1, LIVE        |                 V1 Populated |
+|                          | tableA, V2, NEW-INPROGRESS |      V2 Created & populating |
+| After refresh            |    tableA, V1, LIVE        |                 V1 Populated |
+|                          |  tableA, V2, OBSOLETE      | V2 Stop population requested |
+|                          | tableA, V3, NEW-INPROGRESS |      V3 Created & populating |
+| After population aborted |    tableA, V1, LIVE        |                 V1 Populated |
+|                          | tableA, V3, NEW-INPROGRESS |           V2 Dropped from DB |
+|                          |                            |      V3 Created & populating |
+| After table populated    |    tableA, V1, LIVE        |                 V1 Populated |
+|                          | tableA, V3, NEW-INPROGRESS |                 V3 Populated |
+| After activate query set |    tableA, V3, LIVE        |           V1 Dropped from DB |
+|                          |                            |                 V3 Populated |
 
 
 ## Logging
@@ -337,10 +336,13 @@ log4j.logger.org.alfresco.enterprise.repo.queryaccelerator.QuerySetConfigService
 log4j.logger.org.alfresco.enterprise.repo.queryaccelerator.QuerySetConfigFileFinder=debug
 log4j.logger.org.alfresco.enterprise.repo.queryaccelerator.QuerySetRegistryImpl=debug
 ```
-
+INFO messages should give a % based on number of nodes at the start vs number of nodes processed so far. Log message should look something like: [INFO] {denorm tablename} 25% completed
 
 ## Notes
 
 * The maximum length of the tableName and the version is the maximum table name length of the database system being used 
 mimus 9. So for Postgres that has a maximum table name length of 63 bytes the maximum tableName and version length in 
 the query set is 54 bytes.
+* Queries that present negations on aspects should not be accelerated.
+* Properties of type MLTEXT will NOT be supported. If any such properties are detected in the definition of a QuerySet then a WARN message will be issued,
+the properties will be ignored and the corresponding denormalised table will be created without them.
