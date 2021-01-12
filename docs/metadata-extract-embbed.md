@@ -83,7 +83,7 @@ will be called depending on the target media type. The implementing class is cal
 ~~~
 
 It is typical for the `extractMetadata` method to call another `extractMetadata` method on a sub class of
-`AbstractMetadataExtractor` as this class provide the bulk of the functionallity needed to configure metadata extraction
+`AbstractMetadataExtractor` as this class provides the bulk of the functionallity needed to configure metadata extraction
 or embedding.
 ~~~
     public void extractMetadata(String transformName, String sourceMimetype, String targetMimetype,
@@ -118,7 +118,7 @@ Method parameters:
 
 * The `extractMetadata` should extract and return ALL available metadata from the sourceFile.
 * These values are then mapped into content repository property names and values, depending on what is defined in a
-  `<classname>_metadata_extract.properties`"}` file. Value may be discarded or a single value may even be used for
+  `<classname>_metadata_extract.properties` file. Value may be discarded or a single value may even be used for
   multiple properties.
 * The selected values are set back to the content repository as JSON as a mapping of fully qualified content repository
   property names to values, where the values are applied to the source node.
@@ -156,7 +156,7 @@ repository (if they exist): `imap:messageFrom`, `cm:originator`. The property na
 It is possible to specify if properties in the content repository will be set if the extracted values are not null or if
 the properties already have a value. By default, `PRAGMATIC` is used. Generally you will not need to change this.
 Other values (`CAUTIOUS`, `EAGER`, `PRUDENT`) are described in [OverwritePolicy](https://github.com/Alfresco/alfresco-community-repo/blob/master/repository/src/main/java/org/alfresco/repo/content/metadata/MetadataExtracter.java#L70-L318).
-To use a different policy add a `"sys:overwritePolicy"` value to the Map returned from
+To use a different policy add a `sys:overwritePolicy` value to the Map returned from
 the `extractMetadata` method of the class extending `AbstractMetadataExtractor` (described above).
 
 ### carryAspectProperties
@@ -164,18 +164,18 @@ the `extractMetadata` method of the class extending `AbstractMetadataExtractor` 
 When a property is extracted, which is part of an aspect, it is possible to remove all other
 properties in the same aspect that do not have an extracted value. In this way only extracted values will be set and
 any previously set aspect properties will be cleared. By default, this does not take place and newly extracted values
-are just added to the node's properties. To clear other aspect properties add `"sys:carryAspectProperties"`= `false` to
+are just added to the node's properties. To clear other aspect properties add `sys:carryAspectProperties`= `false` to
 the Map returned from the `extractMetadata` method.
 
 ### enableStringTagging
 
 When a extracted property is taggable, it is possible to automatically extract tags from the value. By default, this is
-disabled, but may be enabled by adding `"sys:enableStringTagging"`= `true` to the Map returned from the `extractMetadata` method.
+disabled, but may be enabled by adding `sys:enableStringTagging`= `true` to the Map returned from the `extractMetadata` method.
 
 ### stringTaggingSeparators
 
 Assuming `enableStringTagging` is `true`, it is also possible to change the default separators of the tags in the value.
-The default separators are `,` `;` and `\|`. This is done by adding a `"sys:stringTaggingSeparators"` value to the Map
+The default separators are `,` `;` and `\|`. This is done by adding a `sys:stringTaggingSeparators` value to the Map
 returned from the `extractMetadata` method. Please note that escaping of characters takes place in both Java and json,
 so json response would look like `"sys:stringTaggingSeparators": ";,\",\",\\|"` if the code explicitly sets the default
 separators.
@@ -183,7 +183,7 @@ separators.
 ### Extract Request
 
 The request from the content repository to extract metadata goes through `RenditionService2`, so will use the asynchronous Alfresco
-Transform Service if available and synchronous Local transform if not.
+Transform Service if available and a synchronous Local transform if not.
 
 Normally the only transform options are `timeout` and `sourceEncoding`, so the extractor code only has the source mimetype
 and content itself to work on. Customisation of mapping should really be done in the T-Engine as described above.
@@ -245,7 +245,7 @@ should be updated on the source node. For example:
 ~~~
 
 ### Embed Request
-An embed request simply contains a transform option called `metadata` that contains a map of metadata names to
+An embed request simply contains a transform option called `metadata` that contains a map of property names to
 values, resulting in transform options like the following:
 ~~~
 {"metadata":
