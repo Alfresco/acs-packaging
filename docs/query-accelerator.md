@@ -330,9 +330,7 @@ Scenario 3c: Upgrade table: tableA to V3 (previous versions LIVE and INPROGRESS)
 
 The admin console only informs whether updates were detected. For a more complete picture of the query sets configuration DEBUG logging must be used:
 ```
-log4j.logger.org.alfresco.enterprise.repo.queryaccelerator.QuerySetConfigServiceImpl=debug
-log4j.logger.org.alfresco.enterprise.repo.queryaccelerator.QuerySetConfigFileFinder=debug
-log4j.logger.org.alfresco.enterprise.repo.queryaccelerator.QuerySetRegistryImpl=debug
+log4j.logger.org.alfresco.enterprise.repo.queryaccelerator=debug
 ```
 INFO messages should give a % based on number of nodes at the start vs number of nodes processed so far. Log message should look something like: [INFO] {denorm tablename} 25% completed
 
