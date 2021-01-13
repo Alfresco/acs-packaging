@@ -155,9 +155,9 @@ The query sets can be refreshed in the Alfresco Administration Console in Share.
 
 ![Search Service](images/RefreshQuerySet1.png "Search Service")
 
-2 Scoll down to the 'Relational Query Accelerator' section. 
+2 Scoll down to the 'Query Accelerator' section. 
 
-![Relational Query Accelerator](images/RefreshQuerySet2.png "Relational Query Accelerator")
+![Query Accelerator](images/RefreshQuerySet2.png "Query Accelerator")
 
 3 Press the 'Refresh Query Set' button. 
 
