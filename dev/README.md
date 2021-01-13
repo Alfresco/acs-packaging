@@ -115,7 +115,7 @@ on the next `mvn clean`.
 ## Aliases
 You may also find the aliases specified in the following file useful, as they may save you some typing.
 
-Aliases ending in `D` provide Maven commands for building Docker images local.
+Aliases ending in `D` provide Maven commands for building local Docker images.
 ~~~
 $ source acs-packaging/dev/aliases
 ~~~
