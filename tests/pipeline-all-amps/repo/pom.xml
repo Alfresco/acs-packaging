@@ -33,14 +33,15 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.alfresco</groupId>
-                                    <artifactId>alfresco-governance-services-enterprise-repo</artifactId>
-                                    <version>${alfresco.ags.version}</version>
-                                    <type>amp</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                </artifactItem>
+                                <!-- TODO uncomment this amp once https://alfresco.atlassian.net/browse/APPS-702 is solved -->
+<!--                                <artifactItem>-->
+<!--                                    <groupId>org.alfresco</groupId>-->
+<!--                                    <artifactId>alfresco-governance-services-enterprise-repo</artifactId>-->
+<!--                                    <version>${alfresco.ags.version}</version>-->
+<!--                                    <type>amp</type>-->
+<!--                                    <overWrite>false</overWrite>-->
+<!--                                    <outputDirectory>${project.build.directory}/amps</outputDirectory>-->
+<!--                                </artifactItem>-->
                                 <artifactItem>
                                     <groupId>org.alfresco.integrations</groupId>
                                     <artifactId>alfresco-s3-connector</artifactId>
@@ -111,14 +112,14 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
-                                <artifactItem>
+                                <!--<artifactItem>
                                     <groupId>org.alfresco.services.sync</groupId>
                                     <artifactId>alfresco-device-sync-repo</artifactId>
                                     <version>${alfresco.desktop-sync.version}</version>
                                     <type>amp</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                </artifactItem>
+                                </artifactItem>-->
                                 <!-- TODO uncomment this amp once https://issues.alfresco.com/jira/browse/MNT-21648 is solved -->
 <!--                                <artifactItem>-->
 <!--                                    <groupId>org.alfresco</groupId>-->
@@ -128,14 +129,15 @@
 <!--                                    <overWrite>false</overWrite>-->
 <!--                                    <outputDirectory>${project.build.directory}/amps</outputDirectory>-->
 <!--                                </artifactItem>-->
-                                <artifactItem>
-                                    <groupId>org.alfresco</groupId>
-                                    <artifactId>alfresco-governance-services-enterprise-repo</artifactId>
-                                    <version>${alfresco.ags.version}</version>
-                                    <type>amp</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                </artifactItem>
+                                <!-- TODO uncomment this amp once https://alfresco.atlassian.net/browse/APPS-702 is solved -->
+<!--                                <artifactItem>-->
+<!--                                    <groupId>org.alfresco</groupId>-->
+<!--                                    <artifactId>alfresco-governance-services-enterprise-repo</artifactId>-->
+<!--                                    <version>${alfresco.ags.version}</version>-->
+<!--                                    <type>amp</type>-->
+<!--                                    <overWrite>false</overWrite>-->
+<!--                                    <outputDirectory>${project.build.directory}/amps</outputDirectory>-->
+<!--                                </artifactItem>-->
                             </artifactItems>
                         </configuration>
                     </execution>
@@ -169,10 +171,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>io.fabric8</groupId>
-                <artifactId>fabric8-maven-plugin</artifactId>
             </plugin>
         </plugins>
     </build>

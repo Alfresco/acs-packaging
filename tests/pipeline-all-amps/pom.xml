@@ -16,30 +16,26 @@
         <module>share</module>
     </modules>
 
-    <properties>
-        <image.name>alfresco/${artifactId}</image.name>
-        <docker.registry>${image.registry}</docker.registry>
-    </properties>
-
     <build>
         <pluginManagement>
             <plugins>
                 <plugin>
                     <groupId>io.fabric8</groupId>
                     <artifactId>fabric8-maven-plugin</artifactId>
+                    <configuration combine.self="override">
+                        <images>
+                            <image>
+                                <name>alfresco/${project.artifactId}:${image.tag}</name>
+                                <registry>${image.registry}</registry>
+                            </image>
+                        </images>
+                    </configuration>
                     <executions>
                         <execution>
                             <id>build-image</id>
                             <phase>package</phase>
                             <goals>
                                 <goal>build</goal>
-                            </goals>
-                        </execution>
-                        <execution>
-                            <id>push-image</id>
-                            <phase>install</phase>
-                            <goals>
-                                <goal>push</goal>
                             </goals>
                         </execution>
                     </executions>
@@ -51,25 +47,63 @@
     <profiles>
         <profile>
             <id>local</id>
-            <properties>
-                <!-- creates "image:latest" locally for testing -->
-                <docker.image>${image.name}:${image.tag}</docker.image>
-                <fabric8.skip.push>true</fabric8.skip.push>
-            </properties>
+            <!-- creates "image:latest" locally for testing -->
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>fabric8-maven-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
         <profile>
             <id>internal</id>
+            <!-- publishes "image:<acs.version>-<build-number>" on Quay -->
             <properties>
-                <!-- publishes "image:<acs.version>-<build-number>" on Quay -->
-                <docker.image>${image.name}:${acs.version}-${build-number}</docker.image>
+                <image.tag>${acs.version}-${build-number}</image.tag>
             </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>fabric8-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>push-image</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>push</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
         <profile>
             <id>release</id>
+            <!-- publishes "image:release_version" on Quay -->
             <properties>
-                <!-- publishes "image:release_version" on Quay -->
-                <docker.image>${image.name}:${project.version}</docker.image>
+                <image.tag>${project.version}</image.tag>
             </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>fabric8-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>push-image</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>push</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
     </profiles>
 

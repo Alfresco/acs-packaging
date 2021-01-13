@@ -4,8 +4,23 @@
   New Features
 </h2>
 
-<h2>        Libraries
-</h2>
+<ul>
+<li>Metadata Extract
+
+The out of the box extraction of metadata is now generally performed asynchronously via a T-Engine connected to the
+repository either as part of the Alfresco Transform Service or as a Local transformer. This provides better security,
+scalability and reliability. The framework used for metadata extraction within the content repository remains,
+allowing custom extractors / embedders of metadata to still function, as long as they don't extend the extractors
+that have been removed. Ideally such custom code should be gradually moved into a T-Engine. For more information see
+[Metadata Extractors](https://github.com/Alfresco/acs-packaging/blob/master/docs/metadata-extract-embbed.md).
+<li>Removal of Legacy transformers
+
+In ACS 6, the Alfresco Transform Service and Local transformers where introduced to help offload the transformation
+of content to a separate process. In ACS 7, the out of the box Legacy transformers and transformation framework have
+been removed. This helps provide greater clarity around installation and administration of transformations and
+technically a more scalable, reliable and secure environment.
+<li>Removal of 3rd party libraries
+
 With the offloading of both transforms and metadata extraction to T-Engines a number of 3rd party libraries
 are no longer needed within the content repository. They do still exist within the T-Engines performing the
 same tasks. Any AMPs that where making use of these will need to provide these libraries themselves. This will
