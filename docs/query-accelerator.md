@@ -195,8 +195,6 @@ If there are no updates to the query sets you will see:
 6. The population of the denormalised tables might take a considerable time depending on the scale of the alfresco
 installation. The progress of the population of the table will be output to the alfresco log.
 
-7. TODO: How does a user know when a table is fully populated and live?
-
 
 ## Query Sets and Transaction Meta-Data Queries (TMDQ)
 
@@ -252,7 +250,7 @@ tableA, version 2, LIVE
 tableA, version 3, INPROGRESS
 tableA, version 4, NEW
 
-Each status should only appear at most most for a given table, i.e. a table cannot have two “LIVE” versions.
+Each status should only appear at most once for a given table, i.e. a table cannot have two “LIVE” versions.
 The transition from NEW to INPROGRESS would normally happen almost immediately.
 The query set cache contains all versions including obsolete and in-progress versions. This is to allow the “maintain table population” process to begin without having to wait for the initial table population to complete.
 
