@@ -70,15 +70,15 @@ The query set configurations define the denormalized tables that will be created
 
 ```json
 {
-  "version": "1",
-  "tableName": "rqa_name_desc",
+  "version": 1,
+  "name": "Test01",
   "properties": [
     {
       "name": "cm:name",
       "isIndex": true
     },
     {
-      "name": "cm:description",
+      "name": "cm:creator",
       "isIndex": true
     }
   ],
@@ -88,12 +88,8 @@ The query set configurations define the denormalized tables that will be created
       "isIndex": true
     }
   ],
-  "type": {
-      "name": "cm:content",
-      "isIndex": true
-  },
   "compositeIndexes": {
-    "index_1": ["cm:name", "cm:description"],
+    "index_1": ["cm:name", "cm:creator"],
     "index_2": ["cm:name", "cm:titled"]
   }
 }
@@ -107,9 +103,8 @@ The query set configurations define the denormalized tables that will be created
 | tableName        | The table name. The actual database table name will have a prefix of 'alf_qs_' and a suffix of '_v' plus the version. So for a tableName of 'rqa_name_desc' and a version of 1 that actual database table name would be 'alf_qs_rqa_name_desc_v1'. |
 | properties       | A collection of properties to appear on the denormalised table. A property consists of a name attribute which is the QName of a property and an isIndex attribute which indicates that the related column on the table should be indexed.            |
 | aspects          | A collection of aspects to appear on the denormalised table. The table will have a boolean column for each of the aspects to indicate if the node has those aspects applied. An aspect consists of a name attribute which is the QName of an aspect and an isIndex attribute which indicates that the related column on the table should be indexed. |
-| type             | The type of nodes to be stored on the denormalised table. The type consists of a name attribute which is the QName of the of a type and an isIndex attribute which indicates that the related column on the table should be indexed. The database column on the table for storing the type will be called cm_type and the column for each row will be the type QName.           |
 | compositeIndexes | A collection of composite indexes to be created for the table. A composite index consists of an attribute where the attribute name is the index name and the attribute value is a collection of QNames of properties and/or aspects of the query set. |
-
+The type consists of a name attribute which is the QName of the of a type and an isIndex attribute - the type is always denormalised (in the column alf_type)
 ### Updating and replacing query sets
 
 #### Removing a query set
@@ -123,7 +118,7 @@ from the registry and the denormalised database table will be dropped.
 
 #### Updating a query set
 
-You can update/replace a query set by changing the properties, aspects, type and compositeIndexes in the query set JSON config.
+You can update/replace a query set by changing the properties, aspects and compositeIndexes in the query set JSON config.
 
 You then need to update the version in the query set JSON config and then request a query set refresh in the Admin Tools. 
 (see Query set refresh in Admin Tools)
@@ -333,6 +328,31 @@ The admin console only informs whether updates were detected. For a more complet
 log4j.logger.org.alfresco.enterprise.repo.queryaccelerator=debug
 ```
 INFO messages should give a % based on number of nodes at the start vs number of nodes processed so far. Log message should look something like: [INFO] {denorm tablename} 25% completed
+
+Logs when Query Set Refresh is performed but there are no updates:
+```
+2021-01-14 17:12:33,020  DEBUG [repo.queryaccelerator.QuerySetConfigServiceImpl] [http-bio-8080-exec-6] Refreshing query sets - checking for updates...
+2021-01-14 17:12:33,022  DEBUG [repo.queryaccelerator.QuerySetConfigFileFinder] [http-bio-8080-exec-6] file /Users/p3700509/Documents/build/queryaccelerator/test01-qs.json config read
+2021-01-14 17:12:33,029  DEBUG [repo.queryaccelerator.QuerySetConfigServiceImpl] [http-bio-8080-exec-6] QuerySet: 'test01' with version: '2' already exists.
+2021-01-14 17:12:33,030  DEBUG [repo.queryaccelerator.QuerySetConfigServiceImpl] [http-bio-8080-exec-6] Query set configuration - no new tables detected
+2021-01-14 17:12:33,031  DEBUG [repo.queryaccelerator.QuerySetConfigServiceImpl] [http-bio-8080-exec-6] Query set configuration - no deleted tables detected
+2021-01-14 17:12:33,033  DEBUG [queryaccelerator.population.PopulateRqaServiceImpl] [http-bio-8080-exec-6] Number of PopulateRqaTableWorkers found: 0
+```
+
+
+Logs when the Query Set Refresh has started:
+```
+2021-01-14 17:14:15,906  DEBUG [repo.queryaccelerator.QuerySetConfigServiceImpl] [http-bio-8080-exec-6] Refreshing query sets - checking for updates...
+2021-01-14 17:14:15,907  DEBUG [repo.queryaccelerator.QuerySetConfigFileFinder] [http-bio-8080-exec-6] file /Users/p3700509/Documents/build/queryaccelerator/test01-qs.json config read
+2021-01-14 17:14:15,911  DEBUG [repo.queryaccelerator.QuerySetConfigServiceImpl] [http-bio-8080-exec-6] Query set configuration - detected new version: test01 version: 3
+2021-01-14 17:14:15,915  DEBUG [repo.queryaccelerator.QuerySetConfigServiceImpl] [http-bio-8080-exec-6] Query sets - creating table script for : test01 version: 3
+2021-01-14 17:14:15,916  DEBUG [repo.queryaccelerator.QuerySetRegistryImpl] [http-bio-8080-exec-6] Registering table: test01, version: 3, status: INPROGRESS
+2021-01-14 17:14:15,929  DEBUG [repo.queryaccelerator.QuerySetConfigServiceImpl] [http-bio-8080-exec-6] Query sets - adding to cache: alf_qs_test01_v3
+2021-01-14 17:14:15,930  INFO  [schema.script.ScriptExecutorImpl] [http-bio-8080-exec-6] Executing database script /var/folders/r7/mybxmf_d2sb2sw6g8ksg3h0x0ylsgp/T/Alfresco/AlfrescoSchema-PostgreSQLDialect-Update-562184015453156440.sql (Copied from file:/var/folders/r7/mybxmf_d2sb2sw6g8ksg3h0x0ylsgp/T/Alfresco/test01-11276349223693844289.sql).
+2021-01-14 17:14:15,954  DEBUG [repo.queryaccelerator.QuerySetConfigServiceImpl] [http-bio-8080-exec-6] Query set configuration - no deleted tables detected
+2021-01-14 17:14:15,957  DEBUG [queryaccelerator.population.PopulateRqaServiceImpl] [http-bio-8080-exec-6] Number of PopulateRqaTableWorkers found: 1
+2021-01-14 17:14:15,959  DEBUG [queryaccelerator.population.PopulateRqaServiceImpl] [http-bio-8080-exec-6] PopulateRqaTableWorker(s) will be started at Thu Jan 14 17:17:15 EET 2021 on process 46672@L3700101035.ness.com (just in case you want to kill this JVM as we do not use daemon executors here)
+```
 
 ## Notes
 
