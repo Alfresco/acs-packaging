@@ -24,14 +24,6 @@ branches:
     - /feature\/.*/
     - /fix\/.*/
 
-# TODO: Remove the following comment and changes needed to release dev images of query-accelerator
-
-# To build a quay.io image for query-accelerator
-# 1. Set the RELEASE_VERSION below with the next number
-# 2. Commit this change with a message of the form: [release] 7.0.0-QUERY-ACC-<number>
-#    The bit after the ] does not matter but it makes it simpler to find the commits in the image
-# I added: OR branch = feature/ACS-247_relational-query-accelerator  to the release stage condition below.
-
 env:
   global:
     - TAS_SCRIPTS=../alfresco-community-repo/packaging/tests/scripts
