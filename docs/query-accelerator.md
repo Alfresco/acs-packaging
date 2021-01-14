@@ -2,7 +2,7 @@
 
 ## Description
 
-An administrator may define [zero or more] "query sets" of properties, document types or aspects applied to nodes to 
+An administrator may define [zero or more] "query sets" of properties or aspects applied to nodes to
 support faster queries. Properties may be from multiple types or aspects. Queries that currently go to either Solr or 
 TMDQs that only use values in one of these query sets will be directed to a new "query accelerator" which will perform 
 the query against a denormalised table.
@@ -23,7 +23,7 @@ which has been upgraded to 7.0.0 that already contains hundreds of million docum
 
 2. Multiple (zero or more but typically not more than 10) query set may be defined. Each will have its own name. It will 
 be possible to replace a query set with an new version or to remove it completely. The definition can include the 
-properties, document type or aspects applied to nodes and if necessary (for selected databases) the order of columns 
+properties or aspects applied to nodes and if necessary (for selected databases) the order of columns
 in compound indexes. The implementation will use one or more JSON files to define the query sets.
 
 3. The addition of new query sets, the replacement of an existing query set or complete removal will not require a 
@@ -101,7 +101,8 @@ The query set configurations define the denormalized tables that will be created
 | properties       | A collection of properties to appear on the denormalised table. A property consists of a name attribute which is the QName of a property and an isIndex attribute which indicates that the related column on the table should be indexed.            |
 | aspects          | A collection of aspects to appear on the denormalised table. The table will have a boolean column for each of the aspects to indicate if the node has those aspects applied. An aspect consists of a name attribute which is the QName of an aspect and an isIndex attribute which indicates that the related column on the table should be indexed. |
 | compositeIndexes | A collection of composite indexes to be created for the table. A composite index consists of an attribute where the attribute name is the index name and the attribute value is a collection of QNames of properties and/or aspects of the query set. |
-The type consists of a name attribute which is the QName of the of a type and an isIndex attribute - the type is always denormalised (in the column alf_type)
+
+The type consists of a name attribute which is the QName of a type and an isIndex attribute - the type is always denormalised (in the column alf_type)
 ### Updating and replacing query sets
 
 #### Removing a query set
@@ -203,7 +204,7 @@ publisher (cm:publisher) equal to 'Hachette Livre' and a type (cm:type) equal to
    }
 }
 ```
-
+document type
 The following Query Set would be able to support the above TMDQ.
 
 ```json
@@ -225,11 +226,7 @@ The following Query Set would be able to support the above TMDQ.
       "name": "cm:dublincore",
       "isIndex": true
     }
-  ],
-  "type": {
-      "name": "cm:content",
-      "isIndex": true
-  }
+  ]
 }
 ```
 
