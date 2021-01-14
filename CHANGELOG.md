@@ -12,13 +12,23 @@ repository either as part of the Alfresco Transform Service or as a Local transf
 scalability and reliability. The framework used for metadata extraction within the content repository remains,
 allowing custom extractors / embedders of metadata to still function, as long as they don't extend the extractors
 that have been removed. Ideally such custom code should be gradually moved into a T-Engine. For more information see
-[Metadata Extractors](https://github.com/Alfresco/acs-packaging/blob/master/docs/metadata-extract-embbed.md).
+[Metadata Extractors](https://github.com/Alfresco/acs-packaging/blob/master/docs/metadata-extract-embbed.md). </li>
 <li>Removal of Legacy transformers
 
 In ACS 6, the Alfresco Transform Service and Local transformers where introduced to help offload the transformation
 of content to a separate process. In ACS 7, the out of the box Legacy transformers and transformation framework have
 been removed. This helps provide greater clarity around installation and administration of transformations and
-technically a more scalable, reliable and secure environment.
+technically a more scalable, reliable and secure environment.</li>
+<li>Query Accelerator
+
+An administrator may define [zero or more] "query sets" of properties, document types or aspects applied to nodes to
+support faster queries. Properties may be from multiple types or aspects. Queries that currently go to either Solr
+or TMDQs that only use values in one of these query sets will be directed to a new "query accelerator" which will
+perform the query against a denormalised table. This comes at the cost of additional space for the denormalised
+relational tables and indexes as well as a minimal increased time on ingestion and updates to support the
+denormalisation. This will however allow customers to make that decision. Typically we would only suggest using this
+feature to support large deployments. For more information see
+[Query Accelerator](https://github.com/Alfresco/acs-packaging/blob/master/docs/query-accelerator.md). </li>
 <li>Removal of 3rd party libraries
 
 With the offloading of both transforms and metadata extraction to T-Engines a number of 3rd party libraries
@@ -30,7 +40,7 @@ new functionality or security patches in these libraries.
 <li>PdfBox org.apache.pdfbox:pdfbox:2.0.21 removed - transforms are now performed in T-Engines</li>
 <li>PdfBox org.apache.pdfbox:fontbox:2.0.21 removed - transforms are now performed in T-Engines</li>
 <li>PdfBox org.apache.pdfbox:pdfbox-tools:2.0.21 removed - transforms are now performed in T-Engines</li>
-</ul>
+</ul></li>
 
 <h1>        6.2.2
 </h1>

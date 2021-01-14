@@ -1,7 +1,4 @@
-# Query Accelerator - First Draft
-
-* PRODMAN : https://alfresco.atlassian.net/browse/PRODMAN-174
-* EPIC : https://alfresco.atlassian.net/browse/ACS-247
+# Query Accelerator
 
 ## Description
 
@@ -48,17 +45,17 @@ consistent, but will be simpler to implement, maintain and use in more situation
 
 ## Alfresco Query Accelerator Properties
 
-* Enable the Query Accelerator by setting the property alfresco.queryAccelerator.enabled to true.
-* Define the location of the Query Accelerator configs by setting the property alfresco.queryAccelerator.config.path
+* Enable the Query Accelerator by setting the property queryAccelerator.enabled to true.
+* Define the location of the Query Accelerator configs by setting the property queryAccelerator.config.path
 * Wait time after system startup before populating the tables. Default value is 60
 * The size of each population batch. Default value is 250000
 
 ### Properties example
 ```
-alfresco.queryAccelerator.enabled=true
-alfresco.queryAccelerator.config.path=alfresco/queryaccelerator
-alfresco.queryAccelerator.populator.startDelayMinutes=3
-alfresco.queryAccelerator.populator.workerBatchSize=250000
+queryAccelerator.enabled=true
+queryAccelerator.config.path=alfresco/queryaccelerator
+queryAccelerator.populator.startDelayMinutes=3
+queryAccelerator.populator.workerBatchSize=250000
 ```
 
 
