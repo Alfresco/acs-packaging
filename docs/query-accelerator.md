@@ -5,9 +5,9 @@
 An administrator may define [zero or more] "query sets" of properties or aspects applied to nodes to
 support faster queries. Properties may be from multiple types or aspects. Queries that currently go to either Solr or
 TMDQs that only use values in one of these query sets will be directed to a new "query accelerator" which will perform
-the query against a denormalised table.
+the query against a denormalized table.
 
-This comes at the cost of additional space for the denormalised relational tables and indexes as well as a minimal
+This comes at the cost of additional space for the denormalized relational tables and indexes as well as a minimal 
 increased time on ingestion and updates to support the denormalisation. This will however allow customers to make that
 decision. Typically we would only suggest using this feature to support large transactional deployments, where documents
 are automatically imported form other systems, rather than traditional collaborative content management system where
@@ -24,29 +24,26 @@ which has been upgraded to 7.0.0 that already contains hundreds of million docum
 2. Multiple (zero or more but typically not more than 10) query set may be defined. Each will have its own name. It will
 be possible to replace a query set with a new version or to remove it completely. The definition can include the
 properties or aspects applied to nodes and if necessary (for selected databases) the order of columns
-in compound indexes. The implementation will use one or more JSON files to define the query sets.
+in compound indexes. Query sets are defined using JSON files.
 
-3. The addition of new query sets, the replacement of an existing query set or complete removal will not require a
-restart, an outage or have a major impact on normal operations. The alfresco.log will contain INFO messages to reflect
-progress. The implementation will need to identify that a new query set exist and to start populating a denormalised
-table in background. It will also need to be able to abandon the table population before it is complete, if a new
-version of the query set is created or the query set is removed. The implementation will also need to identify
-a query set or a previous version that is no longer needed and trigger the removal of the denormalised table in background.
+3. The addition of new query sets, the replacement of an existing query set or complete removal does not require a 
+restart, an outage or have a major impact on normal operations. The alfresco.log will contain messages to reflect 
+progress. When a new query set is identified the system will start populating a denormalized 
+table in background. It will also abandon the table population before it is complete, if a new 
+version of the query set is created or the query set is removed. The implementation will also need to identify a query 
+set or a previous version is no longer needed and trigger the removal of the denormalised table in background.
 
-4. Once the denormalised table has been created and fully populated, it will automatically start being used.
+4. Once the denormalized table has been created and fully populated, it will automatically start being used.
 
-5. The Query accelerator will provide ATOMIC (transactionally consistent) results. This is only possible if we include
-maintaining denormalised tables as part of the main transaction used to update our normal database tables. This will
-have a higher cost on the normal operation of the repository than a system that only promises to be eventually
-consistent, but will be simpler to implement, maintain and use in more situations.
+5. The Query accelerator will provide ATOMIC (transactionally consistent) results.
 
-6. The query accelerator is an enterprise edition feature.
+6. The query accelerator is only an enterprise edition feature.
 
 
 ## Alfresco Query Accelerator Properties
 
 * Enable the Query Accelerator by setting the property queryAccelerator.enabled to true.
-* Define the location of the Query Accelerator configs by setting the property queryAccelerator.config.path
+* Define the location of the Query Accelerator config files by setting the property queryAccelerator.config.path
 * Wait time after system startup before populating the tables. Default value is 60
 * The size of each population batch. Default value is 250000
 
@@ -61,7 +58,7 @@ queryAccelerator.populator.workerBatchSize=250000
 
 ## Query Set Configs
 
-The query set configurations define the denormalized tables that will be created to support the TMDQs.
+The query set configurations define the denormalized tables that will be created to support faster queries.
 
 ### Query set configuration example
 
@@ -97,53 +94,59 @@ The query set configurations define the denormalized tables that will be created
 | Attribute        | Description |
 | ---------------- | ----------- |
 | version          | The version of the query set. |
-| tableName        | The table name. The actual database table name will have a prefix of 'alf_qs_' and a suffix of '_v' plus the version. So for a tableName of 'rqa_name_desc' and a version of 1 that actual database table name would be 'alf_qs_rqa_name_desc_v1'. |
-| properties       | A collection of properties to appear on the denormalised table. A property consists of a name attribute which is the QName of a property and an isIndex attribute which indicates that the related column on the table should be indexed.            |
-| aspects          | A collection of aspects to appear on the denormalised table. The table will have a boolean column for each of the aspects to indicate if the node has those aspects applied. An aspect consists of a name attribute which is the QName of an aspect and an isIndex attribute which indicates that the related column on the table should be indexed. |
-| compositeIndexes | A collection of composite indexes to be created for the table. A composite index consists of an attribute where the attribute name is the index name and the attribute value is a collection of QNames of properties and/or aspects of the query set. |
+| name             | The table name. The actual database table name will have a prefix of 'alf_qs_' and a suffix of '_v' plus the version. So for a query set called of 'Test1' and a version of 1 that actual database table name would be 'alf_test1_desc_v1'. |
+| properties       | A collection of properties to appear on the denormalized table. A property consists of a name attribute which is the name of a property and an isIndex attribute which indicates that the related column on the table should be indexed.            |
+| aspects          | A collection of aspects to appear on the denormalized table. The table will have a boolean column for each of the aspects to indicate if the node has those aspects applied. An aspect consists of a name attribute which is the name of an aspect and an isIndex attribute which indicates that the related column on the table should be indexed. |
+| compositeIndexes | A collection of composite indexes to be created for the table. A composite index consists of an attribute where the attribute name is the index name and the attribute value is a collection of names of properties and/or aspects of the query set. |
 
-The type consists of a name attribute which is the QName of a type and an isIndex attribute - the type is always denormalised (in the column alf_type)
+* The maximum length of the query set name and the version is the maximum table name length of the database system being used,
+  mimus 9. So for Postgres, which has a maximum table name length of 63 bytes, the maximum name and version length in
+  the query set is 54 bytes.
+* Queries that include negations on aspects should not be accelerated.
+* Properties of type MLTEXT are NOT be supported. If any such properties are detected, a WARN message will be logged,
+  the properties will be ignored and the corresponding denormalized table will be created without them.
+* The denormalized table will have an alf_type column, holding the name of the content type.
+  
 ### Updating and replacing query sets
 
 #### Removing a query set
 
 You can remove a query set by removing the query set JSON file from the configuration path and then request a query set
-refresh in the Admin Tools. (see Query set refresh in Admin Tools)
+refresh in the Alfresco Administration Console.
 
 During the refresh the JSON config files will be compared against the internal registry of query sets. If a query set in
 the registry does not have a corresponding JSON config file with the same tableName then the query set will be removed
-from the registry and the denormalised database table will be dropped.
+from the registry and the denormalized database table will be dropped. 
 
 #### Updating a query set
 
 You can update/replace a query set by changing the properties, aspects and compositeIndexes in the query set JSON config.
 
-You then need to update the version in the query set JSON config and then request a query set refresh in the Admin Tools:
-http://localhost:8080/alfresco/s/enterprise/admin/admin-searchservice.
-(see Query set refresh in Admin Tools)
+You then need to update the version in the query set JSON config and then request a query set refresh in the
+Alfresco Administration Console.
 
 This will start a process that will replace the previous version of the query set.
 * A new version of the query set will be added to the internal query set registry.
-* A new version of the denormalised table will be created.
-* The denormalised table for the previous version will continue to exist until it has been replaced by the new version.
-* The new version of the denormalised table will be populated. This could take a considerable time depending on the scale
+* A new version of the denormalized table will be created.
+* The denormalized table for the previous version will continue to exist until it has been replaced by the new version.
+* The new version of the denormalized table will be populated. This could take a considerable time depending on the scale 
 of the Alfresco installation.
 * When the population is completed
     * the query set will be flagged as live
     * the previous version of the query set will be removed from the internal registry
-    * the denormalised table for the previous version will be dropped
+    * the denormalized table for the previous version will be dropped
 
 #### Important
 
-If you edit a query set JSON config and change the tableName and request a query set refresh this will look to the
-system that you have removed the original query set and created a new query set. This will result in the original query
-set being removed from the registry and the denormalised table being dropped before the denormalised table for the new
+If you edit a query set config and change the name and request a query set refresh, the system will see this 
+as the removal of the original query set and the creation of a new one. It will result in the original query 
+set being removed from the registry and the denormalized table being dropped before the denormalized table for the new 
 query set is ready to use.
 
 
 #### Query Set Refresh in Alfresco Administration Console
 
-The query sets can be refreshed in the Alfresco Administration Console in Share.
+The query sets can be refreshed in the Alfresco Administration Console.
 
 1 Select 'Search Service' in the left hand menu.
 
@@ -171,7 +174,7 @@ If there are no updates to the query sets you will see:
 
 3. Start the new installation of Alfresco.
 
-4. The denormalised tables will be created and populated by the end of the installation startup.
+4. The denormalized tables will be created and populated by the end of the installation startup.
 
 
 ## How to set-up the Query Accelerator for an existing Alfresco installation
@@ -184,15 +187,15 @@ If there are no updates to the query sets you will see:
 
 4. Start a Query Set Refresh in the Alfresco Administration Console as described earlier.
 
-5. The denormalised tables will be created
+5. The denormalized tables will be created
 
-6. The population of the denormalised tables might take a considerable time depending on the scale of the alfresco
+6. The population of the denormalized tables might take a considerable time depending on the scale of the alfresco
 installation. The progress of the population of the table will be output to the alfresco log.
 
 
 ## Query Sets and Transaction Meta-Data Queries (TMDQ)
 
-Here we give an example of how to create a Query Set for a TMDQ.
+Here we give an example of how to create a Query Set to replace a TMDQ.
 
 The following TMDQ selects all documents (cm:content) which have a dublincore aspect (cm:dublincore), a
 publisher (cm:publisher) equal to 'Hachette Livre' and a type (cm:type) equal to 'Action'.
@@ -205,7 +208,6 @@ publisher (cm:publisher) equal to 'Hachette Livre' and a type (cm:type) equal to
    }
 }
 ```
-
 The following Query Set would be able to support the above TMDQ.
 
 ```json
@@ -231,100 +233,26 @@ The following Query Set would be able to support the above TMDQ.
 }
 ```
 
-
 ## Query Set Status and Caching
 
-Each table version has one status, i.e. a table could have:
-tableA, version 1, OBSOLETE
-tableA, version 2, LIVE
-tableA, version 3, INPROGRESS
-tableA, version 4, NEW
+Denormalized tables have a status. For example:
 
-Each status should only appear at most once for a given table, i.e. a table cannot have two “LIVE” versions.
-The transition from NEW to INPROGRESS would normally happen almost immediately.
-The query set cache contains all versions including obsolete and in-progress versions. This is to allow the “maintain table population” process to begin without having to wait for the initial table population to complete.
+| Name | Version | State | Notes |
+| ---- | ------- | ----- | ----- |
+| tableA | 1 | OBSOLETE | About to be removed |
+| tableA | 2 |  LIVE | Currently being used |
+| tableA | 3 |  INPROGRESS | Created but not fully populated yet, so cannot be used |
+| tableA | 4 |  NEW | Seen but population of denormalized data has not started |
 
-Use case scenarios:
-
-Scenario 1: Add new table: tableA, v1 (no previous versions)
-|                          |   Registry and cache       |                      DB |
-| ------------------------ | :------------------------: | ----------------------: |
-| Before refresh:          |          empty             |                No table |
-| After refresh            | tableA, V1, NEW-INPROGRESS | V1 Created & populating |
-| After table populated    | tableA, V1, NEW-INPROGRESS |            V1 Populated |
-| After activate query set |    tableA, V1, LIVE        |            V1 Populated |
-
-Scenario 2a: Delete table: tableA (INPROGRESS)
-|                          |   Registry and cache       |                           DB |
-| ------------------------ | :------------------------: | ---------------------------: |
-| Before refresh:          | tableA, V1, NEW-INPROGRESS |      V1 Created & populating |
-| After refresh            |  tableA, V1, OBSOLETE      | V1 Stop population requested |
-| After population aborted |          empty             |           V1 Dropped from DB |
-
-Scenario 2b: Delete table: tableA (LIVE)
-|                 | Registry and cache |                 DB |
-| --------------- | :----------------: | -----------------: |
-| Before refresh: |  tableA, V1, LIVE  |       V1 Populated |
-| After refresh   |        empty       | V1 Dropped from DB |
-
-Scenario 2c: Delete table: tableA (Multiple versions)
-|                          |   Registry and cache       |                           DB |
-| ------------------------ | :------------------------: | ---------------------------: |
-| Before refresh:          |    tableA, V1, LIVE        |      V1 Created & populating |
-|                          | tableA, V2, NEW-INPROGRESS |      V2 Created & populating |
-| After refresh            |  tableA, V2, OBSOLETE      |           V1 Dropped from DB |
-|                          |                            | V2 Stop population requested |
-| After population aborted |          empty             |           V2 Dropped from DB |
-
-Scenario 3a: Upgrade table: tableA to V2 (previous version INPROGRESS)
-|                          |   Registry and cache       |                           DB |
-| ------------------------ | :-------------------------:| ---------------------------: |
-| Before refresh:          | tableA, V1, NEW-INPROGRESS |      V1 Created & populating |
-| After refresh            |  tableA, V1, OBSOLETE      | V1 Stop population requested |
-|                          | tableA, V2, NEW-INPROGRESS |      V2 Created & populating |
-| After population aborted | tableA, V2, NEW-INPROGRESS |           V1 Dropped from DB |
-| After table populated    | tableA, V2, NEW-INPROGRESS |                 V2 Populated |
-| After activate query set |    tableA, V2, LIVE        |                 V2 Populated |
-
-NB: population aborted and population completed could happen in any order
-
-Scenario 3b: Upgrade table: tableA to V2 (previous version LIVE)
-|                          |   Registry and cache       |                      DB |
-| ------------------------ | :------------------------: | ----------------------: |
-| Before refresh:          |    tableA, V1, LIVE        |            V1 Populated |
-| After refresh            |    tableA, V1, LIVE        |            V1 Populated |
-|                          | tableA, V2, NEW-INPROGRESS | V2 Created & populating |
-| After table populated    |    tableA, V1, LIVE        |            V1 Populated |
-|                          | tableA, V2, NEW-INPROGRESS |            V2 Populated |
-| After activate query set |    tableA, V2, LIVE        |      V1 Dropped from DB |
-|                          |                            |            V2 Populated |
-
-Scenario 3c: Upgrade table: tableA to V3 (previous versions LIVE and INPROGRESS)
-|                          |   Registry and cache       |                           DB |
-| ------------------------ | :------------------------: | ---------------------------: |
-| Before refresh:          |    tableA, V1, LIVE        |                 V1 Populated |
-|                          | tableA, V2, NEW-INPROGRESS |      V2 Created & populating |
-| After refresh            |    tableA, V1, LIVE        |                 V1 Populated |
-|                          |  tableA, V2, OBSOLETE      | V2 Stop population requested |
-|                          | tableA, V3, NEW-INPROGRESS |      V3 Created & populating |
-| After population aborted |    tableA, V1, LIVE        |                 V1 Populated |
-|                          | tableA, V3, NEW-INPROGRESS |           V2 Dropped from DB |
-|                          |                            |      V3 Created & populating |
-| After table populated    |    tableA, V1, LIVE        |                 V1 Populated |
-|                          | tableA, V3, NEW-INPROGRESS |                 V3 Populated |
-| After activate query set |    tableA, V3, LIVE        |           V1 Dropped from DB |
-|                          |                            |                 V3 Populated |
-
+The transition from NEW to INPROGRESS will normally happen almost immediately.
 
 ## Logging
 
-The admin console only informs whether updates were detected. For a more complete picture of the query sets configuration DEBUG logging must be used:
+The admin console currently only indicates if updates were detected. For a more complete picture of the query sets configuration DEBUG logging must be used:
 ```
 log4j.logger.org.alfresco.enterprise.repo.queryaccelerator=debug
 ```
-INFO messages should give a log that informs you that rows are being inserted within a range of node ids and after that how many rows have been
-inserted within that same range.
-Logs when Query Set Refresh is performed but there are no updates:
+Logs when a Query Set Refresh was performed but there are no updates:
 ```
 2021-01-14 17:12:33,020  DEBUG [repo.queryaccelerator.QuerySetConfigServiceImpl] [http-bio-8080-exec-6] Refreshing query sets - checking for updates...
 2021-01-14 17:12:33,022  DEBUG [repo.queryaccelerator.QuerySetConfigFileFinder] [http-bio-8080-exec-6] file /Users/p3700509/Documents/build/queryaccelerator/test01-qs.json config read
@@ -335,7 +263,7 @@ Logs when Query Set Refresh is performed but there are no updates:
 ```
 
 
-Logs when the Query Set Refresh has started:
+Logs when a Query Set Refresh has started:
 ```
 2021-01-14 17:14:15,906  DEBUG [repo.queryaccelerator.QuerySetConfigServiceImpl] [http-bio-8080-exec-6] Refreshing query sets - checking for updates...
 2021-01-14 17:14:15,907  DEBUG [repo.queryaccelerator.QuerySetConfigFileFinder] [http-bio-8080-exec-6] file /Users/p3700509/Documents/build/queryaccelerator/test01-qs.json config read
@@ -348,14 +276,3 @@ Logs when the Query Set Refresh has started:
 2021-01-14 17:14:15,957  DEBUG [queryaccelerator.population.PopulateRqaServiceImpl] [http-bio-8080-exec-6] Number of PopulateRqaTableWorkers found: 1
 2021-01-14 17:14:15,959  DEBUG [queryaccelerator.population.PopulateRqaServiceImpl] [http-bio-8080-exec-6] PopulateRqaTableWorker(s) will be started at Thu Jan 14 17:17:15 EET 2021 on process 46672@L3700101035.ness.com (just in case you want to kill this JVM as we do not use daemon executors here)
 ```
-
-## Notes
-
-* The maximum length of the tableName and the version is the maximum table name length of the database system being used
-mimus 9. So for Postgres that has a maximum table name length of 63 bytes the maximum tableName and version length in
-the query set is 54 bytes.
-* Queries that present negations on aspects should not be accelerated.
-* Properties of type MLTEXT will NOT be supported. If any such properties are detected in the definition of a QuerySet then a WARN message will be issued,
-the properties will be ignored and the corresponding denormalised table will be created without them.
-* The maximum length of the tableName and the version is the maximum table name length of the database system being used minus 9.
-* Queries that present negations on aspects will NOT be accelerated.
