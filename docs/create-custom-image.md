@@ -6,7 +6,7 @@ The recommended way of building extensions is to use [Rest APIs](https://api-exp
 
 ### Applying a custom AMP
 
-This project uses [fabric8](https://github.com/fabric8io/fabric8-maven-plugin) maven plugin to build and push the Alfresco Docker image. The plugin's configuration is stored in this [pom.xml](../docker-alfresco/pom.xml). The following example will illustrate how an additional AMP can be added in the configuration.
+This project uses [fabric8](https://github.com/fabric8io/docker-maven-plugin) maven plugin to build and push the Alfresco Docker image. The plugin's configuration is stored in this [pom.xml](../docker-alfresco/pom.xml). The following example will illustrate how an additional AMP can be added in the configuration.
 
 #### Prerequisites
 
@@ -44,4 +44,4 @@ Maven will use _maven-dependency-plugin_ to download the AMP from Maven reposito
 ```bash
 mvn clean install -Pinternal -Dimage.name=mycompany/alfresco-with-s3 -Dimage.tag=latest -Dimage.registry=quay.io
 ```
-The `internal` profile configures _fabric8-maven-plugin_ to build and push an image. It will use this [Dockerfile](../docker-alfresco/Dockerfile). All the AMPs from the _target/amps_ folder are copied inside the image and then the amps are applied to the standard _alfresco.war_ using [MMT tool](https://github.com/Alfresco/alfresco-mmt). After that the image is pushed to the specified Docker registry.  
+The `internal` profile configures _docker-maven-plugin_ to build and push an image. It will use this [Dockerfile](../docker-alfresco/Dockerfile). All the AMPs from the _target/amps_ folder are copied inside the image and then the amps are applied to the standard _alfresco.war_ using [MMT tool](https://github.com/Alfresco/alfresco-mmt). After that the image is pushed to the specified Docker registry.
