@@ -3,41 +3,41 @@
 ## Description
 
 An administrator may define [zero or more] "query sets" of properties or aspects applied to nodes to
-support faster queries. Properties may be from multiple types or aspects. Queries that currently go to either Solr or 
-TMDQs that only use values in one of these query sets will be directed to a new "query accelerator" which will perform 
+support faster queries. Properties may be from multiple types or aspects. Queries that currently go to either Solr or
+TMDQs that only use values in one of these query sets will be directed to a new "query accelerator" which will perform
 the query against a denormalised table.
 
-This comes at the cost of additional space for the denormalised relational tables and indexes as well as a minimal 
-increased time on ingestion and updates to support the denormalisation. This will however allow customers to make that 
-decision. Typically we would only suggest using this feature to support large transactional deployments, where documents 
-are automatically imported form other systems, rather than traditional collaborative content management system where 
-humans are creating documents. In transactional deployments there typically is a case id and one or two other properties, 
-which identify a related collection of documents. These properties would be a good candidate for a query set in the new 
-"query accelerator". Having many properties in a query set or lots of query sets should be avoided, as the cost will be 
+This comes at the cost of additional space for the denormalised relational tables and indexes as well as a minimal
+increased time on ingestion and updates to support the denormalisation. This will however allow customers to make that
+decision. Typically we would only suggest using this feature to support large transactional deployments, where documents
+are automatically imported form other systems, rather than traditional collaborative content management system where
+humans are creating documents. In transactional deployments there typically is a case id and one or two other properties,
+which identify a related collection of documents. These properties would be a good candidate for a query set in the new
+"query accelerator". Having many properties in a query set or lots of query sets should be avoided, as the cost will be
 high and generally indicates that there is something wrong with the data model design.
 
 ### Operational and project requirements
 
-1. Query sets may be applied to an existing Alfresco repository. For example a query set could be applied to a system 
+1. Query sets may be applied to an existing Alfresco repository. For example a query set could be applied to a system
 which has been upgraded to 7.0.0 that already contains hundreds of million documents.
 
-2. Multiple (zero or more but typically not more than 10) query set may be defined. Each will have its own name. It will 
-be possible to replace a query set with an new version or to remove it completely. The definition can include the 
+2. Multiple (zero or more but typically not more than 10) query set may be defined. Each will have its own name. It will
+be possible to replace a query set with a new version or to remove it completely. The definition can include the
 properties or aspects applied to nodes and if necessary (for selected databases) the order of columns
 in compound indexes. The implementation will use one or more JSON files to define the query sets.
 
-3. The addition of new query sets, the replacement of an existing query set or complete removal will not require a 
-restart, an outage or have a major impact on normal operations. The alfresco.log will contain INFO messages to reflect 
-progress. The implementation will need to identify that a new query set exist and to start populating a denormalised 
-table in background. It will also need to be able to abandon the table population before it is complete, if a new 
-version of the query set is created or the query set is removed. The implementation will also need to identify a query 
-set or a previous version is no longer needed and trigger the removal of the denormalised table in background.
+3. The addition of new query sets, the replacement of an existing query set or complete removal will not require a
+restart, an outage or have a major impact on normal operations. The alfresco.log will contain INFO messages to reflect
+progress. The implementation will need to identify that a new query set exist and to start populating a denormalised
+table in background. It will also need to be able to abandon the table population before it is complete, if a new
+version of the query set is created or the query set is removed. The implementation will also need to identify
+a query set or a previous version that is no longer needed and trigger the removal of the denormalised table in background.
 
 4. Once the denormalised table has been created and fully populated, it will automatically start being used.
 
-5. The Query accelerator will provide ATOMIC (transactionally consistent) results. This is only possible if we include 
-maintaining denormalised tables as part of the main transaction used to update our normal database tables. This will 
-have a higher cost on the normal operation of the repository than a system that only promises to be eventually 
+5. The Query accelerator will provide ATOMIC (transactionally consistent) results. This is only possible if we include
+maintaining denormalised tables as part of the main transaction used to update our normal database tables. This will
+have a higher cost on the normal operation of the repository than a system that only promises to be eventually
 consistent, but will be simpler to implement, maintain and use in more situations.
 
 6. The query accelerator is an enterprise edition feature.
@@ -61,7 +61,7 @@ queryAccelerator.populator.workerBatchSize=250000
 
 ## Query Set Configs
 
-The query set configurations define the denormalized tables that will be created to supported the TMDQs.
+The query set configurations define the denormalized tables that will be created to support the TMDQs.
 
 ### Query set configuration example
 
@@ -107,37 +107,38 @@ The type consists of a name attribute which is the QName of a type and an isInde
 
 #### Removing a query set
 
-You can remove a query set by removing the query set JSON file from the configuration path and then request a query set 
+You can remove a query set by removing the query set JSON file from the configuration path and then request a query set
 refresh in the Admin Tools. (see Query set refresh in Admin Tools)
 
-During the refresh the JSON config files will be compared against the internal registry of query sets. If a query set in 
-the registry does not have a corresponding JSON config file with the same tableName then the query set will be removed 
-from the registry and the denormalised database table will be dropped. 
+During the refresh the JSON config files will be compared against the internal registry of query sets. If a query set in
+the registry does not have a corresponding JSON config file with the same tableName then the query set will be removed
+from the registry and the denormalised database table will be dropped.
 
 #### Updating a query set
 
 You can update/replace a query set by changing the properties, aspects and compositeIndexes in the query set JSON config.
 
-You then need to update the version in the query set JSON config and then request a query set refresh in the Admin Tools. 
+You then need to update the version in the query set JSON config and then request a query set refresh in the Admin Tools:
+http://localhost:8080/alfresco/s/enterprise/admin/admin-searchservice.
 (see Query set refresh in Admin Tools)
 
 This will start a process that will replace the previous version of the query set.
 * A new version of the query set will be added to the internal query set registry.
 * A new version of the denormalised table will be created.
 * The denormalised table for the previous version will continue to exist until it has been replaced by the new version.
-* The new version of the denormalised table will be populated. This could take a considerable time depending on the scale 
+* The new version of the denormalised table will be populated. This could take a considerable time depending on the scale
 of the Alfresco installation.
 * When the population is completed
-    * the query set will be flagged as live 
+    * the query set will be flagged as live
     * the previous version of the query set will be removed from the internal registry
     * the denormalised table for the previous version will be dropped
 
 #### Important
 
-If you edit a query set JSON config and change the tableName and request a query set refresh this will look to the 
-system that you have removed the original query set and created a new query set. This will result in the original query 
-set being removed from the registry and the denormalised table being dropped before the denormalised table for the new 
-query set is ready to use.  
+If you edit a query set JSON config and change the tableName and request a query set refresh this will look to the
+system that you have removed the original query set and created a new query set. This will result in the original query
+set being removed from the registry and the denormalised table being dropped before the denormalised table for the new
+query set is ready to use.
 
 
 #### Query Set Refresh in Alfresco Administration Console
@@ -148,11 +149,11 @@ The query sets can be refreshed in the Alfresco Administration Console in Share.
 
 ![Search Service](images/RefreshQuerySet1.png "Search Service")
 
-2 Scoll down to the 'Query Accelerator' section. 
+2 Scoll down to the 'Query Accelerator' section.
 
 ![Query Accelerator](images/RefreshQuerySet2.png "Query Accelerator")
 
-3 Press the 'Refresh Query Set' button. 
+3 Press the 'Refresh Query Set' button.
 
 If there are updates to the query sets you will see:
 
@@ -193,7 +194,7 @@ installation. The progress of the population of the table will be output to the 
 
 Here we give an example of how to create a Query Set for a TMDQ.
 
-The following TMDQ selects all documents (cm:content) which have a dublincore aspect (cm:dublincore) and has a 
+The following TMDQ selects all documents (cm:content) which have a dublincore aspect (cm:dublincore), a
 publisher (cm:publisher) equal to 'Hachette Livre' and a type (cm:type) equal to 'Action'.
 
 ```
@@ -204,7 +205,7 @@ publisher (cm:publisher) equal to 'Hachette Livre' and a type (cm:type) equal to
    }
 }
 ```
-document type
+
 The following Query Set would be able to support the above TMDQ.
 
 ```json
@@ -321,8 +322,8 @@ The admin console only informs whether updates were detected. For a more complet
 ```
 log4j.logger.org.alfresco.enterprise.repo.queryaccelerator=debug
 ```
-INFO messages should give a % based on number of nodes at the start vs number of nodes processed so far. Log message should look something like: [INFO] {denorm tablename} 25% completed
-
+INFO messages should give a log that informs you that rows are being inserted within a range of node ids and after that how many rows have been
+inserted within that same range.
 Logs when Query Set Refresh is performed but there are no updates:
 ```
 2021-01-14 17:12:33,020  DEBUG [repo.queryaccelerator.QuerySetConfigServiceImpl] [http-bio-8080-exec-6] Refreshing query sets - checking for updates...
@@ -350,9 +351,11 @@ Logs when the Query Set Refresh has started:
 
 ## Notes
 
-* The maximum length of the tableName and the version is the maximum table name length of the database system being used 
-mimus 9. So for Postgres that has a maximum table name length of 63 bytes the maximum tableName and version length in 
+* The maximum length of the tableName and the version is the maximum table name length of the database system being used
+mimus 9. So for Postgres that has a maximum table name length of 63 bytes the maximum tableName and version length in
 the query set is 54 bytes.
 * Queries that present negations on aspects should not be accelerated.
 * Properties of type MLTEXT will NOT be supported. If any such properties are detected in the definition of a QuerySet then a WARN message will be issued,
 the properties will be ignored and the corresponding denormalised table will be created without them.
+* The maximum length of the tableName and the version is the maximum table name length of the database system being used minus 9.
+* Queries that present negations on aspects will NOT be accelerated.
