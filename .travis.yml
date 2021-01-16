@@ -166,13 +166,12 @@ jobs:
 #      script:
 #        - travis_wait 20 mvn -B install -f tests/tas-sync-service/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
-# Enable again once we have an image that can be used in Query Accelerator testing
-#    - name: "Elasticsearch TAS tests"
-#      before_script:
-#        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-elasticsearch.yml
-#        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-#      script:
-#        - travis_wait 30 mvn -B install -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+    - name: "Elasticsearch TAS tests"
+      before_script:
+        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-elasticsearch.yml
+        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+      script:
+        - travis_wait 30 mvn -B install -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
     - name: "All AMPs tests"
       before_script:
@@ -193,13 +192,9 @@ jobs:
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco"
         - docker ps
 
-# Enable creation of pipeline images again once we have an image that can be used in Query Accelerator testing
-#    - name: "Update latest and Single Pipeline <acs>-<build> images"
-#      stage: docker_latest
-#      script: travis_retry travis_wait 30 mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Pinternal,pipeline
-    - name: "Update latest BUT NOT the Single Pipeline <acs>-<build> images"
+    - name: "Update latest and Single Pipeline <acs>-<build> images"
       stage: docker_latest
-      script: travis_retry travis_wait 30 mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Pinternal
+      script: travis_retry travis_wait 30 mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Pinternal,pipeline
 
     - name: "Release and Copy to S3 Staging Bucket"
       stage: release
