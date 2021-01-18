@@ -213,7 +213,7 @@ jobs:
           bucket: "alfresco-artefacts-staging"
           region: "eu-west-1"
           # Once Travis releases their *dpl v2* api (currently in beta, check https://docs.travis-ci.com/user/deployment-v2#how-to-opt-in-to-v2)
-          # the skip_cleanup option will no longer be needed (or valid) and should be removed.
+          # the skip_cleanup option will no longer be needed (or valid) and should be removed (ACS-1155).
           skip_cleanup: true
           acl: private
           local_dir: "deploy_dir"
