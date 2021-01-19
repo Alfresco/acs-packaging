@@ -2,19 +2,21 @@
 
 ## Description
 
-An administrator may define [zero or more] "query sets" of properties or aspects applied to nodes to
-support faster queries. Properties may be from multiple types or aspects. Queries that currently go to either Solr or
-TMDQs that only use values in one of these query sets will be directed to a new "query accelerator" which will perform
-the query against a denormalized table.
+The Query Accelerator is a mechanism for optimising selected queries in very large content repositories. We would
+suggest using this feature to support large transactional deployments with hundreds of millions of nodes, where
+documents are automatically imported from other systems, rather than traditional collaborative content management
+system where humans are creating documents. In transactional deployments there typically is a case id and one or two
+other properties, which identify a related collection of documents.
 
-This comes at the cost of additional space for the denormalized relational tables and indexes as well as a minimal 
-increased time on ingestion and updates to support the denormalisation. This will however allow customers to make that
-decision. Typically we would only suggest using this feature to support large transactional deployments, where documents
-are automatically imported form other systems, rather than traditional collaborative content management system where
-humans are creating documents. In transactional deployments there typically is a case id and one or two other properties,
-which identify a related collection of documents. These properties would be a good candidate for a query set in the new
-"query accelerator". Having many properties in a query set or lots of query sets should be avoided, as the cost will be
-high and generally indicates that there is something wrong with the data model design.
+An administrator may define a combination of properties and aspects as a `query set`, to support a faster alternative to
+TMDQ (Transactional MetaData Query) or Solr. Properties may be from multiple types or aspects. A single query set can
+speed up more than on query if the queries share common search properties or aspects. A number of different query sets
+may be created to support queries with different search properties or aspects.
+
+This performance comes at the cost of additional space for denormalized databases tables and indexes as well as a minimal 
+increased time on ingestion and update. This will however allow customers to make that decision. Having many properties
+in a query set or having lots of query sets should be avoided, as the cost will be high and generally indicates that
+there is something wrong with the data model design.
 
 ### Operational and project requirements
 
