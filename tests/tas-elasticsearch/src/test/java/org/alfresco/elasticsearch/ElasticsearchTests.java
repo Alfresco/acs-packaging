@@ -105,10 +105,10 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
         dataUser.addUserToSite(userMultiSite, siteModel1, UserRole.SiteContributor);
         dataUser.addUserToSite(userMultiSite, siteModel2, UserRole.SiteContributor);
 
-        sampleContent = createContent(FILE_0_NAME, "This is a test", siteModel1, userSite1);
-        createContent(FILE_1_NAME, "This is another file", siteModel1, userSite1);
-        createContent(FILE_2_NAME, "This is another file", siteModel2, userSite2);
-        createContent(FILE_3_NAME, "This is another file", siteModel1, userSite2);
+        sampleContent = createContent(FILE_0_NAME, "This is the first teST", siteModel1, userSite1);
+        createContent(FILE_1_NAME, "This is another TEST file", siteModel1, userSite1);
+        createContent(FILE_2_NAME, "This is another tEst file", siteModel2, userSite2);
+        createContent(FILE_3_NAME, "This is another Test file", siteModel1, userSite2);
         //remove the user from site, but he keeps ownership on FILE_3_NAME 
         dataUser.removeUserFromSite(userSite2, siteModel1);
     }
@@ -135,7 +135,7 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
             GetResponse documentResponse = elasticClient.get(request, RequestOptions.DEFAULT);
 
             assertTrue(documentResponse.isExists());
-            assertEquals(documentResponse.getSource().get("cm%3Acontent"), "This is a test");
+            assertEquals(documentResponse.getSource().get("cm%3Acontent"), "This is the first teST");
         });
     }
 
@@ -147,13 +147,13 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
         Utility.sleep(1000, 10000, () -> {
             SearchRequest query = new SearchRequest();
             RestRequestQueryModel queryReq = new RestRequestQueryModel();
-            queryReq.setQuery("test");
+            queryReq.setQuery("first");
             query.setQuery(queryReq);
 
             SearchResponse search = client.authenticateUser(userSite1).withSearchAPI().search(query);
 
             // this test must found only one documents, while documents in the system are four because 
-            // only one contains the word "test".
+            // only one contains the word "first".
             assertResponseAndResult(search, FILE_0_NAME);
         });
     }
@@ -161,12 +161,12 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
     @TestRail(section = {
             TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that Elasticsearch search works as expected using a user that has access to only one site.")
     @Test(groups = { TestGroup.SEARCH })
-    public void searchCanFindAFileAsOwner() throws Exception
+    public void searchCanFindFilesOnASite() throws Exception
     {
         Utility.sleep(1000, 10000, () -> {
             SearchRequest query = new SearchRequest();
             RestRequestQueryModel queryReq = new RestRequestQueryModel();
-            queryReq.setQuery("this");
+            queryReq.setQuery("test");
             query.setQuery(queryReq);
 
             SearchResponse search = client.authenticateUser(userSite1).withSearchAPI().search(query);
@@ -177,14 +177,14 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
     }
 
     @TestRail(section = {
-            TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that Elasticsearch search works as expected when the user can search a file because he is the owenr.")
+            TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that Elasticsearch search works as expected when the user can search a file because he is the owner.")
     @Test(groups = { TestGroup.SEARCH }, enabled = false)
-    public void searchCanFindAFileOnMultipleSites() throws Exception
+    public void searchCanFindAFileOnMultipleSitesWithOwner() throws Exception
     {
         Utility.sleep(1000, 10000, () -> {
             SearchRequest query = new SearchRequest();
             RestRequestQueryModel queryReq = new RestRequestQueryModel();
-            queryReq.setQuery("this");
+            queryReq.setQuery("TEST");
             query.setQuery(queryReq);
 
             SearchResponse search = client.authenticateUser(userSite2).withSearchAPI().search(query);
@@ -198,12 +198,12 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
     @TestRail(section = {
             TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that Elasticsearch search works as expected when a user has permission on multiple sites.")
     @Test(groups = { TestGroup.SEARCH })
-    public void searchCanFindAFilePermission() throws Exception
+    public void searchCanFindAFileOnMultipleSites() throws Exception
     {
         Utility.sleep(1000, 10000, () -> {
             SearchRequest query = new SearchRequest();
             RestRequestQueryModel queryReq = new RestRequestQueryModel();
-            queryReq.setQuery("this");
+            queryReq.setQuery("test");
             query.setQuery(queryReq);
 
             SearchResponse search = client.authenticateUser(userMultiSite).withSearchAPI().search(query);
