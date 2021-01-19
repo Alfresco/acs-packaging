@@ -1,6 +1,5 @@
 package org.alfresco.elasticsearch;
 
-import org.alfresco.elasticsearch.shared.translator.AlfrescoQualifiedNameTranslator;
 import org.alfresco.rest.core.RestWrapper;
 import org.alfresco.rest.search.RestRequestQueryModel;
 import org.alfresco.rest.search.SearchNodeModel;
@@ -88,7 +87,7 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
      *  
      */
     @BeforeClass(alwaysRun = true)
-    public void dataPreparation()
+    public void dataPreparation() throws IOException
     {
         serverHealth.assertServerIsOnline();
 
@@ -115,7 +114,8 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
     }
     
     @AfterClass(alwaysRun=true)
-    public void cleanup(){
+    public void cleanup() throws IOException
+    {
         deleteIndex(INDEX_NAME);
         dataSite.deleteSite(siteModel1);
         dataSite.deleteSite(siteModel2);
@@ -135,7 +135,7 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
             GetResponse documentResponse = elasticClient.get(request, RequestOptions.DEFAULT);
 
             assertTrue(documentResponse.isExists());
-            assertEquals(documentResponse.getSource().get(AlfrescoQualifiedNameTranslator.encode("cm:content")), "This is a test");
+            assertEquals(documentResponse.getSource().get("cm%3Acontent"), "This is a test");
         });
     }
 
@@ -218,52 +218,15 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
                        .createContent(new FileModel(filename, FileType.TEXT_PLAIN, content));
     }
 
-    private void initIndex()
+    private void initIndex() throws IOException
     {
-        if (existsIndex(INDEX_NAME))
-        {
-            deleteIndex(INDEX_NAME);
-        }
-        createIndex(INDEX_NAME);
+        deleteIndex(INDEX_NAME);
     }
 
-    private boolean deleteIndex(String indexName)
+    private void deleteIndex(String indexName) throws IOException
     {
-        DeleteIndexRequest request = new DeleteIndexRequest(indexName);
-        try
-        {
-            return elasticClient.indices().delete(request, RequestOptions.DEFAULT).isAcknowledged();
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private boolean existsIndex(String indexName)
-    {
-        GetIndexRequest request = new GetIndexRequest(indexName);
-        try
-        {
-            return elasticClient.indices().exists(request, RequestOptions.DEFAULT);
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private boolean createIndex(String indexName)
-    {
-        CreateIndexRequest request = new CreateIndexRequest(indexName);
-        try
-        {
-            return elasticClient.indices().create(request, RequestOptions.DEFAULT).isAcknowledged();
-        }
-        catch (IOException e)
-        {
-            throw new RuntimeException(e);
-        }
+        DeleteByQueryRequest indexEmptier = new DeleteByQueryRequest(indexName).setQuery(matchAllQuery());
+        elasticClient.deleteByQuery(indexEmptier, RequestOptions.DEFAULT);
     }
 
     public <T> boolean listEqualsIgnoreOrder(List<T> list1, List<T> list2)
