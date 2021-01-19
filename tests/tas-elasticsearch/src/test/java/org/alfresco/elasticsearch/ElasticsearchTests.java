@@ -141,7 +141,7 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
 
     @TestRail(section = {
             TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that the simpler Elasticsearch search works as expected.")
-    @Test(groups = { TestGroup.SEARCH }, enabled = false)
+    @Test(groups = { TestGroup.SEARCH })
     public void searchCanFindAFile() throws Exception
     {
         Utility.sleep(1000, 10000, () -> {
@@ -160,7 +160,7 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
 
     @TestRail(section = {
             TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that Elasticsearch search works as expected using a user that has access to only one site.")
-    @Test(groups = { TestGroup.SEARCH }, enabled = false)
+    @Test(groups = { TestGroup.SEARCH })
     public void searchCanFindAFileAsOwner() throws Exception
     {
         Utility.sleep(1000, 10000, () -> {
@@ -178,7 +178,7 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
 
     @TestRail(section = {
             TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that Elasticsearch search works as expected when the user can search a file because he is the owenr.")
-    @Test(groups = { TestGroup.SEARCH }, enabled = false)
+    @Test(groups = { TestGroup.SEARCH })
     public void searchCanFindAFileOnMultipleSites() throws Exception
     {
         Utility.sleep(1000, 10000, () -> {
@@ -197,7 +197,7 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
 
     @TestRail(section = {
             TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that Elasticsearch search works as expected when a user has permission on multiple sites.")
-    @Test(groups = { TestGroup.SEARCH }, enabled = false)
+    @Test(groups = { TestGroup.SEARCH })
     public void searchCanFindAFilePermission() throws Exception
     {
         Utility.sleep(1000, 10000, () -> {
@@ -220,6 +220,30 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
 
     private void initIndex() throws IOException
     {
+        //TODO: when the metadata model mapping will be trigger at startup this code can be removed (SEARCH-2632)
+        PutMappingRequest putMappingRequest = new PutMappingRequest(INDEX_NAME);
+        putMappingRequest.source(
+                "{\n" +
+                "  \"properties\": {\n" +
+                "    \"" + encode(CONTENT_ATTRIBUTE_NAME) + "\": {\n" +
+                "      \"type\": \"text\"\n" +
+                "    },\n" +
+                "    \"" + encode(MODIFICATION_DATE_FIELD) + "\": {\n" +
+                "      \"type\": \"date\"\n" +
+                "    },\n" +
+                "    \"" + encode(NAME) + "\": {\n" +
+                "      \"type\": \"text\",\n" +
+                "      \"copy_to\": \""+ encode(NAME)  + "_untokenized\"" +
+                "    },\n" +
+                "    \"" + encode(NAME)  + "_untokenized\": {\n" +
+                "      \"type\": \"keyword\"\n" +
+                "    }\n" +
+                "  }\n" +
+                "}",
+                XContentType.JSON);
+        elasticClient
+                .indices() 
+                .putMapping(putMappingRequest, RequestOptions.DEFAULT);
         deleteIndex(INDEX_NAME);
     }
 
