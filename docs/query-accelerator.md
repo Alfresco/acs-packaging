@@ -18,24 +18,24 @@ increased time on ingestion and update. This will however allow customers to mak
 in a query set or having lots of query sets should be avoided, as the cost will be high and generally indicates that
 there is something wrong with the data model design.
 
-### Operational and project requirements
+### Operational requirements
 
 1. Query sets may be applied to an existing Alfresco repository. For example a query set could be applied to a system
-which has been upgraded to 7.0.0 that already contains hundreds of million documents.
+which has been upgraded to 7.0.0 that already contains hundreds of millions of documents.
 
-2. Multiple (zero or more but typically not more than 10) query set may be defined. Each will have its own name. It will
+2. Multiple (zero or more but typically not more than 10) query sets may be defined. Each will have its own name. It will
 be possible to replace a query set with a new version or to remove it completely. The definition can include the
 properties or aspects applied to nodes and if necessary (for selected databases) the order of columns
 in compound indexes. Query sets are defined using JSON files.
 
 3. The addition of new query sets, the replacement of an existing query set or complete removal does not require a 
 restart, an outage or have a major impact on normal operations. The alfresco.log will contain messages to reflect 
-progress. When a new query set is identified the system will start populating a denormalized 
+progress. When a new query set is identified, the system will start populating a denormalized 
 table in background. It will also abandon the table population before it is complete, if a new 
 version of the query set is created or the query set is removed. The implementation will also need to identify a query 
 set or a previous version is no longer needed and trigger the removal of the denormalised table in background.
 
-4. Once the denormalized table has been created and fully populated, it will automatically start being used.
+4. Once a denormalized table has been created and fully populated, it will automatically start being used.
 
 5. The Query accelerator will provide ATOMIC (transactionally consistent) results.
 
