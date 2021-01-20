@@ -253,14 +253,14 @@
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
                                         </artifactItem>
-                                        <!--<artifactItem>
+                                        <artifactItem>
                                             <groupId>org.alfresco.services.sync</groupId>
                                             <artifactId>alfresco-device-sync-repo</artifactId>
                                             <version>${alfresco.desktop-sync.version}</version>
                                             <type>amp</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                        </artifactItem>-->
+                                        </artifactItem>
                                         <artifactItem>
                                             <groupId>org.alfresco.saml</groupId>
                                             <artifactId>alfresco-saml-repo</artifactId>
@@ -277,23 +277,22 @@
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
                                         </artifactItem>
-                                        <!-- TODO uncomment this amp once https://alfresco.atlassian.net/browse/APPS-702 is solved -->
-<!--                                        <artifactItem>-->
-<!--                                            <groupId>org.alfresco</groupId>-->
-<!--                                            <artifactId>alfresco-governance-services-enterprise-repo</artifactId>-->
-<!--                                            <version>${alfresco.ags.version}</version>-->
-<!--                                            <type>amp</type>-->
-<!--                                            <overWrite>false</overWrite>-->
-<!--                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>-->
-<!--                                        </artifactItem>-->
-<!--                                        <artifactItem>-->
-<!--                                            <groupId>org.alfresco</groupId>-->
-<!--                                            <artifactId>alfresco-governance-services-enterprise-share</artifactId>-->
-<!--                                            <version>${alfresco.ags.version}</version>-->
-<!--                                            <type>amp</type>-->
-<!--                                            <overWrite>false</overWrite>-->
-<!--                                            <outputDirectory>${project.build.directory}/amps_share</outputDirectory>-->
-<!--                                        </artifactItem>-->
+                                        <artifactItem>
+                                            <groupId>org.alfresco</groupId>
+                                            <artifactId>alfresco-governance-services-enterprise-repo</artifactId>
+                                            <version>${alfresco.ags.version}</version>
+                                            <type>amp</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>org.alfresco</groupId>
+                                            <artifactId>alfresco-governance-services-enterprise-share</artifactId>
+                                            <version>${alfresco.ags.version}</version>
+                                            <type>amp</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
+                                        </artifactItem>
                                     </artifactItems>
                                 </configuration>
                             </execution>
