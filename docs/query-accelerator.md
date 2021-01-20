@@ -97,6 +97,7 @@ ACS node properties:
 Table entry:
 
 | node_id | owner_id | alf_type | cm_name   | cm_creator | cm_titled |
+| ------- | -------- | -------- | --------- | ---------- | --------- |
 | 887     | 3        | 24       | demo1.txt | admin      | true      |
 
 
@@ -137,6 +138,7 @@ ACS node properties and aspects:
 Table entry:
 
 | node_id | owner_id | alf_type | cm_name   | cm_creator | cm_titled | cm_dublincore |
+| ------- | -------- | -------- | --------- | ---------- | --------- | ------------- |
 | 918     | 3        | 24       | demo2.txt | admin      | true      | true          |
 
 ### Query set configuration
