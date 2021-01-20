@@ -45,16 +45,16 @@ set or a previous version is no longer needed and trigger the removal of the den
 ## Alfresco Query Accelerator Properties
 
 * Enable the Query Accelerator by setting the property queryAccelerator.enabled to true.
-* Define the location of the Query Accelerator config files by setting the property queryAccelerator.config.path
-* Wait time after system startup before populating the tables. Default value is 60
-* The size of each population batch. Default value is 250000
+* Define the location of the Query Accelerator config files by setting the property queryAccelerator.config.dir
+* Wait time after system startup before populating the tables.
+* The size of each population batch.
 
 ### Properties example
 ```
 queryAccelerator.enabled=true
-queryAccelerator.config.path=alfresco/queryaccelerator
+queryAccelerator.config.dir=shared/classes/alfresco/extension/queryaccelerator
 queryAccelerator.populator.startDelayMinutes=3
-queryAccelerator.populator.workerBatchSize=250000
+queryAccelerator.populator.workerBatchSize=5000
 ```
 
 
