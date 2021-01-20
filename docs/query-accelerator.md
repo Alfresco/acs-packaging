@@ -95,6 +95,7 @@ The query set configurations define the denormalized tables that will be created
 ACS node properties:
 ![acs-node-properties](images/acs-properties.png "ACS Node Properties")
 Table entry:
+
 | node_id | owner_id | alf_type | cm_name   | cm_creator | cm_titled |
 | 887     | 3        | 24       | demo1.txt | admin      | true      |
 
@@ -134,6 +135,7 @@ Table entry:
 ACS node properties and aspects:
 ![acs-node-aspects](images/acs-aspects.png "ACS Node Aspects")
 Table entry:
+
 | node_id | owner_id | alf_type | cm_name   | cm_creator | cm_titled | cm_dublincore |
 | 918     | 3        | 24       | demo2.txt | admin      | true      | true          |
 
