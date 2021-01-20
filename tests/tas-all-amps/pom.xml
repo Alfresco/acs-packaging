@@ -277,23 +277,6 @@
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
                                         </artifactItem>
-                                        <!-- TODO uncomment this amp once https://issues.alfresco.com/jira/browse/MNT-21648 is solved -->
-<!--                                        <artifactItem>
-                                            <groupId>org.alfresco</groupId>
-                                            <artifactId>alfresco-document-transformation-engine-repo</artifactId>
-                                            <version>${alfresco.transformation-engine.version}</version>
-                                            <type>amp</type>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                        </artifactItem>
-                                        <artifactItem>
-                                            <groupId>org.alfresco</groupId>
-                                            <artifactId>alfresco-document-transformation-engine-share</artifactId>
-                                            <version>${alfresco.transformation-engine.version}</version>
-                                            <type>amp</type>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
-                                        </artifactItem>-->
                                         <!-- TODO uncomment this amp once https://alfresco.atlassian.net/browse/APPS-702 is solved -->
 <!--                                        <artifactItem>-->
 <!--                                            <groupId>org.alfresco</groupId>-->
