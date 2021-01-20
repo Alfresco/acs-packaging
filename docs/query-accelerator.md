@@ -54,7 +54,7 @@ set or a previous version is no longer needed and trigger the removal of the den
 queryAccelerator.enabled=true
 queryAccelerator.config.dir=shared/classes/alfresco/extension/queryaccelerator
 queryAccelerator.populator.startDelayMinutes=3
-queryAccelerator.populator.workerBatchSize=250000
+queryAccelerator.populator.workerBatchSize=5000
 ```
 
 
