@@ -105,9 +105,12 @@ The query set configurations define the denormalized tables that will be created
   mimus 9. So for Postgres, which has a maximum table name length of 63 bytes, the maximum name and version length in
   the query set is 54 bytes.
 * Queries that include negations on aspects should not be accelerated.
-* Properties of type MLTEXT are NOT be supported. If any such properties are detected, a WARN message will be logged,
-  the properties will be ignored and the corresponding denormalized table will be created without them.
+* Properties of type MLTEXT are NOT supported. If any such properties are detected, a WARN message will be logged,
+  the properties will be ignored. The corresponding denormalized table will be created without them.
 * The denormalized table will have an alf_type column, holding the name of the content type.
+* When aspects are used, the denormalized table will contain only the nodes that have at least one of the aspect.
+  it is for this reason that a query checking for the absence of an aspect will not use the query accelerator
+  and will be performed by the standard engine.
   
 ### Updating and replacing query sets
 
