@@ -10,7 +10,7 @@
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-enterprise-repo</artifactId>
         <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
-        <version>8.394-SNAPSHOT</version>
+        <version>8.396-SNAPSHOT</version>
     </parent>
 
     <scm>
@@ -32,8 +32,8 @@
     </distributionManagement>
 
     <properties>
-        <dependency.alfresco-community-repo.version>8.371</dependency.alfresco-community-repo.version>
-        <dependency.alfresco-enterprise-repo.version>8.394-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
+        <dependency.alfresco-community-repo.version>8.372</dependency.alfresco-community-repo.version>
+        <dependency.alfresco-enterprise-repo.version>8.396-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
 
         <alfresco.share.version>7.0.0-M3</alfresco.share.version>
         <alfresco.alfresco-share-services.version>${alfresco.share.version}</alfresco.alfresco-share-services.version>
@@ -265,18 +265,6 @@
                 <type>amp</type>
             </dependency>
             -->
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-document-transformation-engine-repo</artifactId>
-                <version>${alfresco.transformation-engine.version}</version>
-                <type>amp</type>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-document-transformation-engine-share</artifactId>
-                <version>${alfresco.transformation-engine.version}</version>
-                <type>amp</type>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
