@@ -64,6 +64,8 @@ The query set configurations define the denormalized tables that will be created
 
 ### Query set configuration example
 
+## Example 1
+
 ```json
 {
   "version": 1,
@@ -90,6 +92,50 @@ The query set configurations define the denormalized tables that will be created
   }
 }
 ```
+ACS node properties:
+![acs-node-properties](images/acs-properties.png "ACS Node Properties")
+Table entry:
+| node_id | owner_id | alf_type | cm_name   | cm_creator | cm_titled |
+| 887     | 3        | 24       | demo1.txt | admin      | true      |
+
+
+## Example 2
+
+```json
+{
+  "version": 6,
+  "name": "ac",
+  "properties": [
+    {
+      "name": "cm:name",
+      "isIndex": true
+    },
+    {
+      "name": "cm:creator",
+      "isIndex": true
+    }
+  ],
+  "aspects": [
+    {
+      "name": "cm:titled",
+      "isIndex": true
+    },
+    {
+      "name": "cm:dublincore",
+      "isIndex": true
+    }
+  ],
+  "compositeIndexes": {
+    "index_1": ["cm:name", "cm:creator"],
+    "index_2": ["cm:name", "cm:titled"]
+  }
+}
+```
+ACS node properties and aspects:
+![acs-node-aspects](images/acs-aspects.png "ACS Node Aspects")
+Table entry:
+| node_id | owner_id | alf_type | cm_name   | cm_creator | cm_titled | cm_dublincore |
+| 918     | 3        | 24       | demo2.txt | admin      | true      | true          |
 
 ### Query set configuration
 
