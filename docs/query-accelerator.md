@@ -57,12 +57,28 @@ queryAccelerator.populator.startDelayMinutes=3
 queryAccelerator.populator.workerBatchSize=250000
 ```
 
-
-## Query Set Configs
+### Query set configuration
 
 The query set configurations define the denormalized tables that will be created to support faster queries.
 
-### Query set configuration example
+| Attribute        | Description |
+| ---------------- | ----------- |
+| version          | The version of the query set. |
+| name             | The table name. The actual database table name will have a prefix of 'alf_qs_' and a suffix of '_v' plus the version. So for a query set called of 'Test1' and a version of 1 that actual database table name would be 'alf_test1_desc_v1'. |
+| properties       | A collection of properties to appear on the denormalized table. A property consists of a name attribute which is the name of a property and an isIndex attribute which indicates that the related column on the table should be indexed.            |
+| aspects          | A collection of aspects to appear on the denormalized table. The table will have a boolean column for each of the aspects to indicate if the node has those aspects applied. An aspect consists of a name attribute which is the name of an aspect and an isIndex attribute which indicates that the related column on the table should be indexed. |
+| compositeIndexes | A collection of composite indexes to be created for the table. A composite index consists of an attribute where the attribute name is the index name and the attribute value is a collection of names of properties and/or aspects of the query set. |
+
+* The maximum length of the query set name and the version is the maximum table name length of the database system being used,
+  mimus 9. So for Postgres, which has a maximum table name length of 63 bytes, the maximum name and version length in
+  the query set is 54 bytes.
+* Queries that include negations on aspects should not be accelerated.
+* Properties of type MLTEXT are NOT be supported. If any such properties are detected, a WARN message will be logged,
+  the properties will be ignored and the corresponding denormalized table will be created without them.
+* The denormalized table will have an alf_type column, holding the name of the content type.
+
+
+### Query set configuration examples
 
 ### Example 1
 
@@ -141,23 +157,6 @@ Table entry:
 | ------- | -------- | -------- | --------- | ---------- | --------- | ------------- |
 | 918     | 3        | 24       | demo2.txt | admin      | true      | true          |
 
-### Query set configuration
-
-| Attribute        | Description |
-| ---------------- | ----------- |
-| version          | The version of the query set. |
-| name             | The table name. The actual database table name will have a prefix of 'alf_qs_' and a suffix of '_v' plus the version. So for a query set called of 'Test1' and a version of 1 that actual database table name would be 'alf_test1_desc_v1'. |
-| properties       | A collection of properties to appear on the denormalized table. A property consists of a name attribute which is the name of a property and an isIndex attribute which indicates that the related column on the table should be indexed.            |
-| aspects          | A collection of aspects to appear on the denormalized table. The table will have a boolean column for each of the aspects to indicate if the node has those aspects applied. An aspect consists of a name attribute which is the name of an aspect and an isIndex attribute which indicates that the related column on the table should be indexed. |
-| compositeIndexes | A collection of composite indexes to be created for the table. A composite index consists of an attribute where the attribute name is the index name and the attribute value is a collection of names of properties and/or aspects of the query set. |
-
-* The maximum length of the query set name and the version is the maximum table name length of the database system being used,
-  mimus 9. So for Postgres, which has a maximum table name length of 63 bytes, the maximum name and version length in
-  the query set is 54 bytes.
-* Queries that include negations on aspects should not be accelerated.
-* Properties of type MLTEXT are NOT be supported. If any such properties are detected, a WARN message will be logged,
-  the properties will be ignored and the corresponding denormalized table will be created without them.
-* The denormalized table will have an alf_type column, holding the name of the content type.
   
 ### Updating and replacing query sets
 
