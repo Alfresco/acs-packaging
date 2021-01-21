@@ -52,7 +52,7 @@ set or a previous version is no longer needed and trigger the removal of the den
 ### Properties example
 ```
 queryAccelerator.enabled=true
-queryAccelerator.config.path=alfresco/queryaccelerator
+queryAccelerator.config.dir=shared/classes/alfresco/extention/querysets
 queryAccelerator.populator.startDelayMinutes=3
 queryAccelerator.populator.workerBatchSize=250000
 ```
@@ -64,7 +64,7 @@ The query set configurations define the denormalized tables that will be created
 
 ### Query set configuration example
 
-## Example 1
+### Example 1
 
 ```json
 {
@@ -101,7 +101,7 @@ Table entry:
 | 887     | 3        | 24       | demo1.txt | admin      | true      |
 
 
-## Example 2
+### Example 2
 
 ```json
 {
