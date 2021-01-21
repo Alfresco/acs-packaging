@@ -52,7 +52,7 @@ set or a previous version is no longer needed and trigger the removal of the den
 ### Properties example
 ```
 queryAccelerator.enabled=true
-queryAccelerator.config.dir=shared/classes/alfresco/extension/queryaccelerator
+queryAccelerator.config.dir=shared/classes/alfresco/extension/querysets
 queryAccelerator.populator.startDelayMinutes=3
 queryAccelerator.populator.workerBatchSize=5000
 ```
