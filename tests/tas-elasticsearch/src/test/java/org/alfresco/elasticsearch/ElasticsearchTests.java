@@ -177,6 +177,7 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
         });
     }
 
+    //TODO: it can be enabled after fixing SEARCH-2666
     @TestRail(section = {
             TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that Elasticsearch search works as expected when the user can search a file because he is the owner.")
     @Test(groups = { TestGroup.SEARCH }, enabled = false)
