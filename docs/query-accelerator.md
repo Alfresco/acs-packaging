@@ -212,40 +212,14 @@ The query sets can be refreshed in the Alfresco Administration Console.
 
 3 Press the 'Refresh Query Set' button.
 
-If there are updates to the query sets you will see:
+If there are updates to the query sets in the folder defined by `queryAccelerator.config.dir` (normally
+`shared/classes/alfresco/extension/querysets`) you will see:
 
 ![Refresh Started](images/RefreshQuerySetStarted.png "Refresh Started")
 
 If there are no updates to the query sets you will see:
 
 ![Refresh Not Started](images/RefreshQuerySetNotStarted.png "Refresh Not Started")
-
-## How to set-up the Query Accelerator for a new Alfresco installation
-
-1. Set the query accelerator properties to enable the query accelerator and set the config path directory.
-
-2. Place one or more query set JSON config files in the query accelerator config path directory.
-
-3. Start the new installation of Alfresco.
-
-4. The denormalized tables will be created and populated by the end of the installation startup.
-
-
-## How to set-up the Query Accelerator for an existing Alfresco installation
-
-1. Set the query accelerator properties to enable the query accelerator and set the config path directory.
-
-2. Place one or more query set JSON config files in the query accelerator config path directory.
-
-3. Restart Alfresco so that the new properties are used.
-
-4. Start a Query Set Refresh in the Alfresco Administration Console as described earlier.
-
-5. The denormalized tables will be created
-
-6. The population of the denormalized tables might take a considerable time depending on the scale of the alfresco
-installation. The progress of the population of the table will be output to the alfresco log.
-
 
 ## Query Sets and Transaction Meta-Data Queries (TMDQ)
 
