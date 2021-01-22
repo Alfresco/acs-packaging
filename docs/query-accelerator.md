@@ -45,16 +45,16 @@ set or a previous version is no longer needed and trigger the removal of the den
 ## Alfresco Query Accelerator Properties
 
 * Enable the Query Accelerator by setting the property queryAccelerator.enabled to true.
-* Define the location of the Query Accelerator config files by setting the property queryAccelerator.config.path
-* Wait time after system startup before populating the tables. Default value is 60
-* The size of each population batch. Default value is 250000
+* Define the location of the Query Accelerator config files by setting the property queryAccelerator.config.dir
+* Wait time after system startup before populating the tables.
+* The size of each population batch.
 
 ### Properties example
 ```
 queryAccelerator.enabled=true
-queryAccelerator.config.dir=shared/classes/alfresco/extention/querysets
+queryAccelerator.config.dir=shared/classes/alfresco/extension/querysets
 queryAccelerator.populator.startDelayMinutes=3
-queryAccelerator.populator.workerBatchSize=250000
+queryAccelerator.populator.workerBatchSize=5000
 ```
 
 ### Query set configuration
@@ -64,7 +64,7 @@ The query set configurations define the denormalized tables that will be created
 | Attribute        | Description |
 | ---------------- | ----------- |
 | version          | The version of the query set. |
-| name             | The table name. The actual database table name will have a prefix of 'alf_qs_' and a suffix of '_v' plus the version. So for a query set called of 'test1' and a version of 1 that actual database table name would be 'alf_qs_test1_v1'. |
+| name             | The table name. The actual database table name will have a prefix of 'alf_qs_' and a suffix of '_v' plus the version. So for a query set called of 'Test1' and a version of 1 that actual database table name would be 'alf_test1_desc_v1'. |
 | properties       | A collection of properties to appear on the denormalized table. A property consists of a name attribute which is the name of a property and an isIndex attribute which indicates that the related column on the table should be indexed.            |
 | aspects          | A collection of aspects to appear on the denormalized table. The table will have a boolean column for each of the aspects to indicate if the node has those aspects applied. An aspect consists of a name attribute which is the name of an aspect and an isIndex attribute which indicates that the related column on the table should be indexed. |
 | compositeIndexes | A collection of composite indexes to be created for the table. A composite index consists of an attribute where the attribute name is the index name and the attribute value is a collection of names of properties and/or aspects of the query set. |
@@ -73,9 +73,12 @@ The query set configurations define the denormalized tables that will be created
   mimus 9. So for Postgres, which has a maximum table name length of 63 bytes, the maximum name and version length in
   the query set is 54 bytes.
 * Queries that include negations on aspects should not be accelerated.
-* Properties of type MLTEXT are NOT be supported. If any such properties are detected, a WARN message will be logged,
-  the properties will be ignored and the corresponding denormalized table will be created without them.
+* Properties of type MLTEXT are NOT be supported. If included a WARN message will be logged,
+  the properties will be ignored, and the corresponding denormalized table will be created without them.
 * The denormalized table will have an alf_type column, holding the name of the content type.
+* When aspects are used, the denormalized table will contain only the nodes that have at least one of the aspect.
+  it is for this reason that a query checking for the absence of an aspect will not use the query accelerator
+  and will be performed by the standard engine.
 
 
 ### Query set configuration examples
@@ -209,40 +212,14 @@ The query sets can be refreshed in the Alfresco Administration Console.
 
 3 Press the 'Refresh Query Set' button.
 
-If there are updates to the query sets you will see:
+If there are updates to the query sets in the folder defined by `queryAccelerator.config.dir` (normally
+`shared/classes/alfresco/extension/querysets`) you will see:
 
 ![Refresh Started](images/RefreshQuerySetStarted.png "Refresh Started")
 
 If there are no updates to the query sets you will see:
 
 ![Refresh Not Started](images/RefreshQuerySetNotStarted.png "Refresh Not Started")
-
-## How to set-up the Query Accelerator for a new Alfresco installation
-
-1. Set the query accelerator properties to enable the query accelerator and set the config path directory.
-
-2. Place one or more query set JSON config files in the query accelerator config path directory.
-
-3. Start the new installation of Alfresco.
-
-4. The denormalized tables will be created and populated by the end of the installation startup.
-
-
-## How to set-up the Query Accelerator for an existing Alfresco installation
-
-1. Set the query accelerator properties to enable the query accelerator and set the config path directory.
-
-2. Place one or more query set JSON config files in the query accelerator config path directory.
-
-3. Restart Alfresco so that the new properties are used.
-
-4. Start a Query Set Refresh in the Alfresco Administration Console as described earlier.
-
-5. The denormalized tables will be created
-
-6. The population of the denormalized tables might take a considerable time depending on the scale of the alfresco
-installation. The progress of the population of the table will be output to the alfresco log.
-
 
 ## Query Sets and Transaction Meta-Data Queries (TMDQ)
 
