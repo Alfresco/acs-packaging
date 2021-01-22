@@ -180,13 +180,13 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
     //TODO: it can be enabled after fixing SEARCH-2666
     @TestRail(section = {
             TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that Elasticsearch search works as expected when the user can search a file because he is the owner.")
-    @Test(groups = { TestGroup.SEARCH }, enabled = false)
+    @Test(groups = { TestGroup.SEARCH })
     public void searchCanFindAFileOnMultipleSitesWithOwner() throws Exception
     {
         Utility.sleep(1000, 10000, () -> {
             SearchRequest query = new SearchRequest();
             RestRequestQueryModel queryReq = new RestRequestQueryModel();
-            queryReq.setQuery("TEST");
+            queryReq.setQuery("test");
             query.setQuery(queryReq);
 
             SearchResponse search = client.authenticateUser(userSite2).withSearchAPI().search(query);
@@ -227,7 +227,7 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
         putMappingRequest.source(
                 "{\n" +
                 "  \"properties\": {\n" +
-                "    \"" + encode(CONTENT_ATTRIBUTE_NAME) + "\": {\n" +
+                "    \"" + encode("cm:content") + "\": {\n" +
                 "      \"type\": \"text\"\n" +
                 "    },\n" +
                 "    \"" + encode(MODIFICATION_DATE_FIELD) + "\": {\n" +
