@@ -33,7 +33,7 @@ restart, an outage or have a major impact on normal operations. The alfresco.log
 progress. When a new query set is identified, the system will start populating a denormalized 
 table in background. It will also abandon the table population before it is complete, if a new 
 version of the query set is created or the query set is removed. The implementation will also need to identify a query 
-set or a previous version is no longer needed and trigger the removal of the denormalised table in background.
+set or a previous version is no longer needed and trigger the removal of the denormalized table in background.
 
 4. Once a denormalized table has been created and fully populated, it will automatically start being used.
 
@@ -57,12 +57,33 @@ queryAccelerator.populator.startDelayMinutes=3
 queryAccelerator.populator.workerBatchSize=5000
 ```
 
-
-## Query Set Configs
+### Query set configuration
 
 The query set configurations define the denormalized tables that will be created to support faster queries.
 
-### Query set configuration example
+| Attribute        | Description |
+| ---------------- | ----------- |
+| version          | The version of the query set. |
+| name             | The table name. The actual database table name will have a prefix of 'alf_qs_' and a suffix of '_v' plus the version. So for a query set called of 'Test1' and a version of 1 that actual database table name would be 'alf_test1_desc_v1'. |
+| properties       | A collection of properties to appear on the denormalized table. A property consists of a name attribute which is the name of a property and an isIndex attribute which indicates that the related column on the table should be indexed.            |
+| aspects          | A collection of aspects to appear on the denormalized table. The table will have a boolean column for each of the aspects to indicate if the node has those aspects applied. An aspect consists of a name attribute which is the name of an aspect and an isIndex attribute which indicates that the related column on the table should be indexed. |
+| compositeIndexes | A collection of composite indexes to be created for the table. A composite index consists of an attribute where the attribute name is the index name and the attribute value is a collection of names of properties and/or aspects of the query set. |
+
+* The maximum length of the query set name and the version is the maximum table name length of the database system being used,
+  mimus 9. So for Postgres, which has a maximum table name length of 63 bytes, the maximum name and version length in
+  the query set is 54 bytes.
+* Queries that include negations on aspects should not be accelerated.
+* Properties of type MLTEXT are NOT be supported. If included a WARN message will be logged,
+  the properties will be ignored, and the corresponding denormalized table will be created without them.
+* The denormalized table will have an alf_type column, holding the name of the content type.
+* When aspects are used, the denormalized table will contain only the nodes that have at least one of the aspect.
+  it is for this reason that a query checking for the absence of an aspect will not use the query accelerator
+  and will be performed by the standard engine.
+
+
+### Query set configuration examples
+
+### Example 1
 
 ```json
 {
@@ -90,27 +111,55 @@ The query set configurations define the denormalized tables that will be created
   }
 }
 ```
+ACS node properties:
+![acs-node-properties](images/acs-properties.png "ACS Node Properties")
+Table entry:
 
-### Query set configuration
+| node_id | owner_id | alf_type | cm_name   | cm_creator | cm_titled |
+| ------- | -------- | -------- | --------- | ---------- | --------- |
+| 887     | 3        | 24       | demo1.txt | admin      | true      |
 
-| Attribute        | Description |
-| ---------------- | ----------- |
-| version          | The version of the query set. |
-| name             | The table name. The actual database table name will have a prefix of 'alf_qs_' and a suffix of '_v' plus the version. So for a query set called of 'Test1' and a version of 1 that actual database table name would be 'alf_test1_desc_v1'. |
-| properties       | A collection of properties to appear on the denormalized table. A property consists of a name attribute which is the name of a property and an isIndex attribute which indicates that the related column on the table should be indexed.            |
-| aspects          | A collection of aspects to appear on the denormalized table. The table will have a boolean column for each of the aspects to indicate if the node has those aspects applied. An aspect consists of a name attribute which is the name of an aspect and an isIndex attribute which indicates that the related column on the table should be indexed. |
-| compositeIndexes | A collection of composite indexes to be created for the table. A composite index consists of an attribute where the attribute name is the index name and the attribute value is a collection of names of properties and/or aspects of the query set. |
 
-* The maximum length of the query set name and the version is the maximum table name length of the database system being used,
-  mimus 9. So for Postgres, which has a maximum table name length of 63 bytes, the maximum name and version length in
-  the query set is 54 bytes.
-* Queries that include negations on aspects should not be accelerated.
-* Properties of type MLTEXT are NOT supported. If any such properties are detected, a WARN message will be logged,
-  the properties will be ignored. The corresponding denormalized table will be created without them.
-* The denormalized table will have an alf_type column, holding the name of the content type.
-* When aspects are used, the denormalized table will contain only the nodes that have at least one of the aspect.
-  it is for this reason that a query checking for the absence of an aspect will not use the query accelerator
-  and will be performed by the standard engine.
+### Example 2
+
+```json
+{
+  "version": 6,
+  "name": "ac",
+  "properties": [
+    {
+      "name": "cm:name",
+      "isIndex": true
+    },
+    {
+      "name": "cm:creator",
+      "isIndex": true
+    }
+  ],
+  "aspects": [
+    {
+      "name": "cm:titled",
+      "isIndex": true
+    },
+    {
+      "name": "cm:dublincore",
+      "isIndex": true
+    }
+  ],
+  "compositeIndexes": {
+    "index_1": ["cm:name", "cm:creator"],
+    "index_2": ["cm:name", "cm:titled"]
+  }
+}
+```
+ACS node properties and aspects:
+![acs-node-aspects](images/acs-aspects.png "ACS Node Aspects")
+Table entry:
+
+| node_id | owner_id | alf_type | cm_name   | cm_creator | cm_titled | cm_dublincore |
+| ------- | -------- | -------- | --------- | ---------- | --------- | ------------- |
+| 918     | 3        | 24       | demo2.txt | admin      | true      | true          |
+
   
 ### Updating and replacing query sets
 
