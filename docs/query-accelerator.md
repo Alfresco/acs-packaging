@@ -33,7 +33,7 @@ restart, an outage or have a major impact on normal operations. The alfresco.log
 progress. When a new query set is identified, the system will start populating a denormalized 
 table in background. It will also abandon the table population before it is complete, if a new 
 version of the query set is created or the query set is removed. The implementation will also need to identify a query 
-set or a previous version is no longer needed and trigger the removal of the denormalised table in background.
+set or a previous version is no longer needed and trigger the removal of the denormalized table in background.
 
 4. Once a denormalized table has been created and fully populated, it will automatically start being used.
 
@@ -64,7 +64,7 @@ The query set configurations define the denormalized tables that will be created
 | Attribute        | Description |
 | ---------------- | ----------- |
 | version          | The version of the query set. |
-| name             | The table name. The actual database table name will have a prefix of 'alf_qs_' and a suffix of '_v' plus the version. So for a query set called of 'Test1' and a version of 1 that actual database table name would be 'alf_test1_desc_v1'. |
+| name             | The table name. The actual database table name will have a prefix of 'alf_qs_' and a suffix of '_v' plus the version. So for a query set called of 'test1' and a version of 1 that actual database table name would be 'alf_qs_test1_v1'. |
 | properties       | A collection of properties to appear on the denormalized table. A property consists of a name attribute which is the name of a property and an isIndex attribute which indicates that the related column on the table should be indexed.            |
 | aspects          | A collection of aspects to appear on the denormalized table. The table will have a boolean column for each of the aspects to indicate if the node has those aspects applied. An aspect consists of a name attribute which is the name of an aspect and an isIndex attribute which indicates that the related column on the table should be indexed. |
 | compositeIndexes | A collection of composite indexes to be created for the table. A composite index consists of an attribute where the attribute name is the index name and the attribute value is a collection of names of properties and/or aspects of the query set. |
