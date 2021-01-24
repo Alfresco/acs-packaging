@@ -10,30 +10,12 @@
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-enterprise-repo</artifactId>
         <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
-        <version>8.401-SNAPSHOT</version>
+        <version>8.403</version>
     </parent>
 
-    <scm>
-        <connection>scm:git:https://github.com/Alfresco/acs-packaging.git</connection>
-        <developerConnection>scm:git:https://github.com/Alfresco/acs-packaging.git</developerConnection>
-        <url>https://github.com/Alfresco/acs-packaging</url>
-        <tag>acs-packaging-7.0.0-SNAPSHOT</tag>
-    </scm>
-
-    <distributionManagement>
-        <repository>
-            <id>alfresco-internal</id>
-            <url>https://artifacts.alfresco.com/nexus/content/repositories/enterprise-releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>alfresco-internal-snapshots</id>
-            <url>https://artifacts.alfresco.com/nexus/content/repositories/enterprise-snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
-
     <properties>
-        <dependency.alfresco-community-repo.version>8.374-SNAPSHOT</dependency.alfresco-community-repo.version>
-        <dependency.alfresco-enterprise-repo.version>8.401-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
+        <dependency.alfresco-community-repo.version>8.375</dependency.alfresco-community-repo.version>
+        <dependency.alfresco-enterprise-repo.version>8.403</dependency.alfresco-enterprise-repo.version>
 
         <alfresco.share.version>7.0.0-M3</alfresco.share.version>
         <alfresco.alfresco-share-services.version>${alfresco.share.version}</alfresco.alfresco-share-services.version>
@@ -56,6 +38,24 @@
         <repo.image.tag>${dependency.alfresco-enterprise-repo.version}</repo.image.tag>
         <share.image.tag>${alfresco.share.version}</share.image.tag>
     </properties>
+
+    <scm>
+        <connection>scm:git:https://github.com/Alfresco/acs-packaging.git</connection>
+        <developerConnection>scm:git:https://github.com/Alfresco/acs-packaging.git</developerConnection>
+        <url>https://github.com/Alfresco/acs-packaging</url>
+        <tag>acs-packaging-7.0.0-SNAPSHOT</tag>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>alfresco-internal</id>
+            <url>https://artifacts.alfresco.com/nexus/content/repositories/enterprise-releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>alfresco-internal-snapshots</id>
+            <url>https://artifacts.alfresco.com/nexus/content/repositories/enterprise-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <profiles>
         <profile>
