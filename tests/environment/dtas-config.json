@@ -22,7 +22,7 @@
                 },
                 {
                     "name": "Alfresco Device Sync Amp",
-                    "version": "3.4.0-M2",
+                    "version": "3.3.3",
                     "installed": true
                 },
                 {
@@ -33,7 +33,7 @@
             ]
         },
         "adw": {
-            "version": "2.0.0"
+            "version": "1.6.0"
         }
     }
 }
