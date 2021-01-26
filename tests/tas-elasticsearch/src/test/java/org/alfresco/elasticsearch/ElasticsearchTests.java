@@ -53,11 +53,11 @@ import static org.testng.Assert.assertTrue;
  */ 
 public class ElasticsearchTests extends AbstractTestNGSpringContextTests
 {
+    private static final String INDEX_NAME = "alfresco";
     private static final String FILE_0_NAME = "test.txt";
     private static final String FILE_1_NAME = "another.txt";
     private static final String FILE_2_NAME = "user1.txt";
     private static final String FILE_3_NAME = "user1Old.txt";
-    private static final String INDEX_NAME = "alfresco";
 
     @Autowired
     public DataUser dataUser;
