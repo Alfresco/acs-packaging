@@ -1,5 +1,6 @@
 package org.alfresco.elasticsearch;
 
+import org.alfresco.elasticsearch.shared.translator.AlfrescoQualifiedNameTranslator;
 import org.alfresco.rest.core.RestWrapper;
 import org.alfresco.rest.search.RestRequestQueryModel;
 import org.alfresco.rest.search.SearchNodeModel;
@@ -134,7 +135,7 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
             GetResponse documentResponse = elasticClient.get(request, RequestOptions.DEFAULT);
 
             assertTrue(documentResponse.isExists());
-            assertEquals(documentResponse.getSource().get("content"), "This is a test");
+            assertEquals(documentResponse.getSource().get(AlfrescoQualifiedNameTranslator.encode("cm:content")), "This is a test");
         });
     }
 
