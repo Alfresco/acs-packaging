@@ -92,7 +92,6 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
         serverHealth.assertServerIsOnline();
 
         elasticClient = new RestHighLevelClient(RestClient.builder(new HttpHost("localhost", 9200, "http")));
-        initIndex();
         emptyIndex(INDEX_NAME);
 
         userSite1 = dataUser.createRandomTestUser();
@@ -218,34 +217,6 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
     {
         return dataContent.usingUser(user).usingSite(site)
                        .createContent(new FileModel(filename, FileType.TEXT_PLAIN, content));
-    }
-
-    private void initIndex() throws IOException
-    {
-        //TODO: when the metadata model mapping will be trigger at startup this code can be removed (SEARCH-2632)
-        PutMappingRequest putMappingRequest = new PutMappingRequest(INDEX_NAME);
-        putMappingRequest.source(
-                "{\n" +
-                "  \"properties\": {\n" +
-                "    \"" + encode("cm:content") + "\": {\n" +
-                "      \"type\": \"text\"\n" +
-                "    },\n" +
-                "    \"" + encode(MODIFICATION_DATE_FIELD) + "\": {\n" +
-                "      \"type\": \"date\"\n" +
-                "    },\n" +
-                "    \"" + encode(NAME) + "\": {\n" +
-                "      \"type\": \"text\",\n" +
-                "      \"copy_to\": \""+ encode(NAME)  + "_untokenized\"" +
-                "    },\n" +
-                "    \"" + encode(NAME)  + "_untokenized\": {\n" +
-                "      \"type\": \"keyword\"\n" +
-                "    }\n" +
-                "  }\n" +
-                "}",
-                XContentType.JSON);
-        elasticClient
-                .indices() 
-                .putMapping(putMappingRequest, RequestOptions.DEFAULT);
     }
 
     private void emptyIndex(String indexName) throws IOException
