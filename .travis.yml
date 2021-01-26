@@ -196,7 +196,9 @@ jobs:
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco" 180
         - docker ps
         # Run smoke tests against the system using DTAS
+        - ls -hal
         - cd dtas
+        - curl -v http://localhost:8080/alfresco/api/-default-/public/alfresco/versions/1/probes/-live-
         - pytest --verbose --configuration ../tests/environment/dtas-config.json tests/ -s
 
     # - name: "Update latest and Single Pipeline <acs>-<build> images"
