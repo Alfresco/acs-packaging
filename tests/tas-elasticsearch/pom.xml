@@ -50,11 +50,6 @@
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-elasticsearch-shared</artifactId>
-            <version>${alfresco-elasticsearch-shared.version}</version>
-        </dependency>
     </dependencies>
 
     <build>

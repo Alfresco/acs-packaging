@@ -10,7 +10,11 @@ import org.alfresco.utility.constants.UserRole;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
-import org.alfresco.utility.model.*;
+import org.alfresco.utility.model.FileModel;
+import org.alfresco.utility.model.FileType;
+import org.alfresco.utility.model.SiteModel;
+import org.alfresco.utility.model.TestGroup;
+import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
@@ -23,12 +27,13 @@ import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.client.indices.GetIndexRequest;
+import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -37,6 +42,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
+import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -47,11 +53,11 @@ import static org.testng.Assert.assertTrue;
  */ 
 public class ElasticsearchTests extends AbstractTestNGSpringContextTests
 {
-    private static final String INDEX_NAME = "alfresco";
     private static final String FILE_0_NAME = "test.txt";
     private static final String FILE_1_NAME = "another.txt";
     private static final String FILE_2_NAME = "user1.txt";
     private static final String FILE_3_NAME = "user1Old.txt";
+    private static final String INDEX_NAME = "alfresco";
 
     @Autowired
     public DataUser dataUser;
@@ -79,7 +85,7 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
      * 
      * Site1:
      *  - Users: userSite1, userMultiSite
-     *  - Documents: FILE_0_NAME (owner: userSite2), FILE_1_NAME (owner: userSite2), FILE_3_NAME (owner: userSite1)
+     *  - Documents: FILE_0_NAME (owner: userSite1), FILE_1_NAME (owner: userSite1), FILE_3_NAME (owner: userSite2)
      *  
      * Site2:
      *  - Users: userSite2, userMultiSite
@@ -176,7 +182,6 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
         });
     }
 
-    //TODO: it can be enabled after fixing SEARCH-2666
     @TestRail(section = {
             TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that Elasticsearch search works as expected when the user can search a file because he is the owner.")
     @Test(groups = { TestGroup.SEARCH })
