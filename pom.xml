@@ -10,34 +10,16 @@
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-enterprise-repo</artifactId>
         <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
-        <version>8.382</version>
+        <version>8.408</version>
     </parent>
 
-    <scm>
-        <connection>scm:git:https://github.com/Alfresco/acs-packaging.git</connection>
-        <developerConnection>scm:git:https://github.com/Alfresco/acs-packaging.git</developerConnection>
-        <url>https://github.com/Alfresco/acs-packaging</url>
-        <tag>acs-packaging-7.0.0-SNAPSHOT</tag>
-    </scm>
-
-    <distributionManagement>
-        <repository>
-            <id>alfresco-internal</id>
-            <url>https://artifacts.alfresco.com/nexus/content/repositories/enterprise-releases</url>
-        </repository>
-        <snapshotRepository>
-            <id>alfresco-internal-snapshots</id>
-            <url>https://artifacts.alfresco.com/nexus/content/repositories/enterprise-snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
-
     <properties>
-        <dependency.alfresco-community-repo.version>8.367</dependency.alfresco-community-repo.version>
-        <dependency.alfresco-enterprise-repo.version>8.382</dependency.alfresco-enterprise-repo.version>
+        <dependency.alfresco-community-repo.version>8.377</dependency.alfresco-community-repo.version>
+        <dependency.alfresco-enterprise-repo.version>8.408</dependency.alfresco-enterprise-repo.version>
 
         <alfresco.share.version>7.0.0-M3</alfresco.share.version>
         <alfresco.alfresco-share-services.version>${alfresco.share.version}</alfresco.alfresco-share-services.version>
-        <alfresco.api-explorer.version>7.0.0-M1</alfresco.api-explorer.version>
+        <alfresco.api-explorer.version>7.0.0-A3</alfresco.api-explorer.version>
         <alfresco.rm-enterprise-rest-api-explorer.version>3.0.2</alfresco.rm-enterprise-rest-api-explorer.version>
         <alfresco.s3connector.version>3.1.0</alfresco.s3connector.version>
         <alfresco.glacier-connector.version>2.1.0</alfresco.glacier-connector.version>
@@ -56,6 +38,24 @@
         <repo.image.tag>${dependency.alfresco-enterprise-repo.version}</repo.image.tag>
         <share.image.tag>${alfresco.share.version}</share.image.tag>
     </properties>
+
+    <scm>
+        <connection>scm:git:https://github.com/Alfresco/acs-packaging.git</connection>
+        <developerConnection>scm:git:https://github.com/Alfresco/acs-packaging.git</developerConnection>
+        <url>https://github.com/Alfresco/acs-packaging</url>
+        <tag>acs-packaging-7.0.0-SNAPSHOT</tag>
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>alfresco-internal</id>
+            <url>https://artifacts.alfresco.com/nexus/content/repositories/enterprise-releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>alfresco-internal-snapshots</id>
+            <url>https://artifacts.alfresco.com/nexus/content/repositories/enterprise-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <profiles>
         <profile>
@@ -265,18 +265,6 @@
                 <type>amp</type>
             </dependency>
             -->
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-document-transformation-engine-repo</artifactId>
-                <version>${alfresco.transformation-engine.version}</version>
-                <type>amp</type>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco</groupId>
-                <artifactId>alfresco-document-transformation-engine-share</artifactId>
-                <version>${alfresco.transformation-engine.version}</version>
-                <type>amp</type>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 

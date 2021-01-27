@@ -76,13 +76,10 @@ public class DiscoveryTests extends RestTest
                 "alfresco-content-connector-for-salesforce-repo",
                 "alfresco-share-services",
                 "alfresco-saml-repo",
-                // Uncomment after Camel upgrade -> https://alfresco.atlassian.net/browse/DESKTOPAPP-539
-                //"org_alfresco_device_sync_repo",
+                "org_alfresco_device_sync_repo",
                 "alfresco-ai-repo",
-                //"org_alfresco_module_rm", "alfresco-rm-enterprise-repo",
+                "org_alfresco_module_rm", "alfresco-rm-enterprise-repo",
                 "alfresco-glacier-connector-repo"
-                // TODO uncomment this amp once https://issues.alfresco.com/jira/browse/MNT-21648 is done
-                //"org.alfresco.module.TransformationServer" // this is the DTE not ATS
         );
 
         expectedModules.forEach(module ->

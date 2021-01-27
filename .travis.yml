@@ -194,6 +194,7 @@ jobs:
 
     - name: "Update latest and Single Pipeline <acs>-<build> images"
       stage: docker_latest
+      # Remove the pipeline profile to avoid sending an image tagged with the build number to the single pipeline
       script: travis_retry travis_wait 30 mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Pinternal,pipeline
 
     - name: "Release and Copy to S3 Staging Bucket"
@@ -212,7 +213,9 @@ jobs:
           secret_access_key: "${AWS_STAGING_SECRET_KEY}"
           bucket: "alfresco-artefacts-staging"
           region: "eu-west-1"
-          cleanup: false
+          # Once Travis releases their *dpl v2* api (currently in beta, check https://docs.travis-ci.com/user/deployment-v2#how-to-opt-in-to-v2)
+          # the skip_cleanup option will no longer be needed (or valid) and should be removed (ACS-1155).
+          skip_cleanup: true
           acl: private
           local_dir: "deploy_dir"
           upload_dir: "alfresco-content-services/release/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}"

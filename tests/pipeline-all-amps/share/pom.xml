@@ -25,6 +25,7 @@
                         </goals>
                         <configuration>
                             <artifactItems>
+                                <!-- Do not comment out, as this will cause problems in the Single Pipeline. -->
                                 <artifactItem>
                                     <groupId>org.alfresco.integrations</groupId>
                                     <artifactId>alfresco-googledrive-share</artifactId>
@@ -33,6 +34,7 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
                                 </artifactItem>
+                                <!-- Do not comment out, as this will cause problems in the Single Pipeline. -->
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-ai-share</artifactId>
@@ -41,6 +43,7 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
                                 </artifactItem>
+                                <!-- Do not comment out, as this will cause problems in the Single Pipeline. -->
                                 <artifactItem>
                                     <groupId>org.alfresco.integrations</groupId>
                                     <artifactId>alfresco-content-connector-for-salesforce-share</artifactId>
@@ -49,6 +52,7 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
                                 </artifactItem>
+                                <!-- Do not comment out, as this will cause problems in the Single Pipeline. -->
                                 <artifactItem>
                                     <groupId>org.alfresco.saml</groupId>
                                     <artifactId>alfresco-saml-share</artifactId>
@@ -57,24 +61,16 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
                                 </artifactItem>
-                                <!-- TODO uncomment this amp once https://issues.alfresco.com/jira/browse/MNT-21648 is solved -->
-<!--                                <artifactItem>-->
-<!--                                    <groupId>org.alfresco</groupId>-->
-<!--                                    <artifactId>alfresco-document-transformation-engine-share</artifactId>-->
-<!--                                    <version>${alfresco.transformation-engine.version}</version>-->
-<!--                                    <type>amp</type>-->
-<!--                                    <overWrite>false</overWrite>-->
-<!--                                    <outputDirectory>${project.build.directory}/amps_share</outputDirectory>-->
-<!--                                </artifactItem>-->
-                                <!-- TODO uncomment this amp once https://alfresco.atlassian.net/browse/APPS-702 is solved -->
-<!--                                <artifactItem>-->
-<!--                                    <groupId>org.alfresco</groupId>-->
-<!--                                    <artifactId>alfresco-governance-services-enterprise-share</artifactId>-->
-<!--                                    <version>${alfresco.ags.version}</version>-->
-<!--                                    <type>amp</type>-->
-<!--                                    <overWrite>false</overWrite>-->
-<!--                                    <outputDirectory>${project.build.directory}/amps_share</outputDirectory>-->
-<!--                                </artifactItem>-->
+                                <!-- Do not comment out, as this will cause problems in the Single Pipeline. -->
+                                <!-- TODO fix test failure APPS-702 -->
+                                <artifactItem>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>alfresco-governance-services-enterprise-share</artifactId>
+                                    <version>${alfresco.ags.version}</version>
+                                    <type>amp</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
+                                </artifactItem>
                             </artifactItems>
                         </configuration>
                     </execution>
@@ -82,5 +78,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
