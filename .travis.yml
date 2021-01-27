@@ -195,10 +195,14 @@ jobs:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco" 180
         - docker ps
+        - ALFCONTAINER=`docker ps -a | grep _alfresco | awk '{ print $1 }'`
+        - echo "Last 200 lines from alfresco.log on container $ALFCONTAINER:"
+        - docker logs --tail=200 $ALFCONTAINER
         # Run smoke tests against the system using DTAS
         - ls -hal
         - cd dtas
-        - curl -v http://localhost:8080/alfresco/api/-default-/public/alfresco/versions/1/probes/-live-
+        # - curl -v http://localhost:8080/alfresco/api/-default-/public/alfresco/versions/1/probes/-live-
+        - curl -v http://localhost:8080/alfresco
         - pytest --verbose --configuration ../tests/environment/dtas-config.json tests/ -s
 
     # - name: "Update latest and Single Pipeline <acs>-<build> images"
