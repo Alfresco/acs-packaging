@@ -18,28 +18,18 @@ import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
-import org.apache.http.HttpHost;
-import org.elasticsearch.action.get.GetRequest;
-import org.elasticsearch.action.get.GetResponse;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
-import static org.elasticsearch.index.query.QueryBuilders.matchAllQuery;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -50,7 +40,6 @@ import static org.testng.Assert.assertTrue;
  */ 
 public class ElasticsearchTests extends AbstractTestNGSpringContextTests
 {
-    private static final String INDEX_NAME = "alfresco";
     private static final String FILE_0_NAME = "test.txt";
     private static final String FILE_1_NAME = "another.txt";
     private static final String FILE_2_NAME = "user1.txt";
@@ -70,10 +59,8 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
     protected RestWrapper client;
 
     private UserModel userSite1;
-    private RestHighLevelClient elasticClient;
     private UserModel userSite2;
     private UserModel userMultiSite;
-    private FileModel sampleContent;
     private SiteModel siteModel1;
     private SiteModel siteModel2;
 
@@ -90,12 +77,9 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
      *  
      */
     @BeforeClass(alwaysRun = true)
-    public void dataPreparation() throws IOException
+    public void dataPreparation() 
     {
         serverHealth.assertServerIsOnline();
-
-        elasticClient = new RestHighLevelClient(RestClient.builder(new HttpHost("localhost", 9200, "http")));
-        emptyIndex(INDEX_NAME);
 
         userSite1 = dataUser.createRandomTestUser();
         userSite2 = dataUser.createRandomTestUser();
@@ -108,7 +92,7 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
         dataUser.addUserToSite(userMultiSite, siteModel1, UserRole.SiteContributor);
         dataUser.addUserToSite(userMultiSite, siteModel2, UserRole.SiteContributor);
 
-        sampleContent = createContent(FILE_0_NAME, "This is the first teST", siteModel1, userSite1);
+        createContent(FILE_0_NAME, "This is the first teST", siteModel1, userSite1);
         createContent(FILE_1_NAME, "This is another TEST file", siteModel1, userSite1);
         createContent(FILE_2_NAME, "This is another tEst file", siteModel2, userSite2);
         createContent(FILE_3_NAME, "This is another Test file", siteModel1, userSite2);
@@ -116,32 +100,6 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
         dataUser.removeUserFromSite(userSite2, siteModel1);
     }
     
-    @AfterClass(alwaysRun=true)
-    public void cleanup() throws IOException
-    {
-        emptyIndex(INDEX_NAME);
-        dataSite.deleteSite(siteModel1);
-        dataSite.deleteSite(siteModel2);
-        dataUser.deleteUser(userSite1);
-        dataUser.deleteUser(userSite2);
-        dataUser.deleteUser(userMultiSite);
-    }
-
-    @TestRail(section = {
-            TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that Elasticsearch indexing works as expected.")
-    @Test(groups = { TestGroup.SEARCH })
-    public void fileIndexed() throws Exception
-    {
-        Utility.sleep(1000, 10000, () -> {
-            GetRequest request = new GetRequest(INDEX_NAME);
-            request.id(sampleContent.getNodeRef());
-            GetResponse documentResponse = elasticClient.get(request, RequestOptions.DEFAULT);
-
-            assertTrue(documentResponse.isExists());
-            assertEquals(documentResponse.getSource().get("cm%3Acontent"), "This is the first teST");
-        });
-    }
-
     @TestRail(section = {
             TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that the simpler Elasticsearch search works as expected.")
     @Test(groups = { TestGroup.SEARCH })
@@ -219,12 +177,6 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
     {
         return dataContent.usingUser(user).usingSite(site)
                        .createContent(new FileModel(filename, FileType.TEXT_PLAIN, content));
-    }
-
-    private void emptyIndex(String indexName) throws IOException
-    {
-        DeleteByQueryRequest indexEmptier = new DeleteByQueryRequest(indexName).setQuery(matchAllQuery());
-        elasticClient.deleteByQuery(indexEmptier, RequestOptions.DEFAULT);
     }
 
     public <T> boolean listEqualsIgnoreOrder(List<T> list1, List<T> list2)
