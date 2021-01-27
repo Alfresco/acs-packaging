@@ -18,6 +18,7 @@ services:
           "
           JAVA_OPTS:
             "
+            -Delasticsearch.createIndexIfNotExists=true
             -Ddb.driver=org.postgresql.Driver
             -Ddb.username=alfresco
             -Ddb.password=alfresco
