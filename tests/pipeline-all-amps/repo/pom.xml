@@ -124,6 +124,7 @@
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
                                 <!-- Do not comment out, as this will cause problems in the Single Pipeline. -->
+                                <!--
                                 <artifactItem>
                                     <groupId>org.alfresco.services.sync</groupId>
                                     <artifactId>alfresco-device-sync-repo</artifactId>
@@ -132,6 +133,7 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
+                                -->
                             </artifactItems>
                         </configuration>
                     </execution>
