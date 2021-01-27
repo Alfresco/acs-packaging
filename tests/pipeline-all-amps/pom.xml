@@ -61,7 +61,7 @@
             <id>internal</id>
             <!-- publishes "image:<acs.version>-<build-number>" on Quay -->
             <properties>
-                <image.tag>${acs.branch}-${build-number}</image.tag>
+                <image.tag>${branch}-${build-number}</image.tag>
             </properties>
             <build>
                 <plugins>
