@@ -193,16 +193,16 @@ jobs:
         - git clone --depth 1 --branch v1.0-M1 https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
       script:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco" 180
+        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/api/-default-/public/alfresco/versions/1/probes/-live-"
         - docker ps
         - ALFCONTAINER=`docker ps -a | grep _alfresco | awk '{ print $1 }'`
-        - echo "Last 200 lines from alfresco.log on container $ALFCONTAINER:"
-        - docker logs --tail=200 $ALFCONTAINER
+        - echo "Last 300 lines from alfresco.log on container $ALFCONTAINER:"
+        - docker logs --tail=300 $ALFCONTAINER
         # Run smoke tests against the system using DTAS
         - ls -hal
         - cd dtas
         # - curl -v http://localhost:8080/alfresco/api/-default-/public/alfresco/versions/1/probes/-live-
-        - curl -v http://localhost:8080/alfresco
+        - curl -v http://localhost:8080/alfresco/
         - pytest --verbose --configuration ../tests/environment/dtas-config.json tests/ -s
 
     # - name: "Update latest and Single Pipeline <acs>-<build> images"

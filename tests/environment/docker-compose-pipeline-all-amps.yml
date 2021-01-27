@@ -50,8 +50,8 @@ services:
                 -DlocalTransform.core-aio.url=http://transform-core-aio:8090/
                 -Dcsrf.filter.enabled=false
                 -Ddsync.service.uris=http://localhost:9090/alfresco
-                -Ds3.accessKey=${AWS_ACCESS_KEY_ID}
-                -Ds3.secretKey=${AWS_SECRET_ACCESS_KEY}
+                -Ds3.accessKey=${AWS_ACCESS_KEY}
+                -Ds3.secretKey=${AWS_SECRET_KEY}
                 -Ds3.bucketName=pipeline-amps-all
                 -Ds3.autoLowerCaseBucketName=true
                 -Ds3.bucketLocation=us-east-1
