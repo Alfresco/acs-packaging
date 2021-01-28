@@ -10,13 +10,13 @@ The same engines may be used
 in Community and Enterprise Editions. They may be directly
 connected to the ACS repository as Local Transforms, but in the
 Enterprise edition there is the option to include them as part of the
-Transform Service which provides more balanced throughput and better
-administration capabilities. A T-Engine is intended to be run as a 
+Alfresco Transform Service (ATS) which provides more balanced throughput.
+A T-Engine is intended to be run as a 
 Docker image, but may also be run as a standalone process.
 
 Prior to ACS 6.0 Legacy transformers ran within the same JVM as
-the ACS repository. They and their supporting code has been deprecated
-and will go away at some point. ACS 6.2 still uses them if a rendition
+the ACS repository. They and their supporting classes were deprecated
+and in ACS 6, but have now been removed. ACS 6.2 still uses them if a rendition
 cannot be created by the Transform Service or Local Transforms. The
 process of migrating custom legacy transformers is described at the end
 of this document.
@@ -81,7 +81,14 @@ or grouped.
 Local or Transform Service transforms can be enabled or disabled
 independently of each other. The ACS repository will try to transform
 content using the Transform Service if possible and falling back to a Local
-Transform. 
+Transform. If you are using Share, Local Transforms are required, as they support
+both synchronous and asynchronous requests. Share makes use of both, so
+functionality such as preview will be unavailable if Local transforms are
+disabled. The Transform service only supports asynchronous requests.
+
+The following sections will show how to create a Local transform pipeline, a Local
+transform failover or a Local transform override, but remember that they will not be
+used if the Transform Service (ATS) if it is able to do the transform and is enabled.
 
 ```properties
 transform.service.enabled=true
@@ -97,7 +104,7 @@ Local Transforms by setting the corresponding T-Engine URL property
 localTransform.helloworld.url=
 ```
 
-### Configure a custom transform pipeline
+### Configure a custom Local transform pipeline
 
 Local Transforms may be combined together in a pipeline to form a new
 transform, where the output from one becomes the input to the next and
@@ -124,7 +131,7 @@ many may be defined in the same file.
         {"transformerName": "html"}
       ],
       "supportedSourceAndTargetList": [
-        {"sourceMediaType": "text/plain", priority:45,  "targetMediaType": "text/plain" }
+        {"sourceMediaType": "text/plain", "priority": 45,  "targetMediaType": "text/plain" }
       ],
       "transformOptions": [
         "helloWorldOptions"
@@ -170,7 +177,7 @@ local.transform.service.initialAndOnError.cronExpression=0/10 * * * * ?
 
 If you are using Docker Compose in development, you will need to copy
 your pipeline definition into your running ACS repository container.
-One way is to use the following command and it will be picked up the
+One way is to use the following command, and it will be picked up the
 next time the location is read, which is dependent on the cron values.
 
 ```bash
@@ -195,10 +202,11 @@ or when the repository pods are restarted.
 > From Kubernetes documentation: Caution: If there are some files
 in the mountPath location, they will be deleted.
 
-### Configure custom failover transforms
+### Configure custom Local failover transforms
 
 A failover transform, simply provides a list of transforms to be
-attempted one after another until one succeeds. For example, you may have a fast transform that simply
+attempted one after another until one succeeds. For example, you may have a fast transform that is able to handle a
+limited set of transforms and another that is slower but handles all cases.
 ```json
 {
   "transformers": [
@@ -224,7 +232,7 @@ Unlike pipelines, it must not be blank.
 * **transformOptions** - A list of references to options required by
 the pipeline transformer.
 
-### Overriding a transform
+### Overriding a Local transform
 In the same way as it is possible combine Local transforms into pipelines, it is also possible to override a
 previously defined transform in a file in the _local.transform.pipeline.config.dir_ directory. The last definition read
 wins. The configuration from T-Engines or the Transform Service is initially read followed by files in this directory.
@@ -300,6 +308,65 @@ in ConfigMap `custom-rendition-config` will be mounted to
 `/usr/local/tomcat/shared/classes/alfresco/extension/transform/renditions/`.
 Again, the files will be picked up the next time the location is read,
 or when the repository pods are restarted.
+
+#### Disabling an existing rendition
+Just like transforms, it is possible to override renditions. The following example effectively
+disables the `doclib` rendition, used to create the thumbnail images in Share's Document Library
+page and other client applications. A good name for this file might be
+`0200-disableDoclib.json`.
+
+~~~
+{
+  "renditions": [
+    {
+      "renditionName": "doclib",
+      "targetMediaType": "image/png",
+      "options": [
+        {"name": "unsupported", "value": 123}
+      ]
+    }
+  ]
+}
+~~~
+Because there is not a transformer with an transform option called `unsupported`, the rendition
+can never be performed. Having turned on `TransformerDebug` logging you normally you would see a
+transform taking place for `-- doclib --` when you upload a file in Share. With this override the
+doclib transform does not appear.
+
+#### Overriding an existing rendition
+It is possible to change a rendition by overriding it. The following `0300-biggerThumbnails.json`
+file changes the size of the `doclib` image from `100x100` to be `123x123` and introduces another
+rendition called `biggerThumbnail` that is `200x200`.
+~~~
+{
+  "renditions": [
+    {
+      "renditionName": "doclib",
+      "targetMediaType": "image/png",
+      "options": [
+        {"name": "resizeWidth", "value": 123},
+        {"name": "resizeHeight", "value": 123},
+        {"name": "allowEnlargement", "value": false},
+        {"name": "maintainAspectRatio", "value": true},
+        {"name": "autoOrient", "value": true},
+        {"name": "thumbnail", "value": true}
+      ]
+    },
+    {
+      "renditionName": "biggerThumbnail",
+      "targetMediaType": "image/png",
+      "options": [
+        {"name": "resizeWidth", "value": 200},
+        {"name": "resizeHeight", "value": 200},
+        {"name": "allowEnlargement", "value": false},
+        {"name": "maintainAspectRatio", "value": true},
+        {"name": "autoOrient", "value": true},
+        {"name": "thumbnail", "value": true}
+      ]
+    }
+  ]
+}
+~~~
 
 ### Configure a custom MIME type
 
