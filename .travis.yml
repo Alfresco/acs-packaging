@@ -201,7 +201,7 @@ jobs:
         # Run smoke tests against the system using DTAS
         # - ls -hal
         - cd dtas
-        - pytest --verbose --configuration ../tests/environment/dtas-config.json tests/ -s
+        - pytest --configuration ../tests/environment/dtas-config.json tests/ -s
 
     # - name: "Update latest and Single Pipeline <acs>-<build> images"
     #   stage: docker_latest

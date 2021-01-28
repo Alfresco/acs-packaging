@@ -106,14 +106,14 @@
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
                                 <!-- Do not comment out, as this will cause problems in the Single Pipeline. -->
-                                <artifactItem>
+                                <!-- <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-centera-connector</artifactId>
                                     <version>${alfresco.centera-connector.version}</version>
                                     <type>amp</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                </artifactItem>
+                                </artifactItem> -->
                                 <!-- Do not comment out, as this will cause problems in the Single Pipeline. -->
                                 <artifactItem>
                                     <groupId>org.alfresco.integrations</groupId>
