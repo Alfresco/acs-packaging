@@ -41,11 +41,6 @@ new functionality or security patches in these libraries.
 <li>PdfBox org.apache.pdfbox:fontbox:2.0.21 removed - transforms are now performed in T-Engines</li>
 <li>PdfBox org.apache.pdfbox:pdfbox-tools:2.0.21 removed - transforms are now performed in T-Engines</li>
 </ul></li>
-<li>Stack changes
-
-The ACS 7.0.0 release includes support for newer versions of databases, operating systems, Java, ActiveMQ.
-For more details see [VERSIONS.md](distribution/src/main/resources/VERSIONS.md).
-</li>
 
 <h1>        6.2.2
 </h1>
