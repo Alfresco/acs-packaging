@@ -306,8 +306,8 @@ Logs when a Query Set Refresh has started:
 ```
 
 
-It is also possible to obtain detailed logs for the query engine. They provide information about the process of selecting the query set based on a query. 
-They need to be activated at the DEBUG level, as in this example:
+It is also possible to obtain detailed logs for the query engine. The logs provide information about the process 
+of selecting the query set, based on the query, by activating the DEBUG level, as in this example:
 ```
 log4j.logger.org.alfresco.repo.search.impl.querymodel.impl.db=debug
 ```
