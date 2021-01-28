@@ -14,7 +14,6 @@
 
     <properties>
         <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/elasticsearch-suite.xml</suiteXmlFile>
-        <alfresco-elasticsearch-shared.version>0.27</alfresco-elasticsearch-shared.version>
     </properties>
 
     <dependencies>
@@ -49,11 +48,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-elasticsearch-shared</artifactId>
-            <version>${alfresco-elasticsearch-shared.version}</version>
         </dependency>
     </dependencies>
 
