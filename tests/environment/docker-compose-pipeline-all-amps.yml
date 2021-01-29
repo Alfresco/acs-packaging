@@ -30,8 +30,7 @@ services:
                 -Ddb.username=alfresco
                 -Ddb.password=alfresco
                 -Ddb.url=jdbc:postgresql://postgres:5432/alfresco
-                -Dalfresco_user_store.adminpassword=1008c2a7bffe1567fe2141c212a67653
-                -Dalfresco_user_store.adminusername=admin.adf@alfresco.com
+                -Dalfresco_user_store.adminusername=admin.pipeline@alfresco.com
                 -Dsolr.host=solr6
                 -Dsolr.port=8983
                 -Dsolr.secureComms=none
