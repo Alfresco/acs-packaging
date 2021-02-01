@@ -155,7 +155,7 @@ services:
             - 61613:61613 # STOMP
 
     digital-workspace:
-        image: quay.io/alfresco/alfresco-digital-workspace:1.6.0
+        image: quay.io/alfresco/alfresco-digital-workspace:2.0.0-adw
         mem_limit: 128m
         environment:
             BASE_PATH: ./
@@ -173,24 +173,24 @@ services:
             - alfresco
             - share
 
-    # sync-service:
-    #     image: quay.io/alfresco/service-sync:3.3.3
-    #     mem_limit: 1g
-    #     environment:
-    #         JAVA_OPTS : "
-    #         -Dsql.db.driver=org.postgresql.Driver
-    #         -Dsql.db.url=jdbc:postgresql://postgres:5432/alfresco
-    #         -Dsql.db.username=alfresco
-    #         -Dsql.db.password=alfresco
-    #         -Dmessaging.broker.host=activemq
-    #         -Drepo.hostname=alfresco
-    #         -Drepo.port=8080
-    #         -Ddw.server.applicationConnectors[0].type=http
-    #         -Xms1000m -Xmx1000m
-    #         "
+    sync-service:
+        image: quay.io/alfresco/service-sync:3.3.3
+        mem_limit: 1g
+        environment:
+            JAVA_OPTS : "
+            -Dsql.db.driver=org.postgresql.Driver
+            -Dsql.db.url=jdbc:postgresql://postgres:5432/alfresco
+            -Dsql.db.username=alfresco
+            -Dsql.db.password=alfresco
+            -Dmessaging.broker.host=activemq
+            -Drepo.hostname=alfresco
+            -Drepo.port=8080
+            -Ddw.server.applicationConnectors[0].type=http
+            -Xms1000m -Xmx1000m
+            "
 
-    #     ports:
-    #         - 9090:9090
+        ports:
+            - 9090:9090
 
 volumes:
     shared-file-store-volume:

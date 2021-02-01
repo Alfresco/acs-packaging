@@ -187,6 +187,8 @@ jobs:
       if: fork = false AND type != pull_request
       before_script:
         - travis_retry travis_wait 20 mvn -B clean install -Ppipeline,local $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-repo.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Drepo.image.tag=latest')
+        # Show what DTAS will be looking for
+        - cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
         - pyenv versions
         - pyenv global 3.7.1
         - pip install requests pytest
@@ -196,9 +198,10 @@ jobs:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/" 180
         - docker ps
+        # Show what AMPs the repo has installed
         - curl -v --user admin.pipeline@alfresco.com:admin http://localhost:8080/alfresco/api/discovery
         - cd dtas
-        - pytest --configuration ../tests/environment/dtas-config.json tests/ -s
+        - pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
 
     # - name: "Update latest and Single Pipeline <acs>-<build> images"
     #   stage: docker_latest
