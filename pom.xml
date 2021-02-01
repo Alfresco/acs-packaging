@@ -17,7 +17,7 @@
         <dependency.alfresco-community-repo.version>8.379</dependency.alfresco-community-repo.version>
         <dependency.alfresco-enterprise-repo.version>8.415</dependency.alfresco-enterprise-repo.version>
 
-        <alfresco.share.version>7.0.0-M3</alfresco.share.version>
+        <alfresco.share.version>7.0.0-A15</alfresco.share.version>
         <alfresco.alfresco-share-services.version>${alfresco.share.version}</alfresco.alfresco-share-services.version>
         <alfresco.api-explorer.version>7.0.0-A3</alfresco.api-explorer.version>
         <alfresco.rm-enterprise-rest-api-explorer.version>3.0.2</alfresco.rm-enterprise-rest-api-explorer.version>
