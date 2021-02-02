@@ -176,15 +176,15 @@ jobs:
         - travis_wait 20 mvn -B install -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
     # Test local repo and share docker images that will be used in the single pipeline. Tag:latest
-    - name: "Single Pipeline image tests"
-      if: fork = false AND type != pull_request
-      before_script:
-        - travis_retry travis_wait 20 mvn -B clean install -Ppipeline,local
-      script:
-        - docker images | grep pipeline
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco"
-        - docker ps
+#    - name: "Single Pipeline image tests"
+#      if: fork = false AND type != pull_request
+#      before_script:
+#        - travis_retry travis_wait 20 mvn -B clean install -Ppipeline,local
+#      script:
+#        - docker images | grep pipeline
+#        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
+#        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco"
+#        - docker ps
 
     - name: "Update latest and Single Pipeline <acs>-<build> images"
       stage: docker_latest
