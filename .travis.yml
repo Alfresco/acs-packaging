@@ -39,7 +39,7 @@ stages:
   - name: docker_latest
     if: fork = false AND type != pull_request AND (branch = master OR branch =~ /release\/.*/)
   - name: release
-    if: commit_message =~ /\[release\]/ AND fork = false AND type != pull_request AND (branch = master OR branch =~ /release\/.*/ OR branch = /fix\/.*/)
+    if: commit_message =~ /\[release\]/ AND fork = false AND type != pull_request AND (branch = master OR branch =~ /release\/.*/ OR branch =~ /fix\/.*/)
   - name: publish
     if: commit_message =~ /\[publish\]/ AND fork = false AND type != pull_request AND (branch = master OR branch =~ /release\/.*/)
 
