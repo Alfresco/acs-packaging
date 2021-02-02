@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>acs-packaging</artifactId>
-        <version>7.0.0-M3</version>
+        <version>repo-5439-M3</version>
     </parent>
 
     <dependencies>
@@ -278,4 +278,8 @@
         </plugins>
     </build>
 
+
+  <scm>
+    <tag>repo-5439-M3</tag>
+  </scm>
 </project>
