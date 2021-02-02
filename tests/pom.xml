@@ -1,12 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>content-repository-tests</artifactId>
+  <version>7.0.0-M3</version>
     <packaging>pom</packaging>
 
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>acs-packaging</artifactId>
-        <version>repo-5439-M3</version>
+        <version>7.0.0-SNAPSHOT</version>
     </parent>
 
     <modules>
@@ -22,8 +23,4 @@
     <properties>
         <dependency.org-json.version>20170516</dependency.org-json.version>
     </properties>
-
-  <scm>
-    <tag>repo-5439-M3</tag>
-  </scm>
 </project>
