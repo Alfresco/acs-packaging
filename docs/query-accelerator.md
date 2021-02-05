@@ -28,11 +28,11 @@ be possible to replace a query set with a new version or to remove it completely
 properties or aspects applied to nodes and if necessary (for selected databases) the order of columns
 in compound indexes. Query sets are defined using JSON files.
 
-3. The addition of new query sets, the replacement of an existing query set or complete removal does not require a 
-restart, an outage or have a major impact on normal operations. The alfresco.log will contain messages to reflect 
-progress. When a new query set is identified, the system will start populating a denormalized 
+3. The addition of new query sets, the replacement of an existing query set or complete removal, require the
+Administrator to perform a query set refresh in the Alfresco Administration Console.
+The alfresco.log will contain messages to reflect progress. When a new query set is identified, the system will start populating a denormalized 
 table in background. It will also abandon the table population before it is complete, if a new 
-version of the query set is created or the query set is removed. The implementation will also need to identify a query 
+version of the query set is created, or the query set is removed. The implementation will also need to identify a query 
 set or a previous version is no longer needed and trigger the removal of the denormalized table in background.
 
 4. Once a denormalized table has been created and fully populated, it will automatically start being used.
@@ -46,14 +46,12 @@ set or a previous version is no longer needed and trigger the removal of the den
 
 * Enable the Query Accelerator by setting the property queryAccelerator.enabled to true.
 * Define the location of the Query Accelerator config files by setting the property queryAccelerator.config.dir
-* Wait time after system startup before populating the tables.
 * The size of each population batch.
 
 ### Properties example
 ```
 queryAccelerator.enabled=true
 queryAccelerator.config.dir=shared/classes/alfresco/extension/querysets
-queryAccelerator.populator.startDelayMinutes=3
 queryAccelerator.populator.workerBatchSize=5000
 ```
 
@@ -165,7 +163,7 @@ Table entry:
 
 #### Removing a query set
 
-You can remove a query set by removing the query set JSON file from the configuration path and then request a query set
+You can remove a query set by removing the query set JSON file from the configuration path and then perform a query set
 refresh in the Alfresco Administration Console.
 
 During the refresh the JSON config files will be compared against the internal registry of query sets. If a query set in
@@ -176,7 +174,7 @@ from the registry and the denormalized database table will be dropped.
 
 You can update/replace a query set by changing the properties, aspects and compositeIndexes in the query set JSON config.
 
-You then need to update the version in the query set JSON config and then request a query set refresh in the
+You then need to update the version in the query set JSON config and then perform a query set refresh in the
 Alfresco Administration Console.
 
 This will start a process that will replace the previous version of the query set.
