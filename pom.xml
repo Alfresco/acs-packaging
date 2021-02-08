@@ -110,18 +110,7 @@
                 <module>dev</module>
             </modules>
         </profile>
-    </profiles>acs-packaging/pom.xml
-Go to file
- 
- 
-271 lines (260 sloc)  11.7 KB
-RawBlame
-￼ ￼
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <artifactId>acs-packaging</artifactId>
-    <packaging>pom</packaging>
+    </profiles>
 
     <dependencyManagement>
         <dependencies>
