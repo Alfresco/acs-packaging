@@ -43,7 +43,7 @@ services:
         -Dindex.subsystem.name=solr6
         -Dlocal.transform.service.enabled=false
         -Dlegacy.transform.service.enabled=false
-        -Ddsync.service.uris=http://localhost:8082/alfresco
+        -Ddsync.service.uris=http://localhost:9090/alfresco
         "
     ports:
       - 8082:8080
