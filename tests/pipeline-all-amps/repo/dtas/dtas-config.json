@@ -1,0 +1,84 @@
+{
+    "config": {
+        "host": "http://localhost:8080",
+        "username": "admin.pipeline@alfresco.com",
+        "password": "admin"
+    },
+    "assertions": {
+        "acs": {
+            "edition": "Enterprise",
+            "version": "7.0.0",
+            "identity": false,
+            "modules": [
+                {
+                    "name": "Alfresco Share Services AMP",
+                    "version": "${alfresco.alfresco-share-services.version}",
+                    "installed": true
+                },
+                {
+                    "name": "alfresco-trashcan-cleaner project",
+                    "version": "${dependency.alfresco-trashcan-cleaner.version}",
+                    "installed": true
+                },
+                {
+                    "name": "Alfresco / Google Docs Integration",
+                    "version": "${alfresco.googledrive.version}",
+                    "installed": true
+                },
+                {
+                    "name": "Alfresco Office Services Module",
+                    "version": "${alfresco.aos-module.version}",
+                    "installed": true
+                },
+                {
+                    "name": "Alfresco Device Sync Amp",
+                    "version": "${alfresco.desktop-sync.version}",
+                    "installed": true
+                },
+                {
+                    "name": "AGS Repo",
+                    "version": "3.5.0",
+                    "installed": true
+                },
+                {
+                    "name": "AGS Enterprise Repo",
+                    "version": "3.5.0",
+                    "installed": true
+                },
+                {
+                    "name": "Alfresco SAML Repository AMP Module",
+                    "version": "${alfresco.saml.version}",
+                    "installed": true
+                },
+                {
+                    "name": "Alfresco Glacier Connector Repo",
+                    "version": "${alfresco.glacier-connector.version}",
+                    "installed": true
+                },
+                {
+                    "name": "S3 Connector",
+                    "version": "${alfresco.s3connector.version}",
+                    "installed": true
+                },
+                {
+                    "name": "Alfresco Intelligence Services Repository AMP",
+                    "version": "${alfresco.ais.version}",
+                    "installed": true
+                },
+                {
+                    "name": "Alfresco Content Connector for Azure",
+                    "version": "${alfresco.azure-connector.version}",
+                    "installed": true
+                },
+                {
+                    "name": "Alfresco Content Connector for Salesforce Repository AMP",
+                    "version": "${alfresco.salesforce-connector.version}",
+                    "installed": true
+                }
+            ]
+        },
+        "adw": {
+            "version": "2.0.0"
+        }
+    }
+}

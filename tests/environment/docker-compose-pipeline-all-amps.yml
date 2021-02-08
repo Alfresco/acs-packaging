@@ -30,8 +30,7 @@ services:
                 -Ddb.username=alfresco
                 -Ddb.password=alfresco
                 -Ddb.url=jdbc:postgresql://postgres:5432/alfresco
-                -Dalfresco_user_store.adminpassword=1008c2a7bffe1567fe2141c212a67653
-                -Dalfresco_user_store.adminusername=admin.adf@alfresco.com
+                -Dalfresco_user_store.adminusername=admin.pipeline@alfresco.com
                 -Dsolr.host=solr6
                 -Dsolr.port=8983
                 -Dsolr.secureComms=none
@@ -50,8 +49,8 @@ services:
                 -DlocalTransform.core-aio.url=http://transform-core-aio:8090/
                 -Dcsrf.filter.enabled=false
                 -Ddsync.service.uris=http://localhost:9090/alfresco
-                -Ds3.accessKey=${AWS_ACCESS_KEY_ID}
-                -Ds3.secretKey=${AWS_SECRET_ACCESS_KEY}
+                -Ds3.accessKey=${AWS_ACCESS_KEY}
+                -Ds3.secretKey=${AWS_SECRET_KEY}
                 -Ds3.bucketName=pipeline-amps-all
                 -Ds3.autoLowerCaseBucketName=true
                 -Ds3.bucketLocation=us-east-1
@@ -156,7 +155,7 @@ services:
             - 61613:61613 # STOMP
 
     digital-workspace:
-        image: quay.io/alfresco/alfresco-digital-workspace:1.6.0
+        image: quay.io/alfresco/alfresco-digital-workspace:2.0.0-adw
         mem_limit: 128m
         environment:
             BASE_PATH: ./
