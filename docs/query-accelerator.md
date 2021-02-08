@@ -28,11 +28,11 @@ be possible to replace a query set with a new version or to remove it completely
 properties or aspects applied to nodes and if necessary (for selected databases) the order of columns
 in compound indexes. Query sets are defined using JSON files.
 
-3. The addition of new query sets, the replacement of an existing query set or complete removal does not require a 
-restart, an outage or have a major impact on normal operations. The alfresco.log will contain messages to reflect 
-progress. When a new query set is identified, the system will start populating a denormalized 
+3. The addition of new query sets, the replacement of an existing query set or complete removal, require the
+Administrator to perform a query set refresh in the Alfresco Administration Console.
+The alfresco.log will contain messages to reflect progress. When a new query set is identified, the system will start populating a denormalized 
 table in background. It will also abandon the table population before it is complete, if a new 
-version of the query set is created or the query set is removed. The implementation will also need to identify a query 
+version of the query set is created, or the query set is removed. The implementation will also need to identify a query 
 set or a previous version is no longer needed and trigger the removal of the denormalized table in background.
 
 4. Once a denormalized table has been created and fully populated, it will automatically start being used.
@@ -46,14 +46,12 @@ set or a previous version is no longer needed and trigger the removal of the den
 
 * Enable the Query Accelerator by setting the property queryAccelerator.enabled to true.
 * Define the location of the Query Accelerator config files by setting the property queryAccelerator.config.dir
-* Wait time after system startup before populating the tables.
 * The size of each population batch.
 
 ### Properties example
 ```
 queryAccelerator.enabled=true
 queryAccelerator.config.dir=shared/classes/alfresco/extension/querysets
-queryAccelerator.populator.startDelayMinutes=3
 queryAccelerator.populator.workerBatchSize=5000
 ```
 
@@ -165,7 +163,7 @@ Table entry:
 
 #### Removing a query set
 
-You can remove a query set by removing the query set JSON file from the configuration path and then request a query set
+You can remove a query set by removing the query set JSON file from the configuration path and then perform a query set
 refresh in the Alfresco Administration Console.
 
 During the refresh the JSON config files will be compared against the internal registry of query sets. If a query set in
@@ -176,7 +174,7 @@ from the registry and the denormalized database table will be dropped.
 
 You can update/replace a query set by changing the properties, aspects and compositeIndexes in the query set JSON config.
 
-You then need to update the version in the query set JSON config and then request a query set refresh in the
+You then need to update the version in the query set JSON config and then perform a query set refresh in the
 Alfresco Administration Console.
 
 This will start a process that will replace the previous version of the query set.
@@ -303,4 +301,37 @@ Logs when a Query Set Refresh has started:
 2021-01-14 17:14:15,954  DEBUG [repo.queryaccelerator.QuerySetConfigServiceImpl] [http-bio-8080-exec-6] Query set configuration - no deleted tables detected
 2021-01-14 17:14:15,957  DEBUG [queryaccelerator.population.PopulateRqaServiceImpl] [http-bio-8080-exec-6] Number of PopulateRqaTableWorkers found: 1
 2021-01-14 17:14:15,959  DEBUG [queryaccelerator.population.PopulateRqaServiceImpl] [http-bio-8080-exec-6] PopulateRqaTableWorker(s) will be started at Thu Jan 14 17:17:15 EET 2021 on process 46672@L3700101035.ness.com (just in case you want to kill this JVM as we do not use daemon executors here)
+```
+
+
+It is also possible to obtain detailed logs for the query engine. The logs provide information about the process 
+of selecting the query set, based on the query, by activating the DEBUG level, as in this example:
+```
+log4j.logger.org.alfresco.repo.search.impl.querymodel.impl.db=debug
+```
+
+
+Logs when a query is accepted by the engine:
+```
+15:02:26,097  DEBUG [impl.db.DBQueryEngine] [http-bio-8080-exec-10] Query request received
+15:02:26,098  DEBUG [impl.db.DBQueryEngine] [http-bio-8080-exec-10] - query is being prepared
+15:02:26,099  DEBUG [impl.db.DBQueryEngine] [http-bio-8080-exec-10] - query sent to the database
+15:02:37,722  DEBUG [impl.db.DBQueryEngine] [http-bio-8080-exec-10] - query predicates list:
+15:03:15,823  DEBUG [impl.db.DBQueryEngine] [http-bio-8080-exec-10]   - aspect: qname={http://www.alfresco.org/model/content/1.0}titled
+15:06:43,325  DEBUG [impl.db.DBQueryEngine] [http-bio-8080-exec-10] - Examining 1 queryset(s)...
+15:06:43,326  DEBUG [impl.db.DBQueryEngine] [http-bio-8080-exec-10]   - queryset table alf_qs_testbb01_v41 accepted for this query!
+15:06:43,328  DEBUG [impl.db.DBQueryEngine] [http-bio-8080-exec-10] - using denormalised table for the query
+```
+
+Logs when a query is refused by the engine:
+```
+15:26:54,753  DEBUG [impl.db.DBQueryEngine] [http-bio-8080-exec-3] Query request received
+15:26:54,753  DEBUG [impl.db.DBQueryEngine] [http-bio-8080-exec-3] - query is being prepared
+15:26:54,755  DEBUG [impl.db.DBQueryEngine] [http-bio-8080-exec-3] - query sent to the database
+15:26:58,389  DEBUG [impl.db.DBQueryEngine] [http-bio-8080-exec-3] - query predicates list:
+15:26:58,389  DEBUG [impl.db.DBQueryEngine] [http-bio-8080-exec-3]   - aspect: qname={http://www.alfresco.org/model/content/1.0}dublincore
+15:26:58,389  DEBUG [impl.db.DBQueryEngine] [http-bio-8080-exec-3]   - column: qname={http://www.alfresco.org/model/content/1.0}publisher
+15:27:00,108  DEBUG [impl.db.DBQueryEngine] [http-bio-8080-exec-3] - Examining 1 queryset(s)...
+15:27:00,108  DEBUG [impl.db.DBQueryEngine] [http-bio-8080-exec-3]   - queryset table alf_qs_testbb01_v41 excluded as qname not found: {http://www.alfresco.org/model/content/1.0}dublincore
+15:27:00,108  DEBUG [impl.db.DBQueryEngine] [http-bio-8080-exec-3] - using standard table for the query
 ```
