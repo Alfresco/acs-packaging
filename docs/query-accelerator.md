@@ -225,13 +225,13 @@ The query sets can be removed in the Alfresco Administration Console.
 
 ![Remove Query Set](images/RemoveQuerySet.png "Remove Query Set")
 
-3 Press the 'Remove Query Set' button.
+2 Press the 'Remove Query Set' button.
 
 If the query set is successfully removed you will see:
 
 ![Query Set Removed](images/QuerySetRemoved.png "Refresh Started")
 
-If there are no updates to the query sets you will see:
+If no matching query set was found you will see:
 
 ![Query Set Not Removed](images/QuerySetNotRemoved.png "Query Set Not Removed")
 
