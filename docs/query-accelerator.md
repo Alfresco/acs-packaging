@@ -28,12 +28,14 @@ be possible to replace a query set with a new version or to remove it completely
 properties or aspects applied to nodes and if necessary (for selected databases) the order of columns
 in compound indexes. Query sets are defined using JSON files.
 
-3. The addition of new query sets, the replacement of an existing query set or complete removal, require the
-Administrator to perform a query set refresh in the Alfresco Administration Console.
-The alfresco.log will contain messages to reflect progress. When a new query set is identified, the system will start populating a denormalized 
+3. Administrator to perform a query set refresh in the Alfresco Administration Console. The addition of new query sets, 
+the replacement of an existing query set or complete removal does not require a 
+restart, an outage or have a major impact on normal operations. The alfresco.log will contain messages to reflect 
+progress. When a new query set is identified, the system will start populating a denormalized 
 table in background. It will also abandon the table population before it is complete, if a new 
-version of the query set is created, or the query set is removed. The implementation will also need to identify a query 
-set or a previous version is no longer needed and trigger the removal of the denormalized table in background.
+version of the query set is created. The implementation will also need to identify a query 
+set or a previous version is no longer needed and issue a message to the alfresco.log to advise that the query set 
+can be deleted.
 
 4. Once a denormalized table has been created and fully populated, it will automatically start being used.
 
@@ -166,12 +168,12 @@ Table entry:
 
 #### Removing a query set
 
-You can remove a query set by removing the query set JSON file from the configuration path and then perform a query set
-refresh in the Alfresco Administration Console.
+You can remove a query set by performing its removal in the Alfresco Administration Console. There is no need to perform
+ a refresh after the query set removal, however the JSON config file should be manually removed from the config directory.
 
 During the refresh the JSON config files will be compared against the internal registry of query sets. If a query set in
-the registry does not have a corresponding JSON config file with the same tableName then the query set will be removed
-from the registry and the denormalized database table will be dropped. 
+the registry does not have a corresponding JSON config file with the same tableName then a warning will be logged.
+The denormalized database table will NOT be dropped. 
 
 #### Updating a query set
 
@@ -183,35 +185,32 @@ Alfresco Administration Console.
 This will start a process that will replace the previous version of the query set.
 * A new version of the query set will be added to the internal query set registry.
 * A new version of the denormalized table will be created.
-* The denormalized table for the previous version will continue to exist until it has been replaced by the new version.
+* The denormalized table for the previous version will continue in-use until it has been replaced by the new version.
 * The new version of the denormalized table will be populated. This could take a considerable time depending on the scale 
 of the Alfresco installation.
 * When the population is completed
     * the query set will be flagged as live
-    * the previous version of the query set will be removed from the internal registry
-    * the denormalized table for the previous version will be dropped
+    * the previous version of the query set will be flagged as retired
+    * the denormalized table for the previous version can now be dropped manually via the Remove Query Set button in the
+    Admin Console 
 
 #### Important
 
 If you edit a query set config and change the name and request a query set refresh, the system will see this 
-as the removal of the original query set and the creation of a new one. It will result in the original query 
-set being removed from the registry and the denormalized table being dropped before the denormalized table for the new 
-query set is ready to use.
+as the retirement of the original query set and the creation of a new one.
 
 
 #### Query Set Refresh in Alfresco Administration Console
 
 The query sets can be refreshed in the Alfresco Administration Console.
 
-1 Select 'Search Service' in the left hand menu.
+1 Select 'Query Accelerator' in the left hand menu.
 
-![Search Service](images/RefreshQuerySet1.png "Search Service")
+![Admin Console](images/AdminConsoleMenu.png "Admin Console")
 
-2 Scoll down to the 'Query Accelerator' section.
+2 Press the 'Refresh Query Set' button.
 
-![Query Accelerator](images/RefreshQuerySet2.png "Query Accelerator")
-
-3 Press the 'Refresh Query Set' button.
+![Refresh Query Set](images/RefreshQuerySet.png "Refresh Query Set")
 
 If there are updates to the query sets in the folder defined by `queryAccelerator.config.dir` (normally
 `shared/classes/alfresco/extension/querysets`) you will see:
@@ -221,6 +220,24 @@ If there are updates to the query sets in the folder defined by `queryAccelerato
 If there are no updates to the query sets you will see:
 
 ![Refresh Not Started](images/RefreshQuerySetNotStarted.png "Refresh Not Started")
+
+#### Query Set Remove in Alfresco Administration Console
+
+The query sets can be removed in the Alfresco Administration Console.
+
+1 On the Query Accelerator page, complete the query set name and version text fields.
+
+![Remove Query Set](images/RemoveQuerySet.png "Remove Query Set")
+
+2 Press the 'Remove Query Set' button.
+
+If the query set is successfully removed you will see:
+
+![Query Set Removed](images/QuerySetRemoved.png "Refresh Started")
+
+If no matching query set was found you will see:
+
+![Query Set Not Removed](images/QuerySetNotRemoved.png "Query Set Not Removed")
 
 ## Query Sets and Transaction Meta-Data Queries (TMDQ)
 
