@@ -77,6 +77,9 @@ The query set configurations define the denormalized tables that will be created
 * When aspects are used, the denormalized table will contain only the nodes that have at least one of the aspect.
   it is for this reason that a query checking for the absence of an aspect will not use the query accelerator
   and will be performed by the standard engine.
+* Auditable properties (namely: cm:creator, cm:created, cm:modifier, cm:modified and cm:accessed) defined in the configuration
+  will be ignored. Data of this nature is always available and there is no need to store it on the corresponding denormalised
+  table.
 
 
 ### Query set configuration examples
@@ -93,7 +96,7 @@ The query set configurations define the denormalized tables that will be created
       "isIndex": true
     },
     {
-      "name": "cm:creator",
+      "name": "cm:publisher",
       "isIndex": true
     }
   ],
@@ -104,7 +107,7 @@ The query set configurations define the denormalized tables that will be created
     }
   ],
   "compositeIndexes": {
-    "index_1": ["cm:name", "cm:creator"],
+    "index_1": ["cm:name", "cm:author"],
     "index_2": ["cm:name", "cm:titled"]
   }
 }
@@ -113,9 +116,9 @@ ACS node properties:
 ![acs-node-properties](images/acs-properties.png "ACS Node Properties")
 Table entry:
 
-| node_id | owner_id | alf_type | cm_name   | cm_creator | cm_titled |
-| ------- | -------- | -------- | --------- | ---------- | --------- |
-| 887     | 3        | 24       | demo1.txt | admin      | true      |
+| node_id | owner_id | alf_type | cm_name   | cm_author   | cm_titled |
+| ------- | -------- | -------- | --------- | ----------- | --------- |
+| 887     | 3        | 24       | demo1.txt | Joe Bloggs  | true      |
 
 
 ### Example 2
@@ -130,7 +133,7 @@ Table entry:
       "isIndex": true
     },
     {
-      "name": "cm:creator",
+      "name": "cm:publisher",
       "isIndex": true
     }
   ],
@@ -145,7 +148,7 @@ Table entry:
     }
   ],
   "compositeIndexes": {
-    "index_1": ["cm:name", "cm:creator"],
+    "index_1": ["cm:name", "cm:publisher"],
     "index_2": ["cm:name", "cm:titled"]
   }
 }
@@ -154,9 +157,9 @@ ACS node properties and aspects:
 ![acs-node-aspects](images/acs-aspects.png "ACS Node Aspects")
 Table entry:
 
-| node_id | owner_id | alf_type | cm_name   | cm_creator | cm_titled | cm_dublincore |
-| ------- | -------- | -------- | --------- | ---------- | --------- | ------------- |
-| 918     | 3        | 24       | demo2.txt | admin      | true      | true          |
+| node_id | owner_id | alf_type | cm_name   | cm_publisher | cm_titled | cm_dublincore |
+| ------- | -------- | -------- | --------- | ------------ | --------- | ------------- |
+| 918     | 3        | 24       | demo2     | Egmont       | true      | true          |
 
   
 ### Updating and replacing query sets
