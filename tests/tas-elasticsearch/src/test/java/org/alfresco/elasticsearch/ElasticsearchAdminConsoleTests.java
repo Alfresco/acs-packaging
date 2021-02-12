@@ -5,9 +5,7 @@ import static java.util.Arrays.asList;
 import static org.springframework.http.HttpMethod.GET;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -38,7 +36,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -105,11 +102,9 @@ public class ElasticsearchAdminConsoleTests extends AbstractTestNGSpringContextT
         int newIndexedDocs = Integer.valueOf(document.select("#elasticsearchDocumentCount span.value").text());
         int newIndexableDocs = Integer.valueOf(document.select("#repositoryNodesCount span.value").text());
 
-        // Check the numbers have increased (in theory by one each, but there may be other documents being indexed too.
-        Assert.assertTrue(newIndexedDocs > indexedDocs, "Expected the number of indexed documents to increase, was "
-                + indexedDocs + ", now " + newIndexedDocs);
-        Assert.assertTrue(newIndexableDocs > indexableDocs, "Expected the number of indexable documents to increase, was "
-                + indexableDocs + ", now " + newIndexableDocs);
+        Step.STEP("Check the document counts have each been increased by one.");
+        assertEquals(newIndexedDocs, indexedDocs + 1, "Expected the number of indexed documents to increase by one.");
+        assertEquals(newIndexableDocs, indexableDocs + 1, "Expected the number of indexable documents to increase by one.");
     }
 
     /** Create a text document with the given file name and wait until we can query for it. */
