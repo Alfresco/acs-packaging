@@ -31,7 +31,7 @@
     </distributionManagement>
 
     <properties>
-        <dependency.alfresco-community-repo.version>repo-5439-M3c1/</dependency.alfresco-community-repo.version>
+        <dependency.alfresco-community-repo.version>repo-5439-M3c1</dependency.alfresco-community-repo.version>
         <dependency.alfresco-enterprise-repo.version>repo-5439-M3v3</dependency.alfresco-enterprise-repo.version>
 
         <alfresco.share.version>7.0.0-M3</alfresco.share.version>
