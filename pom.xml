@@ -21,7 +21,7 @@
         <alfresco.alfresco-share-services.version>${alfresco.share.version}</alfresco.alfresco-share-services.version>
         <alfresco.api-explorer.version>7.0.0-A4</alfresco.api-explorer.version>
         <alfresco.rm-enterprise-rest-api-explorer.version>3.0.2</alfresco.rm-enterprise-rest-api-explorer.version>
-        <alfresco.s3connector.version>3.1.0</alfresco.s3connector.version>
+        <alfresco.s3connector.version>4.0.0-A2</alfresco.s3connector.version>
         <alfresco.glacier-connector.version>2.1.0</alfresco.glacier-connector.version>
         <alfresco.azure-connector.version>2.0-A2</alfresco.azure-connector.version>
         <alfresco.centera-connector.version>2.2.1</alfresco.centera-connector.version>
