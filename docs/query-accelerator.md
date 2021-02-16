@@ -259,7 +259,7 @@ The following Query Set would be able to support the above TMDQ.
 ```json
 {
   "version": "1",
-  "tableName": "doc_dublincore",
+  "name": "doc_dublincore",
   "properties": [
     {
       "name": "cm:publisher",
