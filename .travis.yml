@@ -23,6 +23,7 @@ branches:
     - /release\/.*/
     - /feature\/.*/
     - /fix\/.*/
+    - ACS-1253_messaging-jmx-config
 
 env:
   global:
