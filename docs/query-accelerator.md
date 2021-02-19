@@ -82,7 +82,11 @@ The query set configurations define the denormalized tables that will be created
 * Auditable properties (namely: cm:creator, cm:created, cm:modifier, cm:modified and cm:accessed) defined in the configuration
   will be ignored. Data of this nature is always available and there is no need to store it on the corresponding denormalised
   table.
-
+* Properties of the following types defined in the configuration will be ignored. If included a WARN message will be logged, as the properties are already included in the denormalized table:
+  + cm:owner
+  + cm:noderef
+  + sys:node-dbid
+  + sys:node-uuid
 
 ### Query set configuration examples
 
