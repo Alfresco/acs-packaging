@@ -37,7 +37,7 @@ services:
         -Dsolr.base.url=/solr
         -Dindex.subsystem.name=solr6
         -Dalfresco.restApi.basicAuthScheme=true
-        -Dmessaging.broker.url=\"failover:(tcp://activemq:61616)?timeout=3000&jms.useCompression=true\"
+        -Dmessaging.broker.url=\"failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true\"
         -Dlocal.transform.service.enabled=false
         -Dlegacy.transform.service.enabled=false
         -Dcors.enabled=true
