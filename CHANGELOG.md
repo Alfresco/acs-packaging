@@ -1,3 +1,51 @@
+<h1>        6.2.2.12
+</h1>
+
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-22204'>MNT-22204</a>] -         CLONE - Download as zip REST api does not include custom folders
+</li>
+</ul>
+
+
+
+<h1>        6.2.2.11
+</h1>
+
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-22135'>MNT-22135</a>] -         Adding a group containing a large number of users as subgroup is very slow
+</li>
+</ul>
+
+
+
+<h1>        6.2.2.9
+</h1>
+
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-22055'>MNT-22055</a>] -         Metadata extraction fails for certain documents when using legacy transformations
+</li>
+</ul>
+
+
+
+<h1>        6.2.2.8
+</h1>
+
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-22061'>MNT-22061</a>] -         REST api does not update the primary path on new version upload
+</li>
+</ul>
+
+
+
 <h1>        6.2.2.6
 </h1>
 
@@ -10,13 +58,51 @@
 
 
 
+<h1>        6.2.2.5
+</h1>
+
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-21800'>MNT-21800</a>] -         CMIS Web Service Check Out returns error
+</li>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-21967'>MNT-21967</a>] -         ClassCastException when using CMIS query with SCORE() function
+</li>
+</ul>
+
+
+
+<h1>        6.2.2.3
+</h1>
+
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-21766'>MNT-21766</a>] -         Significant degradation of performance as file and site count increase
+</li>
+</ul>
+
+
+
+<h1>        6.2.2.2
+</h1>
+
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-21758'>MNT-21758</a>] -         Cannot map an AOS / WebDAV drive with Kerberos SSO enabled.
+</li>
+</ul>
+
+
+
 <h1>        6.2.2.1
 </h1>
 
 <h2>        Hot Fix Request
 </h2>
 <ul>
-<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21674'>MNT-21674</a>] -         CLONE - ScriptNode API's url & downloadUrl string/values does not work in ACS 6.x
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-21674'>MNT-21674</a>] -         CLONE - ScriptNode API's url & downloadUrl string/values does not work in ACS 6.x
 </li>
 </ul>
 
