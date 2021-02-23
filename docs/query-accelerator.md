@@ -87,6 +87,9 @@ The query set configurations define the denormalized tables that will be created
   + cm:noderef
   + sys:node-dbid
   + sys:node-uuid
+* When files are read from the `queryAccelerator.config.dir` directory they are read in
+alphanumeric order. So _0101-coyote.json_ would be read before _0102-coyote.json_ and it is
+read before _0201-acme.json_.
 
 ### Query set configuration examples
 
