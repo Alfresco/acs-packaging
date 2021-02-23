@@ -94,6 +94,7 @@ read before _0201-acme.json_.
 ### Query set configuration examples
 
 ### Example 1
+This first example is intentionally simple but should work on any system, providing a basic understanding of how the system works.
 
 ```json
 {
@@ -105,7 +106,7 @@ read before _0201-acme.json_.
       "isIndex": true
     },
     {
-      "name": "cm:publisher",
+      "name": "cm:author",
       "isIndex": true
     }
   ],
@@ -131,6 +132,8 @@ Table entry:
 
 
 ### Example 2
+The following example requires that at least one node in the system has the DublinCore aspect applied. This aspect is
+part of the system by default. If there are no nodes, an unknown property error is reported.
 
 ```json
 {
@@ -261,7 +264,8 @@ publisher (cm:publisher) equal to 'Hachette Livre' and a type (cm:type) equal to
    }
 }
 ```
-The following Query Set would be able to support the above TMDQ.
+The following Query Set would be able to support the above TMDQ. It also requires that at least one node in the system
+has the DublinCore aspect applied.
 
 ```json
 {
