@@ -91,7 +91,7 @@ The query set configurations define the denormalized tables that will be created
 ### Query set configuration examples
 
 ### Example 1
-This first example is intentionally simple but should work on any database, providing a basic understanding of how the system works.
+This first example is intentionally simple but should work on any system, providing a basic understanding of how the system works.
 
 ```json
 {
@@ -129,7 +129,8 @@ Table entry:
 
 
 ### Example 2
-This example requires to have in the systems some nodes that are already using the DublinCore aspect. Such aspect is present in the system by default, but if no relevant nodes are already present, then the population of the table will fail.
+The following example requires that at least one node in the system has the DublinCore aspect applied. This aspect is
+part of the system by default. If there are no nodes, an unknown property error is reported.
 
 ```json
 {
@@ -260,7 +261,8 @@ publisher (cm:publisher) equal to 'Hachette Livre' and a type (cm:type) equal to
    }
 }
 ```
-The following Query Set would be able to support the above TMDQ.
+The following Query Set would be able to support the above TMDQ. It also requires that at least one node in the system
+has the DublinCore aspect applied.
 
 ```json
 {
