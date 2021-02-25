@@ -10,12 +10,12 @@
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-enterprise-repo</artifactId>
         <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
-        <version>8.456</version>
+        <version>8.457</version>
     </parent>
 
     <properties>
         <dependency.alfresco-community-repo.version>8.406</dependency.alfresco-community-repo.version>
-        <dependency.alfresco-enterprise-repo.version>8.456</dependency.alfresco-enterprise-repo.version>
+        <dependency.alfresco-enterprise-repo.version>8.457</dependency.alfresco-enterprise-repo.version>
 
         <alfresco.share.version>7.0.0-A17</alfresco.share.version>
         <alfresco.alfresco-share-services.version>${alfresco.share.version}</alfresco.alfresco-share-services.version>
