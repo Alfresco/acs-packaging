@@ -8,16 +8,16 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Component | Recommended | Also Available |
 |---|---|---|
 | Alfresco Content Services | @project.version@ |
-| Alfresco Repository |@dependency.alfresco-enterprise-repo.version@ |
+| Alfresco Repository | @dependency.alfresco-enterprise-repo.version@ |
 | Alfresco Share | @alfresco.share.version@ |
-| Alfresco Search Services | 2.0.0 |
-| Alfresco Insight Engine | 2.0.0 |
+| Alfresco Search Services | 2.0.1 |
+| Alfresco Insight Engine | 2.0.1 |
 | Alfresco Desktop Sync Service | @alfresco.desktop-sync.version@ |
 | Alfresco Transform Service | 1.3.2-A2 |
 | Document Transformation Engine | @alfresco.transformation-engine.version@ |
 | Alfresco File Transfer Receiver | 6.2.1 |
-| Alfresco Module Management Tool | 6.0 |
-| Alfresco Spring Encryptor | 6.1 |
+| Alfresco Module Management Tool | @dependency.alfresco-mmt.version@ |
+| Alfresco Spring Encryptor | @dependency.alfresco-spring-encryptor.version@ |
 
 ##### Alfresco Modules and Integrations
 | Component | Recommended | Also Available |
@@ -34,7 +34,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Alfresco Content Connector for Azure | @alfresco.azure-connector.version@ |
 | Alfresco EMC Centera Connector | @alfresco.centera-connector.version@ |
 | Alfresco Outlook Integration | @alfresco.outlook.version@ |
-| Alfresco SDK | 3.0.1 |
+| Alfresco SDK | 5.0 | 4.2 |
 
 ##### Microsoft Office Suite
 | Component | Recommended | Also Available |
@@ -44,38 +44,36 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Operating Systems
 | Component | Recommended | Also Available |
 |---|---|---|
-| Red Hat Enterprise Linux | 7.4 Release 2 |
-| Windows Server | 2016 |
-| CentOS | 7 x64 |
-| Ubuntu | 18.04 |
-| SUSE | 12.0 SP1 x64 |
+| Red Hat Enterprise Linux | 8.2 | 7.7 |
+| Windows Server | 2019 |
+| CentOS | 8 (2004) | 7 (1908) |
+| Ubuntu | 20.04 | 18.04 |
+| SUSE | 15 | 12 |
+| Amazon Linux | 2 | |
 
 ##### Databases
 | Component | Recommended | Also Available |
 |---|---|---|
-| MySQL | 5.7.23 | 5.7.17 |
-| MS SQL Server | 2017 |
-| Oracle | 12c  |
-| Oracle | 18c  |
-| Oracle | 19c  |
-| PostgreSQL | 10.9 |
-| PostgreSQL | 11.7 |
-| MariaDB | 10.2.18 |
-| Amazon Aurora | Latest |
+| MySQL | 8.0 | 5.7.23 |
+| MS SQL Server | 2019 | 2017 |
+| Oracle | 19c (19.3)  | |
+| PostgreSQL | 13.1 | 12.4, 11.7 |
+| MariaDB | 10.5 | 10.4 |
+| Amazon Aurora PostgreSQL | 12.4 |
 
 ##### Database Connectors
 | Component | Recommended | Also Available |
 |---|---|---|
 | MySQL connector | @dependency.mysql.version@ |
-| MariaDB Java Client | 2.2.5 |
+| MariaDB Java Client | 2.7.2 |
 | PostgreSQL | @dependency.postgresql.version@ |
-| Oracle JDBC ojdbc8 | 12.2.0.1 |
-| Microsoft JDBC Driver | 7.0 | 7.1
+| Oracle JDBC ojdbc8 | 19.3.0.0 |
+| Microsoft JDBC Driver | 8.4 | |
 
 ##### Application Servers
 | Component | Recommended | Also Available |
 |---|---|---|
-| Tomcat | 8.5.51 |
+| Tomcat | 9.0.41 |
 
 ##### Client Operating Systems
 | Component | Recommended | Also Available |
@@ -96,6 +94,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Component | Recommended | Also Available |
 |---|---|---|
 | OpenJDK | 11.0.7 |
+| Amazon Corretto | 11 |
 
 ##### Message Broker
 | Component | Recommended | Also Available |

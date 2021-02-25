@@ -92,9 +92,9 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
         dataUser.addUserToSite(userMultiSite, siteModel1, UserRole.SiteContributor);
         dataUser.addUserToSite(userMultiSite, siteModel2, UserRole.SiteContributor);
 
-        createContent(FILE_0_NAME, "This is the first teST", siteModel1, userSite1);
+        createContent(FILE_0_NAME, "This is the first test", siteModel1, userSite1);
         createContent(FILE_1_NAME, "This is another TEST file", siteModel1, userSite1);
-        createContent(FILE_2_NAME, "This is another tEst file", siteModel2, userSite2);
+        createContent(FILE_2_NAME, "This is another test file", siteModel2, userSite2);
         createContent(FILE_3_NAME, "This is another Test file", siteModel1, userSite2);
         //remove the user from site, but he keeps ownership on FILE_3_NAME 
         dataUser.removeUserFromSite(userSite2, siteModel1);
