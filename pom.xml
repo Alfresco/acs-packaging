@@ -31,7 +31,7 @@
         <alfresco.ags.version>3.5.0-A4</alfresco.ags.version>
         <alfresco.mm.version>1.5.0-M2</alfresco.mm.version>
         <alfresco.desktop-sync.version>3.4.0-M5</alfresco.desktop-sync.version>
-        <alfresco.ais.version>1.3.0-A1</alfresco.ais.version>
+        <alfresco.ais.version>1.3.0-A2</alfresco.ais.version>
 
         <acs.version>${acs.version.major}.${acs.version.minor}.${acs.version.revision}${acs.version.label}</acs.version>
         <repo.image.tag>${dependency.alfresco-enterprise-repo.version}</repo.image.tag>
