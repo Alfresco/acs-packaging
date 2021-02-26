@@ -2,11 +2,10 @@ package org.alfresco.rest;
 
 import java.lang.reflect.Method;
 
+import org.alfresco.cmis.CmisWrapper;
 import org.alfresco.dataprep.WorkflowService;
-import org.alfresco.rest.core.RestProperties;
 import org.alfresco.rest.core.RestWrapper;
 import org.alfresco.utility.LogFactory;
-import org.alfresco.utility.TasProperties;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataGroup;
 import org.alfresco.utility.data.DataLink;
@@ -27,7 +26,7 @@ import org.testng.annotations.BeforeSuite;
 public abstract class ClusterTest extends AbstractTestNGSpringContextTests
 {
     private static Logger LOG = LogFactory.getLogger();
-    
+
     @Autowired
     protected ClusterProperties restProperties;
 
@@ -41,14 +40,17 @@ public abstract class ClusterTest extends AbstractTestNGSpringContextTests
     protected RestWrapper restClientServer2;
 
     @Autowired
+    protected CmisWrapper cmisApiServer2;
+
+    @Autowired
     protected DataUserAIS dataUser;
 
     @Autowired
     protected DataSite dataSite;
-    
+
     @Autowired
     protected DataContent dataContent;
-    
+
     @Autowired
     protected DataGroup dataGroup;
 
@@ -57,7 +59,7 @@ public abstract class ClusterTest extends AbstractTestNGSpringContextTests
 
     @Autowired
     protected DataLink dataLink;
-    
+
     @Autowired
     protected WorkflowService workflow;
 
@@ -82,16 +84,16 @@ public abstract class ClusterTest extends AbstractTestNGSpringContextTests
         restClientServer2.setServerPort(restProperties.getPort2());
         restClientServer2.configureServerEndpoint();
     }
-    
+
     @BeforeMethod(alwaysRun=true)
     public void showStartTestInfo(Method method)
-    {      
-      LOG.info(String.format("*** STARTING Test: [%s] ***",method.getName()));      
+    {
+        LOG.info(String.format("*** STARTING Test: [%s] ***",method.getName()));
     }
-    
+
     @AfterMethod(alwaysRun=true)
     public void showEndTestInfo(Method method)
-    {      
-      LOG.info(String.format("*** ENDING Test: [%s] ***", method.getName()));
+    {
+        LOG.info(String.format("*** ENDING Test: [%s] ***", method.getName()));
     }
 }
