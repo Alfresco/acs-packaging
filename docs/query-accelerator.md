@@ -62,7 +62,7 @@ your query set definition into your running ACS repository container.
 One way is to use the following command:
 
 ```bash
-docker cp custom_queryset.json <alfresco container>:/usr/local/tomcat/shared/classes/alfresco/extension/transform/querysets/
+docker cp custom_queryset.json <alfresco container>:/usr/local/tomcat/shared/classes/alfresco/extension/querysets/
 ```
 
 In a Kubernetes environment, [ConfigMaps](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/)
