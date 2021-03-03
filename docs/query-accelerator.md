@@ -1,7 +1,7 @@
 # Query Accelerator
 
 ## Description
-
+ 
 The Query Accelerator is a mechanism for optimising selected queries in very large content repositories. We would
 suggest using this feature to support large transactional deployments with hundreds of millions of nodes, where
 documents are automatically imported from other systems, rather than traditional collaborative content management
@@ -57,6 +57,30 @@ queryAccelerator.config.dir=shared/classes/alfresco/extension/querysets
 queryAccelerator.populator.workerBatchSize=5000
 ```
 
+If you are using Docker Compose in development, you will need to copy
+your query set definition into your running ACS repository container.
+One way is to use the following command:
+
+```bash
+docker cp custom_queryset.json <alfresco container>:/usr/local/tomcat/shared/classes/alfresco/extension/querysets/
+```
+
+In a Kubernetes environment, [ConfigMaps](https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/)
+can be used to add query set definitions. You will need to create
+a ConfigMap from the JSON file and mount the ConfigMap through a volume
+to the ACS repository pods.
+
+```bash
+kubectl create configmap custom-queryset-config --from-file=name_of_a_file.json
+```
+
+The necessary volumes are already provided out of the box and the files
+in ConfigMap `custom-queryset-config` will be mounted to
+`/usr/local/tomcat/shared/classes/alfresco/extension/querysets/`.
+
+> From Kubernetes documentation: Caution: If there are some files
+in the mountPath location, they will be deleted.
+
 ### Query set configuration
 
 The query set configurations define the denormalized tables that will be created to support faster queries.
@@ -88,8 +112,8 @@ The query set configurations define the denormalized tables that will be created
   + sys:node-dbid
   + sys:node-uuid
 * When files are read from the `queryAccelerator.config.dir` directory they are read in
-alphanumeric order. So _0101-coyote.json_ would be read before _0102-coyote.json_ and it is
-read before _0201-acme.json_.
+  alphanumeric order. So _0101-coyote.json_ would be read before _0102-coyote.json_ and it is
+  read before _0201-acme.json_.
 
 ### Query set configuration examples
 
