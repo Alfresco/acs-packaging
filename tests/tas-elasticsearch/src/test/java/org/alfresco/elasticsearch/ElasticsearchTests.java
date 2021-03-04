@@ -1,5 +1,7 @@
 package org.alfresco.elasticsearch;
 
+import org.alfresco.dataprep.AlfrescoHttpClient;
+import org.alfresco.dataprep.AlfrescoHttpClientFactory;
 import org.alfresco.rest.core.RestWrapper;
 import org.alfresco.rest.search.RestRequestQueryModel;
 import org.alfresco.rest.search.SearchNodeModel;
@@ -18,6 +20,9 @@ import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
@@ -27,6 +32,7 @@ import org.testng.annotations.Test;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -44,19 +50,25 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
     private static final String FILE_1_NAME = "another.txt";
     private static final String FILE_2_NAME = "user1.txt";
     private static final String FILE_3_NAME = "user1Old.txt";
+    public static final String BEFORE_1970_TXT = "before1970.txt";
 
     @Autowired
-    public DataUser dataUser;
+    private DataUser dataUser;
+    
     @Autowired
-    public DataContent dataContent;
+    private DataContent dataContent;
+    
     @Autowired
-    public DataSite dataSite;
+    private DataSite dataSite;
+    
+    @Autowired
+    private AlfrescoHttpClientFactory alfrescoHttpClientFactory;
 
     @Autowired
-    protected ServerHealth serverHealth;
+    private ServerHealth serverHealth;
 
     @Autowired
-    protected RestWrapper client;
+    private RestWrapper client;
 
     private UserModel userSite1;
     private UserModel userSite2;
@@ -173,11 +185,61 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
         });
     }
 
+    @TestRail(section = {
+            TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that the simpler Elasticsearch search works as expected.")
+    @Test(groups = { TestGroup.SEARCH })
+    public void indexAndSearchForDateBefore1970() throws Exception
+    {
+        //Elasticsearch doesn't accept numbers for dates before 1970, so we create and search for a specific document in order to verify that.
+        createNodeWithProperties(siteModel1, new FileModel(BEFORE_1970_TXT, FileType.TEXT_PLAIN), userSite1,
+                Map.of("cm:from", -2637887000L));
+        
+        Utility.sleep(1000, 10000, () -> {
+            SearchRequest query = new SearchRequest();
+            RestRequestQueryModel queryReq = new RestRequestQueryModel();
+            queryReq.setQuery("cm:from:1969-12-01T11:15:13Z");
+            query.setQuery(queryReq);
+
+            SearchResponse search = client.authenticateUser(userSite1).withSearchAPI().search(query);
+
+            assertResponseAndResult(search, BEFORE_1970_TXT);
+        });
+    }
+
     private FileModel createContent(String filename, String content, SiteModel site, UserModel user)
     {
+        FileModel fileModel = new FileModel(filename, FileType.TEXT_PLAIN, content);
         return dataContent.usingUser(user).usingSite(site)
-                       .createContent(new FileModel(filename, FileType.TEXT_PLAIN, content));
+                       .createContent(fileModel);
     }
+
+    private void createNodeWithProperties(SiteModel parentSite, FileModel fileModel, UserModel currentUser, Map<String, Object> properties)
+    {
+        AlfrescoHttpClient client = alfrescoHttpClientFactory.getObject();
+        String reqUrl = client.getApiVersionUrl() + "nodes/" + parentSite.getGuid() + "/children";
+        String name = fileModel.getName();
+        
+        HttpPost post  = new HttpPost(reqUrl);
+        JSONObject body = new JSONObject();
+        body.put("name", name);
+        body.put("nodeType", "cm:content");
+
+        JSONObject jsonProperties = new JSONObject();
+        jsonProperties.putAll(properties);
+        body.put("properties", jsonProperties);
+
+        post.setEntity(client.setMessageBody(body));
+
+        // Send Request
+        logger.info(String.format("POST: '%s'", reqUrl));
+        HttpResponse response = client.execute(currentUser.getUsername(), currentUser.getPassword(), post);
+        if(org.apache.http.HttpStatus.SC_CREATED != response.getStatusLine().getStatusCode()) 
+        {
+            throw new RuntimeException("Could not create file. Request response: " + client.getParameterFromJSON(response,"briefSummary", "error"));
+        }
+    }
+    
+    
 
     public <T> boolean listEqualsIgnoreOrder(List<T> list1, List<T> list2)
     {
