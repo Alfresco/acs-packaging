@@ -229,15 +229,7 @@
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                         </artifactItem>
-                                        <artifactItem>
-                                            <groupId>org.alfresco</groupId>
-                                            <artifactId>alfresco-centera-connector</artifactId>
-                                            <version>${alfresco.centera-connector.version}</version>
-                                            <type>amp</type>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                        </artifactItem>
-                                        <artifactItem>
+                                         <artifactItem>
                                             <groupId>org.alfresco.integrations</groupId>
                                             <artifactId>alfresco-content-connector-for-salesforce-repo</artifactId>
                                             <version>${alfresco.salesforce-connector.version}</version>
