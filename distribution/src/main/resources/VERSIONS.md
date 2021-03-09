@@ -25,14 +25,12 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Alfresco Share Services | @alfresco.alfresco-share-services.version@ |
 | Alfresco Google Docs Integration | @alfresco.googledrive.version@ |
 | Alfresco Governance Services | @alfresco.ags.version@ |
-| Alfresco Media Management | @alfresco.mm.version@ |
 | Alfresco Intelligence Services | @alfresco.ais.version@ |
 | Alfresco Office Services | @alfresco.aos-module.version@ |
 | SAML Single Sign-On (SSO) for Alfresco Content Services | @alfresco.saml.version@ |
 | Alfresco Content Connector for Salesforce | @alfresco.salesforce-connector.version@ |
 | Alfresco S3 Connector | @alfresco.s3connector.version@ |
 | Alfresco Content Connector for Azure | @alfresco.azure-connector.version@ |
-| Alfresco EMC Centera Connector | @alfresco.centera-connector.version@ |
 | Alfresco Outlook Integration | @alfresco.outlook.version@ |
 | Alfresco SDK | 5.0 | 4.2 |
 
