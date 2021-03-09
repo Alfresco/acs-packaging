@@ -40,8 +40,79 @@ new functionality or security patches in these libraries.
 <li>PdfBox org.apache.pdfbox:pdfbox:2.0.21 removed - transforms are now performed in T-Engines</li>
 <li>PdfBox org.apache.pdfbox:fontbox:2.0.21 removed - transforms are now performed in T-Engines</li>
 <li>PdfBox org.apache.pdfbox:pdfbox-tools:2.0.21 removed - transforms are now performed in T-Engines</li>
-</ul></li>
-<br/>
+</ul>
+<br>
+</li>
+
+<li>Custom Transforms and Renditions
+
+ACS 7 provides a number of content transforms, but also allows custom transforms to be added.
+
+It is possible to create custom transforms that run in separate processes known as T-Engines. The same engines may
+be used in Community and Enterprise Editions. 
+
+For more information, see [Custom Transforms and Renditions](https://github.com/Alfresco/acs-packaging/blob/master/docs/custom-transforms-and-renditions.md)
+</li>
+
+<li>Core All-In-One (AIO) Transform Engine
+
+We have previously used T-Engines for Community and Enterprise Editions that run in separate processes. (https://docs.alfresco.com/transform-service/latest/)
+
+The Core All-In-One (AIO) Transform Engine combines the current 5x core T-Engines  (LibreOffice, imagemagick,
+Alfresco PDF Renderer, Tika) packaged together into a single Docker image.  Enterprise deployments require
+greater scalability and we anticipate in these situations the individual T-Engines will be preferable.  
+
+For Community deployments the AIO T-Engine, running it in a single JVM is recommended.  In addition the
+AIO solution has been updated at with the option to build a single AIO T-Engine.
+</li>
+
+<li>Events related to node and association actions
+
+With Alfresco Content Services 7.0, the Content Repository publishes events related to an initial set of actions
+to nodes and associations. This is the first time that this feature is introduced as part of the ACS Core Services,
+and it will be used in many use cases, as an example by the Alfresco SDK 5. For the moment the supported events
+are related to node creation/update/deletion, secondary child association creation/deletion, peer association
+creation/deletion.
+</li>
+
+<li>New REST API Endpoints:
+
+    File  Rendition Management API is now available under /s
+    POST '/nodes/{nodeId}/s/{Id}/renditions'
+    GET '/nodes/{nodeId}/s/{Id}/renditions'
+    GET '/nodes/{nodeId}/s/{Id}/renditions/{renditionId}'
+    GET '/nodes/{nodeId}/s/{Id}/renditions/{renditionId}/content'
+
+    Site Membership Management API is now available under /sites
+    GET '/sites/{siteId}/group-members'
+    POST '/sites/{siteId}/group-members'
+    GET '/sites/{siteId}/group-members/{groupId}'
+    PUT '/sites/{siteId}/group-members/{groupId}'
+    DELETE '/sites/{siteId}/group-members/{groupId}'
+
+    Model API: https://develop.envalfresco.com/api-explorer/?urls.primaryName=Model API
+</li>
+
+<li>Recommended Database Patch
+
+ACS 7 contains a recommended database patch, which adds two indexes to the alf_node table and three to alf_transaction.
+This patch is optional, but recommended for larger implementations as it can have a big positive performance impact.
+These indexes are not automatically applied during upgrade, as the amount of time needed to create them might be
+considerable. They should be run manually after the upgrade process completes. 
+
+To apply the patch, an admin should set the following Alfresco global property to “true”. Like other patches it will
+only be run once, so there is no need to reset the property afterwards.
+
+    system.new-node-transaction-indexes.ignored=false
+
+Until this step is completed, you will see Schema Validation warnings reported in the alfresco.log on each startup.
+The log will also indicate that the patch was not run.
+
+    INFO  [org.alfresco.repo.domain.schema.SchemaBootstrap] [...] Ignoring script patch (post-Hibernate): patch.db-V6.3-add-indexes-node-transaction
+    ...
+    WARN  [org.alfresco.repo.domain.schema.SchemaBootstrap] [...] Schema validation found ... potential problems, results written to ...
+ </li>
+    
 <li>Stack changes
 
 The ACS 7.0.0 release includes support for newer versions of databases, operating systems, Java, ActiveMQ.
