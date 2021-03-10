@@ -30,6 +30,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Alfresco Content Connector for Salesforce | @alfresco.salesforce-connector.version@ |
 | Alfresco S3 Connector | @alfresco.s3connector.version@ |
 | Alfresco Content Connector for Azure | @alfresco.azure-connector.version@ |
+| Alfresco Outlook Integration | @alfresco.outlook.version@ |
 | Alfresco SDK | 5.0 | 4.2 |
 
 ##### Microsoft Office Suite
