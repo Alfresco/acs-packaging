@@ -10,7 +10,7 @@ other properties, which identify a related collection of documents.
 
 An administrator may define a combination of properties and aspects as a `query set`, to support a faster alternative to
 TMDQ (Transactional MetaData Query) or Solr. Properties may be from multiple types or aspects. A single query set can
-speed up more than on query if the queries share common search properties or aspects. A number of different query sets
+speed up more than one query if the queries share common search properties or aspects. A number of different query sets
 may be created to support queries with different search properties or aspects.
 
 This performance comes at the cost of additional space for denormalized databases tables and indexes as well as a minimal 
@@ -18,7 +18,7 @@ increased time on ingestion and update. This will however allow customers to mak
 in a query set or having lots of query sets should be avoided, as the cost will be high and generally indicates that
 there is something wrong with the data model design.
 
-### Operational requirements
+### Operational overview
 
 1. Query sets may be applied to an existing Alfresco repository. For example a query set could be applied to a system
 which has been upgraded to 7.0.0 that already contains hundreds of millions of documents.
@@ -28,20 +28,20 @@ be possible to replace a query set with a new version or to remove it completely
 properties or aspects applied to nodes and if necessary (for selected databases) the order of columns
 in compound indexes. Query sets are defined using JSON files.
 
-3. Administrator to perform a query set refresh in the Alfresco Administration Console. The addition of new query sets, 
+3. Administrators perform a query set refresh in the Alfresco Administration Console. The addition of new query sets, 
 the replacement of an existing query set or complete removal does not require a 
-restart, an outage or have a major impact on normal operations. The alfresco.log will contain messages to reflect 
+restart, an outage or have a major impact on normal operations. The `alfresco.log` will contain messages to reflect 
 progress. When a new query set is identified, the system will start populating a denormalized 
 table in background. It will also abandon the table population before it is complete, if a new 
 version of the query set is created. The implementation will also need to identify a query 
-set or a previous version is no longer needed and issue a message to the alfresco.log to advise that the query set 
+set or if a previous version is no longer needed and issue a message to the `alfresco.log` to advise that the query set 
 can be deleted.
 
 4. Once a denormalized table has been created and fully populated, it will automatically start being used.
 
-5. The Query accelerator will provide ATOMIC (transactionally consistent) results.
+5. The Query Accelerator will provide ATOMIC (transactionally consistent) results.
 
-6. The query accelerator is only an enterprise edition feature.
+6. The Query Accelerator is only an enterprise edition feature.
 
 
 ## Alfresco Query Accelerator Properties
@@ -50,7 +50,7 @@ can be deleted.
 * Define the location of the Query Accelerator config files by setting the property queryAccelerator.config.dir
 * The size of each population batch.
 
-### Properties example
+## Properties example
 ```
 queryAccelerator.enabled=true
 queryAccelerator.config.dir=shared/classes/alfresco/extension/querysets
@@ -94,14 +94,14 @@ The query set configurations define the denormalized tables that will be created
 | compositeIndexes | A collection of composite indexes to be created for the table. A composite index consists of an attribute where the attribute name is the index name and the attribute value is a collection of names of properties and/or aspects of the query set. |
 
 * The maximum length of the query set name and the version is the maximum table name length of the database system being used,
-  mimus 9. So for Postgres, which has a maximum table name length of 63 bytes, the maximum name and version length in
+  minus 9. So for Postgres, which has a maximum table name length of 63 bytes, the maximum name and version length in
   the query set is 54 bytes.
 * Queries that include negations on aspects should not be accelerated.
-* Properties of type MLTEXT are NOT be supported. If included a WARN message will be logged,
+* Properties of type MLTEXT are NOT supported. If included a WARN message will be logged,
   the properties will be ignored, and the corresponding denormalized table will be created without them.
 * The denormalized table will have an alf_type column, holding the name of the content type.
 * When aspects are used, the denormalized table will contain only the nodes that have at least one of the aspect.
-  it is for this reason that a query checking for the absence of an aspect will not use the query accelerator
+  It is for this reason that a query checking for the absence of an aspect will not use the query accelerator
   and will be performed by the standard engine.
 * Auditable properties (namely: cm:creator, cm:created, cm:modifier, cm:modified and cm:accessed) defined in the configuration
   will be ignored. Data of this nature is always available and there is no need to store it on the corresponding denormalised
@@ -320,8 +320,8 @@ Denormalized tables have a status. For example:
 
 | Name | Version | State | Notes |
 | ---- | ------- | ----- | ----- |
-| tableA | 1 | OBSOLETE | Can be removed |
-| tableA | 2 | RETIRED | Previous LIVE version. Can be removed |
+| tableA | 1 | OBSOLETE | Should be removed |
+| tableA | 2 | RETIRED | Can be removed |
 | tableA | 3 |  LIVE | Currently being used |
 | tableA | 4 |  INPROGRESS | Created but not fully populated yet, so cannot be used |
 | tableA | 5 |  NEW | Seen but population of denormalized data has not started |
