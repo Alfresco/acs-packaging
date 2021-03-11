@@ -81,11 +81,11 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Client browsers
 | Component | Recommended | Also Available |
 |---|---|---|
-| Mozilla Firefox | 58 |
+| Mozilla Firefox | 86 |
 | Microsoft Edge | Latest |
 | IE | 11 |
-| Chrome | 64 |
-| Safari | 11 |
+| Chrome | 89 |
+| Safari | 14 |
 
 ##### Java
 | Component | Recommended | Also Available |
