@@ -14,7 +14,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Alfresco Insight Engine | 2.0.1 |
 | Alfresco Desktop Sync Service | @alfresco.desktop-sync.version@ |
 | Alfresco Transform Service | 1.3.2 |
-| Alfresco File Transfer Receiver | 6.2.1 |
+| Alfresco File Transfer Receiver | 7.0.0 |
 | Alfresco Module Management Tool | @dependency.alfresco-mmt.version@ |
 | Alfresco Spring Encryptor | @dependency.alfresco-spring-encryptor.version@ |
 
@@ -30,6 +30,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Alfresco Content Connector for Salesforce | @alfresco.salesforce-connector.version@ |
 | Alfresco S3 Connector | @alfresco.s3connector.version@ |
 | Alfresco Content Connector for Azure | @alfresco.azure-connector.version@ |
+| Alfresco Outlook Integration | @alfresco.outlook.version@ |
 | Alfresco SDK | 5.0 | 4.2 |
 
 ##### Microsoft Office Suite
