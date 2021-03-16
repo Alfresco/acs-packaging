@@ -1,3 +1,21 @@
+<h1>        6.2.2.13
+</h1>
+
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-22220'>MNT-22220</a>] -         [PaaS] - fixedAclUpdater job fails
+</li>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-21847'>MNT-21847</a>] -         When setting permissions async, no new nodes can be created until job runs
+</li>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-22009'>MNT-22009</a>] -         When setting permissions async, nodes with the aspect applied cannot be deleted
+</li>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-22040'>MNT-22040</a>] -         Copying nodes that contain sys:pendingFixAcl aspect, job fails
+</li>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-21898'>MNT-21898</a>] -         File and Folder Permissions mixed in a site, job fails
+</li>
+</ul>
+
 <h1>        6.2.2.12
 </h1>
 
