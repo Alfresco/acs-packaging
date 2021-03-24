@@ -14,7 +14,7 @@
     </parent>
 
     <properties>
-        <dependency.alfresco-enterprise-repo.version>9.6</dependency.alfresco-enterprise-repo.version>
+        <dependency.alfresco-enterprise-repo.version>9.7</dependency.alfresco-enterprise-repo.version>
 
         <alfresco.share.version>7.0.0</alfresco.share.version>
         <alfresco.alfresco-share-services.version>${alfresco.share.version}</alfresco.alfresco-share-services.version>
