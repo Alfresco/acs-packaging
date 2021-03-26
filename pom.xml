@@ -54,6 +54,19 @@
         </snapshotRepository>
     </distributionManagement>
 
+    <repositories>
+        <repository>
+            <id>alfresco-enterprise-releases</id>
+            <url>https://artifacts.alfresco.com/nexus/content/repositories/enterprise-releases</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <profiles>
         <profile>
             <id>fullBuild</id>
