@@ -1,3 +1,13 @@
+<h1>        6.2.2.14
+</h1>
+
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-22295'>MNT-22295</a>] -         FixedACLJob not processing all nodes due to unordered results
+</li>
+</ul>
+
 <h1>        6.2.2.13
 </h1>
 
