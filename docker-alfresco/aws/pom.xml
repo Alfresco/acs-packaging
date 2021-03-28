@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>content-services-docker</artifactId>
-        <version>6.2.2.14</version>
+        <version>6.2.2.15-SNAPSHOT</version>
     </parent>
 
     <properties>
