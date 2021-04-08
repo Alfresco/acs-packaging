@@ -1,3 +1,11 @@
+<h1>        6.2.2.15
+</h1>
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-22304'>MNT-22304</a>] -         Active Shards not displayed in ACS and Search queries fails due to "No available shards for solr query of store workspace://SpacesStore - trying non-dynamic configuration"
+</li>
+</ul>
 <h1>        6.2.2.14
 </h1>
 
