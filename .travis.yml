@@ -30,8 +30,8 @@ env:
     - TAS_ENVIRONMENT=./tests/environment
     # Release version has to start with real version (7.0.0-....) for the docker image to build successfully.
     # Remember to change the acs.version.label in alfresco-enterprise-repo/pom.xml to match the HF version
-    - RELEASE_VERSION=7.0.0
-    - DEVELOPMENT_VERSION=7.0.0.1-SNAPSHOT
+    - RELEASE_VERSION=7.0.0.1
+    - DEVELOPMENT_VERSION=7.0.0.2-SNAPSHOT
 
 stages:
   - name: test
