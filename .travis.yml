@@ -191,7 +191,7 @@ jobs:
         - pyenv versions
         - pyenv global 3.7.1
         - pip install requests pytest
-        - git clone --depth 1 --branch v1.0-M2 https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
+        - git clone --depth 1 --branch v1.0 https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
         - docker images | grep pipeline
       script:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml

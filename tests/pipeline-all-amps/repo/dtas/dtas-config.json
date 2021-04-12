@@ -11,67 +11,67 @@
             "identity": false,
             "modules": [
                 {
-                    "name": "Alfresco Share Services AMP",
+                    "id": "alfresco-share-services",
                     "version": "${alfresco.alfresco-share-services.version}",
                     "installed": true
                 },
                 {
-                    "name": "alfresco-trashcan-cleaner project",
+                    "id": "alfresco-trashcan-cleaner",
                     "version": "${dependency.alfresco-trashcan-cleaner.version}",
                     "installed": true
                 },
                 {
-                    "name": "Alfresco / Google Docs Integration",
+                    "id": "org.alfresco.integrations.google.docs",
                     "version": "${alfresco.googledrive.version}",
                     "installed": true
                 },
                 {
-                    "name": "Alfresco Office Services Module",
+                    "id": "alfresco-aos-module",
                     "version": "${alfresco.aos-module.version}",
                     "installed": true
                 },
                 {
-                    "name": "Alfresco Device Sync Amp",
+                    "id": "org_alfresco_device_sync_repo",
                     "version": "${alfresco.desktop-sync.version}",
                     "installed": true
                 },
                 {
-                    "name": "AGS Repo",
-                    "version": "3.5.0",
+                    "id": "org_alfresco_module_rm",
+                    "version": "${alfresco.ags.version}",
                     "installed": true
                 },
                 {
-                    "name": "AGS Enterprise Repo",
-                    "version": "3.5.0",
+                    "id": "alfresco-rm-enterprise-repo",
+                    "version": "${alfresco.ags.version}",
                     "installed": true
                 },
                 {
-                    "name": "Alfresco SAML Repository AMP Module",
+                    "id": "alfresco-saml-repo",
                     "version": "${alfresco.saml.version}",
                     "installed": true
                 },
                 {
-                    "name": "Alfresco Glacier Connector Repo",
+                    "id": "alfresco-glacier-connector-repo",
                     "version": "${alfresco.glacier-connector.version}",
                     "installed": true
                 },
                 {
-                    "name": "S3 Connector",
+                    "id": "org_alfresco_integrations_S3Connector",
                     "version": "${alfresco.s3connector.version}",
                     "installed": true
                 },
                 {
-                    "name": "Alfresco Intelligence Services Repository AMP",
+                    "id": "alfresco-ai-repo",
                     "version": "${alfresco.ais.version}",
                     "installed": true
                 },
                 {
-                    "name": "Alfresco Content Connector for Azure",
+                    "id": "org_alfresco_integrations_AzureConnector",
                     "version": "${alfresco.azure-connector.version}",
                     "installed": true
                 },
                 {
-                    "name": "Alfresco Content Connector for Salesforce Repository AMP",
+                    "id": "alfresco-content-connector-for-salesforce-repo",
                     "version": "${alfresco.salesforce-connector.version}",
                     "installed": true
                 }
