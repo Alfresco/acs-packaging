@@ -3,7 +3,7 @@
 #
 # The Enterprise repo project depends on artifacts from the community repo project, but not any of its docker images.
 # Once the repository component has been built, it will need to be combined with other ACS components in one of the
-# packaging projects.
+# packaging projects or the Share projects (alfresco-enterprise-share and its read only community mirror share).
 #
 # When developing code, you will normally not be creating repository docker images, or TAS test jar files, but will be
 # creating war files and then running them in a local tomcat instance. To provide the environment needed to do this you
@@ -19,12 +19,16 @@
 # Aliases to build projects WITHOUT creating docker images or TAS tests jars
 #   comR - alfresco-community-repo
 #   entR - alfresco-enterprise-repo
+#   comS - share
+#   entS - alfresco-enterprise-share
 #   comP - acs-community-packaging
 #   entP - acs-packaging
 #
 # Aliases to build projects including DOCKER images and TAS tests jars
 #   comRD - alfresco-community-repo
 #   entRD - alfresco-enterprise-repo
+#   comSD - share
+#   entSD - alfresco-enterprise-share
 #   comPD - acs-community-packaging
 #   entPD - acs-packaging
 
@@ -44,11 +48,15 @@ export TAG=latest
 
 alias comR='(cd alfresco-community-repo  && mvn clean install  -DskipTests=true -Dversion.edition=Community)'
 alias entR='(cd alfresco-enterprise-repo && mvn clean install  -DskipTests=true -Dmaven.javadoc.skip=true )'
+alias comS='(cd share && echo Not available yet)'
+alias entS='(cd alfresco-enterprise-share && mvn clean install -DskipTests -Dmaven.javadoc.skip=true)'
 alias entP='(cd acs-packaging            && mvn clean install)'
 alias comP='(cd acs-community-packaging  && mvn clean install -Dmaven.javadoc.skip=true)'
 
 alias comRD="(cd alfresco-community-repo  && mvn clean install -PcommunityDocker  -Pall-tas-tests -DskipTests=true -Dimage.tag=$TAG -Dversion.edition=Community)"
 alias entRD="(cd alfresco-enterprise-repo && mvn clean install -PenterpriseDocker -Pall-tas-tests -DskipTests=true -Dimage.tag=$TAG -Dmaven.javadoc.skip=true )"
+alias comSD='(cd share && echo Not available yet)'
+alias entSD='(cd alfresco-enterprise-share && mvn clean install -DskipTests -Dmaven.javadoc.skip=true -PenterpriseDocker -Pall-tas-tests -DskipTests=true -Dimage.tag=$TAG -Drepo.image.tag=$TAG)'
 alias comPD="(cd acs-community-packaging  && mvn clean install -PcommunityDocker  -Pall-tas-tests -DskipTests=true -Dimage.tag=$TAG -Drepo.image.tag=$TAG -Dmaven.javadoc.skip=true)"
 alias entPD="(cd acs-packaging            && mvn clean install -PenterpriseDocker -Pall-tas-tests -DskipTests=true -Dimage.tag=$TAG -Drepo.image.tag=$TAG)"
 
@@ -62,12 +70,12 @@ alias entTDebug='(cd acs-packaging            && mvnDebug clean install -Prun,wi
 alias entO='     (cd acs-packaging            && mvn            install -Prun,withShare -rf dev/dev-acs-amps-overlay)'
 alias entODebug='(cd acs-packaging            && mvnDebug       install -Prun,withShare -rf dev/dev-acs-amps-overlay)'
 
-alias com='comR && comP && comT'
-alias ent='comR && entR && entP && entT'
-alias comD='comRD && comPD'
-alias entD='comR && entRD && entPD'
-alias comX='comR && comP'
-alias entX='comR && entR && entP'
+alias com='comR && comS && comP && comT'
+alias ent='comR && entR && entS && entP && entT'
+alias comD='comRD && comSD && comPD'
+alias entD='comR && entRD && entSD && entPD'
+alias comX='comR && comS && comP'
+alias entX='comR && entR && entS && entP'
 
 # Clean up of docker images and content stores (alf_data directories)
 alias drm='docker rm -f $(docker ps -q)'

@@ -1,0 +1,5 @@
+test/**
+aws/target/docker/**
+aws/tmp/**
+target/docker/**
+tmp/**

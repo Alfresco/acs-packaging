@@ -10,14 +10,13 @@
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-enterprise-repo</artifactId>
         <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
-        <version>11.17</version>
+        <version>11.8-ags-1.0-SNAPSHOT</version>
     </parent>
 
     <properties>
-        <dependency.alfresco-enterprise-repo.version>11.17</dependency.alfresco-enterprise-repo.version>
+        <dependency.alfresco-enterprise-repo.version>11.8-ags-1.0-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
+        <dependency.alfresco-enterprise-share.version>11.4-ags-1.0-SNAPSHOT</dependency.alfresco-enterprise-share.version>
 
-        <alfresco.share.version>7.0.0</alfresco.share.version>
-        <alfresco.alfresco-share-services.version>${alfresco.share.version}</alfresco.alfresco-share-services.version>
         <alfresco.api-explorer.version>7.0.0</alfresco.api-explorer.version>
         <alfresco.rm-enterprise-rest-api-explorer.version>3.0.2</alfresco.rm-enterprise-rest-api-explorer.version>
         <alfresco.s3connector.version>4.0.0</alfresco.s3connector.version>
@@ -33,7 +32,7 @@
 
         <acs.version>${acs.version.major}.${acs.version.minor}.${acs.version.revision}${acs.version.label}</acs.version>
         <repo.image.tag>${dependency.alfresco-enterprise-repo.version}</repo.image.tag>
-        <share.image.tag>${alfresco.share.version}</share.image.tag>
+        <share.image.tag>${dependency.alfresco-enterprise-share.version}</share.image.tag>
     </properties>
 
     <scm>
@@ -64,6 +63,8 @@
                 <module>distribution</module>
                 <module>docker-alfresco</module>
                 <module>docker-alfresco/aws</module>
+                <module>docker-share</module>
+                <module>docker-share/aws</module>
             </modules>
         </profile>
         <profile>
@@ -72,6 +73,8 @@
                 <module>distribution</module>
                 <module>docker-alfresco</module>
                 <module>docker-alfresco/aws</module>
+                <module>docker-share</module>
+                <module>docker-share/aws</module>
             </modules>
         </profile>
         <profile>
@@ -80,6 +83,8 @@
                 <module>distribution</module>
                 <module>docker-alfresco</module>
                 <module>docker-alfresco/aws</module>
+                <module>docker-share</module>
+                <module>docker-share/aws</module>
             </modules>
         </profile>
         <profile>
@@ -93,6 +98,7 @@
             <modules>
                 <module>distribution</module>
                 <module>docker-alfresco</module>
+                <module>docker-share</module>
             </modules>
         </profile>
         <profile>
@@ -186,37 +192,37 @@
             <dependency>
                 <groupId>org.alfresco</groupId>
                 <artifactId>alfresco-content-services-share-distribution</artifactId>
-                <version>${alfresco.share.version}</version>
+                <version>${dependency.alfresco-enterprise-share.version}</version>
                 <type>zip</type>
             </dependency>
             <dependency>
                 <groupId>org.alfresco</groupId>
                 <artifactId>alfresco-share-services</artifactId>
-                <version>${alfresco.alfresco-share-services.version}</version>
+                <version>${dependency.alfresco-community-repo.version}</version>
                 <type>amp</type>
             </dependency>
             <dependency>
                 <groupId>org.alfresco</groupId>
                 <artifactId>share</artifactId>
-                <version>${alfresco.share.version}</version>
+                <version>${dependency.alfresco-enterprise-share.version}</version>
                 <type>war</type>
             </dependency>
             <dependency>
                 <groupId>org.alfresco</groupId>
                 <artifactId>alfresco-wcmqs-distribution</artifactId>
-                <version>${alfresco.share.version}</version>
+                <version>${dependency.alfresco-enterprise-share.version}</version>
                 <type>zip</type>
             </dependency>
             <dependency>
                 <groupId>org.alfresco</groupId>
                 <artifactId>alfresco-wcmqs-web</artifactId>
-                <version>${alfresco.share.version}</version>
+                <version>${dependency.alfresco-enterprise-share.version}</version>
                 <classifier>classes</classifier>
             </dependency>
             <dependency>
                 <groupId>org.alfresco</groupId>
                 <artifactId>alfresco-wcmqs-client-api</artifactId>
-                <version>${alfresco.share.version}</version>
+                <version>${dependency.alfresco-enterprise-share.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.alfresco.integrations</groupId>

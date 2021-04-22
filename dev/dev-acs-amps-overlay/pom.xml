@@ -329,7 +329,7 @@
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>share</artifactId>
                                     <contextPath>/share</contextPath>
-                                    <version>${alfresco.share.version}</version>
+                                    <version>${dependency.alfresco-enterprise-share.version}</version>
                                     <type>war</type>
                                     <asWebapp>true</asWebapp>
                                 </webapp>

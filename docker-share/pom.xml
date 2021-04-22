@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>content-services-docker</artifactId>
-    <name>Alfresco Content Services Docker Image Builder</name>
+    <artifactId>share-docker</artifactId>
+    <name>Alfresco Share Docker Image Builder</name>
     <packaging>pom</packaging>
 
     <parent>
@@ -12,7 +11,7 @@
     </parent>
 
     <properties>
-        <image.name>alfresco/alfresco-content-repository</image.name>
+        <image.name>alfresco/alfresco-share</image.name>
     </properties>
 
     <build>
