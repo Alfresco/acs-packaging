@@ -87,7 +87,6 @@ import static org.testng.Assert.assertTrue;
      * Site2:
      *  - Users: userSite2, userMultiSite
      *  - Documents: FILE_2_NAME (owner: userSite2)
-     *  
      */
     @BeforeClass(alwaysRun = true)
     public void dataPreparation() 
