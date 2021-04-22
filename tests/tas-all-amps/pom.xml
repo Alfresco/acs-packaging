@@ -272,7 +272,7 @@
                                         <artifactItem>
                                             <groupId>org.alfresco</groupId>
                                             <artifactId>alfresco-governance-services-enterprise-repo</artifactId>
-                                            <version>${alfresco.ags.version}</version>
+                                            <version>${dependency.alfresco-enterprise-repo.version}</version>
                                             <type>amp</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>
@@ -280,7 +280,7 @@
                                         <artifactItem>
                                             <groupId>org.alfresco</groupId>
                                             <artifactId>alfresco-governance-services-enterprise-share</artifactId>
-                                            <version>${alfresco.ags.version}</version>
+                                            <version>${dependency.alfresco-enterprise-share.version}</version>
                                             <type>amp</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
