@@ -181,7 +181,7 @@ which can be found in the [alfresco-helloworld-transformer](https://github.com/A
 1. Clone the **alfresco-helloworld-transformer** project and navigate to the **alfresco-helloworld-transformer-engine** folder.
 2. Build the T-Engine
     ```bash
-    mvn clean install -Plocal
+    mvn clean install -Pbuild-docker-images
     ```
 3. Start the T-Engine
     ```bash

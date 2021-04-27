@@ -66,9 +66,9 @@ fi
 
 # Build the upstream alfresco-enterprise-repo project with its docker image
 if [[ "${ENT_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] ; then
-  buildSameBranchOnUpstream "${ENT_UPSTREAM_REPO}" "-PenterpriseDocker"
+  buildSameBranchOnUpstream "${ENT_UPSTREAM_REPO}" "-Pbuild-docker-images"
 else
-  buildUpstreamTag "${ENT_UPSTREAM_REPO}" "${ENT_DEPENDENCY_VERSION}" "-PenterpriseDocker"
+  buildUpstreamTag "${ENT_UPSTREAM_REPO}" "${ENT_DEPENDENCY_VERSION}" "-Pbuild-docker-images"
 fi
 
 SHARE_DEPENDENCY_VERSION="$(retrievePomProperty "dependency.alfresco-enterprise-share.version")"
@@ -89,13 +89,13 @@ SHARE_UPSTREAM_REPO="github.com/Alfresco/alfresco-enterprise-share.git"
 
 # Checkout the upstream alfresco-enterprise-share project (tag or branch; + build if the latter)
 if [[ "${SHARE_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] ; then
-  pullAndBuildSameBranchOnUpstream "${SHARE_UPSTREAM_REPO}" "-Plocal"
+  pullAndBuildSameBranchOnUpstream "${SHARE_UPSTREAM_REPO}" "-Pbuild-docker-images"
 else
-  pullUpstreamTagAndBuildDockerImage "${SHARE_UPSTREAM_REPO}" "${SHARE_DEPENDENCY_VERSION}" "-Plocal"
+  pullUpstreamTagAndBuildDockerImage "${SHARE_UPSTREAM_REPO}" "${SHARE_DEPENDENCY_VERSION}" "-Pbuild-docker-images"
 fi
 
 # Build the current project
-mvn -B -V -q install -DskipTests -Dmaven.javadoc.skip=true -PenterpriseDocker \
+mvn -B -V -q install -DskipTests -Dmaven.javadoc.skip=true -Pbuild-docker-images \
   $([[ "${ENT_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] && echo "-Drepo.image.tag=latest") \
   $([[ "${SHARE_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] && echo "-Dshare.image.tag=latest")
 

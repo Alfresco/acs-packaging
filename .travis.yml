@@ -185,7 +185,7 @@ jobs:
     - name: "Single Pipeline image tests"
       if: fork = false AND type != pull_request
       before_script:
-        - travis_retry travis_wait 20 mvn -B clean install -Ppipeline,local $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-repo.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Drepo.image.tag=latest')
+        - travis_retry travis_wait 20 mvn -B clean install -Ppipeline,build-docker-images $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-repo.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Drepo.image.tag=latest')
         # Show what DTAS will be looking for
         - cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
         - pyenv versions

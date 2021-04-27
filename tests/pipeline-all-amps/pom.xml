@@ -46,7 +46,7 @@
 
     <profiles>
         <profile>
-            <id>local</id>
+            <id>build-docker-images</id>
             <!-- creates "image:latest" locally for testing -->
             <build>
                 <plugins>

@@ -53,12 +53,12 @@ alias entS='(cd alfresco-enterprise-share && mvn clean install -DskipTests -Dmav
 alias entP='(cd acs-packaging            && mvn clean install)'
 alias comP='(cd acs-community-packaging  && mvn clean install -Dmaven.javadoc.skip=true)'
 
-alias comRD="(cd alfresco-community-repo  && mvn clean install -PcommunityDocker  -Pall-tas-tests -DskipTests=true -Dimage.tag=$TAG -Dversion.edition=Community)"
-alias entRD="(cd alfresco-enterprise-repo && mvn clean install -PenterpriseDocker -Pall-tas-tests -DskipTests=true -Dimage.tag=$TAG -Dmaven.javadoc.skip=true )"
+alias comRD="(cd alfresco-community-repo  && mvn clean install -Pbuild-docker-images  -Pall-tas-tests -DskipTests=true -Dimage.tag=$TAG -Dversion.edition=Community)"
+alias entRD="(cd alfresco-enterprise-repo && mvn clean install -Pbuild-docker-images -Pall-tas-tests -DskipTests=true -Dimage.tag=$TAG -Dmaven.javadoc.skip=true )"
 alias comSD='(cd share && echo Not available yet)'
-alias entSD='(cd alfresco-enterprise-share && mvn clean install -DskipTests -Dmaven.javadoc.skip=true -PenterpriseDocker -Pall-tas-tests -DskipTests=true -Dimage.tag=$TAG -Drepo.image.tag=$TAG)'
-alias comPD="(cd acs-community-packaging  && mvn clean install -PcommunityDocker  -Pall-tas-tests -DskipTests=true -Dimage.tag=$TAG -Drepo.image.tag=$TAG -Dmaven.javadoc.skip=true)"
-alias entPD="(cd acs-packaging            && mvn clean install -PenterpriseDocker -Pall-tas-tests -DskipTests=true -Dimage.tag=$TAG -Drepo.image.tag=$TAG)"
+alias entSD='(cd alfresco-enterprise-share && mvn clean install -DskipTests -Dmaven.javadoc.skip=true -Pbuild-docker-images -Pall-tas-tests -DskipTests=true -Dimage.tag=$TAG -Drepo.image.tag=$TAG)'
+alias comPD="(cd acs-community-packaging  && mvn clean install -Pbuild-docker-images  -Pall-tas-tests -DskipTests=true -Dimage.tag=$TAG -Drepo.image.tag=$TAG -Dmaven.javadoc.skip=true)"
+alias entPD="(cd acs-packaging            && mvn clean install -Pbuild-docker-images -Pall-tas-tests -DskipTests=true -Dimage.tag=$TAG -Drepo.image.tag=$TAG)"
 
 alias comT='     (cd acs-community-packaging  && mvn      clean install -Prun,withShare)'
 alias comTDebug='(cd acs-community-packaging  && mvnDebug clean install -Prun,withShare)'
