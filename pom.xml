@@ -52,52 +52,19 @@
         </snapshotRepository>
     </distributionManagement>
 
+    <modules>
+        <module>distribution</module>
+        <module>docker-alfresco</module>
+        <module>docker-alfresco/aws</module>
+        <module>docker-share</module>
+        <module>docker-share/aws</module>
+    </modules>
+
     <profiles>
-        <profile>
-            <id>fullBuild</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <modules>
-                <module>distribution</module>
-                <module>docker-alfresco</module>
-                <module>docker-alfresco/aws</module>
-                <module>docker-share</module>
-                <module>docker-share/aws</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>enterpriseDocker</id>
-            <modules>
-                <module>distribution</module>
-                <module>docker-alfresco</module>
-                <module>docker-alfresco/aws</module>
-                <module>docker-share</module>
-                <module>docker-share/aws</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>internal</id>
-            <modules>
-                <module>distribution</module>
-                <module>docker-alfresco</module>
-                <module>docker-alfresco/aws</module>
-                <module>docker-share</module>
-                <module>docker-share/aws</module>
-            </modules>
-        </profile>
         <profile>
             <id>all-tas-tests</id>
             <modules>
                 <module>tests</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>release</id>
-            <modules>
-                <module>distribution</module>
-                <module>docker-alfresco</module>
-                <module>docker-share</module>
             </modules>
         </profile>
         <profile>
@@ -255,5 +222,4 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
 </project>
