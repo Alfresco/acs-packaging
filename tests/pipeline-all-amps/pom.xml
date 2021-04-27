@@ -58,7 +58,7 @@
             </build>
         </profile>
         <profile>
-            <id>internal</id>
+            <id>publish-docker-images</id>
             <!-- publishes "image:<acs.version>-<build-number>" on Quay -->
             <properties>
                 <image.tag>${acs.version}-${build-number}</image.tag>
