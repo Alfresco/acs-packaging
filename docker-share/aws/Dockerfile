@@ -1,4 +1,4 @@
-FROM alfresco/alfresco-enterprise-share:${image.tag}
+FROM alfresco/alfresco-share:${image.tag}
 
 ARG TOMCAT_DIR=/usr/local/tomcat
 
