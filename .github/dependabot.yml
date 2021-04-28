@@ -1,0 +1,180 @@
+version: 2
+registries:
+  maven-repository-artifacts-alfresco-com-nexus-content-groups-int:
+    type: maven-repository
+    url: https://artifacts.alfresco.com/nexus/content/groups/internal
+    username: bamboo
+    password: "${{secrets.MAVEN_REPOSITORY_ARTIFACTS_ALFRESCO_COM_NEXUS_CONTENT_GROUPS_INT_PASSWORD}}"
+
+updates:
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "22:00"
+    timezone: Africa/Abidjan
+  open-pull-requests-limit: 99
+  ignore:
+  - dependency-name: io.fabric8:fabric8-maven-plugin
+    versions:
+    - "> 4.4.1"
+  - dependency-name: org.apache.maven.plugins:maven-war-plugin
+    versions:
+    - ">= 3.a, < 4"
+  - dependency-name: org.apache.tomcat.embed:tomcat-embed-core
+    versions:
+    - "> 7.0.86"
+  - dependency-name: org.apache.tomcat.embed:tomcat-embed-logging-juli
+    versions:
+    - "> 7.0.86"
+  - dependency-name: org.apache.tomcat.embed:tomcat-embed-logging-log4j
+    versions:
+    - "> 7.0.86"
+  - dependency-name: org.apache.tomcat:tomcat-annotations-api
+    versions:
+    - "> 7.0.86"
+  - dependency-name: org.apache.tomcat:tomcat-api
+    versions:
+    - "> 7.0.86"
+  - dependency-name: org.apache.tomcat:tomcat-catalina
+    versions:
+    - "> 7.0.86"
+  - dependency-name: org.apache.tomcat:tomcat-catalina-ha
+    versions:
+    - "> 7.0.86"
+  - dependency-name: org.apache.tomcat:tomcat-coyote
+    versions:
+    - "> 7.0.86"
+  - dependency-name: org.apache.tomcat:tomcat-dbcp
+    versions:
+    - "> 7.0.86"
+  - dependency-name: org.apache.tomcat:tomcat-el-api
+    versions:
+    - "> 7.0.86"
+  - dependency-name: org.apache.tomcat:tomcat-jasper
+    versions:
+    - "> 7.0.86"
+  - dependency-name: org.apache.tomcat:tomcat-jasper-el
+    versions:
+    - "> 7.0.86"
+  - dependency-name: org.apache.tomcat:tomcat-jdbc
+    versions:
+    - "> 7.0.86"
+  - dependency-name: org.apache.tomcat:tomcat-jsp-api
+    versions:
+    - "> 7.0.86"
+  - dependency-name: org.apache.tomcat:tomcat-juli
+    versions:
+    - "> 7.0.86"
+  - dependency-name: org.apache.tomcat:tomcat-servlet-api
+    versions:
+    - "> 7.0.86"
+  - dependency-name: org.apache.tomcat:tomcat-tribes
+    versions:
+    - "> 7.0.86"
+  - dependency-name: org.apache.tomcat:tomcat-util
+    versions:
+    - "> 7.0.86"
+  - dependency-name: org.alfresco:alfresco-wcmqs-client-api
+    versions:
+    - "11.1"
+    - "11.2"
+    - "11.3"
+    - 7.0.0
+    - 7.0.0-M3
+  - dependency-name: org.alfresco:alfresco-wcmqs-web:classes
+    versions:
+    - "11.1"
+    - "11.2"
+    - "11.3"
+    - 7.0.0
+    - 7.0.0-M3
+  - dependency-name: org.alfresco:alfresco-wcmqs-distribution
+    versions:
+    - "11.1"
+    - "11.2"
+    - "11.3"
+    - 7.0.0
+    - 7.0.0-M3
+  - dependency-name: org.alfresco:share
+    versions:
+    - "11.1"
+    - "11.2"
+    - "11.3"
+    - 7.0.0
+    - 7.0.0-M3
+  - dependency-name: org.alfresco:alfresco-content-services-share-distribution
+    versions:
+    - "11.1"
+    - "11.2"
+    - "11.3"
+    - 7.0.0
+    - 7.0.0-M3
+  - dependency-name: org.alfresco.tas:alfresco-enterprise-repo-webdav-test:tests
+    versions:
+    - "8.462"
+    - "9.7"
+  - dependency-name: org.alfresco.tas:alfresco-enterprise-repo-restapi-test:tests
+    versions:
+    - "8.462"
+    - "9.7"
+  - dependency-name: org.alfresco.tas:alfresco-enterprise-repo-integration-test:tests
+    versions:
+    - "8.462"
+    - "9.7"
+  - dependency-name: org.alfresco.tas:alfresco-enterprise-repo-email-test:tests
+    versions:
+    - "8.462"
+    - "9.7"
+  - dependency-name: org.alfresco.tas:alfresco-enterprise-repo-cmis-test:tests
+    versions:
+    - "8.462"
+    - "9.7"
+  - dependency-name: org.alfresco:alfresco-enterprise-repo-distribution
+    versions:
+    - "8.462"
+    - "9.7"
+  - dependency-name: org.alfresco:alfresco-enterprise-remote-api:tests
+    versions:
+    - "8.462"
+    - "9.7"
+  - dependency-name: org.alfresco:alfresco-enterprise-remote-api
+    versions:
+    - "8.462"
+    - "9.7"
+  - dependency-name: org.alfresco:alfresco-enterprise-repository:tests
+    versions:
+    - "8.462"
+    - "9.7"
+  - dependency-name: org.alfresco:alfresco-enterprise-repository
+    versions:
+    - "8.462"
+    - "9.7"
+  - dependency-name: org.alfresco:content-services
+    versions:
+    - "8.462"
+    - "9.7"
+  - dependency-name: org.alfresco:alfresco-enterprise-repo
+    versions:
+    - "8.462"
+    - "9.7"
+  - dependency-name: org.alfresco:alfresco-share-services
+    versions:
+    - 7.0.0
+    - 7.0.0-M3
+  - dependency-name: org.alfresco.integrations:alfresco-content-connector-for-salesforce-share
+    versions:
+    - 2.2.1
+    - 2.2.1-M1
+  - dependency-name: org.alfresco.integrations:alfresco-content-connector-for-salesforce-repo
+    versions:
+    - 2.2.1
+    - 2.2.1-M1
+  - dependency-name: org.alfresco.services.sync:alfresco-device-sync-repo
+    versions:
+    - 3.4.0-T2
+  - dependency-name: org.alfresco.maven.plugin:alfresco-maven-plugin
+    versions:
+    - 4.1.0
+  registries:
+  - maven-repository-artifacts-alfresco-com-nexus-content-groups-int
