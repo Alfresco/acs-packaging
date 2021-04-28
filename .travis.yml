@@ -129,7 +129,7 @@ jobs:
         - travis_wait 10 mvn -B install -f tests/tas-integration/pom.xml -Prun-ldap -Denvironment=default -DrunBugs=false
 
     - name: "REST API TAS tests with AIMS"
-      if: fork = false # AIMS docker image requires access to quay.io
+      if: commit_message !~ /\[skip tas\]/ AND fork = false # AIMS docker image requires access to quay.io
       before_script:
         # AIMS cannot be configured via localhost
         - export HOST_IP=$(hostname  -I | cut -f1 -d' ')
@@ -139,7 +139,7 @@ jobs:
         - travis_wait 60 mvn -B install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
 
     - name: "CMIS TAS tests with AIMS - BROWSER binding"
-      if: fork = false # AIMS docker image requires access to quay.io
+      if: commit_message !~ /\[skip tas\]/ AND fork = false # AIMS docker image requires access to quay.io
       before_script:
         # AIMS cannot be configured via localhost
         - export HOST_IP=$(hostname  -I | cut -f1 -d' ')
@@ -149,7 +149,7 @@ jobs:
         - travis_wait 40 mvn -B install -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-browser-with-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
 
     - name: "CMIS TAS tests with AIMS - ATOM binding"
-      if: fork = false # AIMS docker image requires access to quay.io
+      if: commit_message !~ /\[skip tas\]/ AND fork = false # AIMS docker image requires access to quay.io
       before_script:
         # AIMS cannot be configured via localhost
         - export HOST_IP=$(hostname  -I | cut -f1 -d' ')
@@ -159,6 +159,7 @@ jobs:
         - travis_wait 40 mvn -B install -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-atom-with-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
 
     - name: "Sync Service TAS tests"
+      if: commit_message !~ /\[skip tas\]/
       before_script:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-sync-service.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
@@ -166,6 +167,7 @@ jobs:
         - travis_wait 20 mvn -B install -f tests/tas-sync-service/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
     - name: "Elasticsearch TAS tests"
+      if: commit_message !~ /\[skip tas\]/
       before_script:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-elasticsearch.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
