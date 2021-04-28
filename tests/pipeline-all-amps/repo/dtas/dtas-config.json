@@ -37,12 +37,12 @@
                 },
                 {
                     "id": "org_alfresco_module_rm",
-                    "version": "${alfresco.ags.version}",
+                    "version": "${dependency.alfresco-enterprise-share.version}",
                     "installed": true
                 },
                 {
                     "id": "alfresco-rm-enterprise-repo",
-                    "version": "${alfresco.ags.version}",
+                    "version": "${dependency.alfresco-enterprise-share.version}",
                     "installed": true
                 },
                 {
