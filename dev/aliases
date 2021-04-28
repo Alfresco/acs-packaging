@@ -46,6 +46,7 @@ alias comR='(cd alfresco-community-repo  && mvn clean install  -DskipTests=true 
 alias entR='(cd alfresco-enterprise-repo && mvn clean install  -DskipTests=true -Dmaven.javadoc.skip=true )'
 alias entP='(cd acs-packaging            && mvn clean install)'
 alias comP='(cd acs-community-packaging  && mvn clean install -Dmaven.javadoc.skip=true)'
+alias comS='(cd alfresco-enterprise-share/share && mvn clean install  -DskipTests=true)'
 
 alias comRD="(cd alfresco-community-repo  && mvn clean install -PcommunityDocker  -Pall-tas-tests -DskipTests=true -Dimage.tag=$TAG -Dversion.edition=Community)"
 alias entRD="(cd alfresco-enterprise-repo && mvn clean install -PenterpriseDocker -Pall-tas-tests -DskipTests=true -Dimage.tag=$TAG -Dmaven.javadoc.skip=true )"
@@ -68,6 +69,7 @@ alias comD='comRD && comPD'
 alias entD='comR && entRD && entPD'
 alias comX='comR && comP'
 alias entX='comR && entR && entP'
+alias comRS='comR && comS'
 
 # Clean up of docker images and content stores (alf_data directories)
 alias drm='docker rm -f $(docker ps -q)'
