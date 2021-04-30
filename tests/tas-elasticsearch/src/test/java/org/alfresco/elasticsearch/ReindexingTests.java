@@ -2,6 +2,8 @@ package org.alfresco.elasticsearch;
 
 import static org.testng.Assert.assertEquals;
 
+import java.io.File;
+import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,8 +34,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testcontainers.Testcontainers;
+import org.testcontainers.containers.DockerComposeContainer;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -48,6 +52,12 @@ public class ReindexingTests extends AbstractTestNGSpringContextTests
     private static final long MAX_SHUTDOWN_DURATION = 5 * 1000;
     /** A unique name for a document. */
     private static final String DOCUMENT_NAME = "TestFile" + UUID.randomUUID() + ".txt";
+    /** Port number to expose alfresco on. */
+    private static final int ALFRESCO_PORT = 8082;
+    /** Port number to expose postgres on. */
+    private static final int PSQL_PORT = 5432;
+    /** Port number to expose elasticsearch on. */
+    private static final int ELASTICSEARCH_PORT = 9200;
 
     @Autowired
     private ServerHealth serverHealth;
@@ -66,6 +76,8 @@ public class ReindexingTests extends AbstractTestNGSpringContextTests
     @BeforeClass (alwaysRun = true)
     public void dataPreparation()
     {
+        Step.STEP("Create docker-compose deployment.");
+        startDockerCompose();
         serverHealth.assertServerIsOnline();
 
         Step.STEP("Create a test user and private site containing a document.");
@@ -78,7 +90,7 @@ public class ReindexingTests extends AbstractTestNGSpringContextTests
     @Test (groups = { TestGroup.SEARCH })
     public void testReindexerIndexesSystemDocuments()
     {
-        LOGGER.error("Starting test");
+        LOGGER.info("Starting test");
         // GIVEN
         // Check a particular system document is not indexed.
         // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
@@ -94,7 +106,7 @@ public class ReindexingTests extends AbstractTestNGSpringContextTests
         // THEN
         // Check system document is indexed.
         expectResultsFromQuery(queryString, dataUser.getAdminUser(), "budget.xls");
-        LOGGER.error("End test");
+        LOGGER.info("End test");
     }
 
     @Test
@@ -134,6 +146,33 @@ public class ReindexingTests extends AbstractTestNGSpringContextTests
     }
 
     /**
+     * Start the services defined in the docker-compose file.
+     */
+    private void startDockerCompose()
+    {
+        DockerComposeContainer environment = new DockerComposeContainer(new File("src/test/resources/docker-compose-elasticsearch.yml"))
+                .withExposedService("alfresco_1", ALFRESCO_PORT, Wait.forHttp("/alfresco")
+                                                                     .forStatusCode(200)
+                                                                     .withStartupTimeout(Duration.ofMinutes(5)))
+                .withExposedService("postgres_1", PSQL_PORT)
+                .withExposedService("elasticsearch_1", ELASTICSEARCH_PORT)
+                .withLogConsumer("alfresco_1", new Slf4jLogConsumer(LOGGER))
+                .withEnv(Map.of("TRANSFORMERS_TAG", "2.3.10",
+                        "TRANSFORM_ROUTER_TAG", "1.3.2",
+                        "SFS_TAG", "0.13.0",
+                        "SOLR6_TAG", "2.0.1",
+                        "POSTGRES_TAG", "13.1",
+                        "ACTIVEMQ_TAG", "5.16.1",
+                        "AIMS_TAG", "1.2",
+                        "SYNC_SERVICE_TAG", "3.4.0",
+                        "ES_TAG", "7.10.1",
+                        "ES_CONNECTOR_TAG", "3.0.0-M1"));
+        environment.start();
+        // Expose the ports to the reindexing container.
+        Testcontainers.exposeHostPorts(PSQL_PORT, ELASTICSEARCH_PORT);
+    }
+
+    /**
      * Run the alfresco-elasticsearch-reindexing container.
      *
      * @param envParam Any environment variables to override from the defaults.
@@ -142,12 +181,10 @@ public class ReindexingTests extends AbstractTestNGSpringContextTests
     {
         // Run the reindexing container.
         Map<String, String> env = new HashMap<>(Map.of(
-                "SPRING_ELASTICSEARCH_REST_URIS", "http://host.testcontainers.internal:9200",
-                "SPRING_DATASOURCE_URL", "jdbc:postgresql://host.testcontainers.internal:5432/alfresco",
+                "SPRING_ELASTICSEARCH_REST_URIS", "http://host.testcontainers.internal:" + ELASTICSEARCH_PORT,
+                "SPRING_DATASOURCE_URL", "jdbc:postgresql://host.testcontainers.internal:" + PSQL_PORT + "/alfresco",
                 "ELASTICSEARCH_INDEX_NAME", "alfresco"));
         env.putAll(envParam);
-        Testcontainers.exposeHostPorts(5432, 9200);
-        Testcontainers.exposeHostPorts(5432, 9200);
         GenericContainer reindexingComponent = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-reindexing:latest")
                         .withEnv(env)
                         .withLogConsumer(new Slf4jLogConsumer(LOGGER));
