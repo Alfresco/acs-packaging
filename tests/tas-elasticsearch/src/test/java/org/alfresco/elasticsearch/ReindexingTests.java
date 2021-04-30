@@ -100,6 +100,7 @@ public class ReindexingTests extends AbstractTestNGSpringContextTests
         // WHEN
         // Run reindexer against the initial documents.
         reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByIds",
+                "ELASTICSEARCH_INDEX_NAME", "custom-alfresco-index",
                 "ALFRESCO_REINDEX_FROM_ID", "0",
                 "ALFRESCO_REINDEX_TO_ID", "1000"));
 

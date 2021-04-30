@@ -3,7 +3,7 @@ version: "2"
 
 services:
     alfresco:
-        image: alfresco/alfresco-content-repository:latest
+        image: quay.io/alfresco/alfresco-content-repository:latest
         mem_limit: 1700m
         environment:
           JAVA_TOOL_OPTIONS: "
@@ -148,6 +148,15 @@ services:
             ELASTICSEARCH_INDEXNAME: custom-alfresco-index
             SPRING_ELASTICSEARCH_REST_URIS: http://elasticsearch:9200
             SPRING_ACTIVEMQ_BROKERURL: nio://activemq:61616
+
+    kibana:
+        image: kibana:7.10.1
+        environment:
+            - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+        ports:
+            - 5601:5601
+        depends_on:
+            - elasticsearch
 
 volumes:
     shared-file-store-volume:
