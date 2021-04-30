@@ -3,6 +3,7 @@ package org.alfresco.elasticsearch;
 import static org.testng.Assert.assertEquals;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Date;
 import java.util.HashMap;
@@ -50,8 +51,6 @@ public class ReindexingTests extends AbstractTestNGSpringContextTests
     private static final long MAX_REINDEX_DURATION = 60 * 1000;
     /** The maximum time to wait for the reindex process to shutdown in milliseconds. */
     private static final long MAX_SHUTDOWN_DURATION = 5 * 1000;
-    /** A unique name for a document. */
-    private static final String DOCUMENT_NAME = "TestFile" + UUID.randomUUID() + ".txt";
     /** Port number to expose alfresco on. */
     private static final int ALFRESCO_PORT = 8082;
     /** Port number to expose postgres on. */
@@ -71,23 +70,24 @@ public class ReindexingTests extends AbstractTestNGSpringContextTests
     protected RestWrapper client;
     private UserModel testUser;
     private SiteModel testSite;
+    private DockerComposeContainer environment;
 
     /** Create a user and a private site and wait for these to be indexed. */
     @BeforeClass (alwaysRun = true)
     public void dataPreparation()
     {
         Step.STEP("Create docker-compose deployment.");
-        startDockerCompose();
+        environment = startDockerCompose();
         serverHealth.assertServerIsOnline();
 
         Step.STEP("Create a test user and private site containing a document.");
         testUser = dataUser.createRandomTestUser();
         testSite = dataSite.usingUser(testUser).createPrivateRandomSite();
-        dataContent.usingUser(testUser).usingSite(testSite).createContent(new FileModel(DOCUMENT_NAME, FileType.TEXT_PLAIN, "content"));
+        createDocument();
     }
 
-    /** Warning - this test looks for the system documents and so can only be run once against a system before the documents are indexed and it starts to fail. */
-    @Test (groups = { TestGroup.SEARCH })
+    /** This is run as the first test in the class so that we know that no other test has indexed the system documents. */
+    @Test (groups = { TestGroup.SEARCH }, priority = -1)
     public void testReindexerIndexesSystemDocuments()
     {
         LOGGER.info("Starting test");
@@ -110,37 +110,53 @@ public class ReindexingTests extends AbstractTestNGSpringContextTests
         LOGGER.info("End test");
     }
 
-    @Test
+    @Test (groups = { TestGroup.SEARCH })
     public void testReindexerFixesBrokenIndex()
     {
         // GIVEN
+
         // Stop Elasticsearch.
         // Create document.
+        String testStart = new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
+        String documentName = createDocument();
         // Start Elasticsearch.
         // Check document not indexed.
+        // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
+        String queryString = "=cm:name:" + documentName + " AND cm:name:*";
+        expectResultsFromQuery(queryString, dataUser.getAdminUser());
 
         // WHEN
-        // Run reindexer.
+        // Run reindexer (leaving ALFRESCO_REINDEX_TO_TIME as default).
+        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+                "ELASTICSEARCH_INDEX_NAME", "custom-alfresco-index",
+                "ALFRESCO_REINDEX_FROM_TIME", testStart));
 
         // THEN
         // Check document indexed.
+        expectResultsFromQuery(queryString, dataUser.getAdminUser(), documentName);
     }
 
-    @Test
+    @Test (groups = { TestGroup.SEARCH })
     public void testRecreateIndex()
     {
         // GIVEN
         // Create document.
+        String documentName = createDocument();
         // Stop ElasticsearchConnector.
         // Stop Alfresco.
         // Delete index.
         // Start Alfresco.
 
         // WHEN
-        // Run reindexer.
+        // Run reindexer (with default dates to reindex everything).
+        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+                "ELASTICSEARCH_INDEX_NAME", "custom-alfresco-index"));
 
         // THEN
         // Check document indexed.
+        // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
+        String queryString = "=cm:name:" + documentName + " AND cm:name:*";
+        expectResultsFromQuery(queryString, dataUser.getAdminUser(), documentName);
 
         // TIDY
         // Restart ElasticsearchConnector.
@@ -148,8 +164,10 @@ public class ReindexingTests extends AbstractTestNGSpringContextTests
 
     /**
      * Start the services defined in the docker-compose file.
+     *
+     * @return The docker-compose environment.
      */
-    private void startDockerCompose()
+    private DockerComposeContainer startDockerCompose()
     {
         DockerComposeContainer environment = new DockerComposeContainer(new File("src/test/resources/docker-compose-elasticsearch.yml"))
                 .withExposedService("alfresco_1", ALFRESCO_PORT, Wait.forHttp("/alfresco")
@@ -171,6 +189,7 @@ public class ReindexingTests extends AbstractTestNGSpringContextTests
         environment.start();
         // Expose the ports to the reindexing container.
         Testcontainers.exposeHostPorts(PSQL_PORT, ELASTICSEARCH_PORT);
+        return environment;
     }
 
     /**
@@ -221,6 +240,17 @@ public class ReindexingTests extends AbstractTestNGSpringContextTests
                 }
             }
         }
+    }
+
+    /**
+     * Create a document using in the test site using the test user.
+     * @return The randomly generated name of the new document.
+     */
+    private String createDocument()
+    {
+        String documentName = "TestFile" + UUID.randomUUID() + ".txt";
+        dataContent.usingUser(testUser).usingSite(testSite).createContent(new FileModel(documentName, FileType.TEXT_PLAIN, "content"));
+        return documentName;
     }
 
     private void expectResultsFromQuery(String queryString, UserModel user,  String... expected)
