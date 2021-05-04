@@ -52,6 +52,7 @@
     </distributionManagement>
 
     <modules>
+        <module>distribution-share</module>
         <module>distribution</module>
         <module>docker-alfresco</module>
         <module>docker-alfresco/aws</module>
@@ -157,7 +158,7 @@
             <dependency>
                 <groupId>org.alfresco</groupId>
                 <artifactId>alfresco-content-services-share-distribution</artifactId>
-                <version>${dependency.alfresco-enterprise-share.version}</version>
+                <version>${project.version}</version>
                 <type>zip</type>
             </dependency>
             <dependency>
