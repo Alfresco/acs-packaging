@@ -158,7 +158,7 @@
             <dependency>
                 <groupId>org.alfresco</groupId>
                 <artifactId>alfresco-content-services-share-distribution</artifactId>
-                <version>${dependency.alfresco-enterprise-share.version}</version>
+                <version>${project.version}</version>
                 <type>zip</type>
             </dependency>
             <dependency>
