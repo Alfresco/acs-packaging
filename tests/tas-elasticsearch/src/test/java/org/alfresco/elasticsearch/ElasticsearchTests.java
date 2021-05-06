@@ -37,14 +37,15 @@ import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 @ContextConfiguration("classpath:alfresco-elasticsearch-context.xml")
 /**
  * In this test we are verifying end-to-end the indexing and search in Elasticsearch.
  * In order to test ACLs we created 2 sites and 3 users. 
- */ 
-public class ElasticsearchTests extends AbstractTestNGSpringContextTests
+ */ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
 {
     private static final String FILE_0_NAME = "test.txt";
     private static final String FILE_1_NAME = "another.txt";
@@ -86,7 +87,6 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
      * Site2:
      *  - Users: userSite2, userMultiSite
      *  - Documents: FILE_2_NAME (owner: userSite2)
-     *  
      */
     @BeforeClass(alwaysRun = true)
     public void dataPreparation() 
@@ -111,7 +111,54 @@ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
         //remove the user from site, but he keeps ownership on FILE_3_NAME 
         dataUser.removeUserFromSite(userSite2, siteModel1);
     }
-    
+
+    @TestRail(section = {
+            TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that the include parameter work with Elasticsearch search as expected.")
+    @Test(groups = { TestGroup.SEARCH })
+    public void searchCanFindAFileUsingIncludeParameter() throws Exception
+    {
+        Utility.sleep(1000, 10000, () -> {
+            RestRequestQueryModel queryReq = new RestRequestQueryModel();
+            queryReq.setQuery("first");
+            
+            SearchRequest queryWithoutIncludes = new SearchRequest();
+            queryWithoutIncludes.setQuery(queryReq);
+
+            SearchResponse searchWithoutIncludes = client.authenticateUser(userSite1).withSearchAPI().search(queryWithoutIncludes);
+            
+            //Verify before that fields are absent if not included
+            SearchNodeModel searchNodeModelWithoutIncludes = searchWithoutIncludes.getEntries().get(0).getModel();
+            assertNull(searchNodeModelWithoutIncludes.getProperties());
+            assertNull(searchNodeModelWithoutIncludes.getPath());
+            assertNull(searchNodeModelWithoutIncludes.getAspectNames());
+            assertNull(searchNodeModelWithoutIncludes.getAllowableOperations());
+            assertNull(searchNodeModelWithoutIncludes.getPermissions());
+            assertNull(searchNodeModelWithoutIncludes.getAssociation());
+            assertNull(searchNodeModelWithoutIncludes.isLocked());
+            assertNull(searchNodeModelWithoutIncludes.isLink());
+
+            SearchRequest queryWithIncludes = new SearchRequest();
+            // A full list of all fields that can be included is declared in constant:
+            // org.alfresco.rest.api.search.impl.SearchMapper.PERMITTED_INCLUDES
+            queryWithIncludes.setInclude(asList("properties", "path", "aspectNames", "isLocked", "allowableOperations",
+                    "permissions", "isLink", "association"));
+            queryWithIncludes.setQuery(queryReq);
+
+            SearchResponse searchWithIncludes = client.authenticateUser(userSite1).withSearchAPI().search(queryWithIncludes);
+
+            //Verify that all fields in the include parameter are in the search response
+            SearchNodeModel searchNodeModelWithIncludes = searchWithIncludes.getEntries().get(0).getModel();
+            assertNotNull(searchNodeModelWithIncludes.getProperties());
+            assertNotNull(searchNodeModelWithIncludes.getPath());
+            assertNotNull(searchNodeModelWithIncludes.getAspectNames());
+            assertNotNull(searchNodeModelWithIncludes.getAllowableOperations());
+            assertNotNull(searchNodeModelWithIncludes.getPermissions());
+            assertNotNull(searchNodeModelWithIncludes.getAssociation());
+            assertNotNull(searchNodeModelWithIncludes.isLocked());
+            assertNotNull(searchNodeModelWithIncludes.isLink());
+        });
+    }
+
     @TestRail(section = {
             TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that the simpler Elasticsearch search works as expected.")
     @Test(groups = { TestGroup.SEARCH })

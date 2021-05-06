@@ -10,18 +10,18 @@
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-enterprise-repo</artifactId>
         <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
-        <version>11.8-ags-1.0-SNAPSHOT</version>
+        <version>11.33</version>
     </parent>
 
     <properties>
-        <dependency.alfresco-enterprise-repo.version>11.8-ags-1.0-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
-        <dependency.alfresco-enterprise-share.version>11.4-ags-1.0-SNAPSHOT</dependency.alfresco-enterprise-share.version>
+        <dependency.alfresco-enterprise-repo.version>11.33</dependency.alfresco-enterprise-repo.version>
+        <dependency.alfresco-enterprise-share.version>11.6</dependency.alfresco-enterprise-share.version>
 
         <alfresco.rm-enterprise-rest-api-explorer.version>3.0.2</alfresco.rm-enterprise-rest-api-explorer.version>
-        <alfresco.s3connector.version>4.0.0</alfresco.s3connector.version>
+        <alfresco.s3connector.version>4.0.0.1</alfresco.s3connector.version>
         <alfresco.glacier-connector.version>2.1.0</alfresco.glacier-connector.version>
-        <alfresco.azure-connector.version>2.0.0</alfresco.azure-connector.version>
-        <alfresco.salesforce-connector.version>2.2.1</alfresco.salesforce-connector.version>
+        <alfresco.azure-connector.version>2.0.0.1</alfresco.azure-connector.version>
+        <alfresco.salesforce-connector.version>2.2.1.1</alfresco.salesforce-connector.version>
         <alfresco.saml.version>1.2.1</alfresco.saml.version>
         <alfresco.outlook.version>2.8.0</alfresco.outlook.version>
         <alfresco.transformation-engine.version>2.2.2</alfresco.transformation-engine.version>
@@ -37,7 +37,6 @@
         <connection>scm:git:https://github.com/Alfresco/acs-packaging.git</connection>
         <developerConnection>scm:git:https://github.com/Alfresco/acs-packaging.git</developerConnection>
         <url>https://github.com/Alfresco/acs-packaging</url>
-        <tag>acs-packaging-7.1.0-SNAPSHOT</tag>
     </scm>
 
     <distributionManagement>
