@@ -15,9 +15,9 @@ each other and the `dependency.alfresco-community-repo.version` and
 1. **test**: Java build with unit tests, integration tests and WhiteSource scan.
 2. **docker_latest**: creates `latest` tags of `alfresco/alfresco-content-repository-aws`
    and `alfresco/alfresco-content-repository`.
-   Also creates `${acs.version}-${build-number}` tags (e.g. `7.0.0-9876`) for the single pipeline images.
+   Also creates `${acs.version}-${build-number}` tags (e.g. `7.0.1-9876`) for the single pipeline images.
 3. **release**: On release and master branches, where the commit message includes `[release]`, this stage
-   creates `${project.version}` tags (e.g. `7.0.0`, `7.0.0-A20`) of `alfresco/alfresco-content-repository-aws`
+   creates `${project.version}` tags (e.g. `7.0.1`, `7.0.1-A20`) of `alfresco/alfresco-content-repository-aws`
    and `alfresco/alfresco-content-repository`. These are in addition to the tags created in the *docker-latest* stage.
 3. **publish**: On release and master branches, where the commit message includes `[publish]`, this stage
    copies artifacts to the AWS Release bucket for access by customers.

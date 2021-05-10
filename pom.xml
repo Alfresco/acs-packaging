@@ -4,17 +4,17 @@
     <artifactId>acs-packaging</artifactId>
     <packaging>pom</packaging>
     <name>Alfresco Content Services Packaging</name>
-    <version>7.0.0.2-SNAPSHOT</version>
+    <version>7.0.1-SNAPSHOT</version>
 
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-enterprise-repo</artifactId>
         <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
-        <version>8.484</version>
+        <version>9.11-SNAPSHOT</version>
     </parent>
 
     <properties>
-        <dependency.alfresco-enterprise-repo.version>8.484</dependency.alfresco-enterprise-repo.version>
+        <dependency.alfresco-enterprise-repo.version>9.11-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
 
         <alfresco.share.version>7.0.0</alfresco.share.version>
         <alfresco.alfresco-share-services.version>${alfresco.share.version}</alfresco.alfresco-share-services.version>

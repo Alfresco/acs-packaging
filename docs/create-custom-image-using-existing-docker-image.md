@@ -213,7 +213,7 @@ docker push customrepository/custom-alfresco-repository:customTag
 
 ```bash
 ### Apply AMPs to the latest Share image (at this moment).
-FROM alfresco/alfresco-share:7.0.0
+FROM alfresco/alfresco-share:7.0.1
 
 # Default user and group are used to setup permissions for Tomcat process, see parent Dockerfile: Alfresco/acs-community-packaging/docker-alfresco/Dockerfile
 ARG GROUPNAME=Alfresco
