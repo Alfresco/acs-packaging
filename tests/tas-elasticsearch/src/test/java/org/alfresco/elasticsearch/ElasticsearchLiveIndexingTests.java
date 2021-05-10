@@ -45,7 +45,7 @@ import static org.testng.Assert.assertTrue;
 /**
  * In this test we are verifying end-to-end the indexing and search in Elasticsearch.
  * In order to test ACLs we created 2 sites and 3 users. 
- */ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
+ */ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextTests
 {
     private static final String FILE_0_NAME = "test.txt";
     private static final String FILE_1_NAME = "another.txt";

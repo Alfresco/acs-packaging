@@ -20,7 +20,10 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     public static Network network;
 
     public static GenericContainer alfresco;
+
     public static ElasticsearchContainer elasticsearch;
+
+    public static GenericContainer liveIndexer;
 
     @Override
     public void initialize(ConfigurableApplicationContext configurableApplicationContext)
@@ -67,12 +70,12 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                            .withExposedPorts(8080);
 
         GenericContainer transformRouter = new GenericContainer("quay.io/alfresco/alfresco-transform-router:latest")
-                                                    .withNetwork(network)
-                                                    .withNetworkAliases("transform-router")
-                                                    .withEnv("JAVA_OPTS", "-Xms256m -Xmx512m")
-                                                    .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
-                                                    .withEnv("CORE_AIO_URL", "http://transform-core-aio:8090")
-                                                    .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file");
+                                                   .withNetwork(network)
+                                                   .withNetworkAliases("transform-router")
+                                                   .withEnv("JAVA_OPTS", "-Xms256m -Xmx512m")
+                                                   .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
+                                                   .withEnv("CORE_AIO_URL", "http://transform-core-aio:8090")
+                                                   .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file");
 
         GenericContainer transformCore = new GenericContainer("alfresco/alfresco-transform-core-aio:latest")
                                                  .withNetwork(network)
@@ -102,21 +105,21 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                             .withExposedPorts(61616, 8161, 5672, 61613);
 
         elasticsearch = new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch:7.10.1")
-                                                       .withNetwork(network)
-                                                       .withNetworkAliases("elasticsearch")
-                                                       .withExposedPorts(9200)
-                                                       .withEnv("xpack.security.enabled", "false")
-                                                       .withEnv("discovery.type", "single-node");
+                                .withNetwork(network)
+                                .withNetworkAliases("elasticsearch")
+                                .withExposedPorts(9200)
+                                .withEnv("xpack.security.enabled", "false")
+                                .withEnv("discovery.type", "single-node");
 
-        GenericContainer liveIndexing = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-live-indexing:latest")
-                                                .withNetwork(network)
-                                                .withNetworkAliases("live-indexing")
-                                                .withEnv("ELASTICSEARCH_INDEXNAME", "custom-alfresco-index")
-                                                .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200")
-                                                .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
-                                                .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/");
+        liveIndexer = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-live-indexing:latest")
+                              .withNetwork(network)
+                              .withNetworkAliases("live-indexing")
+                              .withEnv("ELASTICSEARCH_INDEXNAME", "custom-alfresco-index")
+                              .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200")
+                              .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
+                              .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/");
 
-        CompletableFuture<Void> start = Startables.deepStart(elasticsearch, postgres, alfresco, activemq, transformCore, transformRouter, liveIndexing, sfs);
+        CompletableFuture<Void> start = Startables.deepStart(elasticsearch, postgres, alfresco, activemq, transformCore, transformRouter, liveIndexer, sfs);
 
         try
         {

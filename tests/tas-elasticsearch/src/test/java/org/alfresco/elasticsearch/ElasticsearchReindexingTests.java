@@ -17,6 +17,7 @@ import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.reindex.BulkByScrollResponse;
 import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,12 +25,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.startupcheck.OneShotStartupCheckStrategy;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.time.Clock;
+import java.time.Duration;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.testng.Assert.assertEquals;
@@ -40,29 +48,11 @@ import static org.testng.Assert.assertEquals;
 @ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
                       initializers = AlfrescoStackInitializer.class)
 
-public class ReindexingTests extends AbstractTestNGSpringContextTests
+public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTests
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ReindexingTests.class);
-    /**
-     * The maximum time to let the reindex process run for in milliseconds.
-     */
-    private static final long MAX_REINDEX_DURATION = 60 * 1000;
-    /**
-     * The maximum time to wait for the reindex process to shutdown in milliseconds.
-     */
-    private static final long MAX_SHUTDOWN_DURATION = 5 * 1000;
-    /**
-     * Port number to expose alfresco on.
-     */
-    private static final int ALFRESCO_PORT = 8082;
-    /**
-     * Port number to expose postgres on.
-     */
-    private static final int PSQL_PORT = 5432;
-    /**
-     * Port number to expose elasticsearch on.
-     */
-    private static final int ELASTICSEARCH_PORT = 9200;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ElasticsearchReindexingTests.class);
+
+    public static final String CUSTOM_ALFRESCO_INDEX = "custom-alfresco-index";
 
     @Autowired
     private ServerHealth serverHealth;
@@ -78,6 +68,7 @@ public class ReindexingTests extends AbstractTestNGSpringContextTests
     private UserModel testUser;
 
     private SiteModel testSite;
+
     private RestHighLevelClient elasticClient;
 
     /**
@@ -86,6 +77,7 @@ public class ReindexingTests extends AbstractTestNGSpringContextTests
     @BeforeClass(alwaysRun = true)
     public void dataPreparation()
     {
+
         Step.STEP("Create docker-compose deployment.");
 
         serverHealth.isServerReachable();
@@ -113,14 +105,17 @@ public class ReindexingTests extends AbstractTestNGSpringContextTests
     {
         LOGGER.info("Starting test");
         // GIVEN
-        // Check a particular system document is not indexed.
+        // Check a particular system document is NOT indexed.
         // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
         String queryString = "=cm:name:budget.xls AND =cm:title:\"Web Site Design - Budget\" AND cm:name:*";
         expectResultsFromQuery(queryString, dataUser.getAdminUser());
 
         // WHEN
         // Run reindexer against the initial documents.
-        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByIds", "ELASTICSEARCH_INDEX_NAME", "custom-alfresco-index", "ALFRESCO_REINDEX_FROM_ID", "0", "ALFRESCO_REINDEX_TO_ID", "1000"));
+        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByIds",
+                       "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
+                       "ALFRESCO_REINDEX_FROM_ID", "0",
+                       "ALFRESCO_REINDEX_TO_ID", "1000"));
 
         // THEN
         // Check system document is indexed.
@@ -134,15 +129,13 @@ public class ReindexingTests extends AbstractTestNGSpringContextTests
         // GIVEN
 
         // Delete all documents inside Elasticsearch.
-        DeleteByQueryRequest request = new DeleteByQueryRequest("custom-alfresco-index");
-        request.setQuery(QueryBuilders.matchAllQuery());
-        elasticClient.deleteByQuery(request, RequestOptions.DEFAULT);
-
+        cleanUpIndex();
+        //stop live indexing
+        AlfrescoStackInitializer.liveIndexer.stop();
         // Create document.
-        String testStart = new SimpleDateFormat("yyyyMMddHHmm").format(new Date());
+
+        String testStart = DateTimeFormatter.ofPattern("yyyyMMddHHmm").format(ZonedDateTime.now(Clock.systemUTC()));
         String documentName = createDocument();
-        // Start Elasticsearch.
-        // ---> is still running
         // Check document not indexed.
         // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
         String queryString = "=cm:name:" + documentName + " AND cm:name:*";
@@ -160,15 +153,19 @@ public class ReindexingTests extends AbstractTestNGSpringContextTests
     }
 
     @Test(groups = { TestGroup.SEARCH })
-    public void testRecreateIndex()
+    public void testRecreateIndex() throws IOException
     {
         // GIVEN
         // Create document.
         String documentName = createDocument();
         // Stop ElasticsearchConnector.
+        AlfrescoStackInitializer.liveIndexer.stop();
         // Stop Alfresco.
+        //        AlfrescoStackInitializer.alfresco.stop();
         // Delete index.
+        cleanUpIndex();
         // Start Alfresco.
+        //        AlfrescoStackInitializer.alfresco.start();
 
         // WHEN
         // Run reindexer (with default dates to reindex everything).
@@ -183,6 +180,8 @@ public class ReindexingTests extends AbstractTestNGSpringContextTests
 
         // TIDY
         // Restart ElasticsearchConnector.
+        AlfrescoStackInitializer.liveIndexer.start();
+
     }
 
     /**
@@ -194,43 +193,17 @@ public class ReindexingTests extends AbstractTestNGSpringContextTests
     {
         // Run the reindexing container.
         Map<String, String> env = new HashMap<>(
-                Map.of("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:" + ELASTICSEARCH_PORT, "SPRING_DATASOURCE_URL", "jdbc:postgresql://postgres:" + PSQL_PORT + "/alfresco",
-                       "ELASTICSEARCH_INDEX_NAME", "alfresco"));
+                Map.of("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200",
+                       "SPRING_DATASOURCE_URL", "jdbc:postgresql://postgres:5432/alfresco",
+                       "ELASTICSEARCH_INDEX_NAME", "custom-alfresco-index"));
         env.putAll(envParam);
         GenericContainer reindexingComponent = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-reindexing:latest")
                                                        .withEnv(env)
-                                                       .withNetwork(AlfrescoStackInitializer.network);
+                                                       .withNetwork(AlfrescoStackInitializer.network)
+                                                       .withStartupCheckStrategy(
+                                                               new OneShotStartupCheckStrategy().withTimeout(Duration.ofMinutes(1)));
+
         reindexingComponent.start();
-
-        long startTime = new Date().getTime();
-
-        // Wait for the reindexing process to finish.
-        while (reindexingComponent.isRunning() && (new Date().getTime() - startTime < MAX_REINDEX_DURATION))
-        {
-            try
-            {
-                Thread.sleep(100);
-            } catch (InterruptedException e)
-            {
-                throw new RuntimeException(e);
-            }
-        }
-
-        // Ensure the container is shutdown before continuing.
-        if (reindexingComponent.isRunning())
-        {
-            reindexingComponent.stop();
-            while (reindexingComponent.isRunning() && (new Date().getTime() - startTime < MAX_REINDEX_DURATION + MAX_SHUTDOWN_DURATION))
-            {
-                try
-                {
-                    Thread.sleep(100);
-                } catch (InterruptedException e)
-                {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
     }
 
     /**
@@ -268,4 +241,13 @@ public class ReindexingTests extends AbstractTestNGSpringContextTests
         Set<String> expectedList = Sets.newHashSet(expected);
         assertEquals(result, expectedList, "Unexpected search results.");
     }
+
+    private void cleanUpIndex() throws IOException
+    {
+        DeleteByQueryRequest request = new DeleteByQueryRequest("custom-alfresco-index");
+        request.setQuery(QueryBuilders.matchAllQuery());
+        BulkByScrollResponse response = elasticClient.deleteByQuery(request, RequestOptions.DEFAULT);
+        LOGGER.info("deleted {} documents from index", response.getDeleted());
+    }
+
 }
