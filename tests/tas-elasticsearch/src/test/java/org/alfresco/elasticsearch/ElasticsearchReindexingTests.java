@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.startupcheck.IndefiniteWaitOneShotStartupCheckStrategy;
 import org.testcontainers.containers.startupcheck.OneShotStartupCheckStrategy;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -201,7 +202,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
                                                        .withEnv(env)
                                                        .withNetwork(AlfrescoStackInitializer.network)
                                                        .withStartupCheckStrategy(
-                                                               new OneShotStartupCheckStrategy().withTimeout(Duration.ofMinutes(1)));
+                                                               new IndefiniteWaitOneShotStartupCheckStrategy());
 
         reindexingComponent.start();
     }
