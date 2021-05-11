@@ -26,13 +26,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.startupcheck.IndefiniteWaitOneShotStartupCheckStrategy;
-import org.testcontainers.containers.startupcheck.OneShotStartupCheckStrategy;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.time.Clock;
-import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -78,9 +76,6 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     @BeforeClass(alwaysRun = true)
     public void dataPreparation()
     {
-
-        Step.STEP("Create docker-compose deployment.");
-
         serverHealth.isServerReachable();
         serverHealth.assertServerIsOnline();
 
@@ -101,7 +96,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     /**
      * This is run as the first test in the class so that we know that no other test has indexed the system documents.
      */
-    @Test(groups = { TestGroup.SEARCH }, priority = -1)
+    @Test(groups = TestGroup.SEARCH, priority = -1)
     public void testReindexerIndexesSystemDocuments()
     {
         LOGGER.info("Starting test");
@@ -124,7 +119,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         LOGGER.info("End test");
     }
 
-    @Test(groups = { TestGroup.SEARCH })
+    @Test(groups = TestGroup.SEARCH)
     public void testReindexerFixesBrokenIndex() throws IOException
     {
         // GIVEN
@@ -153,7 +148,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         expectResultsFromQuery(queryString, dataUser.getAdminUser(), documentName);
     }
 
-    @Test(groups = { TestGroup.SEARCH })
+    @Test(groups = TestGroup.SEARCH)
     public void testRecreateIndex() throws IOException
     {
         // GIVEN

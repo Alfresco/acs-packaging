@@ -174,9 +174,10 @@ import static org.testng.Assert.*;
         });
     }
 
-    @TestRail(section = {
-            TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that Elasticsearch search works as expected using a user that has access to only one site.")
-    @Test(groups = { TestGroup.SEARCH })
+    @TestRail(section = TestGroup.SEARCH,
+              executionType = ExecutionType.REGRESSION,
+              description = "Verify that Elasticsearch search works as expected using a user that has access to only one site.")
+    @Test(groups = TestGroup.SEARCH)
     public void searchCanFindFilesOnASite() throws Exception
     {
         Utility.sleep(1000, 10000, () -> {
@@ -192,9 +193,10 @@ import static org.testng.Assert.*;
         });
     }
 
-    @TestRail(section = {
-            TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that Elasticsearch search works as expected when the user can search a file because he is the owner.")
-    @Test(groups = { TestGroup.SEARCH })
+    @TestRail(section = TestGroup.SEARCH,
+              executionType = ExecutionType.REGRESSION,
+              description = "Verify that Elasticsearch search works as expected when the user can search a file because he is the owner.")
+    @Test(groups = TestGroup.SEARCH)
     public void searchCanFindAFileOnMultipleSitesWithOwner() throws Exception
     {
         Utility.sleep(1000, 10000, () -> {
@@ -211,9 +213,10 @@ import static org.testng.Assert.*;
         });
     }
 
-    @TestRail(section = {
-            TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that Elasticsearch search works as expected when a user has permission on multiple sites.")
-    @Test(groups = { TestGroup.SEARCH })
+    @TestRail(section = TestGroup.SEARCH,
+              executionType = ExecutionType.REGRESSION,
+              description = "Verify that Elasticsearch search works as expected when a user has permission on multiple sites.")
+    @Test(groups = TestGroup.SEARCH)
     public void searchCanFindAFileOnMultipleSites() throws Exception
     {
         Utility.sleep(1000, 10000, () -> {
@@ -228,9 +231,10 @@ import static org.testng.Assert.*;
         });
     }
 
-    @TestRail(section = {
-            TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that the simpler Elasticsearch search works as expected.")
-    @Test(groups = { TestGroup.SEARCH })
+    @TestRail(section = TestGroup.SEARCH,
+              executionType = ExecutionType.REGRESSION,
+              description = "Verify that the simpler Elasticsearch search works as expected.")
+    @Test(groups = TestGroup.SEARCH)
     public void indexAndSearchForDateBefore1970() throws Exception
     {
         //Elasticsearch doesn't accept numbers for dates before 1970, so we create and search for a specific document in order to verify that.
