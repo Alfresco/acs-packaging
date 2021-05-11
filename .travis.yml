@@ -166,9 +166,6 @@ jobs:
         - travis_wait 20 mvn -B install -f tests/tas-sync-service/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
     - name: "Elasticsearch TAS tests"
-      before_script:
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-elasticsearch.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
         - travis_wait 30 mvn -B install -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 

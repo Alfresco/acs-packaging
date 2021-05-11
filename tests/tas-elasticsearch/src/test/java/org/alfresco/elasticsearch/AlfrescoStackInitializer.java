@@ -25,6 +25,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     public static GenericContainer liveIndexer;
 
+    private static String ES_CONNECTOR_TAG = "3.0.0-RC1";
+
     @Override
     public void initialize(ConfigurableApplicationContext configurableApplicationContext)
     {
@@ -111,7 +113,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 .withEnv("xpack.security.enabled", "false")
                                 .withEnv("discovery.type", "single-node");
 
-        liveIndexer = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-live-indexing:latest")
+        liveIndexer = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-live-indexing:" + ES_CONNECTOR_TAG)
                               .withNetwork(network)
                               .withNetworkAliases("live-indexing")
                               .withEnv("ELASTICSEARCH_INDEXNAME", "custom-alfresco-index")

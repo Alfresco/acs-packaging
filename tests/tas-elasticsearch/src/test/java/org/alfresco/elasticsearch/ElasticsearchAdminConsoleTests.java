@@ -39,7 +39,8 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-@ContextConfiguration ("classpath:alfresco-elasticsearch-context.xml")
+@ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
+                      initializers = AlfrescoStackInitializer.class)
 public class ElasticsearchAdminConsoleTests extends AbstractTestNGSpringContextTests
 {
     private static final String ADMIN_CONSOLE_URL = "/alfresco/s/enterprise/admin/admin-searchservice";
