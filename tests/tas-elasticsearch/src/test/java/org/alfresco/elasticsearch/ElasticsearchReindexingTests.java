@@ -6,6 +6,7 @@ import org.alfresco.rest.search.RestRequestQueryModel;
 import org.alfresco.rest.search.SearchNodeModel;
 import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.rest.search.SearchResponse;
+import org.alfresco.utility.Utility;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
@@ -97,7 +98,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
      * This is run as the first test in the class so that we know that no other test has indexed the system documents.
      */
     @Test(groups = TestGroup.SEARCH, priority = -1)
-    public void testReindexerIndexesSystemDocuments()
+    public void testReindexerIndexesSystemDocuments() throws Exception
     {
         LOGGER.info("Starting test");
         // GIVEN
@@ -115,12 +116,14 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // THEN
         // Check system document is indexed.
-        expectResultsFromQuery(queryString, dataUser.getAdminUser(), "budget.xls");
+        Utility.sleep(1000, 10000, () -> {
+            expectResultsFromQuery(queryString, dataUser.getAdminUser(), "budget.xls");
+        });
         LOGGER.info("End test");
     }
 
     @Test(groups = TestGroup.SEARCH)
-    public void testReindexerFixesBrokenIndex() throws IOException
+    public void testReindexerFixesBrokenIndex() throws Exception
     {
         // GIVEN
 
@@ -134,8 +137,11 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         String documentName = createDocument();
         // Check document not indexed.
         // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
+
         String queryString = "=cm:name:" + documentName + " AND cm:name:*";
-        expectResultsFromQuery(queryString, dataUser.getAdminUser());
+        Utility.sleep(1000, 10000, () -> {
+            expectResultsFromQuery(queryString, dataUser.getAdminUser());
+        });
 
         // WHEN
         // Run reindexer (leaving ALFRESCO_REINDEX_TO_TIME as default).
@@ -145,7 +151,10 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // THEN
         // Check document indexed.
-        expectResultsFromQuery(queryString, dataUser.getAdminUser(), documentName);
+        Utility.sleep(1000, 10000, () -> {
+            expectResultsFromQuery(queryString, dataUser.getAdminUser(), documentName);
+        });
+
         // TIDY
         // Restart ElasticsearchConnector.
         AlfrescoStackInitializer.liveIndexer.start();
@@ -153,7 +162,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     }
 
     @Test(groups = TestGroup.SEARCH)
-    public void testRecreateIndex() throws IOException
+    public void testRecreateIndex() throws Exception
     {
         // GIVEN
         // Create document.
@@ -171,8 +180,10 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // THEN
         // Check document indexed.
         // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
-        String queryString = "=cm:name:" + documentName + " AND cm:name:*";
-        expectResultsFromQuery(queryString, dataUser.getAdminUser(), documentName);
+        Utility.sleep(1000, 10000, () -> {
+            String queryString = "=cm:name:" + documentName + " AND cm:name:*";
+            expectResultsFromQuery(queryString, dataUser.getAdminUser(), documentName);
+        });
 
         // TIDY
         // Restart ElasticsearchConnector.
@@ -193,13 +204,16 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
                        "SPRING_DATASOURCE_URL", "jdbc:postgresql://postgres:5432/alfresco",
                        "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX));
         env.putAll(envParam);
-        GenericContainer reindexingComponent = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-reindexing:latest")
-                                                       .withEnv(env)
-                                                       .withNetwork(AlfrescoStackInitializer.network)
-                                                       .withStartupCheckStrategy(
-                                                               new IndefiniteWaitOneShotStartupCheckStrategy());
 
-        reindexingComponent.start();
+        try (GenericContainer reindexingComponent = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-reindexing:latest")
+                                                            .withEnv(env)
+                                                            .withNetwork(AlfrescoStackInitializer.network)
+                                                            .withStartupCheckStrategy(
+                                                                    new IndefiniteWaitOneShotStartupCheckStrategy()))
+        {
+            reindexingComponent.start();
+        }
+
     }
 
     /**
