@@ -140,12 +140,16 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // WHEN
         // Run reindexer (leaving ALFRESCO_REINDEX_TO_TIME as default).
         reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
-                       "ELASTICSEARCH_INDEX_NAME", "custom-alfresco-index",
+                       "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
                        "ALFRESCO_REINDEX_FROM_TIME", testStart));
 
         // THEN
         // Check document indexed.
         expectResultsFromQuery(queryString, dataUser.getAdminUser(), documentName);
+        // TIDY
+        // Restart ElasticsearchConnector.
+        AlfrescoStackInitializer.liveIndexer.start();
+
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -156,17 +160,13 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         String documentName = createDocument();
         // Stop ElasticsearchConnector.
         AlfrescoStackInitializer.liveIndexer.stop();
-        // Stop Alfresco.
-        //        AlfrescoStackInitializer.alfresco.stop();
-        // Delete index.
+        // Delete index documents.
         cleanUpIndex();
-        // Start Alfresco.
-        //        AlfrescoStackInitializer.alfresco.start();
 
         // WHEN
         // Run reindexer (with default dates to reindex everything).
         reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
-                       "ELASTICSEARCH_INDEX_NAME", "custom-alfresco-index"));
+                       "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX));
 
         // THEN
         // Check document indexed.
@@ -191,7 +191,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         Map<String, String> env = new HashMap<>(
                 Map.of("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200",
                        "SPRING_DATASOURCE_URL", "jdbc:postgresql://postgres:5432/alfresco",
-                       "ELASTICSEARCH_INDEX_NAME", "custom-alfresco-index"));
+                       "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX));
         env.putAll(envParam);
         GenericContainer reindexingComponent = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-reindexing:latest")
                                                        .withEnv(env)
