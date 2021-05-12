@@ -29,7 +29,7 @@ env:
     - TAS_SCRIPTS=../alfresco-community-repo/packaging/tests/scripts
     - TAS_ENVIRONMENT=./tests/environment
     # Release version has to start with real version (7.1.0-....) for the docker image to build successfully.
-    - RELEASE_VERSION=7.1.0-A1
+    - RELEASE_VERSION=7.1.0-A3
     - DEVELOPMENT_VERSION=7.1.0-SNAPSHOT
 
 stages:
@@ -166,13 +166,13 @@ jobs:
       script:
         - travis_wait 20 mvn -B install -f tests/tas-sync-service/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
-    #- name: "Elasticsearch TAS tests"
-    #  if: commit_message !~ /\[skip tas\]/
-    #  before_script:
-    #    - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-elasticsearch.yml
-    #    - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-    #  script:
-    #    - travis_wait 30 mvn -B install -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+    - name: "Elasticsearch TAS tests"
+      if: commit_message !~ /\[skip tas\]/
+      before_script:
+        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-elasticsearch.yml
+        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+      script:
+        - travis_wait 30 mvn -B install -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
     - name: "All AMPs tests"
       before_script:
