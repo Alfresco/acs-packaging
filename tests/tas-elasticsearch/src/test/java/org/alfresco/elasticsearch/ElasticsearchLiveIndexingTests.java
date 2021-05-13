@@ -41,11 +41,13 @@ import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
-@ContextConfiguration("classpath:alfresco-elasticsearch-context.xml")
+@ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
+                      initializers = AlfrescoStackInitializer.class)
 /**
  * In this test we are verifying end-to-end the indexing and search in Elasticsearch.
  * In order to test ACLs we created 2 sites and 3 users. 
- */ public class ElasticsearchTests extends AbstractTestNGSpringContextTests
+ */
+public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextTests
 {
     private static final String FILE_0_NAME = "test.txt";
     private static final String FILE_1_NAME = "another.txt";
@@ -55,13 +57,13 @@ import static org.testng.Assert.assertTrue;
 
     @Autowired
     private DataUser dataUser;
-    
+
     @Autowired
     private DataContent dataContent;
-    
+
     @Autowired
     private DataSite dataSite;
-    
+
     @Autowired
     private AlfrescoHttpClientFactory alfrescoHttpClientFactory;
 
@@ -79,17 +81,17 @@ import static org.testng.Assert.assertTrue;
 
     /**
      * Data will be prepared using the schema below:
-     * 
+     * <p>
      * Site1:
-     *  - Users: userSite1, userMultiSite
-     *  - Documents: FILE_0_NAME (owner: userSite1), FILE_1_NAME (owner: userSite1), FILE_3_NAME (owner: userSite2)
-     *  
+     * - Users: userSite1, userMultiSite
+     * - Documents: FILE_0_NAME (owner: userSite1), FILE_1_NAME (owner: userSite1), FILE_3_NAME (owner: userSite2)
+     * <p>
      * Site2:
-     *  - Users: userSite2, userMultiSite
-     *  - Documents: FILE_2_NAME (owner: userSite2)
+     * - Users: userSite2, userMultiSite
+     * - Documents: FILE_2_NAME (owner: userSite2)
      */
     @BeforeClass(alwaysRun = true)
-    public void dataPreparation() 
+    public void dataPreparation()
     {
         serverHealth.assertServerIsOnline();
 
@@ -112,20 +114,21 @@ import static org.testng.Assert.assertTrue;
         dataUser.removeUserFromSite(userSite2, siteModel1);
     }
 
-    @TestRail(section = {
-            TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that the include parameter work with Elasticsearch search as expected.")
-    @Test(groups = { TestGroup.SEARCH })
+    @TestRail(section = TestGroup.SEARCH,
+              executionType = ExecutionType.REGRESSION,
+              description = "Verify that the include parameter work with Elasticsearch search as expected.")
+    @Test(groups = TestGroup.SEARCH)
     public void searchCanFindAFileUsingIncludeParameter() throws Exception
     {
         Utility.sleep(1000, 10000, () -> {
             RestRequestQueryModel queryReq = new RestRequestQueryModel();
             queryReq.setQuery("first");
-            
+
             SearchRequest queryWithoutIncludes = new SearchRequest();
             queryWithoutIncludes.setQuery(queryReq);
 
             SearchResponse searchWithoutIncludes = client.authenticateUser(userSite1).withSearchAPI().search(queryWithoutIncludes);
-            
+
             //Verify before that fields are absent if not included
             SearchNodeModel searchNodeModelWithoutIncludes = searchWithoutIncludes.getEntries().get(0).getModel();
             assertNull(searchNodeModelWithoutIncludes.getProperties());
@@ -141,7 +144,7 @@ import static org.testng.Assert.assertTrue;
             // A full list of all fields that can be included is declared in constant:
             // org.alfresco.rest.api.search.impl.SearchMapper.PERMITTED_INCLUDES
             queryWithIncludes.setInclude(asList("properties", "path", "aspectNames", "isLocked", "allowableOperations",
-                    "permissions", "isLink", "association"));
+                                                "permissions", "isLink", "association"));
             queryWithIncludes.setQuery(queryReq);
 
             SearchResponse searchWithIncludes = client.authenticateUser(userSite1).withSearchAPI().search(queryWithIncludes);
@@ -159,9 +162,10 @@ import static org.testng.Assert.assertTrue;
         });
     }
 
-    @TestRail(section = {
-            TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that the simpler Elasticsearch search works as expected.")
-    @Test(groups = { TestGroup.SEARCH })
+    @TestRail(section = TestGroup.SEARCH,
+              executionType = ExecutionType.REGRESSION,
+              description = "Verify that the simpler Elasticsearch search works as expected.")
+    @Test(groups = TestGroup.SEARCH)
     public void searchCanFindAFile() throws Exception
     {
         Utility.sleep(1000, 10000, () -> {
@@ -178,9 +182,10 @@ import static org.testng.Assert.assertTrue;
         });
     }
 
-    @TestRail(section = {
-            TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that Elasticsearch search works as expected using a user that has access to only one site.")
-    @Test(groups = { TestGroup.SEARCH })
+    @TestRail(section = TestGroup.SEARCH,
+              executionType = ExecutionType.REGRESSION,
+              description = "Verify that Elasticsearch search works as expected using a user that has access to only one site.")
+    @Test(groups = TestGroup.SEARCH)
     public void searchCanFindFilesOnASite() throws Exception
     {
         Utility.sleep(1000, 10000, () -> {
@@ -196,9 +201,10 @@ import static org.testng.Assert.assertTrue;
         });
     }
 
-    @TestRail(section = {
-            TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that Elasticsearch search works as expected when the user can search a file because he is the owner.")
-    @Test(groups = { TestGroup.SEARCH })
+    @TestRail(section = TestGroup.SEARCH,
+              executionType = ExecutionType.REGRESSION,
+              description = "Verify that Elasticsearch search works as expected when the user can search a file because he is the owner.")
+    @Test(groups = TestGroup.SEARCH)
     public void searchCanFindAFileOnMultipleSitesWithOwner() throws Exception
     {
         Utility.sleep(1000, 10000, () -> {
@@ -215,9 +221,10 @@ import static org.testng.Assert.assertTrue;
         });
     }
 
-    @TestRail(section = {
-            TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that Elasticsearch search works as expected when a user has permission on multiple sites.")
-    @Test(groups = { TestGroup.SEARCH })
+    @TestRail(section = TestGroup.SEARCH,
+              executionType = ExecutionType.REGRESSION,
+              description = "Verify that Elasticsearch search works as expected when a user has permission on multiple sites.")
+    @Test(groups = TestGroup.SEARCH)
     public void searchCanFindAFileOnMultipleSites() throws Exception
     {
         Utility.sleep(1000, 10000, () -> {
@@ -232,15 +239,16 @@ import static org.testng.Assert.assertTrue;
         });
     }
 
-    @TestRail(section = {
-            TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "Verify that the simpler Elasticsearch search works as expected.")
-    @Test(groups = { TestGroup.SEARCH })
+    @TestRail(section = TestGroup.SEARCH,
+              executionType = ExecutionType.REGRESSION,
+              description = "Verify that the simpler Elasticsearch search works as expected.")
+    @Test(groups = TestGroup.SEARCH)
     public void indexAndSearchForDateBefore1970() throws Exception
     {
         //Elasticsearch doesn't accept numbers for dates before 1970, so we create and search for a specific document in order to verify that.
         createNodeWithProperties(siteModel1, new FileModel(BEFORE_1970_TXT, FileType.TEXT_PLAIN), userSite1,
-                Map.of("cm:from", -2637887000L));
-        
+                                 Map.of("cm:from", -2637887000L));
+
         Utility.sleep(1000, 10000, () -> {
             SearchRequest query = new SearchRequest();
             RestRequestQueryModel queryReq = new RestRequestQueryModel();
@@ -257,7 +265,7 @@ import static org.testng.Assert.assertTrue;
     {
         FileModel fileModel = new FileModel(filename, FileType.TEXT_PLAIN, content);
         return dataContent.usingUser(user).usingSite(site)
-                       .createContent(fileModel);
+                          .createContent(fileModel);
     }
 
     private void createNodeWithProperties(SiteModel parentSite, FileModel fileModel, UserModel currentUser, Map<String, Object> properties)
@@ -265,8 +273,8 @@ import static org.testng.Assert.assertTrue;
         AlfrescoHttpClient client = alfrescoHttpClientFactory.getObject();
         String reqUrl = client.getApiVersionUrl() + "nodes/" + parentSite.getGuid() + "/children";
         String name = fileModel.getName();
-        
-        HttpPost post  = new HttpPost(reqUrl);
+
+        HttpPost post = new HttpPost(reqUrl);
         JSONObject body = new JSONObject();
         body.put("name", name);
         body.put("nodeType", "cm:content");
@@ -280,13 +288,11 @@ import static org.testng.Assert.assertTrue;
         // Send Request
         logger.info(String.format("POST: '%s'", reqUrl));
         HttpResponse response = client.execute(currentUser.getUsername(), currentUser.getPassword(), post);
-        if(org.apache.http.HttpStatus.SC_CREATED != response.getStatusLine().getStatusCode()) 
+        if (org.apache.http.HttpStatus.SC_CREATED != response.getStatusLine().getStatusCode())
         {
-            throw new RuntimeException("Could not create file. Request response: " + client.getParameterFromJSON(response,"briefSummary", "error"));
+            throw new RuntimeException("Could not create file. Request response: " + client.getParameterFromJSON(response, "briefSummary", "error"));
         }
     }
-    
-    
 
     public <T> boolean listEqualsIgnoreOrder(List<T> list1, List<T> list2)
     {
@@ -301,10 +307,10 @@ import static org.testng.Assert.assertTrue;
         client.assertStatusCodeIs(HttpStatus.OK);
         assertEquals(entries.size(), expected.length);
         List<String> result = entries.stream().map(SearchNodeModel::getModel).peek(item -> assertTrue(item.isFile()))
-                                      .map(SearchNodeModel::getName).collect(Collectors.toList());
+                                     .map(SearchNodeModel::getName).collect(Collectors.toList());
         List<String> expectedList = asList(expected);
         assertTrue(listEqualsIgnoreOrder(result, expectedList),
-                "Result " + result + " doesn't contain " + expectedList);
+                   "Result " + result + " doesn't contain " + expectedList);
     }
 
 }
