@@ -12,7 +12,11 @@ import org.alfresco.utility.constants.UserRole;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
-import org.alfresco.utility.model.*;
+import org.alfresco.utility.model.FileModel;
+import org.alfresco.utility.model.FileType;
+import org.alfresco.utility.model.SiteModel;
+import org.alfresco.utility.model.TestGroup;
+import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
@@ -32,14 +36,18 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 
 @ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
                       initializers = AlfrescoStackInitializer.class)
 /**
  * In this test we are verifying end-to-end the indexing and search in Elasticsearch.
  * In order to test ACLs we created 2 sites and 3 users. 
- */ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextTests
+ */
+public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextTests
 {
     private static final String FILE_0_NAME = "test.txt";
     private static final String FILE_1_NAME = "another.txt";

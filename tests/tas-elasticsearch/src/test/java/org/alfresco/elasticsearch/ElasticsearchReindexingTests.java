@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 import static org.testng.Assert.assertEquals;
 
 /**
- * TODO Decide whether this test class needs to be in a maven submodule of its own.
+ * In this test we are verifying end-to-end the reindexer component on Elasticsearch.
  */
 @ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
                       initializers = AlfrescoStackInitializer.class)
@@ -243,6 +243,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         Set<String> expectedList = Sets.newHashSet(expected);
         assertEquals(result, expectedList, "Unexpected search results.");
     }
+
 
     private void cleanUpIndex() throws IOException
     {
