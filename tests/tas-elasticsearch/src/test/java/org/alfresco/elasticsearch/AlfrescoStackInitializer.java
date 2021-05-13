@@ -10,8 +10,11 @@ import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
 import org.testcontainers.lifecycle.Startables;
+import org.testng.Assert;
 
+import java.io.FileReader;
 import java.time.Duration;
+import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 
 public class AlfrescoStackInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext>
@@ -25,15 +28,15 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     public static GenericContainer liveIndexer;
 
-    private static String ES_CONNECTOR_TAG = "3.0.0-RC1";
-
     @Override
     public void initialize(ConfigurableApplicationContext configurableApplicationContext)
     {
 
+        Properties env = loadEnvProperties();
+
         network = Network.newNetwork();
 
-        alfresco = new GenericContainer("quay.io/alfresco/alfresco-content-repository:latest")
+        alfresco = new GenericContainer("alfresco/alfresco-content-repository:latest")
                            .withEnv("JAVA_TOOL_OPTIONS",
                                     "-Dencryption.keystore.type=JCEKS " +
                                     "-Dencryption.cipherAlgorithm=DESede/CBC/PKCS5Padding " +
@@ -71,7 +74,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                                .withStartupTimeout(Duration.ofSeconds(300)))
                            .withExposedPorts(8080);
 
-        GenericContainer transformRouter = new GenericContainer("quay.io/alfresco/alfresco-transform-router:latest")
+        GenericContainer transformRouter = new GenericContainer("quay.io/alfresco/alfresco-transform-router:" + env.getProperty("TRANSFORM_ROUTER_TAG"))
                                                    .withNetwork(network)
                                                    .withNetworkAliases("transform-router")
                                                    .withEnv("JAVA_OPTS", "-Xms256m -Xmx512m")
@@ -79,41 +82,41 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                                    .withEnv("CORE_AIO_URL", "http://transform-core-aio:8090")
                                                    .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file");
 
-        GenericContainer transformCore = new GenericContainer("alfresco/alfresco-transform-core-aio:latest")
+        GenericContainer transformCore = new GenericContainer("alfresco/alfresco-transform-core-aio:" + env.getProperty("TRANSFORMERS_TAG"))
                                                  .withNetwork(network)
                                                  .withNetworkAliases("transform-core-aio")
                                                  .withEnv("JAVA_OPTS", "-Xms256m -Xmx1536m")
                                                  .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
                                                  .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file");
 
-        GenericContainer sfs = new GenericContainer("alfresco/alfresco-shared-file-store:latest")
+        GenericContainer sfs = new GenericContainer("alfresco/alfresco-shared-file-store:" + env.getProperty("SFS_TAG"))
                                        .withNetwork(network)
                                        .withNetworkAliases("shared-file-store")
                                        .withEnv("JAVA_OPTS", "-Xms256m -Xmx512m")
                                        .withEnv("scheduler.content.age.millis", "86400000")
                                        .withEnv("scheduler.cleanup.interval", "86400000");
 
-        PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer("postgres:13.1")
+        PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer("postgres:" + env.getProperty("POSTGRES_TAG"))
                                                                      .withPassword("alfresco")
                                                                      .withUsername("alfresco")
                                                                      .withDatabaseName("alfresco")
                                                                      .withNetwork(network)
                                                                      .withNetworkAliases("postgres");
 
-        GenericContainer activemq = new GenericContainer("alfresco/alfresco-activemq:5.15.8")
+        GenericContainer activemq = new GenericContainer("alfresco/alfresco-activemq:" + env.getProperty("ACTIVEMQ_TAG"))
                                             .withNetwork(network)
                                             .withNetworkAliases("activemq")
                                             .waitingFor(Wait.forListeningPort())
                                             .withExposedPorts(61616, 8161, 5672, 61613);
 
-        elasticsearch = new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch:7.10.1")
+        elasticsearch = new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch:" + env.getProperty("ES_TAG"))
                                 .withNetwork(network)
                                 .withNetworkAliases("elasticsearch")
                                 .withExposedPorts(9200)
                                 .withEnv("xpack.security.enabled", "false")
                                 .withEnv("discovery.type", "single-node");
 
-        liveIndexer = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-live-indexing:" + ES_CONNECTOR_TAG)
+        liveIndexer = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-live-indexing:" + env.getProperty("ES_CONNECTOR_TAG"))
                               .withNetwork(network)
                               .withNetworkAliases("live-indexing")
                               .withEnv("ELASTICSEARCH_INDEXNAME", "custom-alfresco-index")
@@ -128,12 +131,25 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
             start.get();
         } catch (Exception e)
         {
-            e.printStackTrace();
+            Assert.fail("unable to start containers");
         }
 
         TestPropertySourceUtils.addInlinedPropertiesToEnvironment(configurableApplicationContext,
                                                                   "alfresco.server=" + alfresco.getContainerIpAddress(),
                                                                   "alfresco.port=" + alfresco.getFirstMappedPort());
 
+    }
+
+    private Properties loadEnvProperties()
+    {
+        Properties env = new Properties();
+        try (FileReader reader = new FileReader("../environment/.env"))
+        {
+            env.load(reader);
+        } catch (Exception e)
+        {
+            Assert.fail("unable to load .env property file ");
+        }
+        return env;
     }
 }

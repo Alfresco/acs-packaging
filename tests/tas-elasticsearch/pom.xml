@@ -14,7 +14,8 @@
 
     <properties>
         <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/elasticsearch-suite.xml</suiteXmlFile>
-        <testcontainers.version>1.15.3</testcontainers.version>
+        <dependency.testcontainers.version>1.15.3</dependency.testcontainers.version>
+        <dependency.elasticsearch-shared.version>3.0.0-RC1</dependency.elasticsearch-shared.version>
     </properties>
 
     <dependencies>
@@ -53,7 +54,7 @@
         <dependency>
             <groupId>org.alfresco</groupId>
             <artifactId>alfresco-elasticsearch-shared</artifactId>
-            <version>3.0.0-M1</version>
+            <version>${dependency.elasticsearch-shared.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -64,19 +65,19 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>${testcontainers.version}</version>
+            <version>${dependency.testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>${testcontainers.version}</version>
+            <version>${dependency.testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>elasticsearch</artifactId>
-            <version>${testcontainers.version}</version>
+            <version>${dependency.testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

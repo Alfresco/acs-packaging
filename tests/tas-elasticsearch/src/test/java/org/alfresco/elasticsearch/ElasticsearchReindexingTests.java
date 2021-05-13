@@ -10,7 +10,7 @@ import org.alfresco.utility.Utility;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
-import org.alfresco.utility.model.*;
+import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.report.log.Step;
 import org.apache.http.HttpHost;
@@ -65,9 +65,9 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     @Autowired
     protected RestWrapper client;
 
-    private UserModel testUser;
+    private org.alfresco.utility.model.UserModel testUser;
 
-    private SiteModel testSite;
+    private org.alfresco.utility.model.SiteModel testSite;
 
     private RestHighLevelClient elasticClient;
 
@@ -100,7 +100,6 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     @Test(groups = TestGroup.SEARCH, priority = -1)
     public void testReindexerIndexesSystemDocuments() throws Exception
     {
-        LOGGER.info("Starting test");
         // GIVEN
         // Check a particular system document is NOT indexed.
         // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
@@ -116,10 +115,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // THEN
         // Check system document is indexed.
-        Utility.sleep(1000, 10000, () -> {
-            expectResultsFromQuery(queryString, dataUser.getAdminUser(), "budget.xls");
-        });
-        LOGGER.info("End test");
+        expectResultsFromQuery(queryString, dataUser.getAdminUser(), "budget.xls");
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -139,9 +135,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
 
         String queryString = "=cm:name:" + documentName + " AND cm:name:*";
-        Utility.sleep(1000, 10000, () -> {
-            expectResultsFromQuery(queryString, dataUser.getAdminUser());
-        });
+        expectResultsFromQuery(queryString, dataUser.getAdminUser());
 
         // WHEN
         // Run reindexer (leaving ALFRESCO_REINDEX_TO_TIME as default).
@@ -151,9 +145,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // THEN
         // Check document indexed.
-        Utility.sleep(1000, 10000, () -> {
-            expectResultsFromQuery(queryString, dataUser.getAdminUser(), documentName);
-        });
+        expectResultsFromQuery(queryString, dataUser.getAdminUser(), documentName);
 
         // TIDY
         // Restart ElasticsearchConnector.
@@ -180,10 +172,8 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // THEN
         // Check document indexed.
         // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
-        Utility.sleep(1000, 10000, () -> {
-            String queryString = "=cm:name:" + documentName + " AND cm:name:*";
-            expectResultsFromQuery(queryString, dataUser.getAdminUser(), documentName);
-        });
+        String queryString = "=cm:name:" + documentName + " AND cm:name:*";
+        expectResultsFromQuery(queryString, dataUser.getAdminUser(), documentName);
 
         // TIDY
         // Restart ElasticsearchConnector.
@@ -226,20 +216,22 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         String documentName = "TestFile" + UUID.randomUUID() + ".txt";
         dataContent.usingUser(testUser)
                    .usingSite(testSite)
-                   .createContent(new FileModel(documentName, FileType.TEXT_PLAIN, "content"));
+                   .createContent(new org.alfresco.utility.model.FileModel(documentName, org.alfresco.utility.model.FileType.TEXT_PLAIN, "content"));
         return documentName;
     }
 
-    private void expectResultsFromQuery(String queryString, UserModel user, String... expected)
+    private void expectResultsFromQuery(String queryString, org.alfresco.utility.model.UserModel user, String... expected) throws Exception
     {
-        SearchRequest query = new SearchRequest();
-        RestRequestQueryModel queryReq = new RestRequestQueryModel();
-        queryReq.setQuery(queryString);
-        query.setQuery(queryReq);
-        SearchResponse response = client.authenticateUser(user)
-                                        .withSearchAPI()
-                                        .search(query);
-        assertSearchResults(response, expected);
+        Utility.sleep(1000, 10000, () -> {
+            SearchRequest query = new SearchRequest();
+            RestRequestQueryModel queryReq = new RestRequestQueryModel();
+            queryReq.setQuery(queryString);
+            query.setQuery(queryReq);
+            SearchResponse response = client.authenticateUser(user)
+                                            .withSearchAPI()
+                                            .search(query);
+            assertSearchResults(response, expected);
+        });
     }
 
     private void assertSearchResults(SearchResponse actual, String... expected)
@@ -257,7 +249,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         DeleteByQueryRequest request = new DeleteByQueryRequest("custom-alfresco-index");
         request.setQuery(QueryBuilders.matchAllQuery());
         BulkByScrollResponse response = elasticClient.deleteByQuery(request, RequestOptions.DEFAULT);
-        LOGGER.info("deleted {} documents from index", response.getDeleted());
+        LOGGER.debug("deleted {} documents from index", response.getDeleted());
     }
 
 }
