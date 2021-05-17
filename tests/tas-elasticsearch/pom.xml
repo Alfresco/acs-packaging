@@ -16,7 +16,7 @@
   <properties>
     <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/elasticsearch-suite.xml</suiteXmlFile>
     <dependency.testcontainers.version>1.15.3</dependency.testcontainers.version>
-    <dependency.elasticsearch-shared.version>3.0.0-RC1</dependency.elasticsearch-shared.version>
+    <dependency.elasticsearch-shared.version>3.0.0-M2</dependency.elasticsearch-shared.version>
   </properties>
 
   <dependencies>
