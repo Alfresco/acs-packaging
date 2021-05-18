@@ -19,7 +19,7 @@ mvn -B \
   -Prelease,fullBuild,all-tas-tests \
   -DreleaseVersion="${RELEASE_VERSION}" \
   -DdevelopmentVersion="${DEVELOPMENT_VERSION}" \
-  "-Darguments=-Prelease,fullBuild,all-tas-tests -DskipTests -Dbuild-number=${TRAVIS_BUILD_NUMBER}" \
+  "-Darguments=-Prelease,fullBuild,all-tas-tests,run -DskipTests -Dbuild-number=${TRAVIS_BUILD_NUMBER}" \
   release:clean release:prepare release:perform \
   -DscmCommentPrefix="[maven-release-plugin][skip ci] " \
   -Dusername="${GIT_USERNAME}" \

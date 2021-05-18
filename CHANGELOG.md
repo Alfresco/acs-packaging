@@ -1,3 +1,11 @@
+<h1>        6.2.2.16
+</h1>
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-22409'>MNT-22409</a>] -         Legacy transformer with ImageMagick fails to generate multi-page TIFF -> multi-page PDF file preview
+</li>
+</ul>
 <h1>        6.2.2.15
 </h1>
 <h2>        Hot Fix Request
