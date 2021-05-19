@@ -36,7 +36,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         network = Network.newNetwork();
 
-        alfresco = new GenericContainer("alfresco/alfresco-content-repository:latest")
+        alfresco = new GenericContainer("quay.io/alfresco/alfresco-content-repository:latest")
                            .withEnv("JAVA_TOOL_OPTIONS",
                                     "-Dencryption.keystore.type=JCEKS " +
                                     "-Dencryption.cipherAlgorithm=DESede/CBC/PKCS5Padding " +
@@ -71,7 +71,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                            .withNetworkAliases("alfresco")
                            .waitingFor(new LogMessageWaitStrategy()
                                                .withRegEx(".*Server startup in.*\\n")
-                                               .withStartupTimeout(Duration.ofSeconds(300)))
+                                               .withStartupTimeout(Duration.ofSeconds(400)))
                            .withExposedPorts(8080);
 
         GenericContainer transformRouter = new GenericContainer("quay.io/alfresco/alfresco-transform-router:" + env.getProperty("TRANSFORM_ROUTER_TAG"))
