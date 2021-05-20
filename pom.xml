@@ -73,6 +73,12 @@
             </modules>
         </profile>
         <profile>
+            <id>release</id>
+            <modules>
+                <module>dev</module>
+            </modules>
+        </profile>
+        <profile>
             <id>run</id>
             <modules>
                 <module>dev</module>
