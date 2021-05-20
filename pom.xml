@@ -10,7 +10,7 @@
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-enterprise-repo</artifactId>
         <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
-        <version>11.39-SNAPSHOT</version>
+        <version>11.45-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -153,7 +153,6 @@
                 <classifier>tests</classifier>
                 <scope>test</scope>
             </dependency>
-
             <dependency>
                 <groupId>org.alfresco</groupId>
                 <artifactId>alfresco-content-services-share-distribution</artifactId>
