@@ -1,15 +1,5 @@
 package org.alfresco.elasticsearch;
 
-import static java.util.Arrays.asList;
-
-import static org.springframework.http.HttpMethod.GET;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 import org.alfresco.rest.core.RestRequest;
 import org.alfresco.rest.core.RestResponse;
 import org.alfresco.rest.core.RestWrapper;
@@ -39,7 +29,17 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-@ContextConfiguration ("classpath:alfresco-elasticsearch-context.xml")
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static java.util.Arrays.asList;
+import static org.springframework.http.HttpMethod.GET;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+
+@ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
+                      initializers = AlfrescoStackInitializer.class)
 public class ElasticsearchAdminConsoleTests extends AbstractTestNGSpringContextTests
 {
     private static final String ADMIN_CONSOLE_URL = "/alfresco/s/enterprise/admin/admin-searchservice";
@@ -61,8 +61,10 @@ public class ElasticsearchAdminConsoleTests extends AbstractTestNGSpringContextT
     private UserModel user;
     private SiteModel siteModel;
 
-    /** Create a user and a private site and wait for these to be indexed. */
-    @BeforeClass (alwaysRun = true)
+    /**
+     * Create a user and a private site and wait for these to be indexed.
+     */
+    @BeforeClass(alwaysRun = true)
     public void dataPreparation() throws Exception
     {
         serverHealth.assertServerIsOnline();
@@ -75,10 +77,13 @@ public class ElasticsearchAdminConsoleTests extends AbstractTestNGSpringContextT
         createDocumentAndEnsureIndexed("DummyFile" + UUID.randomUUID() + ".txt");
     }
 
-    /** Check the "elasticsearch" subsystem is selected and that the creation of a new document is reflected in the document counts. */
-    @TestRail (section = {
-            TestGroup.SEARCH }, executionType = ExecutionType.REGRESSION, description = "TODO.")
-    @Test (groups = { TestGroup.SEARCH })
+    /**
+     * Check the "elasticsearch" subsystem is selected and that the creation of a new document is reflected in the document counts.
+     */
+    @TestRail(section = TestGroup.SEARCH,
+              executionType = ExecutionType.REGRESSION,
+              description = "Verify that the Elasticsearch subsystem is selected and that the creation of a new document is reflected in the document counts.")
+    @Test(groups = TestGroup.SEARCH)
     public void elasticsearchAdminConsolePage() throws Exception
     {
         Step.STEP("Load the Search admin page.");
@@ -86,7 +91,7 @@ public class ElasticsearchAdminConsoleTests extends AbstractTestNGSpringContextT
 
         Step.STEP("Check that elasticsearch is selected and displayed.");
         assertEquals(document.select("option[value=elasticsearch]").attr("selected"), "selected",
-                "Expected elasticsearch subsystem to be shown as selected.");
+                     "Expected elasticsearch subsystem to be shown as selected.");
         assertFalse(document.select("#elasticsearchSearch").hasClass("hidden"), "Expected elasticsearch section to be displayed.");
 
         Step.STEP("Get the number of indexed and indexable documents.");
@@ -107,7 +112,9 @@ public class ElasticsearchAdminConsoleTests extends AbstractTestNGSpringContextT
         assertEquals(newIndexableDocs, indexableDocs + 1, "Expected the number of indexable documents to increase by one.");
     }
 
-    /** Create a text document with the given file name and wait until we can query for it. */
+    /**
+     * Create a text document with the given file name and wait until we can query for it.
+     */
     private void createDocumentAndEnsureIndexed(String fileName) throws Exception
     {
         dataContent.usingUser(user).usingSite(siteModel)
@@ -120,7 +127,9 @@ public class ElasticsearchAdminConsoleTests extends AbstractTestNGSpringContextT
         });
     }
 
-    /** Load the HTML representation of the Search Admin Console page. */
+    /**
+     * Load the HTML representation of the Search Admin Console page.
+     */
     private Document loadSearchAdminPage()
     {
         RestRequest restRequest = RestRequest.simpleRequest(GET, ADMIN_CONSOLE_URL);
@@ -132,7 +141,7 @@ public class ElasticsearchAdminConsoleTests extends AbstractTestNGSpringContextT
     /**
      * Check that the search response contains exactly the expected file.
      *
-     * @param actual The search results.
+     * @param actual   The search results.
      * @param expected The expected filename.
      */
     private void checkFileIndexed(SearchResponse actual, String expected)
