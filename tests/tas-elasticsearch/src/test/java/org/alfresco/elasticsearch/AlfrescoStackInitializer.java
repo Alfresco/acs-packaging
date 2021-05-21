@@ -71,7 +71,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                            .withNetworkAliases("alfresco")
                            .waitingFor(new LogMessageWaitStrategy()
                                                .withRegEx(".*Server startup in.*\\n")
-                                               .withStartupTimeout(Duration.ofSeconds(300)))
+                                               .withStartupTimeout(Duration.ofSeconds(400)))
                            .withExposedPorts(8080);
 
         GenericContainer transformRouter = new GenericContainer("quay.io/alfresco/alfresco-transform-router:" + env.getProperty("TRANSFORM_ROUTER_TAG"))
