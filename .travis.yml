@@ -165,9 +165,9 @@ jobs:
       script:
         - travis_wait 20 mvn -B install -f tests/tas-sync-service/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
-    # - name: "Elasticsearch TAS tests"
-    #   script:
-    #     - travis_wait 30 mvn -B install -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+    - name: "Elasticsearch TAS tests"
+      script:
+        - travis_wait 30 mvn -B install -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
     - name: "All AMPs tests"
       before_script:
