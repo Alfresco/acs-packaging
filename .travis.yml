@@ -36,11 +36,11 @@ stages:
   - name: test
     if: commit_message !~ /\[skip tests\]/
   - name: docker_latest
-    if: fork = false AND type != pull_request AND (branch = master OR branch =~ /release\/.*/)
+    if: (branch = master OR branch =~ /release\/.*/) AND type != pull_request AND fork = false
   - name: release
-    if: commit_message =~ /\[release\]/ AND fork = false AND type != pull_request AND (branch = master OR branch =~ /release\/.*/)
+    if: commit_message =~ /\[release\]/ AND (branch = master OR branch =~ /release\/.*/) AND type != pull_request AND fork = false
   - name: publish
-    if: commit_message =~ /\[publish\]/ AND fork = false AND type != pull_request AND (branch = master OR branch =~ /release\/.*/)
+    if: commit_message =~ /\[publish\]/ AND (branch = master OR branch =~ /release\/.*/) AND type != pull_request AND fork = false
 
 before_install: travis_retry bash scripts/travis/init.sh
 install: travis_retry travis_wait 40 bash scripts/travis/build.sh
@@ -129,7 +129,7 @@ jobs:
         - travis_wait 10 mvn -B install -f tests/tas-integration/pom.xml -Prun-ldap -Denvironment=default -DrunBugs=false
 
     - name: "REST API TAS tests with AIMS"
-      if: fork = false # AIMS docker image requires access to quay.io
+      if: commit_message !~ /\[skip tas\]/ AND fork = false # AIMS docker image requires access to quay.io
       before_script:
         # AIMS cannot be configured via localhost
         - export HOST_IP=$(hostname  -I | cut -f1 -d' ')
@@ -139,7 +139,7 @@ jobs:
         - travis_wait 60 mvn -B install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
 
     - name: "CMIS TAS tests with AIMS - BROWSER binding"
-      if: fork = false # AIMS docker image requires access to quay.io
+      if: commit_message !~ /\[skip tas\]/ AND fork = false # AIMS docker image requires access to quay.io
       before_script:
         # AIMS cannot be configured via localhost
         - export HOST_IP=$(hostname  -I | cut -f1 -d' ')
@@ -149,7 +149,7 @@ jobs:
         - travis_wait 40 mvn -B install -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-browser-with-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
 
     - name: "CMIS TAS tests with AIMS - ATOM binding"
-      if: fork = false # AIMS docker image requires access to quay.io
+      if: commit_message !~ /\[skip tas\]/ AND fork = false # AIMS docker image requires access to quay.io
       before_script:
         # AIMS cannot be configured via localhost
         - export HOST_IP=$(hostname  -I | cut -f1 -d' ')
@@ -159,6 +159,7 @@ jobs:
         - travis_wait 40 mvn -B install -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-atom-with-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
 
     - name: "Sync Service TAS tests"
+      if: commit_message !~ /\[skip tas\]/
       before_script:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-sync-service.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
@@ -166,6 +167,7 @@ jobs:
         - travis_wait 20 mvn -B install -f tests/tas-sync-service/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
     - name: "Elasticsearch TAS tests"
+      if: commit_message !~ /\[skip tas\]/
       script:
         - travis_wait 30 mvn -B install -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
@@ -182,7 +184,7 @@ jobs:
     - name: "Single Pipeline image tests"
       if: fork = false AND type != pull_request
       before_script:
-        - travis_retry travis_wait 20 mvn -B clean install -Ppipeline,local $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-repo.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Drepo.image.tag=latest')
+        - travis_retry travis_wait 20 mvn -B clean install -Ppipeline,build-docker-images $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-repo.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Drepo.image.tag=latest') $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-share.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Dshare.image.tag=latest')
         # Show what DTAS will be looking for
         - cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
         - pyenv versions
@@ -202,7 +204,7 @@ jobs:
     - name: "Update latest and Single Pipeline <acs>-<build> images"
       stage: docker_latest
       # Remove the pipeline profile to avoid sending an image tagged with the build number to the single pipeline
-      script: travis_retry travis_wait 30 mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Pinternal,pipeline
+      script: travis_retry travis_wait 30 mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Ppush-docker-images,pipeline
 
     - name: "Release and Copy to S3 Staging Bucket"
       stage: release

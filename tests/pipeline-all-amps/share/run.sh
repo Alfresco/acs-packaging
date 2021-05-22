@@ -4,7 +4,7 @@ set -e
 
 # image specific env vars
 PROJECT_NAME=share
-POM_PROPERTY_NAME=alfresco.share.version
+POM_PROPERTY_NAME=dependency.alfresco-enterprise-share.version
 TAG_PROPERTY_NAME=$PROJECT_NAME.image.tag
 DEFAULT_HOST_PORT=8081
 

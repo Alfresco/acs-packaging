@@ -22,6 +22,8 @@
 
     <modules>
         <module>dev-tomcat</module>
+        <module>dev-repo-amps-overlay</module>
+        <module>dev-share-amps-overlay</module>
         <module>dev-acs-amps-overlay</module>
     </modules>
 

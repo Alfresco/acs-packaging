@@ -10,12 +10,12 @@ done so already), so that your changes are in the enterprise alfresco.war file.
 ~~~
 $ # The `comR` alias includes the following commands:
 $ cd alfresco-community-repo
-$ mvn clean install -PcommunityDocker  -DskipTests=true -Dversion.edition=Community
+$ mvn clean install -Pbuild-docker-images  -DskipTests=true -Dversion.edition=Community
 $ cd ..
 
 $ # The `entR` alias is the same as the following commands:
 $ cd alfresco-enterprise-repo
-$ mvn clean install -PenterpriseDocker -DskipTests=true -Dmaven.javadoc.skip=true
+$ mvn clean install -Pbuild-docker-images -DskipTests=true -Dmaven.javadoc.skip=true
 $ cd ..
 ~~~
 

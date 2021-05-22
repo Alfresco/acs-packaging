@@ -12,7 +12,7 @@
             "modules": [
                 {
                     "id": "alfresco-share-services",
-                    "version": "${alfresco.alfresco-share-services.version}",
+                    "version": "${dependency.alfresco-community-repo.version}",
                     "installed": true
                 },
                 {
@@ -37,12 +37,12 @@
                 },
                 {
                     "id": "org_alfresco_module_rm",
-                    "version": "${alfresco.ags.version}",
+                    "version": "${dependency.alfresco-community-repo.version}",
                     "installed": true
                 },
                 {
                     "id": "alfresco-rm-enterprise-repo",
-                    "version": "${alfresco.ags.version}",
+                    "version": "${dependency.alfresco-enterprise-repo.version}",
                     "installed": true
                 },
                 {

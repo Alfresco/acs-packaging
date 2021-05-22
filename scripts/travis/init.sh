@@ -12,9 +12,6 @@ find "${HOME}/.m2/repository/" -type d -name "*-SNAPSHOT*" | xargs -r -l rm -rf
 echo "${DOCKERHUB_PASSWORD}" | docker login -u="${DOCKERHUB_USERNAME}" --password-stdin
 echo "${QUAY_PASSWORD}" | docker login -u="${QUAY_USERNAME}" --password-stdin quay.io
 
-# not helpful in this script
-# export HOST_IP=$(hostname  -I | cut -f1 -d' ')
-
 popd
 set +vex
 echo "=========================== Finishing Init Script =========================="

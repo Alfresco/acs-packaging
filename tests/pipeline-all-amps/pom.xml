@@ -46,7 +46,7 @@
 
     <profiles>
         <profile>
-            <id>local</id>
+            <id>build-docker-images</id>
             <!-- creates "image:latest" locally for testing -->
             <build>
                 <plugins>
@@ -58,7 +58,7 @@
             </build>
         </profile>
         <profile>
-            <id>internal</id>
+            <id>push-docker-images</id>
             <!-- publishes "image:<acs.version>-<build-number>" on Quay -->
             <properties>
                 <image.tag>${acs.version}-${build-number}</image.tag>
