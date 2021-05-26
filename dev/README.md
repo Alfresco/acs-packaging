@@ -53,18 +53,16 @@ following command and `entTDebug` will allow a debugger to be attached.
 ~~~
 $ # The `entT` alias is the same as the following commands:
 $ cd acs-packaging
-$ mvn clean install -Prun,withShare
+$ mvn clean install -Prun -rf dev
 [INFO] Scanning for projects...
 [INFO] ------------------------------------------------------------------------
 [INFO] Reactor Build Order:
 [INFO] 
 [INFO] Development Tomcat Environment                                     [pom]
 [INFO] Tomcat Configuration                                               [pom]
-[INFO] Content Services WAR with amps                                     [war]
-[INFO] 
-[INFO] ----------------< org.alfresco:alfresco-dev-tomcat-env >----------------
-[INFO] Building Development Tomcat Environment 7.0.0-SNAPSHOT             [1/3]
-[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] Repo WAR with amps                                                 [war]
+[INFO] Share WAR with amps                                                [war]
+[INFO] Tomcat                                                             [war]
 ...
 INFO: Starting ProtocolHandler ["http-bio-8080"]
 $ cd ..
@@ -113,9 +111,13 @@ and `dev/dev-acs-amps-overlay/target/dev-instance/tomcat/shared/classes/alfresco
 on the next `mvn clean`.
 
 ## Aliases
-You may also find the aliases specified in the following file useful, as they may save you some typing.
+You may also find the aliases specified in the following file useful, as they will help you only build selected parts
+of the code base and will save you lots of typing.
 
-Aliases ending in `D` provide Maven commands for building local Docker images.
+Aliases ending in `D` provide Maven commands for building local Docker images. The AMPS environment variable will be of
+interest, if you wish to build AMPs included in the repo and share projects. 
+
+The `aliases` file includes a more detailed description.
 ~~~
 $ source acs-packaging/dev/aliases
 ~~~

@@ -2,8 +2,8 @@
 # give the flexibility to only rebuild or repackage parts of the codebase that have changed.
 #
 # The Enterprise repo project depends on artifacts from the community repo project, but not any of its docker images.
-# Once the repository component has been built, it will need to be combined with other ACS components in one of the
-# packaging projects or the Share projects (alfresco-enterprise-share and its read only community mirror share).
+# Once the repository component and Share have been built, they will need to be combined with other ACS components in
+# one of the packaging projects.
 #
 # When developing code, you will normally not be creating repository docker images, or TAS test jar files, but will be
 # creating war files and then running them in a local tomcat instance. To provide the environment needed to do this you

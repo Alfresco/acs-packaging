@@ -13,15 +13,19 @@ The SNAPSHOT version of artifacts are **never** published.
 ### Contributing guide
 Please use [this guide](CONTRIBUTING.md) to make a contribution to the project.
 
-This project creates the `alfresco-content-repository` docker image and the distribution zip
-for the Alfresco Content Services product. The image extends the `alfresco-enterprise-repo-base`
-image created in the `alfresco-enterprise-repo` project, in order to add ACS components that are
-are not directly part of the repository. The `alfresco-enterprise-repo` project in turn builds
-on the `alfresco-community-repo` project.
-
 # General
 
-This project is the Enterprise equivalent of the [Community Packaging Project](https://github.com/Alfresco/acs-community-packaging).  Please ensure that you have the correct agreements in place and access to the Enterprise Maven artifacts.
+This project is the Enterprise equivalent of the [Community Packaging Project](https://github.com/Alfresco/acs-community-packaging).
+Please ensure that you have the correct agreements in place and access to the Enterprise Maven artifacts.
+
+This project creates the `alfresco/alfresco-content-repository` and `alfresco/alfresco-share` docker images. It also
+creates and the distribution zips for the Alfresco Content Services product.
+
+The `alfresco/alfresco-content-repository` image extends the `alfresco-enterprise-repo-base` created by the
+`alfresco-enterprise-repo` project to add additional ACS components.
+
+The `alfresco/alfresco-share` image extends the `alfresco-share-base` created by the `alfresco-enterprise-share`
+project.
 
 # Build:
 To build the project, including the distribution zip, but not the Docker images, issue the following commands:
@@ -32,14 +36,13 @@ $ mvn clean install
 $ cd ..
 ```
 ## Docker Alfresco
-On official releases, an image is published to:
-https://hub.docker.com/r/alfresco/alfresco-content-repository/tags/ 
+Releases are published to https://quay.io/repository/alfresco/alfresco-content-repository?tab=tags
 
-We created another image for our AWS deployment. It adds the S3 Connector amp and MariaDB driver to the image. During a release, it will be published on: https://hub.docker.com/r/alfresco/alfresco-content-repository-aws/tags/
-
-To build the Docker images, you will need to build the `alfresco-enterprise-repo` and `acs-packaging` projects. The simplest way is to use the ```entRD``` and ```entPD``` aliases. For more information, see [build aliases](dev/aliases). A local `latest` image is created from alfresco-enterprise-repo which forms base layer for the images created in acs-packaging.
+To build the Docker images, you will need to build the `alfresco-community-repo`, `alfresco-enterprise-repo` and
+`acs-packaging` projects. The simplest way is to use the `comR`, `entRD` and `entPD` aliases.
+For more information, see [build aliases](dev/aliases).  `latest` images are created locally.
 ```
-entRD && entPD
+comR && entRD && entPD
 ```
 
 ## Docker-compose & Kubernetes
@@ -47,11 +50,12 @@ Use the https://github.com/Alfresco/acs-deployment project as the basis for your
 
 
 ## Distribution zip
-The distribution zip contains the war files, libraries, certificates and settings files you need, to deploy Alfresco Content Services on the supported application servers.
+The distribution zip contains the war files, libraries, certificates and settings files you need, to deploy
+Alfresco Content Services on the supported application servers.
 
 
 # How to
 
-* [Create a custom Docker image](docs/create-custom-image.md)
 * [Development Tomcat Environment](dev/README.md)
 * [aliases](dev/aliases)
+* [Create a custom Docker image](docs/create-custom-image.md)

@@ -5,9 +5,6 @@ version: "3"
 # This version is for testing and development use. For testing and debug we need to have a more open version.
 # For remote debug we need the CATALINA_OPTS and to expose port 8000.
 
-# Add the following environment variable to CATALINA_OPTS to activate YourKit profiling agent on tomcat
-#-agentpath:/usr/local/YourKit-JavaProfiler-2018.04/bin/linux-x86-64/libyjpagent.so=delay=200000,listen=all,sessionname=$$HOSTNAME,dir=/tmp/Alfresco/yourkit,onexit=snapshot,periodicperf=600,periodicmem=600,probe_off=*
-
 services:
   alfresco:
     image: alfresco/alfresco-content-repository:latest
