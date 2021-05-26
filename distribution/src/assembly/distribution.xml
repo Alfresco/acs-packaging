@@ -42,8 +42,8 @@
             <outputDirectory/>
             <includes>
                 <include>web-server/**</include>
-		<include>modules/**</include>
-		<include>amps/**</include>
+                <include>modules/**</include>
+                <include>amps/**</include>
             </includes>
         </fileSet>
         <fileSet>

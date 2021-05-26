@@ -103,7 +103,7 @@
 
         <profile>
             <id>push-docker-images</id>
-            <!-- publishes "image:latest" on Quay & DockerHub -->
+            <!-- publishes "image:latest" to Quay -->
             <build>
                 <plugins>
                     <plugin>
@@ -116,10 +116,6 @@
                                     <name>${image.name}:${image.tag}</name>
                                     <registry>${image.registry}</registry>
                                 </image>
-                                <!-- DockerHub image -->
-                                <!--<image>
-                                    <name>${image.name}:${image.tag}</name>
-                                </image>-->
                             </images>
                         </configuration>
                         <executions>
@@ -139,7 +135,7 @@
 
         <profile>
             <id>release</id>
-            <!-- publishes "image:release_version" on Quay & DockerHub -->
+            <!-- publishes "image:release_version" on Quay -->
             <build>
                 <plugins>
                     <plugin>
@@ -152,10 +148,6 @@
                                     <name>${image.name}:${project.version}</name>
                                     <registry>${image.registry}</registry>
                                 </image>
-                                <!-- DockerHub image -->
-                                <!--<image>
-                                    <name>${image.name}:${project.version}</name>
-                                </image>-->
                             </images>
                         </configuration>
                         <executions>

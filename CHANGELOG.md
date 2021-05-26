@@ -1,3 +1,22 @@
+<h1>        7.1.0
+</h1>
+<h2>
+  New Features
+</h2>
+<li>Removal of 3rd party libraries
+
+With the offloading of both transforms and metadata extraction to T-Engines a number of 3rd party libraries
+are no longer needed within the content repository. They do still exist within the T-Engines performing the
+same tasks. Any AMPs that where making use of these will need to provide these libraries themselves. This will
+reduce the footprint of the repository and allow more frequent releases of the T-Engines to take advantage of
+new functionality or security patches in these libraries.
+<ul>
+<li>PdfBox org.apache.pdfbox:pdfbox:2.0.21 removed - transforms are now performed in T-Engines</li>
+<li>PdfBox org.apache.pdfbox:fontbox:2.0.21 removed - transforms are now performed in T-Engines</li>
+<li>PdfBox org.apache.pdfbox:pdfbox-tools:2.0.21 removed - transforms are now performed in T-Engines</li>
+</ul>
+<br>
+
 <h1>        7.0.0
 </h1>
 <h2>
@@ -29,20 +48,6 @@ relational tables and indexes as well as a minimal increased time on ingestion a
 denormalisation. This will however allow customers to make that decision. Typically we would only suggest using this
 feature to support large deployments. For more information see
 [Query Accelerator](https://github.com/Alfresco/acs-packaging/blob/master/docs/query-accelerator.md). </li>
-<li>Removal of 3rd party libraries
-
-With the offloading of both transforms and metadata extraction to T-Engines a number of 3rd party libraries
-are no longer needed within the content repository. They do still exist within the T-Engines performing the
-same tasks. Any AMPs that where making use of these will need to provide these libraries themselves. This will
-reduce the footprint of the repository and allow more frequent releases of the T-Engines to take advantage of
-new functionality or security patches in these libraries.
-<ul>
-<li>PdfBox org.apache.pdfbox:pdfbox:2.0.21 removed - transforms are now performed in T-Engines</li>
-<li>PdfBox org.apache.pdfbox:fontbox:2.0.21 removed - transforms are now performed in T-Engines</li>
-<li>PdfBox org.apache.pdfbox:pdfbox-tools:2.0.21 removed - transforms are now performed in T-Engines</li>
-</ul>
-<br>
-</li>
 
 <li>Custom Transforms and Renditions
 
