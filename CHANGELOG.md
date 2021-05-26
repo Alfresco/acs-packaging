@@ -1,3 +1,13 @@
+<h1>        6.2.2.17
+</h1>
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-22316'>MNT-22316</a>] -         Access short path with AOS
+</li>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-22425'>MNT-22425</a>] -         [PaaS] - Overriding of transformers not working
+</li>
+</ul>
 <h1>        6.2.2.16
 </h1>
 <h2>        Hot Fix Request
