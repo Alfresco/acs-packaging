@@ -1,6 +1,8 @@
 package org.alfresco.elasticsearch;
 
 import com.google.common.collect.Sets;
+import org.alfresco.dataprep.AlfrescoHttpClient;
+import org.alfresco.dataprep.AlfrescoHttpClientFactory;
 import org.alfresco.rest.core.RestWrapper;
 import org.alfresco.rest.search.RestRequestQueryModel;
 import org.alfresco.rest.search.SearchNodeModel;
@@ -10,6 +12,7 @@ import org.alfresco.utility.Utility;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
+import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.report.log.Step;
@@ -64,6 +67,8 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     private DataContent dataContent;
     @Autowired
     protected RestWrapper client;
+    @Autowired
+    private AlfrescoHttpClientFactory alfrescoHttpClientFactory;
 
     private org.alfresco.utility.model.UserModel testUser;
 
@@ -126,11 +131,11 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // Delete all documents inside Elasticsearch.
         cleanUpIndex();
         //stop live indexing
-        AlfrescoStackInitializer.liveIndexer.stop();
+        AlfrescoStackInitializer.mediationLiveIndexer.stop();
         // Create document.
 
         String testStart = DateTimeFormatter.ofPattern("yyyyMMddHHmm").format(ZonedDateTime.now(Clock.systemUTC()));
-        String documentName = createDocument();
+        String documentName = createDocument().getName();
         // Check document not indexed.
         // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
 
@@ -149,7 +154,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // TIDY
         // Restart ElasticsearchConnector.
-        AlfrescoStackInitializer.liveIndexer.start();
+        AlfrescoStackInitializer.mediationLiveIndexer.start();
 
     }
 
@@ -158,9 +163,9 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     {
         // GIVEN
         // Create document.
-        String documentName = createDocument();
+        String documentName = createDocument().getName();
         // Stop ElasticsearchConnector.
-        AlfrescoStackInitializer.liveIndexer.stop();
+        AlfrescoStackInitializer.mediationLiveIndexer.stop();
         // Delete index documents.
         cleanUpIndex();
 
@@ -177,9 +182,66 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // TIDY
         // Restart ElasticsearchConnector.
-        AlfrescoStackInitializer.liveIndexer.start();
-
+        AlfrescoStackInitializer.mediationLiveIndexer.start();
     }
+
+
+    @Test(groups = TestGroup.SEARCH)
+    public void testContentReindex() throws Exception
+    {
+        // GIVEN
+        // Create document.
+        String documentName = createDocument().getName();
+        // Stop ElasticsearchConnector.
+        AlfrescoStackInitializer.mediationLiveIndexer.stop();
+        // Delete index documents.
+        cleanUpIndex();
+
+        // WHEN
+        // Run reindexer (with default dates to reindex everything).
+        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+                "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX));
+
+        // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
+        String contentQueryString = "=cm:name:" + documentName + " AND =cm:content:content AND cm:name:*";
+        expectResultsFromQuery(contentQueryString, dataUser.getAdminUser(), documentName);
+
+
+        // TIDY
+        // Restart ElasticsearchConnector.
+        AlfrescoStackInitializer.mediationLiveIndexer.start();
+    }
+
+
+    @Test(groups = TestGroup.SEARCH)
+    public void testReindexerUpdateOldContent() throws Exception
+    {
+        // GIVEN
+        // Create document.
+        FileModel document = createDocument();
+        String documentName = document.getName();
+        // Stop ElasticsearchConnector.
+        AlfrescoStackInitializer.mediationLiveIndexer.stop();
+        updateContent("new", document);
+        // Delete index documents.
+
+        // WHEN
+        // Run reindexer (with default dates to reindex everything).
+        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+                "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX));
+
+        // THEN
+        // Check document indexed.
+        // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
+        String contentQueryString = "=cm:name:" + documentName + " AND =cm:content:new AND cm:name:*";
+        expectResultsFromQuery(contentQueryString, dataUser.getAdminUser(), documentName);
+
+        // TIDY
+        // Restart ElasticsearchConnector.
+        AlfrescoStackInitializer.mediationLiveIndexer.start();
+    }
+
+
 
     /**
      * Run the alfresco-elasticsearch-reindexing container.
@@ -192,7 +254,8 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         Map<String, String> env = new HashMap<>(
                 Map.of("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200",
                        "SPRING_DATASOURCE_URL", "jdbc:postgresql://postgres:5432/alfresco",
-                       "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX));
+                        "SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616",
+                        "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX));
         env.putAll(envParam);
 
         try (GenericContainer reindexingComponent = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-reindexing:latest")
@@ -211,14 +274,36 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
      *
      * @return The randomly generated name of the new document.
      */
-    private String createDocument()
+    private FileModel createDocument()
+    {
+        return createDocument("content");
+    }
+
+    private FileModel createDocument(String content)
     {
         String documentName = "TestFile" + UUID.randomUUID() + ".txt";
-        dataContent.usingUser(testUser)
-                   .usingSite(testSite)
-                   .createContent(new org.alfresco.utility.model.FileModel(documentName, org.alfresco.utility.model.FileType.TEXT_PLAIN, "content"));
-        return documentName;
+        return  dataContent.usingUser(testUser)
+                .usingSite(testSite)
+                .createContent(new org.alfresco.utility.model.FileModel(documentName, org.alfresco.utility.model.FileType.TEXT_PLAIN, content));
     }
+
+
+
+
+    private void updateContent(String content, FileModel fileModel)
+    {
+
+        AlfrescoHttpClient httpClient = alfrescoHttpClientFactory.getObject();
+
+        fileModel.setContent(content);
+        dataContent.usingUser(testUser)
+                .usingSite(testSite)
+                .updateContent(httpClient, fileModel);
+
+    }
+
+
+
 
     private void expectResultsFromQuery(String queryString, org.alfresco.utility.model.UserModel user, String... expected) throws Exception
     {

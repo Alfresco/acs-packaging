@@ -26,7 +26,12 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     public static ElasticsearchContainer elasticsearch;
 
-    public static GenericContainer liveIndexer;
+    public static  GenericContainer metadataLiveIndexer;
+
+    public static  GenericContainer contentLiveIndexer;
+
+    public static  GenericContainer mediationLiveIndexer;
+
 
     @Override
     public void initialize(ConfigurableApplicationContext configurableApplicationContext)
@@ -103,7 +108,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                                                      .withNetwork(network)
                                                                      .withNetworkAliases("postgres");
 
-        GenericContainer activemq = new GenericContainer("alfresco/alfresco-activemq:" + env.getProperty("ACTIVEMQ_TAG"))
+        GenericContainer activemq = new GenericContainer("alfresco/alfresco-activemq:5.15.8")
                                             .withNetwork(network)
                                             .withNetworkAliases("activemq")
                                             .waitingFor(Wait.forListeningPort())
@@ -116,15 +121,27 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 .withEnv("xpack.security.enabled", "false")
                                 .withEnv("discovery.type", "single-node");
 
-        liveIndexer = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-live-indexing:" + env.getProperty("ES_CONNECTOR_TAG"))
+        metadataLiveIndexer = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-live-indexing-metadata:" + env.getProperty("ES_CONNECTOR_TAG"))
                               .withNetwork(network)
-                              .withNetworkAliases("live-indexing")
+                              .withNetworkAliases("metadata-indexing")
                               .withEnv("ELASTICSEARCH_INDEXNAME", "custom-alfresco-index")
                               .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200")
-                              .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
-                              .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/");
+                              .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616");
 
-        CompletableFuture<Void> start = Startables.deepStart(elasticsearch, postgres, alfresco, activemq, transformCore, transformRouter, liveIndexer, sfs);
+        contentLiveIndexer = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-live-indexing-content:" + env.getProperty("ES_CONNECTOR_TAG"))
+                .withNetwork(network)
+                .withNetworkAliases("content-indexing")
+                .withEnv("ELASTICSEARCH_INDEXNAME", "custom-alfresco-index")
+                .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200")
+                .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
+                .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/");
+
+        mediationLiveIndexer = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-live-indexing-mediation:" + env.getProperty("ES_CONNECTOR_TAG"))
+                .withNetwork(network)
+                .withNetworkAliases("mediation")
+                .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616");
+
+        CompletableFuture<Void> start = Startables.deepStart(elasticsearch, postgres, alfresco, activemq, transformCore, transformRouter, metadataLiveIndexer, contentLiveIndexer, mediationLiveIndexer, sfs);
 
         try
         {
