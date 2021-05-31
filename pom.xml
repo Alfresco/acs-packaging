@@ -10,12 +10,12 @@
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-enterprise-repo</artifactId>
         <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
-        <version>11.53</version>
+        <version>11.55</version>
     </parent>
 
     <properties>
-        <dependency.alfresco-enterprise-repo.version>11.53</dependency.alfresco-enterprise-repo.version>
-        <dependency.alfresco-enterprise-share.version>11.10</dependency.alfresco-enterprise-share.version>
+        <dependency.alfresco-enterprise-repo.version>11.55</dependency.alfresco-enterprise-repo.version>
+        <dependency.alfresco-enterprise-share.version>11.12</dependency.alfresco-enterprise-share.version>
 
         <alfresco.rm-enterprise-rest-api-explorer.version>3.0.2</alfresco.rm-enterprise-rest-api-explorer.version>
         <alfresco.s3connector.version>4.0.0.1</alfresco.s3connector.version>
@@ -37,7 +37,8 @@
         <connection>scm:git:https://github.com/Alfresco/acs-packaging.git</connection>
         <developerConnection>scm:git:https://github.com/Alfresco/acs-packaging.git</developerConnection>
         <url>https://github.com/Alfresco/acs-packaging</url>
-    </scm>
+      <tag>HEAD</tag>
+  </scm>
 
     <distributionManagement>
         <repository>
