@@ -155,7 +155,6 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // TIDY
         // Restart ElasticsearchConnector.
         AlfrescoStackInitializer.mediationLiveIndexer.start();
-
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -185,7 +184,6 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         AlfrescoStackInitializer.mediationLiveIndexer.start();
     }
 
-
     @Test(groups = TestGroup.SEARCH)
     public void testContentReindex() throws Exception
     {
@@ -211,7 +209,6 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // Restart ElasticsearchConnector.
         AlfrescoStackInitializer.mediationLiveIndexer.start();
     }
-
 
     @Test(groups = TestGroup.SEARCH)
     public void testReindexerUpdateOldContent() throws Exception
@@ -241,8 +238,6 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         AlfrescoStackInitializer.mediationLiveIndexer.start();
     }
 
-
-
     /**
      * Run the alfresco-elasticsearch-reindexing container.
      *
@@ -266,7 +261,6 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         {
             reindexingComponent.start();
         }
-
     }
 
     /**
@@ -292,18 +286,13 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
     private void updateContent(String content, FileModel fileModel)
     {
-
         AlfrescoHttpClient httpClient = alfrescoHttpClientFactory.getObject();
 
         fileModel.setContent(content);
         dataContent.usingUser(testUser)
                 .usingSite(testSite)
                 .updateContent(httpClient, fileModel);
-
     }
-
-
-
 
     private void expectResultsFromQuery(String queryString, org.alfresco.utility.model.UserModel user, String... expected) throws Exception
     {
