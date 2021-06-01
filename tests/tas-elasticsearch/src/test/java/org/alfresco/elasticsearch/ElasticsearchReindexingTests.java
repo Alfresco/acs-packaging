@@ -96,7 +96,6 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
                 RestClient.builder(new HttpHost(AlfrescoStackInitializer.elasticsearch.getContainerIpAddress(),
                                                 AlfrescoStackInitializer.elasticsearch.getFirstMappedPort(),
                                                 "http")));
-
     }
 
     /**
