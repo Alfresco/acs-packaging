@@ -124,6 +124,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         metadataLiveIndexer = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-live-indexing-metadata:" + env.getProperty("ES_CONNECTOR_TAG"))
                               .withNetwork(network)
                               .withNetworkAliases("metadata-indexing")
+                              .withEnv("JAVA_OPTS", "-Xms256m -Xmx256m")
                               .withEnv("ELASTICSEARCH_INDEXNAME", "custom-alfresco-index")
                               .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200")
                               .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616");
@@ -131,6 +132,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         contentLiveIndexer = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-live-indexing-content:" + env.getProperty("ES_CONNECTOR_TAG"))
                 .withNetwork(network)
                 .withNetworkAliases("content-indexing")
+                .withEnv("JAVA_OPTS", "-Xms256m -Xmx256m")
                 .withEnv("ELASTICSEARCH_INDEXNAME", "custom-alfresco-index")
                 .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200")
                 .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
@@ -139,6 +141,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         mediationLiveIndexer = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-live-indexing-mediation:" + env.getProperty("ES_CONNECTOR_TAG"))
                 .withNetwork(network)
                 .withNetworkAliases("mediation")
+                .withEnv("JAVA_OPTS", "-Xms256m -Xmx256m")
                 .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616");
 
         CompletableFuture<Void> start = Startables.deepStart(elasticsearch, postgres, alfresco, activemq, transformCore, transformRouter, metadataLiveIndexer, contentLiveIndexer, mediationLiveIndexer, sfs);
