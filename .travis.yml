@@ -216,6 +216,13 @@ jobs:
         - cp distribution/target/alfresco.war deploy_dir
         - cp distribution/target/*-distribution*.zip deploy_dir
         - ls -lA deploy_dir
+        - mkdir -p deploy_dir_share
+        - cp distribution-share/target/*.war deploy_dir_share
+        - cp distribution-share/target/*.zip deploy_dir_share
+        - ls -lA deploy_dir_share
+        - mkdir -p deploy_dir_ags
+        - cp distribution-ags/target/*.zip deploy_dir_ags
+        - ls -lA deploy_dir_ags
       deploy:
         - provider: s3
           access_key_id: "${AWS_STAGING_ACCESS_KEY}"
@@ -230,6 +237,28 @@ jobs:
           upload_dir: "alfresco-content-services/release/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}"
           on:
             all_branches: true
+        - provider: s3
+          access_key_id: "${AWS_STAGING_ACCESS_KEY}"
+          secret_access_key: "${AWS_STAGING_SECRET_KEY}"
+          bucket: "alfresco-artefacts-staging"
+          region: "eu-west-1"
+          skip_cleanup: true
+          acl: private
+          local_dir: "deploy_dir_share"
+          upload_dir: "share/${RELEASE_VERSION}"
+          on:
+            all_branches: true
+        - provider: s3
+          access_key_id: "${AWS_STAGING_ACCESS_KEY}"
+          secret_access_key: "${AWS_STAGING_SECRET_KEY}"
+          bucket: "alfresco-artefacts-staging"
+          region: "eu-west-1"
+          skip_cleanup: true
+          acl: private
+          local_dir: "deploy_dir_ags"
+          upload_dir: "enterprise/RM/${RELEASE_VERSION}"
+          on:
+            all_branches: true
       after_deploy:
         - echo "Finished release and deployed to https://s3.console.aws.amazon.com/s3/buckets/alfresco-artefacts-staging/alfresco-content-services/release/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}"
 
@@ -242,5 +271,13 @@ jobs:
       deploy:
         - provider: script
           script: bash scripts/travis/copy_to_release_bucket.sh
+          on:
+            all_branches: true
+        - provider: script
+          script: bash scripts/travis/copy_share_to_release_bucket.sh
+          on:
+            all_branches: true
+        - provider: script
+          script: bash scripts/travis/copy_ags_to_release_bucket.sh
           on:
             all_branches: true
