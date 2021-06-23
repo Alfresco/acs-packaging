@@ -31,6 +31,7 @@ env:
     # Release version has to start with real version (7.1.0-....) for the docker image to build successfully.
     - RELEASE_VERSION=7.1.0-A6
     - DEVELOPMENT_VERSION=7.1.0-SNAPSHOT
+    - DTAS_VERSION="${DTAS_VERSION:-v1.1}"
 
 stages:
   - name: test
@@ -190,7 +191,7 @@ jobs:
         - pyenv versions
         - pyenv global 3.7.1
         - pip install requests pytest
-        - git clone --depth 1 --branch v1.0.1 https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
+        - git clone --depth 1 --branch $DTAS_VERSION https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
         - docker images | grep pipeline
       script:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
