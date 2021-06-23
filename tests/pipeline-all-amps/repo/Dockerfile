@@ -15,11 +15,11 @@ RUN mkdir ${TOMCAT_DIR}/webapps/api-explorer && cd ${TOMCAT_DIR}/webapps/api-exp
   jar -xvf ${TOMCAT_DIR}/webapps/api-explorer.war && rm -f ${TOMCAT_DIR}/webapps/api-explorer.war
 
 # Copy gs-api-explorer war into webapps folder
-COPY target/wars/rm-api-explorer.war ${TOMCAT_DIR}/webapps/
+COPY target/wars/gs-api-explorer.war ${TOMCAT_DIR}/webapps/
 
-# Unpack rm-api-explorer.war
-RUN mkdir ${TOMCAT_DIR}/webapps/rm-api-explorer && cd ${TOMCAT_DIR}/webapps/rm-api-explorer && \
-  jar -xvf ${TOMCAT_DIR}/webapps/rm-api-explorer.war && rm -f ${TOMCAT_DIR}/webapps/rm-api-explorer.war
+# Unpack gs-api-explorer.war
+RUN mkdir ${TOMCAT_DIR}/webapps/gs-api-explorer && cd ${TOMCAT_DIR}/webapps/gs-api-explorer && \
+  jar -xvf ${TOMCAT_DIR}/webapps/gs-api-explorer.war && rm -f ${TOMCAT_DIR}/webapps/gs-api-explorer.war
 
 # Turn on log4j debug frequently needed in the single pipeline
 RUN echo -e '\n\
