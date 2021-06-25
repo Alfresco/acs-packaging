@@ -22,7 +22,8 @@ branches:
   only:
     - master
     - /release\/.*/
-    - feature/ACS-986-62N
+    - /feature\/.*/
+    - /fix\/.*/
 
 env:
   global:
