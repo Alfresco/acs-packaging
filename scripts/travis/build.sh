@@ -7,7 +7,6 @@ pushd "$(dirname "${BASH_SOURCE[0]}")/../../"
 source "$(dirname "${BASH_SOURCE[0]}")/build_functions.sh"
 
 ENT_DEPENDENCY_VERSION="$(retrievePomProperty "dependency.alfresco-enterprise-repo.version")"
-REPO_IMAGE=$([[ "${ENT_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] && echo "-Drepo.image.tag=latest")
 
 # Either both the parent and the upstream dependency are the same, or else fail the build
 if [ "${ENT_DEPENDENCY_VERSION}" != "$(retrievePomParentVersion)" ]; then
@@ -73,7 +72,6 @@ else
 fi
 
 SHARE_DEPENDENCY_VERSION="$(retrievePomProperty "dependency.alfresco-enterprise-share.version")"
-SHARE_IMAGE=$([[ "${SHARE_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] && echo "-Dshare.image.tag=latest")
 
 # Prevent merging of any SNAPSHOT dependencies into the master or the release/* branches
 if [[ $(isPullRequestBuild) && "${SHARE_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ && "${TRAVIS_BRANCH}" =~ ^master$|^release/.+$ ]] ; then
@@ -91,13 +89,15 @@ SHARE_UPSTREAM_REPO="github.com/Alfresco/alfresco-enterprise-share.git"
 
 # Checkout the upstream alfresco-enterprise-share project (tag or branch; + build if the latter)
 if [[ "${SHARE_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] ; then
-  pullAndBuildSameBranchOnUpstream "${SHARE_UPSTREAM_REPO}" "-Pbuild-docker-images -Pags -Ddocker.quay-expires.value=NEVER ${REPO_IMAGE}"
+  pullAndBuildSameBranchOnUpstream "${SHARE_UPSTREAM_REPO}" "-Pbuild-docker-images -Pags -Ddocker.quay-expires.value=NEVER"
 else
   pullUpstreamTagAndBuildDockerImage "${SHARE_UPSTREAM_REPO}" "${SHARE_DEPENDENCY_VERSION}" "-Pbuild-docker-images -Pags -Ddocker.quay-expires.value=NEVER"
 fi
 
 # Build the current project
-mvn -B -V -q install -DskipTests -Dmaven.javadoc.skip=true -Pbuild-docker-images -Pags "${REPO_IMAGE}" "${SHARE_IMAGE}"
+mvn -B -V -q install -DskipTests -Dmaven.javadoc.skip=true -Pbuild-docker-images -Pags \
+  $([[ "${ENT_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] && echo "-Drepo.image.tag=latest") \
+  $([[ "${SHARE_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] && echo "-Dshare.image.tag=latest")
 
 
 popd
