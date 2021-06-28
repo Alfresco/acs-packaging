@@ -164,7 +164,7 @@
                                     <version>${alfresco.rm-enterprise-rest-api-explorer.version}</version>
                                     <type>war</type>
                                     <overWrite>false</overWrite>
-                                    <destFileName>rm-api-explorer.war</destFileName>
+                                    <destFileName>gs-api-explorer.war</destFileName>
                                     <outputDirectory>${project.build.directory}/wars</outputDirectory>
                                 </artifactItem>
                                 <!-- Do not comment out, as this will cause problems in the Single Pipeline. -->
