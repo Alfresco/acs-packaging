@@ -3,6 +3,10 @@
 <h2>
   New Features
 </h2>
+<br>
+
+<h1>        7.0.1
+</h1>
 <li>Removal of 3rd party libraries
 
 With the offloading of both transforms and metadata extraction to T-Engines a number of 3rd party libraries
@@ -11,9 +15,9 @@ same tasks. Any AMPs that where making use of these will need to provide these l
 reduce the footprint of the repository and allow more frequent releases of the T-Engines to take advantage of
 new functionality or security patches in these libraries.
 <ul>
-<li>PdfBox org.apache.pdfbox:pdfbox:2.0.21 removed - transforms are now performed in T-Engines</li>
-<li>PdfBox org.apache.pdfbox:fontbox:2.0.21 removed - transforms are now performed in T-Engines</li>
-<li>PdfBox org.apache.pdfbox:pdfbox-tools:2.0.21 removed - transforms are now performed in T-Engines</li>
+<li>PdfBox org.apache.pdfbox:pdfbox:2.0.21</li>
+<li>PdfBox org.apache.pdfbox:fontbox:2.0.21</li>
+<li>PdfBox org.apache.pdfbox:pdfbox-tools:2.0.21</li>
 </ul>
 <br>
 
