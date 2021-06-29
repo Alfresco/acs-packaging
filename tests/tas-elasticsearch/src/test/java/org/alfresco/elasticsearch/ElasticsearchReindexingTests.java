@@ -1,6 +1,19 @@
 package org.alfresco.elasticsearch;
 
+import static org.testng.Assert.assertEquals;
+
+import java.io.IOException;
+import java.time.Clock;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import com.google.common.collect.Sets;
+
 import org.alfresco.rest.core.RestWrapper;
 import org.alfresco.rest.search.RestRequestQueryModel;
 import org.alfresco.rest.search.SearchNodeModel;
@@ -29,18 +42,6 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.startupcheck.IndefiniteWaitOneShotStartupCheckStrategy;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import java.io.IOException;
-import java.time.Clock;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import static org.testng.Assert.assertEquals;
 
 /**
  * In this test we are verifying end-to-end the reindexer component on Elasticsearch.
@@ -103,7 +104,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // GIVEN
         // Check a particular system document is NOT indexed.
         // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
-        String queryString = "=cm:name:budget.xls AND =cm:title:\"Web Site Design - Budget\" AND cm:name:*";
+        String queryString = "cm:name:budget AND cm:title:\"web site design - budget\" AND cm:description:\"Budget file for the web site redesign\" AND cm:name:*";
         expectResultsFromQuery(queryString, dataUser.getAdminUser());
 
         // WHEN
@@ -134,7 +135,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // Check document not indexed.
         // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
 
-        String queryString = "=cm:name:" + documentName + " AND cm:name:*";
+        String queryString = "cm:name:" + documentName + " AND cm:name:*";
         expectResultsFromQuery(queryString, dataUser.getAdminUser());
 
         // WHEN
@@ -172,7 +173,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // THEN
         // Check document indexed.
         // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
-        String queryString = "=cm:name:" + documentName + " AND cm:name:*";
+        String queryString = "cm:name:" + documentName + " AND cm:name:*";
         expectResultsFromQuery(queryString, dataUser.getAdminUser(), documentName);
 
         // TIDY
@@ -192,7 +193,9 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         Map<String, String> env = new HashMap<>(
                 Map.of("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200",
                        "SPRING_DATASOURCE_URL", "jdbc:postgresql://postgres:5432/alfresco",
-                       "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX));
+                       "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
+                       "SPRING_ACTIVEMQ_BROKER-URL", "nio://activemq:61616",
+                       "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config"));
         env.putAll(envParam);
 
         try (GenericContainer reindexingComponent = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-reindexing:latest")
@@ -203,7 +206,6 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         {
             reindexingComponent.start();
         }
-
     }
 
     /**
