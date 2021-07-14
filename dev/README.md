@@ -63,7 +63,7 @@ $ mvn clean install -Prun,withShare
 [INFO] Content Services WAR with amps                                     [war]
 [INFO] 
 [INFO] ----------------< org.alfresco:alfresco-dev-tomcat-env >----------------
-[INFO] Building Development Tomcat Environment 7.0.1-SNAPSHOT             [1/3]
+[INFO] Building Development Tomcat Environment 7.0.2-SNAPSHOT             [1/3]
 [INFO] --------------------------------[ pom ]---------------------------------
 ...
 INFO: Starting ProtocolHandler ["http-bio-8080"]

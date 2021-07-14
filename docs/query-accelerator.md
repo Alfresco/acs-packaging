@@ -21,7 +21,7 @@ there is something wrong with the data model design.
 ### Operational overview
 
 1. Query sets may be applied to an existing Alfresco repository. For example a query set could be applied to a system
-which has been upgraded to 7.0.1 that already contains hundreds of millions of documents.
+which has been upgraded to 7.0.2 that already contains hundreds of millions of documents.
 
 2. Multiple (zero or more but typically not more than 10) query sets may be defined. Each will have its own name. It will
 be possible to replace a query set with a new version or to remove it completely. The definition can include the

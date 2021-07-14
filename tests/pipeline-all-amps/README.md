@@ -7,7 +7,7 @@ The [pipeline-all-amps](../pipeline-all-amps) module pushes repo and share image
 The acs-packaging repo [travis](../../.travis.yml) job `"Pipeline All AMPs tests and push docker images"` publishes internally the new docker images for repo and share
 with travis build number
 
-Example: alfresco/alfresco-pipeline-all-amps-repo:3102:7.0.1.
+Example: alfresco/alfresco-pipeline-all-amps-repo:3102:7.0.2.
 
 The images have been tested using docker-compose deployment.
 
