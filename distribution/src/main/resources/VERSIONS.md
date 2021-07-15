@@ -43,11 +43,10 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Operating Systems
 | Component | Recommended | Also Available |
 |---|---|---|
-| Red Hat Enterprise Linux | 8.2 | 7.7 |
+| Red Hat Enterprise Linux | 8.4 | 8.2, 7.7 |
 | Windows Server | 2019 |
-| CentOS | 8 (2004) | 7 (1908) |
+| CentOS | 8.3 (2011) | 8 (2004), 7 (1908) |
 | Ubuntu | 20.04 | 18.04 |
-| SUSE | 15 | 12 |
 | Amazon Linux | 2 | |
 
 ##### Databases
@@ -56,8 +55,8 @@ This file lists the recommended components for this Service Pack. Use it along w
 | MySQL | 8.0 | 5.7.23 |
 | MS SQL Server | 2019 | 2017 |
 | Oracle | 19c (19.3)  | |
-| PostgreSQL | 13.1 | 12.4, 11.7 |
-| MariaDB | 10.5 | 10.4 |
+| PostgreSQL | 13.3 | 12.7, 12.4, 11.12, 11.7 |
+| MariaDB | 10.6 | 10.5, 10.4 |
 | Amazon Aurora PostgreSQL | 12.4 |
 
 ##### Database Connectors
