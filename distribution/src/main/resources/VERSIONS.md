@@ -45,7 +45,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 |---|---|---|
 | Red Hat Enterprise Linux | 8.2 | 7.7 |
 | Windows Server | 2019 |
-| CentOS | 8.3 (2011) | 8 (2004), 7 (1908) |
+| CentOS | CentOS 7.9 (2009) | CentOS 8.3 |
 | Ubuntu | 20.04 | 18.04 |
 | Amazon Linux | 2 | |
 
