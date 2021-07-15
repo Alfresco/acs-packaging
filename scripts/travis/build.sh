@@ -91,9 +91,9 @@ SHARE_UPSTREAM_REPO="github.com/Alfresco/alfresco-enterprise-share.git"
 
 # Checkout the upstream alfresco-enterprise-share project (tag or branch; + build if the latter)
 if [[ "${SHARE_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] ; then
-  pullAndBuildSameBranchOnUpstream "${SHARE_UPSTREAM_REPO}" "-Pbuild-docker-images -Pags -Ddocker.quay-expires.value=NEVER ${REPO_IMAGE}"
+  pullAndBuildSameBranchOnUpstream "${SHARE_UPSTREAM_REPO}" "-Pbuild-docker-images -Pags -Ddocker.quay-expires.value=NEVER ${REPO_IMAGE} -Ddependency.alfresco-community-repo.version=${COM_DEPENDENCY_VERSION} -Ddependency.alfresco-enterprise-repo.version=${ENT_DEPENDENCY_VERSION}"
 else
-  pullUpstreamTagAndBuildDockerImage "${SHARE_UPSTREAM_REPO}" "${SHARE_DEPENDENCY_VERSION}" "-Pbuild-docker-images -Pags -Ddocker.quay-expires.value=NEVER"
+  pullUpstreamTagAndBuildDockerImage "${SHARE_UPSTREAM_REPO}" "${SHARE_DEPENDENCY_VERSION}" "-Pbuild-docker-images -Pags -Ddocker.quay-expires.value=NEVER -Ddependency.alfresco-community-repo.version=${COM_DEPENDENCY_VERSION} -Ddependency.alfresco-enterprise-repo.version=${ENT_DEPENDENCY_VERSION}"
 fi
 
 # Build the current project
