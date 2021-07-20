@@ -65,8 +65,8 @@ This file lists the recommended components for this Service Pack. Use it along w
 | MySQL connector | @dependency.mysql.version@ |
 | MariaDB Java Client | 2.7.2 |
 | PostgreSQL | @dependency.postgresql.version@ |
-| Oracle JDBC ojdbc8 | 19.3.0.0 |
-| Microsoft JDBC Driver | 8.4 | |
+| Oracle JDBC ojdbc8 | 19.11.0.0 | 19.3.0.0, 12.2.0.1 |
+| Microsoft JDBC Driver | 9.2.1.jre11 | 8.4.1.jre11 |
 
 ##### Application Servers
 | Component | Recommended | Also Available |
