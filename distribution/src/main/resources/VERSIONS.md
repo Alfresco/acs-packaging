@@ -43,7 +43,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Operating Systems
 | Component | Recommended | Also Available |
 |---|---|---|
-| Red Hat Enterprise Linux | 8.2 | 7.7 |
+| Red Hat Enterprise Linux | 8.4 | 8.2 |
 | Windows Server | 2019 |
 | CentOS | CentOS 7.9 (2009) | CentOS 8.3 |
 | Ubuntu | 20.04 | 18.04 |
