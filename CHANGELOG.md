@@ -1,3 +1,72 @@
+<h1>        6.1.1.10
+</h1>
+<h2>        Security Improvements
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/PRODSEC-4422'>PRODSEC-4422</a>] -         An unprivileged attacker can run arbitrary code on the server, compromising it: RCE in rules' scripts for shared folders - script action execution no longer allows to execute scripts outside of Data Dictionary/Scripts
+</li>
+<li>[<a href='https://alfresco.atlassian.net/browse/PRODSEC-4421'>PRODSEC-4421</a>] -         An attacker user can gain full control of another user session. Stored cross site scripting (XSS) in Alfresco
+</li>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-21611'>MNT-21611</a>] -         [Security] Blind Server Side Request Forgery - Removed HTML transformation pipelines that use LibreOffice
+</li>
+</ul>
+<h1>        6.1.1.9
+</h1>
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-22206'>MNT-22206</a>] -         Cluster becomes unresponsive  (ACS-1264 - Content Model changes dynamically updated to node caches across a cluster deadlock)
+</li>
+</ul>
+<h1>        6.1.1.8
+</h1>
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/REPO-5339'>REPO-5339</a>] -         Thread Lock detected for AclReadersGet invocations
+</li>
+</ul>
+<h1>        6.1.1.5
+</h1>
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-21732'>MNT-21732</a>] -         Solr stuck when reindexing large repository
+</li>
+</ul>
+<h1>        6.1.1.4
+</h1>
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-21688'>MNT-21688</a>] -         CLONE - [Security] CVE-2020-8840 - Jackson Databind
+</li>
+</ul>
+<h1>        6.1.1.3
+</h1>
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-21572'>MNT-21572</a>] -         Hotfix on 6.1.1.x - Server-Side Template Injection
+</li>
+</ul>
+<h1>        6.1.1.2
+</h1>
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-21022'>MNT-21022</a>] -         POI metadata and text extraction for Excel files failing
+</li>
+</ul>
+<h1>        6.1.1.1
+</h1>
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-20978'>MNT-20978</a>] -         6.1.1: Share Webscripts page showing interpolations instead of the values
+</li>
+</ul>
+
 <h1>        6.1.1
 </h1>
 <h2>
