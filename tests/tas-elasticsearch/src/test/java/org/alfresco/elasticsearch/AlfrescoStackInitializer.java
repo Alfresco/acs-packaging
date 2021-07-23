@@ -1,11 +1,14 @@
 package org.alfresco.elasticsearch;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.support.TestPropertySourceUtils;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
@@ -19,6 +22,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class AlfrescoStackInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext>
 {
+    private static Logger LOGGER = LoggerFactory.getLogger(AlfrescoStackInitializer.class);
 
     public static Network network;
 
@@ -69,6 +73,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                     "-Xms1500m -Xmx1500m ")
                            .withNetwork(network)
                            .withNetworkAliases("alfresco")
+                           .withLogConsumer(new Slf4jLogConsumer(LOGGER))
                            .waitingFor(new LogMessageWaitStrategy()
                                                .withRegEx(".*Server startup in.*\\n")
                                                .withStartupTimeout(Duration.ofSeconds(400)))
