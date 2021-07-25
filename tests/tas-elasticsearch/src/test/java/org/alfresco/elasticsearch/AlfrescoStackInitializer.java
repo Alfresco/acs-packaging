@@ -137,18 +137,17 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
             start.get();
         } catch (Exception e)
         {
-            Assert.fail("unable to start support containers ");
+            Assert.fail("unable to start support containers");
         }
 
-        CompletableFuture<Void> alfresco = Startables.deepStart(alfresco);
+        CompletableFuture<Void> alf = Startables.deepStart(alfresco);
         try
         {
-            alfresco.get();
+            alf.get();
         } catch (Exception e)
         {
-            Assert.fail("unable to start Alfresco containers");
+            Assert.fail("unable to start Alfresco container");
         }
-
 
         TestPropertySourceUtils.addInlinedPropertiesToEnvironment(configurableApplicationContext,
                                                                   "alfresco.server=" + alfresco.getContainerIpAddress(),
