@@ -130,15 +130,25 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                               .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
                               .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config");
 
-        CompletableFuture<Void> start = Startables.deepStart(elasticsearch, postgres, alfresco, activemq, transformCore, transformRouter, liveIndexer, sfs);
+        CompletableFuture<Void> start = Startables.deepStart(elasticsearch, postgres, activemq, transformCore, transformRouter, liveIndexer, sfs);
 
         try
         {
             start.get();
         } catch (Exception e)
         {
-            Assert.fail("unable to start containers");
+            Assert.fail("unable to start support containers ");
         }
+
+        CompletableFuture<Void> alfresco = Startables.deepStart(alfresco);
+        try
+        {
+            alfresco.get();
+        } catch (Exception e)
+        {
+            Assert.fail("unable to start Alfresco containers");
+        }
+
 
         TestPropertySourceUtils.addInlinedPropertiesToEnvironment(configurableApplicationContext,
                                                                   "alfresco.server=" + alfresco.getContainerIpAddress(),
