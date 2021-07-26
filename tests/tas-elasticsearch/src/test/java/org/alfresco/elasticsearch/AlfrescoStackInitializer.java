@@ -84,21 +84,28 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                                    .withEnv("JAVA_OPTS", "-Xms256m -Xmx512m")
                                                    .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
                                                    .withEnv("CORE_AIO_URL", "http://transform-core-aio:8090")
-                                                   .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file");
+                                                   .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
+                                                   .withExposedPorts(8095)
+                                                   .waitingFor(Wait.forListeningPort());
+
 
         GenericContainer transformCore = new GenericContainer("alfresco/alfresco-transform-core-aio:" + env.getProperty("TRANSFORMERS_TAG"))
                                                  .withNetwork(network)
                                                  .withNetworkAliases("transform-core-aio")
                                                  .withEnv("JAVA_OPTS", "-Xms256m -Xmx1536m")
                                                  .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
-                                                 .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file");
+                                                 .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
+                                                 .withExposedPorts(8090)
+                                                 .waitingFor(Wait.forListeningPort());
 
         GenericContainer sfs = new GenericContainer("alfresco/alfresco-shared-file-store:" + env.getProperty("SFS_TAG"))
                                        .withNetwork(network)
                                        .withNetworkAliases("shared-file-store")
                                        .withEnv("JAVA_OPTS", "-Xms256m -Xmx512m")
                                        .withEnv("scheduler.content.age.millis", "86400000")
-                                       .withEnv("scheduler.cleanup.interval", "86400000");
+                                       .withEnv("scheduler.cleanup.interval", "86400000")
+                                       .withExposedPorts(8099)
+                                       .waitingFor(Wait.forListeningPort());
 
         PostgreSQLContainer postgres = (PostgreSQLContainer) new PostgreSQLContainer("postgres:" + env.getProperty("POSTGRES_TAG"))
                                                                      .withPassword("alfresco")
