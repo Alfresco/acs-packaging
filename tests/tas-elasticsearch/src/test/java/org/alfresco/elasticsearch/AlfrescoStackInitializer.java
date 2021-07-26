@@ -73,7 +73,6 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                     "-Xms1500m -Xmx1500m ")
                            .withNetwork(network)
                            .withNetworkAliases("alfresco")
-                           .withLogConsumer(new Slf4jLogConsumer(LOGGER))
                            .waitingFor(new LogMessageWaitStrategy()
                                                .withRegEx(".*Server startup in.*\\n")
                                                .withStartupTimeout(Duration.ofSeconds(400)))
@@ -119,7 +118,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 .withNetworkAliases("elasticsearch")
                                 .withExposedPorts(9200)
                                 .withEnv("xpack.security.enabled", "false")
-                                .withEnv("discovery.type", "single-node");
+                                .withEnv("discovery.type", "single-node")
+                                .withLogConsumer(new Slf4jLogConsumer(LOGGER));
 
         liveIndexer = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-live-indexing:" + env.getProperty("ES_CONNECTOR_TAG"))
                               .withNetwork(network)
