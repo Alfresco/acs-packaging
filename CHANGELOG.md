@@ -1,3 +1,31 @@
+<h1>        7.0.0.2
+</h1>
+<h2>        Security Improvements
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/PRODSEC-4422'>PRODSEC-4422</a>] -         An unprivileged attacker can run arbitrary code on the server, compromising it: RCE in rules' scripts for shared folders - script action execution no longer allows to execute scripts outside of Data Dictionary/Scripts
+</li>
+<li>[<a href='https://alfresco.atlassian.net/browse/PRODSEC-4421'>PRODSEC-4421</a>] -         An attacker user can gain full control of another user session. Stored cross site scripting (XSS) in Alfresco
+</li>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-21611'>MNT-21611</a>] -         [Security] Blind Server Side Request Forgery - Removed HTML transformation pipelines that use LibreOffice
+</li>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-21902'>MNT-21902</a>] -         ATS Issue Overriding Local Transform
+</li>
+<li>[<a href='https://alfresco.atlassian.net/browse/ACS-1488'>ACS-1488</a>] -         S3 Connector 4.0.0.1 Hot Fix Release
+</li>
+</ul>
+
+<h1>        7.0.0.1
+</h1>
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-22300'>MNT-22300</a>] -         Performance of property update in 7.0.0
+</li>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-22301'>MNT-22301</a>] -         Query Accelerator - datetime & stores
+</li>
+</ul>
+
 <h1>        7.0.0
 </h1>
 <h2>
