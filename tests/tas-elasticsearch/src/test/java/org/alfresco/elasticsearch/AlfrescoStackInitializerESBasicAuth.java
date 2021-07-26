@@ -1,11 +1,14 @@
 package org.alfresco.elasticsearch;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.support.TestPropertySourceUtils;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
@@ -17,7 +20,10 @@ import java.time.Duration;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 
-public class AlfrescoStackInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext>
+/**
+ * ACS Stack Docker Compose initializer with Basic Authentication for Elasticsearch service.
+ */
+public class AlfrescoStackInitializerESBasicAuth implements ApplicationContextInitializer<ConfigurableApplicationContext>
 {
 
     public static Network network;
@@ -27,6 +33,10 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     public static ElasticsearchContainer elasticsearch;
 
     public static GenericContainer liveIndexer;
+
+    // Default Elasticsearch credentials
+    private static final String ELASTICSEARCH_USERNAME = "elastic";
+    private static final String ELASTICSEARCH_PASSWORD = "bob123";
 
     @Override
     public void initialize(ConfigurableApplicationContext configurableApplicationContext)
@@ -42,8 +52,10 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                     "-Dencryption.cipherAlgorithm=DESede/CBC/PKCS5Padding " +
                                     "-Dencryption.keyAlgorithm=DESede " +
                                     "-Dencryption.keystore.location=/usr/local/tomcat/shared/classes/alfresco/extension/keystore/keystore " +
-                                    "-Dmetadata-keystore.password=mp6yc0UD9e -Dmetadata-keystore.aliases=metadata " +
-                                    "-Dmetadata-keystore.metadata.password=oKIWzVdEdA -Dmetadata-keystore.metadata.algorithm=DESede")
+                                    "-Dmetadata-keystore.password=mp6yc0UD9e " +
+                                    "-Dmetadata-keystore.aliases=metadata " +
+                                    "-Dmetadata-keystore.metadata.password=oKIWzVdEdA " +
+                                    "-Dmetadata-keystore.metadata.algorithm=DESede")
                            .withEnv("JAVA_OPTS",
                                     "-Delasticsearch.createIndexIfNotExists=true " +
                                     "-Ddb.driver=org.postgresql.Driver " +
@@ -53,6 +65,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                     "-Dindex.subsystem.name=elasticsearch " +
                                     "-Delasticsearch.host=elasticsearch " +
                                     "-Delasticsearch.indexName=custom-alfresco-index " +
+                                    "-Delasticsearch.user=" + ELASTICSEARCH_USERNAME + " " +
+                                    "-Delasticsearch.password=" + ELASTICSEARCH_PASSWORD + " " +
                                     "-Dshare.host=127.0.0.1 " +
                                     "-Dshare.port=8080 " +
                                     "-Dalfresco.host=localhost " +
@@ -113,14 +127,17 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 .withNetwork(network)
                                 .withNetworkAliases("elasticsearch")
                                 .withExposedPorts(9200)
-                                .withEnv("xpack.security.enabled", "false")
-                                .withEnv("discovery.type", "single-node");
+                                .withEnv("xpack.security.enabled", "true")
+                                .withEnv("discovery.type", "single-node")
+                                .withEnv("ELASTIC_PASSWORD", ELASTICSEARCH_PASSWORD);
 
         liveIndexer = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-live-indexing:" + env.getProperty("ES_CONNECTOR_TAG"))
                               .withNetwork(network)
                               .withNetworkAliases("live-indexing")
                               .withEnv("ELASTICSEARCH_INDEXNAME", "custom-alfresco-index")
                               .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200")
+                              .withEnv("SPRING_ELASTICSEARCH_REST_USERNAME", ELASTICSEARCH_USERNAME)
+                              .withEnv("SPRING_ELASTICSEARCH_REST_PASSWORD", ELASTICSEARCH_PASSWORD)
                               .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
                               .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
                               .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config");

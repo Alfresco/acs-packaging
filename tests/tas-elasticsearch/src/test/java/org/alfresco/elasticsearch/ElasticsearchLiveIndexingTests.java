@@ -178,7 +178,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
 
             // this test must found only one documents, while documents in the system are four because 
             // only one contains the word "first".
-            assertResponseAndResult(search, FILE_0_NAME);
+            assertResponseAndResult(client, search, FILE_0_NAME);
         });
     }
 
@@ -196,7 +196,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
 
             SearchResponse search = client.authenticateUser(userSite1).withSearchAPI().search(query);
 
-            assertResponseAndResult(search, FILE_0_NAME, FILE_1_NAME, FILE_3_NAME);
+            assertResponseAndResult(client, search, FILE_0_NAME, FILE_1_NAME, FILE_3_NAME);
 
         });
     }
@@ -217,7 +217,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
 
             //even if the user has access only to a site with 1 document the search will returns two documents 
             //because he is the owner of a document on a site where he hasn't any permission
-            assertResponseAndResult(search, FILE_3_NAME, FILE_2_NAME);
+            assertResponseAndResult(client, search, FILE_3_NAME, FILE_2_NAME);
         });
     }
 
@@ -235,7 +235,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
 
             SearchResponse search = client.authenticateUser(userMultiSite).withSearchAPI().search(query);
 
-            assertResponseAndResult(search, FILE_0_NAME, FILE_1_NAME, FILE_3_NAME, FILE_2_NAME);
+            assertResponseAndResult(client, search, FILE_0_NAME, FILE_1_NAME, FILE_3_NAME, FILE_2_NAME);
         });
     }
 
@@ -257,7 +257,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
 
             SearchResponse search = client.authenticateUser(userSite1).withSearchAPI().search(query);
 
-            assertResponseAndResult(search, BEFORE_1970_TXT);
+            assertResponseAndResult(client, search, BEFORE_1970_TXT);
         });
     }
 
@@ -294,12 +294,12 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
         }
     }
 
-    public <T> boolean listEqualsIgnoreOrder(List<T> list1, List<T> list2)
+    public static <T> boolean listEqualsIgnoreOrder(List<T> list1, List<T> list2)
     {
         return new HashSet<>(list1).equals(new HashSet<>(list2));
     }
 
-    private void assertResponseAndResult(SearchResponse actual, String... expected)
+    public static void assertResponseAndResult(RestWrapper client, SearchResponse actual, String... expected)
     {
         client.assertStatusCodeIs(HttpStatus.OK);
 
