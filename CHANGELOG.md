@@ -1,3 +1,14 @@
+<h1>        7.0.1.1
+</h1>
+<h2>        Security Improvements
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/PRODSEC-4422'>PRODSEC-4422</a>] -         An unprivileged attacker can run arbitrary code on the server, compromising it: RCE in rules' scripts for shared folders - script action execution no longer allows to execute scripts outside of Data Dictionary/Scripts
+</li>
+<li>[<a href='https://alfresco.atlassian.net/browse/PRODSEC-4421'>PRODSEC-4421</a>] -         An attacker user can gain full control of another user session. Stored cross site scripting (XSS) in Alfresco
+</li>
+</ul>
+
 <h1>        7.0.1
 </h1>
 <li>Removal of 3rd party libraries
