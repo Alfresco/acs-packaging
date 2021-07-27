@@ -72,7 +72,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
             Startables.deepStart(startables).get();
         } catch (Exception e)
         {
-            Assert.fail("Unable to start support containers", e);
+            Assert.fail("Unable to start containers", e);
         }
 
     }
@@ -105,6 +105,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                        .withNetwork(network)
                        .withNetworkAliases("activemq")
                        .waitingFor(Wait.forListeningPort())
+                       .withStartupTimeout(Duration.ofMinutes(2))
                        .withExposedPorts(61616, 8161, 5672, 61613);
     }
 
@@ -115,7 +116,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                              .withUsername("alfresco")
                                              .withDatabaseName("alfresco")
                                              .withNetwork(network)
-                                             .withNetworkAliases("postgres");
+                                             .withNetworkAliases("postgres")
+                                             .withStartupTimeout(Duration.ofMinutes(2));
     }
 
     private GenericContainer createSfsContainer(Properties env)
@@ -127,7 +129,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                        .withEnv("scheduler.content.age.millis", "86400000")
                        .withEnv("scheduler.cleanup.interval", "86400000")
                        .withExposedPorts(8099)
-                       .waitingFor(Wait.forListeningPort());
+                       .waitingFor(Wait.forListeningPort())
+                       .withStartupTimeout(Duration.ofMinutes(2));
     }
 
     private GenericContainer createTransformCoreContainer(Properties env)
@@ -139,7 +142,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                        .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
                        .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
                        .withExposedPorts(8090)
-                       .waitingFor(Wait.forListeningPort());
+                       .waitingFor(Wait.forListeningPort())
+                       .withStartupTimeout(Duration.ofMinutes(2));
     }
 
     private GenericContainer createTransformRouterContainer(Properties env)
@@ -152,7 +156,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                        .withEnv("CORE_AIO_URL", "http://transform-core-aio:8090")
                        .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
                        .withExposedPorts(8095)
-                       .waitingFor(Wait.forListeningPort());
+                       .waitingFor(Wait.forListeningPort())
+                       .withStartupTimeout(Duration.ofMinutes(2));
     }
 
     private GenericContainer createAlfrescoContainer()
@@ -190,9 +195,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 "-Xms1500m -Xmx1500m ")
                        .withNetwork(network)
                        .withNetworkAliases("alfresco")
-                       .waitingFor(new LogMessageWaitStrategy()
-                                           .withRegEx(".*Server startup in.*\\n")
-                                           .withStartupTimeout(Duration.ofSeconds(400)))
+                       .waitingFor(new LogMessageWaitStrategy().withRegEx(".*Server startup in.*\\n"))
+                       .withStartupTimeout(Duration.ofMinutes(7))
                        .withExposedPorts(8080);
     }
 
