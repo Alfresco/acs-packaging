@@ -3,11 +3,9 @@
 <suite name="REST API tests Elasticsearch" preserve-order="true" verbose="1">
   <test name="elasticsearch" verbose="3" preserve-order="true">
     <classes>
-      <!--
       <class name="org.alfresco.elasticsearch.ElasticsearchAdminConsoleTests"></class>
       <class name="org.alfresco.elasticsearch.ElasticsearchLiveIndexingTests"></class>
       <class name="org.alfresco.elasticsearch.ElasticsearchReindexingTests"></class>
-      -->
       <class name="org.alfresco.elasticsearch.ElasticsearchBasicAuthTests"></class>
     </classes>
   </test>

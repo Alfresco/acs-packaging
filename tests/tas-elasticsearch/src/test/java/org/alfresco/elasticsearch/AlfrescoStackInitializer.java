@@ -1,11 +1,14 @@
 package org.alfresco.elasticsearch;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.support.TestPropertySourceUtils;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
@@ -28,6 +31,9 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     public static ElasticsearchContainer elasticsearch;
 
     public static GenericContainer liveIndexer;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AlfrescoStackInitializer.class);
+    private Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(LOGGER);
 
     @Override
     public void initialize(ConfigurableApplicationContext configurableApplicationContext)
@@ -129,6 +135,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         startOrFail(elasticsearch, postgres, activemq, transformCore, transformRouter, liveIndexer, sfs);
 
         startOrFail(alfresco);
+
+        alfresco.followOutput(logConsumer);
 
         TestPropertySourceUtils.addInlinedPropertiesToEnvironment(configurableApplicationContext,
             "alfresco.server=" + alfresco.getContainerIpAddress(),
