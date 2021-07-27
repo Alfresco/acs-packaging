@@ -70,10 +70,10 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                     "-Xms1500m -Xmx1500m ")
                            .withNetwork(network)
                            .withNetworkAliases("alfresco")
-                           .waitingFor(new LogMessageWaitStrategy()
-                                               .withRegEx(".*Server startup in.*\\n")
-                                               .withStartupTimeout(Duration.ofSeconds(400)))
+                           .waitingFor(new LogMessageWaitStrategy().withRegEx(".*Server startup in.*\\n"))
+                           .withStartupTimeout(Duration.ofMinutes(7))
                            .withExposedPorts(8080);
+
 
         GenericContainer transformRouter = new GenericContainer("quay.io/alfresco/alfresco-transform-router:" + env.getProperty("TRANSFORM_ROUTER_TAG"))
                                                    .withNetwork(network)

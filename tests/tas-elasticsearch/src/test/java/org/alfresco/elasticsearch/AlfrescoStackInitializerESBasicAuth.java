@@ -39,6 +39,9 @@ public class AlfrescoStackInitializerESBasicAuth implements ApplicationContextIn
     private static final String ELASTICSEARCH_USERNAME = "elastic";
     private static final String ELASTICSEARCH_PASSWORD = "bob123";
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AlfrescoStackInitializerESBasicAuth.class);
+    private Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(LOGGER);
+
     @Override
     public void initialize(ConfigurableApplicationContext configurableApplicationContext)
     {
@@ -84,9 +87,8 @@ public class AlfrescoStackInitializerESBasicAuth implements ApplicationContextIn
                                     "-Xms1500m -Xmx1500m ")
                            .withNetwork(network)
                            .withNetworkAliases("alfresco")
-                           .waitingFor(new LogMessageWaitStrategy()
-                                               .withRegEx(".*Server startup in.*\\n")
-                                               .withStartupTimeout(Duration.ofSeconds(400)))
+                           .waitingFor(new LogMessageWaitStrategy().withRegEx(".*Server startup in.*\\n"))
+                           .withStartupTimeout(Duration.ofMinutes(7))
                            .withExposedPorts(8080);
 
         GenericContainer transformRouter = new GenericContainer("quay.io/alfresco/alfresco-transform-router:" + env.getProperty("TRANSFORM_ROUTER_TAG"))
@@ -146,6 +148,8 @@ public class AlfrescoStackInitializerESBasicAuth implements ApplicationContextIn
         startOrFail(elasticsearch, postgres, activemq, transformCore, transformRouter, liveIndexer, sfs);
 
         startOrFail(alfresco);
+
+        alfresco.followOutput(logConsumer);
 
         TestPropertySourceUtils.addInlinedPropertiesToEnvironment(configurableApplicationContext,
             "alfresco.server=" + alfresco.getContainerIpAddress(),
