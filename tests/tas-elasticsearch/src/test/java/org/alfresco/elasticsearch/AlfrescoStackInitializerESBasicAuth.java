@@ -12,6 +12,7 @@ import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
+import org.testcontainers.lifecycle.Startable;
 import org.testcontainers.lifecycle.Startables;
 import org.testng.Assert;
 
@@ -142,19 +143,29 @@ public class AlfrescoStackInitializerESBasicAuth implements ApplicationContextIn
                               .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
                               .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config");
 
-        CompletableFuture<Void> start = Startables.deepStart(elasticsearch, postgres, alfresco, activemq, transformCore, transformRouter, liveIndexer, sfs);
+        startOrFail(elasticsearch, postgres, activemq, transformCore, transformRouter, liveIndexer, sfs);
 
-        try
-        {
-            start.get();
-        } catch (Exception e)
-        {
-            Assert.fail("unable to start containers");
-        }
+        startOrFail(alfresco);
+
+        TestPropertySourceUtils.addInlinedPropertiesToEnvironment(configurableApplicationContext,
+            "alfresco.server=" + alfresco.getContainerIpAddress(),
+            "alfresco.port=" + alfresco.getFirstMappedPort());
 
         TestPropertySourceUtils.addInlinedPropertiesToEnvironment(configurableApplicationContext,
                                                                   "alfresco.server=" + alfresco.getContainerIpAddress(),
                                                                   "alfresco.port=" + alfresco.getFirstMappedPort());
+
+    }
+
+    private void startOrFail(Startable... startables)
+    {
+        try
+        {
+            Startables.deepStart(startables).get();
+        } catch (Exception e)
+        {
+            Assert.fail("Unable to start support containers", e);
+        }
 
     }
 
