@@ -1,6 +1,65 @@
+<h1>        6.0.1.8
+</h1>
+<h2>        Security Improvements
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/PRODSEC-4422'>PRODSEC-4422</a>] -         An unprivileged attacker can run arbitrary code on the server, compromising it: RCE in rules' scripts for shared folders - script action execution no longer allows to execute scripts outside of Data Dictionary/Scripts
+</li>
+<li>[<a href='https://alfresco.atlassian.net/browse/PRODSEC-4421'>PRODSEC-4421</a>] -         An attacker user can gain full control of another user session. Stored cross site scripting (XSS) in Alfresco
+</li>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-21611'>MNT-21611</a>] -         [Security] Blind Server Side Request Forgery - Removed HTML transformation pipelines that use LibreOffice
+</li>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-20518'>MNT-20518</a>] -         [Security] CVE-2018-1000632 dom4j XML injection vulnerability (REPO-4514)
+</li>
+</ul>
+
+<h1>        6.0.1.6
+</h1>
+<h2>        Hotfix Request
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21736'>MNT-21736</a>] - Access to downloadable zip is not restricted to their owner
+</li>
+</ul>
+
+<h1>        6.0.1.5
+</h1>
+<h2>        Hotfix Request
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21619'>MNT-21619</a>] - Alfresco Content Services 6.0.1.4 does not run on JDK 8. JDK 8 is supported version for ACS 6.0.1.4
+</li>
+</ul>
+
+<h1>        6.0.1.4
+</h1>
+<h2>        Hotfix Request
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-21573'>MNT-21573</a>] - Server-Side Template Injection
+</li>
+</ul>
+
+<h1>        6.0.1.3
+</h1>
+<h2>        Hotfix Request
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/MNT-20593'>MNT-20593</a>] - [Security] Full repository access for all unauthenticated users
+</li>
+</ul>
+
+<h1>        6.0.1.2
+</h1>
+<h2>        Hotfix Request
+</h2>
+<ul>
+<li>[<a href='https://issues.alfresco.com/jira/browse/REPO-4123'>REPO-4123</a>] - ACS 6.1 RC3 Distribution zip contains wti-bin.war instead of _vti_bin.war
+</li>
+</ul>
+
 <h1>        6.0.1.1
 </h1>
-
 <h2>        Service Pack Request
 </h2>
 <ul>
