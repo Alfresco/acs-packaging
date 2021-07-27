@@ -151,10 +151,6 @@ public class AlfrescoStackInitializerESBasicAuth implements ApplicationContextIn
             "alfresco.server=" + alfresco.getContainerIpAddress(),
             "alfresco.port=" + alfresco.getFirstMappedPort());
 
-        TestPropertySourceUtils.addInlinedPropertiesToEnvironment(configurableApplicationContext,
-                                                                  "alfresco.server=" + alfresco.getContainerIpAddress(),
-                                                                  "alfresco.port=" + alfresco.getFirstMappedPort());
-
     }
 
     private void startOrFail(Startable... startables)
