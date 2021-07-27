@@ -224,7 +224,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
     private void expectResultsFromQuery(String queryString, org.alfresco.utility.model.UserModel user, String... expected) throws Exception
     {
-        Utility.sleep(1000, 10000, () -> {
+        Utility.sleep(1000, 20000, () -> {
             SearchRequest query = new SearchRequest();
             RestRequestQueryModel queryReq = new RestRequestQueryModel();
             queryReq.setQuery(queryString);
