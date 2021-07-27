@@ -120,7 +120,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void searchCanFindAFileUsingIncludeParameter() throws Exception
     {
-        Utility.sleep(1000, 10000, () -> {
+        Utility.sleep(1000, 20000, () -> {
             RestRequestQueryModel queryReq = new RestRequestQueryModel();
             queryReq.setQuery("first");
 
@@ -168,7 +168,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void searchCanFindAFile() throws Exception
     {
-        Utility.sleep(1000, 10000, () -> {
+        Utility.sleep(1000, 20000, () -> {
             SearchRequest query = new SearchRequest();
             RestRequestQueryModel queryReq = new RestRequestQueryModel();
             queryReq.setQuery("first");
@@ -188,7 +188,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void searchCanFindFilesOnASite() throws Exception
     {
-        Utility.sleep(1000, 10000, () -> {
+        Utility.sleep(1000, 20000, () -> {
             SearchRequest query = new SearchRequest();
             RestRequestQueryModel queryReq = new RestRequestQueryModel();
             queryReq.setQuery("test");
@@ -207,7 +207,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void searchCanFindAFileOnMultipleSitesWithOwner() throws Exception
     {
-        Utility.sleep(1000, 10000, () -> {
+        Utility.sleep(1000, 20000, () -> {
             SearchRequest query = new SearchRequest();
             RestRequestQueryModel queryReq = new RestRequestQueryModel();
             queryReq.setQuery("test");
@@ -227,7 +227,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void searchCanFindAFileOnMultipleSites() throws Exception
     {
-        Utility.sleep(1000, 10000, () -> {
+        Utility.sleep(1000, 20000, () -> {
             SearchRequest query = new SearchRequest();
             RestRequestQueryModel queryReq = new RestRequestQueryModel();
             queryReq.setQuery("test");
@@ -249,7 +249,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
         createNodeWithProperties(siteModel1, new FileModel(BEFORE_1970_TXT, FileType.TEXT_PLAIN), userSite1,
                                  Map.of("cm:from", -2637887000L));
 
-        Utility.sleep(1000, 10000, () -> {
+        Utility.sleep(1000, 20000, () -> {
             SearchRequest query = new SearchRequest();
             RestRequestQueryModel queryReq = new RestRequestQueryModel();
             queryReq.setQuery("cm:from:1969-12-01T11:15:13Z");

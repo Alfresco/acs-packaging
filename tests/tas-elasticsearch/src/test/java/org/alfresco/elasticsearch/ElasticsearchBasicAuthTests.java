@@ -73,7 +73,7 @@ public class ElasticsearchBasicAuthTests extends AbstractTestNGSpringContextTest
     public void searchCanFindAFile() throws Exception
     {
 
-        Utility.sleep(1000, 10000, () -> {
+        Utility.sleep(1000, 20000, () -> {
           SearchRequest query = new SearchRequest();
           RestRequestQueryModel queryReq = new RestRequestQueryModel();
           queryReq.setQuery("first");
