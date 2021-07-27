@@ -77,7 +77,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     }
 
-    private GenericContainer createLiveIndexingContainer(Properties env)
+    protected GenericContainer createLiveIndexingContainer(Properties env)
     {
         return new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-live-indexing:" + env.getProperty("ES_CONNECTOR_TAG"))
                        .withNetwork(network)
@@ -89,7 +89,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                        .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config");
     }
 
-    private ElasticsearchContainer createElasticContainer(Properties env)
+    protected ElasticsearchContainer createElasticContainer(Properties env)
     {
         return new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch:" + env.getProperty("ES_TAG"))
                        .withNetwork(network)
@@ -160,7 +160,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                        .withStartupTimeout(Duration.ofMinutes(2));
     }
 
-    private GenericContainer createAlfrescoContainer()
+    protected GenericContainer createAlfrescoContainer()
     {
         return new GenericContainer("alfresco/alfresco-content-repository:latest")
                        .withEnv("JAVA_TOOL_OPTIONS",
