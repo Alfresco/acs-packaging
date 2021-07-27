@@ -48,159 +48,159 @@ install: travis_retry travis_wait 40 bash scripts/travis/build.sh
 
 jobs:
   include:
-    - name: "REST API TAS tests part1"
-      if: commit_message =~ /\[tas\]/
-      before_script:
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-rest-api-tests.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 60 mvn -B install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-part1 -Denvironment=default -DrunBugs=false
-
-    - name: "REST API TAS tests part2"
-      if: commit_message =~ /\[tas\]/
-      before_script:
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-rest-api-tests.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 60 mvn -B install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-part2 -Denvironment=default -DrunBugs=false
-
-    - name: "REST API TAS tests part3"
-      if: commit_message =~ /\[tas\]/
-      before_script:
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-rest-api-tests.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 60 mvn -B install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-part3 -Denvironment=default -DrunBugs=false
-
-    - name: "CMIS TAS tests - BROWSER binding"
-      if: commit_message =~ /\[tas\]/
-      before_script:
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-tests.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 40 mvn -B install -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-browser -Denvironment=default -DrunBugs=false
-
-    - name: "CMIS TAS tests - ATOM binding"
-      if: commit_message =~ /\[tas\]/
-      before_script:
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-tests.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 40 mvn -B install -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-atom -Denvironment=default -DrunBugs=false
-
-    - name: "CMIS TAS tests - WEBSERVICES binding"
-      if: commit_message =~ /\[tas\]/
-      before_script:
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-tests.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 40 mvn -B install -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-webservices -Denvironment=default -DrunBugs=false
-
-    - name: "Email TAS tests"
-      if: commit_message =~ /\[tas\]/
-      before_script:
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-email-tests.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 30 mvn -B install -f tests/tas-email/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
-
-    - name: "WebDAV TAS tests"
-      if: commit_message =~ /\[tas\]/
-      before_script:
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-minimal.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 20 mvn -B install -f tests/tas-webdav/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
-
-    - name: "Integration TAS tests"
-      if: commit_message =~ /\[tas\]/
-      before_script:
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-integration-tests.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 30 mvn -B install -f tests/tas-integration/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
-
-    - name: "LDAP TAS tests"
-      if: commit_message =~ /\[tas\]/
-      before_script:
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-with-ldap.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 60 mvn -B install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-ldap -Denvironment=default -DrunBugs=false
-        - travis_wait 10 mvn -B install -f tests/tas-integration/pom.xml -Prun-ldap -Denvironment=default -DrunBugs=false
-
-    - name: "REST API TAS tests with AIMS"
-      if: commit_message !~ /\[skip tas\]/ AND fork = false # AIMS docker image requires access to quay.io
-      before_script:
-        # AIMS cannot be configured via localhost
-        - export HOST_IP=$(hostname  -I | cut -f1 -d' ')
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-aims.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco" 180
-      script:
-        - travis_wait 60 mvn -B install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
-
-    - name: "CMIS TAS tests with AIMS - BROWSER binding"
-      if: commit_message !~ /\[skip tas\]/ AND fork = false # AIMS docker image requires access to quay.io
-      before_script:
-        # AIMS cannot be configured via localhost
-        - export HOST_IP=$(hostname  -I | cut -f1 -d' ')
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-aims.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco" 180
-      script:
-        - travis_wait 40 mvn -B install -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-browser-with-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
-
-    - name: "CMIS TAS tests with AIMS - ATOM binding"
-      if: commit_message !~ /\[skip tas\]/ AND fork = false # AIMS docker image requires access to quay.io
-      before_script:
-        # AIMS cannot be configured via localhost
-        - export HOST_IP=$(hostname  -I | cut -f1 -d' ')
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-aims.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco" 180
-      script:
-        - travis_wait 40 mvn -B install -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-atom-with-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
-
-    - name: "Sync Service TAS tests"
-      if: commit_message !~ /\[skip tas\]/
-      before_script:
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-sync-service.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 20 mvn -B install -f tests/tas-sync-service/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
-
+    # - name: "REST API TAS tests part1"
+    #   if: commit_message =~ /\[tas\]/
+    #   before_script:
+    #     - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-rest-api-tests.yml
+    #     - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+    #   script:
+    #     - travis_wait 60 mvn -B install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-part1 -Denvironment=default -DrunBugs=false
+    #
+    # - name: "REST API TAS tests part2"
+    #   if: commit_message =~ /\[tas\]/
+    #   before_script:
+    #     - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-rest-api-tests.yml
+    #     - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+    #   script:
+    #     - travis_wait 60 mvn -B install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-part2 -Denvironment=default -DrunBugs=false
+    #
+    # - name: "REST API TAS tests part3"
+    #   if: commit_message =~ /\[tas\]/
+    #   before_script:
+    #     - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-rest-api-tests.yml
+    #     - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+    #   script:
+    #     - travis_wait 60 mvn -B install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-part3 -Denvironment=default -DrunBugs=false
+    #
+    # - name: "CMIS TAS tests - BROWSER binding"
+    #   if: commit_message =~ /\[tas\]/
+    #   before_script:
+    #     - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-tests.yml
+    #     - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+    #   script:
+    #     - travis_wait 40 mvn -B install -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-browser -Denvironment=default -DrunBugs=false
+    #
+    # - name: "CMIS TAS tests - ATOM binding"
+    #   if: commit_message =~ /\[tas\]/
+    #   before_script:
+    #     - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-tests.yml
+    #     - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+    #   script:
+    #     - travis_wait 40 mvn -B install -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-atom -Denvironment=default -DrunBugs=false
+    #
+    # - name: "CMIS TAS tests - WEBSERVICES binding"
+    #   if: commit_message =~ /\[tas\]/
+    #   before_script:
+    #     - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-tests.yml
+    #     - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+    #   script:
+    #     - travis_wait 40 mvn -B install -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-webservices -Denvironment=default -DrunBugs=false
+    #
+    # - name: "Email TAS tests"
+    #   if: commit_message =~ /\[tas\]/
+    #   before_script:
+    #     - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-email-tests.yml
+    #     - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+    #   script:
+    #     - travis_wait 30 mvn -B install -f tests/tas-email/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+    #
+    # - name: "WebDAV TAS tests"
+    #   if: commit_message =~ /\[tas\]/
+    #   before_script:
+    #     - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-minimal.yml
+    #     - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+    #   script:
+    #     - travis_wait 20 mvn -B install -f tests/tas-webdav/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+    #
+    # - name: "Integration TAS tests"
+    #   if: commit_message =~ /\[tas\]/
+    #   before_script:
+    #     - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-integration-tests.yml
+    #     - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+    #   script:
+    #     - travis_wait 30 mvn -B install -f tests/tas-integration/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+    #
+    # - name: "LDAP TAS tests"
+    #   if: commit_message =~ /\[tas\]/
+    #   before_script:
+    #     - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-with-ldap.yml
+    #     - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+    #   script:
+    #     - travis_wait 60 mvn -B install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-ldap -Denvironment=default -DrunBugs=false
+    #     - travis_wait 10 mvn -B install -f tests/tas-integration/pom.xml -Prun-ldap -Denvironment=default -DrunBugs=false
+    #
+    # - name: "REST API TAS tests with AIMS"
+    #   if: commit_message !~ /\[skip tas\]/ AND fork = false # AIMS docker image requires access to quay.io
+    #   before_script:
+    #     # AIMS cannot be configured via localhost
+    #     - export HOST_IP=$(hostname  -I | cut -f1 -d' ')
+    #     - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-aims.yml
+    #     - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco" 180
+    #   script:
+    #     - travis_wait 60 mvn -B install -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
+    #
+    # - name: "CMIS TAS tests with AIMS - BROWSER binding"
+    #   if: commit_message !~ /\[skip tas\]/ AND fork = false # AIMS docker image requires access to quay.io
+    #   before_script:
+    #     # AIMS cannot be configured via localhost
+    #     - export HOST_IP=$(hostname  -I | cut -f1 -d' ')
+    #     - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-aims.yml
+    #     - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco" 180
+    #   script:
+    #     - travis_wait 40 mvn -B install -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-browser-with-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
+    #
+    # - name: "CMIS TAS tests with AIMS - ATOM binding"
+    #   if: commit_message !~ /\[skip tas\]/ AND fork = false # AIMS docker image requires access to quay.io
+    #   before_script:
+    #     # AIMS cannot be configured via localhost
+    #     - export HOST_IP=$(hostname  -I | cut -f1 -d' ')
+    #     - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-aims.yml
+    #     - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco" 180
+    #   script:
+    #     - travis_wait 40 mvn -B install -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-atom-with-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
+    #
+    # - name: "Sync Service TAS tests"
+    #   if: commit_message !~ /\[skip tas\]/
+    #   before_script:
+    #     - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-sync-service.yml
+    #     - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+    #   script:
+    #     - travis_wait 20 mvn -B install -f tests/tas-sync-service/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+    #
     - name: "Elasticsearch TAS tests"
       if: commit_message !~ /\[skip search\]/
       script:
         - travis_wait 30 mvn -B install -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
-    - name: "All AMPs tests"
-      before_script:
-        - travis_retry travis_wait 20 mvn -B -q install -f tests/tas-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
-      script:
-        - ./tests/scripts/checkLibraryDuplicates.sh ./tests/tas-all-amps/target/war/alfresco/WEB-INF/lib
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-all-amps-test.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-        - travis_wait 20 mvn -B install -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
-
-    # Test local repo and share docker images that will be used in the single pipeline. Tag:latest
-    - name: "Single Pipeline image tests"
-      if: fork = false AND type != pull_request
-      before_script:
-        - travis_retry travis_wait 20 mvn -B clean install -Ppipeline,build-docker-images $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-repo.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Drepo.image.tag=latest') $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-share.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Dshare.image.tag=latest')
-        # Show what DTAS will be looking for
-        - cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
-        - pyenv versions
-        - pyenv global 3.7.1
-        - pip install requests pytest==6.2.4 pytest-testinfra==6.3.0 jmespath==0.10.0
-        - git clone --depth 1 --branch $DTAS_VERSION https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
-        - docker images | grep pipeline
-      script:
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/" 180
-        - docker ps
-        # Show what AMPs the repo has installed
-        - curl -v --user admin.pipeline@alfresco.com:admin http://localhost:8080/alfresco/api/discovery
-        - cd dtas
-        - pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
+    # - name: "All AMPs tests"
+    #   before_script:
+    #     - travis_retry travis_wait 20 mvn -B -q install -f tests/tas-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
+    #   script:
+    #     - ./tests/scripts/checkLibraryDuplicates.sh ./tests/tas-all-amps/target/war/alfresco/WEB-INF/lib
+    #     - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-all-amps-test.yml
+    #     - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+    #     - travis_wait 20 mvn -B install -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+    #
+    # # Test local repo and share docker images that will be used in the single pipeline. Tag:latest
+    # - name: "Single Pipeline image tests"
+    #   if: fork = false AND type != pull_request
+    #   before_script:
+    #     - travis_retry travis_wait 20 mvn -B clean install -Ppipeline,build-docker-images $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-repo.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Drepo.image.tag=latest') $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-share.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Dshare.image.tag=latest')
+    #     # Show what DTAS will be looking for
+    #     - cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
+    #     - pyenv versions
+    #     - pyenv global 3.7.1
+    #     - pip install requests pytest==6.2.4 pytest-testinfra==6.3.0 jmespath==0.10.0
+    #     - git clone --depth 1 --branch $DTAS_VERSION https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
+    #     - docker images | grep pipeline
+    #   script:
+    #     - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
+    #     - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/" 180
+    #     - docker ps
+    #     # Show what AMPs the repo has installed
+    #     - curl -v --user admin.pipeline@alfresco.com:admin http://localhost:8080/alfresco/api/discovery
+    #     - cd dtas
+    #     - pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
 
     - name: "Update latest and Single Pipeline <acs>-<build> images"
       stage: docker_latest
