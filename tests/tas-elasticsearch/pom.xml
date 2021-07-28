@@ -14,6 +14,7 @@
 
   <properties>
     <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/elasticsearch-suite.xml</suiteXmlFile>
+    <suiteBasicAuthXmlFile>${project.basedir}/src/test/resources/test-suites/elasticsearch-basic-auth-suite.xml</suiteBasicAuthXmlFile>
     <dependency.testcontainers.version>1.15.3</dependency.testcontainers.version>
     <dependency.elasticsearch-shared.version>3.0.0-M2</dependency.elasticsearch-shared.version>
   </properties>
@@ -91,6 +92,7 @@
           <redirectTestOutputToFile>false</redirectTestOutputToFile>
           <suiteXmlFiles>
             <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
+            <suiteXmlFile>${suiteBasicAuthXmlFile}</suiteXmlFile>
           </suiteXmlFiles>
           <argLine>
             --illegal-access=warn

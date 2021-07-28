@@ -6,7 +6,6 @@
       <class name="org.alfresco.elasticsearch.ElasticsearchAdminConsoleTests"></class>
       <class name="org.alfresco.elasticsearch.ElasticsearchLiveIndexingTests"></class>
       <class name="org.alfresco.elasticsearch.ElasticsearchReindexingTests"></class>
-      <class name="org.alfresco.elasticsearch.ElasticsearchBasicAuthTests"></class>
     </classes>
   </test>
 </suite>
