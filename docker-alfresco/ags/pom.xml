@@ -34,7 +34,7 @@
                                     <artifactId>alfresco-governance-services-enterprise-rest-api-explorer</artifactId>
                                     <version>${dependency.alfresco-enterprise-repo.version}</version>
                                     <type>war</type>
-                                    <destFileName>gs-api-explorer-${project.version}.war</destFileName>
+                                    <destFileName>gs-api-explorer-${dependency.alfresco-enterprise-repo.version}.war</destFileName>
                                     <outputDirectory>${project.build.directory}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
