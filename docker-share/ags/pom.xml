@@ -13,7 +13,6 @@
 
    <properties>
       <alfresco.repo.url>http://localhost:8080/alfresco</alfresco.repo.url>
-      <s3connector.version>3.1.0</s3connector.version>
       <image.name>alfresco/alfresco-governance-share-enterprise</image.name>
    </properties>
 
@@ -36,13 +35,6 @@
                            <artifactId>alfresco-governance-services-enterprise-share</artifactId>
                            <version>${dependency.alfresco-enterprise-share.version}</version>
                            <type>amp</type>
-                        </artifactItem>
-                        <artifactItem>
-                           <groupId>org.alfresco.integrations</groupId>
-                           <artifactId>alfresco-s3-connector</artifactId>
-                           <version>${s3connector.version}</version>
-                           <type>amp</type>
-                           <overWrite>false</overWrite>
                         </artifactItem>
                      </artifactItems>
                      <outputDirectory>${project.build.directory}</outputDirectory>

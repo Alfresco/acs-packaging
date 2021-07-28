@@ -13,7 +13,6 @@
     </parent>
     <properties>
         <image.name>alfresco/alfresco-governance-repository-enterprise</image.name>
-        <s3connector.version>3.1.0</s3connector.version>
     </properties>
 
     <build>
@@ -32,38 +31,20 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
-                                    <artifactId>alfresco-share-services</artifactId>
-                                    <version>${dependency.alfresco-community-repo.version}</version>
-                                    <type>amp</type>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-governance-services-enterprise-rest-api-explorer</artifactId>
                                     <version>${dependency.alfresco-enterprise-repo.version}</version>
                                     <type>war</type>
                                     <destFileName>gs-api-explorer-${project.version}.war</destFileName>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.alfresco</groupId>
-                                    <artifactId>alfresco-governance-services-community-repo</artifactId>
-                                    <version>${dependency.alfresco-community-repo.version}</version>
-                                    <type>amp</type>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-governance-services-enterprise-repo</artifactId>
                                     <version>${dependency.alfresco-enterprise-repo.version}</version>
                                     <type>amp</type>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.alfresco.integrations</groupId>
-                                    <artifactId>alfresco-s3-connector</artifactId>
-                                    <version>${s3connector.version}</version>
-                                    <type>amp</type>
-                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>

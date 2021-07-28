@@ -9,14 +9,13 @@ USER root
 
 ### Copy the AMP from build context to amps
 COPY target/alfresco-governance-services-enterprise-repo-*.amp /usr/local/tomcat/amps/
-COPY target/amps/alfresco-share-services-*.amp /usr/local/tomcat/amps/
 
 # Install amps on alfresco.war
 RUN java -jar /usr/local/tomcat/alfresco-mmt/alfresco-mmt*.jar install \
               /usr/local/tomcat/amps \
               /usr/local/tomcat/webapps/alfresco -directory -nobackup
 ### Copy gs-api-explorer war into webapps folder
-COPY target/amps/gs-api-explorer-*.war /usr/local/tomcat/webapps/
+COPY target/gs-api-explorer-*.war /usr/local/tomcat/webapps/
 
 ### Unpack gs-api-explorer.war
 RUN mkdir /usr/local/tomcat/webapps/gs-api-explorer && cd /usr/local/tomcat/webapps/gs-api-explorer && \
