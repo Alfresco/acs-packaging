@@ -1,4 +1,4 @@
-<h1>        6.0.1.8
+<h1>        6.0.1.9
 </h1>
 <h2>        Security Improvements
 </h2>
