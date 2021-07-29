@@ -3,13 +3,13 @@
 <h2>        Security Improvements
 </h2>
 <ul>
-<li>[<a href='https://alfresco.atlassian.net/browse/PRODSEC-4422'>PRODSEC-4422</a>] -         An unprivileged attacker can run arbitrary code on the server, compromising it: RCE in rules' scripts for shared folders - script action execution no longer allows to execute scripts outside of Data Dictionary/Scripts
+<li>[<a href='https://alfresco.atlassian.net/browse/PRODSEC-4422'>PRODSEC-4422</a>] -         elevation of privileges additional checks
 </li>
-<li>[<a href='https://alfresco.atlassian.net/browse/PRODSEC-4421'>PRODSEC-4421</a>] -         An attacker user can gain full control of another user session. Stored cross site scripting (XSS) in Alfresco
+<li>[<a href='https://alfresco.atlassian.net/browse/PRODSEC-4421'>PRODSEC-4421</a>] -         additional validation for HTML content
 </li>
-<li>[<a href='https://alfresco.atlassian.net/browse/MNT-21611'>MNT-21611</a>] -         [Security] Blind Server Side Request Forgery - Removed HTML transformation pipelines that use LibreOffice
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-21611'>MNT-21611</a>] -         [Security] Removed HTML transformation
 </li>
-<li>[<a href='https://alfresco.atlassian.net/browse/MNT-20518'>MNT-20518</a>] -         [Security] CVE-2018-1000632 dom4j XML injection vulnerability (REPO-4514)
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-20518'>MNT-20518</a>] -         [Security] CVE-2018-1000632 upgrade fix (REPO-4514)
 </li>
 </ul>
 
