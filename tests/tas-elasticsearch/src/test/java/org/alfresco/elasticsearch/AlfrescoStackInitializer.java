@@ -37,6 +37,23 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     public void initialize(ConfigurableApplicationContext configurableApplicationContext)
     {
 
+        // Wait till existing containers are stopped
+        if (alfresco != null)
+        {
+            if (alfresco.getDockerClient().listContainersCmd().withShowAll(true).exec().size() > 0)
+            {
+                try
+                {
+                    LOGGER.info("Waiting for living containers to be stopped...");
+                    Thread.sleep(10000);
+                }
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         Properties env = loadEnvProperties();
 
         network = Network.newNetwork();
