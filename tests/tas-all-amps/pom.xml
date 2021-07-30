@@ -275,7 +275,7 @@
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
                                         </artifactItem>
-                                        <!--<artifactItem>
+                                        <artifactItem>
                                             <groupId>org.alfresco.mediamanagement</groupId>
                                             <artifactId>alfresco-mm-repo</artifactId>
                                             <version>${alfresco.mm.version}</version>
@@ -290,7 +290,7 @@
                                             <type>amp</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
-                                        </artifactItem>-->
+                                        </artifactItem>
                                         <artifactItem>
                                             <groupId>org.alfresco</groupId>
                                             <artifactId>alfresco-document-transformation-engine-repo</artifactId>
