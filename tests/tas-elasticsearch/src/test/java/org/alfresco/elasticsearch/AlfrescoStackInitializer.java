@@ -117,7 +117,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                        .withNetworkAliases("elasticsearch")
                        .withExposedPorts(9200)
                        .withEnv("xpack.security.enabled", "false")
-                       .withEnv("discovery.type", "single-node");
+                       .withEnv("discovery.type", "single-node")
+                       .withEnv("ES_JAVA_OPTS", "-Xms1g -Xmx1g");
     }
 
     private GenericContainer createAMQContainer(Properties env)
