@@ -74,9 +74,13 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         liveIndexer = createLiveIndexingContainer(env);
 
-        startOrFail(postgres, activemq, transformCore, transformRouter, liveIndexer, sfs);
+        startOrFail(postgres, activemq, sfs);
+
+        startOrFail(transformCore, transformRouter);
 
         startOrFail(elasticsearch);
+
+        startOrFail(liveIndexer);
 
         startOrFail(alfresco);
 
@@ -168,7 +172,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                        .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
                        .withExposedPorts(8090)
                        .waitingFor(Wait.forListeningPort())
-                       .withStartupTimeout(Duration.ofMinutes(4));
+                       .withStartupTimeout(Duration.ofMinutes(2));
     }
 
     private GenericContainer createTransformRouterContainer(Properties env)
