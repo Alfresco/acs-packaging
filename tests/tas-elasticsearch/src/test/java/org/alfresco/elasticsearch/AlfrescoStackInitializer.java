@@ -74,11 +74,11 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         liveIndexer = createLiveIndexingContainer(env);
 
+        startOrFail(elasticsearch);
+
         startOrFail(postgres, activemq, sfs);
 
         startOrFail(transformCore, transformRouter);
-
-        startOrFail(elasticsearch);
 
         startOrFail(liveIndexer);
 
