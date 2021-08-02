@@ -33,6 +33,7 @@ public class AlfrescoStackInitializerESBasicAuth extends AlfrescoStackInitialize
             .withExposedPorts(9200)
             .withEnv("xpack.security.enabled", "true")
             .withEnv("discovery.type", "single-node")
+            .withEnv("ES_JAVA_OPTS", "\"-Xms2g -Xmx2g\"")
             .withEnv("ELASTIC_PASSWORD", ELASTICSEARCH_PASSWORD);
     }
 
