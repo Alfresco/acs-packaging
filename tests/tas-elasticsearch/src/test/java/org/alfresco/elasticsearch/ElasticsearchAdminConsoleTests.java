@@ -119,7 +119,7 @@ public class ElasticsearchAdminConsoleTests extends AbstractTestNGSpringContextT
     {
         dataContent.usingUser(user).usingSite(siteModel)
                    .createContent(new FileModel(fileName, FileType.TEXT_PLAIN, "content"));
-        Utility.sleep(1000, 10000, () -> {
+        Utility.sleep(1000, 20000, () -> {
             RestRequestQueryModel queryReq = new RestRequestQueryModel();
             queryReq.setQuery("cm:name:\"" + fileName + "\"");
             SearchResponse search = client.authenticateUser(user).withSearchAPI().search(new SearchRequest(queryReq));
