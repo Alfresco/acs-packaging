@@ -1,3 +1,11 @@
+<h1>        6.2.2.20
+</h1>
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-22512'>MNT-22512</a>] -         CLONE - propTablesCleanupJobDetail v2 can cause Out of Memory errors (CleanAlfPropTablesV2.sql)
+</li>
+</ul>
 <h1>        6.2.2.19
 </h1>
 <h2>        Security Improvements
