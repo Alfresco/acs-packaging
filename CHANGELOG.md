@@ -1,3 +1,12 @@
+<h1>        6.0.1.10
+</h1>
+<h2>        Security Improvements
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-22511'>MNT-22511</a>] -         Update Share to version 6.0.1.3
+</li>
+</ul>
+
 <h1>        6.0.1.9
 </h1>
 <h2>        Security Improvements
