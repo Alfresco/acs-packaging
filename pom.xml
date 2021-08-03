@@ -55,10 +55,8 @@
         <module>distribution-share</module>
         <module>distribution</module>
         <module>docker-alfresco</module>
-        <module>docker-alfresco/ags</module>
         <module>docker-alfresco/aws</module>
         <module>docker-share</module>
-        <module>docker-share/ags</module>
         <module>docker-share/aws</module>
     </modules>
 
