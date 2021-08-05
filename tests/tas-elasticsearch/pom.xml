@@ -13,10 +13,24 @@
   </parent>
 
   <properties>
-    <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/elasticsearch-suite.xml</suiteXmlFile>
-    <dependency.testcontainers.version>1.15.3</dependency.testcontainers.version>
+    <dependency.testcontainers.version>1.16.0</dependency.testcontainers.version>
     <dependency.elasticsearch-shared.version>3.0.0-M2</dependency.elasticsearch-shared.version>
   </properties>
+
+  <profiles>
+    <profile>
+      <id>elastic</id>
+      <properties>
+        <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/elasticsearch-suite.xml</suiteXmlFile>
+      </properties>
+    </profile>
+    <profile>
+      <id>elastic-basic-auth</id>
+      <properties>
+        <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/elasticsearch-basic-auth-suite.xml</suiteXmlFile>
+      </properties>
+    </profile>
+  </profiles>
 
   <dependencies>
     <dependency>
@@ -111,4 +125,5 @@
       </plugin>
     </plugins>
   </build>
+
 </project>
