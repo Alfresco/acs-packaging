@@ -44,6 +44,16 @@
             </build>
         </profile>
 
+        <!-- When producing Docker Images for pipeline, image tag should be
+             "image:<acs.version>-<build-number>" on Quay to avoid
+             overwriting "latest" tag in release branches -->
+        <profile>
+            <id>pipeline</id>
+            <properties>
+                <image.tag>${acs.version}-${build-number}</image.tag>
+            </properties>
+        </profile>
+
         <profile>
             <id>push-docker-images</id>
             <!-- publishes "image:latest" on Quay & DockerHub -->
