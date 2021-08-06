@@ -101,6 +101,16 @@
             </build>
         </profile>
 
+        <!-- When producing Docker Images, image tag for releases should be
+            "image:<acs.version>-<build-number>" on Quay to avoid
+            overwriting "latest" tag in release branches -->
+        <profile>
+            <id>release</id>
+            <properties>
+                <image.tag>${acs.version}-${build-number}</image.tag>
+            </properties>
+        </profile>
+        
         <profile>
             <id>push-docker-images</id>
             <!-- publishes "image:latest" to Quay -->
