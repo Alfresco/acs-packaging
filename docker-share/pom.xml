@@ -48,7 +48,7 @@
             "image:<acs.version>-<build-number>" on Quay to avoid
             overwriting "latest" tag in release branches -->
         <profile>
-            <id>release</id>
+            <id>release-branch</id>
             <properties>
                 <image.tag>${acs.version}-${build-number}</image.tag>
             </properties>

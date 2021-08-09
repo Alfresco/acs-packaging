@@ -217,7 +217,7 @@ jobs:
     - name: "Update release and Single Pipeline <acs>-<build> images"
       stage: docker_release
       # Remove the pipeline profile to avoid sending an image tagged with the build number to the single pipeline
-      script: travis_retry travis_wait 30 mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Ppush-docker-images,pipeline,release
+      script: travis_retry travis_wait 30 mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Ppush-docker-images,pipeline,release-branch
 
     - name: "Release and Copy to S3 Staging Bucket"
       stage: release
