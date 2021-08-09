@@ -108,6 +108,7 @@
             <id>release-branch</id>
             <properties>
                 <image.tag>${acs.version}-${build-number}</image.tag>
+                <docker.quay-expires.value>1w</docker.quay-expires.value>
             </properties>
         </profile>
 
