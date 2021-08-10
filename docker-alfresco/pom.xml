@@ -13,6 +13,7 @@
 
     <properties>
         <image.name>alfresco/alfresco-content-repository</image.name>
+        <docker.quay-expires.value>NEVER</docker.quay-expires.value>
     </properties>
 
     <build>
@@ -99,6 +100,17 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+
+        <!-- When producing Docker Images, image tag for releases should be
+            "image:<acs.version>-<build-number>" on Quay to avoid
+            overwriting "latest" tag in release branches -->
+        <profile>
+            <id>release-branch</id>
+            <properties>
+                <image.tag>${acs.version}-${build-number}</image.tag>
+                <docker.quay-expires.value>1w</docker.quay-expires.value>
+            </properties>
         </profile>
 
         <profile>
