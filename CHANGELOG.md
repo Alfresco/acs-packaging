@@ -1,3 +1,11 @@
+<h1>        6.2.2.21
+</h1>
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-22523'>MNT-22523</a>] -         CLONE - APS Action always duplicates content in APS
+</li>
+</ul>
 <h1>        6.2.2.20
 </h1>
 <h2>        Hot Fix Request
