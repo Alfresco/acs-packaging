@@ -10,12 +10,12 @@
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-enterprise-repo</artifactId>
         <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
-        <version>11.120</version>
+        <version>11.124</version>
     </parent>
 
     <properties>
-        <dependency.alfresco-enterprise-repo.version>11.120</dependency.alfresco-enterprise-repo.version>
-        <dependency.alfresco-enterprise-share.version>11.56</dependency.alfresco-enterprise-share.version>
+        <dependency.alfresco-enterprise-repo.version>11.124</dependency.alfresco-enterprise-repo.version>
+        <dependency.alfresco-enterprise-share.version>11.57</dependency.alfresco-enterprise-share.version>
 
         <alfresco.rm-enterprise-rest-api-explorer.version>3.0.2</alfresco.rm-enterprise-rest-api-explorer.version>
         <alfresco.s3connector.version>4.0.0.1</alfresco.s3connector.version>
