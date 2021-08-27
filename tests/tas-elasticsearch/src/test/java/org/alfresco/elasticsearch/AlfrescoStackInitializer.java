@@ -191,7 +191,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     protected GenericContainer createAlfrescoContainer()
     {
-        return new GenericContainer("quay.io/alfresco/alfresco-content-repository:latest")
+        return new GenericContainer("alfresco/alfresco-content-repository:latest")
                        .withEnv("JAVA_TOOL_OPTIONS",
                                 "-Dencryption.keystore.type=JCEKS " +
                                 "-Dencryption.cipherAlgorithm=DESede/CBC/PKCS5Padding " +
