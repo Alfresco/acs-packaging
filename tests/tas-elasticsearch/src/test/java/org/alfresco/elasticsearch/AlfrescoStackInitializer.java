@@ -76,7 +76,9 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         startOrFail(elasticsearch);
 
-        startOrFail(postgres, activemq, sfs);
+        startOrFail(postgres);
+
+        startOrFail(activemq, sfs);
 
         startOrFail(transformCore, transformRouter);
 
