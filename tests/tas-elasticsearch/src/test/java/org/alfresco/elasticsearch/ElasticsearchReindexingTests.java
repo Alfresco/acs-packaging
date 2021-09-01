@@ -150,6 +150,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // TIDY
         // Restart ElasticsearchConnector.
+        cleanUpIndex();
         AlfrescoStackInitializer.liveIndexer.start();
 
     }
@@ -178,9 +179,106 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // TIDY
         // Restart ElasticsearchConnector.
+        cleanUpIndex();
         AlfrescoStackInitializer.liveIndexer.start();
 
     }
+
+    @Test(groups = TestGroup.SEARCH)
+    public void testRecreateIndexWithMetadataAndContent() throws Exception
+    {
+        // GIVEN
+        // Create document.
+        String documentName = createDocument();
+        // Stop ElasticsearchConnector.
+        AlfrescoStackInitializer.liveIndexer.stop();
+        // Delete index documents.
+        cleanUpIndex();
+
+        // Restart ElasticsearchConnector to Index Content
+        AlfrescoStackInitializer.liveIndexer.start();
+
+        // WHEN
+        // Run reindexer (with default dates to reindex everything).
+        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+            "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX));
+
+        // THEN
+        String queryString = "cm:name:" + documentName + " AND TEXT:'content'";
+        expectResultsFromQuery(queryString, dataUser.getAdminUser(), documentName);
+
+        // TIDY
+        // Delete index documents.
+        cleanUpIndex();
+
+    }
+
+    @Test(groups = TestGroup.SEARCH)
+    public void testRecreateIndexWithMetadataAndNoContent() throws Exception
+    {
+        // GIVEN
+        // Create document.
+        String documentName = createDocument();
+        // Stop ElasticsearchConnector.
+        AlfrescoStackInitializer.liveIndexer.stop();
+        // Delete index documents.
+        cleanUpIndex();
+
+        // Restart ElasticsearchConnector to Index Content
+        AlfrescoStackInitializer.liveIndexer.start();
+
+        // WHEN
+        // Run reindexer (with default dates to reindex everything).
+        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+            "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
+            "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "false"));
+
+        // THEN
+        // Since content is not indexed, no results are expected
+        String queryString = "cm:name:" + documentName + " AND TEXT:'content'";
+        expectResultsFromQuery(queryString, dataUser.getAdminUser());
+
+        // TIDY
+        // Delete index documents.
+        cleanUpIndex();
+
+    }
+
+    @Test(groups = TestGroup.SEARCH)
+    public void testRecreateIndexWithNoMetadataAndContent() throws Exception
+    {
+        // GIVEN
+        // Create document.
+        String documentName = createDocument();
+        // Stop ElasticsearchConnector.
+        AlfrescoStackInitializer.liveIndexer.stop();
+        // Delete index documents.
+        cleanUpIndex();
+
+        // Restart ElasticsearchConnector to Index Content
+        AlfrescoStackInitializer.liveIndexer.start();
+
+        String queryString = "cm:name:" + documentName + " AND TEXT:'content'";
+        expectResultsFromQuery(queryString, dataUser.getAdminUser());
+
+        // WHEN
+        // Run reindexer (with default dates to reindex everything).
+        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+            "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
+            "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "false"));
+
+        // THEN
+        // When indexing only content, no results should be found
+        // Permissions are indexed together with metadata, so indexing only content would miss permissions
+        expectResultsFromQuery(queryString, dataUser.getAdminUser());
+
+        // TIDY
+        // Delete index documents.
+        cleanUpIndex();
+
+    }
+
+    // TODO Tests with PATH enabled and disabled
 
     /**
      * Run the alfresco-elasticsearch-reindexing container.
