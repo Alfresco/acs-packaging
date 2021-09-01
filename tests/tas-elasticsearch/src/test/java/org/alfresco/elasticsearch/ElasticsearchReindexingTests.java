@@ -1,5 +1,6 @@
 package org.alfresco.elasticsearch;
 
+import static org.alfresco.elasticsearch.EnvHelper.getEnvProperty;
 import static org.testng.Assert.assertEquals;
 
 import java.io.IOException;
@@ -182,6 +183,37 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
     }
 
+    @Test (groups = TestGroup.SEARCH)
+    public void testPathReindex() throws Exception
+    {
+        // GIVEN
+        // Create document.
+        String documentName = createDocument();
+        // Stop ElasticsearchConnector.
+        AlfrescoStackInitializer.liveIndexer.stop();
+        // Delete index documents.
+        cleanUpIndex();
+
+        // WHEN
+        // Run reindexer with path indexing enabled (and with default dates to reindex everything).
+        reindex(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true",
+                "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+                "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX));
+
+        // THEN
+        // Check path indexed.
+        // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
+        String queryString = "PATH:\"//" + documentName + "\" AND cm:name:*";
+        expectResultsFromQuery(queryString, dataUser.getAdminUser(), documentName);
+        // Also check that the document can be obtained by a path query against the site.
+        queryString = "PATH:\"//" + testSite.getTitle() + "/documentLibrary/*\" AND cm:name:" + documentName + " AND cm:name:*";
+        expectResultsFromQuery(queryString, dataUser.getAdminUser(), documentName);
+
+        // TIDY
+        // Restart ElasticsearchConnector.
+        AlfrescoStackInitializer.liveIndexer.start();
+    }
+
     /**
      * Run the alfresco-elasticsearch-reindexing container.
      *
@@ -198,7 +230,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
                        "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config"));
         env.putAll(envParam);
 
-        try (GenericContainer reindexingComponent = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-reindexing:latest")
+        try (GenericContainer reindexingComponent = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-reindexing:" + getEnvProperty("ES_CONNECTOR_TAG"))
                                                             .withEnv(env)
                                                             .withNetwork(AlfrescoStackInitializer.network)
                                                             .withStartupCheckStrategy(
@@ -249,7 +281,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
     private void cleanUpIndex() throws IOException
     {
-        DeleteByQueryRequest request = new DeleteByQueryRequest("custom-alfresco-index");
+        DeleteByQueryRequest request = new DeleteByQueryRequest(CUSTOM_ALFRESCO_INDEX);
         request.setQuery(QueryBuilders.matchAllQuery());
         BulkByScrollResponse response = elasticClient.deleteByQuery(request, RequestOptions.DEFAULT);
         LOGGER.debug("deleted {} documents from index", response.getDeleted());

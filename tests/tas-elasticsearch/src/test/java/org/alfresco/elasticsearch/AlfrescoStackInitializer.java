@@ -1,5 +1,9 @@
 package org.alfresco.elasticsearch;
 
+import java.time.Duration;
+import java.util.Objects;
+import java.util.Properties;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContextInitializer;
@@ -16,10 +20,6 @@ import org.testcontainers.lifecycle.Startable;
 import org.testcontainers.lifecycle.Startables;
 import org.testng.Assert;
 
-import java.io.FileReader;
-import java.time.Duration;
-import java.util.Properties;
-
 public class AlfrescoStackInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext>
 {
     private static Logger LOGGER = LoggerFactory.getLogger(AlfrescoStackInitializer.class);
@@ -30,6 +30,9 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     public static GenericContainer alfresco;
 
     public static ElasticsearchContainer elasticsearch;
+
+    /** To create the kibana container for a test run then pass -Dkibana=true as an argument to the mvn command. */
+    public static GenericContainer kibana;
 
     public static GenericContainer liveIndexer;
 
@@ -54,7 +57,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
             }
         }
 
-        Properties env = loadEnvProperties();
+        Properties env = EnvHelper.loadEnvProperties();
 
         network = Network.newNetwork();
 
@@ -72,8 +75,6 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         elasticsearch = createElasticContainer(env);
 
-        liveIndexer = createLiveIndexingContainer(env);
-
         startOrFail(elasticsearch);
 
         startOrFail(postgres);
@@ -81,6 +82,15 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         startOrFail(activemq, sfs);
 
         startOrFail(transformCore, transformRouter);
+
+        // We don't want Kibana to run on our CI, but it can be useful when investigating issues locally.
+        if (Objects.equals(System.getProperty("kibana"), "true"))
+        {
+            kibana = createKibanaContainer(elasticsearch);
+            startOrFail(kibana);
+        }
+
+        liveIndexer = createLiveIndexingContainer(env);
 
         startOrFail(liveIndexer);
 
@@ -121,12 +131,21 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     protected ElasticsearchContainer createElasticContainer(Properties env)
     {
         return new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch:" + env.getProperty("ES_TAG"))
-                       .withNetwork(network)
-                       .withNetworkAliases("elasticsearch")
-                       .withExposedPorts(9200)
-                       .withEnv("xpack.security.enabled", "false")
-                       .withEnv("discovery.type", "single-node")
-                       .withEnv("ES_JAVA_OPTS", "-Xms1g -Xmx1g");
+                .withNetwork(network)
+                .withNetworkAliases("elasticsearch")
+                .withExposedPorts(9200)
+                .withEnv("xpack.security.enabled", "false")
+                .withEnv("discovery.type", "single-node")
+                .withEnv("ES_JAVA_OPTS", "-Xms1g -Xmx1g");
+    }
+
+    protected GenericContainer createKibanaContainer(ElasticsearchContainer elasticsearch)
+    {
+        return new GenericContainer("kibana:7.10.1")
+                .withNetwork(network)
+                .withNetworkAliases("kibana")
+                .withExposedPorts(5601)
+                .withEnv("ELASTICSEARCH_HOSTS", "http://elasticsearch:9200");
     }
 
     private GenericContainer createAMQContainer(Properties env)
@@ -229,18 +248,5 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                        .waitingFor(new LogMessageWaitStrategy().withRegEx(".*Server startup in.*\\n"))
                        .withStartupTimeout(Duration.ofMinutes(7))
                        .withExposedPorts(8080);
-    }
-
-    private Properties loadEnvProperties()
-    {
-        Properties env = new Properties();
-        try (FileReader reader = new FileReader("../environment/.env"))
-        {
-            env.load(reader);
-        } catch (Exception e)
-        {
-            Assert.fail("unable to load .env property file ");
-        }
-        return env;
     }
 }
