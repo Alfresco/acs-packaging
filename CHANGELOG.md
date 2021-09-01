@@ -1,3 +1,11 @@
+<h1>        7.0.1.4
+</h1>
+<h2>        Bug Fix
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-22536'>MNT-22536</a>] -         TMDQ against MySql throws SQLException
+</li>
+</ul>
 <h1>        7.0.1.3
 </h1>
 <h2>        Security Improvements
