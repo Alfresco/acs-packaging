@@ -234,10 +234,6 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
             expectResultsFromQuery(queryString.replace("<DOCUMENT_NAME>", documentName), dataUser.getAdminUser());
         }
 
-        // TIDY
-        // Delete index documents
-        cleanUpIndex();
-
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -260,7 +256,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // When not using metadata, document shouldn't be present in Elasticsearch index,
         // since metadata reindexing process is indexing also permissions
         internalTestEnabledFeatures(false, true, false,
-            "cm:name:'<DOCUMENT_NAME>'", false);
+            "cm:name:'<DOCUMENT_NAME>' AND cm:name:*", false);
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -284,7 +280,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // When not using metadata, document shouldn't be present in Elasticsearch index,
         // since metadata reindexing process is indexing also permissions
         internalTestEnabledFeatures(false, false, true,
-            "cm:name:'<DOCUMENT_NAME>'", false);
+            "cm:name:'<DOCUMENT_NAME>' AND cm:name:*", false);
     }
 
     /**
