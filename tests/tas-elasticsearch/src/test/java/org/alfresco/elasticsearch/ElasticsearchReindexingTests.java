@@ -1,6 +1,7 @@
 package org.alfresco.elasticsearch;
 
 import static org.alfresco.elasticsearch.EnvHelper.getEnvProperty;
+import static org.alfresco.elasticsearch.SearchQueryService.req;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
@@ -95,8 +97,8 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // GIVEN
         // Check a particular system document is NOT indexed.
         // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
-        String queryString = "cm:name:budget AND cm:title:\"web site design - budget\" AND cm:description:\"Budget file for the web site redesign\" AND cm:name:*";
-        searchQueryService.expectResultsFromQuery(queryString, dataUser.getAdminUser());
+        SearchRequest query = req("cm:name:budget AND cm:title:\"web site design - budget\" AND cm:description:\"Budget file for the web site redesign\" AND cm:name:*");
+        searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser());
 
         // WHEN
         // Run reindexer against the initial documents.
@@ -107,7 +109,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // THEN
         // Check system document is indexed.
-        searchQueryService.expectResultsFromQuery(queryString, dataUser.getAdminUser(), "budget.xls");
+        searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), "budget.xls");
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -126,8 +128,8 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // Check document not indexed.
         // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
 
-        String queryString = "cm:name:" + documentName + " AND cm:name:*";
-        searchQueryService.expectResultsFromQuery(queryString, dataUser.getAdminUser());
+        SearchRequest query = req("cm:name:" + documentName + " AND cm:name:*");
+        searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser());
 
         // WHEN
         // Run reindexer (leaving ALFRESCO_REINDEX_TO_TIME as default).
@@ -137,7 +139,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // THEN
         // Check document indexed.
-        searchQueryService.expectResultsFromQuery(queryString, dataUser.getAdminUser(), documentName);
+        searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
 
         // TIDY
         // Restart ElasticsearchConnector.
@@ -165,8 +167,8 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // THEN
         // Check document indexed.
         // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
-        String queryString = "cm:name:" + documentName + " AND cm:name:*";
-        searchQueryService.expectResultsFromQuery(queryString, dataUser.getAdminUser(), documentName);
+        SearchRequest query = req("cm:name:" + documentName + " AND cm:name:*");
+        searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
 
         // TIDY
         // Restart ElasticsearchConnector.
@@ -189,7 +191,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         Boolean pathIndexingEnabled,
         String queryString,
         Boolean expectingDocNameAsResult
-    ) throws Exception
+    )
     {
 
         // Initial timestamp for reindexing by date: this will save reindexing time for these tests
@@ -216,33 +218,34 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
             "ALFRESCO_REINDEX_PATHINDEXINGENABLED", pathIndexingEnabled.toString()));
 
         // THEN
+        SearchRequest query = req(queryString.replace("<DOCUMENT_NAME>", documentName));
         if (expectingDocNameAsResult)
         {
-            searchQueryService.expectResultsFromQuery(queryString.replace("<DOCUMENT_NAME>", documentName), dataUser.getAdminUser(), documentName);
+            searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
         }
         else
         {
-            searchQueryService.expectResultsFromQuery(queryString.replace("<DOCUMENT_NAME>", documentName), dataUser.getAdminUser());
+            searchQueryService.expectNoResultsFromQuery(query, dataUser.getAdminUser());
         }
 
     }
 
     @Test(groups = TestGroup.SEARCH)
-    public void testRecreateIndexWithMetadataAndContent() throws Exception
+    public void testRecreateIndexWithMetadataAndContent()
     {
         internalTestEnabledFeatures(true, true, false,
             "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content'", true);
     }
 
     @Test(groups = TestGroup.SEARCH)
-    public void testRecreateIndexWithMetadataAndNoContent() throws Exception
+    public void testRecreateIndexWithMetadataAndNoContent()
     {
         internalTestEnabledFeatures(true, false, false,
             "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content'", false);
     }
 
     @Test(groups = TestGroup.SEARCH)
-    public void testRecreateIndexWithNoMetadataAndContent() throws Exception
+    public void testRecreateIndexWithNoMetadataAndContent()
     {
         // When not using metadata, document shouldn't be present in Elasticsearch index,
         // since metadata reindexing process is indexing also permissions
@@ -251,14 +254,14 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     }
 
     @Test(groups = TestGroup.SEARCH)
-    public void testRecreateIndexWithMetadataAndNoContentAndPath() throws Exception
+    public void testRecreateIndexWithMetadataAndNoContentAndPath()
     {
         internalTestEnabledFeatures(true, false, true,
             "cm:name:'<DOCUMENT_NAME>' AND PATH:'/app:company_home/st:sites/cm:" + testSite + "/cm:documentLibrary/cm:<DOCUMENT_NAME>'", true);
     }
 
     @Test(groups = TestGroup.SEARCH)
-    public void testRecreateIndexWithMetadataAndContentAndPath() throws Exception
+    public void testRecreateIndexWithMetadataAndContentAndPath()
     {
         internalTestEnabledFeatures(true, true, true,
             "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content' " +
@@ -266,7 +269,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     }
 
     @Test(groups = TestGroup.SEARCH)
-    public void testRecreateIndexWithNoMetadataAndPath() throws Exception
+    public void testRecreateIndexWithNoMetadataAndPath()
     {
         // When not using metadata, document shouldn't be present in Elasticsearch index,
         // since metadata reindexing process is indexing also permissions
@@ -294,11 +297,11 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // THEN
         // Check path indexed.
         // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
-        String queryString = "PATH:\"//" + documentName + "\" AND cm:name:*";
-        searchQueryService.expectResultsFromQuery(queryString, dataUser.getAdminUser(), documentName);
+        SearchRequest query = req("PATH:\"//" + documentName + "\" AND cm:name:*");
+        searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
         // Also check that the document can be obtained by a path query against the site.
-        queryString = "PATH:\"//" + testSite.getTitle() + "/documentLibrary/*\" AND cm:name:" + documentName + " AND cm:name:*";
-        searchQueryService.expectResultsFromQuery(queryString, dataUser.getAdminUser(), documentName);
+        query = req("PATH:\"//" + testSite.getTitle() + "/documentLibrary/*\" AND cm:name:" + documentName + " AND cm:name:*");
+        searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
 
         // TIDY
         // Restart ElasticsearchConnector.
