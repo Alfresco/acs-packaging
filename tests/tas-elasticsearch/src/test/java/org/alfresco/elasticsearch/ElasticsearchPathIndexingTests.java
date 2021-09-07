@@ -1,25 +1,16 @@
 package org.alfresco.elasticsearch;
 
 import static org.alfresco.elasticsearch.EnvHelper.getEnvProperty;
-import static org.testng.Assert.assertEquals;
+import static org.alfresco.elasticsearch.SearchQueryService.req;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.google.common.collect.Sets;
-
-import org.alfresco.rest.core.RestWrapper;
-import org.alfresco.rest.search.RestRequestQueryModel;
-import org.alfresco.rest.search.SearchNodeModel;
 import org.alfresco.rest.search.SearchRequest;
-import org.alfresco.rest.search.SearchResponse;
-import org.alfresco.utility.Utility;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
@@ -28,15 +19,6 @@ import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.report.log.Step;
-import org.apache.http.HttpHost;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.reindex.BulkByScrollResponse;
-import org.elasticsearch.index.reindex.DeleteByQueryRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -53,8 +35,6 @@ import org.testng.annotations.Test;
 
 public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextTests
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ElasticsearchPathIndexingTests.class);
-
     public static final String CUSTOM_ALFRESCO_INDEX = "custom-alfresco-index";
 
     @Autowired
@@ -76,9 +56,6 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
 
     private String testFileName;
 
-    private RestHighLevelClient elasticClient;
-
-
     /**
      * Create a user and a private site containing some nested folders with a document in.
      */
@@ -98,86 +75,80 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
 
         testFolders = createNestedFolders(3);
         testFileName = createDocument(testFolders.get(testFolders.size() - 1));
-
-        Step.STEP("create ES client");
-        elasticClient = new RestHighLevelClient(
-                RestClient.builder(new HttpHost(AlfrescoStackInitializer.elasticsearch.getContainerIpAddress(),
-                                                AlfrescoStackInitializer.elasticsearch.getFirstMappedPort(),
-                                                "http")));
     }
 
     @Test(groups = TestGroup.SEARCH)
     public void testRelativePathQuery()
     {
-        String queryString = "PATH:'//cm:" + testFileName + "' AND cm:name:*";
-        searchQueryService.expectResultsFromQuery(queryString, testUser, testFileName);
+        SearchRequest query = req("PATH:'//cm:" + testFileName + "' AND cm:name:*");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
     }
 
     @Test (groups = TestGroup.SEARCH)
     public void testRelativePathQueryWithoutPrefixes()
     {
-        String queryString = "PATH:'//" + testFileName + "' AND name:*";
-        searchQueryService.expectResultsFromQuery(queryString, testUser, testFileName);
+        SearchRequest query = req("PATH:'//" + testFileName + "' AND name:*");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
     }
 
     @Test (groups = TestGroup.SEARCH)
     public void testWildcardQuery()
     {
         // The test file should be the only descendent of the last folder.
-        String queryString = "PATH:'//" + testSite.getId() + "//" + testFolders.get(testFolders.size() - 1).getName() + "/*' AND name:*";
-        searchQueryService.expectResultsFromQuery(queryString, testUser, testFileName);
+        SearchRequest query = req("PATH:'//" + testSite.getId() + "//" + testFolders.get(testFolders.size() - 1).getName() + "/*' AND name:*");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
     }
 
     @Test (groups = TestGroup.SEARCH)
     public void testAbsolutePathQuery()
     {
         String folderPath = testFolders.stream().map(folder -> "cm:" + folder.getName()).collect(Collectors.joining("/"));
-        String queryString = "PATH:'/app:company_home/st:sites/cm:" + testSite.getId() + "/cm:documentLibrary/" + folderPath + "/cm:" + testFileName + "' AND cm:name:*";
-        searchQueryService.expectResultsFromQuery(queryString, testUser, testFileName);
+        SearchRequest query = req("PATH:'/app:company_home/st:sites/cm:" + testSite.getId() + "/cm:documentLibrary/" + folderPath + "/cm:" + testFileName + "' AND cm:name:*");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
     }
 
     @Test (groups = TestGroup.SEARCH)
     public void testAbsolutePathQueryWithoutPrefixes()
     {
         String folderPath = testFolders.stream().map(folder -> "cm:" + folder.getName()).collect(Collectors.joining("/"));
-        String queryString = "PATH:'/company_home/sites/" + testSite.getId() + "/documentLibrary/" + folderPath + "/" + testFileName + "' AND name:*";
-        searchQueryService.expectResultsFromQuery(queryString, testUser, testFileName);
+        SearchRequest query = req("PATH:'/company_home/sites/" + testSite.getId() + "/documentLibrary/" + folderPath + "/" + testFileName + "' AND name:*");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
     }
 
     @Test (groups = TestGroup.SEARCH)
     public void testRootNodes()
     {
-        String queryString = "PATH:'/*' AND name:*";
-        searchQueryService.expectResultsFromQuery(queryString, testUser, "categories", "Company Home");
+        SearchRequest query = req("PATH:'/*' AND name:*");
+        searchQueryService.expectResultsFromQuery(query, testUser, "categories", "Company Home");
     }
 
     @Test (groups = TestGroup.SEARCH)
     public void testPathNameMismatch()
     {
-        String queryString = "PATH:'/*' AND name:" + testFileName + " AND name:*";
-        searchQueryService.expectNoResultsFromQuery(queryString, testUser);
+        SearchRequest query = req("PATH:'/*' AND name:" + testFileName + " AND name:*");
+        searchQueryService.expectNoResultsFromQuery(query, testUser);
     }
 
     @Test (groups = TestGroup.SEARCH)
     public void testPathNameIntersect()
     {
-        String queryString = "PATH:'//*' AND name:" + testFileName + " AND name:*";
-        searchQueryService.expectResultsFromQuery(queryString, testUser, testFileName);
+        SearchRequest query = req("PATH:'//*' AND name:" + testFileName + " AND name:*");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
     }
 
     @Test (groups = TestGroup.SEARCH)
     public void testAllDescendentsOfFolder()
     {
-        String queryString = "PATH:'//" + testFolders.get(0).getName() + "//*' AND name:*";
-        searchQueryService.expectResultsFromQuery(queryString, testUser, testFileName, testFolders.get(1).getName(), testFolders.get(2).getName());
+        SearchRequest query = req("PATH:'//" + testFolders.get(0).getName() + "//*' AND name:*");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFileName, testFolders.get(1).getName(), testFolders.get(2).getName());
     }
 
     @Test (groups = TestGroup.SEARCH)
     public void testAllFoldersInSite()
     {
-        String queryString = "PATH:'/*/sites/" + testSite.getId() + "/*//*' AND TYPE:'cm:folder' AND name:*";
+        SearchRequest query = req("PATH:'/*/sites/" + testSite.getId() + "/*//*' AND TYPE:'cm:folder' AND name:*");
         String[] folderNames = testFolders.stream().map(ContentModel::getName).toArray(String[]::new);
-        searchQueryService.expectResultsFromQuery(queryString, testUser, folderNames);
+        searchQueryService.expectResultsFromQuery(query, testUser, folderNames);
     }
 
     /**
