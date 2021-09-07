@@ -23,6 +23,7 @@ import org.alfresco.utility.Utility;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
+import org.alfresco.utility.model.ContentModel;
 import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.network.ServerHealth;
@@ -141,6 +142,42 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
         String folderPath = testFolders.stream().map(folder -> "cm:" + folder.getName()).collect(Collectors.joining("/"));
         String queryString = "PATH:'/company_home/sites/" + testSite.getId() + "/documentLibrary/" + folderPath + "/" + testFileName + "' AND name:*";
         searchQueryService.expectResultsFromQuery(queryString, testUser, testFileName);
+    }
+
+    @Test (groups = TestGroup.SEARCH)
+    public void testRootNodes()
+    {
+        String queryString = "PATH:'/*' AND name:*";
+        searchQueryService.expectResultsFromQuery(queryString, testUser, "categories", "Company Home");
+    }
+
+    @Test (groups = TestGroup.SEARCH)
+    public void testPathNameMismatch()
+    {
+        String queryString = "PATH:'/*' AND name:" + testFileName + " AND name:*";
+        searchQueryService.expectNoResultsFromQuery(queryString, testUser);
+    }
+
+    @Test (groups = TestGroup.SEARCH)
+    public void testPathNameIntersect()
+    {
+        String queryString = "PATH:'//*' AND name:" + testFileName + " AND name:*";
+        searchQueryService.expectResultsFromQuery(queryString, testUser, testFileName);
+    }
+
+    @Test (groups = TestGroup.SEARCH)
+    public void testAllDescendentsOfFolder()
+    {
+        String queryString = "PATH:'//" + testFolders.get(0).getName() + "//*' AND name:*";
+        searchQueryService.expectResultsFromQuery(queryString, testUser, testFileName, testFolders.get(1).getName(), testFolders.get(2).getName());
+    }
+
+    @Test (groups = TestGroup.SEARCH)
+    public void testAllFoldersInSite()
+    {
+        String queryString = "PATH:'/*/sites/" + testSite.getId() + "/*//*' AND TYPE:'cm:folder' AND name:*";
+        String[] folderNames = testFolders.stream().map(ContentModel::getName).toArray(String[]::new);
+        searchQueryService.expectResultsFromQuery(queryString, testUser, folderNames);
     }
 
     /**

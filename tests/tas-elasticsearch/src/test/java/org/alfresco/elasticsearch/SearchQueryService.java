@@ -14,6 +14,7 @@ import org.alfresco.rest.search.SearchNodeModel;
 import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.rest.search.SearchResponse;
 import org.alfresco.utility.Utility;
+import org.alfresco.utility.model.UserModel;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /** A class providing methods for testing search queries. */
@@ -21,6 +22,11 @@ public class SearchQueryService
 {
     @Autowired
     private RestWrapper client;
+
+    public void expectNoResultsFromQuery(String queryString, UserModel testUser)
+    {
+        expectResultsFromQuery(queryString, testUser);
+    }
 
     public void expectResultsFromQuery(String queryString, org.alfresco.utility.model.UserModel user, String... expected)
     {
