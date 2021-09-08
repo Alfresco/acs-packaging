@@ -25,15 +25,8 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <version>RELEASE</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.alfresco.mediamanagement</groupId>
-      <artifactId>alfresco-mm-temporalcomments-repo</artifactId>
-      <version>1.4.3.2-SNAPSHOT</version>
+      <groupId>org.alfresco.tas</groupId>
+      <artifactId>restapi</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
