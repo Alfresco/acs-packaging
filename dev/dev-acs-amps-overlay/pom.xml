@@ -78,6 +78,11 @@
                         <metadata-keystore.aliases>metadata</metadata-keystore.aliases>
                         <metadata-keystore.metadata.password>mp6yc0UD9e</metadata-keystore.metadata.password>
                         <metadata-keystore.metadata.algorithm>AES</metadata-keystore.metadata.algorithm>
+                        <connector.s3.accessKey>changeMe</connector.s3.accessKey>
+                        <connector.s3.secretKey>changeMe</connector.s3.secretKey>
+                        <connector.s3.bucketName>changeMe</connector.s3.bucketName>
+                        <connector.s3.bucketRegion>changeMe</connector.s3.bucketRegion>
+                        <connector.s3.storeProtocol>changeMe</connector.s3.storeProtocol>
                     </systemProperties>
                     <delegate>false</delegate>
                     <useSeparateTomcatClassLoader>true</useSeparateTomcatClassLoader>

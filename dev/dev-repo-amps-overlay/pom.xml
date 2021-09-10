@@ -137,5 +137,37 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>s3</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-ags-amp</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.alfresco.integrations</groupId>
+                                            <artifactId>alfresco-s3-connector</artifactId>
+                                            <version>${alfresco.s3connector.version}</version>
+                                            <type>amp</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>
