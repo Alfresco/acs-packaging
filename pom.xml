@@ -26,7 +26,7 @@
         <alfresco.outlook.version>2.8.0</alfresco.outlook.version>
         <alfresco.transformation-engine.version>2.2.2</alfresco.transformation-engine.version>
         <alfresco.desktop-sync.version>3.4.1-M1</alfresco.desktop-sync.version>
-        <alfresco.ais.version>1.4.0-A1</alfresco.ais.version>
+        <alfresco.ais.version>1.4.0</alfresco.ais.version>
 
         <acs.version>${acs.version.major}.${acs.version.minor}.${acs.version.revision}${acs.version.label}</acs.version>
         <repo.image.tag>${dependency.alfresco-enterprise-repo.version}</repo.image.tag>
