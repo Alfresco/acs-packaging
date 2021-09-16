@@ -3,6 +3,30 @@
 <h2>
   New Features
 </h2>
+<ul>
+<li>Direct Access URLs
+
+To allow the acceleration of the local download of content, support has been added for Direct Access URLs in both the
+Alfresco Repository and the Alfresco S3 Connector extension. The AWS S3 pre-signed URLs are temporary 
+links with an expiration time.
+
+New Rest API endpoints have been added for requesting a new Direct Access URL (a direct download link) for a specific
+file in the Content Repository:
+    
+    POST '/nodes/{nodeId}/request-direct-access-url'
+    POST '/nodes/{nodeId}/renditions/{renditionId}/request-direct-access-url'
+    POST '/nodes/{nodeId}/versions/{versionId}/request-direct-access-url'
+    POST '/deleted-nodes/{nodeId}/request-direct-access-url'
+    POST '/deleted-nodes/{nodeId}/renditions/{renditionId}/request-direct-access-url'
+
+Access to Direct URLs is strictly controlled. They can be enabled or disabled system-wide as well as by individual 
+content store. Access via the REST API layer can also be enabled or disabled. Their expiration dates are restricted by 
+configurations in the Alfresco Repository via global & content-store specific properties.
+By default, Direct Access URLs are disabled.
+For more information see
+[Direct Access URLs](https://github.com/Alfresco/acs-packaging/blob/master/docs/direct-accesss-urls.md).
+</li>
+</ul>
 <br>
 
 <h1>        7.0.1
