@@ -55,6 +55,9 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     private List<FolderModel> testFolders;
 
     private String testFileName;
+    private String filenameWhichIncludesWhitespace = "TestFile " + UUID.randomUUID() + ".txt";
+    private String escapedFilenameWhichIncludesWhitespace = filenameWhichIncludesWhitespace.replace(" ", "_x0020_");
+    private String testFileNameWithWhitespace;
 
     /**
      * Create a user and a private site containing some nested folders with a document in.
@@ -75,6 +78,7 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
 
         testFolders = createNestedFolders(3);
         testFileName = createDocument(testFolders.get(testFolders.size() - 1));
+        testFileNameWithWhitespace = createDocument(testFolders.get(testFolders.size() - 1), filenameWhichIncludesWhitespace);
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -137,6 +141,13 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     }
 
     @Test (groups = TestGroup.SEARCH)
+    public void testPathNameIntersectUsingEscapedFilenames()
+    {
+        SearchRequest query = req("PATH:'//*' AND name:" + escapedFilenameWhichIncludesWhitespace + " AND name:*");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFileNameWithWhitespace);
+    }
+
+    @Test (groups = TestGroup.SEARCH)
     public void testAllDescendentsOfFolder()
     {
         SearchRequest query = req("PATH:'//" + testFolders.get(0).getName() + "//*' AND name:*");
@@ -176,17 +187,29 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     }
 
     /**
-     * Create a document in the given folder using the test user.
+     * Create a document in the given folder using the test user and a random filename.
      *
      * @param folderModel The location to create the document.
      * @return The randomly generated name of the new document.
      */
     private String createDocument(FolderModel folderModel)
     {
+        return createDocument(folderModel, "TestFile" + UUID.randomUUID() + ".txt");
+    }
+
+    /**
+     * Create a document in the given folder using the test user and the given filename.
+     *
+     * @param folderModel The location to create the document.
+     * @param filename the filename.
+     * @return The randomly generated name of the new document.
+     */
+    private String createDocument(FolderModel folderModel, String filename)
+    {
         String documentName = "TestFile" + UUID.randomUUID() + ".txt";
         dataContent.usingUser(testUser)
-                   .usingResource(folderModel)
-                   .createContent(new org.alfresco.utility.model.FileModel(documentName, org.alfresco.utility.model.FileType.TEXT_PLAIN, "content"));
+                .usingResource(folderModel)
+                .createContent(new org.alfresco.utility.model.FileModel(filename, org.alfresco.utility.model.FileType.TEXT_PLAIN, "content"));
         return documentName;
     }
 
