@@ -4,6 +4,9 @@ USER root
 
 ARG TOMCAT_DIR=/usr/local/tomcat
 
+# Copy the idp.jks keystore file used to enable AOS with SAML
+COPY idp.jks /usr/src/alfresco/
+
 # Copy the amps from build context to the appropriate location for your application server
 COPY target/amps/*.amp ${TOMCAT_DIR}/amps/
 
@@ -45,9 +48,6 @@ RUN chgrp -R Alfresco ${TOMCAT_DIR} && \
   find ${TOMCAT_DIR}/shared -type d -exec chmod 0750 {} \; && \
   find ${TOMCAT_DIR}/shared -type f -exec chmod 0640 {} \; && \
   chmod -R g+r ${TOMCAT_DIR}/webapps
-
-WORKDIR /usr/src/alfresco
-COPY idp.jks .
 
 #Use the alfresco user
 #USER alfresco
