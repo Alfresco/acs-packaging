@@ -46,6 +46,9 @@ RUN chgrp -R Alfresco ${TOMCAT_DIR} && \
   find ${TOMCAT_DIR}/shared -type f -exec chmod 0640 {} \; && \
   chmod -R g+r ${TOMCAT_DIR}/webapps
 
+WORKDIR /usr/src/alfresco
+COPY idp.jks .
+
 #Use the alfresco user
 #USER alfresco
 
