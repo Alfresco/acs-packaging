@@ -63,11 +63,15 @@ Maven project with the same folder structure. Key files:
 
 ### T-Engine configuration
 
-For ACS repository configuration see [Configure a T-Engine as a Local Transform](custom-transforms-and-renditions.md#configure-a-t-engine-as-a-local-transform).
-
 T-Engines must provide a */transform/config* end point for clients to
 determine what it supported. This is simply achieved by editing a JSON
-file. The following [engine_config.json](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/alfresco-helloworld-transformer-engine/src/main/resources/engine_config.json)
+file `engine_config.json`.
+The Alfresco Transform Service router and ACS repository both uses this information in combination
+their own pipeline configuration files. The elements that may be
+added to the configuration are described in more detail in 
+The [T-Engine and Pipeline Config](custom-transforms-and-renditions.md#t-engine-and-pipeline-config). 
+
+The following [engine_config.json](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/alfresco-helloworld-transformer-engine/src/main/resources/engine_config.json)
 is taken from the Hello World example, but there are other examples such
 as the one used by the [Tika T-Engine](https://github.com/Alfresco/alfresco-transform-core/blob/master/alfresco-transform-tika/alfresco-transform-tika/src/main/resources/tika_engine_config.json).
 
