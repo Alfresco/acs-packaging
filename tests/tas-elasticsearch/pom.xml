@@ -14,7 +14,6 @@
 
   <properties>
     <dependency.testcontainers.version>1.16.0</dependency.testcontainers.version>
-    <dependency.elasticsearch-shared.version>3.0.0</dependency.elasticsearch-shared.version>
   </properties>
 
   <profiles>
