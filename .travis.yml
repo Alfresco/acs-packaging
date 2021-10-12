@@ -52,9 +52,9 @@ install: travis_retry travis_wait 40 bash scripts/travis/build.sh
 jobs:
   include:
     - name: "Source Clear Scan (SCA)"
-      before_install: bash scripts/travis/init.sh
       # Run Veracode
-      script: travis_wait 30 bash scripts/veracode/source_clear.sh
+      install: skip
+      script: travis_wait 40 bash scripts/veracode/source_clear.sh
 
     - name: "REST API TAS tests part1"
       if: commit_message =~ /\[tas\]/
