@@ -20,6 +20,10 @@ COM_VERSION="$(evaluatePomProperty "dependency.alfresco-community-repo.version")
 # Retrieve the Enterprise Share version
 SHA_VERSION="$(evaluatePomProperty "dependency.alfresco-enterprise-share.version")"
 
+# Retrieve the release and development versions as they are normally the same in community packaging
+RELEASE_VERSION=$(grep RELEASE_VERSION= .travis.yml)
+DEVELOPMENT_VERSION=$(grep DEVELOPMENT_VERSION= .travis.yml)
+
 DOWNSTREAM_REPO="github.com/Alfresco/acs-community-packaging.git"
 
 cloneRepo "${DOWNSTREAM_REPO}" "${TRAVIS_BRANCH}"
@@ -42,17 +46,24 @@ mvn -B versions:set-property versions:commit \
   -Dproperty=dependency.acs-packaging.version \
   "-DnewVersion=${VERSION}"
 
+sed -i '' "s/.*RELEASE_VERSION=.*/$RELEASE_VERSION/" .travis.yml
+sed -i '' "s/.*DEVELOPMENT_VERSION=.*/DEVELOPMENT_VERSION/" .travis.yml
+
 # Commit changes
 git status
 git --no-pager diff pom.xml
 git add pom.xml
+git --no-pager diff pom.xml
+git add .travis.yml
 
 if git status --untracked-files=no --porcelain | grep -q '^' ; then
   git commit -m "Update upstream versions
 
     - alfresco-community-repo:   ${COM_VERSION}
     - alfresco-enterprise-share: ${SHA_VERSION}
-    - acs-packaging:             ${VERSION}"
+    - acs-packaging:             ${VERSION}
+    - RELEASE_VERSION:           ${RELEASE_VERSION}
+    - DEVELOPMENT_VERSION:       ${DEVELOPMENT_VERSION}"
   git push
 else
   echo "Dependencies are already up to date."
