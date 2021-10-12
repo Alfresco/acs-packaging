@@ -295,3 +295,5 @@ jobs:
           script: bash scripts/travis/copy_ags_to_release_bucket.sh
           on:
             all_branches: true
+addons:
+  srcclr: true
