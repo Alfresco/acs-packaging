@@ -46,8 +46,8 @@ mvn -B versions:set-property versions:commit \
   -Dproperty=dependency.acs-packaging.version \
   "-DnewVersion=${VERSION}"
 
-sed -i '' "s/.*RELEASE_VERSION=.*/$RELEASE_VERSION/" .travis.yml
-sed -i '' "s/.*DEVELOPMENT_VERSION=.*/DEVELOPMENT_VERSION/" .travis.yml
+sed -i "s/.*RELEASE_VERSION=.*/$RELEASE_VERSION/" .travis.yml
+sed -i "s/.*DEVELOPMENT_VERSION=.*/$DEVELOPMENT_VERSION/" .travis.yml
 
 # Commit changes
 git status
