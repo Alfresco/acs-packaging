@@ -161,6 +161,13 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
         String[] folderNames = testFolders.stream().map(ContentModel::getName).toArray(String[]::new);
         searchQueryService.expectResultsFromQuery(query, testUser, folderNames);
     }
+    
+    @Test (groups = TestGroup.SEARCH)
+    public void testUpdatePath()
+    {
+    	SearchRequest query = req("PATH:'/app:company_home/st:sites/cm:" + testSite.getId() + "/cm:documentLibrary/" + folderName + "/cm:" + filenameWhichIncludesWhitespace + "' AND cm:name:*");
+        searchQueryService.expectResultsFromQuery(query, testUser, filenameWhichIncludesWhitespace);
+    }
 
     /**
      * Create a set of nested folders in the test site using the test user.
