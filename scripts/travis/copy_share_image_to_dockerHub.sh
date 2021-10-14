@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-echo "=========================== Starting Copy Image To Dockerhub Script ==========================="
+echo "=========================== Starting Copy Share Image To Dockerhub Script ==========================="
 PS4="\[\e[35m\]+ \[\e[m\]"
 set +e -v -x
 pushd "$(dirname "${BASH_SOURCE[0]}")/../"
@@ -22,6 +22,6 @@ docker push $TARGET_IMAGE:$TAG_NAME
 
 popd
 set +vex
-echo "=========================== Finishing Copy Image To Dockerhub Script =========================="
+echo "=========================== Finishing Copy Share Image To Dockerhub Script =========================="
 
 exit ${SUCCESS}
