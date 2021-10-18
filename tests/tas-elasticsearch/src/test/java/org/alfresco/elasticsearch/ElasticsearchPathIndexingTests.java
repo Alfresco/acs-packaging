@@ -165,8 +165,9 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     @Test (groups = TestGroup.SEARCH)
     public void testUpdatePath()
     {
-    	SearchRequest query = req("PATH:'/app:company_home/st:sites/cm:" + testSite.getId() + "/cm:documentLibrary/" + folderName + "/cm:" + filenameWhichIncludesWhitespace + "' AND cm:name:*");
-        searchQueryService.expectResultsFromQuery(query, testUser, filenameWhichIncludesWhitespace);
+    	String folderPath = testFolders.stream().map(folder -> "cm:" + folder.getName()).collect(Collectors.joining("/"));
+        SearchRequest query = req("PATH:'/app:company_home/cm:" + testFileName + "' AND cm:name:*");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
     }
 
     /**
