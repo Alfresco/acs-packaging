@@ -135,8 +135,8 @@ function buildSameBranchOnUpstream() {
 
   cd "$(basename "${UPSTREAM_REPO%.git}")"
 
-  mvn -B -V -q clean install -DskipTests -Dmaven.javadoc.skip=true ${EXTRA_BUILD_ARGUMENTS}
-  mvn -B -V -q install -DskipTests -f packaging/tests/pom.xml
+  mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true ${EXTRA_BUILD_ARGUMENTS}
+  mvn -B -V install -DskipTests -f packaging/tests/pom.xml
 
   popd
 }
@@ -169,8 +169,8 @@ function pullAndBuildSameBranchOnUpstream() {
 
   cd "$(basename "${UPSTREAM_REPO%.git}")"
 
-  mvn -B -V -q clean install -DskipTests -Dmaven.javadoc.skip=true ${EXTRA_BUILD_ARGUMENTS}
-  mvn -B -V -q install -DskipTests -f packaging/tests/pom.xml
+  mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true ${EXTRA_BUILD_ARGUMENTS}
+  mvn -B -V install -DskipTests -f packaging/tests/pom.xml
 
   popd
 }
@@ -181,7 +181,7 @@ function retieveLatestTag() {
 
   local LOCAL_PATH="/tmp/$(basename "${REPO%.git}")"
 
-  git clone -q -b "${BRANCH}" "https://${GIT_USERNAME}:${GIT_PASSWORD}@${REPO}" "${LOCAL_PATH}"
+  git clone -b "${BRANCH}" "https://${GIT_USERNAME}:${GIT_PASSWORD}@${REPO}" "${LOCAL_PATH}"
 
   pushd "${LOCAL_PATH}" >/dev/null
   git describe --abbrev=0 --tags
