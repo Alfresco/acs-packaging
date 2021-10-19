@@ -1,4 +1,4 @@
-Please refer to the main version onf this file in: https://github.com/Alfresco/acs-packaging 
+Please refer to the main version of this file in: https://github.com/Alfresco/acs-packaging 
 
 ### October 2021
 
