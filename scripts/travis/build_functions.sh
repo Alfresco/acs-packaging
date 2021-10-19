@@ -122,9 +122,7 @@ function buildUpstreamTag() {
 
   cd "$(basename "${UPSTREAM_REPO%.git}")"
 
-  docker images
   mvn -B -V clean package -DskipTests -Dmaven.javadoc.skip=true "-Dimage.tag=${TAG}" ${EXTRA_BUILD_ARGUMENTS}
-  docker images
 
   popd
 }
@@ -137,10 +135,8 @@ function buildSameBranchOnUpstream() {
 
   cd "$(basename "${UPSTREAM_REPO%.git}")"
 
-  docker images
   mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true ${EXTRA_BUILD_ARGUMENTS}
   mvn -B -V install -DskipTests -f packaging/tests/pom.xml
-  docker images
 
   popd
 }
@@ -156,9 +152,7 @@ function pullUpstreamTagAndBuildDockerImage() {
 
   cd "$(basename "${UPSTREAM_REPO%.git}")"
 
-  docker images
   mvn -B -V clean package -DskipTests -Dmaven.javadoc.skip=true "-Dimage.tag=${TAG}" ${EXTRA_BUILD_ARGUMENTS}
-  docker images
 
   popd
 }
@@ -174,10 +168,10 @@ function pullAndBuildSameBranchOnUpstream() {
   pushd "$(dirname "${BASH_SOURCE[0]}")/../../../"
 
   cd "$(basename "${UPSTREAM_REPO%.git}")"
-  docker images
+
   mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true ${EXTRA_BUILD_ARGUMENTS}
   mvn -B -V install -DskipTests -f packaging/tests/pom.xml
-  docker images
+
   popd
 }
 
