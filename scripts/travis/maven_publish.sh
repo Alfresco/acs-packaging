@@ -36,7 +36,6 @@ function publishDistributionZip() {
     -Durl=https://nexus.alfresco.com/nexus/content/repositories/enterprise-releases/ \
     -DgroupId="${GROUP_ID}" -DartifactId="${ARTIFACT_ID}" -Dversion="${VERSION}" \
     -Dpackaging=zip
-#    -DpomFile="${TMP_PATH}/${ARTIFACT_ID}-${VERSION}.pom" \ - overwrites the zip
 }
 
 publishDistributionZip org.alfresco alfresco-content-services-distribution               ${RELEASE_VERSION}
@@ -47,6 +46,4 @@ popd
 set +vex
 echo "=========================== Finishing Release Script =========================="
 
-# TODO remove: Exit for now with an error as we don't want to copy to the S3 RELEASE area which happens next.
-exit 123
 
