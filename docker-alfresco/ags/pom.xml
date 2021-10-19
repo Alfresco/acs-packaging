@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>content-services-docker</artifactId>
-        <version>7.1.0-SNAPSHOT</version>
+        <version>7.2.0-A4-SNAPSHOT</version>
     </parent>
     <properties>
         <image.name>alfresco/alfresco-governance-repository-enterprise</image.name>

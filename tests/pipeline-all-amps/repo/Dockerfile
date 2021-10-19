@@ -4,6 +4,9 @@ USER root
 
 ARG TOMCAT_DIR=/usr/local/tomcat
 
+# Copy the idp.jks keystore file used to enable AOS with SAML
+COPY idp.jks /usr/src/alfresco/
+
 # Copy the amps from build context to the appropriate location for your application server
 COPY target/amps/*.amp ${TOMCAT_DIR}/amps/
 
