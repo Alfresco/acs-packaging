@@ -21,7 +21,7 @@ The second issue fixed was in the business logic around script execution. Additi
 - org.alfresco:alfresco-content-services - versions 7.0.0.2 , 7.0.0.1 , 7.0
 - org.alfresco:alfresco-content-services - versions from (including) 7.0.1.0 up to (including) 7.0.1.2
 
-The third issue fixed is an Blind SSRF that could be executed through a specific document format transformation. The issue has been fixed by disabling the specific tranformation through configuration. This issue was assigned provisional number CVE-2021-41792. Affected versions include:
+The third issue fixed is a Blind SSRF that could be executed through a specific document format transformation. The issue has been fixed by disabling the specific tranformation through configuration. This issue was assigned provisional number CVE-2021-41792. Affected versions include:
 - org.alfresco:alfresco-content-services - versions from (including) 5.0.x.x up to (including) 5.2.7.11
 - org.alfresco:alfresco-content-services - versions from (including) 6.0.0.x up to (including) 6.0.1.9
 - org.alfresco:alfresco-content-services - versions from (including) 6.1.0.x up to (including) 6.1.1.10
