@@ -22,7 +22,4 @@ popd
 set +vex
 echo "=========================== Finishing Release Script =========================="
 
-echo STOP BEFORE WE COPY S3 STAGING TO S3 RELEASES. WHEN WORKING REMOVE THIS echo AND exit.
-exit 123
-
 
