@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 echo "=========================== Starting Publish Script ==========================="
-# downloads the distribution zips from the internal Nexus repository and then uploads them to the enterprise release repository
+# Downloads the distribution zips from the Nexus Internal Releases repository and then uploads them to the Enterprise
+# Releases repository
 
 PS4="\[\e[35m\]+ \[\e[m\]"
 set -vex
@@ -21,15 +22,18 @@ function publishDistributionZip() {
   local LOCAL_PATH="${HOME}/.m2/repository/${ARTIFACT_PATH}"
   local TMP_PATH="/tmp/${ARTIFACT_ID}"
 
+  # Download the artifact. Make sure we are not using a cached version
   rm -rf "${LOCAL_PATH}"
   mvn org.apache.maven.plugins:maven-dependency-plugin:get  \
     -Dartifact=${GROUP_ID}:${ARTIFACT_ID}:${VERSION}:zip \
     -Dtransitive=false
   ls -l "${LOCAL_PATH}/${VERSION}"
 
+  # The local maven repo must not contain the downloaded artifacts otherwise the upload can fail
   rm -rf "${TMP_PATH}"
   mv "${LOCAL_PATH}/${VERSION}" "${TMP_PATH}"
 
+  # Upload the artifact
   mvn deploy:deploy-file \
        -Dfile="${TMP_PATH}/${ARTIFACT_ID}-${VERSION}.zip" \
     -DrepositoryId=alfresco-enterprise-releases \
