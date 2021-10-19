@@ -233,6 +233,11 @@
                 <version>${alfresco.saml.version}</version>
                 <type>amp</type>
             </dependency>
+            <dependency>
+                <groupId>org.elasticsearch</groupId>
+                <artifactId>elasticsearch</artifactId>
+                <version>7.10.0</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>
