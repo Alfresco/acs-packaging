@@ -13,6 +13,10 @@ mvn -B -q clean install \
 
 SUCCESS=$?   # this will read exit code of the previous command
 
+if [ -z "$SRCCLR_FAILS_BUILD" ] || [ "$SRCCLR_FAILS_BUILD" = false ] ; then
+    SUCCESS=0
+fi
+
 cat scan.log | grep -e 'Full Report Details' -e 'Failed'
 
 popd

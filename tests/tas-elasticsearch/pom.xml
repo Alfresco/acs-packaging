@@ -90,7 +90,7 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>elasticsearch</artifactId>
-      <version>7.10.1</version>
+      <version>${dependency.testcontainers.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
