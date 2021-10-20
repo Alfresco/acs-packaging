@@ -2,37 +2,59 @@
 
 
 It is possible to use Docker containers to test your code, but it is normally more convenient to simply run the
-repository webapp (`alfresco.war`) in a tomcat instance.
+repository webapp (`alfresco.war`) and Share webapp (`share.war`) in a tomcat instance. Options are also available to
+apply selected AMPs
+
+## Link the projects
+Generally you will want to link the different projects together by modifing the top level
+pom.xml files of each downstream project so that they references the SNAPSHOT versions of the
+upstream projects. To help do this see the `acs-packaging` project's `scripts/dev/linkPoms.sh` and
+`scripts/dev/unlinkPoms.sh` scripts.
+
+~~~
+sh acs-packaging/scripts/linkPoms.sh
+~~~
 
 ## Build -repo projects
 Build the `alfresco-community-repo` and `alfresco-enterprise-repo` projects (if you have not
 done so already), so that your changes are in the enterprise alfresco.war file.
 ~~~
-$ # The `comR` alias includes the following commands:
-$ cd alfresco-community-repo
-$ mvn clean install -Pbuild-docker-images  -DskipTests=true -Dversion.edition=Community
-$ cd ..
+# The `comR` alias includes the following commands:
+cd alfresco-community-repo
+mvn clean install -DskipTests=true -Dversion.edition=Community
+cd ..
 
-$ # The `entR` alias is the same as the following commands:
-$ cd alfresco-enterprise-repo
-$ mvn clean install -Pbuild-docker-images -DskipTests=true -Dmaven.javadoc.skip=true
-$ cd ..
+# The `entR` alias is the same as the following commands:
+cd alfresco-enterprise-repo
+mvn clean install -DskipTests=true -Dmaven.javadoc.skip=true
+cd ..
+~~~
+
+## Build the enterprise share project
+Build the `alfresco-enterprise-share` project (if you have not done so already), so that your
+changes are in the enterprise share.war file, which also depends on your `-repo` project versions.
+~~~
+# The `entS` alias is the same as the following commands:
+cd alfresco-enterprise-share
+mvn mvn clean install -DskipTests -Dmaven.javadoc.skip=true
+cd ..
 ~~~
 
 ## Docker test environment
 The repository code will need to talk to other ACS components, such as a databases, message queue and transformers.
-The simplest way to create these, is to use the `docker-compose.yml` file in the `dev` directory.
+The simplest way to create these, is to use the `docker-compose.yml` file in the `dev` directory. Do this in a
+separate terminal as it will continue to run until you kill it with `^C`.
 ~~~
-$ # The `envUp` alias is the same as the following commands:
-$ cd acs-packaging
-$ docker-compose -f dev/docker-compose.yml up -d
+# The `envUp` alias is the same as the following commands:
+cd acs-packaging
+docker-compose -f dev/docker-compose.yml up -d
 Creating dev_activemq_1          ... done
 Creating dev_shared-file-store_1 ... done
 Creating dev_solr6_1             ... done
 Creating dev_postgres_1          ... done
 Creating dev_transform-core-aio_1 ... done
 Creating dev_transform-router_1   ... done
-$ cd ..
+...
 ~~~
 
 ## Alfresco Global Properties and Log4j
