@@ -1,14 +1,20 @@
 package org.alfresco.elasticsearch;
 
 import static org.alfresco.elasticsearch.SearchQueryService.req;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.alfresco.dataprep.AlfrescoHttpClient;
+import org.alfresco.dataprep.AlfrescoHttpClientFactory;
 import org.alfresco.rest.core.RestWrapper;
 import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.utility.data.DataContent;
@@ -24,6 +30,9 @@ import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.report.log.Step;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPut;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -43,7 +52,10 @@ public class ElasticsearchTagIndexingTests extends AbstractTestNGSpringContextTe
     DataUser dataUser;
 
     @Autowired
-    private DataContent dataContent;
+    DataContent dataContent;
+
+    @Autowired
+    private AlfrescoHttpClientFactory alfrescoHttpClientFactory;
 
     @Autowired
     SearchQueryService searchQueryService;
@@ -96,7 +108,7 @@ public class ElasticsearchTagIndexingTests extends AbstractTestNGSpringContextTe
         assertTagQueryResult(tag2, List.of());
 
         //Tag second file with a new tag
-        tagContent(file2, tag2);
+        final String tag2Id = tagContent(file2, tag2);
         assertTagQueryResult(tag1, List.of(file1, file2));
         assertTagQueryResult(tag2, List.of(file2));
 
@@ -112,6 +124,25 @@ public class ElasticsearchTagIndexingTests extends AbstractTestNGSpringContextTe
         final String unknownTag = unique("unknown");
         assertTagQueryResult(tag1, "OR", unknownTag, List.of(file1, file2));
         assertTagQueryResult(tag1, "AND", unknownTag, List.of());
+
+        //Delete file
+        deleteFile(file1);
+        assertTagQueryResult(tag1, List.of(file2));
+        assertTagQueryResult(tag2, List.of(file2, file3));
+
+        //Rename tag
+        final String newTag2 = unique("NEW-TAG2");
+        assertTagQueryResult(newTag2, List.of());
+        renameTag(tag2Id, newTag2);
+        assertTagQueryResult(tag1, List.of(file2));
+        assertTagQueryResult(newTag2, List.of(file2, file3));
+        assertTagQueryResult(tag2, List.of());
+
+        //Delete tag
+        deleteTag(file3, newTag2);
+        assertTagQueryResult(tag1, List.of(file2));
+        assertTagQueryResult(tag2, List.of());
+        assertTagQueryResult(newTag2, List.of(file2));
     }
 
     private void assertTagQueryResult(String tag1Name, String operator, String tag2Name, Collection<ContentModel> contentModels)
@@ -186,17 +217,48 @@ public class ElasticsearchTagIndexingTests extends AbstractTestNGSpringContextTe
                 .createContent(file);
     }
 
-    private void tagContent(ContentModel content, String... tagNames)
+    private String tagContent(ContentModel contentModel, String tag)
     {
-        final var contentData = dataContent
+        var tagModel = new TagModel(tag);
+        dataContent
                 .usingAdmin()
-                .usingResource(content);
-        for (String tag : tagNames)
-        {
-            var tagModel = new TagModel(tag);
-            contentData.addTagToContent(tagModel);
-            contentData.assertContentHasTag(content.getCmisLocation(), tagModel);
-        }
+                .usingResource(contentModel)
+                .addTagToContent(tagModel);
+
+        final String tagNodeId = dataContent.getContentActions().getTagNodeRef(
+                dataContent.getCurrentUser().getUsername(), dataContent.getCurrentUser().getPassword(),
+                contentModel.getCmisLocation(), tag);
+        assertNotNull(tagNodeId, "Tag node ref must exist.");
+        return tagNodeId;
+    }
+
+    private void deleteFile(ContentModel contentModel)
+    {
+        dataContent
+                .usingAdmin()
+                .usingResource(contentModel)
+                .deleteContent();
+        ;
+    }
+
+    private void deleteTag(ContentModel contentModel, String tagName)
+    {
+        boolean deleted = dataContent
+                .usingAdmin()
+                .getContentActions()
+                .removeTag(
+                        dataContent.getCurrentUser().getUsername(), dataContent.getCurrentUser().getPassword(),
+                        contentModel.getCmisLocation(), tagName);
+        assertTrue(deleted, "Tag should be deleted.");
+    }
+
+    private void renameTag(String tagId, String newName)
+    {
+        final AlfrescoHttpClient client = alfrescoHttpClientFactory.getObject();
+        final HttpPut put = new HttpPut(client.getApiVersionUrl() + "tags/" + tagId);
+        final UserModel adminUser = dataContent.usingAdmin().getCurrentUser();
+        HttpResponse response = client.executeAndRelease(adminUser.getUsername(), adminUser.getPassword(), new JSONObject(Map.of("tag", "ALA")), put);
+        assertEquals(response.getStatusLine().getStatusCode(), 200, "Expecting tag modification to succeed.");
     }
 
     private static ContentModel contentRoot()
