@@ -15,8 +15,10 @@ if [ -z "${RELEASE_VERSION}" ]; then
   exit 1
 fi
 
-publishDistributionZip org.alfresco alfresco-content-services-distribution               ${RELEASE_VERSION} https://nexus.alfresco.com/nexus/content/repositories/enterprise-releases/
-publishDistributionZip org.alfresco alfresco-governance-services-enterprise-distribution ${RELEASE_VERSION} https://nexus.alfresco.com/nexus/content/repositories/enterprise-releases/
+copyArtifactToAnotherRepo org.alfresco alfresco-content-services-distribution               ${RELEASE_VERSION} zip \
+    alfresco-enterprise-releases https://nexus.alfresco.com/nexus/content/repositories/enterprise-releases/
+copyArtifactToAnotherRepo org.alfresco alfresco-governance-services-enterprise-distribution ${RELEASE_VERSION} zip \
+    alfresco-enterprise-releases https://nexus.alfresco.com/nexus/content/repositories/enterprise-releases/
 
 popd
 set +vex

@@ -28,7 +28,8 @@ mvn -B \
 
 
 # The alfresco-content-services-share-distribution was in the Nexus 'Releases' repository prior to 7.1.0, which was visible to Community.
-publishDistributionZip org.alfresco alfresco-content-services-share-distribution ${RELEASE_VERSION} https://nexus.alfresco.com/nexus/content/repositories/releases/
+copyArtifactToAnotherRepo org.alfresco alfresco-content-services-share-distribution ${RELEASE_VERSION} zip \
+ alfresco-enterprise-releases https://nexus.alfresco.com/nexus/content/repositories/releases/
 
 popd
 set +vex
