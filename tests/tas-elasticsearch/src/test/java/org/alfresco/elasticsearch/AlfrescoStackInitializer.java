@@ -1,6 +1,10 @@
 package org.alfresco.elasticsearch;
 
+import static org.alfresco.elasticsearch.EnvHelper.getEnvProperty;
+
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 
@@ -13,6 +17,7 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.containers.startupcheck.IndefiniteWaitOneShotStartupCheckStrategy;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
@@ -22,6 +27,7 @@ import org.testng.Assert;
 
 public class AlfrescoStackInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext>
 {
+    public static final String CUSTOM_ALFRESCO_INDEX = "custom-alfresco-index";
     private static Logger LOGGER = LoggerFactory.getLogger(AlfrescoStackInitializer.class);
     private static Slf4jLogConsumer LOG_CONSUMER = new Slf4jLogConsumer(LOGGER);
 
@@ -104,6 +110,31 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     }
 
+    /**
+     * Run the alfresco-elasticsearch-reindexing container with path reindexing enabled.
+     */
+    public static void reindexEverything()
+    {
+        // Run the reindexing container.
+        Map<String, String> env = new HashMap<>(
+                Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true", // Ensure path reindexing is enabled.
+                        "SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200",
+                        "SPRING_DATASOURCE_URL", "jdbc:postgresql://postgres:5432/alfresco",
+                        "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
+                        "SPRING_ACTIVEMQ_BROKER-URL", "nio://activemq:61616",
+                        "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config",
+                        "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
+
+        try (GenericContainer reindexingComponent = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-reindexing:" + getEnvProperty("ES_CONNECTOR_TAG"))
+                .withEnv(env)
+                .withNetwork(AlfrescoStackInitializer.network)
+                .withStartupCheckStrategy(
+                        new IndefiniteWaitOneShotStartupCheckStrategy()))
+        {
+            reindexingComponent.start();
+        }
+    }
+
     private void startOrFail(Startable... startables)
     {
         try
@@ -121,7 +152,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         return new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-live-indexing:" + env.getProperty("ES_CONNECTOR_TAG"))
                        .withNetwork(network)
                        .withNetworkAliases("live-indexing")
-                       .withEnv("ELASTICSEARCH_INDEXNAME", "custom-alfresco-index")
+                       .withEnv("ELASTICSEARCH_INDEXNAME", CUSTOM_ALFRESCO_INDEX)
                        .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200")
                        .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
                        .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
@@ -228,7 +259,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 "-Ddb.url=jdbc:postgresql://postgres:5432/alfresco " +
                                 "-Dindex.subsystem.name=elasticsearch " +
                                 "-Delasticsearch.host=elasticsearch " +
-                                "-Delasticsearch.indexName=custom-alfresco-index " +
+                                "-Delasticsearch.indexName=" + CUSTOM_ALFRESCO_INDEX + " " +
                                 "-Dshare.host=127.0.0.1 " +
                                 "-Dshare.port=8080 " +
                                 "-Dalfresco.host=localhost " +

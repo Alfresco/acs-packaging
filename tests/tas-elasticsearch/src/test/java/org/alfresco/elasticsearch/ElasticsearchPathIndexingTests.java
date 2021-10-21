@@ -35,8 +35,6 @@ import org.testng.annotations.Test;
 
 public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextTests
 {
-    public static final String CUSTOM_ALFRESCO_INDEX = "custom-alfresco-index";
-
     @Autowired
     private ServerHealth serverHealth;
     @Autowired
@@ -70,7 +68,7 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
 
         // Before we start testing the live indexing we need to use the reindexing component to index the system nodes.
         Step.STEP("Index system nodes.");
-        reindexEverything();
+        AlfrescoStackInitializer.reindexEverything();
 
         Step.STEP("Create a test user and private site containing three nested folders and a document.");
         testUser = dataUser.createRandomTestUser();
@@ -211,30 +209,5 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
                 .usingResource(folderModel)
                 .createContent(new org.alfresco.utility.model.FileModel(filename, org.alfresco.utility.model.FileType.TEXT_PLAIN, "content"));
         return documentName;
-    }
-
-    /**
-     * Run the alfresco-elasticsearch-reindexing container with path reindexing enabled.
-     */
-    private void reindexEverything()
-    {
-        // Run the reindexing container.
-        Map<String, String> env = new HashMap<>(
-                Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true", // Ensure path reindexing is enabled.
-                        "SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200",
-                        "SPRING_DATASOURCE_URL", "jdbc:postgresql://postgres:5432/alfresco",
-                        "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
-                        "SPRING_ACTIVEMQ_BROKER-URL", "nio://activemq:61616",
-                        "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config",
-                        "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
-
-        try (GenericContainer reindexingComponent = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-reindexing:" + getEnvProperty("ES_CONNECTOR_TAG"))
-                .withEnv(env)
-                .withNetwork(AlfrescoStackInitializer.network)
-                .withStartupCheckStrategy(
-                        new IndefiniteWaitOneShotStartupCheckStrategy()))
-        {
-            reindexingComponent.start();
-        }
     }
 }

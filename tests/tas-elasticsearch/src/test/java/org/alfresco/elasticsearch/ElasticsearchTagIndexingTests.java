@@ -16,6 +16,7 @@ import org.alfresco.utility.model.TagModel;
 import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
+import org.alfresco.utility.report.log.Step;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +51,11 @@ public class ElasticsearchTagIndexingTests extends AbstractTestNGSpringContextTe
     public void dataPreparation()
     {
         serverHealth.assertServerIsOnline();
+
+        // TAG support is based on PATH attributes. We need to reindex all nodes created during bootstrap
+        Step.STEP("Index system nodes.");
+        AlfrescoStackInitializer.reindexEverything();
+
         testUser = dataUser.createRandomTestUser();
         testFolder = dataContent
                 .usingAdmin()
@@ -77,7 +83,7 @@ public class ElasticsearchTagIndexingTests extends AbstractTestNGSpringContextTe
         tagContent(testContent, tagName);
 
         SearchRequest query = req("TAG:" + tagName);
-        searchQueryService.expectNoResultsFromQuery(query, testUser);
+        searchQueryService.expectResultsFromQuery(query, testUser, testContent.getName());
     }
 
     private FileModel givenContent(final String content)
