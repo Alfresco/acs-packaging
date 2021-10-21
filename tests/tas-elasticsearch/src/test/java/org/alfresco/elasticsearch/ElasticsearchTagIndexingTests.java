@@ -2,6 +2,8 @@ package org.alfresco.elasticsearch;
 
 import static org.alfresco.elasticsearch.SearchQueryService.req;
 
+import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import org.alfresco.rest.core.RestWrapper;
@@ -82,8 +84,19 @@ public class ElasticsearchTagIndexingTests extends AbstractTestNGSpringContextTe
 
         tagContent(testContent, tagName);
 
-        SearchRequest query = req("TAG:" + tagName);
-        searchQueryService.expectResultsFromQuery(query, testUser, testContent.getName());
+        assertTagQueryResult(tagName, testContent.getName());
+    }
+
+    private void assertTagQueryResult(String tagName, String ... names)
+    {
+        for (final String tag : List.of(tagName.toLowerCase(Locale.ROOT), tagName.toUpperCase(Locale.ROOT)))
+        {
+            for (final String language : List.of("afts", "lucene"))
+            {
+                Step.STEP("Searching for TAG `" + tag + "` using `" + language + "` language.");
+                searchQueryService.expectResultsFromQuery(req("TAG:" + tag), testUser, names);
+            }
+        }
     }
 
     private FileModel givenContent(final String content)
