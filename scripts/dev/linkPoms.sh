@@ -19,7 +19,7 @@ usage() {
 }
 
 function checkout_master() {
-    local PROJECT="{$1}"
+    local PROJECT="${1}"
 
     pushd "${ROOT_DIR}/${PROJECT}" &>${LOGGING_OUT}
     git checkout master &>${LOGGING_OUT}
@@ -28,7 +28,7 @@ function checkout_master() {
 }
 
 function pull_latest() {
-    local PROJECT="{$1}"
+    local PROJECT="${1}"
 
     pushd "${ROOT_DIR}/${PROJECT}" &>${LOGGING_OUT}
     git checkout master &>${LOGGING_OUT}
