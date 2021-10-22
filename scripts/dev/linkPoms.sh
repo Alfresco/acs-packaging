@@ -32,7 +32,7 @@ function pull_latest() {
     local PROJECT="${1}"
 
     pushd "${ROOT_DIR}/${PROJECT}" &>${LOGGING_OUT}
-    git checkout master &>${LOGGING_OUT}
+    git pull &>${LOGGING_OUT}
     echo "${PROJECT} is now using the latest version"
     popd &>${LOGGING_OUT}
 }
@@ -49,7 +49,7 @@ function exportPomProperty() {
     >&2 echo "${ENV_NAME}=${PROPERTY_VALUE}"
 }
 
-while getopts "b:plkqh" arg; do
+while getopts "lb:pkqh" arg; do
     case $arg in
         b)
             BRANCH="${OPTARG:-master}"
@@ -122,3 +122,5 @@ then
   updatePomProperty acs-community-packaging   "$COM_R_VERSION" dependency.alfresco-community-repo.version
   updatePomProperty acs-community-packaging   "$ENT_S_VERSION" dependency.alfresco-community-share.version
 fi
+
+echo Finished
