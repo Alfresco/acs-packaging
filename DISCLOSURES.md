@@ -30,5 +30,5 @@ The third issue fixed is a Blind SSRF that could be executed through a specific 
 
 Credits:
 
-For CVE-2021-41791 and CVE-2021-41792 we want to thank Jack Misiura and Stefano Lanaro at The Missing Link Australia for reporting them and to professionally collaborate in the controlled disclosure. All the above issues were discovered during security testing and so far we do not have any evidence that they have ever been attempted to be exploited in a production environment.
+For CVE-2021-41790 and CVE-2021-41791 we want to thank Jack Misiura and Stefano Lanaro at The Missing Link Australia for reporting them and to professionally collaborate in the controlled disclosure. All the above issues were discovered during security testing and so far we do not have any evidence that they have ever been attempted to be exploited in a production environment.
 
