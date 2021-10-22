@@ -3,15 +3,13 @@ set -o errexit
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="${SCRIPT_DIR}/../../.."
-LOGGING_OUT="/dev/null"
 
 source "$(dirname "${BASH_SOURCE[0]}")/dev_functions.sh"
 
 usage() {
-    echo "Reverts changes make by linkPoms.sh using values stored in ." 1>&2;
+    echo "Reverts changes made by linkPoms.sh using values stored in .pomLink.env" 1>&2;
     echo 1>&2;
     echo "Usage: $0 [-h]" 1>&2;
-    echo "  -l: Output extra logging" 1>&2;
     echo "  -h: Display this help" 1>&2;
     exit 1;
 }
