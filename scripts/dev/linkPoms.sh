@@ -10,19 +10,20 @@ source "$(dirname "${BASH_SOURCE[0]}")/dev_functions.sh"
 usage() {
     echo "Updates the downstream projects with the versions of the upstream projects. Reversed by unlinkPoms.sh" 1>&2;
     echo 1>&2;
-    echo "Usage: $0 [-h]" 1>&2;
-    echo "  -m: Checkout the master branch of each project" 1>&2;
+    echo "Usage: $0 [-b <branch>] [-plh]" 1>&2;
+    echo "  -b: Checkout the <branch> of each project or master if <branch> is blank" 1>&2;
     echo "  -p: Pull the latest version of each project" 1>&2;
     echo "  -l: Output extra logging" 1>&2;
     echo "  -h: Display this help" 1>&2;
     exit 1;
 }
 
-function checkout_master() {
+function checkout() {
     local PROJECT="${1}"
+    local BRANCH="${2}"
 
     pushd "${ROOT_DIR}/${PROJECT}" &>${LOGGING_OUT}
-    git checkout master &>${LOGGING_OUT}
+    git checkout "${BRANCH}" &>${LOGGING_OUT}
     echo "${PROJECT} is now on master"
     popd &>${LOGGING_OUT}
 }
@@ -48,14 +49,15 @@ function exportPomProperty() {
     >&2 echo "${ENV_NAME}=${PROPERTY_VALUE}"
 }
 
-while getopts "mplkh" arg; do
+while getopts "b:plkqh" arg; do
     case $arg in
-        m)
-            checkout_master alfresco-community-repo
-            checkout_master alfresco-enterprise-repo
-            checkout_master alfresco-enterprise-share
-            checkout_master acs-packaging
-            checkout_master acs-community-packaging
+        b)
+            BRANCH="${OPTARG:-master}"
+            checkout alfresco-community-repo   "${BRANCH}"
+            checkout alfresco-enterprise-repo  "${BRANCH}"
+            checkout alfresco-enterprise-share "${BRANCH}"
+            checkout acs-packaging             "${BRANCH}"
+            checkout acs-community-packaging   "${BRANCH}"
             ;;
         p)
             pull_latest alfresco-community-repo
@@ -69,6 +71,9 @@ while getopts "mplkh" arg; do
             ;;
         k)
             SKIP_EXPORT="true"
+            ;;
+        q)
+            SKIP_UPDATE="true"
             ;;
         h | *)
             usage
@@ -99,19 +104,21 @@ then
   echo
 fi
 
-source .pomLink.env
+if [ -z ${SKIP_UPDATE+x} ]
+then
+  source .pomLink.env
 
-updatePomParent   alfresco-enterprise-repo  "$COM_R_VERSION"
-updatePomProperty alfresco-enterprise-repo  "$COM_R_VERSION" dependency.alfresco-community-repo.version
+  updatePomParent   alfresco-enterprise-repo  "$COM_R_VERSION"
+  updatePomProperty alfresco-enterprise-repo  "$COM_R_VERSION" dependency.alfresco-community-repo.version
 
-updatePomProperty alfresco-enterprise-share "$COM_R_VERSION" dependency.alfresco-community-repo.version
-updatePomProperty alfresco-enterprise-share "$ENT_R_VERSION" dependency.alfresco-enterprise-repo.version
+  updatePomProperty alfresco-enterprise-share "$COM_R_VERSION" dependency.alfresco-community-repo.version
+  updatePomProperty alfresco-enterprise-share "$ENT_R_VERSION" dependency.alfresco-enterprise-repo.version
 
-updatePomParent   acs-packaging             "$ENT_R_VERSION"
-updatePomProperty acs-packaging             "$ENT_R_VERSION" dependency.alfresco-enterprise-repo.version
-updatePomProperty acs-packaging             "$ENT_S_VERSION" dependency.alfresco-enterprise-share.version
+  updatePomParent   acs-packaging             "$ENT_R_VERSION"
+  updatePomProperty acs-packaging             "$ENT_R_VERSION" dependency.alfresco-enterprise-repo.version
+  updatePomProperty acs-packaging             "$ENT_S_VERSION" dependency.alfresco-enterprise-share.version
 
-updatePomParent   acs-community-packaging   "$COM_R_VERSION"
-updatePomProperty acs-community-packaging   "$COM_R_VERSION" dependency.alfresco-community-repo.version
-updatePomProperty acs-community-packaging   "$ENT_S_VERSION" dependency.alfresco-community-share.version
-
+  updatePomParent   acs-community-packaging   "$COM_R_VERSION"
+  updatePomProperty acs-community-packaging   "$COM_R_VERSION" dependency.alfresco-community-repo.version
+  updatePomProperty acs-community-packaging   "$ENT_S_VERSION" dependency.alfresco-community-share.version
+fi
