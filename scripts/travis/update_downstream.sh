@@ -21,8 +21,8 @@ COM_VERSION="$(evaluatePomProperty "dependency.alfresco-community-repo.version")
 SHA_VERSION="$(evaluatePomProperty "dependency.alfresco-enterprise-share.version")"
 
 # Retrieve the release and development versions as they are normally the same in community packaging
-RELEASE_VERSION=$(grep RELEASE_VERSION= .travis.yml)
-DEVELOPMENT_VERSION=$(grep DEVELOPMENT_VERSION= .travis.yml)
+RELEASE_VERSION=$(grep RELEASE_VERSION= .travis.yml | sed 's/.*RELEASE_VERSION=\(.*\)/\1/')
+DEVELOPMENT_VERSION=$(grep DEVELOPMENT_VERSION= .travis.yml | sed 's/.*DEVELOPMENT_VERSION=\(.*\)/\1/')
 
 DOWNSTREAM_REPO="github.com/Alfresco/acs-community-packaging.git"
 
@@ -38,6 +38,7 @@ mvn -B versions:set-property versions:commit \
   -Dproperty=dependency.alfresco-community-repo.version \
   "-DnewVersion=${COM_VERSION}"
 
+
 mvn -B versions:set-property versions:commit \
   -Dproperty=dependency.alfresco-community-share.version \
   "-DnewVersion=${SHA_VERSION}"
@@ -46,8 +47,8 @@ mvn -B versions:set-property versions:commit \
   -Dproperty=dependency.acs-packaging.version \
   "-DnewVersion=${VERSION}"
 
-sed -i "s/.*RELEASE_VERSION=.*/$RELEASE_VERSION/" .travis.yml
-sed -i "s/.*DEVELOPMENT_VERSION=.*/$DEVELOPMENT_VERSION/" .travis.yml
+sed -i "s/.*RELEASE_VERSION=.*/    - RELEASE_VERSION=$RELEASE_VERSION/" .travis.yml
+sed -i "s/.*DEVELOPMENT_VERSION=.*/    - DEVELOPMENT_VERSION=$DEVELOPMENT_VERSION/" .travis.yml
 
 # Commit changes
 git status
