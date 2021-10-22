@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
-set -o errexit
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="${SCRIPT_DIR}/../../.."
-LOGGING_OUT="/dev/null"
 
 source "$(dirname "${BASH_SOURCE[0]}")/dev_functions.sh"
 
 usage() {
     echo "Updates the downstream projects with the versions of the upstream projects. Reversed by unlinkPoms.sh" 1>&2;
     echo 1>&2;
-    echo "Usage: $0 [-b <branch>] [-plh]" 1>&2;
+    echo "Usage: $0 [-b <branch>] [-mpxuh]" 1>&2;
+    echo "  -m: Checkout master of each project" 1>&2;
     echo "  -b: Checkout the <branch> of each project or master if <branch> is blank" 1>&2;
     echo "  -p: Pull the latest version of each project" 1>&2;
-    echo "  -l: Output extra logging" 1>&2;
+    echo "  -x: Skip the extract of values from each project" 1>&2;
+    echo "  -u: Skip the update of values in each project" 1>&2;
     echo "  -h: Display this help" 1>&2;
     exit 1;
 }
@@ -22,19 +22,39 @@ function checkout() {
     local PROJECT="${1}"
     local BRANCH="${2}"
 
-    pushd "${ROOT_DIR}/${PROJECT}" &>${LOGGING_OUT}
-    git checkout "${BRANCH}" &>${LOGGING_OUT}
-    echo "${PROJECT} is now on master"
-    popd &>${LOGGING_OUT}
+    if [ -d "${ROOT_DIR}/${PROJECT}" ]
+    then
+      pushd "${ROOT_DIR}/${PROJECT}" &>/dev/null
+      git checkout "${BRANCH}" &>/tmp/$$.log
+      if [ $? -ne 0 ]
+      then
+        echo
+        echo "\"git checkout ${BRANCH}\" failed on ${PROJECT}"
+        cat "/tmp/$$.log"
+        exit 1
+      fi
+      echo "${PROJECT} is now on ${BRANCH}"
+      popd &>/dev/null
+    fi
 }
 
 function pull_latest() {
     local PROJECT="${1}"
 
-    pushd "${ROOT_DIR}/${PROJECT}" &>${LOGGING_OUT}
-    git pull &>${LOGGING_OUT}
-    echo "${PROJECT} is now using the latest version"
-    popd &>${LOGGING_OUT}
+    if [ -d "${ROOT_DIR}/${PROJECT}" ]
+    then
+      pushd "${ROOT_DIR}/${PROJECT}" &>/dev/null
+      git pull &>/tmp/$$.log
+      if [ $? -ne 0 ]
+      then
+        echo
+        echo "\"git pull\" failed on ${PROJECT}"
+        cat "/tmp/$$.log"
+        exit 1
+      fi
+      echo "${PROJECT} is now using latest"
+      popd &>/dev/null
+    fi
 }
 
 function exportPomProperty() {
@@ -42,14 +62,46 @@ function exportPomProperty() {
     local ENV_NAME="$2"
     local PROPERTY_NAME="$3"
 
-    pushd "${ROOT_DIR}/${PROJECT}" &>${LOGGING_OUT}
-    PROPERTY_VALUE=$(mvn help:evaluate -Dexpression="${PROPERTY_NAME}" -q -DforceStdout)
-    echo "export ${ENV_NAME}=${PROPERTY_VALUE}"
-    popd &>${LOGGING_OUT}
-    >&2 echo "${ENV_NAME}=${PROPERTY_VALUE}"
+    if [ -d "${ROOT_DIR}/${PROJECT}" ]
+      then
+      pushd "${ROOT_DIR}/${PROJECT}" &>/dev/null
+      PROPERTY_VALUE=$(mvn help:evaluate -Dexpression="${PROPERTY_NAME}" -q -DforceStdout)
+      echo "export ${ENV_NAME}=${PROPERTY_VALUE}"
+      popd &>/dev/null
+      >&2 echo "${ENV_NAME}=${PROPERTY_VALUE}"
+    fi
 }
 
-while getopts "lb:pkqh" arg; do
+while getopts "b:mpxuh" arg; do
+    case $arg in
+        b)
+            B_FLAG_SET="true"
+            ;;
+        m)
+            M_FLAG_B_FLAG_SET="true"
+            ;;
+        p)
+            # git pull after git checkout
+            ;;
+        x)
+            SKIP_EXPORT="true"
+            ;;
+        u)
+            SKIP_UPDATE="true"
+            ;;
+        h | *)
+            usage
+            exit 0
+            ;;
+    esac
+done
+if [ -n "${B_FLAG_SET}" -a -n "${M_FLAG_B_FLAG_SET}" ]
+then
+  echo "-m and -b may not both be set"
+  exit 1
+fi
+OPTIND=1
+while getopts "b:mpxuh" arg; do
     case $arg in
         b)
             BRANCH="${OPTARG:-master}"
@@ -59,25 +111,25 @@ while getopts "lb:pkqh" arg; do
             checkout acs-packaging             "${BRANCH}"
             checkout acs-community-packaging   "${BRANCH}"
             ;;
+        m)
+            BRANCH="master"
+            checkout alfresco-community-repo   "${BRANCH}"
+            checkout alfresco-enterprise-repo  "${BRANCH}"
+            checkout alfresco-enterprise-share "${BRANCH}"
+            checkout acs-packaging             "${BRANCH}"
+            checkout acs-community-packaging   "${BRANCH}"
+            ;;
+    esac
+done
+OPTIND=1
+while getopts "b:mpxuh" arg; do
+    case $arg in
         p)
             pull_latest alfresco-community-repo
             pull_latest alfresco-enterprise-repo
             pull_latest alfresco-enterprise-share
             pull_latest acs-packaging
             pull_latest acs-community-packaging
-            ;;
-        l)
-            LOGGING_OUT=`tty`
-            ;;
-        k)
-            SKIP_EXPORT="true"
-            ;;
-        q)
-            SKIP_UPDATE="true"
-            ;;
-        h | *)
-            usage
-            exit 0
             ;;
     esac
 done
@@ -122,5 +174,3 @@ then
   updatePomProperty acs-community-packaging   "$COM_R_VERSION" dependency.alfresco-community-repo.version
   updatePomProperty acs-community-packaging   "$ENT_S_VERSION" dependency.alfresco-community-share.version
 fi
-
-echo Finished
