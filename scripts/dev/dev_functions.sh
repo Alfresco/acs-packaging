@@ -4,7 +4,7 @@ function updatePomParent() {
     local PROJECT="$1"
     local PARENT_POM_VERSION="$2"
 
-    if [ -d "${ROOT_DIR}/${PROJECT}" ]
+    if [ -d "${ROOT_DIR}/${PROJECT}" -a -n "${PARENT_POM_VERSION}" ]
     then
       # Cannot use "mvn versions:update-parent" as the version must exist before it can be set. The ed command is also faster.
       pushd "${ROOT_DIR}/${PROJECT}" &>/dev/null
@@ -30,7 +30,7 @@ function updatePomProperty() {
     local PROPERTY_VALUE="$2"
     local PROPERTY_NAME="$3"
 
-    if [ -d "${ROOT_DIR}/${PROJECT}" ]
+    if [ -d "${ROOT_DIR}/${PROJECT}" -a -n "${PROPERTY_VALUE}" ]
     then
       # Can use "mvn versions:set-property", but ed is so much faster.
       # mvn -B versions:set-property  versions:commit  -Dproperty="${PROPERTY_NAME}" "-DnewVersion=${PROPERTY_VALUE}"
