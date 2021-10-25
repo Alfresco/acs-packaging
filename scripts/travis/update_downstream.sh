@@ -38,6 +38,7 @@ mvn -B versions:set-property versions:commit \
   -Dproperty=dependency.alfresco-community-repo.version \
   "-DnewVersion=${COM_VERSION}"
 
+
 mvn -B versions:set-property versions:commit \
   -Dproperty=dependency.alfresco-community-share.version \
   "-DnewVersion=${SHA_VERSION}"

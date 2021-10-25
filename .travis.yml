@@ -29,8 +29,8 @@ env:
     - TAS_SCRIPTS=../alfresco-community-repo/packaging/tests/scripts
     - TAS_ENVIRONMENT=./tests/environment
     # Release version has to start with real version (7.2.0-....) for the docker image to build successfully.
-    - RELEASE_VERSION=7.2.0-A3
-    - DEVELOPMENT_VERSION=7.2.0-A4-SNAPSHOT
+    - RELEASE_VERSION=7.2.0-A4
+    - DEVELOPMENT_VERSION=7.2.0-A5-SNAPSHOT
     - DTAS_VERSION="${DTAS_VERSION:-v1.1}"
 
 stages:
@@ -300,6 +300,10 @@ jobs:
             all_branches: true
         - provider: script
           script: bash scripts/travis/copy_ags_to_release_bucket.sh
+          on:
+            all_branches: true
+        - provider: script
+          script: bash scripts/travis/copy_share_image_to_dockerHub.sh
           on:
             all_branches: true
 
