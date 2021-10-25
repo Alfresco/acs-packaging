@@ -115,11 +115,11 @@ function exportPomParent() {
     then
     pushd "${ROOT_DIR}/${PROJECT}" &>/dev/null
     # Same as slower/simpler: "mvn help:evaluate -Dexpression=project.parent.version"
-    PROPERTY_VALUE=$(sed -n '/<parent>/,/<\/parent>/p' pom.xml | sed -n "s/.*<version>\(.*\)<\/version>/\1/p")
+    PROPERTY_VALUE=$(sed -n '/<parent>/,/<\/parent>/p' pom.xml | sed -n "s/.*<version>\(.*\)<\/version>/\1/p" | sed 's/\r//g')
     if [ $? -ne 0 ]
     then
       echo
-      echo "sed -n '/<parent>/,/<\/parent>/p' pom.xml | sed -n \"s/.*<version>\(.*\)<\/version>/\1/p\" failed on ${PROJECT}"
+      echo "\"sed -n '/<parent>/,/<\/parent>/p' pom.xml | sed -n \\\"s/.*<version>\(.*\)<\/version>/\1/p\\\" | sed 's/\r//g'\" failed on ${PROJECT}"
       exit 1
     fi
     echo "export ${ENV_NAME}=${PROPERTY_VALUE}" >> "${ENV_PATH}"
@@ -137,11 +137,11 @@ function exportPomProperty() {
     then
     pushd "${ROOT_DIR}/${PROJECT}" &>/dev/null
     # Same as slower/simpler: "mvn help:evaluate -Dexpression=${PROPERTY_NAME}"
-    PROPERTY_VALUE=$(sed -n '/<properties>/,/<\/properties>/p' pom.xml | sed -n "s/.*<${PROPERTY_NAME}>\(.*\)<\/${PROPERTY_NAME}>/\1/p")
+    PROPERTY_VALUE=$(sed -n '/<properties>/,/<\/properties>/p' pom.xml | sed -n "s/.*<${PROPERTY_NAME}>\(.*\)<\/${PROPERTY_NAME}>/\1/p" | sed 's/\r//g')
     if [ $? -ne 0 ]
     then
       echo
-      echo "sed -n '/<properties>/,/<\/properties>/p' pom.xml | sed -n \"s/.*<${PROPERTY_NAME}>\(.*\)<\/${PROPERTY_NAME}>/\1/p\" failed on ${PROJECT}"
+      echo "\"sed -n '/<properties>/,/<\/properties>/p' pom.xml | sed -n \\\"s/.*<${PROPERTY_NAME}>\(.*\)<\/${PROPERTY_NAME}>/\1/p\\\" | sed 's/\r//g'\" failed on ${PROJECT}"
       exit 1
     fi
     echo "export ${ENV_NAME}=${PROPERTY_VALUE}" >> "${ENV_PATH}"
@@ -225,10 +225,12 @@ then
   exportPomProperty alfresco-enterprise-share ENT_S_DEP_COM_R dependency.alfresco-community-repo.version
   exportPomProperty alfresco-enterprise-share ENT_S_DEP_ENT_R dependency.alfresco-enterprise-repo.version
 
+  exportPomVersion  acs-packaging             ENT_P_VERSION
   exportPomParent   acs-packaging             ENT_P_PARENT
   exportPomProperty acs-packaging             ENT_P_DEP_ENT_R dependency.alfresco-enterprise-repo.version
   exportPomProperty acs-packaging             ENT_P_DEP_ENT_S dependency.alfresco-enterprise-share.version
 
+  exportPomVersion  acs-packaging             COM_P_VERSION
   exportPomParent   acs-community-packaging   COM_P_PARENT
   exportPomProperty acs-community-packaging   COM_P_DEP_COM_R dependency.alfresco-community-repo.version
   exportPomProperty acs-community-packaging   COM_P_DEP_COM_S dependency.alfresco-community-share.version
