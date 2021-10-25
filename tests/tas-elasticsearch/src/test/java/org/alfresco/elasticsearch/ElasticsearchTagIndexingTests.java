@@ -85,7 +85,7 @@ public class ElasticsearchTagIndexingTests extends AbstractTestNGSpringContextTe
     @TestRail (section = { TestGroup.SEARCH, TestGroup.TAGS }, executionType = ExecutionType.REGRESSION,
             description = "Verify the TAG queries work correctly")
     @Test (groups = { TestGroup.SEARCH, TestGroup.TAGS, TestGroup.REGRESSION })
-    public void testSingleTagSearch()
+    public void testTAGUseCases()
     {
         final String tag1 = unique("TAG1");
 
