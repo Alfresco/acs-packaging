@@ -238,7 +238,6 @@ public class ElasticsearchTagIndexingTests extends AbstractTestNGSpringContextTe
                 .usingAdmin()
                 .usingResource(contentModel)
                 .deleteContent();
-        ;
     }
 
     private void deleteTag(ContentModel contentModel, String tagName)
@@ -257,7 +256,7 @@ public class ElasticsearchTagIndexingTests extends AbstractTestNGSpringContextTe
         final AlfrescoHttpClient client = alfrescoHttpClientFactory.getObject();
         final HttpPut put = new HttpPut(client.getApiVersionUrl() + "tags/" + tagId);
         final UserModel adminUser = dataContent.usingAdmin().getCurrentUser();
-        HttpResponse response = client.executeAndRelease(adminUser.getUsername(), adminUser.getPassword(), new JSONObject(Map.of("tag", "ALA")), put);
+        HttpResponse response = client.executeAndRelease(adminUser.getUsername(), adminUser.getPassword(), new JSONObject(Map.of("tag", newName)), put);
         assertEquals(response.getStatusLine().getStatusCode(), 200, "Expecting tag modification to succeed.");
     }
 
