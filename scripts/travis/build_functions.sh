@@ -190,4 +190,39 @@ function retieveLatestTag() {
   rm -rf "${LOCAL_PATH}"
 }
 
+function copyArtifactToAnotherRepo() {
+  local GROUP_ID="${1}"
+  local ARTIFACT_ID="${2}"
+  local VERSION="${3}"
+  local PACKAGING="${4}"
+  local SETTINGS_SERVER_ID="${5}"
+  local NEXUS_REPO="${6}"
+
+  local ARTIFACT_PATH="$(echo ${GROUP_ID}/${ARTIFACT_ID} | sed 's/\./\//g')"
+  local LOCAL_PATH="${HOME}/.m2/repository/${ARTIFACT_PATH}"
+  local TMP_PATH="/tmp/${ARTIFACT_ID}"
+
+  # Download the artifact. Make sure we are not using a cached version
+  rm -rf "${LOCAL_PATH}"
+  mvn org.apache.maven.plugins:maven-dependency-plugin:get  \
+    -Dartifact=${GROUP_ID}:${ARTIFACT_ID}:${VERSION}:${PACKAGING} \
+    -Dtransitive=false
+  ls -l "${LOCAL_PATH}/${VERSION}"
+
+  # The local maven repo must not contain the downloaded artifacts otherwise the upload can fail
+  rm -rf "${TMP_PATH}"
+  mv "${LOCAL_PATH}/${VERSION}" "${TMP_PATH}"
+
+  # Upload the artifact
+  mvn deploy:deploy-file \
+    -Dfile="${TMP_PATH}/${ARTIFACT_ID}-${VERSION}.${PACKAGING}" \
+    -DrepositoryId=${SETTINGS_SERVER_ID} \
+    -Durl="${NEXUS_REPO}" \
+    -DgroupId="${GROUP_ID}" \
+    -DartifactId="${ARTIFACT_ID}" \
+    -Dversion="${VERSION}" \
+    -Dpackaging=${PACKAGING}
+}
+
+
 set -vx

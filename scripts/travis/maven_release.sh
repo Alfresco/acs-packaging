@@ -4,6 +4,7 @@ PS4="\[\e[35m\]+ \[\e[m\]"
 set -vex
 pushd "$(dirname "${BASH_SOURCE[0]}")/../../"
 
+source "$(dirname "${BASH_SOURCE[0]}")/build_functions.sh"
 
 if [ -z "${RELEASE_VERSION}" ] || [ -z "${DEVELOPMENT_VERSION}" ]; then
   echo "Please provide a Release and Development version in the format <acs-version>-<additional-info> (7.2.0-EA or 7.2.0-SNAPSHOT)"
@@ -25,6 +26,10 @@ mvn -B \
   -Dusername="${GIT_USERNAME}" \
   -Dpassword="${GIT_PASSWORD}"
 
+
+# The alfresco-content-services-share-distribution was in the Nexus 'Releases' repository prior to 7.1.0, which was visible to Community.
+copyArtifactToAnotherRepo org.alfresco alfresco-content-services-share-distribution ${RELEASE_VERSION} zip \
+ alfresco-enterprise-releases https://nexus.alfresco.com/nexus/content/repositories/releases/
 
 popd
 set +vex
