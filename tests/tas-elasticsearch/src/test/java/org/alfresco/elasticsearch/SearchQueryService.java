@@ -94,6 +94,7 @@ public class SearchQueryService
     {
         RestRequestQueryModel restRequestQueryModel = new RestRequestQueryModel();
         restRequestQueryModel.setQuery(query);
+        restRequestQueryModel.setLanguage("afts");
         return new SearchRequest(restRequestQueryModel);
     }
 }
