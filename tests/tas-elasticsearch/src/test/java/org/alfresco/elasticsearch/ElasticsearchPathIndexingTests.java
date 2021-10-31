@@ -81,18 +81,6 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
         testFileNameWithWhitespace = createDocument(testFolders.get(testFolders.size() - 1), filenameWhichIncludesWhitespace);
     }
 
-    //    @AfterClass
-    //    public void keepAllRunning() throws InterruptedException
-    //    {
-    //        while (true)
-    //        {
-    //            logger.info("keeping env live");
-    //            logger.info("es:: " + AlfrescoStackInitializer.elasticsearch.getContainerIpAddress());
-    //            TimeUnit.SECONDS.sleep(5);
-    //        }
-    //
-    //    }
-
     @Test(groups = TestGroup.SEARCH)
     public void testSimple()
     {
