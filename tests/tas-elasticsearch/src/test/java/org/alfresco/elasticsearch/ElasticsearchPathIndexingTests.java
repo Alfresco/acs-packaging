@@ -168,14 +168,6 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
         String[] folderNames = testFolders.stream().map(ContentModel::getName).toArray(String[]::new);
         searchQueryService.expectResultsFromQuery(query, testUser, folderNames);
     }
-    
-    @Test (groups = TestGroup.SEARCH)
-    public void testUpdatePath()
-    {
-    	String folderPath = testFolders.stream().map(folder -> "cm:" + folder.getName()).collect(Collectors.joining("/"));
-        SearchRequest query = req("PATH:'/app:company_home/cm:" + testFileName + "' AND cm:name:*");
-        searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
-    }
 
     @Test(groups = TestGroup.SEARCH, enabled = false)
     public void testUpdatePath()
