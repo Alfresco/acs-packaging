@@ -4,23 +4,23 @@
     <artifactId>acs-packaging</artifactId>
     <packaging>pom</packaging>
     <name>Alfresco Content Services Packaging</name>
-    <version>7.2.0-A5-SNAPSHOT</version>
+    <version>7.2.0-A6-SNAPSHOT</version>
 
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-enterprise-repo</artifactId>
         <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
-        <version>14.17</version>
+        <version>14.24</version>
     </parent>
 
     <properties>
-        <dependency.alfresco-enterprise-repo.version>14.17</dependency.alfresco-enterprise-repo.version>
-        <dependency.alfresco-enterprise-share.version>14.12</dependency.alfresco-enterprise-share.version>
+        <dependency.alfresco-enterprise-repo.version>14.24</dependency.alfresco-enterprise-repo.version>
+        <dependency.alfresco-enterprise-share.version>14.15</dependency.alfresco-enterprise-share.version>
 
         <alfresco.rm-enterprise-rest-api-explorer.version>3.0.2</alfresco.rm-enterprise-rest-api-explorer.version>
-        <alfresco.s3connector.version>4.2.0-A1</alfresco.s3connector.version>
+        <alfresco.s3connector.version>5.0.0-A1</alfresco.s3connector.version>
         <alfresco.glacier-connector.version>2.2.1-A1</alfresco.glacier-connector.version>
-        <alfresco.azure-connector.version>2.1.0</alfresco.azure-connector.version>
+        <alfresco.azure-connector.version>3.0.0-A1</alfresco.azure-connector.version>
         <alfresco.salesforce-connector.version>2.3.0.3</alfresco.salesforce-connector.version>
         <alfresco.saml.version>1.2.2</alfresco.saml.version>
         <alfresco.outlook.version>2.8.0</alfresco.outlook.version>

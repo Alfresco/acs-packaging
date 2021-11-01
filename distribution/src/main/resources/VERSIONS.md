@@ -8,7 +8,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Component | Recommended | Also Available |
 |---|---|---|
 | Alfresco Content Services | @project.version@ |
-| Alfresco Repository | @dependency.alfresco-enterprise-repo.version@ |
+| Alfresco Enterprise Repository ± | @dependency.alfresco-enterprise-repo.version@ |
 | Alfresco Share | @dependency.alfresco-enterprise-share.version@ |
 | Alfresco Search Services | 2.0.2 |
 | Alfresco Insight Engine | 2.0.2 |
@@ -18,6 +18,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Alfresco File Transfer Receiver | 7.0.0 |
 | Alfresco Module Management Tool | @dependency.alfresco-mmt.version@ |
 | Alfresco Spring Encryptor | @dependency.alfresco-spring-encryptor.version@ |
+± Based on Alfresco Community Repository @dependency.alfresco-community-repo.version@
 
 ##### Alfresco Modules and Integrations
 | Component | Recommended | Also Available |

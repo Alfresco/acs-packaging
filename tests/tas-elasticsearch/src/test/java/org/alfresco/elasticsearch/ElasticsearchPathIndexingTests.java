@@ -1,15 +1,5 @@
 package org.alfresco.elasticsearch;
 
-import static org.alfresco.elasticsearch.EnvHelper.getEnvProperty;
-import static org.alfresco.elasticsearch.SearchQueryService.req;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
 import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
@@ -26,6 +16,16 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.startupcheck.IndefiniteWaitOneShotStartupCheckStrategy;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static org.alfresco.elasticsearch.EnvHelper.getEnvProperty;
+import static org.alfresco.elasticsearch.SearchQueryService.req;
 
 /**
  * Tests to verify live indexing of paths using Elasticsearch.
@@ -82,82 +82,89 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     }
 
     @Test(groups = TestGroup.SEARCH)
+    public void testSimple()
+    {
+        SearchRequest query = req("PATH:\"//cm:" + testFileName + "\"");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
+    }
+
+    @Test(groups = TestGroup.SEARCH)
     public void testRelativePathQuery()
     {
-        SearchRequest query = req("PATH:'//cm:" + testFileName + "' AND cm:name:*");
+        SearchRequest query = req("PATH:\"//cm:" + testFileName + "\" ");
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
     }
 
-    @Test (groups = TestGroup.SEARCH)
+    @Test(groups = TestGroup.SEARCH)
     public void testRelativePathQueryWithoutPrefixes()
     {
-        SearchRequest query = req("PATH:'//" + testFileName + "' AND name:*");
+        SearchRequest query = req("PATH:\"//" + testFileName + "\" AND name:*");
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
     }
 
-    @Test (groups = TestGroup.SEARCH)
+    @Test(groups = TestGroup.SEARCH)
     public void testWildcardQuery()
     {
         // The test file should be the only descendent of the last folder.
-        SearchRequest query = req("PATH:'//" + testSite.getId() + "//" + testFolders.get(testFolders.size() - 1).getName() + "/*' AND name:*");
-        searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
+        SearchRequest query = req("PATH:\"//" + testSite.getId() + "//" + testFolders.get(testFolders.size() - 1).getName() + "/*\" AND name:*");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFileName, testFileNameWithWhitespace);
     }
 
-    @Test (groups = TestGroup.SEARCH)
+    @Test(groups = TestGroup.SEARCH)
     public void testAbsolutePathQuery()
     {
         String folderPath = testFolders.stream().map(folder -> "cm:" + folder.getName()).collect(Collectors.joining("/"));
-        SearchRequest query = req("PATH:'/app:company_home/st:sites/cm:" + testSite.getId() + "/cm:documentLibrary/" + folderPath + "/cm:" + testFileName + "' AND cm:name:*");
+        SearchRequest query = req("PATH:\"/app:company_home/st:sites/cm:" + testSite.getId() + "/cm:documentLibrary/" + folderPath + "/cm:" + testFileName + "\" AND cm:name:*");
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
     }
 
-    @Test (groups = TestGroup.SEARCH)
+    @Test(groups = TestGroup.SEARCH)
     public void testAbsolutePathQueryWithoutPrefixes()
     {
         String folderPath = testFolders.stream().map(folder -> "cm:" + folder.getName()).collect(Collectors.joining("/"));
-        SearchRequest query = req("PATH:'/company_home/sites/" + testSite.getId() + "/documentLibrary/" + folderPath + "/" + testFileName + "' AND name:*");
+        SearchRequest query = req("PATH:\"/company_home/sites/" + testSite.getId() + "/documentLibrary/" + folderPath + "/" + testFileName + "\" AND name:*");
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
     }
 
-    @Test (groups = TestGroup.SEARCH)
+    @Test(groups = TestGroup.SEARCH)
     public void testRootNodes()
     {
-        SearchRequest query = req("PATH:'/*' AND name:*");
+        SearchRequest query = req("PATH:\"/*\" AND name:*");
         searchQueryService.expectResultsFromQuery(query, testUser, "categories", "Company Home");
     }
 
-    @Test (groups = TestGroup.SEARCH)
+    @Test(groups = TestGroup.SEARCH)
     public void testPathNameMismatch()
     {
-        SearchRequest query = req("PATH:'/*' AND name:" + testFileName + " AND name:*");
+        SearchRequest query = req("PATH:\"/*\" AND name:" + testFileName + " AND name:*");
         searchQueryService.expectNoResultsFromQuery(query, testUser);
     }
 
-    @Test (groups = TestGroup.SEARCH)
+    @Test(groups = TestGroup.SEARCH)
     public void testPathNameIntersect()
     {
-        SearchRequest query = req("PATH:'//*' AND name:" + testFileName + " AND name:*");
+        SearchRequest query = req("PATH:\"//*\" AND name:" + testFileName + " AND name:*");
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
     }
 
-    @Test (groups = TestGroup.SEARCH)
+    @Test(groups = TestGroup.SEARCH)
     public void testPathNameIntersectUsingEscapedFilenames()
     {
-        SearchRequest query = req("PATH:'//*' AND name:" + escapedFilenameWhichIncludesWhitespace + " AND name:*");
-        searchQueryService.expectResultsFromQuery(query, testUser, testFileNameWithWhitespace);
+        SearchRequest query = req("PATH:\"//*\" AND name:" + escapedFilenameWhichIncludesWhitespace);
+        searchQueryService.expectResultsFromQuery(query, testUser, testFileName, testFileNameWithWhitespace);
     }
 
-    @Test (groups = TestGroup.SEARCH)
+    @Test(groups = TestGroup.SEARCH)
     public void testAllDescendentsOfFolder()
     {
-        SearchRequest query = req("PATH:'//" + testFolders.get(0).getName() + "//*' AND name:*");
-        searchQueryService.expectResultsFromQuery(query, testUser, testFileName, testFolders.get(1).getName(), testFolders.get(2).getName());
+        SearchRequest query = req("PATH:\"//" + testFolders.get(0).getName() + "//*\" AND name:*");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFileName, testFileNameWithWhitespace, testFolders.get(1).getName(), testFolders.get(2).getName());
     }
 
-    @Test (groups = TestGroup.SEARCH)
+    @Test(groups = TestGroup.SEARCH)
     public void testAllFoldersInSite()
     {
-        SearchRequest query = req("PATH:'/*/sites/" + testSite.getId() + "/*//*' AND TYPE:'cm:folder' AND name:*");
+        SearchRequest query = req("PATH:\"/*/sites/" + testSite.getId() + "/*//*\" AND TYPE:\"cm:folder\" AND name:*");
         String[] folderNames = testFolders.stream().map(ContentModel::getName).toArray(String[]::new);
         searchQueryService.expectResultsFromQuery(query, testUser, folderNames);
     }
@@ -167,6 +174,15 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     {
     	String folderPath = testFolders.stream().map(folder -> "cm:" + folder.getName()).collect(Collectors.joining("/"));
         SearchRequest query = req("PATH:'/app:company_home/cm:" + testFileName + "' AND cm:name:*");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
+    }
+
+    @Test(groups = TestGroup.SEARCH, enabled = false)
+    public void testUpdatePath()
+    {
+        //disabled test: find a way to rename or move a folder on repository
+        String folderPath = testFolders.stream().map(folder -> "cm:" + folder.getName()).collect(Collectors.joining("/"));
+        SearchRequest query = req("PATH:\"/app:company_home/cm:" + testFileName + "\" AND cm:name:*");
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
     }
 
@@ -209,16 +225,15 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
      * Create a document in the given folder using the test user and the given filename.
      *
      * @param folderModel The location to create the document.
-     * @param filename the filename.
-     * @return The randomly generated name of the new document.
+     * @param filename    the filename.
+     * @return the passed filename.
      */
     private String createDocument(FolderModel folderModel, String filename)
     {
-        String documentName = "TestFile" + UUID.randomUUID() + ".txt";
         dataContent.usingUser(testUser)
-                .usingResource(folderModel)
-                .createContent(new org.alfresco.utility.model.FileModel(filename, org.alfresco.utility.model.FileType.TEXT_PLAIN, "content"));
-        return documentName;
+                   .usingResource(folderModel)
+                   .createContent(new org.alfresco.utility.model.FileModel(filename, org.alfresco.utility.model.FileType.TEXT_PLAIN, "content"));
+        return filename;
     }
 
     /**
@@ -229,12 +244,12 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
         // Run the reindexing container.
         Map<String, String> env = new HashMap<>(
                 Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true", // Ensure path reindexing is enabled.
-                        "SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200",
-                        "SPRING_DATASOURCE_URL", "jdbc:postgresql://postgres:5432/alfresco",
-                        "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
-                        "SPRING_ACTIVEMQ_BROKER-URL", "nio://activemq:61616",
-                        "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config",
-                        "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
+                       "SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200",
+                       "SPRING_DATASOURCE_URL", "jdbc:postgresql://postgres:5432/alfresco",
+                       "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
+                       "SPRING_ACTIVEMQ_BROKER-URL", "nio://activemq:61616",
+                       "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config",
+                       "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
 
         try (GenericContainer reindexingComponent = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-reindexing:" + getEnvProperty("ES_CONNECTOR_TAG"))
                 .withEnv(env)

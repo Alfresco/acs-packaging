@@ -28,6 +28,9 @@ The `alfresco/alfresco-share` image extends the `alfresco-share-base` created by
 project.
 
 # Build:
+For more detailed build instructions, see the [Development Tomcat Environment](https://github.com/Alfresco/acs-packaging/tree/master/dev/README.md)
+page.
+
 To build the project, including the distribution zip, but not the Docker images, issue the following commands:
 ```
 $ # The entP alias includes the following:

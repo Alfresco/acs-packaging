@@ -29,8 +29,8 @@ env:
     - TAS_SCRIPTS=../alfresco-community-repo/packaging/tests/scripts
     - TAS_ENVIRONMENT=./tests/environment
     # Release version has to start with real version (7.2.0-....) for the docker image to build successfully.
-    - RELEASE_VERSION=7.2.0-A4
-    - DEVELOPMENT_VERSION=7.2.0-A5-SNAPSHOT
+    - RELEASE_VERSION=7.2.0-A5
+    - DEVELOPMENT_VERSION=7.2.0-A6-SNAPSHOT
     - DTAS_VERSION="${DTAS_VERSION:-v1.1}"
 
 stages:
@@ -52,6 +52,12 @@ install: travis_retry travis_wait 40 bash scripts/travis/build.sh
 
 jobs:
   include:
+    - name: "Source Clear Scan (SCA)"
+      if: branch = master OR branch =~ /release\/.*/
+      # Run Veracode
+      install: skip
+      script: travis_wait 30 bash scripts/travis/source_clear.sh
+
     - name: "REST API TAS tests part1"
       if: commit_message =~ /\[tas\]/
       before_script:
@@ -190,6 +196,12 @@ jobs:
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
         - travis_wait 20 mvn -B install -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
+    - name: "Distribution Zip content tests"
+      before_script:
+        - travis_retry travis_wait 20 mvn -B -V clean install -Pags -DskipTests -Dmaven.javadoc.skip=true
+      script:
+        - travis_wait 20 mvn -B install -f tests/tas-distribution-zip/pom.xml -Prun-distribution-zip-contents-check -DrunBugs=false
+
     # Test local repo and share docker images that will be used in the single pipeline. Tag:latest
     - name: "Single Pipeline image tests"
       if: fork = false AND type != pull_request
@@ -294,6 +306,10 @@ jobs:
             all_branches: true
         - provider: script
           script: bash scripts/travis/copy_ags_to_release_bucket.sh
+          on:
+            all_branches: true
+        - provider: script
+          script: bash scripts/travis/copy_share_image_to_dockerHub.sh
           on:
             all_branches: true
 
