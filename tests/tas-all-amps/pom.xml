@@ -304,7 +304,7 @@
                                     <executable>java</executable>
                                     <arguments>
                                         <argument>-jar</argument>
-                                        <argument>${project.build.directory}/alfresco-mmt/alfresco-mmt-${dependency.alfresco-mmt.version}.jar</argument>
+                                        <argument>${project.build.directory}/alfresco-mmt/alfresco-mmt-${dependency.alfresco-community-repo.version}.jar</argument>
                                         <argument>install</argument>
                                         <argument>${project.build.directory}/amps</argument>
                                         <argument>${project.build.directory}/war/alfresco</argument>
@@ -324,7 +324,7 @@
                                     <executable>java</executable>
                                     <arguments>
                                         <argument>-jar</argument>
-                                        <argument>${project.build.directory}/alfresco-mmt/alfresco-mmt-${dependency.alfresco-mmt.version}.jar</argument>
+                                        <argument>${project.build.directory}/alfresco-mmt/alfresco-mmt-${dependency.alfresco-community-repo.version}.jar</argument>
                                         <argument>install</argument>
                                         <argument>${project.build.directory}/amps_share</argument>
                                         <argument>${project.build.directory}/war/share</argument>
