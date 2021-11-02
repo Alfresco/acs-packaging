@@ -77,7 +77,9 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
         testSite = dataSite.usingUser(testUser).createPrivateRandomSite();
 
         testFolders = createNestedFolders(3);
+
         testFileName = createDocument(testFolders.get(testFolders.size() - 1));
+
         testFileNameWithWhitespace = createDocument(testFolders.get(testFolders.size() - 1), filenameWhichIncludesWhitespace);
     }
 
@@ -151,7 +153,7 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     public void testPathNameIntersectUsingEscapedFilenames()
     {
         SearchRequest query = req("PATH:\"//*\" AND name:" + escapedFilenameWhichIncludesWhitespace);
-        searchQueryService.expectResultsFromQuery(query, testUser, testFileNameWithWhitespace);
+        searchQueryService.expectResultsFromQuery(query, testUser, testFileName, testFileNameWithWhitespace);
     }
 
     @Test(groups = TestGroup.SEARCH)
