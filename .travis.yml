@@ -29,8 +29,8 @@ env:
     - TAS_SCRIPTS=../alfresco-community-repo/packaging/tests/scripts
     - TAS_ENVIRONMENT=./tests/environment
     # Release version has to start with real version (7.2.0-....) for the docker image to build successfully.
-    - RELEASE_VERSION=7.2.0-A4
-    - DEVELOPMENT_VERSION=7.2.0-A5-SNAPSHOT
+    - RELEASE_VERSION=7.2.0-A5
+    - DEVELOPMENT_VERSION=7.2.0-A6-SNAPSHOT
     - DTAS_VERSION="${DTAS_VERSION:-v1.1}"
 
 stages:
@@ -52,6 +52,12 @@ install: travis_retry travis_wait 40 bash scripts/travis/build.sh
 
 jobs:
   include:
+    - name: "Source Clear Scan (SCA)"
+      if: branch = master OR branch =~ /release\/.*/
+      # Run Veracode
+      install: skip
+      script: travis_wait 30 bash scripts/travis/source_clear.sh
+
     - name: "REST API TAS tests part1"
       if: commit_message =~ /\[tas\]/
       before_script:
