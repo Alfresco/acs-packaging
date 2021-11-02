@@ -79,15 +79,6 @@
                                 <!-- Do not comment out, as this will cause problems in the Single Pipeline. -->
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
-                                    <artifactId>alfresco-glacier-connector-repo</artifactId>
-                                    <version>${alfresco.glacier-connector.version}</version>
-                                    <type>amp</type>
-                                    <overWrite>false</overWrite>
-                                    <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                </artifactItem>
-                                <!-- Do not comment out, as this will cause problems in the Single Pipeline. -->
-                                <artifactItem>
-                                    <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-share-services</artifactId>
                                     <version>${dependency.alfresco-community-repo.version}</version>
                                     <type>amp</type>

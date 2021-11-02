@@ -51,11 +51,6 @@
                     "installed": true
                 },
                 {
-                    "id": "alfresco-glacier-connector-repo",
-                    "version": "${alfresco.glacier-connector.version}",
-                    "installed": true
-                },
-                {
                     "id": "org_alfresco_integrations_S3Connector",
                     "version": "${alfresco.s3connector.version}",
                     "installed": true
