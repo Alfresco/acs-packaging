@@ -33,9 +33,9 @@ git --no-pager diff "${CONFIG_FILE}"
 git add "${CONFIG_FILE}"
 
 if git status --untracked-files=no --porcelain | grep -q '^' ; then
-  git commit -m "Update upstream versions
+  git commit -m "Auto-update repository/share: ${ACS_VERSION}
 
-    - repository/share:   ${ACS_VERSION}"
+   [skip ci]"
   git push
 else
   echo "Dependencies are already up to date."
