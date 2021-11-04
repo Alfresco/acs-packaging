@@ -15,7 +15,7 @@ git pull
 MAJOR="$(evaluatePomProperty "acs.version.major")"
 MINOR="$(evaluatePomProperty "acs.version.minor")"
 REVISION="$(evaluatePomProperty "acs.version.revision")"
-ACS_VERSION="${MAJOR}.${MINOR}.${REVISION}"
+ACS_VERSION="${MAJOR}\.${MINOR}\.${REVISION}"
 
 DOWNSTREAM_REPO="github.com/Alfresco/terraform-alfresco-pipeline.git"
 
