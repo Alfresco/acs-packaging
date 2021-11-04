@@ -23,8 +23,8 @@ cloneRepo "${DOWNSTREAM_REPO}" develop
 cd "$(dirname "${BASH_SOURCE[0]}")/../../../$(basename "${DOWNSTREAM_REPO%.git}")"
 
 CONFIG_FILE=flux-configuration/develop/flux_configuration.yaml
-sed -i "s/\(.*repository: regex:^\).*\((.*).*\)/\1${MAJOR}\.${MINOR}\.${REVISION}\2/" "${CONFIG_FILE}"
-sed -i "s/\(.*share: regex:^\).*\((.*).*\)/\1${MAJOR}\.${MINOR}\.${REVISION}\2/" "${CONFIG_FILE}"
+sed -i "s/\(.*repository: regex:\).*\((.*).*\)/\1^${MAJOR}\.${MINOR}\.${REVISION}\2/" "${CONFIG_FILE}"
+sed -i "s/\(.*share: regex:\).*\((.*).*\)/\1^${MAJOR}\.${MINOR}\.${REVISION}\2/" "${CONFIG_FILE}"
 
 # Commit changes
 git status
