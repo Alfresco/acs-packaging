@@ -227,7 +227,7 @@ jobs:
       stage: docker_latest
       script:
         - travis_retry travis_wait 30 mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Pags -Ppush-docker-images,pipeline
-        - scripts/travis/update_single_pipeline_reference.sh
+        - bash scripts/travis/update_single_pipeline_reference.sh
 
     - name: "Update release and Single Pipeline <acs>-<build> images"
       stage: docker_release
