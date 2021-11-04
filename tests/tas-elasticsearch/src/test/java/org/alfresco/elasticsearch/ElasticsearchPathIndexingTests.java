@@ -54,6 +54,7 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
 
     private List<FolderModel> testFolders;
 
+    private String uuid;
     private String testFileName;
     private String filenameWhichIncludesWhitespace = "TestFile " + UUID.randomUUID() + ".txt";
     private String escapedFilenameWhichIncludesWhitespace = filenameWhichIncludesWhitespace.replace(" ", "_x0020_");
@@ -77,6 +78,7 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
         testSite = dataSite.usingUser(testUser).createPrivateRandomSite();
 
         testFolders = createNestedFolders(3);
+        uuid = dataContent.getLastNodeId();
 
         testFileName = createDocument(testFolders.get(testFolders.size() - 1));
 
@@ -177,6 +179,13 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
         //disabled test: find a way to rename or move a folder on repository
         String folderPath = testFolders.stream().map(folder -> "cm:" + folder.getName()).collect(Collectors.joining("/"));
         SearchRequest query = req("PATH:\"/app:company_home/cm:" + testFileName + "\" AND cm:name:*");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
+    }
+
+    @Test(groups = TestGroup.SEARCH)
+    public void primaryHierarchyContainsFolderId()
+    {
+        SearchRequest query = req("primaryHierarchy: \"" + uuid + "\"");
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
     }
 
