@@ -170,15 +170,48 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
         String[] folderNames = testFolders.stream().map(ContentModel::getName).toArray(String[]::new);
         searchQueryService.expectResultsFromQuery(query, testUser, folderNames);
     }
-
-    @Test(groups = TestGroup.SEARCH, enabled = false)
-    public void testUpdatePath()
-    {
-        //disabled test: find a way to rename or move a folder on repository
-        String folderPath = testFolders.stream().map(folder -> "cm:" + folder.getName()).collect(Collectors.joining("/"));
-        SearchRequest query = req("PATH:\"/app:company_home/cm:" + testFileName + "\" AND cm:name:*");
-        searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
-    }
+    
+//  @Test(groups = TestGroup.SEARCH, enabled = false)
+//  public void testUpdatePath()
+//  {
+//      //disabled test: find a way to rename or move a folder on repository
+//      String folderPath = testFolders.stream().map(folder -> "cm:" + folder.getName()).collect(Collectors.joining("/"));
+//      SearchRequest query = req("PATH:\"/app:company_home/cm:" + testFileName + "\" AND cm:name:*");
+//      searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
+//  }
+  
+  @Test(groups = TestGroup.SEARCH)
+  public void testUpdatePath()
+  {
+  	FolderModel folderModel = new FolderModel(folder1);
+  	String folderPath = testFolders.stream().map(folder -> "cm:" + folder.getName()).collect(Collectors.joining("/"));
+  	
+  	testFileName= createDocument(FolderModel folder1, file1)
+  	
+  	FolderModel folderModel = new FolderModel(folder2);
+  	String folderPath = testFolders.stream().map(folder -> "cm:" + folder.getName()).collect(Collectors.joining("/"));
+  	
+  	testFileName= createDocument(FolderModel folder2, file1)
+  	
+  	SearchRequest query = req("PATH:\"/company_home/sites/" + testSite.getId() + "/documentLibrary/" + folder2 + "/" + testFileName + "\" AND name:*");
+      searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
+  }
+  
+//  @Test(groups = TestGroup.SEARCH)
+//  public void testUpdatePath()
+//  {
+//  	String folderPath = testFolders.stream().map(folder -> "cm:" + folder.getName()).collect(Collectors.joining("/"));
+//  	String folderPath2 = testFolders.stream().map(folder -> "cm:" + folder.getName()).collect(Collectors.joining("/"));
+//  	testFileName = createDocument(folderPath.get(folderPath.size() - 1));
+//      
+//      STEP("Move record from one folder to the other");
+//      getRestAPIFactory().getNodeAPI(toContentModel(testFileName)).move(createBodyForMoveCopy(folderPath2));
+//      assertStatusCode(OK);
+//
+//      STEP("Check the file has moved to folder");
+//      SearchRequest query = req("PATH:\"/company_home/sites/" + testSite.getId() + "/documentLibrary/" + folderPath2 + "/" + testFileName + "\" AND name:*");
+//      searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
+//  }
 
     /**
      * Create a set of nested folders in the test site using the test user.
