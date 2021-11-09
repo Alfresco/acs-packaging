@@ -6,7 +6,7 @@ import argparse, os, re, subprocess
 script_path = os.path.dirname(os.path.realpath(__file__))
 root_dir = os.path.dirname(os.path.dirname(os.path.dirname(script_path)))
 
-projects = ['alfresco-community-repo', 'alfresco-enterprise-repo', 'alfresco-enterprise-share', 'acs-packaging']
+projects = ['alfresco-community-repo', 'alfresco-enterprise-repo', 'alfresco-enterprise-share', 'acs-community-packaging', 'acs-packaging']
 project_dir = {project: os.path.join(root_dir, project) for project in projects}
 version_string = {project: '<dependency.{}.version>'.format(project) for project in projects}
 
@@ -15,6 +15,7 @@ parser = argparse.ArgumentParser(description='Find the acs-packaging tags that c
 parser.add_argument('-j', '--jira', help='The ticket number to search for.')
 parser.add_argument('-a', '--all', action='store_true', help='Display all releases containing fix.')
 parser.add_argument('-r', '--release', action='store_true', help='Only consider full releases.')
+parser.add_argument('-s', '--skipfetch', action='store_true', help='Skip the git fetch step - only include commits that are stored locally.')
 args = parser.parse_args()
 
 # The filter to use to avoid considering test tags.
@@ -71,9 +72,9 @@ def tag_before(tag_a, tag_b):
             return False
     return len(a_parts) <= len(b_parts)
 
-tags_in_project = {}
 for project in projects:
-    run_command(['git', 'fetch'], project)
+    if not args.skipfetch:
+        run_command(['git', 'fetch'], project)
     commits = run_list_command(['git', 'rev-list', '--all', '--grep', args.jira], project)
     for commit in commits:
         tags = run_list_command(['git', 'tag', '--contains', commit], project)
@@ -88,7 +89,7 @@ for project in projects:
         else:
             # Filter out tags that are before other tags.
             reduced_tags = []
-            for i, tag_a in enumerate(tags):
+            for tag_a in tags:
                 include = True
                 for tag_b in tags:
                     if tag_a == tag_b:
