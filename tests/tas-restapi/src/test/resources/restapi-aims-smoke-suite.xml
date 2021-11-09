@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="REST-API ACS AIMS SMOKE TEST">
+	<listeners>
+        <listener class-name="org.alfresco.utility.report.HtmlReportListener"/>
+        <listener class-name="org.alfresco.utility.testrail.TestRailExecutorListener"/>
+        <listener class-name="org.alfresco.utility.testng.OSTestMethodSelector"/>
+	</listeners>
+
+	<test name="REST-API smoke test with AIMS">
+      <classes>
+         <class name="org.alfresco.rest.groups.GroupsTests">
+            <methods>
+               <include name="createListUpdateAndDeleteGroup" />
+            </methods>
+         </class>
+      </classes>
+   </test>
+
+</suite>
