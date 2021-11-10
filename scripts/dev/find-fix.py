@@ -2,19 +2,22 @@
 # -*- coding: utf-8 -*-
 
 import argparse, os, re, subprocess
+from collections import defaultdict
 
 script_path = os.path.dirname(os.path.realpath(__file__))
 root_dir = os.path.dirname(os.path.dirname(os.path.dirname(script_path)))
 
 projects = ['alfresco-community-repo', 'alfresco-enterprise-repo', 'alfresco-enterprise-share', 'acs-community-packaging', 'acs-packaging']
+project_dependencies = {'alfresco-community-repo': ['alfresco-enterprise-repo', 'acs-community-packaging'], 'alfresco-enterprise-repo': ['acs-packaging'], 'alfresco-enterprise-share': ['acs-packaging']}
 project_dir = {project: os.path.join(root_dir, project) for project in projects}
-version_string = {project: '<dependency.{}.version>'.format(project) for project in projects}
+version_string = {project: '<dependency.{0}.version>{{}}</dependency.{0}.version>'.format(project) for project in projects}
 
-parser = argparse.ArgumentParser(description='Find the acs-packaging tags that contain commits referencing a ticket.',
+parser = argparse.ArgumentParser(description='Find the tags that contain commits referencing a ticket.',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument('-j', '--jira', help='The ticket number to search for.')
 parser.add_argument('-a', '--all', action='store_true', help='Display all releases containing fix.')
 parser.add_argument('-r', '--release', action='store_true', help='Only consider full releases.')
+parser.add_argument('-p', '--packaged', action='store_true', help='Include information about how the commit is packaged.')
 parser.add_argument('-s', '--skipfetch', action='store_true', help='Skip the git fetch step - only include commits that are stored locally.')
 args = parser.parse_args()
 
@@ -72,31 +75,61 @@ def tag_before(tag_a, tag_b):
             return False
     return len(a_parts) <= len(b_parts)
 
+def reduce_tags(tags):
+    """Filter a set of tags to return only those that aren't descendents from others in the list."""
+    reduced_tags = []
+    for tag_a in tags:
+        include = True
+        for tag_b in tags:
+            if tag_a == tag_b:
+                continue
+            if not tag_before(tag_a, tag_b):
+                include = False
+                break
+        if include:
+            reduced_tags.append(tag_a)
+    return reduced_tags
+
+def find_tags_containing(project, commit):
+    """Find all tags containing the given commit.  Returns the full list and a condensed list (excluding tags 'after' other tags in the list)."""
+    tags = run_list_command(['git', 'tag', '--contains', commit], project)
+    # The packaging projects had a different format for older tags.
+    if project in ['acs-packaging', 'acs-community-packaging']:
+        # Remove the prefix 'acs-packaging-' if it's present.
+        tags = list(map(lambda tag: tag.replace('{}-'.format(project), ''), tags))
+    # Exclude tags that aren't just chains of numbers with an optional suffix.
+    tags = list(filter(lambda tag: re.match(version_filter, tag), tags))
+    # Filter out tags that are before other tags.
+    reduced_tags = reduce_tags(tags)
+    return tags, reduced_tags
+
 for project in projects:
     if not args.skipfetch:
         run_command(['git', 'fetch'], project)
     commits = run_list_command(['git', 'rev-list', '--all', '--grep', args.jira], project)
-    for commit in commits:
-        tags = run_list_command(['git', 'tag', '--contains', commit], project)
-        # acs-packaging has a different format for older tags.
-        if project == 'acs-packaging':
-            # Remove the prefix 'acs-packaging-' if it's present.
-            tags = list(map(lambda tag: tag.replace('acs-packaging-', ''), tags))
-        # Exclude tags that aren't just chains of numbers with an optional suffix.
-        tags = list(filter(lambda tag: re.match(version_filter, tag), tags))
-        if args.all:
-            reduced_tags = tags
-        else:
-            # Filter out tags that are before other tags.
-            reduced_tags = []
-            for tag_a in tags:
-                include = True
-                for tag_b in tags:
-                    if tag_a == tag_b:
-                        continue
-                    if not tag_before(tag_a, tag_b):
-                        include = False
-                        break
-                if include:
-                    reduced_tags.append(tag_a)
-        print('{} is in {}: {}'.format(commit, project, ', '.join(reduced_tags)))
+    for original_commit in commits:
+        tags, reduced_tags = find_tags_containing(project, original_commit)
+        tag_info = ', '.join(tags if args.all else reduced_tags)
+        packaging_info = ''
+        if args.packaged:
+            pairs = [(project, tag) for tag in reduced_tags]
+            packaged = defaultdict(set)
+            while pairs:
+                dependency, tag = pairs.pop()
+                if dependency not in project_dependencies.keys():
+                    packaged[dependency].add(tag)
+                else:
+                    # Try to find pairs from next project up.
+                    for ancestor_project in project_dependencies[dependency]:
+                        commits = run_list_command(['git', 'log', '--all', '--pretty=format:%h', '-S', version_string[dependency].format(tag), '--', 'pom.xml'], ancestor_project)
+                        for commit in commits:
+                            _, found_tags = find_tags_containing(ancestor_project, commit)
+                            pairs += [(ancestor_project, found_tag) for found_tag in found_tags]
+                            pairs = list(set(pairs))
+            if packaged:
+                packaged_set = set()
+                for packaging_project, packaged_tags in packaged.items():
+                    for packaged_tag in reduce_tags(packaged_tags):
+                        packaged_set.add((packaging_project, packaged_tag))
+                packaging_info = ' ({})'.format(', '.join('{}:{}'.format(*pair) for pair in packaged_set))
+        print('{:.7s} is in {}: {}{}'.format(original_commit, project, tag_info, packaging_info))
