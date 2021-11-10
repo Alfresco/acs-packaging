@@ -7,6 +7,7 @@
         <listener class-name="org.alfresco.utility.testng.OSTestMethodSelector"/>
 	</listeners>
 
+<!-- This suite is not currently run as the single pipeline now runs the restapi-aims-smoke-suite instead -->
 	<test name="Sanity tests with AIMS">
 		<groups>
 			<run>
