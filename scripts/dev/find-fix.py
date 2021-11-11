@@ -12,9 +12,8 @@ project_dependencies = {'alfresco-community-repo': ['alfresco-enterprise-repo', 
 project_dir = {project: os.path.join(root_dir, project) for project in projects}
 version_string = {project: '<dependency.{0}.version>{{}}</dependency.{0}.version>'.format(project) for project in projects}
 
-parser = argparse.ArgumentParser(description='Find the tags that contain commits referencing a ticket.',
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument('-j', '--jira', help='The ticket number to search for.')
+parser = argparse.ArgumentParser(description='Find the tags that contain commits referencing a ticket.')
+parser.add_argument('-j', '--jira', help='The ticket number to search for.', required=True)
 parser.add_argument('-a', '--all', action='store_true', help='Display all releases containing fix.')
 parser.add_argument('-r', '--release', action='store_true', help='Only consider full releases.')
 parser.add_argument('-p', '--packaged', action='store_true', help='Include information about how the commit is packaged.')
