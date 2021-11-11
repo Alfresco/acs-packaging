@@ -68,7 +68,7 @@
       <groupId>org.alfresco</groupId>
       <artifactId>alfresco-elasticsearch-shared</artifactId>
 <!--      <version>${dependency.elasticsearch-shared.version}</version>-->
-      <version>3.1.0-A1</version>
+      <version>3.1.0-M1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
