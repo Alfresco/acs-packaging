@@ -3,7 +3,7 @@ set -o errexit
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-ROOT_DIR="${SCRIPT_DIR}/../.."
+ROOT_DIR="${SCRIPT_DIR}/../../.."
 
 usage() {
     echo "Checkout the code for a particular version of acs-packaging." 1>&2;
