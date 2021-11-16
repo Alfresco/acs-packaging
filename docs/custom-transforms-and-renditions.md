@@ -86,7 +86,7 @@ localTransform.helloworld.url=
 ### T-Engine and Pipeline Config
 
 #### Transformer selection strategy
-The ACS repository and ATS router both use the
+The ACS repository and ATS router use the
 [T-Engine configuration](creating-a-t-engine.md#t-engine-configuration) in combination with their
 own pipeline files to choose which T-Engine will perform a transform. A transformer
 definition contains a supported list of source and target Media Types. This is used
@@ -111,12 +111,12 @@ different transformer. Size limits are normally added to avoid the transforms co
 resources. The configuration may also specify a priority which will be used in Transformer
 selection if there and a number of options. The highest priority is the one with the lowest number. 
 
-#### Configure a custom Local transform pipeline
+#### Transform pipelines
 
-Local Transforms may be combined together in a pipeline to form a new
+Transforms may be combined in a pipeline to form a new
 transform, where the output from one becomes the input to the next and
 so on. A pipeline definition (JSON) defines the sequence of
-transforms and intermediate Media Types. Like any other transformer, it
+transform steps and intermediate Media Types. Like any other transformer, it
 specifies a list of supported source and target Media Types. If you don't supply any,
 all possible combinations are assumed to be available. The
 definition may reuse the transformOptions of transformers in the
@@ -165,9 +165,9 @@ will also have the priority from the first transform.
 * **transformOptions** - A list of references to options required by
 the pipeline transformer.
 
-Custom Pipeline definitions need to be placed in a directory of the ACS
+Pipeline definitions need to be placed in a directory of the ACS
 repository. The default location (below) may be changed by resetting the
-following Alfresco global property.
+following Alfresco global property. The ATS Router has similar pipeline files.
 ```properties
 local.transform.pipeline.config.dir=shared/classes/alfresco/extension/transform/pipelines
 ```
@@ -209,7 +209,7 @@ or when the repository pods are restarted.
 > From Kubernetes documentation: Caution: If there are some files
 in the mountPath location, they will be deleted.
 
-#### Configure custom Local failover transforms
+#### Failover transforms
 
 A failover transform, simply provides a list of transforms to be
 attempted one after another until one succeeds. For example, you may have a fast transform that is able to handle a
@@ -239,13 +239,46 @@ Unlike pipelines, it must not be blank.
 * **transformOptions** - A list of references to options required by
 the pipeline transformer.
 
-#### Overriding a Local transform
-In the same way as it is possible combine Local transforms into pipelines, it is also possible to override a
-previously defined transform in a file in the _local.transform.pipeline.config.dir_ directory. The last definition read
-wins. The configuration from T-Engines or the Transform Service is initially read followed by files in this directory.
-Files are read in alphanumeric order. So _0100-basePipelines.json_ is read before _0200-a-cutdown-libreoffice.json_. The
-following example removes most of the supported source to target media types form the standard _"libreoffice"_
-transform. This is not something you would normally want to do. It also changes the max size and priority of others.
+#### Adding pipelines and failover transforms to a T-Engine
+
+Since ACS 7.2 & ATS 1.5.0
+
+So far we have talked about defining pipelines and failover transforms in the ACS repository or
+ATS router pipeline files. It is also possible to add them to a T-Engine's configuration, even
+when they reference a transformer provided by another T-Engine. It is only when all transform steps
+exist that the pipeline or failover transform becomes available. Warning messages will be issued if
+step transforms do not exist.
+
+Generally it is better to add them to T-Engines to avoid having to add an identical entry to both
+the ACS repository and ATS Router pipeline files.
+
+#### Modifying existing configuration
+
+Since ACS 7.2 & ATS 1.5.0
+
+The ACS repository and ATS router read the configuration from T-Engines and then their own pipeline
+files. The T-Engine order is based on the `<engineName>` and the pipeline file order is based on
+the filenames. As sorting is alphanumeric, you may wish to consider using a fixed length numeric prefix.
+
+For example:
+~~~
+localTransform.imagemagick.url=http://localhost:8091/
+localTransform.libreoffice.url=http://localhost:8092/
+localTransform.misc.url=http://localhost:8094/
+localTransform.pdfrenderer.url=http://localhost:8090/
+localTransform.tika.url=http://localhost:8093/
+
+shared/classes/alfresco/extension/transform/pipelines/0100-basePipelines.json
+shared/classes/alfresco/extension/transform/pipelines/0200-a-cutdown-libreoffice.json
+~~~
+
+The following sections describe ways to modify the configuration that has already been read. This may be added to
+T-Engine or pipeline configuration.
+
+#### Overriding transforms
+It is possible to override a previously defined transform definition. The following example
+removes most of the supported source to target media types form the standard _"libreoffice"_
+transform. It also changes the max size and priority of others. This is not something you would normally want to do. 
 
 ```json
 {
@@ -265,27 +298,15 @@ transform. This is not something you would normally want to do. It also changes 
 }
 ```
 
-#### Adding pipelines and failover transforms to a T-Engine
-So far we have talked about defining pipelines and failover transforms in the ACS repository's or
-ATS router's pipeline files. It is also possible to add them to the T-Engine's configuration, even
-when they reference a transformer provided by another T-Engine. It is only when all the
-configuration files are combined that there may be warning messages issued if these transformers
-does not exist.
-
-Generally it is better to add them to T-Engines to avoid duplication (in the repository and
-router) and adds flexibility.
-
-The following sections describe ways to modify the configuration that has already been read.
-This too may be included in the T-Engine configuration.
-
 #### Removing a transformer
 
-Since ACS 7.2 & ATS 1.4.2
+Since ACS 7.2 & ATS 1.5.0
 
 To discard a previous transformer definition include its name in the optional
 `"removeTransformers"` list. You might want to do this if you have a replacement and wish keep
-the overall configuration simple (so contains no alternatives), or you wish to temporarily
-remove it. The following example removes two transformers.
+the overall configuration simple (so it contains no alternatives), or you wish to temporarily
+remove it. The following example removes two transformers before processing any other configuration
+in the same T-Engine or pipeline file.
 
 ```json
 {
@@ -299,15 +320,16 @@ remove it. The following example removes two transformers.
 
 #### Overriding the supportedSourceAndTargetList
 
-Since ACS 7.2 & ATS 1.4.2
+Since ACS 7.2 & ATS 1.5.0
 
 Rather than totally override an existing transform definition from another T-Engine or pipeline file,
-it is generally simpler and better to modify the `"supportedSourceAndTargetList"` by adding
+it is generally simpler to modify the `"supportedSourceAndTargetList"` by adding
 elements to the optional `"addSupported"`, `"removeSupported"` and `"overrideSupported"` lists.
 You will need to specify the `"transformerName"` but you will not need to repeat all the other
 `"supportedSourceAndTargetList"` values, which means if there are changed in the original, the
 same change is not needed in a second place. The following example adds one transform, removes
-two others and changes the `"priority"` and `"maxSourceSizeBytes"` of another.
+two others and changes the `"priority"` and `"maxSourceSizeBytes"` of another. This is done before
+processing any other configuration in the same T-Engine or pipeline file.
 ```json
 {
   "addSupported": [
@@ -364,9 +386,11 @@ Being able to change the defaults is particularly useful once a T-Engine has bee
 allows a system administrator to handle limitations that are only found later. The
 **system wide defaults** are generally not used but are included for completeness.
 The following example says that the `"Office"` transformer by default should only handle zip files up to 18 Mb and by 
-default the maximum size of a `.doc` file to be transformed is 4 Mb. The later example also defaults the priority,
+default the maximum size of a `.doc` file to be transformed is 4 Mb. The third example defaults the priority,
 possibly allowing another transformer that has specified a priority of say `50` to be used in
 preference.
+
+Defaults values are only applied after T-Engine and pipeline files have been read.
  
 ```json
 {
