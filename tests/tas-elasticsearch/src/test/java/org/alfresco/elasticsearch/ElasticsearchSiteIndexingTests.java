@@ -79,7 +79,7 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
     {
         Step.STEP("No such site exists so no results.");
         // No such site exists so no results
-        assertSiteQueryResult("no such site", List.of());
+        assertSiteQueryResult(unique("NoSuchSite"), List.of());
 
         // Public site has no docs so no result
         Step.STEP("Public site has no files, so no results.");
