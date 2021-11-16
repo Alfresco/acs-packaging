@@ -1,7 +1,6 @@
 package org.alfresco.elasticsearch;
 
 import static org.alfresco.elasticsearch.SearchQueryService.req;
-import static org.testng.Assert.assertTrue;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -78,15 +77,13 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
     @Test (groups = { TestGroup.SEARCH, TestGroup.SITES, TestGroup.REGRESSION })
     public void testSiteUseCases()
     {
-        assertTrue(true);
-
         Step.STEP("No such site exists so no results.");
         // No such site exists so no results
         assertSiteQueryResult("no such site", List.of());
 
         // Public site has no docs so no result
         Step.STEP("Public site has no files, so no results.");
-        assertSiteQueryResult(publicSite1.getGuid(), List.of());
+        assertSiteQueryResult(publicSite1.getId(), List.of());
 
         // Create document in the public site - expect a single result
         Step.STEP("Public site has one file, so one result.");
