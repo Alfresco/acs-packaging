@@ -29,7 +29,7 @@ content store. Access via the REST API layer can also be enabled or disabled. Th
 configurations in the Alfresco Repository via global & content-store specific properties.
 By default, Direct Access URLs are disabled.
 For more information see
-[Direct Access URLs](https://github.com/Alfresco/acs-packaging/blob/master/docs/direct-accesss-urls.md).
+[Direct Access URLs](https://github.com/Alfresco/acs-packaging/blob/master/docs/direct-access-urls.md).
 </li>
 </ul>
 <br>

@@ -8,6 +8,7 @@
         <listener class-name="org.alfresco.utility.testng.OSTestMethodSelector"/>
 	</listeners>
 
+   <!-- This suite is not currently run as the single pipeline now runs the cmis-aims-smoke-suite instead -->
 	<test name="CMIS Tests">
         <groups>
             <run>

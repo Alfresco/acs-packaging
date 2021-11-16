@@ -6,6 +6,8 @@
       <class name="org.alfresco.elasticsearch.ElasticsearchAdminConsoleTests"></class>
       <class name="org.alfresco.elasticsearch.ElasticsearchLiveIndexingTests"></class>
       <class name="org.alfresco.elasticsearch.ElasticsearchReindexingTests"></class>
+      <class name="org.alfresco.elasticsearch.ElasticsearchPathIndexingTests"></class>
+      <class name="org.alfresco.elasticsearch.ElasticsearchTagIndexingTests"></class>
     </classes>
   </test>
 </suite>

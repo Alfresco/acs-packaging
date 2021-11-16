@@ -5,6 +5,7 @@ import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -92,8 +93,14 @@ public class SearchQueryService
 
     public static SearchRequest req(String query)
     {
+        return req(null, query);
+    }
+
+    public static SearchRequest req(String language, String query)
+    {
         RestRequestQueryModel restRequestQueryModel = new RestRequestQueryModel();
         restRequestQueryModel.setQuery(query);
+        Optional.ofNullable(language).ifPresent(restRequestQueryModel::setLanguage);
         return new SearchRequest(restRequestQueryModel);
     }
 }
