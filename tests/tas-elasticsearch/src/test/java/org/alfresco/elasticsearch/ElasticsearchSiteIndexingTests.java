@@ -35,6 +35,7 @@ import org.testng.annotations.Test;
 public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextTests
 {
     private static final Iterable<String> LANGUAGES_TO_CHECK = List.of("afts", "lucene");
+    private static final FileModel DOCUMENT_LIBRARY = new FileModel("documentLibrary");
     private static final String ALL_SITES = "_ALL_SITES_";
     private static final String EVERYTHING = "_EVERYTHING_";
 
@@ -78,17 +79,14 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
     public void testSiteUseCases()
     {
         Step.STEP("No such site exists so no results.");
-        // No such site exists so no results
         assertSiteQueryResult(unique("NoSuchSite"), List.of());
 
-        // Public site has no docs so no result
-        Step.STEP("Public site has no files, so no results.");
-        assertSiteQueryResult(publicSite1.getId(), List.of());
+        Step.STEP("Public site has no files, so no results other than document library.");
+        assertSiteQueryResult(publicSite1.getId(), List.of(DOCUMENT_LIBRARY));
 
-        // Create document in the public site - expect a single result
-        Step.STEP("Public site has one file, so one result.");
+        Step.STEP("Public site has one file, so expect one file plus the document library.");
         FileModel file1 = createContentInSite(publicSite1, "test1");
-        assertSiteQueryResult(publicSite1.getGuid(), List.of(file1));
+        assertSiteQueryResult(publicSite1.getId(), List.of(DOCUMENT_LIBRARY, file1));
     }
 
     private void assertSiteQueryResult(String siteName, Collection<ContentModel> contentModels)
@@ -101,7 +99,7 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
             for (final String language : LANGUAGES_TO_CHECK)
             {
                 Step.STEP("Searching for SITE `" + siteName + "` using `" + language + "` language.");
-                final SearchRequest query = req(language, "SITE:" + siteName);
+                final SearchRequest query = req(language, "SITE:" + siteName + " ");
                 if (contentNames.isEmpty())
                 {
                     searchQueryService.expectNoResultsFromQuery(query, testUser);
