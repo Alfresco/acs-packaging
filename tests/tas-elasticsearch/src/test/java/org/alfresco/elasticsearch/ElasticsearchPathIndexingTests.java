@@ -150,13 +150,6 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     }
 
     @Test(groups = TestGroup.SEARCH)
-    public void testPathNameIntersectUsingEscapedFilenames()
-    {
-        SearchRequest query = req("PATH:\"//*\" AND name:" + escapedFilenameWhichIncludesWhitespace);
-        searchQueryService.expectResultsFromQuery(query, testUser, testFileName, testFileNameWithWhitespace);
-    }
-
-    @Test(groups = TestGroup.SEARCH)
     public void testAllDescendentsOfFolder()
     {
         SearchRequest query = req("PATH:\"//" + testFolders.get(0).getName() + "//*\" AND name:*");
