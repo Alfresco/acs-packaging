@@ -16,9 +16,9 @@ public class AlfrescoStackInitializerESBasicAuth extends AlfrescoStackInitialize
     private static final String ELASTICSEARCH_PASSWORD = "bob123";
 
     @Override
-    protected GenericContainer createLiveIndexingContainer(Properties env)
+    protected GenericContainer createLiveIndexingContainer()
     {
-          GenericContainer container = super.createLiveIndexingContainer(env);
+          GenericContainer container = super.createLiveIndexingContainer();
           container.withEnv("SPRING_ELASTICSEARCH_REST_USERNAME", ELASTICSEARCH_USERNAME);
           container.withEnv("SPRING_ELASTICSEARCH_REST_PASSWORD", ELASTICSEARCH_PASSWORD);
           return container;
