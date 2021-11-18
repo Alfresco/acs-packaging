@@ -1,6 +1,6 @@
 package org.alfresco.elasticsearch;
 
-import static org.alfresco.elasticsearch.EnvHelper.getEnvProperty;
+import static org.alfresco.elasticsearch.MavenPropertyHelper.getMavenProperty;
 
 import java.time.Duration;
 import java.util.HashMap;
@@ -96,7 +96,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
             startOrFail(kibana);
         }
 
-        liveIndexer = createLiveIndexingContainer(env);
+        liveIndexer = createLiveIndexingContainer();
 
         startOrFail(liveIndexer);
 
@@ -125,7 +125,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                         "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config",
                         "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
 
-        try (GenericContainer reindexingComponent = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-reindexing:" + getEnvProperty("ES_CONNECTOR_TAG"))
+        try (GenericContainer reindexingComponent = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-reindexing:" + getMavenProperty("dependency.elasticsearch-shared.version"))
                 .withEnv(env)
                 .withNetwork(AlfrescoStackInitializer.network)
                 .withStartupCheckStrategy(
@@ -147,9 +147,9 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     }
 
-    protected GenericContainer createLiveIndexingContainer(Properties env)
+    protected GenericContainer createLiveIndexingContainer()
     {
-        return new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-live-indexing:" + env.getProperty("ES_CONNECTOR_TAG"))
+        return new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-live-indexing:" + getMavenProperty("dependency.elasticsearch-shared.version"))
                        .withNetwork(network)
                        .withNetworkAliases("live-indexing")
                        .withEnv("ELASTICSEARCH_INDEXNAME", CUSTOM_ALFRESCO_INDEX)
