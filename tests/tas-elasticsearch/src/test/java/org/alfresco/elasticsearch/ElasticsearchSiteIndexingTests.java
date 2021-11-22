@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.alfresco.dataprep.AlfrescoHttpClientFactory;
+import org.alfresco.dataprep.ContentActions;
 import org.alfresco.dataprep.SiteService.Visibility;
 import org.alfresco.rest.core.RestWrapper;
 import org.alfresco.rest.search.SearchRequest;
@@ -25,6 +27,11 @@ import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.report.log.Step;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
+import org.apache.chemistry.opencmis.client.api.CmisObject;
+import org.apache.chemistry.opencmis.client.api.Document;
+import org.apache.chemistry.opencmis.client.api.Folder;
+import org.apache.logging.log4j.util.Strings;
+import org.apache.chemistry.opencmis.client.api.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -54,6 +61,9 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
 
     @Autowired
     public DataSite dataSite;
+
+    @Autowired
+    private AlfrescoHttpClientFactory alfrescoHttpClientFactory;
 
     @Autowired
     SearchQueryService searchQueryService;
@@ -215,6 +225,33 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
         assertSiteQueryResult(testSite1.getId(), List.of());
         assertSiteQueryResult(ALL_SITES, List.of());
         assertSiteQueryResult(EVERYTHING, "AND", FILE_CONTENT_CONDITION, List.of(fileNotInSite));
+
+        Step.STEP("Moving files between sites and modifying content use cases");
+
+        SiteModel publicSite1 = dataSite.usingUser(testUser).createSite(new SiteModel("public-site-1"));
+        SiteModel publicSite2 = dataSite.usingUser(testUser).createSite(new SiteModel("public-site-2"));
+        FileModel file5 = createContentInSite(publicSite1, "file5");
+
+        //Moving a file between sites.
+        moveFile(file5, publicSite1, publicSite2);
+        assertSiteQueryResult(publicSite1.getId(), List.of(DOCUMENT_LIBRARY));
+        assertSiteQueryResult(publicSite2.getId(), List.of(DOCUMENT_LIBRARY, file5));
+
+        //Moving a file out of a site.
+        moveFileOutsideOfSite(file5, publicSite2, testFolder);
+        assertSiteQueryResult(publicSite2.getId(), List.of(DOCUMENT_LIBRARY));
+
+        //Removing file.
+        FileModel file6 = createContentInSite(publicSite2, "file6");
+        assertSiteQueryResult(publicSite2.getId(), List.of(DOCUMENT_LIBRARY, file6));
+        deleteFile(file6);
+        assertSiteQueryResult(publicSite2.getId(), List.of(DOCUMENT_LIBRARY));
+
+        //Document modification.
+        FileModel file7 = createContentInSite(publicSite2, "file7", "Initial Content.");
+        assertContentInGivenFileUnderSiteQueryResult(publicSite2.getId(), "initial", List.of(file7));
+        modifyDocument(file7, "Modified Content.");
+        assertContentInGivenFileUnderSiteQueryResult(publicSite2.getId(), "modified", List.of(file7));
     }
 
     private void assertSiteQueryResult(String siteName, Collection<ContentModel> contentModels)
@@ -273,13 +310,85 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
         }
     }
 
+    private void assertContentInGivenFileUnderSiteQueryResult(String siteName, String content, Collection<ContentModel> contentModels)
+    {
+        final List<String> contentNames = contentModels
+                .stream()
+                .map(ContentModel::getName)
+                .collect(Collectors.toList());
+        for (final String language : LANGUAGES_TO_CHECK)
+        {
+            Step.STEP("Searching for SITE `" + siteName + "` and content:'" + content + "' using `" + language + "` language.");
+            final SearchRequest query = req(language, "SITE:" + siteName + " AND TEXT:" + content + " ");
+            searchQueryService.expectResultsFromQuery(query, testUser, contentNames.toArray(String[]::new));
+        }
+    }
+
+    private void modifyDocument(FileModel file, String newContent)
+    {
+        dataContent.usingUser(testUser).usingResource(file)
+                .updateContent(newContent);
+    }
+
+    private void deleteFile(ContentModel contentModel)
+    {
+        dataContent
+                .usingAdmin()
+                .usingResource(contentModel)
+                .deleteContent();
+    }
+
+    private void moveFile(FileModel file, SiteModel sourceSite, SiteModel targetSite)
+    {
+        moveFile(file, sourceSite, targetSite, null);
+    }
+
+    private void moveFile(FileModel file, SiteModel sourceSite, SiteModel targetSite, ContentModel targetFolder)
+    {
+        Session session = dataContent.getContentActions().getCMISSession(testUser.getUsername(), testUser.getPassword());
+        dataContent.usingUser(testUser).getContentActions()
+                .moveTo(
+                        session,
+                        sourceSite.getId(),
+                        file.getName(),
+                        targetSite.getId(),
+                        targetFolder != null ? targetFolder.getName() : Strings.EMPTY //if empty then target folder is documentLibrary (which is default target location)
+                );
+    }
+
+    private void moveFileOutsideOfSite(FileModel file, SiteModel sourceSite, ContentModel targetContentModel)
+    {
+        Session session = dataContent.getContentActions().getCMISSession(alfrescoHttpClientFactory.getAdminUser(), alfrescoHttpClientFactory.getAdminPassword());
+        ContentActions actions = dataContent.usingAdmin().getContentActions();
+        CmisObject objFrom = actions.getCmisObject(session, sourceSite.getId(), file.getName());
+        CmisObject objTarget = actions.getCmisObject(session, targetContentModel.getCmisLocation());
+
+        List parents;
+        CmisObject parent;
+        if (objFrom instanceof Document) {
+            Document d = (Document)objFrom;
+            parents = d.getParents();
+            parent = session.getObject(((Folder)parents.get(0)).getId());
+            d.move(parent, objTarget);
+        } else if (objFrom instanceof Folder) {
+            Folder f = (Folder)objFrom;
+            parents = f.getParents();
+            parent = session.getObject(((Folder)parents.get(0)).getId());
+            f.move(parent, objTarget);
+        }
+    }
+
     private FileModel createContentInSite(SiteModel site, String fileName)
     {
-        Step.STEP("Creating file '" + fileName + "' in site '" + site.getId() + "'.");
-        final FileModel file = new FileModel(unique(fileName) + ".txt", FileType.TEXT_PLAIN, "Content for " + fileName);
+        return createContentInSite(site, fileName, "Content for " + fileName);
+    }
+
+    private FileModel createContentInSite(SiteModel site, String fileName, String content)
+    {
+        final FileModel file = new FileModel(unique(fileName) + ".txt", FileType.TEXT_PLAIN, content);
         return dataContent.usingUser(siteCreator)
-                          .usingSite(site)
-                          .createContent(file);
+                .usingSite(site)
+                .createContent(file);
     }
 
     private SiteModel createPublicSite()
