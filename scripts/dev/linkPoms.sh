@@ -4,15 +4,17 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="${SCRIPT_DIR}/../../.."
 ENV_FILE=".linkPoms.env"
 ENV_PATH="${ROOT_DIR}/${ENV_FILE}"
+PROJECT_LIST="alfresco-community-repo alfresco-enterprise-repo alfresco-enterprise-share acs-packaging acs-community-packaging"
 
 source "$(dirname "${BASH_SOURCE[0]}")/dev_functions.sh"
 
 usage() {
     echo "Updates the downstream projects with the versions of the upstream projects. Reversed by unlinkPoms.sh" 1>&2;
     echo 1>&2;
-    echo "Usage: $0 [-b <branch>] [-mpxuh]" 1>&2;
+    echo "Usage: $0 [-b <branch>] [-mpfxuh]" 1>&2;
     echo "  -m: Checkout master of each project" 1>&2;
     echo "  -b: Checkout the <branch> of each project or master if <branch> is blank" 1>&2;
+    echo "  -f: Fetch before checking out the branch" 1>&2;
     echo "  -p: Pull the latest version of each project" 1>&2;
     echo "  -x: Skip the extract of values from each project" 1>&2;
     echo "  -u: Skip the update of values in each project" 1>&2;
@@ -40,21 +42,22 @@ function checkout() {
     fi
 }
 
-function pull_latest() {
-    local PROJECT="${1}"
+function update_repository() {
+    local UPDATE_COMMAND="${1}"
+    local PROJECT="${2}"
 
     if [ -d "${ROOT_DIR}/${PROJECT}" ]
     then
       pushd "${ROOT_DIR}/${PROJECT}" &>/dev/null
-      git pull &>/tmp/$$.log
+      git "${UPDATE_COMMAND}" &>/tmp/$$.log
       if [ $? -ne 0 ]
       then
         echo
-        echo "\"git pull\" failed on ${PROJECT}"
+        echo "\"git ${UPDATE_COMMAND}\" failed on ${PROJECT}"
         cat "/tmp/$$.log"
         exit 1
       fi
-      echo "${PROJECT} is now using latest"
+      echo "${PROJECT} has been updated using \"git ${UPDATE_COMMAND}\""
       popd &>/dev/null
     fi
 }
@@ -149,7 +152,7 @@ function exportPomProperty() {
   fi
 }
 
-while getopts "b:mpxuh" arg; do
+while getopts "b:mpfxuh" arg; do
     case $arg in
         b)
             B_FLAG_SET="true"
@@ -159,6 +162,12 @@ while getopts "b:mpxuh" arg; do
             ;;
         p)
             # git pull after git checkout
+            ;;
+        f)
+            for project in ${PROJECT_LIST}
+            do
+                update_repository fetch "${project}"
+            done
             ;;
         x)
             SKIP_EXPORT="true"
@@ -178,35 +187,31 @@ then
   exit 1
 fi
 OPTIND=1
-while getopts "b:mpxuh" arg; do
+while getopts "b:mpfxuh" arg; do
     case $arg in
         b)
             BRANCH="${OPTARG:-master}"
-            checkout alfresco-community-repo   "${BRANCH}"
-            checkout alfresco-enterprise-repo  "${BRANCH}"
-            checkout alfresco-enterprise-share "${BRANCH}"
-            checkout acs-packaging             "${BRANCH}"
-            checkout acs-community-packaging   "${BRANCH}"
             ;;
         m)
             BRANCH="master"
-            checkout alfresco-community-repo   "${BRANCH}"
-            checkout alfresco-enterprise-repo  "${BRANCH}"
-            checkout alfresco-enterprise-share "${BRANCH}"
-            checkout acs-packaging             "${BRANCH}"
-            checkout acs-community-packaging   "${BRANCH}"
             ;;
     esac
 done
+if [ -n "${BRANCH}" ]
+then
+    for project in ${PROJECT_LIST}
+    do
+        checkout "${project}" "${BRANCH}"
+    done
+fi
 OPTIND=1
-while getopts "b:mpxuh" arg; do
+while getopts "b:mpfxuh" arg; do
     case $arg in
         p)
-            pull_latest alfresco-community-repo
-            pull_latest alfresco-enterprise-repo
-            pull_latest alfresco-enterprise-share
-            pull_latest acs-packaging
-            pull_latest acs-community-packaging
+            for project in ${PROJECT_LIST}
+            do
+                update_repository pull "${project}"
+            done
             ;;
     esac
 done
