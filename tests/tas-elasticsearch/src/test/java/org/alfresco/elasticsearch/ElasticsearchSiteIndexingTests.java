@@ -38,7 +38,7 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
     private static final Iterable<String> LANGUAGES_TO_CHECK = List.of("afts", "lucene");
     private static final FileModel DOCUMENT_LIBRARY = new FileModel("documentLibrary");
     private static final String FILENAME_PREFIX = "EsSiteTest";
-    private static final String FILE_PREFIX_CONDITION = " cm:name:" + FILENAME_PREFIX + "*";
+    private static final String FILE_CONTENT_CONDITION = " cm:content:" + FILENAME_PREFIX + "*";
     private static final String SAMPLE_SITE_ID = "swsdp";
     private static final String ALL_SITES = "_ALL_SITES_ ";
     private static final String EVERYTHING = "_EVERYTHING_ ";
@@ -70,6 +70,9 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
     {
         serverHealth.assertServerIsOnline();
 
+        Step.STEP("Index system nodes.");
+        AlfrescoStackInitializer.reindexEverything();
+
         Step.STEP("Create test users and a folder.");
         testUser = dataUser.createRandomTestUser();
         siteCreator = dataUser.createRandomTestUser();
@@ -91,7 +94,7 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
 
         // Check there are no files within or without a site, that have the given filename prefix
         assertSiteQueryResult(ALL_SITES, List.of());
-        assertSiteQueryResult(EVERYTHING, "AND", FILE_PREFIX_CONDITION, List.of());
+        assertSiteQueryResult(EVERYTHING, "AND", FILE_CONTENT_CONDITION, List.of());
 
         // Create a file with the given filename prefix, outside any site
         FileModel fileNotInSite = new FileModel(unique(FILENAME_PREFIX) + ".txt", FileType.TEXT_PLAIN, "Content for fileNotInSite");
@@ -101,8 +104,8 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
                 .createContent(fileNotInSite);
 
         // Search with condition of filename prefix - we should see the file using EVERYTHING but not from ALL_SITES
-        assertSiteQueryResult(ALL_SITES, "AND", FILE_PREFIX_CONDITION, List.of());
-        assertSiteQueryResult(EVERYTHING, "AND", FILE_PREFIX_CONDITION, List.of(fileNotInSite));
+        assertSiteQueryResult(ALL_SITES, "AND", FILE_CONTENT_CONDITION, List.of());
+        assertSiteQueryResult(EVERYTHING, "AND", FILE_CONTENT_CONDITION, List.of(fileNotInSite));
 
         // No sites should exist - expect no results
         assertSiteQueryResult(ALL_SITES, List.of());
@@ -112,40 +115,40 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
         SiteModel testSite1 = createPublicSite();
         assertSiteQueryResult(testSite1.getId(), List.of(DOCUMENT_LIBRARY));
         assertSiteQueryResult(ALL_SITES, List.of(DOCUMENT_LIBRARY));
-        assertSiteQueryResult(EVERYTHING, "AND", FILE_PREFIX_CONDITION, List.of(fileNotInSite));
+        assertSiteQueryResult(EVERYTHING, "AND", FILE_CONTENT_CONDITION, List.of(fileNotInSite));
 
         // Create a file in public site - expect one file plus the document library.
         FileModel file1 = createContentInSite(testSite1, FILENAME_PREFIX + "test1");
         assertSiteQueryResult(testSite1.getId(), List.of(DOCUMENT_LIBRARY, file1));
         assertSiteQueryResult(ALL_SITES, List.of(DOCUMENT_LIBRARY, file1));
-        assertSiteQueryResult(EVERYTHING, "AND", FILE_PREFIX_CONDITION, List.of(fileNotInSite, file1));
+        assertSiteQueryResult(EVERYTHING, "AND", FILE_CONTENT_CONDITION, List.of(fileNotInSite, file1));
 
         // Create another file in public site - expect two files plus the document library.
         FileModel file2 = createContentInSite(testSite1, FILENAME_PREFIX + "test2");
         assertSiteQueryResult(testSite1.getId(), List.of(DOCUMENT_LIBRARY, file1, file2));
         assertSiteQueryResult(ALL_SITES, List.of(DOCUMENT_LIBRARY, file1, file2));
-        assertSiteQueryResult(EVERYTHING, "AND", FILE_PREFIX_CONDITION, List.of(fileNotInSite, file1, file2));
+        assertSiteQueryResult(EVERYTHING, "AND", FILE_CONTENT_CONDITION, List.of(fileNotInSite, file1, file2));
 
         // Create a second public site, empty - expect no results other than document library
         SiteModel testSite2 = createPublicSite();
         assertSiteQueryResult(testSite2.getId(), List.of(DOCUMENT_LIBRARY));
         assertSiteQueryResult(testSite1.getId(), List.of(DOCUMENT_LIBRARY, file1, file2));
         assertSiteQueryResult(ALL_SITES, List.of(DOCUMENT_LIBRARY, file1, file2));
-        assertSiteQueryResult(EVERYTHING, "AND", FILE_PREFIX_CONDITION, List.of(fileNotInSite, file1, file2));
+        assertSiteQueryResult(EVERYTHING, "AND", FILE_CONTENT_CONDITION, List.of(fileNotInSite, file1, file2));
 
         // Create a file in second public site - expect one file plus the document library.
         FileModel file3 = createContentInSite(testSite2, FILENAME_PREFIX + "test3");
         assertSiteQueryResult(testSite2.getId(), List.of(DOCUMENT_LIBRARY, file3));
         assertSiteQueryResult(testSite1.getId(), List.of(DOCUMENT_LIBRARY, file1, file2));
         assertSiteQueryResult(ALL_SITES, List.of(DOCUMENT_LIBRARY, file1, file2, file3));
-        assertSiteQueryResult(EVERYTHING, "AND", FILE_PREFIX_CONDITION, List.of(fileNotInSite, file1, file2, file3));
+        assertSiteQueryResult(EVERYTHING, "AND", FILE_CONTENT_CONDITION, List.of(fileNotInSite, file1, file2, file3));
 
         // Create another file in second public site - expect two files plus the document library.
         FileModel file4 = createContentInSite(testSite2, FILENAME_PREFIX + "test4");
         assertSiteQueryResult(testSite2.getId(), List.of(DOCUMENT_LIBRARY, file3, file4));
         assertSiteQueryResult(testSite1.getId(), List.of(DOCUMENT_LIBRARY, file1, file2));
         assertSiteQueryResult(ALL_SITES, List.of(DOCUMENT_LIBRARY, file1, file2, file3, file4));
-        assertSiteQueryResult(EVERYTHING, "AND", FILE_PREFIX_CONDITION, List.of(fileNotInSite, file1, file2, file3, file4));
+        assertSiteQueryResult(EVERYTHING, "AND", FILE_CONTENT_CONDITION, List.of(fileNotInSite, file1, file2, file3, file4));
 
         // Test disjunction and conjunction using SITE: and SITE:
         assertSiteQueryResult(testSite1.getId(), "OR", " SITE:" + testSite2.getId(), List.of(DOCUMENT_LIBRARY, file1, file2, file3, file4));
@@ -167,34 +170,34 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
         assertSiteQueryResult(siteCreator, testSite1.getId(), List.of(DOCUMENT_LIBRARY, file1, file2));
         assertSiteQueryResult(siteCreator, testSite2.getId(), List.of(DOCUMENT_LIBRARY, file3, file4));
         assertSiteQueryResult(siteCreator, ALL_SITES, List.of(DOCUMENT_LIBRARY, file1, file2, file3, file4));
-        assertSiteQueryResult(siteCreator, EVERYTHING, "AND", FILE_PREFIX_CONDITION, List.of(fileNotInSite, file1, file2, file3, file4));
+        assertSiteQueryResult(siteCreator, EVERYTHING, "AND", FILE_CONTENT_CONDITION, List.of(fileNotInSite, file1, file2, file3, file4));
 
         // Verify user who is not a member of any sites can see all files in both public sites
         UserModel publicUser = dataUser.createRandomTestUser();
         assertSiteQueryResult(publicUser, testSite1.getId(), List.of(DOCUMENT_LIBRARY, file1, file2));
         assertSiteQueryResult(publicUser, testSite2.getId(), List.of(DOCUMENT_LIBRARY, file3, file4));
         assertSiteQueryResult(publicUser, ALL_SITES, List.of(DOCUMENT_LIBRARY, file1, file2, file3, file4));
-        assertSiteQueryResult(publicUser, EVERYTHING, "AND", FILE_PREFIX_CONDITION, List.of(fileNotInSite, file1, file2, file3, file4));
+        assertSiteQueryResult(publicUser, EVERYTHING, "AND", FILE_CONTENT_CONDITION, List.of(fileNotInSite, file1, file2, file3, file4));
 
         // Change first site's visibility to private - verify site creator can still see all files in both sites
         dataSite.usingUser(siteCreator).updateSiteVisibility(testSite1, Visibility.PRIVATE);
         assertSiteQueryResult(siteCreator, testSite1.getId(), List.of(DOCUMENT_LIBRARY, file1, file2));
         assertSiteQueryResult(siteCreator, testSite2.getId(), List.of(DOCUMENT_LIBRARY, file3, file4));
         assertSiteQueryResult(siteCreator, ALL_SITES, List.of(DOCUMENT_LIBRARY, file1, file2, file3, file4));
-        assertSiteQueryResult(siteCreator, EVERYTHING, "AND", FILE_PREFIX_CONDITION, List.of(fileNotInSite, file1, file2, file3, file4));
+        assertSiteQueryResult(siteCreator, EVERYTHING, "AND", FILE_CONTENT_CONDITION, List.of(fileNotInSite, file1, file2, file3, file4));
 
         // Verify user who is not a member of any sites can see files in public site but not see files in private site
         assertSiteQueryResult(publicUser, testSite1.getId(), List.of());
         assertSiteQueryResult(publicUser, testSite2.getId(), List.of(DOCUMENT_LIBRARY, file3, file4));
         assertSiteQueryResult(publicUser, ALL_SITES, List.of(DOCUMENT_LIBRARY, file3, file4));
-        assertSiteQueryResult(publicUser, EVERYTHING, "AND", FILE_PREFIX_CONDITION, List.of(fileNotInSite, file3, file4));
+        assertSiteQueryResult(publicUser, EVERYTHING, "AND", FILE_CONTENT_CONDITION, List.of(fileNotInSite, file3, file4));
 
         // Change site visibility back to public - user who is not a member of any sites can see files in both sites again
         dataSite.usingUser(siteCreator).updateSiteVisibility(testSite1, Visibility.PUBLIC);
         assertSiteQueryResult(publicUser, testSite1.getId(), List.of(DOCUMENT_LIBRARY, file1, file2));
         assertSiteQueryResult(publicUser, testSite2.getId(), List.of(DOCUMENT_LIBRARY, file3, file4));
         assertSiteQueryResult(publicUser, ALL_SITES, List.of(DOCUMENT_LIBRARY, file1, file2, file3, file4));
-        assertSiteQueryResult(publicUser, EVERYTHING, "AND", FILE_PREFIX_CONDITION, List.of(fileNotInSite, file1, file2, file3, file4));
+        assertSiteQueryResult(publicUser, EVERYTHING, "AND", FILE_CONTENT_CONDITION, List.of(fileNotInSite, file1, file2, file3, file4));
 
         // Test delete site
         Step.STEP("Site deletion use cases");
@@ -204,14 +207,14 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
         assertSiteQueryResult(testSite1.getId(), List.of());
         assertSiteQueryResult(testSite2.getId(), List.of(DOCUMENT_LIBRARY, file3, file4));
         assertSiteQueryResult(ALL_SITES, List.of(DOCUMENT_LIBRARY, file3, file4));
-        assertSiteQueryResult(EVERYTHING, "AND", FILE_PREFIX_CONDITION, List.of(fileNotInSite, file3, file4));
+        assertSiteQueryResult(EVERYTHING, "AND", FILE_CONTENT_CONDITION, List.of(fileNotInSite, file3, file4));
 
         // Delete remaining site - expect no results
         deleteSite(testSite2.getId());
         assertSiteQueryResult(testSite2.getId(), List.of());
         assertSiteQueryResult(testSite1.getId(), List.of());
         assertSiteQueryResult(ALL_SITES, List.of());
-        assertSiteQueryResult(EVERYTHING, "AND", FILE_PREFIX_CONDITION, List.of(fileNotInSite));
+        assertSiteQueryResult(EVERYTHING, "AND", FILE_CONTENT_CONDITION, List.of(fileNotInSite));
     }
 
     private void assertSiteQueryResult(String siteName, Collection<ContentModel> contentModels)
