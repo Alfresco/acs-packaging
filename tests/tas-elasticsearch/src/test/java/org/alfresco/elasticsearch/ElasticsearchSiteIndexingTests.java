@@ -38,7 +38,7 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
     private static final Iterable<String> LANGUAGES_TO_CHECK = List.of("afts", "lucene");
     private static final FileModel DOCUMENT_LIBRARY = new FileModel("documentLibrary");
     private static final String FILENAME_PREFIX = "EsSiteTest";
-    private static final String FILE_CONTENT_CONDITION = " cm:content:" + FILENAME_PREFIX + "*";
+    private static final String FILE_CONTENT_CONDITION = " TEXT:" + FILENAME_PREFIX + "*";
     private static final String SAMPLE_SITE_ID = "swsdp";
     private static final String ALL_SITES = "_ALL_SITES_ ";
     private static final String EVERYTHING = "_EVERYTHING_ ";
@@ -155,13 +155,13 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
         assertSiteQueryResult(testSite1.getId(), "OR", " SITE:" + unique("NoSuchSite"), List.of(DOCUMENT_LIBRARY, file1, file2));
         assertSiteQueryResult(testSite1.getId(), "AND", " SITE:" + unique("NoSuchSite"), List.of());
 
-        // Test conjunction using SITE: and cm:name:
-        assertSiteQueryResult(testSite1.getId(), "AND", " cm:name:" + FILENAME_PREFIX + "test2*", List.of(file2));
-        assertSiteQueryResult(testSite1.getId(), "AND", " cm:name:" + FILENAME_PREFIX + "testX*", List.of());
-        assertSiteQueryResult(EVERYTHING, "AND", " cm:name:" + FILENAME_PREFIX + "test2*", List.of(file2));
-        assertSiteQueryResult(EVERYTHING, "AND", " cm:name:" + FILENAME_PREFIX + "testX*", List.of());
-        assertSiteQueryResult(ALL_SITES, "AND", " cm:name:" + FILENAME_PREFIX + "test2*", List.of(file2));
-        assertSiteQueryResult(ALL_SITES, "AND", " cm:name:" + FILENAME_PREFIX + "testX*", List.of());
+        // Test conjunction using SITE: and TEXT:
+        assertSiteQueryResult(testSite1.getId(), "AND", " TEXT:" + FILENAME_PREFIX + "test2*", List.of(file2));
+        assertSiteQueryResult(testSite1.getId(), "AND", " TEXT:" + FILENAME_PREFIX + "testX*", List.of());
+        assertSiteQueryResult(EVERYTHING, "AND", " TEXT:" + FILENAME_PREFIX + "test2*", List.of(file2));
+        assertSiteQueryResult(EVERYTHING, "AND", " TEXT:" + FILENAME_PREFIX + "testX*", List.of());
+        assertSiteQueryResult(ALL_SITES, "AND", " TEXT:" + FILENAME_PREFIX + "test2*", List.of(file2));
+        assertSiteQueryResult(ALL_SITES, "AND", " TEXT:" + FILENAME_PREFIX + "testX*", List.of());
 
         // Test modify site
         Step.STEP("Site modification use cases");
@@ -260,8 +260,7 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
         for (final String language : LANGUAGES_TO_CHECK)
         {
             Step.STEP("Searching for SITE `" + site1Name + "` " + operator + " `" + condition + "` using `" + language + "` language.");
-//            final SearchRequest query = req(language, "SITE:" + site1Name + " "  + operator + condition);
-            final SearchRequest query = req("afts", "SITE:" + site1Name + " "  + operator + condition);
+            final SearchRequest query = req(language, "SITE:" + site1Name + " "  + operator + condition);
             if (contentNames.isEmpty())
             {
                 searchQueryService.expectNoResultsFromQuery(query, user);
