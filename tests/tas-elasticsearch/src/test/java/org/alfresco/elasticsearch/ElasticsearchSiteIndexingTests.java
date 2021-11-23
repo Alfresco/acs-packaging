@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.alfresco.dataprep.AlfrescoHttpClientFactory;
+import org.alfresco.dataprep.CMISUtil;
 import org.alfresco.dataprep.ContentActions;
 import org.alfresco.dataprep.SiteService.Visibility;
 import org.alfresco.rest.core.RestWrapper;
@@ -225,11 +226,17 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
         assertSiteQueryResult(testSite1.getId(), List.of());
         assertSiteQueryResult(ALL_SITES, List.of());
         assertSiteQueryResult(EVERYTHING, "AND", FILE_CONTENT_CONDITION, List.of(fileNotInSite));
+    }
 
+    @TestRail (section = { TestGroup.SEARCH, TestGroup.SITES }, executionType = ExecutionType.REGRESSION,
+            description = "Verify the SITE content manipulation works correctly.")
+    @Test (groups = { TestGroup.SEARCH, TestGroup.SITES, TestGroup.REGRESSION })
+    public void manipulatingFilesAndContentBetweenSites()
+    {
         Step.STEP("Moving files between sites and modifying content use cases");
 
-        SiteModel publicSite1 = dataSite.usingUser(testUser).createSite(new SiteModel("public-site-1"));
-        SiteModel publicSite2 = dataSite.usingUser(testUser).createSite(new SiteModel("public-site-2"));
+        SiteModel publicSite1 = createPublicSite(siteCreator);
+        SiteModel publicSite2 = createPublicSite(siteCreator);
         FileModel file5 = createContentInSite(publicSite1, "file5");
 
         //Moving a file between sites.
@@ -241,17 +248,60 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
         moveFileOutsideOfSite(file5, publicSite2, testFolder);
         assertSiteQueryResult(publicSite2.getId(), List.of(DOCUMENT_LIBRARY));
 
+        //Moving a file to the site
+        FileModel file6 = dataContent
+                .usingAdmin()
+                .usingResource(contentRoot())
+                .createContent(CMISUtil.DocumentType.TEXT_PLAIN);
+        FileModel file7 = createContentInSite(publicSite1, "file7"); //Ensuring that DocumentLibrary exists in the publicSite1
+        assertSiteQueryResult(publicSite1.getId(), List.of(DOCUMENT_LIBRARY, file7));
+        moveFileToTheSite(file6, publicSite1);
+        assertSiteQueryResult(publicSite1.getId(), List.of(DOCUMENT_LIBRARY, file6, file7));
+
         //Removing file.
-        FileModel file6 = createContentInSite(publicSite2, "file6");
-        assertSiteQueryResult(publicSite2.getId(), List.of(DOCUMENT_LIBRARY, file6));
-        deleteFile(file6);
+        FileModel file8 = createContentInSite(publicSite2, "file8");
+        assertSiteQueryResult(publicSite2.getId(), List.of(DOCUMENT_LIBRARY, file8));
+        deleteFile(file8);
         assertSiteQueryResult(publicSite2.getId(), List.of(DOCUMENT_LIBRARY));
 
         //Document modification.
-        FileModel file7 = createContentInSite(publicSite2, "file7", "Initial Content.");
-        assertContentInGivenFileUnderSiteQueryResult(publicSite2.getId(), "initial", List.of(file7));
-        modifyDocument(file7, "Modified Content.");
-        assertContentInGivenFileUnderSiteQueryResult(publicSite2.getId(), "modified", List.of(file7));
+        FileModel file9 = createContentInSite(publicSite2, "file9", "Initial Content.");
+        assertContentInGivenFileUnderSiteQueryResult(publicSite2.getId(), "initial", List.of(file9));
+        modifyDocument(file9, "Modified Content.");
+        assertContentInGivenFileUnderSiteQueryResult(publicSite2.getId(), "modified", List.of(file9));
+
+        //Cleanup.
+        deleteFiles(file6, file7, file9);
+        dataContent.usingAdmin().deleteSite(publicSite1);
+        dataContent.usingAdmin().deleteSite(publicSite2);
+    }
+
+    private void deleteFiles(FileModel... fileModels) {
+        for(FileModel fileModel : fileModels)
+        {
+            deleteFile(fileModel);
+        }
+    }
+
+    private void moveFileToTheSite(FileModel file, SiteModel targetSite) {
+        Session session = dataContent.getContentActions().getCMISSession(alfrescoHttpClientFactory.getAdminUser(), alfrescoHttpClientFactory.getAdminPassword());
+        ContentActions actions = dataContent.usingAdmin().getContentActions();
+        CmisObject objFrom = actions.getCmisObject(session, file.getName());
+        CmisObject objTarget = session.getObjectByPath("/Sites/" + targetSite.getId() + "/documentLibrary");
+
+        List parents;
+        CmisObject parent;
+        if (objFrom instanceof Document) {
+            Document d = (Document)objFrom;
+            parents = d.getParents();
+            parent = session.getObject(((Folder)parents.get(0)).getId());
+            d.move(parent, objTarget);
+        } else if (objFrom instanceof Folder) {
+            Folder f = (Folder)objFrom;
+            parents = f.getParents();
+            parent = session.getObject(((Folder)parents.get(0)).getId());
+            f.move(parent, objTarget);
+        }
     }
 
     private void assertSiteQueryResult(String siteName, Collection<ContentModel> contentModels)
@@ -326,7 +376,7 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
 
     private void modifyDocument(FileModel file, String newContent)
     {
-        dataContent.usingUser(testUser).usingResource(file)
+        dataContent.usingUser(siteCreator).usingResource(file)
                 .updateContent(newContent);
     }
 
@@ -345,8 +395,8 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
 
     private void moveFile(FileModel file, SiteModel sourceSite, SiteModel targetSite, ContentModel targetFolder)
     {
-        Session session = dataContent.getContentActions().getCMISSession(testUser.getUsername(), testUser.getPassword());
-        dataContent.usingUser(testUser).getContentActions()
+        Session session = dataContent.getContentActions().getCMISSession(siteCreator.getUsername(), siteCreator.getPassword());
+        dataContent.usingUser(siteCreator).getContentActions()
                 .moveTo(
                         session,
                         sourceSite.getId(),
@@ -393,7 +443,12 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
 
     private SiteModel createPublicSite()
     {
-        SiteModel createdSite = dataSite.usingUser(siteCreator).createPublicRandomSite();
+        return createPublicSite(siteCreator);
+    }
+
+    private SiteModel createPublicSite(UserModel user)
+    {
+        SiteModel createdSite = dataSite.usingUser(user).createPublicRandomSite();
         Step.STEP("Created public site '" + createdSite.getId() + "'.");
         return createdSite;
     }
