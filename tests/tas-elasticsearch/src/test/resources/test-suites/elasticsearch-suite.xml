@@ -8,6 +8,7 @@
       <class name="org.alfresco.elasticsearch.ElasticsearchReindexingTests"></class>
       <class name="org.alfresco.elasticsearch.ElasticsearchPathIndexingTests"></class>
       <class name="org.alfresco.elasticsearch.ElasticsearchTagIndexingTests"></class>
+      <class name="org.alfresco.elasticsearch.ElasticsearchSiteIndexingTests"></class>
     </classes>
   </test>
 </suite>
