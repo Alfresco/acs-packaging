@@ -238,15 +238,16 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
         SiteModel publicSite1 = createPublicSite(siteCreator);
         SiteModel publicSite2 = createPublicSite(siteCreator);
         FileModel file5 = createContentInSite(publicSite1, "file5");
+        assertSiteQueryResult(publicSite1.getId(), List.of(DOCUMENT_LIBRARY, file5));
 
         //Moving a file between sites.
         moveFile(file5, publicSite1, publicSite2);
-        assertSiteQueryResult(publicSite1.getId(), List.of());
+        assertSiteQueryResult(publicSite1.getId(), List.of(DOCUMENT_LIBRARY));
         assertSiteQueryResult(publicSite2.getId(), List.of(DOCUMENT_LIBRARY, file5));
 
         //Moving a file out of a site.
         moveFileOutsideOfSite(file5, publicSite2, testFolder);
-        assertSiteQueryResult(publicSite2.getId(), List.of());
+        assertSiteQueryResult(publicSite2.getId(), List.of(DOCUMENT_LIBRARY));
 
         //Moving a file to the site
         FileModel file6 = dataContent
@@ -262,7 +263,7 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
         FileModel file8 = createContentInSite(publicSite2, "file8");
         assertSiteQueryResult(publicSite2.getId(), List.of(DOCUMENT_LIBRARY, file8));
         deleteFile(file8);
-        assertSiteQueryResult(publicSite2.getId(), List.of());
+        assertSiteQueryResult(publicSite2.getId(), List.of(DOCUMENT_LIBRARY));
 
         //Document modification.
         FileModel file9 = createContentInSite(publicSite2, "file9", "Initial Content.");
