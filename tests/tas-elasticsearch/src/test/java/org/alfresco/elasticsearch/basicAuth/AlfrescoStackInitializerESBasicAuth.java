@@ -1,5 +1,6 @@
-package org.alfresco.elasticsearch;
+package org.alfresco.elasticsearch.basicAuth;
 
+import org.alfresco.elasticsearch.AlfrescoStackInitializer;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
 
