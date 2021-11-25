@@ -1,7 +1,8 @@
-package org.alfresco.elasticsearch;
+package org.alfresco.elasticsearch.basicAuth;
 
 import static org.alfresco.elasticsearch.SearchQueryService.req;
 
+import org.alfresco.elasticsearch.SearchQueryService;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
