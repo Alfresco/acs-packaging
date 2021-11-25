@@ -33,7 +33,7 @@ the repository.
 
 ### Configure a T-Engine as a Local Transform
 
-For the ACS repository to talk to a T-Engine, it must know the engine's 
+For the Repository to talk to a T-Engine, it must know the engine's 
 URL. The URL can be added as an Alfresco global property,
 or more simply as a Java system property. `JAVA_OPTS` may be used to set
 this if starting the repository with Docker.
@@ -48,8 +48,8 @@ contains a single transform or an associated group of transforms.
 Having set the URL to a T-Engine, the Repository will update its
 configuration by requesting the
 [T-Engine configuration](creating-a-t-engine.md#t-engine-configuration)
-on a periodical basis. It is requested more frequent on start up or if a
-communication or configuration problem has occurred, and a less
+on a periodical basis. It is requested more frequently on start up or if a
+communication or configuration problem has occurred, and less
 frequently otherwise.
 
 ```text
@@ -61,14 +61,14 @@ local.transform.service.initialAndOnError.cronExpression=0/10 * * * * ?
 
 Local or Transform Service transforms can be enabled or disabled
 independently of each other. The Repository will try to transform
-content using the Transform Service if possible and falling back to a Local
+content using the Transform Service if possible and fall back to a Local
 Transform. If you are using Share, Local Transforms are required, as they support
 both synchronous and asynchronous requests. Share makes use of both, so
 functionality such as preview will be unavailable if Local transforms are
 disabled. The Transform service only supports asynchronous requests.
 
-The following sections will show how to create a Local transform pipeline, a Local
-transform failover or a Local transform override, but remember that they will not be
+The following sections will show how to create a Local Transform pipeline, a Local
+Transform failover or a Local transform override, but remember that they will not be
 used if the Transform Service (ATS) if it is able to do the transform and is enabled.
 
 ```text
@@ -76,10 +76,10 @@ transform.service.enabled=true
 local.transform.service.enabled=true
 ```
 
-Setting the enabled state to **false** will disable all of the transforms
+Setting the enabled state to `false` will disable all of the transforms
 performed by that particular service. It is possible to disable individual
 Local Transforms by setting the corresponding T-Engine URL property
-**localTransform.&lt;engineName>.url** value to an empty string.
+`localTransform.&lt;engineName>.url` value to an empty string.
 
 ```text
 localTransform.helloworld.url=
@@ -89,9 +89,9 @@ localTransform.helloworld.url=
 
 ### Transformer selection strategy
 
-The ACS repository and ATS router use the
-[T-Engine configuration](creating-a-t-engine.md#t-engine-configuration) in combination with their
-own pipeline files to choose which T-Engine will perform a transform. A transformer
+The Repository and ATS router use the
+[T-Engine configuration](creating-a-t-engine.md#t-engine-configuration)
+to choose which T-Engine will perform a transform. A transformer
 definition contains a supported list of source and target Media Types. This is used
 for the most basic selection. This is further refined by checking
 that the definition also supports transform options (parameters) that
@@ -114,7 +114,7 @@ or grouped.
 The configuration may impose a source file size limit resulting in the selection of a
 different transformer. Size limits are normally added to avoid the transforms consuming too many
 resources. The configuration may also specify a priority which will be used in Transformer
-selection if there and a number of options. The highest priority is the one with the lowest number. 
+selection if there are a number of options. The highest priority is the one with the lowest number. 
 
 ### Transform pipelines
 
@@ -128,7 +128,7 @@ definition may reuse the `transformOptions` of transformers in the
 pipeline, but typically will define its own subset of these.  
 
 The following example begins with the `helloWorld` Transformer
-described in [Creating a T-Engine](#creating-a-t-engine.md), which takes a
+described in [Creating a T-Engine](creating-a-t-engine.md), which takes a
 text file containing a name and produces an HTML file with a Hello
 &lt;name> message in the body. This is then transformed back into a
 text file. This example contains just one pipeline transformer, but
@@ -178,8 +178,8 @@ local.transform.pipeline.config.dir=shared/classes/alfresco/extension/transform/
 ```
 
 On startup this location is checked every 10 seconds, but then switches
-to once an hour if successfully. After a problem, it tries every 10
-seconds again. These are the same properties use to decide when to read
+to once an hour if successful. After a problem, it tries every 10
+seconds again. These are the same properties used to decide when to read
 T-Engine configurations, because pipelines combine transformers in the
 T-Engines.
 
@@ -285,7 +285,7 @@ T-Engine or pipeline files.
 #### Overriding transforms
 
 It is possible to override a previously defined transform definition. The following example
-removes most of the supported source to target media types form the standard _"libreoffice"_
+removes most of the supported source to target media types from the standard _"libreoffice"_
 transform. It also changes the max size and priority of others. This is not something you would normally want to do. 
 
 ```json
@@ -334,7 +334,7 @@ Rather than totally override an existing transform definition from another T-Eng
 it is generally simpler to modify the `"supportedSourceAndTargetList"` by adding
 elements to the optional `"addSupported"`, `"removeSupported"` and `"overrideSupported"` lists.
 You will need to specify the `"transformerName"` but you will not need to repeat all the other
-`"supportedSourceAndTargetList"` values, which means if there are changed in the original, the
+`"supportedSourceAndTargetList"` values, which means if there are changes in the original, the
 same change is not needed in a second place. The following example adds one transform, removes
 two others and changes the `"priority"` and `"maxSourceSizeBytes"` of another. This is done before
 processing any other configuration in the same T-Engine or pipeline file.
@@ -393,7 +393,7 @@ specified it is only that value that is being defaulted.
 
 Being able to change the defaults is particularly useful once a T-Engine has been developed as it
 allows a system administrator to handle limitations that are only found later. The
-**system wide defaults** are generally not used but are included for completeness.
+`system wide defaults` are generally not used but are included for completeness.
 The following example says that the `"Office"` transformer by default should only handle zip files up to 18 Mb and by 
 default the maximum size of a `.doc` file to be transformed is 4 Mb. The third example defaults the priority,
 possibly allowing another transformer that has specified a priority of say `50` to be used in
@@ -627,7 +627,7 @@ Please follow the steps described in [Alfresco Transform Service Docs](https://g
 The deployment and development of a T-Engine transformer is simpler
 than before.
 
-* Transformers no longer needs to be applied as AMPs/JARs on top of the Repository.
+* Transformers no longer need to be applied as AMPs/JARs on top of the Repository.
 * New versions may be deployed separately without restarting the repository.
 * As a standalone Spring Boot application develop and test
   cycles are reduced.
@@ -666,7 +666,7 @@ Initially you will probably want to create new T-Engines but run them as
 Local Transformers attached directly to the Repository. All of the
 transforms provided with the base Content Services are available as Local
 Transformers, so may be combined with your own Local
-Transformers in Local Pipelines. Once happy you have every thing working
+Transformers in Local Pipelines. Once happy you have everything working
 it then probably makes sense to add your new T-Engines to the Transform
 Service. The
 [Migrating a Legacy Transformer](migrating-a-legacy-transformer.md) page
