@@ -110,7 +110,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
               executionType = ExecutionType.REGRESSION,
               description = "Verify that the include parameter work with Elasticsearch search as expected.")
     @Test(groups = TestGroup.SEARCH)
-    public void searchCanFindAFileUsingIncludeParameter() throws Exception
+    public void searchCanFindAFileUsingIncludeParameter()
     {
         SearchRequest queryWithoutIncludes = req("first");
         Predicate<SearchNodeModel> allFieldsNull = searchNodeModel ->
@@ -148,7 +148,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
               executionType = ExecutionType.REGRESSION,
               description = "Verify that the simpler Elasticsearch search works as expected.")
     @Test(groups = TestGroup.SEARCH)
-    public void searchCanFindAFile() throws Exception
+    public void searchCanFindAFile()
     {
         // this test must found only one documents, while documents in the system are four because
         // only one contains the word "first".
@@ -159,7 +159,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
               executionType = ExecutionType.REGRESSION,
               description = "Verify that Elasticsearch search works as expected using a user that has access to only one site.")
     @Test(groups = TestGroup.SEARCH)
-    public void searchCanFindFilesOnASite() throws Exception
+    public void searchCanFindFilesOnASite()
     {
         searchQueryService.expectResultsFromQuery(req("test"), userSite1, FILE_0_NAME, FILE_1_NAME, FILE_3_NAME);
     }
@@ -168,7 +168,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
               executionType = ExecutionType.REGRESSION,
               description = "Verify that Elasticsearch search works as expected when the user can search a file because he is the owner.")
     @Test(groups = TestGroup.SEARCH)
-    public void searchCanFindAFileOnMultipleSitesWithOwner() throws Exception
+    public void searchCanFindAFileOnMultipleSitesWithOwner()
     {
         searchQueryService.expectResultsFromQuery(req("test"), userSite2, FILE_3_NAME, FILE_2_NAME);
     }
@@ -177,16 +177,34 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
               executionType = ExecutionType.REGRESSION,
               description = "Verify that Elasticsearch search works as expected when a user has permission on multiple sites.")
     @Test(groups = TestGroup.SEARCH)
-    public void searchCanFindAFileOnMultipleSites() throws Exception
+    public void searchCanFindAFileOnMultipleSites()
     {
         searchQueryService.expectResultsFromQuery(req("test"), userMultiSite, FILE_0_NAME, FILE_1_NAME, FILE_3_NAME, FILE_2_NAME);
+    }
+
+    @TestRail (section = TestGroup.SEARCH,
+            executionType = ExecutionType.REGRESSION,
+            description = "Verify that a range query can return a document from Elasticsearch.")
+    @Test (groups = TestGroup.SEARCH)
+    public void findFileWithRangeQuery()
+    {
+        searchQueryService.expectResultsFromQuery(req("cm:created:[NOW-1YEAR TO MAX] AND name:" + FILE_0_NAME), userSite1, FILE_0_NAME);
+    }
+
+    @TestRail (section = TestGroup.SEARCH,
+            executionType = ExecutionType.REGRESSION,
+            description = "Verify that a range query doesn't return all documents from Elasticsearch.")
+    @Test (groups = TestGroup.SEARCH)
+    public void omitFileWithRangeQuery()
+    {
+        searchQueryService.expectNoResultsFromQuery(req("cm:created:[MIN TO NOW-2YEARS] AND name:" + FILE_0_NAME), userSite1);
     }
 
     @TestRail(section = TestGroup.SEARCH,
               executionType = ExecutionType.REGRESSION,
               description = "Verify that the simpler Elasticsearch search works as expected.")
     @Test(groups = TestGroup.SEARCH)
-    public void indexAndSearchForDateBefore1970() throws Exception
+    public void indexAndSearchForDateBefore1970()
     {
         //Elasticsearch doesn't accept numbers for dates before 1970, so we create and search for a specific document in order to verify that.
         createNodeWithProperties(siteModel1, new FileModel(BEFORE_1970_TXT, FileType.TEXT_PLAIN), userSite1,
