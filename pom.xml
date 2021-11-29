@@ -18,8 +18,8 @@
         <dependency.alfresco-enterprise-share.version>14.26</dependency.alfresco-enterprise-share.version>
 
         <alfresco.rm-enterprise-rest-api-explorer.version>3.0.2</alfresco.rm-enterprise-rest-api-explorer.version>
-        <alfresco.s3connector.version>5.0.0-M1</alfresco.s3connector.version>
-        <alfresco.azure-connector.version>3.0.0-M1</alfresco.azure-connector.version>
+        <alfresco.s3connector.version>5.0.0-A3</alfresco.s3connector.version>
+        <alfresco.azure-connector.version>3.0.0-A2</alfresco.azure-connector.version>
 
         <alfresco.salesforce-connector.version>2.3.0.3</alfresco.salesforce-connector.version>
         <alfresco.saml.version>1.2.2</alfresco.saml.version>
