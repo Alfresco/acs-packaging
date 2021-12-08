@@ -200,6 +200,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
         searchQueryService.expectNoResultsFromQuery(req("cm:created:[MIN TO NOW-2YEARS] AND name:" + FILE_0_NAME), userSite1);
     }
 
+    //intermittent failure
     @TestRail(section = TestGroup.SEARCH,
               executionType = ExecutionType.REGRESSION,
               description = "Verify that the simpler Elasticsearch search works as expected.")
