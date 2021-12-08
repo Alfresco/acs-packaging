@@ -210,7 +210,7 @@ jobs:
         # Show what DTAS will be looking for
         - cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
         - pyenv versions
-        - pyenv global 3.7.1
+        - pyenv global 3.7.2
         - pip install requests pytest==6.2.4 pytest-testinfra==6.3.0 jmespath==0.10.0
         - git clone --depth 1 --branch $DTAS_VERSION https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
         - docker images | grep pipeline
