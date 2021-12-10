@@ -49,7 +49,7 @@ stages:
     if: (commit_message =~ /\[downstream\]/ OR (commit_message =~ /\[release\]/ AND commit_message !~ /\[no downstream\]/)) AND (branch = master OR branch =~ /release\/.*/) AND type != pull_request AND fork = false
 
 before_install: travis_retry bash scripts/travis/init.sh
-install: echo "building..."
+install: travis_retry travis_wait 40 bash scripts/travis/build.sh
 
 jobs:
   include:
@@ -207,25 +207,23 @@ jobs:
     - name: "Single Pipeline image tests"
       if: fork = false AND type != pull_request
       before_script:
-        # - travis_retry travis_wait 20 mvn -B clean install -Ppipeline,build-docker-images $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-repo.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Drepo.image.tag=latest') $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-share.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Dshare.image.tag=latest')
-        # # Show what DTAS will be looking for
-        # - cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
+        - travis_retry travis_wait 20 mvn -B clean install -Ppipeline,build-docker-images $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-repo.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Drepo.image.tag=latest') $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-share.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Dshare.image.tag=latest')
+        # Show what DTAS will be looking for
+        - cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
         - eval "$(pyenv init --path)" && pyenv install $PYTHON_VERSION
-        - pyenv versions
-        - python --version
         - pyenv global $PYTHON_VERSION
         - python --version
-        # - pip install requests pytest==6.2.4 pytest-testinfra==6.3.0 jmespath==0.10.0
-        # - git clone --depth 1 --branch $DTAS_VERSION https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
-        # - docker images | grep pipeline
+        - pip install requests pytest==6.2.4 pytest-testinfra==6.3.0 jmespath==0.10.0
+        - git clone --depth 1 --branch $DTAS_VERSION https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
+        - docker images | grep pipeline
       script:
-        # - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
-        # - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/" 180
-        # - docker ps
-        # # Show what AMPs the repo has installed
-        # - curl -v --user admin.pipeline@alfresco.com:admin http://localhost:8080/alfresco/api/discovery
-        # - cd dtas
-        # - pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
+        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
+        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/" 180
+        - docker ps
+        # Show what AMPs the repo has installed
+        - curl -v --user admin.pipeline@alfresco.com:admin http://localhost:8080/alfresco/api/discovery
+        - cd dtas
+        - pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
 
     - name: "Update latest and Single Pipeline <acs>-<build> images"
       stage: docker_latest
