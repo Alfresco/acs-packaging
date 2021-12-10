@@ -32,6 +32,7 @@ env:
     - RELEASE_VERSION=7.1.1-A1
     - DEVELOPMENT_VERSION=7.1.1-A2-SNAPSHOT
     - DTAS_VERSION="${DTAS_VERSION:-v1.1}"
+    - PYTHON_VERSION=3.7.12
 
 stages:
   - name: test
@@ -197,8 +198,9 @@ jobs:
         - travis_retry travis_wait 20 mvn -B clean install -Ppipeline,build-docker-images $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-repo.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Drepo.image.tag=latest') $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-share.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Dshare.image.tag=latest')
         # Show what DTAS will be looking for
         - cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
-        - pyenv versions
-        - pyenv global 3.7.1
+        - eval "$(pyenv init --path)" && pyenv install $PYTHON_VERSION
+        - pyenv global $PYTHON_VERSION
+        - python --version
         - pip install requests pytest==6.2.4 pytest-testinfra==6.3.0 jmespath==0.10.0
         - git clone --depth 1 --branch $DTAS_VERSION https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
         - docker images | grep pipeline
