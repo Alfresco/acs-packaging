@@ -209,6 +209,7 @@ jobs:
         - travis_retry travis_wait 20 mvn -B clean install -Ppipeline,build-docker-images $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-repo.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Drepo.image.tag=latest') $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-share.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Dshare.image.tag=latest')
         # Show what DTAS will be looking for
         - cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
+        - echo $PATH
         - pyenv versions
         - pyenv global 3.7.1
         - pip install requests pytest==6.2.4 pytest-testinfra==6.3.0 jmespath==0.10.0
