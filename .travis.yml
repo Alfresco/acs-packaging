@@ -32,6 +32,7 @@ env:
     # Remember to change the acs.version.label in alfresco-enterprise-repo/pom.xml to match the HF version
     - RELEASE_VERSION=7.0.1.4
     - DEVELOPMENT_VERSION=7.0.1.5-SNAPSHOT
+    - PYTHON_VERSION=3.7.12
 
 stages:
   - name: test
@@ -191,9 +192,10 @@ jobs:
         - travis_retry travis_wait 20 mvn -B clean install -Ppipeline,local $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-repo.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Drepo.image.tag=latest')
         # Show what DTAS will be looking for
         - cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
-        - pyenv versions
-        - pyenv global 3.7.1
-        - pip install requests pytest
+        - eval "$(pyenv init --path)" && pyenv install $PYTHON_VERSION
+        - pyenv global $PYTHON_VERSION
+        - python --version
+        - pip install requests pytest==6.2.4 pytest-testinfra==6.3.0 jmespath==0.10.0
         - git clone --depth 1 --branch v1.0-M2 https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
         - docker images | grep pipeline
       script:
