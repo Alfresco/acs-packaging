@@ -4,7 +4,6 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -35,9 +34,15 @@ public class SearchQueryService
         expectResultsFromQuery(searchRequest, testUser);
     }
 
-    public void expectResultsFromQuery(SearchRequest searchRequest, org.alfresco.utility.model.UserModel user, String... expected)
+    public void expectResultsFromQuery(SearchRequest searchRequest, UserModel user, String... expected)
     {
         Consumer<SearchResponse> assertNames = searchResponse -> assertNames(searchResponse, expected);
+        expectResultsFromQuery(searchRequest, user, assertNames);
+    }
+
+    public void expectNodeRefsFromQuery(SearchRequest searchRequest, UserModel user, String... expectedNodeRefs)
+    {
+        Consumer<SearchResponse> assertNames = searchResponse -> assertNodeRefs(searchResponse, expectedNodeRefs);
         expectResultsFromQuery(searchRequest, user, assertNames);
     }
 
@@ -69,6 +74,16 @@ public class SearchQueryService
         {
             fail("InterruptedException received while waiting for results.");
         }
+    }
+
+    private void assertNodeRefs(SearchResponse actual, String... expected)
+    {
+        Set<String> result = actual.getEntries().stream()
+                                   .map(SearchNodeModel::getModel)
+                                   .map(SearchNodeModel::getId)
+                                   .collect(Collectors.toSet());
+        Set<String> expectedList = Sets.newHashSet(expected);
+        assertEquals(result, expectedList, "Unexpected search results.");
     }
 
     private void assertNames(SearchResponse actual, String... expected)

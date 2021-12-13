@@ -6,8 +6,6 @@ import static org.alfresco.elasticsearch.SearchQueryService.req;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.utility.data.DataContent;
@@ -110,7 +108,25 @@ public class ElasticsearchProximitySearchTests extends AbstractTestNGSpringConte
     @Test (groups = { TestGroup.SEARCH, TestGroup.TAGS, TestGroup.REGRESSION })
     public void testProximitySearchUsingAFTSSyntaxForSpecificProperty()
     {
-        throw new RuntimeException("FAIL");
+        final String AFTS = "cm:name:(%s *%s %s)";
+
+        assertAFTS(format(AFTS, nameA, "(0)", nameB), file_NameAB_ContentABC, file_NameABC_ContentAB, file_NameABCD_ContentA);
+        assertAFTS(format(AFTS, nameA, "(1)", nameB), file_NameAB_ContentABC, file_NameABC_ContentAB, file_NameABCD_ContentA);
+        assertAFTS(format(AFTS, nameA, "(2)", nameB), file_NameAB_ContentABC, file_NameABC_ContentAB, file_NameABCD_ContentA);
+        assertAFTS(format(AFTS, nameA, "(3)", nameB), file_NameAB_ContentABC, file_NameABC_ContentAB, file_NameABCD_ContentA);
+        assertAFTS(format(AFTS, nameA, "", nameB), file_NameAB_ContentABC, file_NameABC_ContentAB, file_NameABCD_ContentA);
+
+        assertAFTS(format(AFTS, nameA, "(0)", nameC));
+        assertAFTS(format(AFTS, nameA, "(1)", nameC), file_NameABC_ContentAB, file_NameABCD_ContentA);
+        assertAFTS(format(AFTS, nameA, "(2)", nameC), file_NameABC_ContentAB, file_NameABCD_ContentA);
+        assertAFTS(format(AFTS, nameA, "(3)", nameC), file_NameABC_ContentAB, file_NameABCD_ContentA);
+        assertAFTS(format(AFTS, nameA, "", nameC), file_NameABC_ContentAB, file_NameABCD_ContentA);
+
+        assertAFTS(format(AFTS, nameA, "(0)", nameD));
+        assertAFTS(format(AFTS, nameA, "(1)", nameD));
+        assertAFTS(format(AFTS, nameA, "(2)", nameD), file_NameABCD_ContentA);
+        assertAFTS(format(AFTS, nameA, "(3)", nameD), file_NameABCD_ContentA);
+        assertAFTS(format(AFTS, nameA, "", nameD), file_NameABCD_ContentA);
     }
 
     @TestRail (section = { TestGroup.SEARCH, TestGroup.TAGS }, executionType = ExecutionType.REGRESSION,
@@ -118,7 +134,22 @@ public class ElasticsearchProximitySearchTests extends AbstractTestNGSpringConte
     @Test (groups = { TestGroup.SEARCH, TestGroup.TAGS, TestGroup.REGRESSION })
     public void testProximitySearchUsingLuceneSyntax()
     {
-        throw new RuntimeException("FAIL");
+        final String lucene = "\"%s %s\"~%d";
+
+        assertLucene(format(lucene, contentA, contentB, 0), file_NameA_ContentABCD, file_NameAB_ContentABC, file_NameABC_ContentAB);
+        assertLucene(format(lucene, contentA, contentB, 1), file_NameA_ContentABCD, file_NameAB_ContentABC, file_NameABC_ContentAB);
+        assertLucene(format(lucene, contentA, contentB, 2), file_NameA_ContentABCD, file_NameAB_ContentABC, file_NameABC_ContentAB);
+        assertLucene(format(lucene, contentA, contentB, 3), file_NameA_ContentABCD, file_NameAB_ContentABC, file_NameABC_ContentAB);
+
+        assertLucene(format(lucene, contentA, contentC, 0));
+        assertLucene(format(lucene, contentA, contentC, 1), file_NameA_ContentABCD, file_NameAB_ContentABC);
+        assertLucene(format(lucene, contentA, contentC, 2), file_NameA_ContentABCD, file_NameAB_ContentABC);
+        assertLucene(format(lucene, contentA, contentC, 3), file_NameA_ContentABCD, file_NameAB_ContentABC);
+
+        assertLucene(format(lucene, contentA, contentD, 0));
+        assertLucene(format(lucene, contentA, contentD, 1));
+        assertLucene(format(lucene, contentA, contentD, 2), file_NameA_ContentABCD);
+        assertLucene(format(lucene, contentA, contentD, 3), file_NameA_ContentABCD);
     }
 
     @TestRail (section = { TestGroup.SEARCH, TestGroup.TAGS }, executionType = ExecutionType.REGRESSION,
@@ -126,7 +157,27 @@ public class ElasticsearchProximitySearchTests extends AbstractTestNGSpringConte
     @Test (groups = { TestGroup.SEARCH, TestGroup.TAGS, TestGroup.REGRESSION })
     public void testProximitySearchUsingLuceneSyntaxForSpecificProperty()
     {
-        throw new RuntimeException("FAIL");
+        final String lucene = "@cm\\:name:\"%s %s\"~%d";
+
+        assertLucene(format(lucene, nameA, nameB, 0), file_NameAB_ContentABC, file_NameABC_ContentAB, file_NameABCD_ContentA);
+        assertLucene(format(lucene, nameA, nameB, 1), file_NameAB_ContentABC, file_NameABC_ContentAB, file_NameABCD_ContentA);
+        assertLucene(format(lucene, nameA, nameB, 2), file_NameAB_ContentABC, file_NameABC_ContentAB, file_NameABCD_ContentA);
+        assertLucene(format(lucene, nameA, nameB, 3), file_NameAB_ContentABC, file_NameABC_ContentAB, file_NameABCD_ContentA);
+
+        assertLucene(format(lucene, nameA, nameC, 0));
+        assertLucene(format(lucene, nameA, nameC, 1), file_NameABC_ContentAB, file_NameABCD_ContentA);
+        assertLucene(format(lucene, nameA, nameC, 2), file_NameABC_ContentAB, file_NameABCD_ContentA);
+        assertLucene(format(lucene, nameA, nameC, 3), file_NameABC_ContentAB, file_NameABCD_ContentA);
+
+        assertLucene(format(lucene, nameA, nameD, 0));
+        assertLucene(format(lucene, nameA, nameD, 1));
+        assertLucene(format(lucene, nameA, nameD, 2), file_NameABCD_ContentA);
+        assertLucene(format(lucene, nameA, nameD, 3), file_NameABCD_ContentA);
+    }
+
+    private void assertLucene(String query, String... expected)
+    {
+        assertQueryResult("lucene", query, expected);
     }
 
     private void assertAFTS(String query, String... expected)
@@ -142,7 +193,7 @@ public class ElasticsearchProximitySearchTests extends AbstractTestNGSpringConte
             searchQueryService.expectNoResultsFromQuery(searchRequest, testUser);
         } else
         {
-            searchQueryService.expectResultsFromQuery(searchRequest, testUser, expected);
+            searchQueryService.expectNodeRefsFromQuery(searchRequest, testUser, expected);
         }
     }
 
@@ -164,7 +215,7 @@ public class ElasticsearchProximitySearchTests extends AbstractTestNGSpringConte
 
     private String join(String... parts)
     {
-        return Stream.of(parts).collect(Collectors.joining(" "));
+        return String.join(" ", parts);
     }
 
     private static String uniqueString()
