@@ -15,7 +15,7 @@
 
     <properties>
         <dependency.alfresco-enterprise-repo.version>14.57</dependency.alfresco-enterprise-repo.version>
-        <dependency.alfresco-enterprise-share.version>14.35</dependency.alfresco-enterprise-share.version>
+        <dependency.alfresco-enterprise-share.version>14.36</dependency.alfresco-enterprise-share.version>
 
         <alfresco.rm-enterprise-rest-api-explorer.version>3.0.2</alfresco.rm-enterprise-rest-api-explorer.version>
         <alfresco.s3connector.version>5.0.0-A4</alfresco.s3connector.version>
