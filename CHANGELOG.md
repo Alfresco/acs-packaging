@@ -1,3 +1,13 @@
+<h1>        7.1.1
+</h1>
+
+<h2>        Service Pack Request
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-22601'>MNT-22601</a>] -         Admin Console functionality becomes unusable in Alfresco v7.0.1.3
+</li>
+</ul>
+
 <h1>        7.1.0
 </h1>
 <h2>
