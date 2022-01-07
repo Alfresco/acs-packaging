@@ -54,7 +54,7 @@ frequently otherwise.
 
 ```text
 local.transform.service.cronExpression=4 30 0/1 * * ?
-local.transform.service.initialAndOnError.cronExpression=0/10 * * * * ?
+local.transform.service.initialAndOnError.cronExpression=0 * * * * ?
 ```
 
 ### Enabling and disabling Local or Transform Service transforms
@@ -177,15 +177,15 @@ following Alfresco global property. The ATS Router has similar pipeline files.
 local.transform.pipeline.config.dir=shared/classes/alfresco/extension/transform/pipelines
 ```
 
-On startup this location is checked every 10 seconds, but then switches
-to once an hour if successful. After a problem, it tries every 10
-seconds again. These are the same properties used to decide when to read
+On startup this location is checked every minute, but then switches
+to once an hour if successful. After a problem, it tries every
+minute again. These are the same properties used to decide when to read
 T-Engine configurations, because pipelines combine transformers in the
 T-Engines.
 
 ```text
 local.transform.service.cronExpression=4 30 0/1 * * ?
-local.transform.service.initialAndOnError.cronExpression=0/10 * * * * ?
+local.transform.service.initialAndOnError.cronExpression=0 * * * * ?
 ```
 
 If you are using Docker Compose in development, you will need to copy
@@ -463,7 +463,7 @@ rendition.config.dir=shared/classes/alfresco/extension/transform/renditions/
 
 ```text
 rendition.config.cronExpression=2 30 0/1 * * ?
-rendition.config.initialAndOnError.cronExpression=0/10 * * * * ?
+rendition.config.initialAndOnError.cronExpression=0 * * * * ?
 ```
 
 In a Kubernetes environment:
@@ -588,7 +588,7 @@ mimetype.config.dir=shared/classes/alfresco/extension/mimetypes
 ```
 ```text
 mimetype.config.cronExpression=0 30 0/1 * * ?
-mimetype.config.initialAndOnError.cronExpression=0/10 * * * * ?
+mimetype.config.initialAndOnError.cronExpression=0 * * * * ?
 ```
 
 In a Kubernetes environment:
@@ -614,7 +614,7 @@ periodically.
 
 ```text
 transform.service.cronExpression=4 30 0/1 * * ?
-transform.service.initialAndOnError.cronExpression=0/10 * * * * ?
+transform.service.initialAndOnError.cronExpression=0 * * * * ?
 ```
 
 ## ATS Configuration
