@@ -54,7 +54,7 @@ frequently otherwise.
 
 ```text
 local.transform.service.cronExpression=4 30 0/1 * * ?
-local.transform.service.initialAndOnError.cronExpression=? * * * * ?
+local.transform.service.initialAndOnError.cronExpression=0 * * * * ?
 ```
 
 ### Enabling and disabling Local or Transform Service transforms
@@ -185,7 +185,7 @@ T-Engines.
 
 ```text
 local.transform.service.cronExpression=4 30 0/1 * * ?
-local.transform.service.initialAndOnError.cronExpression=? * * * * ?
+local.transform.service.initialAndOnError.cronExpression=0 * * * * ?
 ```
 
 If you are using Docker Compose in development, you will need to copy
@@ -463,7 +463,7 @@ rendition.config.dir=shared/classes/alfresco/extension/transform/renditions/
 
 ```text
 rendition.config.cronExpression=2 30 0/1 * * ?
-rendition.config.initialAndOnError.cronExpression=? * * * * ?
+rendition.config.initialAndOnError.cronExpression=0 * * * * ?
 ```
 
 In a Kubernetes environment:
@@ -588,7 +588,7 @@ mimetype.config.dir=shared/classes/alfresco/extension/mimetypes
 ```
 ```text
 mimetype.config.cronExpression=0 30 0/1 * * ?
-mimetype.config.initialAndOnError.cronExpression=? * * * * ?
+mimetype.config.initialAndOnError.cronExpression=0 * * * * ?
 ```
 
 In a Kubernetes environment:
@@ -614,7 +614,7 @@ periodically.
 
 ```text
 transform.service.cronExpression=4 30 0/1 * * ?
-transform.service.initialAndOnError.cronExpression=? * * * * ?
+transform.service.initialAndOnError.cronExpression=0 * * * * ?
 ```
 
 ## ATS Configuration
