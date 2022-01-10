@@ -288,6 +288,10 @@ jobs:
           upload_dir: "enterprise/RM/${RELEASE_VERSION}"
           on:
             all_branches: true
+        - provider: script
+            script: bash scripts/travis/copy_share_image_to_dockerHub.sh
+            on:
+              all_branches: true
       after_deploy:
         - echo "Finished release and deployed to https://s3.console.aws.amazon.com/s3/buckets/alfresco-artefacts-staging/alfresco-content-services/release/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}"
 
@@ -308,10 +312,6 @@ jobs:
             all_branches: true
         - provider: script
           script: bash scripts/travis/copy_ags_to_release_bucket.sh
-          on:
-            all_branches: true
-        - provider: script
-          script: bash scripts/travis/copy_share_image_to_dockerHub.sh
           on:
             all_branches: true
 
