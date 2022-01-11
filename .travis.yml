@@ -289,7 +289,7 @@ jobs:
           on:
             all_branches: true
         - provider: script
-            script: bash scripts/travis/copy_share_image_to_dockerHub.sh
+            script: bash scripts/travis/copy_share_image_to_docker_hub.sh
             on:
               all_branches: true
       after_deploy:
