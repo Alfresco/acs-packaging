@@ -7,7 +7,7 @@
     "assertions": {
         "acs": {
             "edition": "Enterprise",
-            "version": "7.1.0",
+            "version": "7.2.0",
             "identity": false,
             "modules": [
                 {
@@ -48,11 +48,6 @@
                 {
                     "id": "alfresco-saml-repo",
                     "version": "${alfresco.saml.version}",
-                    "installed": true
-                },
-                {
-                    "id": "alfresco-glacier-connector-repo",
-                    "version": "${alfresco.glacier-connector.version}",
                     "installed": true
                 },
                 {

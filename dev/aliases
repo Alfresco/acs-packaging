@@ -22,15 +22,20 @@
 # Aliases to build projects WITHOUT creating docker images or TAS tests jars
 #   comR - alfresco-community-repo
 #   entR - alfresco-enterprise-repo
-#   comS - share
+#   comS - alfresco-enterprise-share ±
 #   entS - alfresco-enterprise-share
 #   comP - acs-community-packaging
 #   entP - acs-packaging
 #
+# Note: ± the comS * aliases in acs-packaging use alfresco-enterprise-share rather than alfresco-community-share
+#         as the acs-packaging aliases are generally used when alfresco-enterprise-share has been cloned by a
+#         developer working on enterprise. The acs-community-packaging aliases use alfresco-community-share as
+#         that is available to a community developer.
+#
 # Aliases to build projects including DOCKER images and TAS tests jars
 #   comRD - alfresco-community-repo
 #   entRD - alfresco-enterprise-repo
-#   comSD - share
+#   comSD - alfresco-enterprise-share ±
 #   entSD - alfresco-enterprise-share
 #   comPD - acs-community-packaging
 #   entPD - acs-packaging
@@ -54,18 +59,18 @@ then
 fi
 
 alias  comR='(cd alfresco-community-repo   && mvn clean install $AMPS -DskipTests=true                                       -Dversion.edition=Community)'
-alias  comS='(cd share                     && mvn clean install $AMPS -DskipTests                  -Dmaven.javadoc.skip=true)'
-alias  comP='(cd acs-community-packaging   && mvn clean install                                    -Dmaven.javadoc.skip=true)'
+alias  comS='(cd alfresco-enterprise-share && mvn clean install $AMPS -DskipTests                  -Dmaven.javadoc.skip=true)'
+alias  comP='(cd acs-community-packaging   && mvn clean install $AMPS                              -Dmaven.javadoc.skip=true)'
 alias  entR='(cd alfresco-enterprise-repo  && mvn clean install $AMPS -DskipTests=true             -Dmaven.javadoc.skip=true)'
 alias  entS='(cd alfresco-enterprise-share && mvn clean install $AMPS                  -DskipTests -Dmaven.javadoc.skip=true)'
-alias  entP='(cd acs-packaging             && mvn clean install)'
+alias  entP='(cd acs-packaging             && mvn clean install $AMPS)'
 
 alias comRD='(cd alfresco-community-repo   && mvn clean install $AMPS -DskipTests=true                                       -Dversion.edition=Community -Pall-tas-tests -Pbuild-docker-images -Dimage.tag=latest)'
-alias comSD='(cd share                     && mvn clean install $AMPS -DskipTests=true -DskipTests -Dmaven.javadoc.skip=true                             -Pall-tas-tests -Pbuild-docker-images -Dimage.tag=latest -Drepo.image.tag=latest)'
-alias comPD='(cd acs-community-packaging   && mvn clean install       -DskipTests=true             -Dmaven.javadoc.skip=true                             -Pall-tas-tests -Pbuild-docker-images -Dimage.tag=latest -Drepo.image.tag=latest -Dshare.image.tag=latest)'
+alias comSD='(cd alfresco-enterprise-share && mvn clean install $AMPS -DskipTests=true -DskipTests -Dmaven.javadoc.skip=true                             -Pall-tas-tests -Pbuild-docker-images -Dimage.tag=latest -Drepo.image.tag=latest)'
+alias comPD='(cd acs-community-packaging   && mvn clean install $AMPS -DskipTests=true             -Dmaven.javadoc.skip=true                             -Pall-tas-tests -Pbuild-docker-images -Dimage.tag=latest -Drepo.image.tag=latest -Dshare.image.tag=latest)'
 alias entRD='(cd alfresco-enterprise-repo  && mvn clean install $AMPS -DskipTests=true             -Dmaven.javadoc.skip=true                             -Pall-tas-tests -Pbuild-docker-images -Dimage.tag=latest                       )'
 alias entSD='(cd alfresco-enterprise-share && mvn clean install $AMPS -DskipTests=true -DskipTests -Dmaven.javadoc.skip=true                             -Pall-tas-tests -Pbuild-docker-images -Dimage.tag=latest -Drepo.image.tag=latest)'
-alias entPD='(cd acs-packaging             && mvn clean install       -DskipTests=true                                                                   -Pall-tas-tests -Pbuild-docker-images -Dimage.tag=latest -Drepo.image.tag=latest -Dshare.image.tag=latest)'
+alias entPD='(cd acs-packaging             && mvn clean install $AMPS -DskipTests=true                                                                   -Pall-tas-tests -Pbuild-docker-images -Dimage.tag=latest -Drepo.image.tag=latest -Dshare.image.tag=latest)'
 
 alias      comT='(cd acs-community-packaging  && mvn      clean install -Prun $AMPS -rf dev)'
 alias comTDebug='(cd acs-community-packaging  && mvnDebug clean install -Prun $AMPS -rf dev)'
@@ -83,7 +88,7 @@ alias comDR='comRD && comRD && comPD'
 alias comXR='comR  && comR  && comP'
 alias comXS='comS  && comP'
 alias   ent='comR  && entR  && entS  && entP  && entT'
-alias  entD='comR  && entRD && entSD && entPD'
+alias  entD='comRD && entRD && entSD && entPD'
 alias  entX='comR  && entR  && entS  && entP'
 alias entDR='comRD && entRD && entPD'
 alias entXR='comR  && entR  && entP'

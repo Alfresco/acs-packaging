@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>acs-packaging</artifactId>
-        <version>7.1.0-SNAPSHOT</version>
+        <version>7.2.0-A12-SNAPSHOT</version>
     </parent>
 
     <!-- To replace in share-config-custom.xml -->
@@ -119,11 +119,33 @@
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-mmt</artifactId>
-                                    <version>6.0</version>
+                                    <version>${dependency.alfresco-community-repo.version}</version>
                                     <outputDirectory>${project.build.outputDirectory}/bin</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
                             <stripVersion>true</stripVersion>
+                        </configuration>
+                    </execution>
+
+                    <!-- Copy share.war -->
+                    <execution>
+                        <id>copy-share-war</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.alfresco</groupId>
+                                    <artifactId>share</artifactId>
+                                    <version>${dependency.alfresco-enterprise-share.version}</version>
+                                    <type>war</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                    <destFileName>share.war</destFileName>
+                                </artifactItem>
+                            </artifactItems>
                         </configuration>
                     </execution>
                 </executions>

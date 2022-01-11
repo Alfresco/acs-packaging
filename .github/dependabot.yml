@@ -1,0 +1,65 @@
+version: 2
+registries:
+  maven-repository-artifacts-alfresco-com-nexus-content-groups-int:
+    type: maven-repository
+    url: https://artifacts.alfresco.com/nexus/content/groups/internal
+    username: ${{secrets.NEXUS_USERNAME}}
+    password: ${{secrets.NEXUS_PASSWORD}}
+
+updates:
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "22:00"
+    timezone: Africa/Abidjan
+  open-pull-requests-limit: 99
+  ignore:
+# Upstream alfresco-enterprise-repo artifacts
+  - dependency-name: org.alfresco:alfresco-enterprise-repo
+  - dependency-name: org.alfresco:alfresco-enterprise-repository
+  - dependency-name: org.alfresco:alfresco-enterprise-remote-api
+  - dependency-name: org.alfresco:alfresco-enterprise-repo-distribution
+  - dependency-name: org.alfresco:content-services
+  - dependency-name: org.alfresco:alfresco-wcmqs-client-api
+  - dependency-name: org.alfresco:alfresco-wcmqs-web
+  - dependency-name: org.alfresco:alfresco-wcmqs-distribution
+  - dependency-name: org.alfresco.tas:alfresco-enterprise-repo-webdav-test
+  - dependency-name: org.alfresco.tas:alfresco-enterprise-repo-restapi-test
+  - dependency-name: org.alfresco.tas:alfresco-enterprise-repo-integration-test
+  - dependency-name: org.alfresco.tas:alfresco-enterprise-repo-email-test
+  - dependency-name: org.alfresco.tas:alfresco-enterprise-repo-cmis-test
+# Upstream alfresco-enterprise-share artifacts
+  - dependency-name: org.alfresco:alfresco-enterprise-share
+  - dependency-name: org.alfresco:share
+  - dependency-name: org.alfresco:alfresco-share-services
+# Used in dev env - Currently using 7.0.86 but have tried higher versions
+  - dependency-name: org.apache.tomcat.embed
+    versions:
+    - "> 7.0.109"
+  - dependency-name: org.apache.tomcat
+    versions:
+    - "> 7.0.109"
+# Others
+  - dependency-name: io.fabric8:fabric8-maven-plugin
+    versions:
+    - "> 4.4.1"
+  - dependency-name: org.apache.maven.plugins:maven-war-plugin
+    versions:
+    - ">= 3.a, < 4"
+  - dependency-name: org.alfresco.integrations:alfresco-content-connector-for-salesforce-share
+    versions:
+    - 2.2.1
+    - 2.2.1-M1
+  - dependency-name: org.alfresco.integrations:alfresco-content-connector-for-salesforce-repo
+    versions:
+    - 2.2.1
+    - 2.2.1-M1
+  - dependency-name: org.alfresco.services.sync:alfresco-device-sync-repo
+    versions:
+    - 3.4.0-T2
+  - dependency-name: org.alfresco.maven.plugin:alfresco-maven-plugin
+    versions:
+    - 4.1.0
+  registries:
+  - maven-repository-artifacts-alfresco-com-nexus-content-groups-int

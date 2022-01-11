@@ -1,8 +1,68 @@
+<h1>        7.2.0
+</h1>
+<h2>
+  New Features
+</h2>
+<li>Upgrade of 3rd party libraries</li>
+<br>
+
+The Tika 1.26 library has been upgraded to the Tika 2.1.0. This upgrade brings
+some changes in available libraries. If you depend indirectly on transitive
+dependencies of Tika 1.26 then you should consider expressing your dependencies
+in an explicit way. For more details please see the Tika migration guides:
+<a href='https://cwiki.apache.org/confluence/display/TIKA/Migrating+to+Tika+2.0.0'>Migrating
+to Tika 2.0.0</a> and
+<a href='https://cwiki.apache.org/confluence/display/TIKA/Tika2_0MigrationGuide'>Tika
+2.0 Migration Guide</a>
+
+<ul>
+<li>org.apache.tika:tika-core:1.26 upgraded to  org.apache.tika:tika-core:2.1.0</li>
+<li>org.apache.tika:tika-parsers:1.26 replaced by org.apache.tika:tika-parsers-standard-package:2.1.0</li>
+</ul>
+
+<h1>        7.1.1
+</h1>
+
+<h2>        Service Pack Request
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-22601'>MNT-22601</a>] -         Admin Console functionality becomes unusable in Alfresco v7.0.1.3
+</li>
+</ul>
+
 <h1>        7.1.0
 </h1>
 <h2>
   New Features
 </h2>
+<ul>
+<li>Direct Access URLs
+
+To allow the acceleration of the local download of content, support has been added for Direct Access URLs in both the
+Alfresco Repository and the Alfresco S3 Connector extension. The AWS S3 pre-signed URLs are temporary 
+links with an expiration time.
+
+New Rest API endpoints have been added for requesting a new Direct Access URL (a direct download link) for a specific
+file in the Content Repository:
+    
+    POST '/nodes/{nodeId}/request-direct-access-url'
+    POST '/nodes/{nodeId}/renditions/{renditionId}/request-direct-access-url'
+    POST '/nodes/{nodeId}/versions/{versionId}/request-direct-access-url'
+    POST '/deleted-nodes/{nodeId}/request-direct-access-url'
+    POST '/deleted-nodes/{nodeId}/renditions/{renditionId}/request-direct-access-url'
+
+Access to Direct URLs is strictly controlled. They can be enabled or disabled system-wide as well as by individual 
+content store. Access via the REST API layer can also be enabled or disabled. Their expiration dates are restricted by 
+configurations in the Alfresco Repository via global & content-store specific properties.
+By default, Direct Access URLs are disabled.
+For more information see
+[Direct Access URLs](https://github.com/Alfresco/acs-packaging/blob/master/docs/direct-access-urls.md).
+</li>
+</ul>
+<br>
+
+<h1>        7.0.1
+</h1>
 <li>Removal of 3rd party libraries
 
 With the offloading of both transforms and metadata extraction to T-Engines a number of 3rd party libraries
@@ -11,9 +71,9 @@ same tasks. Any AMPs that where making use of these will need to provide these l
 reduce the footprint of the repository and allow more frequent releases of the T-Engines to take advantage of
 new functionality or security patches in these libraries.
 <ul>
-<li>PdfBox org.apache.pdfbox:pdfbox:2.0.21 removed - transforms are now performed in T-Engines</li>
-<li>PdfBox org.apache.pdfbox:fontbox:2.0.21 removed - transforms are now performed in T-Engines</li>
-<li>PdfBox org.apache.pdfbox:pdfbox-tools:2.0.21 removed - transforms are now performed in T-Engines</li>
+<li>PdfBox org.apache.pdfbox:pdfbox:2.0.21</li>
+<li>PdfBox org.apache.pdfbox:fontbox:2.0.21</li>
+<li>PdfBox org.apache.pdfbox:pdfbox-tools:2.0.21</li>
 </ul>
 <br>
 

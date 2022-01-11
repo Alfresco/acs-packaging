@@ -2,10 +2,8 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="REST API tests Elasticsearch" preserve-order="true" verbose="1">
   <test name="elasticsearch" verbose="3" preserve-order="true">
-    <classes>
-      <class name="org.alfresco.elasticsearch.ElasticsearchAdminConsoleTests"></class>
-      <class name="org.alfresco.elasticsearch.ElasticsearchLiveIndexingTests"></class>
-      <class name="org.alfresco.elasticsearch.ElasticsearchReindexingTests"></class>
-    </classes>
+    <packages>
+      <package name="org.alfresco.elasticsearch"/>
+    </packages>
   </test>
 </suite>

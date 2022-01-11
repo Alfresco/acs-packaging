@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>content-repository-tests</artifactId>
-        <version>7.1.0-SNAPSHOT</version>
+        <version>7.2.0-A12-SNAPSHOT</version>
     </parent>
 
     <developers>
@@ -214,14 +214,6 @@
                                             <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
                                         </artifactItem>
                                         <artifactItem>
-                                            <groupId>org.alfresco</groupId>
-                                            <artifactId>alfresco-glacier-connector-repo</artifactId>
-                                            <version>${alfresco.glacier-connector.version}</version>
-                                            <type>amp</type>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                        </artifactItem>
-                                        <artifactItem>
                                             <groupId>org.alfresco.integrations</groupId>
                                             <artifactId>alfresco-azure-connector</artifactId>
                                             <version>${alfresco.azure-connector.version}</version>
@@ -304,7 +296,7 @@
                                     <executable>java</executable>
                                     <arguments>
                                         <argument>-jar</argument>
-                                        <argument>${project.build.directory}/alfresco-mmt/alfresco-mmt-${dependency.alfresco-mmt.version}.jar</argument>
+                                        <argument>${project.build.directory}/alfresco-mmt/alfresco-mmt-${dependency.alfresco-community-repo.version}.jar</argument>
                                         <argument>install</argument>
                                         <argument>${project.build.directory}/amps</argument>
                                         <argument>${project.build.directory}/war/alfresco</argument>
@@ -324,7 +316,7 @@
                                     <executable>java</executable>
                                     <arguments>
                                         <argument>-jar</argument>
-                                        <argument>${project.build.directory}/alfresco-mmt/alfresco-mmt-${dependency.alfresco-mmt.version}.jar</argument>
+                                        <argument>${project.build.directory}/alfresco-mmt/alfresco-mmt-${dependency.alfresco-community-repo.version}.jar</argument>
                                         <argument>install</argument>
                                         <argument>${project.build.directory}/amps_share</argument>
                                         <argument>${project.build.directory}/war/share</argument>

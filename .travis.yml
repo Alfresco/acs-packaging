@@ -28,25 +28,37 @@ env:
   global:
     - TAS_SCRIPTS=../alfresco-community-repo/packaging/tests/scripts
     - TAS_ENVIRONMENT=./tests/environment
-    # Release version has to start with real version (7.1.0-....) for the docker image to build successfully.
-    - RELEASE_VERSION=7.1.0-A4
-    - DEVELOPMENT_VERSION=7.1.0-SNAPSHOT
+    # Release version has to start with real version (7.2.0-....) for the docker image to build successfully.
+    - RELEASE_VERSION=7.2.0-A12
+    - DEVELOPMENT_VERSION=7.2.0-A13-SNAPSHOT
+    - DTAS_VERSION="${DTAS_VERSION:-v1.1}"
+    - PYTHON_VERSION=3.7.12
 
 stages:
   - name: test
     if: commit_message !~ /\[skip tests\]/
   - name: docker_latest
-    if: commit_message !~ /\[skip docker_latest\]/ AND (branch = master OR branch =~ /release\/.*/) AND type != pull_request AND fork = false
+    if: commit_message !~ /\[skip docker_latest\]/ AND branch = master AND type != pull_request AND fork = false
+  - name: docker_release
+    if: commit_message !~ /\[skip docker_release\]/ AND branch =~ /release\/.*/ AND type != pull_request AND fork = false
   - name: release
     if: commit_message =~ /\[release\]/ AND (branch = master OR branch =~ /release\/.*/) AND type != pull_request AND fork = false
   - name: publish
     if: commit_message =~ /\[publish\]/ AND (branch = master OR branch =~ /release\/.*/) AND type != pull_request AND fork = false
+  - name: update_downstream
+    if: (commit_message =~ /\[downstream\]/ OR (commit_message =~ /\[release\]/ AND commit_message !~ /\[no downstream\]/)) AND (branch = master OR branch =~ /release\/.*/) AND type != pull_request AND fork = false
 
 before_install: travis_retry bash scripts/travis/init.sh
 install: travis_retry travis_wait 40 bash scripts/travis/build.sh
 
 jobs:
   include:
+    - name: "Source Clear Scan (SCA)"
+      if: branch = master OR branch =~ /release\/.*/
+      # Run Veracode
+      install: skip
+      script: travis_wait 30 bash scripts/travis/source_clear.sh
+
     - name: "REST API TAS tests part1"
       if: commit_message =~ /\[tas\]/
       before_script:
@@ -167,9 +179,14 @@ jobs:
         - travis_wait 20 mvn -B install -f tests/tas-sync-service/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
     - name: "Elasticsearch TAS tests"
-      if: commit_message !~ /\[skip tas\]/
+      if: commit_message !~ /\[skip search\]/
       script:
-        - travis_wait 30 mvn -B install -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+       - travis_wait 30 mvn -B install -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false
+
+    - name: "Elasticsearch Basic Auth TAS tests"
+      if: commit_message !~ /\[skip search\]/
+      script:
+       - travis_wait 30 mvn -B install -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false
 
     - name: "All AMPs tests"
       before_script:
@@ -180,6 +197,12 @@ jobs:
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
         - travis_wait 20 mvn -B install -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
+    - name: "Distribution Zip content tests"
+      before_script:
+        - travis_retry travis_wait 20 mvn -B -V clean install -Pags -DskipTests -Dmaven.javadoc.skip=true
+      script:
+        - travis_wait 20 mvn -B install -f tests/tas-distribution-zip/pom.xml -Prun-distribution-zip-contents-check -DrunBugs=false
+
     # Test local repo and share docker images that will be used in the single pipeline. Tag:latest
     - name: "Single Pipeline image tests"
       if: fork = false AND type != pull_request
@@ -187,10 +210,11 @@ jobs:
         - travis_retry travis_wait 20 mvn -B clean install -Ppipeline,build-docker-images $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-repo.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Drepo.image.tag=latest') $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-share.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Dshare.image.tag=latest')
         # Show what DTAS will be looking for
         - cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
-        - pyenv versions
-        - pyenv global 3.7.1
-        - pip install requests pytest
-        - git clone --depth 1 --branch v1.0.1 https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
+        - eval "$(pyenv init --path)" && pyenv install $PYTHON_VERSION
+        - pyenv global $PYTHON_VERSION
+        - python --version
+        - pip install requests pytest==6.2.4 pytest-testinfra==6.3.0 jmespath==0.10.0
+        - git clone --depth 1 --branch $DTAS_VERSION https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
         - docker images | grep pipeline
       script:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
@@ -203,8 +227,13 @@ jobs:
 
     - name: "Update latest and Single Pipeline <acs>-<build> images"
       stage: docker_latest
-      # Remove the pipeline profile to avoid sending an image tagged with the build number to the single pipeline
-      script: travis_retry travis_wait 30 mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Ppush-docker-images,pipeline
+      script:
+        - travis_retry travis_wait 30 mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Pags -Ppush-docker-images,pipeline
+        - bash scripts/travis/update_single_pipeline_reference.sh
+
+    - name: "Update release and Single Pipeline <acs>-<build> images"
+      stage: docker_release
+      script: travis_retry travis_wait 30 mvn -B -V clean install -DskipTests -Dmaven.javadoc.skip=true -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Ppush-docker-images,pipeline,release-branch
 
     - name: "Release and Copy to S3 Staging Bucket"
       stage: release
@@ -216,6 +245,13 @@ jobs:
         - cp distribution/target/alfresco.war deploy_dir
         - cp distribution/target/*-distribution*.zip deploy_dir
         - ls -lA deploy_dir
+        - mkdir -p deploy_dir_share
+        - cp distribution-share/target/*.war deploy_dir_share
+        - cp distribution-share/target/*.zip deploy_dir_share
+        - ls -lA deploy_dir_share
+        - mkdir -p deploy_dir_ags
+        - cp distribution-ags/target/*.zip deploy_dir_ags
+        - ls -lA deploy_dir_ags
       deploy:
         - provider: s3
           access_key_id: "${AWS_STAGING_ACCESS_KEY}"
@@ -230,6 +266,32 @@ jobs:
           upload_dir: "alfresco-content-services/release/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}"
           on:
             all_branches: true
+        - provider: s3
+          access_key_id: "${AWS_STAGING_ACCESS_KEY}"
+          secret_access_key: "${AWS_STAGING_SECRET_KEY}"
+          bucket: "alfresco-artefacts-staging"
+          region: "eu-west-1"
+          skip_cleanup: true
+          acl: private
+          local_dir: "deploy_dir_share"
+          upload_dir: "share/${RELEASE_VERSION}"
+          on:
+            all_branches: true
+        - provider: s3
+          access_key_id: "${AWS_STAGING_ACCESS_KEY}"
+          secret_access_key: "${AWS_STAGING_SECRET_KEY}"
+          bucket: "alfresco-artefacts-staging"
+          region: "eu-west-1"
+          skip_cleanup: true
+          acl: private
+          local_dir: "deploy_dir_ags"
+          upload_dir: "enterprise/RM/${RELEASE_VERSION}"
+          on:
+            all_branches: true
+        - provider: script
+          script: bash scripts/travis/copy_share_image_to_docker_hub.sh
+          on:
+            all_branches: true
       after_deploy:
         - echo "Finished release and deployed to https://s3.console.aws.amazon.com/s3/buckets/alfresco-artefacts-staging/alfresco-content-services/release/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}"
 
@@ -237,10 +299,23 @@ jobs:
       stage: publish
       # Nothing to build/install as we are just copying from S3 buckets
       install: skip
-      script: skip
+      script: travis_wait 60 bash scripts/travis/maven_publish.sh
       before_deploy: pip install awscli
       deploy:
         - provider: script
           script: bash scripts/travis/copy_to_release_bucket.sh
           on:
             all_branches: true
+        - provider: script
+          script: bash scripts/travis/copy_share_to_release_bucket.sh
+          on:
+            all_branches: true
+        - provider: script
+          script: bash scripts/travis/copy_ags_to_release_bucket.sh
+          on:
+            all_branches: true
+
+    - name: "Update acs-community-packaging (after release)"
+      stage: update_downstream
+      install: skip
+      script: bash scripts/travis/update_downstream.sh

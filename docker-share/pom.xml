@@ -7,11 +7,12 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>acs-packaging</artifactId>
-        <version>7.1.0-SNAPSHOT</version>
+        <version>7.2.0-A12-SNAPSHOT</version>
     </parent>
 
     <properties>
         <image.name>alfresco/alfresco-share</image.name>
+        <docker.quay-expires.value>NEVER</docker.quay-expires.value>
     </properties>
 
     <profiles>
@@ -42,6 +43,17 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+
+        <!-- When producing Docker Images, image tag for releases should be
+            "image:<acs.version>-<build-number>" on Quay to avoid
+            overwriting "latest" tag in release branches -->
+        <profile>
+            <id>release-branch</id>
+            <properties>
+                <image.tag>${acs.version}-${build-number}</image.tag>
+                <docker.quay-expires.value>1w</docker.quay-expires.value>
+            </properties>
         </profile>
 
         <profile>

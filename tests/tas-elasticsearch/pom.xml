@@ -9,14 +9,27 @@
   <parent>
     <groupId>org.alfresco</groupId>
     <artifactId>content-repository-tests</artifactId>
-    <version>7.1.0-SNAPSHOT</version>
+    <version>7.2.0-A12-SNAPSHOT</version>
   </parent>
 
   <properties>
-    <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/elasticsearch-suite.xml</suiteXmlFile>
-    <dependency.testcontainers.version>1.15.3</dependency.testcontainers.version>
-    <dependency.elasticsearch-shared.version>3.0.0-M2</dependency.elasticsearch-shared.version>
+    <dependency.testcontainers.version>1.16.2</dependency.testcontainers.version>
   </properties>
+
+  <profiles>
+    <profile>
+      <id>elastic</id>
+      <properties>
+        <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/elasticsearch-suite.xml</suiteXmlFile>
+      </properties>
+    </profile>
+    <profile>
+      <id>elastic-basic-auth</id>
+      <properties>
+        <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/elasticsearch-basic-auth-suite.xml</suiteXmlFile>
+      </properties>
+    </profile>
+  </profiles>
 
   <dependencies>
     <dependency>
@@ -111,4 +124,5 @@
       </plugin>
     </plugins>
   </build>
+
 </project>

@@ -8,11 +8,11 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-dev-tomcat-env</artifactId>
-        <version>7.1.0-SNAPSHOT</version>
+        <version>7.2.0-A12-SNAPSHOT</version>
     </parent>
 
     <properties>
-        <dependency.sis.version>1.0</dependency.sis.version>
+        <dependency.sis.version>1.1</dependency.sis.version>
 
         <tomcat.version>7.0.86</tomcat.version>
         <tomcat.default.solr6.port>8983</tomcat.default.solr6.port>
@@ -40,7 +40,6 @@
         <plugins>
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>2.6</version>
                 <configuration>
                     <overlays>
                         <overlay>
@@ -79,6 +78,11 @@
                         <metadata-keystore.aliases>metadata</metadata-keystore.aliases>
                         <metadata-keystore.metadata.password>mp6yc0UD9e</metadata-keystore.metadata.password>
                         <metadata-keystore.metadata.algorithm>AES</metadata-keystore.metadata.algorithm>
+                        <connector.s3.accessKey>changeMe</connector.s3.accessKey>
+                        <connector.s3.secretKey>changeMe</connector.s3.secretKey>
+                        <connector.s3.bucketName>changeMe</connector.s3.bucketName>
+                        <connector.s3.bucketRegion>changeMe</connector.s3.bucketRegion>
+                        <connector.s3.storeProtocol>changeMe</connector.s3.storeProtocol>
                     </systemProperties>
                     <delegate>false</delegate>
                     <useSeparateTomcatClassLoader>true</useSeparateTomcatClassLoader>

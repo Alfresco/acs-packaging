@@ -10,4 +10,6 @@
 	<context:component-scan base-package="org.alfresco" />
 	
 	<import resource="classpath:dataprep-context.xml" />
+
+	<bean id="searchQueryService" class="org.alfresco.elasticsearch.SearchQueryService" />
 </beans>
