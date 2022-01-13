@@ -136,6 +136,13 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     }
 
     @Test(groups = TestGroup.SEARCH)
+    public void testRootNodesWithoutWildcard()
+    {
+        SearchRequest query = req("PATH:\"/\"");
+        searchQueryService.expectNodeTypesFromQuery(query, testUser, "sys:store_root");
+    }
+
+    @Test(groups = TestGroup.SEARCH)
     public void testPathNameMismatch()
     {
         SearchRequest query = req("PATH:\"/*\" AND name:" + testFileName + " AND name:*");
