@@ -24,6 +24,8 @@ to Tika 2.0.0</a> and
 </h1>
 
 <h2>        Service Pack Request
+</h2>
+<ul>
 <li>[<a href='https://alfresco.atlassian.net/browse/MNT-22696'>MNT-22696</a>] -         Replace Renditions via REST API
 </li>
 <li>[<a href='https://alfresco.atlassian.net/browse/MNT-22611'>MNT-22611</a>] -         Disable rules flag not working correctly in bulk import with ACS v6.x or above
@@ -58,7 +60,7 @@ to Tika 2.0.0</a> and
 </li>
 <li>[<a href='https://alfresco.atlassian.net/browse/ACS-2180'>ACS-2180</a>]   -         Secret Communication for Alfresco/SOLR is not protecting Alfresco Repository endpoints
 </li>
-</h2>ul>
+</ul>
 
 <h1>        7.1.0
 </h1>
