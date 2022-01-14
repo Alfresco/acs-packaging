@@ -38,8 +38,6 @@ to Tika 2.0.0</a> and
 </li>
 <li>[<a href='https://alfresco.atlassian.net/browse/MNT-21883'>MNT-21883</a>] -         Documents Shared from a Smart Folder cannot be Unshared
 </li>
-<li>[<a href='https://alfresco.atlassian.net/browse/PRODSEC-5795'>PRODSEC-5795</a>] -   Share - Veracode Scan Detected Vulnerabilities in Component OWASP Java HTML Sanitizer in Application ACS_EXT_MASTER
-</li>
 <li>[<a href='https://alfresco.atlassian.net/browse/MNT-18700'>MNT-18700</a>] -         Message bundles do not deploy/reload automatically when dynamically deployed
 </li>
 <li>[<a href='https://alfresco.atlassian.net/browse/MNT-22680'>MNT-22680</a>] -         Some formatting elements not displaying when viewing a wiki page after ACS v5.2.7.12 installed
