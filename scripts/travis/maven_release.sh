@@ -17,6 +17,7 @@ git checkout -B "${TRAVIS_BRANCH}"
 git config user.email "${GIT_EMAIL}"
 
 mvn -B \
+  -ntp \
   -Prelease,all-tas-tests,pipeline -Pags \
   -DreleaseVersion="${RELEASE_VERSION}" \
   -DdevelopmentVersion="${DEVELOPMENT_VERSION}" \
