@@ -40,6 +40,12 @@ public class SearchQueryService
         expectResultsFromQuery(searchRequest, user, assertNames);
     }
 
+    public void expectNodeTypesFromQuery(SearchRequest searchRequest, UserModel user, String... expected)
+    {
+        Consumer<SearchResponse> assertNodeTypes = searchResponse -> assertNodeTypes(searchResponse, expected);
+        expectResultsFromQuery(searchRequest, user, assertNodeTypes);
+    }
+
     public void expectNodeRefsFromQuery(SearchRequest searchRequest, UserModel user, String... expectedNodeRefs)
     {
         Consumer<SearchResponse> assertNames = searchResponse -> assertNodeRefs(searchResponse, expectedNodeRefs);
@@ -86,11 +92,22 @@ public class SearchQueryService
         assertEquals(result, expectedList, "Unexpected search results.");
     }
 
+
     private void assertNames(SearchResponse actual, String... expected)
     {
         Set<String> result = actual.getEntries().stream()
                                    .map(SearchNodeModel::getModel)
                                    .map(SearchNodeModel::getName)
+                                   .collect(Collectors.toSet());
+        Set<String> expectedList = Sets.newHashSet(expected);
+        assertEquals(result, expectedList, "Unexpected search results.");
+    }
+
+    private void assertNodeTypes(SearchResponse actual, String... expected)
+    {
+        Set<String> result = actual.getEntries().stream()
+                                   .map(SearchNodeModel::getModel)
+                                   .map(SearchNodeModel::getNodeType)
                                    .collect(Collectors.toSet());
         Set<String> expectedList = Sets.newHashSet(expected);
         assertEquals(result, expectedList, "Unexpected search results.");
