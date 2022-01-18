@@ -31,13 +31,10 @@ env:
     - TAS_SCRIPTS=../alfresco-community-repo/packaging/tests/scripts
     - TAS_ENVIRONMENT=./tests/environment
     # Release version has to start with real version (7.2.0-....) for the docker image to build successfully.
-    - RELEASE_VERSION=7.2.0-A19.5
-    - DEVELOPMENT_VERSION=7.2.0-A19.6-SNAPSHOT
+    - RELEASE_VERSION=7.2.0-A19.6
+    - DEVELOPMENT_VERSION=7.2.0-A19.7-SNAPSHOT
     - DTAS_VERSION="${DTAS_VERSION:-v1.1}"
     - PYTHON_VERSION=3.7.12
-
-before_script:
-  - export -f travis_fold
 
 stages:
   - name: test

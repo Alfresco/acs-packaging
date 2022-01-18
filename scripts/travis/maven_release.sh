@@ -16,8 +16,6 @@ git checkout -B "${TRAVIS_BRANCH}"
 # Add email to link commits to user
 git config user.email "${GIT_EMAIL}"
 
-travis_fold start mvn_release
-
 mvn -B \
   -ntp \
   -Prelease,all-tas-tests,pipeline -Pags \
@@ -27,14 +25,15 @@ mvn -B \
   release:clean release:prepare release:perform \
   -DscmCommentPrefix="[maven-release-plugin][skip ci] " \
   -Dusername="${GIT_USERNAME}" \
-  -Dpassword="${GIT_PASSWORD}"
+  -Dpassword="${GIT_PASSWORD}" \
+2>&1 | grep -v 'original line endings' | grep -v 'replaced by CRLF'
+# We ended up with +23,000 warning messages about the wrong line endings because of update of the copyright year in RM
+# files and the Travis logs filled up and terminated. The above greps remove them, while we look for a better solution.
 
 
 # The alfresco-content-services-share-distribution was in the Nexus 'Releases' repository prior to 7.1.0, which was visible to Community.
 copyArtifactToAnotherRepo org.alfresco alfresco-content-services-share-distribution ${RELEASE_VERSION} zip \
  alfresco-enterprise-releases https://nexus.alfresco.com/nexus/content/repositories/releases/
-
-travis_fold end mvn_release
 
 popd
 set +vex
