@@ -31,8 +31,8 @@ env:
     - TAS_SCRIPTS=../alfresco-community-repo/packaging/tests/scripts
     - TAS_ENVIRONMENT=./tests/environment
     # Release version has to start with real version (7.2.0-....) for the docker image to build successfully.
-    - RELEASE_VERSION=7.2.0-A19.4
-    - DEVELOPMENT_VERSION=7.2.0-A19.5-SNAPSHOT
+    - RELEASE_VERSION=7.2.0-A19.5
+    - DEVELOPMENT_VERSION=7.2.0-A19.6-SNAPSHOT
     - DTAS_VERSION="${DTAS_VERSION:-v1.1}"
     - PYTHON_VERSION=3.7.12
 
@@ -242,7 +242,9 @@ jobs:
 
     - name: "Release and Copy to S3 Staging Bucket"
       stage: release
-      before_script: bash scripts/travis/verify_release_tag.sh
+      before_script:
+        - bash scripts/travis/verify_release_tag.sh
+        - export -f travis_fold
       script: travis_wait 60 bash scripts/travis/maven_release.sh
       before_deploy:
         # Move the final artifacts to a single folder (deploy_dir) to be copied to S3
