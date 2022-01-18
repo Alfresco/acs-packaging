@@ -1,3 +1,11 @@
+<h1>        7.0.1.6
+</h1>
+<h2>        Bug Fix
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-22758'>MNT-22758</a>] -         Admin Console functionality becomes unusable. Update surf, surf-webscripts and Share
+</li>
+</ul>
 <h1>        7.0.1.5
 </h1>
 <h2>        Bug Fix
