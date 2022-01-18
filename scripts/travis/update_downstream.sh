@@ -38,7 +38,6 @@ mvn -B versions:set-property versions:commit \
   -Dproperty=dependency.alfresco-community-repo.version \
   "-DnewVersion=${COM_VERSION}"
 
-
 mvn -B versions:set-property versions:commit \
   -Dproperty=dependency.alfresco-community-share.version \
   "-DnewVersion=${SHA_VERSION}"
@@ -50,6 +49,16 @@ mvn -B versions:set-property versions:commit \
 sed -i "s/.*RELEASE_VERSION=.*/    - RELEASE_VERSION=$RELEASE_VERSION/" .travis.yml
 sed -i "s/.*DEVELOPMENT_VERSION=.*/    - DEVELOPMENT_VERSION=$DEVELOPMENT_VERSION/" .travis.yml
 
+set +e
+echo "${TRAVIS_COMMIT_MESSAGE}" | grep '\[publish\]'
+if [ "$?" -eq 0 ]
+then
+  COMMIT_DIRECTIVES="[release][publish]"
+else
+  COMMIT_DIRECTIVES="[release]"
+fi
+set -e
+
 # Commit changes
 git status
 git --no-pager diff pom.xml
@@ -58,8 +67,9 @@ git --no-pager diff pom.xml
 git add .travis.yml
 
 if git status --untracked-files=no --porcelain | grep -q '^' ; then
-  git commit -m "Update upstream versions
+  git commit -m "${COMMIT_DIRECTIVES} ${VERSION}
 
+  Update upstream versions
     - alfresco-community-repo:   ${COM_VERSION}
     - alfresco-enterprise-share: ${SHA_VERSION}
     - acs-packaging:             ${VERSION}
