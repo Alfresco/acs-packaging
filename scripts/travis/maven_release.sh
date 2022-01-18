@@ -25,8 +25,8 @@ mvn -B \
   release:clean release:prepare release:perform \
   -DscmCommentPrefix="[maven-release-plugin][skip ci] " \
   -Dusername="${GIT_USERNAME}" \
-  -Dpassword="${GIT_PASSWORD}" \
-2>&1 | grep -v 'original line endings' | grep -v 'replaced by CRLF'
+  -Dpassword="${GIT_PASSWORD}"
+#2>&1 | grep -v 'original line endings' | grep -v 'replaced by CRLF'
 # We ended up with +23,000 warning messages about the wrong line endings because of update of the copyright year in RM
 # files and the Travis logs filled up and terminated. The above greps remove them, while we look for a better solution.
 
