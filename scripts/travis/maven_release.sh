@@ -16,7 +16,10 @@ git checkout -B "${TRAVIS_BRANCH}"
 # Add email to link commits to user
 git config user.email "${GIT_EMAIL}"
 
+travis_fold start mvn_release
+
 mvn -B \
+  -ntp \
   -Prelease,all-tas-tests,pipeline -Pags \
   -DreleaseVersion="${RELEASE_VERSION}" \
   -DdevelopmentVersion="${DEVELOPMENT_VERSION}" \
@@ -30,6 +33,8 @@ mvn -B \
 # The alfresco-content-services-share-distribution was in the Nexus 'Releases' repository prior to 7.1.0, which was visible to Community.
 copyArtifactToAnotherRepo org.alfresco alfresco-content-services-share-distribution ${RELEASE_VERSION} zip \
  alfresco-enterprise-releases https://nexus.alfresco.com/nexus/content/repositories/releases/
+
+travis_fold end mvn_release
 
 popd
 set +vex
