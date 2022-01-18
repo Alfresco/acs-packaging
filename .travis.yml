@@ -34,9 +34,6 @@ env:
     - DTAS_VERSION="${DTAS_VERSION:-v1.1}"
     - PYTHON_VERSION=3.7.12
 
-before_script:
-  - export -f travis_fold
-
 stages:
   - name: test
     if: commit_message !~ /\[skip tests\]/
