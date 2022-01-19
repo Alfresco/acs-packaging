@@ -33,15 +33,15 @@ ls -lA deploy_dir_share
 mkdir -p deploy_dir_ags
 cp distribution-ags/target/*.zip deploy_dir_ags
 # Generate third party license csv for AGS.
-unzip deploy_dir_ags/*.zip -d deploy_dir_ags/extracted
+unzip deploy_dir_ags/*.zip -d deploy_dir_ags/ags
 zippaths=""
-for file in `find deploy_dir_ags/extracted -name "*.amp" -o -name "*.war"`
+for file in `find deploy_dir_ags/ags -name "*.amp" -o -name "*.war"`
 do
     zippaths+="$file|"
 done
 zippaths=${zippaths::-1}
 python3 ./third-party-license-overrides/thirdPartyLicenseCSVCreator.py --zippaths ${zippaths} --version "${VERSION}" --combined --output "deploy_dir_ags"
-rm -rf deploy_dir_ags/extracted
+rm -rf deploy_dir_ags/ags
 echo "Local AGS deploy directory content:"
 ls -lA deploy_dir_ags
 
