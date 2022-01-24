@@ -1,4 +1,15 @@
-### Apply AGS enterprise repo AMP to ACS image
+# BUILD STAGE AGS
+FROM debian:11-slim AS AGSBUILDER
+
+RUN DEBIAN_FRONTEND=noninteractive apt-get -yqq install unzip && \
+    mkdir build
+
+COPY target/gs-api-explorer-*.war
+
+RUN unzip gs-api-explorer-*.war -d build/ && \
+    chmod -R g-w,o= build
+    
+# AcTUAL IMAGE
 FROM alfresco/alfresco-content-repository:${image.tag}
 
 # Set default docker_context.
@@ -9,28 +20,14 @@ USER root
 
 ### Copy the AMP from build context to amps
 COPY target/alfresco-governance-services-enterprise-repo-*.amp /usr/local/tomcat/amps/
+### Copy gs-api-explorer war into webapps folder
+COPY --chown=root:Alfresco --from AGSBUILDER build/ /usr/local/tomcat/webapps/gs-api-explorer
 
-# Install amps on alfresco.war
+# Install amps on alfresco.war & set all security permissions to jolokia and share in order to work properly.
 RUN java -jar /usr/local/tomcat/alfresco-mmt/alfresco-mmt*.jar install \
               /usr/local/tomcat/amps \
-              /usr/local/tomcat/webapps/alfresco -directory -nobackup
-### Copy gs-api-explorer war into webapps folder
-COPY target/gs-api-explorer-*.war /usr/local/tomcat/webapps/
-
-### Unpack gs-api-explorer.war
-RUN mkdir /usr/local/tomcat/webapps/gs-api-explorer && cd /usr/local/tomcat/webapps/gs-api-explorer && \
-    jar -xvf /usr/local/tomcat/webapps/gs-api-explorer-*.war && rm -f /usr/local/tomcat/webapps/gs-api-explorer-*.war
-
-# Grant all security permissions to jolokia and share in order to work properly.
-RUN sed -i -e "\$a\grant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/jolokia\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};\ngrant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/share\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};" /usr/local/tomcat/conf/catalina.policy
-
-## All files in the tomcat folder must be owned by root user and Alfresco group as mentioned in the parent Dockerfile
-RUN chgrp -R Alfresco /usr/local/tomcat && \
-    find /usr/local/tomcat/webapps -type d -exec chmod 0750 {} \; && \
-    find /usr/local/tomcat/webapps -type f -exec chmod 0640 {} \; && \
-    find /usr/local/tomcat/shared -type d -exec chmod 0750 {} \; && \
-    find /usr/local/tomcat/shared -type f -exec chmod 0640 {} \; && \
-    chmod -R g+r /usr/local/tomcat/webapps
+              /usr/local/tomcat/webapps/alfresco -directory -nobackup; \
+              sed -i -e "\$a\grant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/jolokia\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};\ngrant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/share\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};" /usr/local/tomcat/conf/catalina.policy
 
 #Use the alfresco user
 USER alfresco
