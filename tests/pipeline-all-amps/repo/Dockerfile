@@ -3,16 +3,17 @@ FROM debian:11-slim AS SWAGGERBUILDER
 
 ARG JOLOKIA_VER 1.6.2
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get -yqq install unzip && \
+RUN DEBIAN_FRONTEND=noninteractive; \
+    apt-get update -yqq && apt-get -yqq install unzip && \
     mkdir -p /build/{api-explorer,gs-api-explorer,jolokia} && \
     curl -o /build/jolokia.war https://repo1.maven.org/maven2/org/jolokia/jolokia-war-unsecured/${JOLOKIA_VER}/jolokia-war-unsecured-${JOLOKIA_VER}.war && \
-    unzip /build/jolokia.war -d /build/jolokia
+    unzip -q /build/jolokia.war -d /build/jolokia
 
 COPY target/wars/api-explorer.war /build
 COPY target/wars/gs-api-explorer.war /build
 
-RUN unzip /build/api-explorer.war -d /build/api-explorer && \
-    unzip /build/gs-api-explorer.war -p /build/gs-api-explorer && \
+RUN unzip -q /build/api-explorer.war -d /build/api-explorer && \
+    unzip -q /build/gs-api-explorer.war -p /build/gs-api-explorer && \
     chmod -R g-w,o= /build
 
 # ACTUAL IMAGE
@@ -30,10 +31,10 @@ COPY idp.jks /usr/src/alfresco/
 COPY target/amps/*.amp ${TOMCAT_DIR}/amps/
 
 # Copy api-explorer
-COPY --chown=root:${GROUPANME} --from SWAGGERBUILDER /build/api-explorer ${TOMCAT_DIR}/webapps
+COPY --chown=root:${GROUPANME} --from=SWAGGERBUILDER /build/api-explorer ${TOMCAT_DIR}/webapps
 
 # Copy gs-api-explorer
-COPY --chown=root:${GROUPANME} --from SWAGGERBUILDER /build/gs-api-explorer ${TOMCAT_DIR}/webapps
+COPY --chown=root:${GROUPANME} --from=SWAGGERBUILDER /build/gs-api-explorer ${TOMCAT_DIR}/webapps
 
 # Turn on log4j debug frequently needed in the single pipeline
 RUN echo -e '\n\
