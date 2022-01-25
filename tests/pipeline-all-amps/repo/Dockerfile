@@ -1,7 +1,7 @@
 # BUILD STAGE SWAGGERBUILDER
 FROM debian:11-slim AS SWAGGERBUILDER
 
-ARG JOLOKIA_VER 1.6.2
+ARG JOLOKIA_VER=1.6.2
 
 RUN DEBIAN_FRONTEND=noninteractive; \
     apt-get update -yqq && apt-get -yqq install curl unzip && \
@@ -13,7 +13,7 @@ COPY target/wars/api-explorer.war /build
 COPY target/wars/gs-api-explorer.war /build
 
 RUN unzip -q /build/api-explorer.war -d /build/api-explorer && \
-    unzip -q /build/gs-api-explorer.war -p /build/gs-api-explorer && \
+    unzip -q /build/gs-api-explorer.war -d /build/gs-api-explorer && \
     chmod -R g+r,g-w,o= /build
 
 # ACTUAL IMAGE
