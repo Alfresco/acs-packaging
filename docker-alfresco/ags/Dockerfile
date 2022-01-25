@@ -25,7 +25,7 @@ USER root
 ### Copy the AMP from local context to amps
 COPY --chown=root:${GROUPNAME} target/alfresco-governance-services-enterprise-repo-*.amp /usr/local/tomcat/amps/
 ### Copy gs-api-explorer webapp from AGS build stage
-COPY --chown=root:${GROUPNAME} --from=AGSBUILDER /build/gs-api-explorer /usr/local/tomcat/webapps
+COPY --chown=root:${GROUPNAME} --from=AGSBUILDER /build/gs-api-explorer /usr/local/tomcat/webapps/gs-api-explorer
 
 # Install amps on alfresco.war & set all security permissions to jolokia and share in order to work properly.
 RUN java -jar /usr/local/tomcat/alfresco-mmt/alfresco-mmt*.jar install \

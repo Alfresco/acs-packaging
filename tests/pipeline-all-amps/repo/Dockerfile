@@ -31,10 +31,10 @@ COPY idp.jks /usr/src/alfresco/
 COPY target/amps/*.amp ${TOMCAT_DIR}/amps/
 
 # Copy api-explorer
-COPY --chown=root:${GROUPANME} --from=SWAGGERBUILDER /build/api-explorer ${TOMCAT_DIR}/webapps
+COPY --chown=root:${GROUPANME} --from=SWAGGERBUILDER /build/api-explorer ${TOMCAT_DIR}/webapps/api-explorer
 
 # Copy gs-api-explorer
-COPY --chown=root:${GROUPANME} --from=SWAGGERBUILDER /build/gs-api-explorer ${TOMCAT_DIR}/webapps
+COPY --chown=root:${GROUPANME} --from=SWAGGERBUILDER /build/gs-api-explorer ${TOMCAT_DIR}/webapps/gs-api-explorer
 
 # Turn on log4j debug frequently needed in the single pipeline
 RUN echo -e '\n\
