@@ -65,6 +65,17 @@ else
   pullUpstreamTag "${COM_UPSTREAM_REPO}" "${COM_DEPENDENCY_VERSION}"
 fi
 
+# Ensure that alfresco-community-repo is targetting this version of ACS
+pushd "alfresco-community-repo"
+ACS_VERSION_IN_COMMUNITY_REPO="$(retrievePomProperty "acs.version.major").$(retrievePomProperty "acs.version.minor").$(retrievePomProperty "acs.version.revision")"
+popd
+ACS_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec 2>/dev/null)
+if [[ ${ACS_VERSION} != ${ACS_VERSION_IN_COMMUNITY_REPO}* ]]
+then
+    printf "Referenced version of community repo specifies ${ACS_VERSION_IN_COMMUNITY_REPO} in pom.xml, but this is ${ACS_VERSION}."
+    exit 1
+fi
+
 # Build the upstream alfresco-enterprise-repo project with its docker image
 if [[ "${ENT_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] ; then
   buildSameBranchOnUpstream "${ENT_UPSTREAM_REPO}" "-Pbuild-docker-images -Pags -Dlicense.failOnNotUptodateHeader=true"
