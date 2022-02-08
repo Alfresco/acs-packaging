@@ -66,7 +66,7 @@ else
 fi
 
 # Ensure that alfresco-community-repo is targetting this version of ACS
-pushd "alfresco-community-repo"
+pushd "$(dirname "${BASH_SOURCE[0]}")/../../../alfresco-community-repo"
 ACS_VERSION_IN_COMMUNITY_REPO="$(retrievePomProperty "acs.version.major").$(retrievePomProperty "acs.version.minor").$(retrievePomProperty "acs.version.revision")"
 popd
 ACS_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec 2>/dev/null)
