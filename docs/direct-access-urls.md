@@ -8,16 +8,21 @@ ___
 
 
 ## Overview
+Most Cloud Storage Providers allow generating publicly accessible URLs for sharing access to objects although the way it is provided and named differs throughout platforms.
+
 AWS S3 provides a way of generating
 [pre-signed URLs](https://docs.aws.amazon.com/AmazonS3/latest/dev/ShareObjectPreSignedURL.html)
-for sharing objects. This feature is a perfect candidate for the implementation of direct
+for sharing objects.
+Azure Blob Storage provide [Shared Access Signature (SAS) tokens](https://docs.microsoft.com/en-us/rest/api/storageservices/delegate-access-with-shared-access-signature) which as a part of object's URL can serve very similar role.
+
+Above described features are perfect candidates for the implementation of direct
 access to our content (e.g. shortcutting the Shared File Store for transformations or
 faster/direct access in the context of ADW to documents).
 
->:warning: **Note:** The AWS S3 pre-signed URLs are temporary links with an expiration time.
+>:warning: **Note:** The AWS S3 pre-signed URLs are temporary links with an expiration time. Same counts for Azure SAS tokens which have expiration time.
 
 The repository infrastructure now supports direct access urls. This includes the ContentService
-and the ContentStore interface for which default methods have been provided so that ContentStore implementations that 
+and the ContentStore interface for which default methods have been provided so that ContentStore implementations that
 implement the old version of this interface will throw a Not Supported exception.
 The new methods are auditable using the node reference and time in seconds for which the direct access URL is
 valid for as the  parameters.
@@ -73,12 +78,12 @@ The REST API configuration only affects the REST layer in ACS:
       (`system.directAccessUrl.defaultExpiryTimeInSec`).
 
 
-#### Storage Connector Content Store (e.g. S3)
+#### Storage Connector Content Store (e.g. S3 or Azure Connector)
 Each content store (i.e. "_final_" content store, one that provides actual storage, as opposed to a
 _caching content store_), should have dedicated configuration options:
-* **`connector.s3.directAccessUrl.enabled=false`**
+* **`connector.{$connectorName}.directAccessUrl.enabled=false`**
     - Controls whether DAUs are enabled on this specific content store.
-* **`connector.s3.directAccessUrl.defaultExpiryTimeInSec=30`**
+* **`connector.{$connectorName}.directAccessUrl.defaultExpiryTimeInSec=30`**
     - Sets the expiry time for the DAU in this store, by overriding the global config. If this
       value exceeds the content store limit (described below) or the global limit it should
       fallback to the global configuration.
@@ -87,7 +92,7 @@ _caching content store_), should have dedicated configuration options:
       otherwise_).
     - If not set, the default system-wide setting will be used
       (`system.directAccessUrl.defaultExpiryTimeInSec`).
-* **`connector.s3.directAccessUrl.maxExpiryTimeInSec=300`**
+* **`connector.{$connectorName}.directAccessUrl.maxExpiryTimeInSec=300`**
     - The maximum expiry time interval that can be requested by clients - content-store specific
       setting.
     - Its value cannot exceed the system-wide configuration
@@ -96,14 +101,21 @@ _caching content store_), should have dedicated configuration options:
     - If not set, the default system-wide setting will be used
       (`system.directAccessUrl.maxExpiryTimeInSec`).
 
+>**Note:** `{$connectorName}` depends on Alfresco Cloud Connector. For S3 Connector it is 's3', for Azure Connector it is 'az'.
+
 >**Note:** Callers within the platform (i.e. Java interfaces) can either request a specific
 > expiry time or rely on the default.
 
 >**Note:** When multiple S3 buckets are used for storage in Alfresco, each S3 Content Store can
 > be configured with either the default (common) S3 Connector-specific properties (i.e.
-> `connector.s3.directAccessUrl.enabled` & Co) OR new separate properties could be defined for
-> each and every store (e.g. `connector.s3store1.directAccessUrl.enabled`,
-> `connector.s3store2.directAccessUrl.enabled`, etc.).
+> `connector.s3.directAccessUrl.enabled` & common/default settings) OR new separate properties could be defined for
+> each and every store (e.g. `connector.s3.store1.directAccessUrl.enabled`,
+> `connector.s3.store2.directAccessUrl.enabled`, etc.).
+>
+> For multiple Azure blob containers, each of them can also be configured similarly to S3 buckets (i.e.
+> `connector.azure.directAccessUrl.enabled` & common/default settings) OR new separate properties could be defined for
+> each and every store/container (e.g. `connector.az.store1.directAccessUrl.enabled`,
+> `connector.az.store2.directAccessUrl.enabled`, etc.).
 
 
 #### Default Configuration
@@ -142,16 +154,16 @@ The following endpoints can be used to obtain direct access URLs:
 * `/nodes/{nodeId}/versions/{versionId}/request-direct-access-url`
 * `/deleted-nodes/{nodeId}/request-direct-access-url`
 * `/deleted-nodes/{nodeId}/renditions/{renditionId}/request-direct-access-url`
-  
+
 **Method:** **`POST`**
-  
+
 **Response:** Link to the resource wrapped in a JSON Object which also contains an attachment flag and the DAU expiration date.
-  
+
 **Error Codes:**
-* If there’s no Direct Access URL provider (e.g. Alfresco S3 Connector extension) installed in
+* If there’s no Direct Access URL provider (e.g. Alfresco S3 Connector / Azure Connector extension) installed in
   Alfresco, or DAUs are not enabled, returns **501** HTTP Status Code.
 
-  
+
 **Parameters:**
 * **`attachment`** - an optional flag which controls the download method (attachment URL vs
   embedded URL). Defaults to `true` when not specified, meaning the value of the
@@ -182,6 +194,17 @@ The pre-signed request generates a download for the remote content.
 >**Known Limitations:** DAU generation on S3 depends on the security credentials used:
 > https://docs.aws.amazon.com/AmazonS3/latest/dev/ShareObjectPreSignedURL.html
 
+
+##### Azure Connector
+
+Several Azure Java SDK objects (see [BlobSasPermission](https://docs.microsoft.com/en-us/java/api/com.azure.storage.blob.sas.blobsaspermission?view=azure-java-stable) [BlobServiceSasSignatureValues](https://docs.microsoft.com/en-us/java/api/com.azure.storage.blob.sas.blobservicesassignaturevalues?view=azure-java-stable)) ,  are used to generate SAS (Shared Access Signature) which is the used to generate direct access URLs with the configured duration (see
+Repository and Content Store expiry times configurations).
+
+The pre-signed request generates a download for the remote content.
+
+>**Known Limitations:** SAS generation on Azure Blob depends on the authorization type used (only valid for Azure AD or shared key authorization), see:
+> https://docs.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas
+
 ___
 
 
@@ -193,7 +216,7 @@ In order to be able to request a Direct Access URLs 3 configurations must be set
 2. `restApi.directAccessUrl.enabled` (for enabling REST calls)
 3. `connector.s3.directAccessUrl.enabled` (specific to a store)
 
-See [direct-access-urls](https://github.com/Alfresco/alfresco-enterprise-repo/blob/master/docs/direct-access-urls.md) flows page for further details. 
+See [direct-access-urls](https://github.com/Alfresco/alfresco-enterprise-repo/blob/master/docs/direct-access-urls.md) flows page for further details.
 
 
 #### Multiple Content Stores
@@ -231,15 +254,15 @@ ___
 
 ## Performance and scalability
 Each call to one of the new `.../request-direct-access-url` Alfresco REST endpoints results in the
-creation of a new (and separate) pre-signed URL for an AWS S3 object.
+creation of a new (and separate) pre-signed URL for an AWS S3 / Azure Blob object.
 
-The generation of a pre-signed URL is a purely AWS SDK **client-side operation** - meaning the
+The generation of a pre-signed URL is a purely AWS/Azure (TBC) SDK **client-side operation** - meaning the
 URL is generated (&signed) locally in the Alfresco JVM, without any communication with AWS
 (no I/O).
 
 The Direct Access URL generation is a fairly simple and quick operation, not particularly
 computation-intensive (though it does involve a small cryptographic operation - the generated
-URLs are signed with the AWS credentials).
+URLs are signed with the AWS/Azure credentials).
 
 It’s best if client applications request a DAU right before the actual download operation, or
 only after the intention of using the DAU is certain.
