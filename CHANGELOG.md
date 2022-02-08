@@ -1,3 +1,13 @@
+<h1>        7.1.0.2
+</h1>
+<h2>        Security Improvements
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-22529'>MNT-22529</a>] - Share security patch for jQuery
+</li>
+</ul>
+<br>
+
 <h1>        7.1.0
 </h1>
 <h2>
