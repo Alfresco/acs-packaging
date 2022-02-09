@@ -1,3 +1,11 @@
+<h1>        6.2.2.22
+</h1>
+<h2>        Hot Fix Request
+</h2>
+<ul>
+<li>         Upgrade Apache Tika to version 1.26
+</li>
+</ul>
 <h1>        6.2.2.21
 </h1>
 <h2>        Hot Fix Request
