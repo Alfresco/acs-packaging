@@ -83,6 +83,14 @@
                         <connector.s3.bucketName>changeMe</connector.s3.bucketName>
                         <connector.s3.bucketRegion>changeMe</connector.s3.bucketRegion>
                         <connector.s3.storeProtocol>changeMe</connector.s3.storeProtocol>
+                        <connector.az.authentication.mode>changeMe</connector.az.authentication.mode><!-- sharedKey is the most likely value-->
+                        <connector.az.account.name>changeMe</connector.az.account.name>
+                        <connector.az.account.key>changeMe</connector.az.account.key>
+                        <connector.az.containerName>changeMe</connector.az.containerName>
+                        <connector.az.deleted.containerName>changeMe</connector.az.deleted.containerName><!-- not sure if this is actually needed-->
+<!--                        <cache.cachingContentStoreCache.timeToLiveSeconds>1</cache.cachingContentStoreCache.timeToLiveSeconds>--><!-- if you wish to turn off caching content store-->
+                        <system.directAccessUrl.enabled>true</system.directAccessUrl.enabled><!-- not sure if this is actually needed-->
+                        <restApi.directAccessUrl.enabled>true</restApi.directAccessUrl.enabled><!-- not sure if this is actually needed-->
                     </systemProperties>
                     <delegate>false</delegate>
                     <useSeparateTomcatClassLoader>true</useSeparateTomcatClassLoader>
