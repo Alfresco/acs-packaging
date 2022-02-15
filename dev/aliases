@@ -13,7 +13,7 @@
 # end in D for Docker.
 #
 # By default only the share-services AMP is built by these aliases. Additional AMPS may be included by adding their
-# profile to the AMPS environment variable. For example: export AMPS="-Pags"
+# profile to the AMPS environment variable. For example: export AMPS="-Pags" (or "-Ps3" or "-Paz").
 #
 # Aliases to build a sequence of projects and start tomcat - remember to start a CLEAN docker-compose environment - see envUp
 #   com - builds alfresco-community-repo & acs-community-packaging
