@@ -146,7 +146,7 @@
                         <artifactId>maven-dependency-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>copy-ags-amp</id>
+                                <id>copy-s3-amp</id>
                                 <phase>process-resources</phase>
                                 <goals>
                                     <goal>copy</goal>
@@ -178,7 +178,7 @@
                         <artifactId>maven-dependency-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>copy-ags-amp</id>
+                                <id>copy-az-amp</id>
                                 <phase>process-resources</phase>
                                 <goals>
                                     <goal>copy</goal>
