@@ -65,14 +65,20 @@ else
   pullUpstreamTag "${COM_UPSTREAM_REPO}" "${COM_DEPENDENCY_VERSION}"
 fi
 
-# Ensure that alfresco-community-repo is targetting this version of ACS
+# Ensure that the repository is targeting this version of ACS.
 pushd "$(dirname "${BASH_SOURCE[0]}")/../../../alfresco-community-repo"
 ACS_VERSION_IN_COMMUNITY_REPO="$(retrievePomProperty "acs.version.major").$(retrievePomProperty "acs.version.minor").$(retrievePomProperty "acs.version.revision")"
 popd
+# Get the hotfix label (including a dot) from alfresco-enterprise-repo, or an empty string if it's not set.
+pushd "$(dirname "${BASH_SOURCE[0]}")/../../../alfresco-enterprise-repo"
+HOTFIX_LABEL_IN_ENTERPRISE_REPO="$(retrievePomProperty "acs.version.label")"
+popd
 ACS_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec 2>/dev/null)
-if [[ ${ACS_VERSION} != ${ACS_VERSION_IN_COMMUNITY_REPO}* ]]
+# Create a regular expression from the repo properties.
+VERSION_REGEX="^${ACS_VERSION_IN_COMMUNITY_REPO}${HOTFIX_LABEL_IN_ENTERPRISE_REPO}([^.0-9].*)?$"
+if ! [[ ${ACS_VERSION} =~ ${VERSION_REGEX} ]]
 then
-    printf "Referenced version of community repo specifies ${ACS_VERSION_IN_COMMUNITY_REPO} in pom.xml, but this is ${ACS_VERSION}."
+    printf "Referenced version of community repo specifies \"${ACS_VERSION_IN_COMMUNITY_REPO}\" in pom.xml and enterprise repo specifies \"${HOTFIX_LABEL_IN_ENTERPRISE_REPO}\", but this is ${ACS_VERSION}."
     exit 1
 fi
 
