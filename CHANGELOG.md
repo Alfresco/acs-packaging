@@ -1,10 +1,11 @@
-<h1>        7.1.1.1
+<h1>        7.1.1.2
 </h1>
 <h2>        Community distribution zip
 </h2>
 <ul>
 <li>[<a href='https://alfresco.atlassian.net/browse/ACS-2553'>ACS-2553</a>] - Incorrect or missing share.war in
  Community distribution zip - has no impact on enterprise edition, but we would like to keep the versions in step.
+ There was no 7.1.1.1.
 </li>
 </ul>
 <h1>        7.1.1
