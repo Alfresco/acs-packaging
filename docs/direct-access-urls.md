@@ -150,6 +150,7 @@ The following endpoints can be used to obtain direct access URLs:
 * `/nodes/{nodeId}/request-direct-access-url`
 * `/nodes/{nodeId}/renditions/{renditionId}/request-direct-access-url`
 * `/nodes/{nodeId}/versions/{versionId}/request-direct-access-url`
+* `/nodes/{nodeId}/versions/{versionId}/renditions/{renditionId}/request-direct-access-url`
 * `/deleted-nodes/{nodeId}/request-direct-access-url`
 * `/deleted-nodes/{nodeId}/renditions/{renditionId}/request-direct-access-url`
 

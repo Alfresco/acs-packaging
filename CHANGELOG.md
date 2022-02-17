@@ -20,6 +20,13 @@ to Tika 2.0.0</a> and
 <li>org.apache.tika:tika-parsers:1.26 replaced by org.apache.tika:tika-parsers-standard-package:2.1.0</li>
 </ul>
 
+<li>New REST API Endpoint:
+
+    Direct Access Url for Version Renditions is now available under /versions
+    POST '/nodes/{nodeId}/versions/{versionId}/renditions/{renditionId}/request-direct-access-url'
+
+</li>
+
 <h1>        7.1.1
 </h1>
 
