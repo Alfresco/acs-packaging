@@ -129,8 +129,7 @@ REVISION_FROM_SHARE=$(mvn -q -Dexec.executable=echo -Dexec.args='${version.revis
 if [[ "${MAJOR_FROM_SHARE}.${MINOR_FROM_SHARE}.${REVISION_FROM_SHARE}" != ${ACS_VERSION_IN_COMMUNITY_REPO} ]]
 then
     printf "Referenced version of community repo specifies \"${ACS_VERSION_IN_COMMUNITY_REPO}\" in pom.xml but enterprise share specifies \"${MAJOR_FROM_SHARE}.${MINOR_FROM_SHARE}.${REVISION_FROM_SHARE}\"."
-    # This is broken at the moment - uncomment this when Share is fixed.
-    #exit 1
+    exit 1
 fi
 # Check the major part of the Share dependency versions match those from acs-packaging.
 COM_DEP_VERSION_FROM_SHARE="$(retrievePomProperty "dependency.alfresco-enterprise-repo.version")"
