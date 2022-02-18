@@ -111,7 +111,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     }
 
-    public static String getElsticsearchConnectorImageTag()
+    public static String getElasticsearchConnectorImageTag()
     {
         final String fromEnv = getEnvProperty("ES_CONNECTOR_TAG");
         if (fromEnv != null && !fromEnv.isBlank())
@@ -136,7 +136,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                         "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config",
                         "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
 
-        try (GenericContainer reindexingComponent = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-reindexing:" + getElsticsearchConnectorImageTag())
+        try (GenericContainer reindexingComponent = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-reindexing:" + getElasticsearchConnectorImageTag())
                 .withEnv(env)
                 .withNetwork(AlfrescoStackInitializer.network)
                 .withStartupCheckStrategy(
@@ -160,7 +160,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     protected GenericContainer createLiveIndexingContainer()
     {
-        return new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-live-indexing:" + getElsticsearchConnectorImageTag())
+        return new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-live-indexing:" + getElasticsearchConnectorImageTag())
                        .withNetwork(network)
                        .withNetworkAliases("live-indexing")
                        .withEnv("ELASTICSEARCH_INDEXNAME", CUSTOM_ALFRESCO_INDEX)
