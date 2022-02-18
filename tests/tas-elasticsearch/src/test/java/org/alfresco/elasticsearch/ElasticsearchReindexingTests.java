@@ -1,6 +1,6 @@
 package org.alfresco.elasticsearch;
 
-import static org.alfresco.elasticsearch.MavenPropertyHelper.getMavenProperty;
+import static org.alfresco.elasticsearch.AlfrescoStackInitializer.getElasticsearchConnectorImageTag;
 import static org.alfresco.elasticsearch.SearchQueryService.req;
 import static org.junit.Assert.fail;
 
@@ -324,7 +324,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
                        "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config"));
         env.putAll(envParam);
 
-        try (GenericContainer reindexingComponent = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-reindexing:" + getMavenProperty("dependency.elasticsearch-shared.version"))
+        try (GenericContainer reindexingComponent = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-reindexing:" + getElasticsearchConnectorImageTag())
                                                             .withEnv(env)
                                                             .withNetwork(AlfrescoStackInitializer.network)
                                                             .withStartupCheckStrategy(
