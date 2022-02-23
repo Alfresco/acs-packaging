@@ -12,7 +12,6 @@
         <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
         <version>14.59</version>
     </parent>
-</parent>
 
     <properties>
         <dependency.alfresco-enterprise-repo.version>14.59</dependency.alfresco-enterprise-repo.version>
