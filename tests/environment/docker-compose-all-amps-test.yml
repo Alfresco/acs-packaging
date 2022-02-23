@@ -50,11 +50,13 @@ services:
         -Ds3.secretKey=${AWS_SECRET_KEY}
         -Ds3.bucketName=bamboo-s3-conn-default
         -Ds3.autoLowerCaseBucketName=true
-        -Dconnector.az.account.name=${AZURE_STORAGE_ACCOUNT_NAME}
-        -Dconnector.az.authentication.mode=${AZURE_AUTHENTICATION_MODE}
-        -Dconnector.az.account.key=${AZURE_STORAGE_ACCOUNT_KEY}
-        -Dconnector.az.containerName=packaging-test-container
-        -Dconnector.az.deleted.containerName=packaging-test-container-del
+        -Dconnector.az.store2.authentication.mode=${AZURE_AUTHENTICATION_MODE}
+        -Dconnector.az.store2.account.name=${AZURE_STORAGE_ACCOUNT_NAME}
+        -Dconnector.az.store2.account.key=${AZURE_STORAGE_ACCOUNT_KEY}
+        -Dconnector.az.store2.containerName=acspackagingtestconn2
+        -Dconnector.az.store2.objectNamePrefix=
+        -Dconnector.az.store2.objectNameSuffix=
+        -Dconnector.az.store2.storeProtocol=azb
         -Dcentera.url=168.159.214.26
         -Dsaml.sp.isEnforced=false
         "
