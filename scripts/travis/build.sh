@@ -122,29 +122,29 @@ else
   pullUpstreamTagAndBuildDockerImage "${SHARE_UPSTREAM_REPO}" "${SHARE_DEPENDENCY_VERSION}" "-Pbuild-docker-images -Pags -Dlicense.failOnNotUptodateHeader=false -Ddocker.quay-expires.value=NEVER -Ddependency.alfresco-community-repo.version=${COM_DEPENDENCY_VERSION} -Ddependency.alfresco-enterprise-repo.version=${ENT_DEPENDENCY_VERSION}"
 fi
 
-pushd "$(dirname "${BASH_SOURCE[0]}")/../../../alfresco-enterprise-share"
-MAJOR_FROM_SHARE=$(mvn -q -Dexec.executable=echo -Dexec.args='${version.major}' --non-recursive exec:exec 2>/dev/null)
-MINOR_FROM_SHARE=$(mvn -q -Dexec.executable=echo -Dexec.args='${version.minor}' --non-recursive exec:exec 2>/dev/null)
-REVISION_FROM_SHARE=$(mvn -q -Dexec.executable=echo -Dexec.args='${version.revision}' --non-recursive exec:exec 2>/dev/null)
-if [[ "${MAJOR_FROM_SHARE}.${MINOR_FROM_SHARE}.${REVISION_FROM_SHARE}" != ${ACS_VERSION_IN_COMMUNITY_REPO} ]]
-then
-    printf "Referenced version of community repo specifies \"${ACS_VERSION_IN_COMMUNITY_REPO}\" in pom.xml but enterprise share specifies \"${MAJOR_FROM_SHARE}.${MINOR_FROM_SHARE}.${REVISION_FROM_SHARE}\"."
-    exit 1
-fi
-# Check the major part of the Share dependency versions match those from acs-packaging.
-COM_DEP_VERSION_FROM_SHARE="$(retrievePomProperty "dependency.alfresco-enterprise-repo.version")"
-if [[ $(echo ${COM_DEP_VERSION_FROM_SHARE} | cut -d "." -f 1) != $(echo ${COM_DEPENDENCY_VERSION} | cut -d "." -f 1) ]]
-then
-    printf "Community repo version from Share (${COM_DEP_VERSION_FROM_SHARE}) isn't similar to version from acs-packaging (${COM_DEPENDENCY_VERSION})."
-    exit 1
-fi
-ENT_DEP_VERSION_FROM_SHARE="$(retrievePomProperty "dependency.alfresco-community-repo.version")"
-if [[ $(echo ${ENT_DEP_VERSION_FROM_SHARE} | cut -d "." -f 1) != $(echo ${ENT_DEPENDENCY_VERSION} | cut -d "." -f 1) ]]
-then
-    printf "Enterprise repo version from Share (${ENT_DEP_VERSION_FROM_SHARE}) isn't similar to version from acs-packaging (${ENT_DEPENDENCY_VERSION})."
-    exit 1
-fi
-popd
+# pushd "$(dirname "${BASH_SOURCE[0]}")/../../../alfresco-enterprise-share"
+# MAJOR_FROM_SHARE=$(mvn -q -Dexec.executable=echo -Dexec.args='${version.major}' --non-recursive exec:exec 2>/dev/null)
+# MINOR_FROM_SHARE=$(mvn -q -Dexec.executable=echo -Dexec.args='${version.minor}' --non-recursive exec:exec 2>/dev/null)
+# REVISION_FROM_SHARE=$(mvn -q -Dexec.executable=echo -Dexec.args='${version.revision}' --non-recursive exec:exec 2>/dev/null)
+# if [[ "${MAJOR_FROM_SHARE}.${MINOR_FROM_SHARE}.${REVISION_FROM_SHARE}" != ${ACS_VERSION_IN_COMMUNITY_REPO} ]]
+# then
+#     printf "Referenced version of community repo specifies \"${ACS_VERSION_IN_COMMUNITY_REPO}\" in pom.xml but enterprise share specifies \"${MAJOR_FROM_SHARE}.${MINOR_FROM_SHARE}.${REVISION_FROM_SHARE}\"."
+#     exit 1
+# fi
+# # Check the major part of the Share dependency versions match those from acs-packaging.
+# COM_DEP_VERSION_FROM_SHARE="$(retrievePomProperty "dependency.alfresco-enterprise-repo.version")"
+# if [[ $(echo ${COM_DEP_VERSION_FROM_SHARE} | cut -d "." -f 1) != $(echo ${COM_DEPENDENCY_VERSION} | cut -d "." -f 1) ]]
+# then
+#     printf "Community repo version from Share (${COM_DEP_VERSION_FROM_SHARE}) isn't similar to version from acs-packaging (${COM_DEPENDENCY_VERSION})."
+#     exit 1
+# fi
+# ENT_DEP_VERSION_FROM_SHARE="$(retrievePomProperty "dependency.alfresco-community-repo.version")"
+# if [[ $(echo ${ENT_DEP_VERSION_FROM_SHARE} | cut -d "." -f 1) != $(echo ${ENT_DEPENDENCY_VERSION} | cut -d "." -f 1) ]]
+# then
+#     printf "Enterprise repo version from Share (${ENT_DEP_VERSION_FROM_SHARE}) isn't similar to version from acs-packaging (${ENT_DEPENDENCY_VERSION})."
+#     exit 1
+# fi
+# popd
 
 # Build the current project
 mvn -B -ntp -V -q install -DskipTests -Dmaven.javadoc.skip=true -Pbuild-docker-images -Pags ${REPO_IMAGE} ${SHARE_IMAGE}
