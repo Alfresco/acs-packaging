@@ -146,7 +146,7 @@
                         <artifactId>maven-dependency-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>copy-ags-amp</id>
+                                <id>copy-s3-amp</id>
                                 <phase>process-resources</phase>
                                 <goals>
                                     <goal>copy</goal>
@@ -157,6 +157,38 @@
                                             <groupId>org.alfresco.integrations</groupId>
                                             <artifactId>alfresco-s3-connector</artifactId>
                                             <version>${alfresco.s3connector.version}</version>
+                                            <type>amp</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>az</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>copy-az-amp</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>copy</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>org.alfresco.integrations</groupId>
+                                            <artifactId>alfresco-azure-connector</artifactId>
+                                            <version>${alfresco.azure-connector.version}</version>
                                             <type>amp</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>

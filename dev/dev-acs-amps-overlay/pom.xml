@@ -78,11 +78,28 @@
                         <metadata-keystore.aliases>metadata</metadata-keystore.aliases>
                         <metadata-keystore.metadata.password>mp6yc0UD9e</metadata-keystore.metadata.password>
                         <metadata-keystore.metadata.algorithm>AES</metadata-keystore.metadata.algorithm>
+                        
+                        <system.directAccessUrl.enabled>true</system.directAccessUrl.enabled>
+                        <restApi.directAccessUrl.enabled>true</restApi.directAccessUrl.enabled>
+
+                        <!-- override if using "s3" profile -->
+                        <connector.s3.directAccessUrl>true</connector.s3.directAccessUrl>
                         <connector.s3.accessKey>changeMe</connector.s3.accessKey>
                         <connector.s3.secretKey>changeMe</connector.s3.secretKey>
                         <connector.s3.bucketName>changeMe</connector.s3.bucketName>
                         <connector.s3.bucketRegion>changeMe</connector.s3.bucketRegion>
                         <connector.s3.storeProtocol>changeMe</connector.s3.storeProtocol>
+
+                        <!-- override if using "az" profile -->
+                        <connector.az.directAccessUrl>true</connector.az.directAccessUrl>
+                        <connector.az.authentication.mode>changeMe</connector.az.authentication.mode><!-- sharedKey is the most likely value-->
+                        <connector.az.account.name>changeMe</connector.az.account.name>
+                        <connector.az.account.key>changeMe</connector.az.account.key>
+<!--                    <connector.az.containerName>changeMe</connector.az.containerName>--><!-- optional override -->
+<!--                    <connector.az.deleted.containerName>changeMe</connector.az.deleted.containerName>--><!-- optional override -->
+
+<!--                    <cache.cachingContentStoreCache.timeToLiveSeconds>1</cache.cachingContentStoreCache.timeToLiveSeconds>--><!-- if you wish to turn off caching content store-->
+
                     </systemProperties>
                     <delegate>false</delegate>
                     <useSeparateTomcatClassLoader>true</useSeparateTomcatClassLoader>
