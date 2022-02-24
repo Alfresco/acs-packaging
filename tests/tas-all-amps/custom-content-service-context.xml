@@ -18,4 +18,46 @@
         </constructor-arg>
     </bean>
 
+
+    <!-- Note: force Azure Connector subsystem to start (partial extract from "azure-mc-contentstore-context.xml.sample") although not used -->
+
+        <!-- [Start] Store 2 (partial) -->
+
+        <bean id="store2.authConfig" class="org.alfresco.integrations.connector.authentication.AuthConfig" >
+            <property name="accountName" value="${connector.az.store2.account.name}" />
+            <property name="accountKey" value="${connector.az.store2.account.key}" />
+
+            <!-- more here ... -->
+
+        </bean>
+
+        <!-- more here ... -->
+
+        <bean id="store2.sharedKey" class="org.alfresco.integrations.connector.authentication.AzureSharedKeyAuthentication" >
+            <constructor-arg index="0"  ref="store2.authConfig" />
+        </bean>
+
+        <bean id="store2.abstractAzureServiceAdapter" class="org.alfresco.integrations.connector.AzureBlobServiceAdapter" abstract="true">
+            <property name="azureAuthentication" ref="store2.${connector.az.store2.authentication.mode}"/>
+
+            <!-- sets a maximum file size for all content. See content-services-context.xml for defaultContentLimitProvider bean -->
+            <property name="contentLimitProvider" ref="defaultContentLimitProvider" />
+
+            <!-- more here ... -->
+
+        </bean>
+
+        <bean id="store2.azureServiceAdapter" class="org.alfresco.integrations.connector.AzureBlobServiceAdapter" parent="store2.abstractAzureServiceAdapter" init-method="init">
+            <property name="containerName" value="${connector.az.store2.containerName}" />
+        </bean>
+
+        <bean id="store2.azureBlobContentStore" class="org.alfresco.integrations.connector.AzureBlobContentStore" depends-on="store2.azureServiceAdapter">
+            <property name="serviceAdapter" ref="store2.azureServiceAdapter" />
+            <property name="objNamePrefix" value="${connector.az.store2.objectNamePrefix}" />
+            <property name="objNameSuffix" value="${connector.az.store2.objectNameSuffix}" />
+            <property name="storeProtocol" value="${connector.az.store2.storeProtocol}" />
+        </bean>
+
+        <!-- [End] Store 2 (partial) -->
+
 </beans>
