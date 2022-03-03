@@ -143,10 +143,9 @@ services:
             #HTTP by default
             ALFRESCO_SECURE_COMMS: "secret"
             JAVA_TOOL_OPTIONS:
-                "
-            -Dalfresco.secureComms=secret
-            -Dalfresco.secureComms.secret=secret
-            "
+              "
+              -Dalfresco.secureComms.secret=secret
+              "
             SOLR_JAVA_MEM: "-Xms2g -Xmx2g"
         ports:
             - 8083:8983 #Browser port
