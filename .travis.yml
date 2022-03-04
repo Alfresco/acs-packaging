@@ -33,7 +33,7 @@ env:
     # Release version has to start with real version (7.2.0-....) for the docker image to build successfully.
     - RELEASE_VERSION=7.2.0-A27
     - DEVELOPMENT_VERSION=7.2.0-A28-SNAPSHOT
-    - DTAS_VERSION="${DTAS_VERSION:-v1.1}"
+    - DTAS_VERSION="feature/ACS-2562_disallow_secure_comms_none"
     - PYTHON_VERSION=3.7.12
 
 stages:
