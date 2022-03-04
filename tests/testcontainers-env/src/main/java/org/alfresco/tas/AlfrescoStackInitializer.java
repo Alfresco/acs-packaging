@@ -259,7 +259,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                             .withUsername("alfresco")
                                             .withDatabaseName("alfresco")
                                             .withNetwork(network)
-                                            .withNetworkAliases("postgres")
+                                            .withNetworkAliases("mysql")
                                             .withStartupTimeout(Duration.ofMinutes(2));
 
     }
