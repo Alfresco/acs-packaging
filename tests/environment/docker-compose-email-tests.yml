@@ -33,7 +33,8 @@ services:
         -Dmessaging.broker.url=\"failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true\"
         -Dsolr.host=solr6
         -Dsolr.port=8983
-        -Dsolr.secureComms=none
+        -Dsolr.secureComms=secret
+        -Dsolr.sharedSecret=secret
         -Dsolr.base.url=/solr
         -Dindex.subsystem.name=solr6
         -Dalfresco.restApi.basicAuthScheme=true
@@ -78,15 +79,19 @@ services:
     image: quay.io/alfresco/insight-engine:${SOLR6_TAG}
     environment:
       #Solr needs to know how to register itself with Alfresco
-      - SOLR_ALFRESCO_HOST=alfresco
-      - SOLR_ALFRESCO_PORT=8080
+      SOLR_ALFRESCO_HOST: "alfresco"
+      SOLR_ALFRESCO_PORT: "8080"
       #Alfresco needs to know how to call solr
-      - SOLR_SOLR_HOST=solr6
-      - SOLR_SOLR_PORT=8983
+      SOLR_SOLR_HOST: "solr6"
+      SOLR_SOLR_PORT: "8983"
       #Create the default alfresco and archive cores
-      - SOLR_CREATE_ALFRESCO_DEFAULTS=alfresco,archive
+      SOLR_CREATE_ALFRESCO_DEFAULTS: "alfresco,archive"
       #HTTP by default
-      - ALFRESCO_SECURE_COMMS=none
+      ALFRESCO_SECURE_COMMS: "secret"
+      JAVA_TOOL_OPTIONS:
+        "
+        -Dalfresco.secureComms.secret=secret
+        "
     ports:
       - 8083:8983 #Browser port
 
