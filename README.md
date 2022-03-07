@@ -1,4 +1,4 @@
-
+This is a dummy change to check the push rights in git.
 # Alfresco Content Services Enterprise Packaging
 This project is producing packaging for Alfresco Content Services Enterprise.
 
