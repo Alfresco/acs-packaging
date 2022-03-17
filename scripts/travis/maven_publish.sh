@@ -21,6 +21,7 @@ mvn -B \
   -ntp \
   -Prelease,all-tas-tests,pipeline,ags \
   -DaltDeploymentRepository=alfresco-enterprise-releases::default::https://artifacts.alfresco.com/nexus/content/repositories/enterprise-releases \
+  -DskipTests \
   clean deploy
 
 popd
