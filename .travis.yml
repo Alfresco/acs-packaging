@@ -285,7 +285,7 @@ jobs:
 
     - name: "Copy to S3 Release Bucket"
       stage: publish
-      # Nothing to build/install as we are just copying from S3 buckets
+      # We do not want to build/install the tip of the branch which will be a SNAPSHOT.
       install: skip
       script: travis_wait 60 bash scripts/travis/maven_publish.sh
       before_deploy: pip install awscli
