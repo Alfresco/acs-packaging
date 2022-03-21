@@ -94,6 +94,12 @@
                 <module>dev</module>
             </modules>
         </profile>
+        <profile>
+            <id>publish</id>
+            <modules>
+                <module>dev</module>
+            </modules>
+        </profile>
     </profiles>
 
     <dependencyManagement>

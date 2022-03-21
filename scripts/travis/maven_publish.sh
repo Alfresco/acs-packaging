@@ -19,7 +19,7 @@ git checkout "${RELEASE_VERSION}"
 # Rebuild the artifacts and publish them to enterprise-releases.
 mvn -B \
   -ntp \
-  -Prelease,all-tas-tests,pipeline,ags \
+  -Ppublish,all-tas-tests,pipeline,ags \
   -DaltDeploymentRepository=alfresco-enterprise-releases::default::https://artifacts.alfresco.com/nexus/content/repositories/enterprise-releases \
   -DskipTests \
   clean deploy
