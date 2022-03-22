@@ -79,17 +79,6 @@ then
     printf "Referenced version of community repo specifies \"${ACS_VERSION_IN_COMMUNITY_REPO}\" in pom.xml but enterprise repo specifies \"${MAJOR_FROM_ENTERPRISE}.${MINOR_FROM_ENTERPRISE}.${REVISION_FROM_ENTERPRISE}\"."
     exit 1
 fi
-# Get the hotfix label (including a dot) from alfresco-enterprise-repo, or an empty string if it's not set.
-HOTFIX_LABEL_IN_ENTERPRISE_REPO="$(retrievePomProperty "acs.version.label")"
-popd
-ACS_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec 2>/dev/null)
-# Create a regular expression from the repo properties.
-VERSION_REGEX="^${ACS_VERSION_IN_COMMUNITY_REPO}${HOTFIX_LABEL_IN_ENTERPRISE_REPO}([^.0-9].*)?$"
-if ! [[ ${ACS_VERSION} =~ ${VERSION_REGEX} ]]
-then
-    printf "Referenced version of community repo specifies \"${ACS_VERSION_IN_COMMUNITY_REPO}\" in pom.xml and enterprise repo specifies \"${HOTFIX_LABEL_IN_ENTERPRISE_REPO}\", but this is ${ACS_VERSION}."
-    exit 1
-fi
 
 # Build the upstream alfresco-enterprise-repo project with its docker image
 if [[ "${ENT_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] ; then
