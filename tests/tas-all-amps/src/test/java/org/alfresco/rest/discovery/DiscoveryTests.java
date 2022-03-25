@@ -46,9 +46,10 @@ public class DiscoveryTests extends RestTest
         restClient.assertStatusCodeIs(HttpStatus.OK);
 
         // Compare information
-        response.getRepository().getVersion().assertThat().field("major").is(version.charAt(0));
-        response.getRepository().getVersion().assertThat().field("minor").is(version.charAt(2));
-        response.getRepository().getVersion().assertThat().field("patch").is(version.charAt(4));
+        String[] semanticVersion = version.split("\\D");
+        response.getRepository().getVersion().assertThat().field("major").is(semanticVersion[0]);
+        response.getRepository().getVersion().assertThat().field("minor").is(semanticVersion[1]);
+        response.getRepository().getVersion().assertThat().field("patch").is(semanticVersion[2]);
         response.getRepository().getVersion().assertThat().field("schema").is(schema);
         response.getRepository().getId().equals(id);
         response.getRepository().getEdition().equals(edition);
