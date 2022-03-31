@@ -37,6 +37,8 @@ env:
     - PYTHON_VERSION=3.7.12
 
 stages:
+  - name: prepare
+    if: commit_message !~ /\[skip tests\]/ AND commit_message !~ /\[force[^\]]*\]/
   - name: test
     if: commit_message !~ /\[skip tests\]/
   - name: docker_latest
@@ -55,7 +57,13 @@ install: travis_retry travis_wait 40 bash scripts/travis/build.sh
 
 jobs:
   include:
+    - name: "Prepare"
+      stage: prepare
+      install: skip
+      script: travis_retry travis_wait 80 bash scripts/travis/prepare.sh
+
     - name: "Source Clear Scan (SCA)"
+      stage: test
       if: branch = master OR branch =~ /release\/.*/
       # Run Veracode
       install: skip

@@ -96,9 +96,27 @@ else
   pullUpstreamTagAndBuildDockerImage "${SHARE_UPSTREAM_REPO}" "${SHARE_DEPENDENCY_VERSION}" "-Pbuild-docker-images -Pags -Dlicense.failOnNotUptodateHeader=true -Ddocker.quay-expires.value=NEVER -Ddependency.alfresco-community-repo.version=${COM_DEPENDENCY_VERSION} -Ddependency.alfresco-enterprise-repo.version=${ENT_DEPENDENCY_VERSION}"
 fi
 
-# Build the current project
-mvn -B -ntp -V -q install -DskipTests -Dmaven.javadoc.skip=true -Pbuild-docker-images -Pags ${REPO_IMAGE} ${SHARE_IMAGE}
+# Build the current project if needed
+if [[ -n ${REQUIRES_INSTALLED_ARTIFACTS} ]] || [[ -n ${REQUIRES_LOCAL_IMAGES} ]] || [[ -n ${BUILD_PROFILES} ]]; then
 
+  if [[ -n ${BUILD_PROFILES} ]]; then
+    PROFILES="${BUILD_PROFILES}"
+  else
+    if [[ "${REQUIRES_LOCAL_IMAGES}" == "true" ]]; then
+      PROFILES="-Pbuild-docker-images -Pags"
+    else
+      PROFILES="-Pags"
+    fi
+  fi
+
+  if [[ "${REQUIRES_INSTALLED_ARTIFACTS}" == "true" ]]; then
+    PHASE="install"
+  else
+    PHASE="package"
+  fi
+
+  mvn -B -ntp -V -q $PHASE -DskipTests -Dmaven.javadoc.skip=true -Pbuild-docker-images -Pags ${REPO_IMAGE} ${SHARE_IMAGE} $PROFILES $BUILD_OPTIONS
+fi
 
 popd
 set +vex
