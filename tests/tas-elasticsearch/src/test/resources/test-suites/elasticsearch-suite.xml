@@ -4,6 +4,7 @@
   <test name="elasticsearch" verbose="3" preserve-order="true">
     <packages>
       <package name="org.alfresco.elasticsearch"/>
+      <package name="org.alfresco.elasticsearch.reindexing" />
     </packages>
   </test>
 </suite>
