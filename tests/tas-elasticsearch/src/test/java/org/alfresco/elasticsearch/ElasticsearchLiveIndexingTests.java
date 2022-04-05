@@ -3,8 +3,10 @@ package org.alfresco.elasticsearch;
 import static java.util.Arrays.asList;
 
 import static org.alfresco.elasticsearch.SearchQueryService.req;
+import static org.alfresco.elasticsearch.TestDataUtility.getAlphabeticUUID;
 
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Predicate;
 
 import org.alfresco.dataprep.AlfrescoHttpClient;
@@ -41,10 +43,12 @@ import org.testng.annotations.Test;
  */
 public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextTests
 {
-    private static final String FILE_0_NAME = "test.txt";
-    private static final String FILE_1_NAME = "another.txt";
-    private static final String FILE_2_NAME = "user1.txt";
-    private static final String FILE_3_NAME = "user1Old.txt";
+    private static final String PREFIX = getAlphabeticUUID() + "_";
+    private static final String UNIQUE_WORD = getAlphabeticUUID();
+    private static final String FILE_0_NAME = PREFIX + "test.txt";
+    private static final String FILE_1_NAME = PREFIX + "another.txt";
+    private static final String FILE_2_NAME = PREFIX + "user1.txt";
+    private static final String FILE_3_NAME = PREFIX + "user1Old.txt";
     public static final String BEFORE_1970_TXT = "before1970.txt";
 
     @Autowired
@@ -98,7 +102,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
         dataUser.addUserToSite(userMultiSite, siteModel1, UserRole.SiteContributor);
         dataUser.addUserToSite(userMultiSite, siteModel2, UserRole.SiteContributor);
 
-        createContent(FILE_0_NAME, "This is the first test", siteModel1, userSite1);
+        createContent(FILE_0_NAME, "This is the first test containing the unique word " + UNIQUE_WORD, siteModel1, userSite1);
         createContent(FILE_1_NAME, "This is another TEST file", siteModel1, userSite1);
         createContent(FILE_2_NAME, "This is another test file", siteModel2, userSite2);
         createContent(FILE_3_NAME, "This is another Test file", siteModel1, userSite2);
@@ -112,7 +116,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void searchCanFindAFileUsingIncludeParameter()
     {
-        SearchRequest queryWithoutIncludes = req("first");
+        SearchRequest queryWithoutIncludes = req(UNIQUE_WORD);
         Predicate<SearchNodeModel> allFieldsNull = searchNodeModel ->
                 searchNodeModel.getProperties() == null
                         && searchNodeModel.getPath() == null
@@ -130,7 +134,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
         queryWithIncludes.setInclude(asList("properties", "path", "aspectNames", "isLocked", "allowableOperations",
                 "permissions", "isLink", "association"));
         RestRequestQueryModel queryReq = new RestRequestQueryModel();
-        queryReq.setQuery("first");
+        queryReq.setQuery(UNIQUE_WORD);
         queryWithIncludes.setQuery(queryReq);
         Predicate<SearchNodeModel> noFieldsNull = searchNodeModel ->
                 searchNodeModel.getProperties() != null
@@ -151,8 +155,8 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     public void searchCanFindAFile()
     {
         // this test must found only one documents, while documents in the system are four because
-        // only one contains the word "first".
-        searchQueryService.expectResultsFromQuery(req("first"), userSite1, FILE_0_NAME);
+        // only one contains the unique word.
+        searchQueryService.expectResultsFromQuery(req(UNIQUE_WORD), userSite1, FILE_0_NAME);
     }
 
     @TestRail(section = TestGroup.SEARCH,
@@ -161,7 +165,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void searchCanFindFilesOnASite()
     {
-        searchQueryService.expectResultsFromQuery(req("test"), userSite1, FILE_0_NAME, FILE_1_NAME, FILE_3_NAME);
+        searchQueryService.expectResultsFromQuery(req(PREFIX), userSite1, FILE_0_NAME, FILE_1_NAME, FILE_3_NAME);
     }
 
     @TestRail(section = TestGroup.SEARCH,
@@ -170,7 +174,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void searchCanFindAFileOnMultipleSitesWithOwner()
     {
-        searchQueryService.expectResultsFromQuery(req("test"), userSite2, FILE_3_NAME, FILE_2_NAME);
+        searchQueryService.expectResultsFromQuery(req(PREFIX), userSite2, FILE_3_NAME, FILE_2_NAME);
     }
 
     @TestRail(section = TestGroup.SEARCH,
@@ -179,7 +183,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void searchCanFindAFileOnMultipleSites()
     {
-        searchQueryService.expectResultsFromQuery(req("test"), userMultiSite, FILE_0_NAME, FILE_1_NAME, FILE_3_NAME, FILE_2_NAME);
+        searchQueryService.expectResultsFromQuery(req(PREFIX), userMultiSite, FILE_0_NAME, FILE_1_NAME, FILE_3_NAME, FILE_2_NAME);
     }
 
     @TestRail (section = TestGroup.SEARCH,

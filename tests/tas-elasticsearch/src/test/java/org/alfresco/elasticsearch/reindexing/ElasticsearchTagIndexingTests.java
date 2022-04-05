@@ -1,4 +1,4 @@
-package org.alfresco.elasticsearch;
+package org.alfresco.elasticsearch.reindexing;
 
 import static org.alfresco.elasticsearch.SearchQueryService.req;
 import static org.testng.Assert.assertEquals;
@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
 
 import org.alfresco.dataprep.AlfrescoHttpClient;
 import org.alfresco.dataprep.AlfrescoHttpClientFactory;
+import org.alfresco.elasticsearch.AlfrescoStackInitializer;
+import org.alfresco.elasticsearch.SearchQueryService;
 import org.alfresco.rest.core.RestWrapper;
 import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.utility.data.DataContent;

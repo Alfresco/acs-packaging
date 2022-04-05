@@ -1,6 +1,7 @@
 package org.alfresco.elasticsearch;
 
 import static org.alfresco.elasticsearch.SearchQueryService.req;
+import static org.alfresco.elasticsearch.TestDataUtility.getAlphabeticUUID;
 
 import java.util.UUID;
 
@@ -31,7 +32,8 @@ import org.testng.annotations.Test;
  */
 public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
 {
-    private static final String PREFIX = UUID.randomUUID().toString().substring(0, 9);
+    private static final String PREFIX = getAlphabeticUUID() + "_";
+    private static final String UNIQUE_WORD = getAlphabeticUUID();
     private static final String FILE_0_NAME = PREFIX + "test.txt";
     private static final String FILE_1_NAME = PREFIX + "another.txt";
     private static final String FILE_2_NAME = PREFIX + "user1Old.txt";
@@ -86,13 +88,13 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
         dataUser.addUserToSite(userMultiSite, siteModel1, UserRole.SiteContributor);
         dataUser.addUserToSite(userMultiSite, siteModel2, UserRole.SiteContributor);
 
-        createContent(FILE_0_NAME, "This is the first test", siteModel1, user1);
-        createContent(FILE_1_NAME, "This is another TEST file", siteModel1, user1);
-        createContent(FILE_2_NAME, "This is another Test file", siteModel1, user2);
+        createContent(FILE_0_NAME, "This is the first test containing " + UNIQUE_WORD, siteModel1, user1);
+        createContent(FILE_1_NAME, "This is another TEST file containing " + UNIQUE_WORD, siteModel1, user1);
+        createContent(FILE_2_NAME, "This is another Test file containing " + UNIQUE_WORD, siteModel1, user2);
         // Remove user 2 from site, but he keeps ownership on FILE_2_NAME.
         dataUser.removeUserFromSite(user2, siteModel1);
         // Also create another file that only user 2 has access to.
-        createContent(USER_2_FILE_NAME, "This is a test file that user1 does not have access to", siteModel2, user2);
+        createContent(USER_2_FILE_NAME, "This is a test file that user1 does not have access to, but it still contains " + UNIQUE_WORD, siteModel2, user2);
     }
 
     @TestRail (description = "Verify that we can perform a basic CMIS query against Elasticsearch.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
@@ -125,7 +127,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     public void matchContentOfFile()
     {
         // Check the query is case insensitive.
-        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE CONTAINS('test')");
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE CONTAINS('" + UNIQUE_WORD + "')");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
     }
 

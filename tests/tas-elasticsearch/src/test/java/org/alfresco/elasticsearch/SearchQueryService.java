@@ -83,8 +83,6 @@ public class SearchQueryService
                                                 .withSearchAPI()
                                                 .search(searchRequest);
                 client.assertStatusCodeIs(HttpStatus.OK);
-                String entriesStr = response.getEntries().isEmpty() ? "[]" : response.getEntries().get(0).toString() + (response.getEntries().size() > 1 ? ", ..." : "");
-                Step.STEP("Response: " + entriesStr);
                 assertionMethod.accept(response);
             });
         }
