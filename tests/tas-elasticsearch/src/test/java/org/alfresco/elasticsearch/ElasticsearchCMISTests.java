@@ -3,8 +3,6 @@ package org.alfresco.elasticsearch;
 import static org.alfresco.elasticsearch.SearchQueryService.req;
 import static org.alfresco.elasticsearch.TestDataUtility.getAlphabeticUUID;
 
-import java.util.UUID;
-
 import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.utility.constants.UserRole;
 import org.alfresco.utility.data.DataContent;

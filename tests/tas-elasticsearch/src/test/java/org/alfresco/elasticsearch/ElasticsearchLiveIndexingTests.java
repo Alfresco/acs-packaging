@@ -6,7 +6,6 @@ import static org.alfresco.elasticsearch.SearchQueryService.req;
 import static org.alfresco.elasticsearch.TestDataUtility.getAlphabeticUUID;
 
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.Predicate;
 
 import org.alfresco.dataprep.AlfrescoHttpClient;
