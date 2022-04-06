@@ -30,13 +30,14 @@ import org.testng.annotations.Test;
  */
 public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
 {
-    private static final String PREFIX = getAlphabeticUUID() + "_";
+    private static final String PREFIX = getAlphabeticUUID();
+    private static final String SUFFIX = getAlphabeticUUID();
     private static final String UNIQUE_WORD = getAlphabeticUUID();
-    private static final String FILE_0_NAME = PREFIX + "test.txt";
-    private static final String FILE_1_NAME = PREFIX + "another.txt";
-    private static final String FILE_2_NAME = PREFIX + "user1Old.txt";
+    private static final String FILE_0_NAME = PREFIX + "_test.txt" + SUFFIX;
+    private static final String FILE_1_NAME = "internal_" + PREFIX + "_and_" + SUFFIX + ".txt";
+    private static final String FILE_2_NAME = PREFIX + "_user2doc_" + SUFFIX;
     /** This is a file that user 1 doesn't have access to and so shouldn't be returned in their search results. */
-    private static final String USER_2_FILE_NAME = PREFIX + "user2.txt";
+    private static final String USER_2_FILE_NAME = PREFIX + "_user2only_" + SUFFIX;
 
     @Autowired
     private DataUser dataUser;
@@ -88,7 +89,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
 
         createContent(FILE_0_NAME, "This is the first test containing " + UNIQUE_WORD, siteModel1, user1);
         createContent(FILE_1_NAME, "This is another TEST file containing " + UNIQUE_WORD, siteModel1, user1);
-        createContent(FILE_2_NAME, "This is another Test file containing " + UNIQUE_WORD, siteModel1, user2);
+        createContent(FILE_2_NAME, "This Test file is owned by user2 " + UNIQUE_WORD, siteModel1, user2);
         // Remove user 2 from site, but he keeps ownership on FILE_2_NAME.
         dataUser.removeUserFromSite(user2, siteModel1);
         // Also create another file that only user 2 has access to.
@@ -117,6 +118,14 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     public void matchNamesLikePrefix()
     {
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name LIKE '" + PREFIX + "%' AND CONTAINS('*')");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
+    }
+
+    @TestRail (description = "Check we can use the CMIS LIKE syntax to match a suffix.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void matchNamesLikeSuffix()
+    {
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name LIKE '%" + SUFFIX + "' AND CONTAINS('*')");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
     }
 
