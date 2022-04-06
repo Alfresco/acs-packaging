@@ -14,7 +14,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Alfresco Insight Engine | 2.0.3 |
 | Alfresco Desktop Sync Service | @alfresco.desktop-sync.version@ |
 | Alfresco Transform Service | 1.5.2 |
-| Alfresco Transform Core | 2.5.7 |
+| Alfresco Transform Core | 2.6.0-A2 |
 | Alfresco Shared File Store | @dependency.alfresco-shared-file-store-data-model.version@ |
 | Document Transformation Engine | @alfresco.transformation-engine.version@ |
 | Alfresco File Transfer Receiver | 7.0.0 |
