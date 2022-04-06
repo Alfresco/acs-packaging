@@ -1,4 +1,4 @@
-package org.alfresco.elasticsearch;
+package org.alfresco.elasticsearch.reindexing;
 
 import static org.alfresco.elasticsearch.AlfrescoStackInitializer.getElasticsearchConnectorImageTag;
 import static org.alfresco.elasticsearch.SearchQueryService.req;
@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.alfresco.elasticsearch.AlfrescoStackInitializer;
+import org.alfresco.elasticsearch.SearchQueryService;
 import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
@@ -86,30 +88,6 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
                                                 AlfrescoStackInitializer.elasticsearch.getFirstMappedPort(),
                                                 "http")));
 
-    }
-
-    /**
-     * This is run as the first test in the class so that we know that no other test has indexed the system documents.
-     */
-    @Test(groups = TestGroup.SEARCH, priority = -1)
-    public void testReindexerIndexesSystemDocuments()
-    {
-        // GIVEN
-        // Check a particular system document is NOT indexed.
-        // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
-        SearchRequest query = req("cm:name:budget AND cm:title:\"web site design - budget\" AND cm:description:\"Budget file for the web site redesign\" AND cm:name:*");
-        searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser());
-
-        // WHEN
-        // Run reindexer against the initial documents.
-        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByIds",
-                       "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
-                       "ALFRESCO_REINDEX_FROM_ID", "0",
-                       "ALFRESCO_REINDEX_TO_ID", "1000"));
-
-        // THEN
-        // Check system document is indexed.
-        searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), "budget.xls");
     }
 
     @Test(groups = TestGroup.SEARCH)

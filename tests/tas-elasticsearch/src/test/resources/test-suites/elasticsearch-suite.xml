@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="REST API tests Elasticsearch" preserve-order="true" verbose="1">
-  <test name="elasticsearch" verbose="3" preserve-order="true">
+<suite name="REST API tests Elasticsearch" preserve-order="true" verbose="1" parallel="false">
+  <test name="elasticsearch" verbose="3">
     <packages>
-      <package name="org.alfresco.elasticsearch"/>
+      <package name="org.alfresco.elasticsearch" />
+    </packages>
+  </test>
+  <test name="initial_reindex" verbose="3">
+    <packages>
+      <package name="org.alfresco.elasticsearch.initialReindex" />
+    </packages>
+  </test>
+  <test name="reindexing" verbose="3">
+    <packages>
+      <package name="org.alfresco.elasticsearch.reindexing" />
     </packages>
   </test>
 </suite>

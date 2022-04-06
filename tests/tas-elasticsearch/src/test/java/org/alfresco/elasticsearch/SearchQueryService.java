@@ -1,5 +1,6 @@
 package org.alfresco.elasticsearch;
 
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
@@ -20,6 +21,7 @@ import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.rest.search.SearchResponse;
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.model.UserModel;
+import org.alfresco.utility.report.log.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
@@ -29,9 +31,17 @@ public class SearchQueryService
     @Autowired
     private RestWrapper client;
 
+    /** Assert that the query returns no results. */
     public void expectNoResultsFromQuery(SearchRequest searchRequest, UserModel testUser)
     {
         expectResultsFromQuery(searchRequest, testUser);
+    }
+
+    /** Assert that the query returns something, without checking exactly what it returns. */
+    public void expectSomeResultsFromQuery(SearchRequest searchRequest, UserModel testUser)
+    {
+        Consumer<SearchResponse> assertNotEmpty = searchResponse -> assertFalse(searchResponse.isEmpty());
+        expectResultsFromQuery(searchRequest, testUser, assertNotEmpty);
     }
 
     public void expectResultsFromQuery(SearchRequest searchRequest, UserModel user, String... expected)
