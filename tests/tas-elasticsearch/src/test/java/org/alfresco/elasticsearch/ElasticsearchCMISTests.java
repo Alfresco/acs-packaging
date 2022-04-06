@@ -31,12 +31,13 @@ import org.testng.annotations.Test;
 public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
 {
     private static final String PREFIX = getAlphabeticUUID() + "_";
+    private static final String SUFFIX = "_" + getAlphabeticUUID();
     private static final String UNIQUE_WORD = getAlphabeticUUID();
-    private static final String FILE_0_NAME = PREFIX + "test.txt";
-    private static final String FILE_1_NAME = PREFIX + "another.txt";
-    private static final String FILE_2_NAME = PREFIX + "user1Old.txt";
+    private static final String FILE_0_NAME = PREFIX + "test.txt" + SUFFIX;
+    private static final String FILE_1_NAME = PREFIX + "another.txt" + SUFFIX;
+    private static final String FILE_2_NAME = PREFIX + "user1Old.txt" + SUFFIX;
     /** This is a file that user 1 doesn't have access to and so shouldn't be returned in their search results. */
-    private static final String USER_2_FILE_NAME = PREFIX + "user2.txt";
+    private static final String USER_2_FILE_NAME = PREFIX + "user2.txt" + SUFFIX;
 
     @Autowired
     private DataUser dataUser;
@@ -117,6 +118,14 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     public void matchNamesLikePrefix()
     {
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name LIKE '" + PREFIX + "%' AND CONTAINS('*')");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
+    }
+
+    @TestRail (description = "Check we can use the CMIS LIKE syntax to match a suffix.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void matchNamesLikeSuffix()
+    {
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name LIKE '%" + SUFFIX + "' AND CONTAINS('*')");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
     }
 
