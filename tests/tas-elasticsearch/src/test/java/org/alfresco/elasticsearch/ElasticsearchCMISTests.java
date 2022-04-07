@@ -138,6 +138,15 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
     }
 
+    @TestRail (description = "Check users can access documents they created even if they are in a site they don't have access to.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkPermissionForUser2()
+    {
+        // Reuse the prefix query to check which documents user2 can access.
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name LIKE '" + PREFIX + "%' AND CONTAINS('*')");
+        searchQueryService.expectResultsFromQuery(query, user2, FILE_2_NAME, USER_2_FILE_NAME);
+    }
+
     private FileModel createContent(String filename, String content, SiteModel site, UserModel user)
     {
         FileModel fileModel = new FileModel(filename, FileType.TEXT_PLAIN, content);
