@@ -46,7 +46,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     @Override
     public void initialize(ConfigurableApplicationContext configurableApplicationContext)
     {
-
+        /*
         // Wait till existing containers are stopped
         if (alfresco != null)
         {
@@ -65,7 +65,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         }
 
         Properties env = EnvHelper.loadEnvProperties();
-
+        
         network = Network.newNetwork();
 
         alfresco = createAlfrescoContainer();
@@ -104,11 +104,14 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         startOrFail(alfresco);
 
         alfresco.followOutput(LOG_CONSUMER);
-
+        
         TestPropertySourceUtils.addInlinedPropertiesToEnvironment(configurableApplicationContext,
                                                                   "alfresco.server=" + alfresco.getContainerIpAddress(),
                                                                   "alfresco.port=" + alfresco.getFirstMappedPort());
+        */
 
+        TestPropertySourceUtils.addInlinedPropertiesToEnvironment(configurableApplicationContext,
+                "alfresco.server=localhost", "alfresco.port=8080");
     }
 
     public static String getElasticsearchConnectorImageTag()

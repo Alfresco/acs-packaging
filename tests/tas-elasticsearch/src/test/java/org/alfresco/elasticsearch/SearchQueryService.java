@@ -77,7 +77,7 @@ public class SearchQueryService
     {
         try
         {
-            Utility.sleep(1000, 20000, () ->
+            Utility.sleep(1000, 40000, () ->
             {
                 SearchResponse response = client.authenticateUser(user)
                                                 .withSearchAPI()
