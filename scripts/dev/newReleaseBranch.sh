@@ -20,25 +20,20 @@ Usage: $0 <hotfix_version> [-v <master_version>] [-h] [-l]
   -l: Output extra logging
 
 Examples:
-
   1. After the release of 23.1.0 from the master branch:
-
      $ $0 23.1.0
      Creates the HotFix branch for 23.1.0, creates the 23.1.N ServicePack branch and modifies the master branch for
      use by the next minor version 23.2.0.
 
   2. After the release of 23.1.1 from the ServicePack branch release/23.1.N:
-
      $ $0 23.1.1
      Creates the HotFix branch for 23.1.1 and modifies the 23.1.N ServicePack branch for use by the next version 23.1.2
 
   3. After the release of 23.1.2 from the ServicePack branch release/23.1.N
-
      $ $0 23.1.2
      Creates the HotFix branch for 23.1.2 and modifies the 23.1.N ServicePack branch for use by the next version 23.1.3
 
   4. Switching to the next hotfix_major version:
-
      $ $0 23.2.0 -v 25.1.0
      Creates the HotFix branch for 23.2.0, creates the 23.2.N ServicePack branch and modifies the master branch for
      use by the next hotfix_major version 25.1.0.
