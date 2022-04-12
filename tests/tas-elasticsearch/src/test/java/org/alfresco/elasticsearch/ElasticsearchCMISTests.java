@@ -108,7 +108,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void returnFieldListFromDoc()
     {
-        SearchRequest query = req("cmis", "SELECT cmis:name, cmis:objectId, cmis:lastModifiedBy, cmis:creationDate, cmis:contentStreamFileName FROM cmis:document");
+        SearchRequest query = req("cmis", "SELECT cmis:name, cmis:objectId, cmis:lastModifiedBy, cmis:creationDate, cmis:contentStreamFileName FROM cmis:document WHERE CONTAINS('*')");
         searchQueryService.expectSomeResultsFromQuery(query, user1);
     }
 
@@ -116,7 +116,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void returnFieldListFromFolder()
     {
-        SearchRequest query = req("cmis", "SELECT cmis:name, cmis:parentId, cmis:path, cmis:allowedChildObjectTypeIds FROM cmis:folder");
+        SearchRequest query = req("cmis", "SELECT cmis:name, cmis:parentId, cmis:path, cmis:allowedChildObjectTypeIds FROM cmis:folder WHERE CONTAINS('*')");
         searchQueryService.expectSomeResultsFromQuery(query, user1);
     }
 
