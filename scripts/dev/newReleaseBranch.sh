@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 set -o errexit
-#set -x
-
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ROOT_DIR="${SCRIPT_DIR}/../../.."
-RELEASE_BRANCH_PREFIX=release
 
 usage() {
     cat << ???  1>&2;
@@ -40,16 +35,49 @@ Examples:
 ???
 }
 
+readCommandLineArgs() {
+  hotfix_version="${1}"
+  if [ -z "${hotfix_version}" ]
+  then
+    usage
+    exit 1
+  fi
+  shift 1
+
+  master_version=""
+  logging_output="/dev/null"
+  while getopts "v:lh" arg; do
+      case $arg in
+          v)
+              master_version=${OPTARG}
+              ;;
+          l)
+              logging_output=`tty`
+              ;;
+          h | *)
+              usage
+              exit 0
+              ;;
+      esac
+  done
+  shift $((OPTIND-1))
+
+  if [ "$#" != "0" ]; then
+    usage
+    exit 1
+  fi
+}
+
 getVersionMajor() {
-  echo "${1}" | sed -n "s/^\([0-9]*\)\.[0-9]*\.[0-9N]*$/\1/p"
+  echo "${1}" | sed -n "s/^\([0-9]*\)\.[0-9]*\.[0-9]*$/\1/p"
 }
 
 getVersionMinor() {
-  echo "${1}" | sed -n "s/^[0-9]*\.\([0-9]*\)\.[0-9N]*$/\1/p"
+  echo "${1}" | sed -n "s/^[0-9]*\.\([0-9]*\)\.[0-9]*$/\1/p"
 }
 
 getVersionRevision() {
-  echo "${1}" | sed -n "s/^[0-9]*\.[0-9]*\.\([0-9N]*\)$/\1/p"
+  echo "${1}" | sed -n "s/^[0-9]*\.[0-9]*\.\([0-9]*\)$/\1/p"
 }
 
 increment() {
@@ -57,123 +85,148 @@ increment() {
   echo "${number} + 1" | bc
 }
 
-getVersionSchema() {
+getPomMajor() {
+  # TODO
+  echo 14
+}
+
+setPomVersion() {
+  local version="${1}"
+  local version_major="${2}"
+
+  if [[ "${version_major}" -lt 23 ]]
+  then
+    pom_version=`getPomMajor`
+    pom_version=`increment "${pom_version}"`
+  else
+    pom_version="${version}"
+  fi
+  pom_version="${pom_version}.1-SNAPSHOT"
+
+  echo TODO setPomVersion "${pom_version}"
+}
+
+getSchema() {
   # TODO
   echo 17002
 }
 
-setVersionSchema() {
-  echo TODO setVersionSchema
+setSchema() {
+  local schema="${1}"
+  echo TODO setSchema "${schema}"
 }
 
-incrementVersionSchema() {
-  local version_multiple="${1}"
-  local version_schema=`getVersionSchema`
-  version_schema=`echo "(${version_schema} / ${schema_multiple} + 1) * ${schema_multiple}" | bc`
-  setVersionSchema "${version_schema}"
+incrementSchema() {
+  local schema_multiple="${1}"
+
+  local schema=`getSchema`
+  schema=`echo "(${schema} / ${schema_multiple} + 1) * ${schema_multiple}" | bc`
+  setSchema "${schema}"
 }
 
-# Read the command line arguments
-hotfix_version="${1}"
-if [ -z "${hotfix_version}" ]
-then
-  usage
-  exit 0
-fi
+forkBranch() {
+  local sourceBranch="${1}"
+  local version="${2}"
+  local branch="${3}"
 
-master_version=""
-LOGGING_OUT="/dev/null"
-while getopts "v:lh" arg; do
-    case $arg in
-        v)
-            master_version=${OPTARG}
-            ;;
-        l)
-            LOGGING_OUT=`tty`
-            ;;
-        h | *)
-            usage
-            exit 0
-            ;;
-    esac
-done
+  echo TODO forkBranch from "${sourceBranch} tag ${version} to ${branch}"
+}
 
-# HotFix branch version
-hotfix_major=`getVersionMajor "${hotfix_version}"`
-hotfix_minor=`getVersionMinor "${hotfix_version}"`
-hotfix_revision=`getVersionRevision "${hotfix_version}"`
-if [[ "${hotfix_version}" != "${hotfix_major}.${hotfix_minor}.${hotfix_revision}" ]]
-then
-  echo 'The <hotfix_version> is invalid. Must contain 3 numbers separated by dots.'
-  exit 1
-fi
+checkoutBranch() {
+  local branch="${1}"
 
-# ServicePack branch version
-if [[ "${release_branch}" == "master"  ]]
-then
-  servicepack_revision="0"
-else
-  servicepack_revision=`increment "${hotfix_revision}"`
-fi
-servicepack_version="${hotfix_major}.${hotfix_minor}.${servicepack_revision}"
+  echo TODO checkoutBranch "${branch}"
+}
 
-# Master branch version
-if [ -z "${master_version}" ]
-then
-  master_major=`increment "${hotfix_minor}"`
-  master_version="${hotfix_major}.${master_major}.0"
-else
-  master_major=`getVersionMajor "${master_version}"`
-  master_minor=`getVersionMinor "${master_version}"`
-  master_revision=`getVersionRevision "${master_version}"`
-  if [[ "${master_version}" != "${master_major}.${master_minor}.${master_revision}" ]]
+setVersion() {
+  local version="${1}"
+
+  echo TODO setVersion "${version}"
+}
+
+modifyAndBuildBranch() {
+  local version="${1}"
+  local version_major="${2}"
+  local schema_multiple="${3}"
+
+  setPomVersion "${version}" "${version_major}"
+  setVersion "${version}"
+  incrementSchema "${schema_multiple}"
+  buildBranch
+}
+
+buildBranch() {
+  echo TODO buildBranch
+  echo
+}
+
+calculateBranchVersions() {
+
+  # HotFix version
+  hotfix_major=`getVersionMajor "${hotfix_version}"`
+  hotfix_minor=`getVersionMinor "${hotfix_version}"`
+  hotfix_revision=`getVersionRevision "${hotfix_version}"`
+  if [[ "${hotfix_version}" != "${hotfix_major}.${hotfix_minor}.${hotfix_revision}" ]]
   then
-    echo 'The <master_version> is invalid. Must contain 3 numbers separated by dots.'
+    echo 'The <hotfix_version> is invalid. Must contain 3 numbers separated by dots.'
     exit 1
   fi
-fi
 
-echo branch=$branch
-echo hotfix_major=$hotfix_major
-echo minor=$minor
-echo hotfix_revision=$hotfix_revision
-echo source_branch=$source_branch
-echo version=$version
-echo pom_version=$pom_version
-echo schema_multiple=$schema_multiple
-echo version_schema=$version_schema
+  # ServicePack version
+  servicepack_major="${hotfix_major}"
+  servicepack_minor="${hotfix_minor}"
+  servicepack_revision=`increment "${hotfix_revision}"`
+  servicepack_version="${servicepack_major}.${servicepack_minor}.${servicepack_revision}"
 
-#hotfix_version_schema=`getVersionSchema`
-#servicepack_version_schema=`incrementVersionSchema "${hotfix_version_schema}" 100`
+  # Master version
+  if [ -z "${master_version}" ]
+  then
+    master_major="${hotfix_major}"
+    master_minor=`increment "${hotfix_minor}"`
+    master_revision="0"
+    master_version="${master_major}.${master_minor}.${master_revision}"
+  else
+    master_major=`getVersionMajor "${master_version}"`
+    master_minor=`getVersionMinor "${master_version}"`
+    master_revision=`getVersionRevision "${master_version}"`
+    if [[ "${master_version}" != "${master_major}.${master_minor}.${master_revision}" ]]
+    then
+      echo 'The <master_version> is invalid. Must contain 3 numbers separated by dots.'
+      exit 1
+    fi
+  fi
 
-release_branch=master
-hotfix_branch=release/23.1.0
-servicepack_branch=release/23.1.N
-servicepack_version=23.1.1
-master_version=23.2.0
+  # Branches
+  hotfix_branch="release/${hotfix_version}"
+  servicepack_branch="release/${hotfix_major}.${hotfix_minor}.N"
+}
 
-# Create the HotFix branch
-forkBranch "${release_branch}" "${hotfix_version}" "${hotfix_branch}"
-buildBranch
+createAndModifyBranches() {
 
-# Create or update the ServicePack branch
-if [[ "${release_branch}" == "master"  ]]
-then
-  forkBranch "${hotfix_branch}" "${hotfix_version}" "${servicepack_branch}"
-else
-  checkoutBranch "${servicepack_branch}"
-fi
-setVersion "${servicepack_version}"
-incrementVersionSchema 100
-buildBranch
+  calculateBranchVersions
 
-# Update the master branch
-if [[ "${release_branch}" == "master"  ]]
-then
-  checkoutBranch master
-  setVersion "${master_version}"
-  incrementVersionSchema 1000
-  buildBranch
-fi
+  if [[ "${hotfix_revision}" == "0" ]]
+  then
+    # Create the HotFix branch
+    forkBranch master "${hotfix_version}" "${hotfix_branch}"
+    buildBranch
 
-echo DONE
+    # Create the ServicePack branch
+    forkBranch "${hotfix_branch}" "${hotfix_version}" "${servicepack_branch}"
+    modifyAndBuildBranch "${servicepack_version}" "${servicepack_major}" 100
+
+    checkoutBranch master
+    modifyAndBuildBranch "${master_version}" "${master_major}" 1000
+  else
+    # Create the HotFix branch
+    forkBranch "${servicepack_branch}" "${hotfix_version}" "${hotfix_branch}"
+    buildBranch
+
+    # Modify the ServicePack branch
+    checkoutBranch "${servicepack_branch}"
+    modifyAndBuildBranch "${servicepack_version}" "${servicepack_major}" 100
+  fi
+}
+
+readCommandLineArgs "$@"
+createAndModifyBranches
