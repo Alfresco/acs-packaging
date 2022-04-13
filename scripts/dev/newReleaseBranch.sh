@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
+
 set -o errexit
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="${SCRIPT_DIR}/../../.."
+LOGGING_OUT="/dev/null"
 
 usage() {
     cat << ???  1>&2;
@@ -45,14 +50,13 @@ readCommandLineArgs() {
   shift 1
 
   master_version=""
-  logging_output="/dev/null"
   while getopts "v:lh" arg; do
       case $arg in
           v)
               master_version=${OPTARG}
               ;;
           l)
-              logging_output=`tty`
+              LOGGING_OUT=`tty`
               ;;
           h | *)
               usage
@@ -124,18 +128,50 @@ incrementSchema() {
   setSchema "${schema}"
 }
 
+checkout() {
+    local project="${1}"
+    local version="${2}"
+
+    cd "${ROOT_DIR}/${project}/"
+    git fetch &>${LOGGING_OUT}
+    git checkout "${version}" &>${LOGGING_OUT}
+}
+
+checkout_from_project() {
+    local targetProject="${1}"
+    local sourceProject="${2}"
+    local targetProperty="${3}"
+
+    local targetVersion=`grep ${targetProperty} ${ROOT_DIR}/${sourceProject}/pom.xml | sed "s|^.*<[^>]*>\([^<]*\)</[^>]*>.*$|\1|g"`
+    if [[ "${version}" != "" ]]
+    then
+        checkout "${targetProject}" "${targetVersion}"
+    else
+        echo "ERROR: Could not find version for ${targetProject} from ${targetProperty} in ${sourceProject}."
+        exit 2
+    fi
+}
+
+checkoutBranch() {
+  local branch="${1}"
+  local version="${2}"
+
+  echo checkoutBranch "${branch}"
+
+  checkout acs-packaging           "${version}"
+  checkout acs-community_packaging "${version}"
+
+  checkout_from_project alfresco-enterprise-repo  acs-packaging            "<dependency.alfresco-enterprise-repo.version>"
+  checkout_from_project alfresco-community-repo   alfresco-enterprise-repo "<dependency.alfresco-community-repo.version>"
+  checkout_from_project alfresco-enterprise-share acs-packaging            "<dependency.alfresco-enterprise-share.version>"
+}
+
 forkBranch() {
   local sourceBranch="${1}"
   local version="${2}"
   local branch="${3}"
 
   echo TODO forkBranch from "${sourceBranch} tag ${version} to ${branch}"
-}
-
-checkoutBranch() {
-  local branch="${1}"
-
-  echo TODO checkoutBranch "${branch}"
 }
 
 setVersion() {
@@ -215,7 +251,7 @@ createAndModifyBranches() {
     forkBranch "${hotfix_branch}" "${hotfix_version}" "${servicepack_branch}"
     modifyAndBuildBranch "${servicepack_version}" "${servicepack_major}" 100
 
-    checkoutBranch master
+    checkoutBranch master "${hotfix_version}"
     modifyAndBuildBranch "${master_version}" "${master_major}" 1000
   else
     # Create the HotFix branch
@@ -223,7 +259,7 @@ createAndModifyBranches() {
     buildBranch
 
     # Modify the ServicePack branch
-    checkoutBranch "${servicepack_branch}"
+    checkoutBranch "${servicepack_branch}" "${hotfix_version}"
     modifyAndBuildBranch "${servicepack_version}" "${servicepack_major}" 100
   fi
 }
