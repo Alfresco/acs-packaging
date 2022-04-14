@@ -110,6 +110,13 @@ setPomVersion() {
   echo TODO setPomVersion "${pom_version}"
 }
 
+getPomProperty() {
+    local project="${1}"
+    local property="${2}"
+
+    grep ${property} ${ROOT_DIR}/${project}/pom.xml | sed "s|^.*<[^>]*>\([^<]*\)</[^>]*>.*$|\1|g"
+}
+
 getSchema() {
   # TODO
   echo 17002
@@ -118,6 +125,12 @@ getSchema() {
 setSchema() {
   local schema="${1}"
   echo TODO setSchema "${schema}"
+}
+
+setVersion() {
+  local version="${1}"
+
+  echo TODO setVersion "${version}"
 }
 
 incrementSchema() {
@@ -129,58 +142,39 @@ incrementSchema() {
 }
 
 checkout() {
-    local project="${1}"
-    local version="${2}"
+  local project="${1}"
+  local version="${2}"
+  local newBranch="${3}"
 
-    cd "${ROOT_DIR}/${project}/"
-    git fetch &>${LOGGING_OUT}
-    git checkout "${version}" &>${LOGGING_OUT}
+  set -x
+  cd "${ROOT_DIR}/${project}/"
+  git fetch &>${LOGGING_OUT}
+  git checkout "${version}" &>${LOGGING_OUT}
+
+  if [ -n "${newBranch}" ]
+  then
+    git switch -c "${newBranch}"
+  fi
+  set +x
 }
 
-checkout_from_project() {
-    local targetProject="${1}"
-    local sourceProject="${2}"
-    local targetProperty="${3}"
-
-    local targetVersion=`grep ${targetProperty} ${ROOT_DIR}/${sourceProject}/pom.xml | sed "s|^.*<[^>]*>\([^<]*\)</[^>]*>.*$|\1|g"`
-    if [[ "${version}" != "" ]]
-    then
-        checkout "${targetProject}" "${targetVersion}"
-    else
-        echo "ERROR: Could not find version for ${targetProject} from ${targetProperty} in ${sourceProject}."
-        exit 2
-    fi
-}
-
-checkoutBranch() {
+checkoutProjectBranchesForAcsVersion() {
   local branch="${1}"
   local version="${2}"
+  local newBranch="${3}"
 
-  echo checkoutBranch "${branch}"
-
-  checkout acs-packaging           "${version}"
-  checkout acs-community_packaging "${version}"
-
-  checkout_from_project alfresco-enterprise-repo  acs-packaging            "<dependency.alfresco-enterprise-repo.version>"
-  checkout_from_project alfresco-community-repo   alfresco-enterprise-repo "<dependency.alfresco-community-repo.version>"
-  checkout_from_project alfresco-enterprise-share acs-packaging            "<dependency.alfresco-enterprise-share.version>"
+  echo checkoutProjectBranchesForAcsVersion "${branch}"
+           shareVersion=`getPomProperty acs-packaging            "<dependency.alfresco-enterprise-share.version>"`
+  enterpriseRepoVersion=`getPomProperty acs-packaging            "<dependency.alfresco-enterprise-repo.version>"`
+   communityRepoVersion=`getPomProperty alfresco-enterprise-repo "<dependency.alfresco-community-repo.version>"`
+  checkout acs-packaging             "${version}"               "${newBranch}"
+  checkout acs-community-packaging   "${version}"               "${newBranch}"
+  checkout alfresco-enterprise-share "${shareVersion}"          "${newBranch}"
+  checkout alfresco-enterprise-repo  "${enterpriseRepoVersion}" "${newBranch}"
+  checkout alfresco-community-repo   "${communityRepoVersion}"  "${newBranch}"
 }
 
-forkBranch() {
-  local sourceBranch="${1}"
-  local version="${2}"
-  local branch="${3}"
-
-  echo TODO forkBranch from "${sourceBranch} tag ${version} to ${branch}"
-}
-
-setVersion() {
-  local version="${1}"
-
-  echo TODO setVersion "${version}"
-}
-
-modifyAndBuildBranch() {
+modifyProjectBranches() {
   local version="${1}"
   local version_major="${2}"
   local schema_multiple="${3}"
@@ -188,11 +182,10 @@ modifyAndBuildBranch() {
   setPomVersion "${version}" "${version_major}"
   setVersion "${version}"
   incrementSchema "${schema_multiple}"
-  buildBranch
 }
 
-buildBranch() {
-  echo TODO buildBranch
+buildProjectBranches() {
+  echo TODO buildProjectBranches
   echo
 }
 
@@ -233,36 +226,39 @@ calculateBranchVersions() {
   fi
 
   # Branches
-  hotfix_branch="release/${hotfix_version}"
-  servicepack_branch="release/${hotfix_major}.${hotfix_minor}.N"
+  hotfix_branch="release/test/${hotfix_version}"
+  servicepack_branch="release/test/${hotfix_major}.${hotfix_minor}.N"
 }
 
-createAndModifyBranches() {
+createAndModifyProjectBranches() {
 
   calculateBranchVersions
 
   if [[ "${hotfix_revision}" == "0" ]]
   then
     # Create the HotFix branch
-    forkBranch master "${hotfix_version}" "${hotfix_branch}"
-    buildBranch
+    checkoutProjectBranchesForAcsVersion master-test "${hotfix_version}" "${hotfix_branch}"
+    buildProjectBranches
 
     # Create the ServicePack branch
-    forkBranch "${hotfix_branch}" "${hotfix_version}" "${servicepack_branch}"
-    modifyAndBuildBranch "${servicepack_version}" "${servicepack_major}" 100
+    checkoutProjectBranchesForAcsVersion "${hotfix_branch}" "${hotfix_version}" "${servicepack_branch}"
+    modifyProjectBranches "${servicepack_version}" "${servicepack_major}" 100
+    buildProjectBranches
 
-    checkoutBranch master "${hotfix_version}"
-    modifyAndBuildBranch "${master_version}" "${master_major}" 1000
+    checkoutProjectBranchesForAcsVersion master-test "${hotfix_version}"
+    modifyProjectBranches "${master_version}" "${master_major}" 1000
+    buildProjectBranches
   else
     # Create the HotFix branch
-    forkBranch "${servicepack_branch}" "${hotfix_version}" "${hotfix_branch}"
-    buildBranch
+    checkoutProjectBranchesForAcsVersion "${servicepack_branch}" "${hotfix_version}" "${hotfix_branch}"
+    buildProjectBranches
 
     # Modify the ServicePack branch
-    checkoutBranch "${servicepack_branch}" "${hotfix_version}"
-    modifyAndBuildBranch "${servicepack_version}" "${servicepack_major}" 100
+    checkoutProjectBranchesForAcsVersion "${servicepack_branch}" "${hotfix_version}"
+    modifyProjectBranches "${servicepack_version}" "${servicepack_major}" 100
+    buildProjectBranches
   fi
 }
 
 readCommandLineArgs "$@"
-createAndModifyBranches
+createAndModifyProjectBranches
