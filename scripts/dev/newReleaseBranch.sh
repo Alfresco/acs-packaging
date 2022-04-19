@@ -5,6 +5,7 @@ set -o errexit
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="${SCRIPT_DIR}/../../.."
 LOGGING_OUT="/dev/null"
+prefix=""
 
 usage() {
     cat << ???  1>&2;
@@ -57,6 +58,7 @@ readCommandLineArgs() {
               ;;
           l)
               LOGGING_OUT=`tty`
+              prefix="== "
               ;;
           h | *)
               usage
@@ -94,27 +96,35 @@ getPomMajor() {
   echo 14
 }
 
+updateTopLevelPomVersion() {
+  echo TODO
+}
+
 setPomVersion() {
-  local version="${1}"
-  local version_major="${2}"
+  local pom_version="${1}"
+  local profiles="${2}"
 
-  if [[ "${version_major}" -lt 23 ]]
-  then
-    pom_version=`getPomMajor`
-    pom_version=`increment "${pom_version}"`
-  else
-    pom_version="${version}"
-  fi
-  pom_version="${pom_version}.1-SNAPSHOT"
-
-  echo TODO setPomVersion "${pom_version}"
+  echo "${prefix}  Set pom version ${pom_version} using profiles: ${profiles}"
+  mvn versions:set -DnewVersion="${pom_version}" -DgenerateBackupPoms=false -P"${profiles}" &>${LOGGING_OUT}
 }
 
 getPomProperty() {
-    local project="${1}"
-    local property="${2}"
+  local project="${1}"
+  local property="${2}"
 
-    grep ${property} ${ROOT_DIR}/${project}/pom.xml | sed "s|^.*<[^>]*>\([^<]*\)</[^>]*>.*$|\1|g"
+  grep ${property} ${ROOT_DIR}/${project}/pom.xml | sed "s|^.*<[^>]*>\([^<]*\)</[^>]*>.*$|\1|g"
+}
+
+setScmTag() {
+  local tag="${1}"
+
+  echo "${prefix}  Set <scm><tag> ${tag}"
+  ed -s pom.xml &>/tmp/$$.log << EOF
+/<scm>
+/<tag>.*<\/tag>/s//<tag>${tag}<\/tag>/
+wq
+EOF
+
 }
 
 getSchema() {
@@ -124,13 +134,13 @@ getSchema() {
 
 setSchema() {
   local schema="${1}"
-  echo TODO setSchema "${schema}"
+  echo "${prefix}  TODO setSchema ${schema}"
 }
 
 setVersion() {
   local version="${1}"
 
-  echo TODO setVersion "${version}"
+  echo "${prefix}  TODO setVersion ${version}"
 }
 
 incrementSchema() {
@@ -143,35 +153,89 @@ incrementSchema() {
 
 checkout() {
   local project="${1}"
-  local version="${2}"
-  local newBranch="${3}"
+  local branch="${2}"
 
-  set -x
+  echo "${prefix}Checkout ${project} ${branch}"
+
   cd "${ROOT_DIR}/${project}/"
-  git fetch &>${LOGGING_OUT}
-  git checkout "${version}" &>${LOGGING_OUT}
-
-  if [ -n "${newBranch}" ]
-  then
-    git switch -c "${newBranch}"
-  fi
-  set +x
+  git fetch                  &>${LOGGING_OUT}
+  git checkout "${branch}"   &>${LOGGING_OUT}
 }
 
-checkoutProjectBranchesForAcsVersion() {
-  local branch="${1}"
-  local version="${2}"
+createBranchFromTag() {
+  local project="${1}"
+  local tag="${2}"
   local newBranch="${3}"
 
-  echo checkoutProjectBranchesForAcsVersion "${branch}"
-           shareVersion=`getPomProperty acs-packaging            "<dependency.alfresco-enterprise-share.version>"`
-  enterpriseRepoVersion=`getPomProperty acs-packaging            "<dependency.alfresco-enterprise-repo.version>"`
-   communityRepoVersion=`getPomProperty alfresco-enterprise-repo "<dependency.alfresco-community-repo.version>"`
-  checkout acs-packaging             "${version}"               "${newBranch}"
-  checkout acs-community-packaging   "${version}"               "${newBranch}"
-  checkout alfresco-enterprise-share "${shareVersion}"          "${newBranch}"
-  checkout alfresco-enterprise-repo  "${enterpriseRepoVersion}" "${newBranch}"
-  checkout alfresco-community-repo   "${communityRepoVersion}"  "${newBranch}"
+  echo "${prefix}Create ${project} ${newBranch} from tag ${tag}"
+
+  cd "${ROOT_DIR}/${project}/"
+  git fetch                    &>${LOGGING_OUT}
+  git checkout "${tag}"        &>${LOGGING_OUT}
+  git switch -c "${newBranch}" &>${LOGGING_OUT}
+}
+
+checkoutProjectBranches() {
+  local branch="${1}"
+
+  checkout acs-packaging             "${branch}"
+  checkout acs-community-packaging   "${branch}"
+  checkout alfresco-enterprise-share "${branch}"
+  checkout alfresco-enterprise-repo  "${branch}"
+  checkout alfresco-community-repo   "${branch}"
+}
+
+createProjectBranchesFromAcsVersion() {
+  local version="${1}"
+  local newBranch="${2}"
+
+  createBranchFromTag acs-packaging            "${version}"                "${newBranch}"
+  createBranchFromTag acs-community-packaging  "${version}"                "${newBranch}"
+
+  shareVersion=`getPomProperty                  acs-packaging               "<dependency.alfresco-enterprise-share.version>"`
+  enterpriseRepoVersion=`getPomProperty         acs-packaging               "<dependency.alfresco-enterprise-repo.version>"`
+  createBranchFromTag alfresco-enterprise-share "${shareVersion}"           "${newBranch}"
+  createBranchFromTag alfresco-enterprise-repo  "${enterpriseRepoVersion}"  "${newBranch}"
+
+  communityRepoVersion=`getPomProperty          alfresco-enterprise-repo    "<dependency.alfresco-community-repo.version>"`
+  createBranchFromTag alfresco-community-repo   "${communityRepoVersion}"   "${newBranch}"
+
+  echo
+}
+
+modifyPomVersion() {
+  local version="${1}"
+  local version_major="${2}"
+  local profiles="${3}"
+  local packaging_project="${4}"
+
+  if [[ "${version_major}" -lt 23 && "${packaging_project}" -ne "true" ]]
+  then
+    pom_version=`getPomMajor`
+    pom_version=`increment "${pom_version}"`
+  else
+    pom_version="${version}"
+  fi
+  pom_version="${pom_version}.1-SNAPSHOT"
+
+  setPomVersion "${pom_version}" "${profiles}"
+}
+
+modifyProject() {
+  local project="${1}"
+  local packaging_project="${2}"
+  local version="${3}"
+  local version_major="${4}"
+  local schema_multiple="${5}"
+  local profiles="${6}"
+
+  echo "${prefix}${project}"
+  cd "${ROOT_DIR}/${project}/"
+  modifyPomVersion "${version}" "${version_major}" "${profiles}" "${packaging_project}"
+  setScmTag HEAD
+  setVersion "${version}"
+  incrementSchema "${schema_multiple}"
+  echo
 }
 
 modifyProjectBranches() {
@@ -179,13 +243,17 @@ modifyProjectBranches() {
   local version_major="${2}"
   local schema_multiple="${3}"
 
-  setPomVersion "${version}" "${version_major}"
-  setVersion "${version}"
-  incrementSchema "${schema_multiple}"
+  modifyProject alfresco-community-repo   false "${version}" "${version_major}" "${schema_multiple}" ags
+  modifyProject alfresco-enterprise-repo  false "${version}" "${version_major}" "${schema_multiple}" ags
+  modifyProject alfresco-enterprise-share false "${version}" "${version_major}" "${schema_multiple}" ags
+  modifyProject acs-packaging             true  "${version}" "${version_major}" "${schema_multiple}" dev
+  modifyProject acs-community-packaging   true  "${version}" "${version_major}" "${schema_multiple}" dev
 }
 
 buildProjectBranches() {
-  echo TODO buildProjectBranches
+
+  git checkout .                   &>${LOGGING_OUT}
+  echo "${prefix}TODO buildProjectBranches"
   echo
 }
 
@@ -236,29 +304,56 @@ createAndModifyProjectBranches() {
 
   if [[ "${hotfix_revision}" == "0" ]]
   then
-    # Create the HotFix branch
-    checkoutProjectBranchesForAcsVersion master-test "${hotfix_version}" "${hotfix_branch}"
+    echo "${prefix}Create the HotFix branches"
+    createProjectBranchesFromAcsVersion "${hotfix_version}" "${hotfix_branch}"
     buildProjectBranches
 
-    # Create the ServicePack branch
-    checkoutProjectBranchesForAcsVersion "${hotfix_branch}" "${hotfix_version}" "${servicepack_branch}"
+    echo "${prefix}Create the ServicePack branches"
+    createProjectBranchesFromAcsVersion "${hotfix_version}" "${servicepack_branch}"
     modifyProjectBranches "${servicepack_version}" "${servicepack_major}" 100
     buildProjectBranches
 
-    checkoutProjectBranchesForAcsVersion master-test "${hotfix_version}"
+    echo "${prefix}Modify the master branches"
+    checkoutProjectBranches master-test
     modifyProjectBranches "${master_version}" "${master_major}" 1000
     buildProjectBranches
   else
-    # Create the HotFix branch
-    checkoutProjectBranchesForAcsVersion "${servicepack_branch}" "${hotfix_version}" "${hotfix_branch}"
+    echo "${prefix}Create the HotFix branches"
+    createProjectBranchesFromAcsVersion "${hotfix_version}" "${hotfix_branch}"
     buildProjectBranches
 
-    # Modify the ServicePack branch
-    checkoutProjectBranchesForAcsVersion "${servicepack_branch}" "${hotfix_version}"
+    echo "${prefix}Modify the ServicePack branches"
+    checkoutProjectBranches "${servicepack_branch}"
     modifyProjectBranches "${servicepack_version}" "${servicepack_major}" 100
     buildProjectBranches
   fi
 }
 
+cleanUp() {
+  local project="${1}"
+
+  echo "${prefix}Clean up ${project}"
+  cd "${ROOT_DIR}/${project}/"
+  git checkout .                   &>${LOGGING_OUT}
+  git checkout master-test         &>${LOGGING_OUT}
+  git branch -D release/test/7.2.0 &>${LOGGING_OUT}
+  git branch -D release/test/7.2.1 &>${LOGGING_OUT}
+  git branch -D release/test/7.2.N &>${LOGGING_OUT}
+}
+
+cleanUpProjectBranches() {
+  echo
+  set +o errexit
+  cleanUp alfresco-community-repo
+  cleanUp alfresco-enterprise-repo
+  cleanUp alfresco-enterprise-share
+  cleanUp acs-community-packaging
+  cleanUp acs-packaging
+  set -o errexit
+  echo
+}
+
 readCommandLineArgs "$@"
+  cleanUpProjectBranches
 createAndModifyProjectBranches
+echo Done
