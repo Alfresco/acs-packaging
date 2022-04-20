@@ -15,7 +15,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Alfresco Desktop Sync Service | @alfresco.desktop-sync.version@ |
 | Alfresco Transform Service | @dependency.alfresco-transform-service.version@ |
 | Alfresco Transform Core | @dependency.alfresco-transform-core.version@ |
-| Alfresco Shared File Store | @dependency.alfresco-shared-file-store-data-model.version@ |
+| Alfresco Shared File Store | @dependency.alfresco-transform-service.version@ |
 | Document Transformation Engine | @alfresco.transformation-engine.version@ |
 | Alfresco File Transfer Receiver | 7.0.0 |
 | Alfresco Module Management Tool | @dependency.alfresco-community-repo.version@ |

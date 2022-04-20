@@ -214,7 +214,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     private GenericContainer createSfsContainer(Properties env)
     {
-        return new GenericContainer("alfresco/alfresco-shared-file-store:" + env.getProperty("SFS_TAG"))
+        return new GenericContainer("alfresco/alfresco-shared-file-store:" + env.getProperty("TRANSFORM_ROUTER_TAG"))
                        .withNetwork(network)
                        .withNetworkAliases("shared-file-store")
                        .withEnv("JAVA_OPTS", "-Xms256m -Xmx256m")
