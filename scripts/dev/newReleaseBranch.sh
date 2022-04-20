@@ -167,7 +167,7 @@ createBranchFromTag() {
   local tag="${2}"
   local newBranch="${3}"
 
-  echo "${prefix}Create ${project} ${newBranch} from tag ${tag}"
+  echo "${prefix}  Create ${project} ${newBranch} from tag ${tag}"
 
   cd "${ROOT_DIR}/${project}/"
   git fetch                    &>${LOGGING_OUT}
@@ -190,11 +190,13 @@ createProjectBranchesFromAcsVersion() {
   local newBranch="${2}"
 
   createBranchFromTag acs-packaging            "${version}"                "${newBranch}"
+
   createBranchFromTag acs-community-packaging  "${version}"                "${newBranch}"
 
   shareVersion=`getPomProperty                  acs-packaging               "<dependency.alfresco-enterprise-share.version>"`
-  enterpriseRepoVersion=`getPomProperty         acs-packaging               "<dependency.alfresco-enterprise-repo.version>"`
   createBranchFromTag alfresco-enterprise-share "${shareVersion}"           "${newBranch}"
+
+  enterpriseRepoVersion=`getPomProperty         acs-packaging               "<dependency.alfresco-enterprise-repo.version>"`
   createBranchFromTag alfresco-enterprise-repo  "${enterpriseRepoVersion}"  "${newBranch}"
 
   communityRepoVersion=`getPomProperty          alfresco-enterprise-repo    "<dependency.alfresco-community-repo.version>"`
@@ -229,7 +231,7 @@ modifyProject() {
   local schema_multiple="${5}"
   local profiles="${6}"
 
-  echo "${prefix}${project}"
+  echo "${prefix}${project}:"
   cd "${ROOT_DIR}/${project}/"
   modifyPomVersion "${version}" "${version_major}" "${profiles}" "${packaging_project}"
   setScmTag HEAD
@@ -250,11 +252,26 @@ modifyProjectBranches() {
   modifyProject acs-community-packaging   true  "${version}" "${version_major}" "${schema_multiple}" dev
 }
 
-buildProjectBranches() {
+commitAndPush() {
+  local project="${1}"
+  local message="${2}"
 
-  git checkout .                   &>${LOGGING_OUT}
-  echo "${prefix}TODO buildProjectBranches"
+  echo "${prefix}  Commit: ${message}"
+  cd "${ROOT_DIR}/${project}/"
+  git commit --allow-empty -m "${message}" &>${LOGGING_OUT}
+  echo "${prefix}TODO push"
+#  git push                                  &>${LOGGING_OUT}
   echo
+}
+
+commitAndPushProjectBranches() {
+  local message="${1}"
+
+  commitAndPush alfresco-community-repo   "${message}"
+  commitAndPush alfresco-enterprise-repo  "${message} [skip ci]"
+  commitAndPush alfresco-enterprise-share "${message} [skip ci]"
+  commitAndPush acs-packaging             "${message} [skip ci]"
+  commitAndPush acs-community-packaging   "${message} [skip ci]"
 }
 
 calculateBranchVersions() {
@@ -298,34 +315,49 @@ calculateBranchVersions() {
   servicepack_branch="release/test/${hotfix_major}.${hotfix_minor}.N"
 }
 
+createHotFixProjectBranches() {
+   local hotfix_version="${1}"
+   local hotfix_branch="${2}"
+
+   echo "${prefix}Create the HotFix branches"
+   createProjectBranchesFromAcsVersion "${hotfix_version}" "${hotfix_branch}"
+   commitAndPushProjectBranches "Create HotFix branch for ${hotfix_version}"
+}
+
+createServicePackProjectBranches() {
+  local hotfix_version="${1}"
+  local servicepack_branch="${2}"
+  local servicepack_version="${3}"
+  local servicepack_major="${4}"
+
+  echo "${prefix}Create the ServicePack branches"
+  createProjectBranchesFromAcsVersion "${hotfix_version}" "${servicepack_branch}"
+  modifyProjectBranches "${servicepack_version}" "${servicepack_major}" 100
+  commitAndPushProjectBranches "Create ServicePack branch ${servicepack_branch}"
+}
+
+modifyOriginalProjectBranches() {
+  local branchType="${1}"
+  local branch="${2}"
+  local version="${3}"
+  local version_major="${4}"
+  local schema_multiple="${5}"
+
+  echo "${prefix}Modify the ${branchType} branches"
+  checkoutProjectBranches "${branch}"
+  modifyProjectBranches "${version}" "${version_major}" 100
+  commitAndPushProjectBranches "Update ${branchType} branch to ${version}"
+}
+
 createAndModifyProjectBranches() {
-
   calculateBranchVersions
-
+  createHotFixProjectBranches "${hotfix_version}" "${hotfix_branch}"
   if [[ "${hotfix_revision}" == "0" ]]
   then
-    echo "${prefix}Create the HotFix branches"
-    createProjectBranchesFromAcsVersion "${hotfix_version}" "${hotfix_branch}"
-    buildProjectBranches
-
-    echo "${prefix}Create the ServicePack branches"
-    createProjectBranchesFromAcsVersion "${hotfix_version}" "${servicepack_branch}"
-    modifyProjectBranches "${servicepack_version}" "${servicepack_major}" 100
-    buildProjectBranches
-
-    echo "${prefix}Modify the master branches"
-    checkoutProjectBranches master-test
-    modifyProjectBranches "${master_version}" "${master_major}" 1000
-    buildProjectBranches
+    createServicePackProjectBranches "${hotfix_version}" "${servicepack_branch}" "${servicepack_version}" "${servicepack_major}"
+    modifyOriginalProjectBranches Master master-test "${master_version}" "${master_major}" 1000
   else
-    echo "${prefix}Create the HotFix branches"
-    createProjectBranchesFromAcsVersion "${hotfix_version}" "${hotfix_branch}"
-    buildProjectBranches
-
-    echo "${prefix}Modify the ServicePack branches"
-    checkoutProjectBranches "${servicepack_branch}"
-    modifyProjectBranches "${servicepack_version}" "${servicepack_major}" 100
-    buildProjectBranches
+    modifyOriginalProjectBranches ServicePack "${servicepack_branch}" "${servicepack_version}" "${servicepack_major}" 100
   fi
 }
 
