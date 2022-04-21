@@ -214,7 +214,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     private GenericContainer createSfsContainer(Properties env)
     {
-        return new GenericContainer("alfresco/alfresco-shared-file-store:" + env.getProperty("TRANSFORM_ROUTER_TAG"))
+        return new GenericContainer("alfresco/alfresco-shared-file-store:" + getMavenProperty("dependency.alfresco-transform-service.version"))
                        .withNetwork(network)
                        .withNetworkAliases("shared-file-store")
                        .withEnv("JAVA_OPTS", "-Xms256m -Xmx256m")
@@ -227,7 +227,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     private GenericContainer createTransformCoreContainer(Properties env)
     {
-        return new GenericContainer("alfresco/alfresco-transform-core-aio:" + env.getProperty("TRANSFORMERS_TAG"))
+        return new GenericContainer("alfresco/alfresco-transform-core-aio:" + getMavenProperty("dependency.alfresco-transform-core.version"))
                        .withNetwork(network)
                        .withNetworkAliases("transform-core-aio")
                        .withEnv("JAVA_OPTS", "-Xms512m -Xmx512m")
