@@ -108,19 +108,49 @@ increment() {
   echo "${number} + 1" | bc
 }
 
+function readTopLevelTag() {
+  local tagName="${1}"
+  local pomFile="${2}"
+  # Might be possible to generalise this function to accept an XPath so it could be used in place of sed commands
+
+  # Read the file with an IFS (Input Field Separator) of the start of XML tag character <
+  local IFS=\>
+  local depth=-99
+  while read -d \< ENTITY CONTENT
+  do
+    if [[ $ENTITY == project\ * ]] # outer <project> tag
+    then
+      depth=0
+    elif [[ $ENTITY == /* ]] # end tag
+    then
+      ((depth=depth-1))
+    else                     # start tag
+      ((depth=depth+1))
+    fi
+
+    if [[ $ENTITY = "${tagName}" ]] && [[ $depth == 1 ]] ; then
+        echo $CONTENT
+        exit
+    fi
+  done < $pomFile
+  exit 1
+}
+
+getPomVersion() {
+  # Same as slower/simpler: "mvn help:evaluate -Dexpression=project.version"
+  readTopLevelTag version pom.xml
+}
+
 getPomMajor() {
-  # TODO
-  echo 10
+  getPomVersion | sed -n "s/^\([0-9]*\).*/\1/p"
 }
 
 getPomMinor() {
-  # TODO
-  echo 200
+  getPomVersion | sed -n "s/^[0-9]*\.\([0-9]*\).*/\1/p"
 }
 
 getPomLabel() {
-  # TODO
-  echo 300
+  getPomVersion | sed -n "s/^[0-9]*\.[0-9]*\.[0-9]*\.\([0-9]*\).*/\1/p"
 }
 
 setPomVersion() {
@@ -139,24 +169,37 @@ getPomProperty() {
 }
 
 setScmTag() {
-  local tag="${1}"
+  local newBranch="${1}"
+  local tag="${2}"
 
-  echo "${prefix}    Set <scm><tag> ${tag}"
-  ed -s pom.xml &>/tmp/$$.log << EOF
+  if [[ "${newBranch}" == "NewBranch" ]]
+  then
+    echo "${prefix}    Set <scm><tag> ${tag}"
+    ed -s pom.xml &>${loggingOut} << EOF
 /<scm>
 /<tag>.*<\/tag>/s//<tag>${tag}<\/tag>/
 wq
 EOF
+  fi
 }
 
 getSchema() {
-  # TODO
-  echo 17002
+  grep '^version\.schema=\d*.*$' repository/src/main/resources/alfresco/repository.properties | sed 's/.*=\(\d*\)/\1/'
 }
 
 setSchema() {
   local schema="${1}"
-  echo "${prefix}    TODO setSchema ${schema}"
+
+  echo "${prefix}    setSchema ${schema}"
+  ed -s repository/src/main/resources/alfresco/repository.properties &>${loggingOut} << EOF
+/^version\.schema=\d*.*$/s//version.schema=${schema}/
+wq
+EOF
+}
+
+getCurrentProject() {
+  local pwd=`pwd`
+  basename ${pwd}
 }
 
 setVersion() {
@@ -168,7 +211,7 @@ setVersion() {
 incrementSchema() {
   local schemaMultiple="${1}"
 
-  if [[ `getCurrentDirectory` == "alfresco-community-repo" && "${schemaMultiple}" -gt 0 ]]
+  if [[ `getCurrentProject` == "alfresco-community-repo" && "${schemaMultiple}" -gt 0 ]]
   then
     local schema=`getSchema`
     schema=`echo "(${schema} / ${schemaMultiple} + 1) * ${schemaMultiple}" | bc`
@@ -198,11 +241,6 @@ createBranchFromTag() {
   git fetch                 &>${loggingOut}
   git checkout "${tag}"     &>${loggingOut}
   git switch -c "${branch}" &>${loggingOut}
-}
-
-getCurrentDirectory() {
-  local pwd=`pwd`
-  basename ${pwd}
 }
 
 modifyPomVersion() {
@@ -255,9 +293,10 @@ modifyProject() {
   local schemaMultiple="${3}"
   local profiles="${4}"
   local projectType="${5}"
+  local newBranch="${6}"
 
   modifyPomVersion "${version}" "${branchType}" "${profiles}" "${projectType}"
-  setScmTag HEAD
+  setScmTag "${newBranch}" HEAD
   setVersion "${version}"
   incrementSchema "${schemaMultiple}"
 }
@@ -285,26 +324,26 @@ createProjectBranchesFromAcsVersion() {
   local message="${6}"
 
   createBranchFromTag acs-packaging             "${hotFixVersion}"        "${branch}"
-  modifyProject "${version}"                    "${branchType}"           "${schemaMultiple}"       dev Packaging
+  modifyProject "${version}"                    "${branchType}"           "${schemaMultiple}"       dev Packaging NewBranch
   commitAndPush "${message} [skip ci]"
 
   createBranchFromTag acs-community-packaging   "${hotFixVersion}"        "${branch}"
-  modifyProject "${version}"                    "${branchType}"           "${schemaMultiple}"       dev Packaging
+  modifyProject "${version}"                    "${branchType}"           "${schemaMultiple}"       dev Packaging NewBranch
   commitAndPush "${message} [skip ci]"
 
   shareVersion=`getPomProperty                  acs-packaging              "<dependency.alfresco-enterprise-share.version>"`
   createBranchFromTag alfresco-enterprise-share "${shareVersion}"          "${branch}"
-  modifyProject "${version}"                    "${branchType}"            "${schemaMultiple}"      ags Library
+  modifyProject "${version}"                    "${branchType}"            "${schemaMultiple}"      ags Library   NewBranch
   commitAndPush "${message} [skip ci]"
 
   enterpriseRepoVersion=`getPomProperty         acs-packaging              "<dependency.alfresco-enterprise-repo.version>"`
   createBranchFromTag alfresco-enterprise-repo  "${enterpriseRepoVersion}" "${branch}"
-  modifyProject "${version}"                    "${branchType}"            "${schemaMultiple}"      ags Library
+  modifyProject "${version}"                    "${branchType}"            "${schemaMultiple}"      ags Library   NewBranch
   commitAndPush "${message} [skip ci]"
 
   communityRepoVersion=`getPomProperty          alfresco-enterprise-repo   "<dependency.alfresco-community-repo.version>"`
   createBranchFromTag alfresco-community-repo   "${communityRepoVersion}"  "${branch}"
-  modifyProject "${version}"                    "${branchType}"            "${schemaMultiple}"      ags Library
+  modifyProject "${version}"                    "${branchType}"            "${schemaMultiple}"      ags Library   NewBranch
   commitAndPush "${message}"
 }
 
@@ -316,23 +355,23 @@ modifyOriginalProjectBranchesForNextRelease() {
   local message="${5}"
 
   checkout acs-packaging             "${branch}"
-  modifyProject "${version}" "${branchType}" "${schemaMultiple}" dev Packaging
+  modifyProject "${version}" "${branchType}" "${schemaMultiple}" dev Packaging OriginalBranch
   commitAndPush "${message} [skip ci]"
 
   checkout acs-community-packaging   "${branch}"
-  modifyProject "${version}" "${branchType}" "${schemaMultiple}" dev Packaging
+  modifyProject "${version}" "${branchType}" "${schemaMultiple}" dev Packaging OriginalBranch
   commitAndPush "${message} [skip ci]"
 
   checkout alfresco-enterprise-share "${branch}"
-  modifyProject "${version}" "${branchType}" "${schemaMultiple}" ags Library
+  modifyProject "${version}" "${branchType}" "${schemaMultiple}" ags Library   OriginalBranch
   commitAndPush "${message} [skip ci]"
 
   checkout alfresco-enterprise-repo  "${branch}"
-  modifyProject "${version}" "${branchType}" "${schemaMultiple}" ags Library
+  modifyProject "${version}" "${branchType}" "${schemaMultiple}" ags Library   OriginalBranch
   commitAndPush "${message} [skip ci]"
 
   checkout alfresco-community-repo   "${branch}"
-  modifyProject "${version}" "${branchType}" "${schemaMultiple}" ags Library
+  modifyProject "${version}" "${branchType}" "${schemaMultiple}" ags Library   OriginalBranch
   commitAndPush "${message}"
 }
 
