@@ -214,7 +214,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     private GenericContainer createSfsContainer(Properties env)
     {
-        return new GenericContainer("alfresco/alfresco-shared-file-store:" + getMavenProperty("dependency.alfresco-transform-service.version"))
+        return new GenericContainer("quay.io/alfresco/alfresco-shared-file-store:" + getMavenProperty("dependency.alfresco-transform-service.version"))
                        .withNetwork(network)
                        .withNetworkAliases("shared-file-store")
                        .withEnv("JAVA_OPTS", "-Xms256m -Xmx256m")
@@ -240,7 +240,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     private GenericContainer createTransformRouterContainer(Properties env)
     {
-        return new GenericContainer("quay.io/alfresco/alfresco-transform-router:" + env.getProperty("TRANSFORM_ROUTER_TAG"))
+        return new GenericContainer("quay.io/alfresco/alfresco-transform-router:" + getMavenProperty("dependency.alfresco-transform-service.version"))
                        .withNetwork(network)
                        .withNetworkAliases("transform-router")
                        .withEnv("JAVA_OPTS", "-Xms256m -Xmx256m")
