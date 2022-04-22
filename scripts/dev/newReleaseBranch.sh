@@ -202,10 +202,56 @@ getCurrentProject() {
   basename ${pwd}
 }
 
-setVersion() {
+setAcsVersionLabelInEnterpriseRepoHotFixes() {
+  local version="${1}"
+  local branchType="${2}"
+
+  if [[ `getCurrentProject` == "alfresco-enterprise-repo" && "${branchType}" == "HotFix" ]]
+  then
+    echo "${prefix}    set <acs.version.label>"
+    ed -s pom.xml &>${loggingOut} << EOF
+/.*acs.version.label.*$/s//        <acs.version.label>.1<\/acs.version.label> <!-- ${version}.<acs.version.label> -->/
+wq
+EOF
+  fi
+}
+
+setNextReleaseVersion() {
   local version="${1}"
 
-  echo "${prefix}    TODO setVersion ${version}"
+  echo "${prefix}    set - RELEASE_VERSION=${version}"
+  ed -s .travis.yml &>${loggingOut} << EOF
+/.*- RELEASE_VERSION.*$/s//    - RELEASE_VERSION=${version}/
+wq
+EOF
+}
+
+setNextDevelopmentVersion() {
+  local version="${1}"
+
+  echo "${prefix}    set - DEVELOPMENT_VERSION=${version}"
+  ed -s .travis.yml &>${loggingOut} << EOF
+/.*- DEVELOPMENT_VERSION.*$/s//    - DEVELOPMENT_VERSION=${version}/
+wq
+EOF
+}
+
+setPackagingNextReleaseVersion() {
+  local version="${1}"
+  local branchType="${2}"
+  local projectType="${3}"
+
+  if [[ "${projectType}" == "Packaging" ]]
+  then
+    if [[ "${branchType}" == "HotFix" ]]
+    then
+      setNextReleaseVersion "${version}.1"
+      setNextDevelopmentVersion "${version}.2-SNAPSHOT"
+    else
+      setNextReleaseVersion "${version}.A1-SNAPSHOT"
+      setNextDevelopmentVersion "${version}-SNAPSHOT"
+    fi
+  fi
 }
 
 incrementSchema() {
@@ -251,7 +297,12 @@ modifyPomVersion() {
 
   if [[ "${projectType}" == "Packaging" ]]
   then
-    pomVersion="${version}-SNAPSHOT"
+    if [[ "${branchType}" == "HotFix" ]]
+    then
+      pomVersion="${version}.1-SNAPSHOT"
+    else
+      pomVersion="${version}-SNAPSHOT"
+    fi
   else
     local versionMajor=`getVersionMajor "${version}"`
     if [[ "${versionMajor}" -lt 23 ]]
@@ -262,7 +313,7 @@ modifyPomVersion() {
         pomMinor=`getPomMinor`
         pomMinor=`increment "${pomMinor}"`
         pomVersion="${pomMajor}.${pomMinor}-SNAPSHOT"
-    else
+      else
         if [[ "${branchType}" == "Master" ]]
         then
           # Allow for two service packs before the next release off master
@@ -297,7 +348,8 @@ modifyProject() {
 
   modifyPomVersion "${version}" "${branchType}" "${profiles}" "${projectType}"
   setScmTag "${newBranch}" HEAD
-  setVersion "${version}"
+  setAcsVersionLabelInEnterpriseRepoHotFixes "${version}" "${branchType}"
+  setPackagingNextReleaseVersion "${version}" "${branchType}" "${projectType}"
   incrementSchema "${schemaMultiple}"
 }
 
@@ -305,7 +357,7 @@ commitAndPush() {
   local message="${1}"
 
   echo "${prefix}    git commit"
-  git commit --all --allow-empty -m "${message}" &>${loggingOut}
+  git commit --all -m "${message}" &>${loggingOut}
   if [[ -n "${doPush}" ]]
   then
     echo "${prefix}     git push"
@@ -424,6 +476,31 @@ calculateBranchVersions() {
   fi
 }
 
+cleanUpTestBranches() {
+  local project="${1}"
+
+  echo "${prefix}Clean up ${hotFixBranch} and ${servicePackBranch} on ${project}"
+  cd "${ROOT_DIR}/${project}/"
+  git checkout .                       &>${loggingOut}
+  git checkout "${masterBranch}"       &>${loggingOut}
+  git branch -D "${hotFixBranch}"      &>${loggingOut}
+  git branch -D "${servicePackBranch}" &>${loggingOut}
+}
+
+cleanUpTestProjectBranches() {
+  if [[ -n "${doCleanup}" ]]
+  then
+    echo
+    set +o errexit
+    cleanUpTestBranches alfresco-community-repo
+    cleanUpTestBranches alfresco-enterprise-repo
+    cleanUpTestBranches alfresco-enterprise-share
+    cleanUpTestBranches acs-community-packaging
+    cleanUpTestBranches acs-packaging
+    set -o errexit
+  fi
+}
+
 createHotFixProjectBranches() {
   local hotFixVersion="${1}"
   local hotFixBranch="${2}"
@@ -465,40 +542,24 @@ createAndModifyProjectBranches() {
   if [[ "${hotFixRevision}" == "0" ]]
   then
     createServicePackProjectBranches "${hotFixVersion}" "${servicePackBranch}" "${servicePackVersion}"
+echo STOP AFTER ServicePack Branch
+exit 99
     modifyOriginalProjectBranches Master "${masterBranch}" "${masterVersion}" 1000
   else
     modifyOriginalProjectBranches ServicePack "${servicePackBranch}" "${servicePackVersion}" 100
   fi
 }
 
-cleanUpTestBranches() {
-  local project="${1}"
+main() {
+  readCommandLineArgs "$@"
+  calculateBranchVersions
 
-  echo "${prefix}Clean up ${hotFixBranch} and ${servicePackBranch} on ${project}"
-  cd "${ROOT_DIR}/${project}/"
-  git checkout .                       &>${loggingOut}
-  git checkout "${masterBranch}"       &>${loggingOut}
-  git branch -D "${hotFixBranch}"      &>${loggingOut}
-  git branch -D "${servicePackBranch}" &>${loggingOut}
+  cleanUpTestProjectBranches
+
+  createAndModifyProjectBranches
+
+  echo
+  echo Done
 }
 
-cleanUpTestProjectBranches() {
-  if [[ -n "${doCleanup}" ]]
-  then
-    echo
-    set +o errexit
-    cleanUpTestBranches alfresco-community-repo
-    cleanUpTestBranches alfresco-enterprise-repo
-    cleanUpTestBranches alfresco-enterprise-share
-    cleanUpTestBranches acs-community-packaging
-    cleanUpTestBranches acs-packaging
-    set -o errexit
-  fi
-}
-
-readCommandLineArgs "$@"
-calculateBranchVersions
-cleanUpTestProjectBranches
-createAndModifyProjectBranches
-echo
-echo Done
+main "$@"
