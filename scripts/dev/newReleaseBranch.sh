@@ -202,15 +202,60 @@ getCurrentProject() {
   basename ${pwd}
 }
 
-setAcsVersionLabelInEnterpriseRepoHotFixes() {
+setAcsVersionLabelInEnterpriseRepo() {
   local version="${1}"
   local branchType="${2}"
 
-  if [[ `getCurrentProject` == "alfresco-enterprise-repo" && "${branchType}" == "HotFix" ]]
+  if [[ `getCurrentProject` == "alfresco-enterprise-repo" ]]
   then
-    echo "${prefix}    set <acs.version.label>"
-    ed -s pom.xml &>${loggingOut} << EOF
+    if [[ "${branchType}" == "HotFix" ]]
+    then
+      echo "${prefix}    set <acs.version.label>"
+      ed -s pom.xml &>${loggingOut} << EOF
 /.*acs.version.label.*$/s//        <acs.version.label>.1<\/acs.version.label> <!-- ${version}.<acs.version.label> -->/
+wq
+EOF
+    else
+      echo "${prefix}    set <acs.version.label>"
+      ed -s pom.xml &>${loggingOut} << EOF
+/.*acs.version.label.*$/s//        <acs.version.label \/> <!-- ${version}.<acs.version.label> -->/
+wq
+EOF
+    fi
+  fi
+}
+
+setAcsVersionInCommunityRepo() {
+  local version="${1}"
+
+  if [[ `getCurrentProject` == "alfresco-community-repo" ]]
+  then
+    local versionMajor=`getVersionMajor "${version}"`
+    local versionMinor=`getVersionMinor "${version}"`
+    local versionRevision=`getVersionRevision "${version}"`
+    echo "${prefix}    set <acs.version.major> <acs.version.minor> <acs.version.revision> ${versionMajor} ${versionMinor} ${versionRevision}"
+    ed -s pom.xml &>${loggingOut} << EOF
+/.*acs.version.major.*$/s//        <acs.version.major>${versionMajor}<\/acs.version.major>/
+/.*acs.version.minor.*$/s//        <acs.version.minor>${versionMinor}<\/acs.version.minor>/
+/.*acs.version.revision.*$/s//        <acs.version.revision>${versionRevision}<\/acs.version.revision>/
+wq
+EOF
+  fi
+}
+
+setAcsVersionInShare() {
+  local version="${1}"
+
+  if [[ `getCurrentProject` == "alfresco-enterprise-share" ]]
+  then
+    local versionMajor=`getVersionMajor "${version}"`
+    local versionMinor=`getVersionMinor "${version}"`
+    local versionRevision=`getVersionRevision "${version}"`
+    echo "${prefix}    set <version.major> <version.minor> <version.revision> ${versionMajor} ${versionMinor} ${versionRevision}"
+    ed -s pom.xml &>${loggingOut} << EOF
+/.*version.major.*$/s//        <version.major>${versionMajor}<\/version.major>/
+/.*version.minor.*$/s//        <version.minor>${versionMinor}<\/version.minor>/
+/.*version.revision.*$/s//        <version.revision>${versionRevision}<\/version.revision>/
 wq
 EOF
   fi
@@ -226,6 +271,16 @@ wq
 EOF
 }
 
+setStartWithRealVersion() {
+  local version="${1}"
+
+  echo "${prefix}    set # ... start with real version ${version}"
+  ed -s .travis.yml &>${loggingOut} << EOF
+/.*start with real version.*$/s//    # Release version has to start with real version (${version}-....) for the docker image to build successfully./
+wq
+EOF
+}
+
 setNextDevelopmentVersion() {
   local version="${1}"
 
@@ -236,7 +291,7 @@ wq
 EOF
 }
 
-setPackagingNextReleaseVersion() {
+setVersionInPackaging() {
   local version="${1}"
   local branchType="${2}"
   local projectType="${3}"
@@ -245,12 +300,31 @@ setPackagingNextReleaseVersion() {
   then
     if [[ "${branchType}" == "HotFix" ]]
     then
-      setNextReleaseVersion "${version}.1"
+      setNextReleaseVersion     "${version}.1"
       setNextDevelopmentVersion "${version}.2-SNAPSHOT"
     else
-      setNextReleaseVersion "${version}.A1-SNAPSHOT"
+      setStartWithRealVersion   "${version}"
+      setNextReleaseVersion     "${version}-A1"
       setNextDevelopmentVersion "${version}-SNAPSHOT"
     fi
+  fi
+}
+
+setUpstreamVersionsInCommunityPackaging() {
+  local version="${1}"
+  local $nextUpstreamVersion="${2}"
+
+  if [[ `getCurrentProject` == "acs-community-packaging" ]]
+  then
+    echo "${prefix}    set <dependency.alfresco-community-repo.version> ${nextUpstreamVersion}"
+    echo "${prefix}    set <dependency.alfresco-community-share.version> ${nextUpstreamVersion}"
+    echo "${prefix}    set <dependency.acs-packaging.version> ${version}"
+    ed -s pom.xml &>${loggingOut} << EOF
+/.*dependency.alfresco-community-repo.version.*$/s//        <dependency.alfresco-community-repo.version>${nextUpstreamVersion}<\/dependency.alfresco-community-repo.version>/
+/.*dependency.alfresco-community-share.version.*$/s//        <dependency.alfresco-community-share.version>${nextUpstreamVersion}<\/dependency.alfresco-community-share.version>/
+/.*dependency.acs-packaging.version.*$/s//        <dependency.acs-packaging.version>${version}<\/dependency.acs-packaging.version>/
+wq
+EOF
   fi
 }
 
@@ -335,6 +409,12 @@ modifyPomVersion() {
     fi
   fi
 
+  if [[ `getCurrentProject` == "alfresco-community-repo" ]]
+  then
+    nextUpstreamVersion="${pomVersion}"
+  fi
+
+  pomVersion="${pomVersion}-SNAPSHOT"
   setPomVersion "${pomVersion}" "${profiles}"
 }
 
@@ -348,9 +428,12 @@ modifyProject() {
 
   modifyPomVersion "${version}" "${branchType}" "${profiles}" "${projectType}"
   setScmTag "${newBranch}" HEAD
-  setAcsVersionLabelInEnterpriseRepoHotFixes "${version}" "${branchType}"
-  setPackagingNextReleaseVersion "${version}" "${branchType}" "${projectType}"
   incrementSchema "${schemaMultiple}"
+  setAcsVersionInCommunityRepo "${version}"
+  setAcsVersionLabelInEnterpriseRepo "${version}" "${branchType}"
+  setAcsVersionInShare "${version}"
+  setVersionInPackaging "${version}" "${branchType}" "${projectType}"
+  setUpstreamVersionsInCommunityPackaging "${version}" "$nextUpstreamVersion"
 }
 
 commitAndPush() {
@@ -379,10 +462,6 @@ createProjectBranchesFromAcsVersion() {
   modifyProject "${version}"                    "${branchType}"           "${schemaMultiple}"       dev Packaging NewBranch
   commitAndPush "${message} [skip ci]"
 
-  createBranchFromTag acs-community-packaging   "${hotFixVersion}"        "${branch}"
-  modifyProject "${version}"                    "${branchType}"           "${schemaMultiple}"       dev Packaging NewBranch
-  commitAndPush "${message} [skip ci]"
-
   shareVersion=`getPomProperty                  acs-packaging              "<dependency.alfresco-enterprise-share.version>"`
   createBranchFromTag alfresco-enterprise-share "${shareVersion}"          "${branch}"
   modifyProject "${version}"                    "${branchType}"            "${schemaMultiple}"      ags Library   NewBranch
@@ -397,6 +476,10 @@ createProjectBranchesFromAcsVersion() {
   createBranchFromTag alfresco-community-repo   "${communityRepoVersion}"  "${branch}"
   modifyProject "${version}"                    "${branchType}"            "${schemaMultiple}"      ags Library   NewBranch
   commitAndPush "${message}"
+
+  createBranchFromTag acs-community-packaging   "${hotFixVersion}"        "${branch}"
+  modifyProject "${version}"                    "${branchType}"           "${schemaMultiple}"       dev Packaging NewBranch
+  commitAndPush "${message} [skip ci]"
 }
 
 modifyOriginalProjectBranchesForNextRelease() {
@@ -407,10 +490,6 @@ modifyOriginalProjectBranchesForNextRelease() {
   local message="${5}"
 
   checkout acs-packaging             "${branch}"
-  modifyProject "${version}" "${branchType}" "${schemaMultiple}" dev Packaging OriginalBranch
-  commitAndPush "${message} [skip ci]"
-
-  checkout acs-community-packaging   "${branch}"
   modifyProject "${version}" "${branchType}" "${schemaMultiple}" dev Packaging OriginalBranch
   commitAndPush "${message} [skip ci]"
 
@@ -425,6 +504,10 @@ modifyOriginalProjectBranchesForNextRelease() {
   checkout alfresco-community-repo   "${branch}"
   modifyProject "${version}" "${branchType}" "${schemaMultiple}" ags Library   OriginalBranch
   commitAndPush "${message}"
+
+  checkout acs-community-packaging   "${branch}"
+  modifyProject "${version}" "${branchType}" "${schemaMultiple}" dev Packaging OriginalBranch
+  commitAndPush "${message} [skip ci]"
 }
 
 calculateBranchVersions() {
@@ -542,8 +625,6 @@ createAndModifyProjectBranches() {
   if [[ "${hotFixRevision}" == "0" ]]
   then
     createServicePackProjectBranches "${hotFixVersion}" "${servicePackBranch}" "${servicePackVersion}"
-echo STOP AFTER ServicePack Branch
-exit 99
     modifyOriginalProjectBranches Master "${masterBranch}" "${masterVersion}" 1000
   else
     modifyOriginalProjectBranches ServicePack "${servicePackBranch}" "${servicePackVersion}" 100
@@ -563,3 +644,6 @@ main() {
 }
 
 main "$@"
+
+echo TODO version number in other files, such as those ending in .sh, .jml and .json.
+echo TODO version in dtas-config.json
