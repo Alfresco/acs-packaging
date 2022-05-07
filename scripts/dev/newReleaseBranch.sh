@@ -14,11 +14,11 @@ or ServicePack branches ready for the next release.
 Usage: $0 <hotFixVersion> [-v <masterVersion>] [-h] [-l]
   <hotFixVersion>:  HotFix Branch to be created or modified.
   -v <masterVersion>: Overrides the next development version on master so that the HotFix major version may be changed.
-                    Ignored if the master branch is not going to be modified. Must contain 3 numbers separated by dots.
+                    Ignored if the master branch is not going to be modified. Must contain 3 integers separated by dots.
   -h: Display this help
   -l: Output extra logging
   -t: use test branches: master-test and release/test/X.x.x
-  -c: cleanup (delete) local .../X.x.x branches that are about to be created or modified
+  -c: cleanup (delete) local test release/test/X.x.x branches that are about to be created or modified.
   -p: skip the push to the remote git repository
 
 Examples:
@@ -41,8 +41,6 @@ Examples:
      use by the next Hot Fix major version 25.1.0.
 ???
 }
-#  Test switching to 23.1.0 after the release of 7.2.0
-#     $ $0 7.2.0 -ptc -v 23.1.0
 
 readCommandLineArgs() {
   hotFixVersion="${1}"
@@ -64,8 +62,9 @@ readCommandLineArgs() {
           v)
               masterVersion=${OPTARG}
               ;;
-          p)
-              doPush=""
+          l)
+              loggingOut=`tty`
+              prefix="== "
               ;;
           t)
               doTest="true"
@@ -73,9 +72,8 @@ readCommandLineArgs() {
           c)
               doCleanup="true"
               ;;
-          l)
-              loggingOut=`tty`
-              prefix="== "
+          p)
+              doPush=""
               ;;
           h | *)
               usage
@@ -312,7 +310,7 @@ setVersionInPackaging() {
 
 setUpstreamVersionsInCommunityPackaging() {
   local version="${1}"
-  local $nextUpstreamVersion="${2}"
+  local nextUpstreamVersion="${2}"
 
   if [[ `getCurrentProject` == "acs-community-packaging" ]]
   then
@@ -355,7 +353,7 @@ createBranchFromTag() {
   local tag="${2}"
   local branch="${3}"
 
-  echo "${prefix}  Create ${project} ${branch} from tag ${tag}"
+  echo "${prefix}  Create ${project} branch ${branch} from tag ${tag}"
 
   cd "${ROOT_DIR}/${project}/"
   git fetch                 &>${loggingOut}
@@ -373,9 +371,9 @@ modifyPomVersion() {
   then
     if [[ "${branchType}" == "HotFix" ]]
     then
-      pomVersion="${version}.1-SNAPSHOT"
+      pomVersion="${version}.1"
     else
-      pomVersion="${version}-SNAPSHOT"
+      pomVersion="${version}"
     fi
   else
     local versionMajor=`getVersionMajor "${version}"`
@@ -386,7 +384,7 @@ modifyPomVersion() {
       then
         pomMinor=`getPomMinor`
         pomMinor=`increment "${pomMinor}"`
-        pomVersion="${pomMajor}.${pomMinor}-SNAPSHOT"
+        pomVersion="${pomMajor}.${pomMinor}"
       else
         if [[ "${branchType}" == "Master" ]]
         then
@@ -395,7 +393,7 @@ modifyPomVersion() {
           pomMajor=`increment "${pomMajor}"`
         fi
         pomMajor=`increment "${pomMajor}"`
-        pomVersion="${pomMajor}.1-SNAPSHOT"
+        pomVersion="${pomMajor}.1"
       fi
     else
       if [[ "${branchType}" == "HotFix" ]]
@@ -405,7 +403,7 @@ modifyPomVersion() {
       else
         pomLabel="1"
       fi
-      pomVersion="${version}.${pomLabel}-SNAPSHOT"
+      pomVersion="${version}.${pomLabel}"
     fi
   fi
 
@@ -518,7 +516,7 @@ calculateBranchVersions() {
   hotFixRevision=`getVersionRevision "${hotFixVersion}"`
   if [[ "${hotFixVersion}" != "${hotFixMajor}.${hotFixMinor}.${hotFixRevision}" ]]
   then
-    echo 'The <hotFixVersion> is invalid. Must contain 3 numbers separated by dots.'
+    echo 'The <hotFixVersion> is invalid. Must contain 3 integers separated by dots.'
     exit 1
   fi
 
@@ -541,7 +539,7 @@ calculateBranchVersions() {
     masterRevision=`getVersionRevision "${masterVersion}"`
     if [[ "${masterVersion}" != "${masterMajor}.${masterMinor}.${masterRevision}" ]]
     then
-      echo 'The <masterVersion> is invalid. Must contain 3 numbers separated by dots.'
+      echo 'The <masterVersion> is invalid. Must contain 3 integers separated by dots.'
       exit 1
     fi
   fi
@@ -571,7 +569,8 @@ cleanUpTestBranches() {
 }
 
 cleanUpTestProjectBranches() {
-  if [[ -n "${doCleanup}" ]]
+
+  if [[ -n "${doCleanup}" && -n "${doTest}" ]]
   then
     echo
     set +o errexit
@@ -644,6 +643,3 @@ main() {
 }
 
 main "$@"
-
-echo TODO version number in other files, such as those ending in .sh, .jml and .json.
-echo TODO version in dtas-config.json
