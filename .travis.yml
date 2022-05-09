@@ -58,6 +58,11 @@ jobs:
     - name: "Get memory"
       install: skip
       script: cat /proc/meminfo
+    - name: "Get memory on large VM"
+      vm:
+        size: large
+      install: skip
+      script: cat /proc/meminfo
 
 # jobs:
 #   include:
