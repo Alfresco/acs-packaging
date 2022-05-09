@@ -17,7 +17,7 @@ Usage: $0 <hotFixVersion> [-v <masterVersion>] [-h] [-l]
                     Ignored if the master branch is not going to be modified. Must contain 3 integers separated by dots.
   -h: Display this help
   -l: Output extra logging
-  -t: use test branches: master-test and release/test/X.x.x
+  -t: use test branches: release/test/master and release/test/X.x.x
   -c: cleanup (delete) local test release/test/X.x.x branches that are about to be created or modified.
   -p: skip the push to the remote git repository
 
@@ -547,7 +547,7 @@ calculateBranchVersions() {
   # Branches
   if [[ -n "${doTest}" ]]
   then
-    masterBranch="master-test"
+    masterBranch="release/test/master"
     hotFixBranch="release/test/${hotFixVersion}"
     servicePackBranch="release/test/${hotFixMajor}.${hotFixMinor}.N"
   else
