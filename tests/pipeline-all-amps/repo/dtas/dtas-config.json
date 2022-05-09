@@ -7,7 +7,7 @@
     "assertions": {
         "acs": {
             "edition": "Enterprise",
-            "version": "7.2.1",
+            "version": "${acs.version.major}.${acs.version.minor}.${acs.version.revision}",
             "identity": false,
             "modules": [
                 {
