@@ -147,7 +147,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
         searchQueryService.expectResultsFromQuery(query, user2, FILE_2_NAME, USER_2_FILE_NAME);
     }
 
-    @TestRail (description = "Check that exact term search works.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @TestRail (description = "Check that exact term search works. Needs exact term search to be enabled to pass.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
     @Test (groups = TestGroup.SEARCH)
     public void matchDocumentName()
     {
@@ -155,12 +155,12 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME);
     }
 
-    @TestRail (description = "Check IN('value1','value2') syntax works.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @TestRail (description = "Check IN('value1','value2') syntax works. Needs exact term search to be enabled to pass.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
     @Test (groups = TestGroup.SEARCH)
     public void checkInSyntax()
     {
-        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name IN ('" + FILE_0_NAME + "') AND CONTAINS('*')");
-        searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME);
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name IN ('" + FILE_0_NAME + "', '" + FILE_1_NAME + "') AND CONTAINS('*')");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME);
     }
 
     private FileModel createContent(String filename, String content, SiteModel site, UserModel user)

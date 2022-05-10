@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.support.TestPropertySourceUtils;
+import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -289,6 +290,9 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                        .withNetworkAliases("alfresco")
                        .waitingFor(new LogMessageWaitStrategy().withRegEx(".*Server startup in.*\\n"))
                        .withStartupTimeout(Duration.ofMinutes(7))
-                       .withExposedPorts(8080);
+                       .withExposedPorts(8080)
+                       .withClasspathResourceMapping("exactTermSearch.properties",
+                        "/usr/local/tomcat/webapps/alfresco/WEB-INF/classes/alfresco/search/elasticsearch/config/exactTermSearch.properties",
+                        BindMode.READ_ONLY);
     }
 }
