@@ -19,7 +19,7 @@ Usage: $0 <hotFixVersion> [-v <masterVersion>] [-h] [-l]
   -l: Output extra logging
   -t: use test branches: release/test/master and release/test/X.x.x
   -c: cleanup (delete) local test release/test/X.x.x branches that are about to be created or modified.
-  -p: skip the push to the remote git repository
+  -s: skip the push to the remote git repository
 
 Examples:
   1. After the release of 23.1.0 from the master branch:
@@ -35,7 +35,7 @@ Examples:
      $ $0 23.1.2
      Creates the HotFix branch for 23.1.2 and modifies the 23.1.N ServicePack branch for use by the next version 23.1.3
 
-  4. Switching to the next HotFix major version:
+  4. Switching to the next major version:
      $ $0 23.2.0 -v 25.1.0
      Creates the HotFix branch for 23.2.0, creates the 23.2.N ServicePack branch and modifies the master branch for
      use by the next Hot Fix major version 25.1.0.
@@ -57,7 +57,7 @@ readCommandLineArgs() {
   doCleanup=""
   loggingOut="/dev/null"
   prefix=""
-  while getopts "v:ptclh" arg; do
+  while getopts "v:stclh" arg; do
       case $arg in
           v)
               masterVersion=${OPTARG}
@@ -72,7 +72,7 @@ readCommandLineArgs() {
           c)
               doCleanup="true"
               ;;
-          p)
+          s)
               doPush=""
               ;;
           h | *)
@@ -241,6 +241,26 @@ EOF
   fi
 }
 
+# Tried using maven properties in this test file, but they are not currently being replaced by the build, so need to
+# edit them in this script for now.
+setAgsTestVersionPropertiesInCommunityRepo() {
+  local version="${1}"
+
+  if [[ `getCurrentProject` == "alfresco-community-repo" ]]
+  then
+    local versionMajor=`getVersionMajor "${version}"`
+    local versionMinor=`getVersionMinor "${version}"`
+    local versionRevision=`getVersionRevision "${version}"`
+    echo "${prefix}    set AGS test version.properties: version.major version.minor version.revision ${versionMajor} ${versionMinor} ${versionRevision}"
+    ed -s amps/ags/rm-community/rm-community-repo/test/resources/alfresco/version.properties &>${loggingOut} << EOF
+/.*version.major.*$/s//version.major=${versionMajor}/
+/.*version.minor.*$/s//version.minor=${versionMinor}/
+/.*version.revision.*$/s//version.revision=${versionRevision}/
+wq
+EOF
+  fi
+}
+
 setAcsVersionInShare() {
   local version="${1}"
 
@@ -309,18 +329,20 @@ setVersionInPackaging() {
 }
 
 setUpstreamVersionsInCommunityPackaging() {
-  local version="${1}"
-  local nextUpstreamVersion="${2}"
+  local nextCommunityRepoVersion="${1}"
+  local nextEnterpriseShareVersion="${2}"
 
   if [[ `getCurrentProject` == "acs-community-packaging" ]]
   then
-    echo "${prefix}    set <dependency.alfresco-community-repo.version> ${nextUpstreamVersion}"
-    echo "${prefix}    set <dependency.alfresco-community-share.version> ${nextUpstreamVersion}"
-    echo "${prefix}    set <dependency.acs-packaging.version> ${version}"
+    echo "${prefix}    set parent pom <version> ${nextCommunityRepoVersion}"
+    echo "${prefix}    set <dependency.alfresco-community-repo.version> ${nextCommunityRepoVersion}"
+    echo "${prefix}    set <dependency.alfresco-community-share.version> ${nextEnterpriseShareVersion}"
+    # Do not change the <dependency.acs-packaging.version> as we will need a version of the share distribution that
+    # exists, if we want to do a test build. acs-packaging will update it when a release is made.
     ed -s pom.xml &>${loggingOut} << EOF
-/.*dependency.alfresco-community-repo.version.*$/s//        <dependency.alfresco-community-repo.version>${nextUpstreamVersion}<\/dependency.alfresco-community-repo.version>/
-/.*dependency.alfresco-community-share.version.*$/s//        <dependency.alfresco-community-share.version>${nextUpstreamVersion}<\/dependency.alfresco-community-share.version>/
-/.*dependency.acs-packaging.version.*$/s//        <dependency.acs-packaging.version>${version}<\/dependency.acs-packaging.version>/
+/        <version>.*$/s//        <version>${nextCommunityRepoVersion}<\/version>/
+/.*dependency.alfresco-community-repo.version.*$/s//        <dependency.alfresco-community-repo.version>${nextCommunityRepoVersion}<\/dependency.alfresco-community-repo.version>/
+/.*dependency.alfresco-community-share.version.*$/s//        <dependency.alfresco-community-share.version>${nextEnterpriseShareVersion}<\/dependency.alfresco-community-share.version>/
 wq
 EOF
   fi
@@ -409,7 +431,10 @@ modifyPomVersion() {
 
   if [[ `getCurrentProject` == "alfresco-community-repo" ]]
   then
-    nextUpstreamVersion="${pomVersion}"
+    nextCommunityRepoVersion="${pomVersion}"
+  elif [[ `getCurrentProject` == "alfresco-enterprise-share" ]]
+  then
+    nextEnterpriseShareVersion="${pomVersion}"
   fi
 
   pomVersion="${pomVersion}-SNAPSHOT"
@@ -428,10 +453,11 @@ modifyProject() {
   setScmTag "${newBranch}" HEAD
   incrementSchema "${schemaMultiple}"
   setAcsVersionInCommunityRepo "${version}"
+  setAgsTestVersionPropertiesInCommunityRepo "${version}"
   setAcsVersionLabelInEnterpriseRepo "${version}" "${branchType}"
   setAcsVersionInShare "${version}"
   setVersionInPackaging "${version}" "${branchType}" "${projectType}"
-  setUpstreamVersionsInCommunityPackaging "${version}" "$nextUpstreamVersion"
+  setUpstreamVersionsInCommunityPackaging "${nextCommunityRepoVersion}" "${nextEnterpriseShareVersion}"
 }
 
 commitAndPush() {
