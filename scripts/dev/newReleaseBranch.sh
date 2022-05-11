@@ -155,7 +155,7 @@ setPomVersion() {
   local pomVersion="${1}"
   local profiles="${2}"
 
-  echo "${prefix}    Set pom version ${pomVersion} using profiles: ${profiles}"
+  echo "${prefix}    set pom version ${pomVersion} using profiles: ${profiles}"
   mvn versions:set -DnewVersion="${pomVersion}" -DgenerateBackupPoms=false -P"${profiles}" &>${loggingOut}
 }
 
@@ -172,7 +172,7 @@ setScmTag() {
 
   if [[ "${newBranch}" == "NewBranch" ]]
   then
-    echo "${prefix}    Set <scm><tag> ${tag}"
+    echo "${prefix}    set <scm><tag> ${tag}"
     ed -s pom.xml &>${loggingOut} << EOF
 /<scm>
 /<tag>.*<\/tag>/s//<tag>${tag}<\/tag>/
