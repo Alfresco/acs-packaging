@@ -586,12 +586,21 @@ calculateBranchVersions() {
 cleanUpTestBranches() {
   local project="${1}"
 
-  echo "${prefix}Clean up ${hotFixBranch} and ${servicePackBranch} on ${project}"
-  cd "${ROOT_DIR}/${project}/"
-  git checkout .                       &>${loggingOut}
-  git checkout "${masterBranch}"       &>${loggingOut}
-  git branch -D "${hotFixBranch}"      &>${loggingOut}
-  git branch -D "${servicePackBranch}" &>${loggingOut}
+  if [[ "${hotFixRevision}" == "0" ]]
+  then
+    echo "${prefix}Clean up ${hotFixBranch} and ${servicePackBranch} on ${project}"
+    cd "${ROOT_DIR}/${project}/"
+    git checkout .                         &>${loggingOut}
+    git checkout  "${masterBranch}"      &>${loggingOut}
+    git branch -D "${hotFixBranch}"      &>${loggingOut}
+    git branch -D "${servicePackBranch}" &>${loggingOut}
+  else
+    echo "${prefix}Clean up ${hotFixBranch} on ${project}"
+    cd "${ROOT_DIR}/${project}/"
+    git checkout .                         &>${loggingOut}
+    git checkout  "${servicePackBranch}" &>${loggingOut}
+    git branch -D "${hotFixBranch}"      &>${loggingOut}
+  fi
 }
 
 cleanUpTestProjectBranches() {
