@@ -11,10 +11,11 @@ usage() {
 Creates HotFix and ServicePack (.N) branches for repo, share and packaging projects, and updates the master
 or ServicePack branches ready for the next release.
 
-Usage: $0 <hotFixVersion> [-v <masterVersion>] [-h] [-l]
-  <hotFixVersion>:  HotFix Branch to be created or modified.
-  -v <masterVersion>: Overrides the next development version on master so that the HotFix major version may be changed.
-                    Ignored if the master branch is not going to be modified. Must contain 3 integers separated by dots.
+Usage: $0 <releasedVersion> [-v <masterVersion>] [-h] [-l]
+  <releasedVersion>:  The version just released. Used in the new HotFix Branch name release/<releasedVersion>.
+                      Must contain 3 integers separated by dots.
+  -v <masterVersion>: Overrides the next development version on master so that the major version may be changed.
+                      Ignored if the master branch is not going to be modified. Must contain 3 integers separated by dots.
   -h: Display this help
   -l: Output extra logging
   -t: use test branches: release/test/master and release/test/X.x.x
@@ -542,7 +543,7 @@ calculateBranchVersions() {
   hotFixRevision=`getVersionRevision "${hotFixVersion}"`
   if [[ "${hotFixVersion}" != "${hotFixMajor}.${hotFixMinor}.${hotFixRevision}" ]]
   then
-    echo 'The <hotFixVersion> is invalid. Must contain 3 integers separated by dots.'
+    echo 'The <releasedVersion> is invalid. Must contain 3 integers separated by dots.'
     exit 1
   fi
 
