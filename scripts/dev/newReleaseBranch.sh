@@ -11,7 +11,7 @@ usage() {
 Creates HotFix and ServicePack (.N) branches for repo, share and packaging projects, and updates the master
 or ServicePack branches ready for the next release.
 
-Usage: $0 <releasedVersion> [-v <masterVersion>] [-h] [-l]
+Usage: $0 <releasedVersion> [-v <masterVersion>] [-h] [-l] [-t] [-c] [-s]
   <releasedVersion>:  The version just released. Used in the new HotFix Branch name release/<releasedVersion>.
                       Must contain 3 integers separated by dots.
   -v <masterVersion>: Overrides the next development version on master so that the major version may be changed.
