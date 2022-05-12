@@ -16,7 +16,9 @@ import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
@@ -170,6 +172,41 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     {
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name IN ('" + FILE_0_NAME + "', '" + FILE_1_NAME + "') AND CONTAINS('*')");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME);
+    }
+
+    @Test (groups = TestGroup.SEARCH)
+    public void negative_basicCMISQuery_missingFrom()
+    {
+        // note: ideally 400 but currently 500 :-(
+
+        SearchRequest query1 = req("cmis", "SELECT *");
+        searchQueryService.expectErrorFromQuery(query1, user1, HttpStatus.INTERNAL_SERVER_ERROR, "expecting FROM");
+
+        SearchRequest query2 = req("cmis", "SELECT * FROM");
+        searchQueryService.expectErrorFromQuery(query2, user1, HttpStatus.INTERNAL_SERVER_ERROR, "no viable alternative at input");
+    }
+
+    @Test (groups = TestGroup.SEARCH)
+    public void negative_basicCMISQuery_invalidType()
+    {
+        // note: ideally 400 but currently 500 :-(
+        SearchRequest query = req("SELECT * FROM cmis:unknown");
+        searchQueryService.expectErrorFromQuery(query, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown property");
+    }
+
+    @Test (groups = TestGroup.SEARCH)
+    public void negative_basicCMISQuery_invalidFieldName()
+    {
+        // note: ideally 400 but currently 500 :-(
+
+        SearchRequest query1 = req("SELECT cmis:unknown FROM cmis:document");
+        searchQueryService.expectErrorFromQuery(query1, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown property");
+    
+        SearchRequest query2 = req("SELECT cm:unknown FROM cmis:document");
+        searchQueryService.expectErrorFromQuery(query2, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown property");
+
+        SearchRequest query3 = req("SELECT my:custom FROM cmis:document");
+        searchQueryService.expectErrorFromQuery(query3, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown property");
     }
 
     private FileModel createContent(String filename, String content, SiteModel site, UserModel user)

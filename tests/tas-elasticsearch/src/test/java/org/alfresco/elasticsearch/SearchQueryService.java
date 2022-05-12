@@ -92,6 +92,14 @@ public class SearchQueryService
         }
     }
 
+    public void expectErrorFromQuery(SearchRequest searchRequest, org.alfresco.utility.model.UserModel user, 
+                                        HttpStatus expectedStatusCode, String containsErrorString)
+    {
+        client.authenticateUser(user).withSearchAPI().search(searchRequest);
+        client.assertStatusCodeIs(expectedStatusCode);
+        client.assertLastError().containsSummary(containsErrorString);
+    }
+
     private void assertNodeRefs(SearchResponse actual, String... expected)
     {
         Set<String> result = actual.getEntries().stream()
