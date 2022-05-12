@@ -1,43 +1,67 @@
 package org.alfresco.elasticsearch.upgrade;
 
-import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.UncheckedIOException;
-import java.net.HttpURLConnection;
+import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
 import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
+import java.time.Instant;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.google.gson.Gson;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class FromSolrUpgradeTest
 {
     @Test
-    public void testIt()
+    public void testIt() throws IOException, InterruptedException
     {
-        RepoWithSolrSearchEngine.createRunning();
+        try (RepoWithSolrSearchEngine initialEnv = RepoWithSolrSearchEngine.createRunning())
+        {
+            initialEnv.expectSearchResult(Duration.ofSeconds(5), "alabama", Set.of());
+            initialEnv.uploadFile(getClass().getResource("test.pdf"), "test1.pdf");
+            initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf"));
+        }
     }
 }
 
 class RepoWithSolrSearchEngine implements Closeable
 {
     private final Network network;
+
     private final GenericContainer alfresco;
     private final GenericContainer postgres;
     private final GenericContainer solr6;
+    private final GenericContainer transformRouter;
+    private final GenericContainer transformCoreAllInOne;
+    private final GenericContainer sharedFileStore;
+    private final GenericContainer activemq;
+
+    private RepoHttpClient repoHttpClient;
 
     public static RepoWithSolrSearchEngine createRunning()
     {
@@ -57,8 +81,11 @@ class RepoWithSolrSearchEngine implements Closeable
                 .withUsername("alfresco")
                 .withDatabaseName("alfresco")
                 .withNetwork(network)
-                .withNetworkAliases("postgres")
-                .withStartupTimeout(Duration.ofMinutes(2));
+                .withNetworkAliases("postgres");
+
+        activemq = new GenericContainer("alfresco/alfresco-activemq:5.16.4-jre11-centos7")
+                .withNetwork(network)
+                .withNetworkAliases("activemq");
 
         solr6 = new GenericContainer("alfresco/alfresco-search-services:2.0.3")
                 .withEnv("SOLR_ALFRESCO_HOST", "alfresco")
@@ -71,33 +98,30 @@ class RepoWithSolrSearchEngine implements Closeable
                 .withNetwork(network)
                 .withNetworkAliases("solr6");
 
-/*
-* solr6:
-    image: alfresco/alfresco-search-services:2.0.3
-    deploy:
-      resources:
-        limits:
-          memory: 1536M
-    environment:
-      # Solr needs to know how to register itself with Alfresco
-      SOLR_ALFRESCO_HOST: "alfresco"
-      SOLR_ALFRESCO_PORT: "8080"
-      # Alfresco needs to know how to call solr
-      SOLR_SOLR_HOST: "solr6"
-      SOLR_SOLR_PORT: "8983"
-      # Create the default alfresco and archive cores
-      SOLR_CREATE_ALFRESCO_DEFAULTS: "alfresco,archive"
-      # HTTPS or SECRET
-      ALFRESCO_SECURE_COMMS: "secret"
-      # SHARED SECRET VALUE
-      JAVA_TOOL_OPTIONS: "
-          -Dalfresco.secureComms.secret=secret
-        "
-    ports:
-      - "8083:8983" # Browser port
-* */
+        sharedFileStore = new GenericContainer("quay.io/alfresco/alfresco-shared-file-store:0.16.1")
+                .withEnv("JAVA_OPTS", " -Xmx384m -XshowSettings:vm")
+                .withEnv("scheduler.content.age.millis", "86400000")
+                .withEnv("scheduler.cleanup.interval", "86400000")
+                .withNetwork(network)
+                .withNetworkAliases("shared-file-store");
 
-        alfresco = new GenericContainer("quay.io/alfresco/alfresco-content-repository:latest")
+        transformCoreAllInOne = new GenericContainer("alfresco/alfresco-transform-core-aio:2.5.7")
+                .withEnv("JAVA_OPTS", " -Xmx1024m -XshowSettings:vm")
+                .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
+                .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
+                .withNetwork(network)
+                .withNetworkAliases("transform-core-aio");
+
+        transformRouter = new GenericContainer<>("quay.io/alfresco/alfresco-transform-router:1.5.2")
+                .withEnv("JAVA_OPTS", " -Xmx384m -XshowSettings:vm")
+                .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
+                .withEnv("CORE_AIO_URL", "http://transform-core-aio:8090")
+                .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
+                .withNetwork(network)
+                .withNetworkAliases("transform-router");
+
+        //alfresco = new GenericContainer("quay.io/alfresco/alfresco-content-repository:latest")
+        alfresco = new GenericContainer("quay.io/alfresco/alfresco-content-repository:7.2.0")
                 .withEnv("JAVA_TOOL_OPTIONS",
                         "-Dencryption.keystore.type=JCEKS " +
                                 "-Dencryption.cipherAlgorithm=DESede/CBC/PKCS5Padding " +
@@ -127,85 +151,163 @@ class RepoWithSolrSearchEngine implements Closeable
                                 "-Xmx768m -XshowSettings:vm")
                 .withNetwork(network)
                 .withNetworkAliases("alfresco")
-                .withExposedPorts(8080);
+                .withAccessToHost(true).withExposedPorts(8080);
+    }
+
+    public void expectSearchResult(Duration timeout, String term, Set<String> expected)
+    {
+        final Instant start = Instant.now();
+        while (Instant.now().isBefore(start.plus(timeout)))
+        {
+            try
+            {
+                try
+                {
+                    Optional<Set<String>> actual = repoHttpClient.searchForFiles(term);
+                    if (actual.map(expected::equals).orElse(false)) return;
+                    Thread.sleep(500);
+                }
+                catch (IOException e)
+                {
+                    System.out.println("Failed " + e.getClass() + " -> " + e.getMessage());
+                    Thread.sleep(1_000);
+                }
+            } catch (InterruptedException e)
+            {
+                Thread.currentThread().interrupt();
+                throw new RuntimeException("Interrupted.", e);
+            }
+        }
+        Assert.fail("Couldn't reach the point where `" + expected + "` was received.");
     }
 
     @Override
     public void close()
     {
+        allContainers().forEach(GenericContainer::stop);
+    }
 
+    private Stream<GenericContainer> allContainers()
+    {
+        return Stream.of(solr6, postgres, activemq, sharedFileStore, transformCoreAllInOne, transformRouter, alfresco);
     }
 
     private void start()
     {
-        postgres.start();
-        solr6.start();
-        alfresco.start();
+        allContainers().forEach(GenericContainer::start);
 
-        LocalDateTime start = LocalDateTime.now();
+        repoHttpClient = new RepoHttpClient(URI.create("http://" + alfresco.getHost() + ":" + alfresco.getMappedPort(8080)));
 
-        while (LocalDateTime.now().isBefore(start.plus(5, ChronoUnit.MINUTES)))
+        expectSearchResult(Duration.ofMinutes(3), "babekyrtso", Set.of());
+    }
+
+    public void uploadFile(URL contentUrl, String fileName) throws IOException, InterruptedException
+    {
+        repoHttpClient.uploadFile(contentUrl, fileName);
+    }
+
+    public static class RepoHttpClient
+    {
+        private static final int HTTP_TIMEOUT_MS = 5_000;
+
+        final CloseableHttpClient client = HttpClientBuilder.create()
+                                                            .setDefaultRequestConfig(
+                                                                    RequestConfig.copy(RequestConfig.DEFAULT)
+                                                                                 .setConnectionRequestTimeout(HTTP_TIMEOUT_MS)
+                                                                                 .setSocketTimeout(HTTP_TIMEOUT_MS)
+                                                                                 .setConnectionRequestTimeout(HTTP_TIMEOUT_MS)
+                                                                                 .setRedirectsEnabled(false)
+                                                                                 .build())
+                                                            .build();
+
+        final Gson gson = new Gson();
+        private final URI searchApiUri;
+        private final URI fileUploadApiUri;
+
+        RepoHttpClient(final URI repoBaseUri)
         {
-            //System.out.println(LocalDateTime.now() + ":");
-            try
+            searchApiUri = repoBaseUri.resolve("/alfresco/api/-default-/public/search/versions/1/search");
+            fileUploadApiUri = repoBaseUri.resolve("/alfresco/api/-default-/public/alfresco/versions/1/nodes/-my-/children");
+        }
+
+        public String uploadFile(URL contentUrl, String fileName) throws IOException
+        {
+            try (InputStream is = contentUrl.openStream())
             {
-                HttpURLConnection c = (HttpURLConnection) new URL("http://localhost:" + alfresco.getMappedPort(8080) + "/alfresco/api/-default-/public/search/versions/1/search").openConnection();
-                c.setConnectTimeout(5_000);
-                c.setReadTimeout(5_000);
-                c.setDoOutput(true);
-                c.setRequestProperty("Authorization", "Basic YWRtaW46YWRtaW4=");
-                c.setRequestProperty("Content-Type", "application/json");
-                c.setRequestMethod("POST");
+                final HttpEntity uploadEntity = MultipartEntityBuilder
+                        .create()
+                        .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+                        .addBinaryBody("filedata", is, ContentType.DEFAULT_BINARY, fileName)
+                        .build();
 
+                final HttpPost uploadRequest = new HttpPost(fileUploadApiUri);
+                uploadRequest.setHeader("Authorization", "Basic YWRtaW46YWRtaW4=");
+                uploadRequest.setEntity(uploadEntity);
 
-                try (OutputStreamWriter writer = new OutputStreamWriter(c.getOutputStream()))
-                {
-                    String query = "{\"query\":{\"language\":\"afts\",\"query\":\"alabama\"}}";
-                    //System.out.println("writing: " + query);
-                    writer.write(query);
-                }
+                final Optional<Map<String, ?>> uploadResult = getJsonResponse(uploadRequest, HttpStatus.SC_CREATED);
 
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(c.getInputStream())))
-                {
-                    String response = reader.lines().collect(Collectors.joining(System.lineSeparator()));
-                    if (c.getResponseCode() == 200)
-                    {
-                        Map<String, ?> searchResponse = new Gson().fromJson(response, Map.class);
-                        Collection<?> entries = ((Collection<?>) ((Map<String, ?>) searchResponse.get("list")).get("entries"));
-                        if (entries.isEmpty())
-                        {
-                            System.out.println("Done in " + Duration.between(start, LocalDateTime.now()));
-                            break;
-                        }
-                    }
-                }
-            } catch (IOException | UncheckedIOException e)
-            {
-                //System.err.println(e.getClass() + " -> " + e.getMessage());
+                System.out.println(uploadResult);
+                return "OK";
+
             }
         }
-    }
-}
 
-class TestEnvironment implements Closeable
-{
-    private final Map<String, Network> networks = new HashMap<>();
-    private final Map<String, GenericContainer> containers = new HashMap<>();
+        public Optional<Set<String>> searchForFiles(String term) throws IOException
+        {
+            final HttpPost searchRequest = new HttpPost(searchApiUri);
+            searchRequest.setHeader("Authorization", "Basic YWRtaW46YWRtaW4=");
+            searchRequest.setEntity(new StringEntity(searchQuery(term), ContentType.APPLICATION_JSON));
 
-    public void createContainer()
-    {
-        final GenericContainer c = new GenericContainer<>("quay.io/alfresco/alfresco-content-repository:latest").withExposedPorts(8080);
+            final Optional<Map<String, ?>> searchResult = getJsonResponse(searchRequest, HttpStatus.SC_OK);
 
-        c.start();
-    }
+            System.out.println(searchResult);
+            final Optional<Collection<?>> possibleEntries = searchResult
+                    .map(r -> r.get("list"))
+                    .filter(Map.class::isInstance).map(Map.class::cast)
+                    .map(m -> m.get("entries"))
+                    .filter(Collection.class::isInstance).map(Collection.class::cast);
 
-    @Override
-    public void close()
-    {
-        networks.values().forEach(n -> n.close());
-        networks.clear();
+            if (possibleEntries.isEmpty())
+            {
+                return Optional.empty();
+            }
 
-        containers.values().forEach(c -> c.close());
-        containers.clear();
+            final Collection<?> entries = possibleEntries.get();
+            final Set<String> names = entries
+                    .stream()
+                    .filter(Map.class::isInstance).map(Map.class::cast)
+                    .map(m -> m.get("entry"))
+                    .filter(Map.class::isInstance).map(Map.class::cast)
+                    .map(m -> m.get("name"))
+                    .filter(String.class::isInstance).map(String.class::cast)
+                    .collect(Collectors.toUnmodifiableSet());
+
+            return Optional.of(names);
+        }
+
+        private Optional<Map<String, ?>> getJsonResponse(HttpUriRequest request, int requiredStatusCode) throws IOException
+        {
+            try (CloseableHttpResponse response = client.execute(request))
+            {
+                if (response.getStatusLine().getStatusCode() != requiredStatusCode)
+                {
+                    System.err.println(EntityUtils.toString(response.getEntity()));
+                    return Optional.empty();
+                }
+
+                final ContentType contentType = ContentType.parse(response.getEntity().getContentType().getValue());
+                if (!ContentType.APPLICATION_JSON.getMimeType().equals(contentType.getMimeType()))
+                {
+                    return Optional.empty();
+                }
+
+                return Optional.of(gson.fromJson(EntityUtils.toString(response.getEntity()), Map.class));
+            }
+        }
+
+        private String searchQuery(String term)
+        {
+            return "{\"query\":{\"language\":\"afts\",\"query\":\"" + term + "\"}}";
+        }
     }
 }
