@@ -147,7 +147,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
         searchQueryService.expectResultsFromQuery(query, user2, FILE_2_NAME, USER_2_FILE_NAME);
     }
 
-    @TestRail (description = "Check that exact term search works. Needs exact term search to be enabled to pass.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @TestRail (description = "Check that we can match a document's name. Needs exact term search to be enabled to pass.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
     @Test (groups = TestGroup.SEARCH)
     public void matchDocumentName()
     {
