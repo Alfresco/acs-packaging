@@ -256,6 +256,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     protected GenericContainer createAlfrescoContainer()
     {
         return new GenericContainer("alfresco/alfresco-content-repository:latest")
+                       .withEnv("CATALINA_OPTS", "\"-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n\"")
                        .withEnv("JAVA_TOOL_OPTIONS",
                                 "-Dencryption.keystore.type=JCEKS " +
                                 "-Dencryption.cipherAlgorithm=DESede/CBC/PKCS5Padding " +
@@ -290,7 +291,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                        .withNetworkAliases("alfresco")
                        .waitingFor(new LogMessageWaitStrategy().withRegEx(".*Server startup in.*\\n"))
                        .withStartupTimeout(Duration.ofMinutes(7))
-                       .withExposedPorts(8080)
+                       .withExposedPorts(8080, 8000)
                        .withClasspathResourceMapping("exactTermSearch.properties",
                         "/usr/local/tomcat/webapps/alfresco/WEB-INF/classes/alfresco/search/elasticsearch/config/exactTermSearch.properties",
                         BindMode.READ_ONLY);

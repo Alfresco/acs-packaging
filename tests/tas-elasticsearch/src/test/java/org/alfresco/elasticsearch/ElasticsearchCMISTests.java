@@ -59,6 +59,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     private UserModel userMultiSite;
     private SiteModel siteModel1;
     private SiteModel siteModel2;
+    private FileModel file0;
 
     /**
      * Data will be prepared using the schema below:
@@ -87,7 +88,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
         dataUser.addUserToSite(userMultiSite, siteModel1, UserRole.SiteContributor);
         dataUser.addUserToSite(userMultiSite, siteModel2, UserRole.SiteContributor);
 
-        createContent(FILE_0_NAME, "This is the first test containing " + UNIQUE_WORD, siteModel1, user1);
+        file0 = createContent(FILE_0_NAME, "This is the first test containing " + UNIQUE_WORD, siteModel1, user1);
         createContent(FILE_1_NAME, "This is another TEST file containing " + UNIQUE_WORD, siteModel1, user1);
         createContent(FILE_2_NAME, "This Test file is owned by user2 " + UNIQUE_WORD, siteModel1, user2);
         // Remove user 2 from site, but he keeps ownership on FILE_2_NAME.
@@ -111,6 +112,14 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
         // This query will be handled by the DB rather than ES.
         SearchRequest query = req("cmis", "SELECT cmis:name FROM cmis:document");
         searchQueryService.expectSomeResultsFromQuery(query, user1);
+    }
+
+    @TestRail (description = "Check documents can be selected using cmis:objectId.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void objectIdQuery()
+    {
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:objectId = '" + file0.getNodeRef() + "' AND CONTAINS('*')");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME);
     }
 
     @TestRail (description = "Check we can use the CMIS LIKE syntax to match a prefix.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
