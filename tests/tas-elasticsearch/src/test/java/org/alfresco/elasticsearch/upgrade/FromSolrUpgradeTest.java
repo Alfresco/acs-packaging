@@ -43,8 +43,12 @@ public class FromSolrUpgradeTest
         try (RepoWithSolrSearchEngine initialEnv = RepoWithSolrSearchEngine.createRunning())
         {
             initialEnv.expectSearchResult(Duration.ofSeconds(5), "alabama", Set.of());
+
             initialEnv.uploadFile(getClass().getResource("test.pdf"), "test1.pdf");
             initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf"));
+
+            initialEnv.uploadFile(getClass().getResource("test.pdf"), "test2.pdf");
+            initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf", "test2.pdf"));
         }
     }
 }
