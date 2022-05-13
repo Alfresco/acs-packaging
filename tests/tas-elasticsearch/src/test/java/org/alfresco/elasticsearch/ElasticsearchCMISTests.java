@@ -177,7 +177,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void negative_basicCMISQuery_missingFrom()
     {
-        // note: ideally 400 but currently 500 :-(
+        // note: ideally 400 but currently 500 (also for Solr) :-(
 
         SearchRequest query1 = req("cmis", "SELECT *");
         searchQueryService.expectErrorFromQuery(query1, user1, HttpStatus.INTERNAL_SERVER_ERROR, "expecting FROM");
@@ -189,24 +189,24 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void negative_basicCMISQuery_invalidType()
     {
-        // note: ideally 400 but currently 500 :-(
+        // note: ideally 400 but currently 500 (also for Solr) :-(
         SearchRequest query = req("SELECT * FROM cmis:unknown");
-        searchQueryService.expectErrorFromQuery(query, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown property");
+        searchQueryService.expectErrorFromQuery(query, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown property: {http://www.alfresco.org/model/content/1.0}cmis");
     }
 
     @Test (groups = TestGroup.SEARCH)
     public void negative_basicCMISQuery_invalidFieldName()
     {
-        // note: ideally 400 but currently 500 :-(
+        // note: ideally 400 but currently 500 (also for Solr) :-(
 
         SearchRequest query1 = req("SELECT cmis:unknown FROM cmis:document");
-        searchQueryService.expectErrorFromQuery(query1, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown property");
+        searchQueryService.expectErrorFromQuery(query1, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown property: {http://www.alfresco.org/model/content/1.0}cmis");
     
         SearchRequest query2 = req("SELECT cm:unknown FROM cmis:document");
-        searchQueryService.expectErrorFromQuery(query2, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown property");
+        searchQueryService.expectErrorFromQuery(query2, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown property: {http://www.alfresco.org/model/content/1.0}cm");
 
         SearchRequest query3 = req("SELECT my:custom FROM cmis:document");
-        searchQueryService.expectErrorFromQuery(query3, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown property");
+        searchQueryService.expectErrorFromQuery(query3, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown property: {http://www.alfresco.org/model/content/1.0}my");
     }
 
     private FileModel createContent(String filename, String content, SiteModel site, UserModel user)
