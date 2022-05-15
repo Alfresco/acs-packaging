@@ -99,22 +99,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
         createContent(USER_2_FILE_NAME, "This is a test file that user1 does not have access to, but it still contains " + UNIQUE_WORD, siteModel2, user2);
     }
 
-    @TestRail (description = "Verify that we can perform a basic CMIS query against Elasticsearch.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
-    @Test (groups = TestGroup.SEARCH)
-    public void basicCMISQuery()
-    {
-        SearchRequest query = req("cmis", "SELECT cmis:name FROM cmis:document WHERE CONTAINS('*')");
-        searchQueryService.expectSomeResultsFromQuery(query, user1);
-    }
-
-    @TestRail(description = "Verify that we can perform a basic CMIS query against the DB.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
-    @Test(groups = TestGroup.SEARCH)
-    public void basicCMISQueryAgainstDB()
-    {
-        // This query will be handled by the DB rather than ES.
-        SearchRequest query = req("cmis", "SELECT cmis:name FROM cmis:document");
-        searchQueryService.expectSomeResultsFromQuery(query, user1);
-    }
+    //TODO Basic CMIS Query: "SELECT * FROM cmis:document"
 
     @TestRail (description = "Check documents can be selected using cmis:objectId.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
     @Test (groups = TestGroup.SEARCH)
@@ -128,7 +113,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void matchNamesLikePrefix()
     {
-        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name LIKE '" + PREFIX + "%' AND CONTAINS('*')");
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name LIKE '" + PREFIX + "%'");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
     }
 
@@ -136,7 +121,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void matchNamesLikeSuffix()
     {
-        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name LIKE '%" + SUFFIX + "' AND CONTAINS('*')");
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name LIKE '%" + SUFFIX + "'");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
     }
 
@@ -154,7 +139,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     public void checkPermissionForUser2()
     {
         // Reuse the prefix query to check which documents user2 can access.
-        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name LIKE '" + PREFIX + "%' AND CONTAINS('*')");
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name LIKE '" + PREFIX + "%'");
         searchQueryService.expectResultsFromQuery(query, user2, FILE_2_NAME, USER_2_FILE_NAME);
     }
 
@@ -162,7 +147,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void matchDocumentName()
     {
-        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name = '" + FILE_0_NAME + "' AND CONTAINS('*')");
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name = '" + FILE_0_NAME + "'");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME);
     }
 
@@ -170,7 +155,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void checkInSyntax()
     {
-        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name IN ('" + FILE_0_NAME + "', '" + FILE_1_NAME + "') AND CONTAINS('*')");
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name IN ('" + FILE_0_NAME + "', '" + FILE_1_NAME + "')");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME);
     }
 

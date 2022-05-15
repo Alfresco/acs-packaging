@@ -286,6 +286,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 "-DlocalTransform.core-aio.url=http://transform-core-aio:8090/ " +
                                 "-Dcsrf.filter.enabled=false " +
                                 "-Dalfresco.restApi.basicAuthScheme=true " +
+                                "-Dsolr.query.cmis.queryConsistency=EVENTUAL " +
                                 "-Xms1500m -Xmx1500m ")
                        .withNetwork(network)
                        .withNetworkAliases("alfresco")
