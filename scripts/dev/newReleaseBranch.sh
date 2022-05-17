@@ -349,6 +349,12 @@ EOF
   fi
 }
 
+# Each version of the Repo has a schema number stored in it. When we need to patch something, generally the database,
+# we increment the schema by one and create a patch with that number. As a result it is possible for the repo to do the
+# patching on startup. So that we have enough space between versions each major or minor version uses the next multiple
+# of 1000 and each service pack uses the next multiple of 100. Actually patches don't have to have unique numbers, but
+# it does make it simpler to understand what is going to happen. The following code does this calculation with 1000 or
+# 100 being passed in as an argument.
 incrementSchema() {
   local schemaMultiple="${1}"
 
@@ -411,7 +417,13 @@ modifyPomVersion() {
       else
         if [[ "${branchType}" == "Master" ]]
         then
-          # Allow for two service packs before the next release off master
+          # Allow for two service packs before the next release off master.
+          # Prior to 23.1, the pom version of repo and share projects had a fixed number followed by a dot and an
+          # incrementing number. For example ACS 7.0.0 used 8.N, ACS 7.1.0 used 11.N, ACS 7.2.0 used 14.N. To allow
+          # for a couple of service packs between these it would jump two numbers. ACS 7.1.1 used 12.N. Had there been
+          # an ACS 7.1.2 it would have used 13.N. Not that we have done it for years, if there was a need for a third
+          # service pack we would have had to do something special and go down another level. For example ACS 7.1.3
+          # might have used 13.300.N
           pomMajor=`increment "${pomMajor}"`
           pomMajor=`increment "${pomMajor}"`
         fi
