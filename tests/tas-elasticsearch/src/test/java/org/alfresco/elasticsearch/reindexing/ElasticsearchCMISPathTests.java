@@ -107,7 +107,7 @@ public class ElasticsearchCMISPathTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void inTreeQuery_selectSubfolders()
     {
-        SearchRequest query = req("cmis", "SELECT * FROM cmis:folder WHERE IN_TREE('" + folder0.getNodeRef() + "') AND CONTAINS('*')");
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:folder WHERE IN_TREE('" + folder0.getNodeRef() + "')");
         searchQueryService.expectResultsFromQuery(query, user, FOLDER_00_NAME, FOLDER_000_NAME);
     }
 
@@ -115,7 +115,7 @@ public class ElasticsearchCMISPathTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void inTreeQuery_selectDocuments()
     {
-        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE IN_TREE('" + folder0.getNodeRef() + "') AND CONTAINS('*')");
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE IN_TREE('" + folder0.getNodeRef() + "')");
         searchQueryService.expectResultsFromQuery(query, user, DOC_0000_NAME, DOC_00_NAME, DOC_01_NAME);
     }
 
