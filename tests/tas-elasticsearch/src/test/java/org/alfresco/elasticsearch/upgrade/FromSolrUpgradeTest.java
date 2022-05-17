@@ -16,6 +16,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -23,6 +24,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.github.dockerjava.api.DockerClient;
+import com.github.dockerjava.api.command.ConnectToNetworkCmd;
+import com.github.dockerjava.api.model.ContainerNetwork;
 import com.google.common.util.concurrent.Uninterruptibles;
 import com.google.gson.Gson;
 
@@ -40,10 +44,12 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.Container.ExecResult;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.images.builder.Transferable;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -94,6 +100,7 @@ class UpgradeScenario implements AutoCloseable
     private final GenericContainer solr6;
     private final ACSEnv initialEnv;
 
+    private final Path sharedContentStorePath;
     private final Elasticsearch elasticsearch;
 
     private final Network mirroredEnvNetwork = Network.newNetwork();
@@ -101,6 +108,14 @@ class UpgradeScenario implements AutoCloseable
 
     public UpgradeScenario()
     {
+        try
+        {
+            sharedContentStorePath = Files.createTempDirectory("alf_data");
+        } catch (IOException e)
+        {
+            throw new RuntimeException("Unexpected.", e);
+        }
+
         solr6 = new GenericContainer("alfresco/alfresco-search-services:2.0.3")
                 .withEnv("SOLR_ALFRESCO_HOST", "alfresco")
                 .withEnv("SOLR_ALFRESCO_PORT", "8080")
@@ -112,10 +127,12 @@ class UpgradeScenario implements AutoCloseable
                 .withNetwork(initialEnvNetwork)
                 .withNetworkAliases("solr6");
         initialEnv = new ACSEnv(initialEnvNetwork, "solr6");
+        initialEnv.setContentStoreHostPath(sharedContentStorePath);
 
         elasticsearch = new Elasticsearch(mirroredEnvNetwork, initialEnvNetwork);
 
         mirroredEnv = new ACSEnv(mirroredEnvNetwork, "elasticsearch");
+        mirroredEnv.setReadOnlyContentStoreHostPath(sharedContentStorePath);
     }
 
     public ACSEnv startInitialEnvWithSolrBasedSearchService()
@@ -133,6 +150,7 @@ class UpgradeScenario implements AutoCloseable
 
     public ACSEnv startMirroredEnvWitElasticsearchBasedSearchService()
     {
+        mirroredEnv.setMetadataDumpToRestore(initialEnv.getMetadataDump());
         mirroredEnv.start();
         return mirroredEnv;
     }
@@ -152,15 +170,18 @@ class Elasticsearch implements AutoCloseable
     private static final int ES_API_TIMEOUT_MS = 5_000;
 
     private final GenericContainer elasticsearch;
+    private final Collection<String> networksToConnectTo;
     private final Gson gson = new Gson();
 
-    public Elasticsearch(Network... networks)
+    public Elasticsearch(Network network, Network... networks)
     {
+        networksToConnectTo = Stream.of(networks).map(Network::getId).collect(Collectors.toUnmodifiableSet());
+
         elasticsearch = new GenericContainer("elasticsearch:7.10.1")
                 .withEnv("xpack.security.enabled", "false")
                 .withEnv("discovery.type", "single-node")
-                .withNetwork(networks[0])
                 .withNetworkAliases("elasticsearch")
+                .withNetwork(network)
                 .withExposedPorts(9200);
     }
 
@@ -212,7 +233,6 @@ class Elasticsearch implements AutoCloseable
         }
     }
 
-
     public void start()
     {
         if (elasticsearch.isRunning())
@@ -221,6 +241,7 @@ class Elasticsearch implements AutoCloseable
         }
 
         elasticsearch.start();
+
         for (int i = 0; i < 30; i++)
         {
             try
@@ -232,6 +253,22 @@ class Elasticsearch implements AutoCloseable
                 Uninterruptibles.sleepUninterruptibly(1, TimeUnit.SECONDS);
             }
         }
+
+        connectElasticSearchToAllNetworks();
+    }
+
+    private void connectElasticSearchToAllNetworks()
+    {
+        final DockerClient client = elasticsearch.getDockerClient();
+        final String containerId = elasticsearch.getContainerId();
+
+        networksToConnectTo
+                .stream()
+                .map(client.connectToNetworkCmd()
+                           .withContainerId(containerId)
+                           .withContainerNetwork(new ContainerNetwork()
+                                   .withAliases("elasticsearch"))::withNetworkId)
+                .forEach(ConnectToNetworkCmd::exec);
     }
 
     @Override
@@ -251,6 +288,10 @@ class ACSEnv implements AutoCloseable
     private final GenericContainer activemq;
 
     private RepoHttpClient repoHttpClient;
+
+    private String metadataDumpToRestore;
+    private Path alfDataHostPath;
+    private boolean readOnlyContentStore;
 
     public ACSEnv(final Network network, final String indexSubsystemName)
     {
@@ -323,6 +364,23 @@ class ACSEnv implements AutoCloseable
                 .withExposedPorts(8080);
     }
 
+    public void setMetadataDumpToRestore(String metadataDumpToRestore)
+    {
+        this.metadataDumpToRestore = Objects.requireNonNull(metadataDumpToRestore);
+    }
+
+    public void setContentStoreHostPath(Path hostPath)
+    {
+        readOnlyContentStore = false;
+        alfDataHostPath = hostPath;
+    }
+
+    public void setReadOnlyContentStoreHostPath(Path hostPath)
+    {
+        readOnlyContentStore = true;
+        alfDataHostPath = hostPath;
+    }
+
     public void start()
     {
         if (alfresco.isRunning())
@@ -330,10 +388,51 @@ class ACSEnv implements AutoCloseable
             throw new IllegalStateException("Already started");
         }
 
+        if (metadataDumpToRestore != null)
+        {
+            postgres.start();
+            postgres.copyFileToContainer(Transferable.of(metadataDumpToRestore), "/opt/alfresco/pg-dump-alfresco.sql");
+            execInPostgres("cat /opt/alfresco/pg-dump-alfresco.sql | psql -U alfresco");
+        }
+
+        if (alfDataHostPath != null)
+        {
+            final String hostPath = alfDataHostPath.toAbsolutePath().toString();
+            final BindMode bindMode = readOnlyContentStore ? BindMode.READ_ONLY : BindMode.READ_WRITE;
+            alfresco.addFileSystemBind(hostPath, "/usr/local/tomcat/alf_data", bindMode);
+        }
+
         allContainers().forEach(GenericContainer::start);
         repoHttpClient = new RepoHttpClient(URI.create("http://" + alfresco.getHost() + ":" + alfresco.getMappedPort(8080)));
 
         expectSearchResult(Duration.ofMinutes(3), UUID.randomUUID().toString(), Set.of());
+    }
+
+    public String getMetadataDump()
+    {
+        return execInPostgres("pg_dump -c -U alfresco alfresco").getStdout();
+    }
+
+    private ExecResult execInPostgres(String command)
+    {
+        final ExecResult result;
+        try
+        {
+            result = postgres.execInContainer("sh", "-c", command);
+        } catch (IOException e)
+        {
+            throw new IllegalStateException("Failed to execute command `" + command + "`.", e);
+        } catch (InterruptedException e)
+        {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("Command execution has been interrupted..", e);
+        }
+        if (result.getExitCode() != 0)
+        {
+            throw new IllegalStateException("Failed to execute command `" + command + "`. " + result.getStderr());
+        }
+
+        return result;
     }
 
     @Override
