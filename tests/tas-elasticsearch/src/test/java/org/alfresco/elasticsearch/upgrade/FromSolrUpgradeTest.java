@@ -49,6 +49,7 @@ import org.testcontainers.containers.Container.ExecResult;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.images.builder.Transferable;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -362,6 +363,10 @@ class ACSEnv implements AutoCloseable
                                 "-Xmx768m -XshowSettings:vm")
                 .withNetwork(network)
                 .withNetworkAliases("alfresco")
+                .withLogConsumer(f -> {
+                    OutputFrame of = (OutputFrame) f;
+                    System.out.print("[alfresco] " + of.getUtf8String());
+                })
                 .withExposedPorts(8080);
     }
 
