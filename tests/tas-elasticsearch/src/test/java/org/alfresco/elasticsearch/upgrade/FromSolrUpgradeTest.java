@@ -118,14 +118,14 @@ class UpgradeScenario implements AutoCloseable
     {
         try
         {
-//            FileAttribute<?>[] folderAttributes = new FileAttribute[]{};
-//            if (FileSystems.getDefault().supportedFileAttributeViews().contains("posix"))
-//            {
-//                Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwxrwxrwx");
-//                folderAttributes = new FileAttribute[]{ PosixFilePermissions.asFileAttribute(permissions) };
-//            }
-            sharedContentStorePath = Files.createTempDirectory(Path.of(System.getProperty("user.home")), "alf_data");
-//            System.err.println("CREATED " + sharedContentStorePath + " / " + Arrays.toString(folderAttributes));
+            FileAttribute<?>[] folderAttributes = new FileAttribute[]{};
+            if (FileSystems.getDefault().supportedFileAttributeViews().contains("posix"))
+            {
+                Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwxrwxrwx");
+                folderAttributes = new FileAttribute[]{ PosixFilePermissions.asFileAttribute(permissions) };
+            }
+            sharedContentStorePath = Files.createTempDirectory(Path.of(System.getProperty("user.home")), "alf_data", folderAttributes);
+            System.err.println("CREATED!!!! " + sharedContentStorePath + " / " + Arrays.toString(folderAttributes));
         } catch (IOException e)
         {
             throw new RuntimeException("Unexpected.", e);
@@ -418,7 +418,13 @@ class ACSEnv implements AutoCloseable
         {
             final String hostPath = alfDataHostPath.toAbsolutePath().toString();
             final BindMode bindMode = readOnlyContentStore ? BindMode.READ_ONLY : BindMode.READ_WRITE;
-            System.err.println("USING " + hostPath + " in " + bindMode + " mode. Exists: " + new File(hostPath).exists());
+            try
+            {
+                System.err.println("USING!!! " + hostPath + " in " + bindMode + " mode. Exists: " + new File(hostPath).exists() + ". Permissions: " + Files.getPosixFilePermissions(alfDataHostPath));
+            } catch (IOException e)
+            {
+                e.printStackTrace();
+            }
             alfresco.addFileSystemBind(hostPath, "/usr/local/tomcat/alf_data", bindMode);
         }
 
