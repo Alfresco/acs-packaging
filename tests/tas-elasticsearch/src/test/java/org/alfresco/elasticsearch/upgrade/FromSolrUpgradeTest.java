@@ -72,6 +72,7 @@ public class FromSolrUpgradeTest
 
             Assert.assertTrue(elasticsearch.isIndexCreated());
             Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), 0);
+            mirroredEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of());
         }
 
 //        try (RepoWithSolrSearchEngine initialEnv = RepoWithSolrSearchEngine.createRunning())
@@ -405,7 +406,7 @@ class ACSEnv implements AutoCloseable
         allContainers().forEach(GenericContainer::start);
         repoHttpClient = new RepoHttpClient(URI.create("http://" + alfresco.getHost() + ":" + alfresco.getMappedPort(8080)));
 
-        expectSearchResult(Duration.ofMinutes(3), UUID.randomUUID().toString(), Set.of());
+        expectSearchResult(Duration.ofMinutes(5), UUID.randomUUID().toString(), Set.of());
     }
 
     public String getMetadataDump()
@@ -453,19 +454,22 @@ class ACSEnv implements AutoCloseable
     public void expectSearchResult(Duration timeout, String term, Set<String> expected)
     {
         final Instant start = Instant.now();
+        String lastResult = "unknown";
         while (Instant.now().isBefore(start.plus(timeout)))
         {
             try
             {
                 Optional<Set<String>> actual = repoHttpClient.searchForFiles(term);
                 if (actual.map(expected::equals).orElse(false)) return;
+                lastResult = actual.map(Object::toString).orElse("unknown");
                 Uninterruptibles.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
             } catch (IOException e)
             {
+                lastResult = e.getClass().getSimpleName() + ": " + e.getMessage();
                 Uninterruptibles.sleepUninterruptibly(1, TimeUnit.SECONDS);
             }
         }
-        throw new IllegalStateException("Couldn't reach the point where `" + expected + "` was returned.");
+        throw new IllegalStateException("Couldn't reach the point where `" + expected + "` was returned. Last seen result: `" + lastResult + "`");
     }
 
     public UUID uploadFile(URL contentUrl, String fileName) throws IOException
