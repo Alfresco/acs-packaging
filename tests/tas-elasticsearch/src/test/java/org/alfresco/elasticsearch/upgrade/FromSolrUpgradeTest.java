@@ -2,6 +2,7 @@ package org.alfresco.elasticsearch.upgrade;
 
 import java.io.BufferedReader;
 import java.io.Closeable;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -65,15 +66,15 @@ public class FromSolrUpgradeTest
             System.out.println(initialEnv.uploadFile(getClass().getResource("test.pdf"), "test1.pdf"));
             initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf"));
 
-            final Elasticsearch elasticsearch = scenario.startElasticsearch();
-            Assert.assertFalse(elasticsearch.isIndexCreated());
-
-            ACSEnv mirroredEnv = scenario.startMirroredEnvWitElasticsearchBasedSearchService();
-            mirroredEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of());
-
-            Assert.assertTrue(elasticsearch.isIndexCreated());
-            Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), 0);
-            mirroredEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of());
+//            final Elasticsearch elasticsearch = scenario.startElasticsearch();
+//            Assert.assertFalse(elasticsearch.isIndexCreated());
+//
+//            ACSEnv mirroredEnv = scenario.startMirroredEnvWitElasticsearchBasedSearchService();
+//            mirroredEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of());
+//
+//            Assert.assertTrue(elasticsearch.isIndexCreated());
+//            Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), 0);
+//            mirroredEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of());
         }
 
 //        try (RepoWithSolrSearchEngine initialEnv = RepoWithSolrSearchEngine.createRunning())
@@ -405,6 +406,7 @@ class ACSEnv implements AutoCloseable
         {
             final String hostPath = alfDataHostPath.toAbsolutePath().toString();
             final BindMode bindMode = readOnlyContentStore ? BindMode.READ_ONLY : BindMode.READ_WRITE;
+            System.err.println("USING " + hostPath + " in " + bindMode + " mode. Exists: " + new File(hostPath).exists());
             alfresco.addFileSystemBind(hostPath, "/usr/local/tomcat/alf_data", bindMode);
         }
 
