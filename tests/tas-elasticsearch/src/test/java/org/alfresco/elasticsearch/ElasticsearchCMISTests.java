@@ -16,7 +16,9 @@ import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
@@ -59,6 +61,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     private UserModel userMultiSite;
     private SiteModel siteModel1;
     private SiteModel siteModel2;
+    private FileModel file0;
 
     /**
      * Data will be prepared using the schema below:
@@ -87,7 +90,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
         dataUser.addUserToSite(userMultiSite, siteModel1, UserRole.SiteContributor);
         dataUser.addUserToSite(userMultiSite, siteModel2, UserRole.SiteContributor);
 
-        createContent(FILE_0_NAME, "This is the first test containing " + UNIQUE_WORD, siteModel1, user1);
+        file0 = createContent(FILE_0_NAME, "This is the first test containing " + UNIQUE_WORD, siteModel1, user1);
         createContent(FILE_1_NAME, "This is another TEST file containing " + UNIQUE_WORD, siteModel1, user1);
         createContent(FILE_2_NAME, "This Test file is owned by user2 " + UNIQUE_WORD, siteModel1, user2);
         // Remove user 2 from site, but he keeps ownership on FILE_2_NAME.
@@ -96,28 +99,21 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
         createContent(USER_2_FILE_NAME, "This is a test file that user1 does not have access to, but it still contains " + UNIQUE_WORD, siteModel2, user2);
     }
 
-    @TestRail (description = "Verify that we can perform a basic CMIS query against Elasticsearch.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
-    @Test (groups = TestGroup.SEARCH)
-    public void basicCMISQuery()
-    {
-        SearchRequest query = req("cmis", "SELECT cmis:name FROM cmis:document WHERE CONTAINS('*')");
-        searchQueryService.expectSomeResultsFromQuery(query, user1);
-    }
+    //TODO Basic CMIS Query: "SELECT * FROM cmis:document"
 
-    @TestRail(description = "Verify that we can perform a basic CMIS query against the DB.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
-    @Test(groups = TestGroup.SEARCH)
-    public void basicCMISQueryAgainstDB()
+    @TestRail (description = "Check documents can be selected using cmis:objectId.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void objectIdQuery()
     {
-        // This query will be handled by the DB rather than ES.
-        SearchRequest query = req("cmis", "SELECT cmis:name FROM cmis:document");
-        searchQueryService.expectSomeResultsFromQuery(query, user1);
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:objectId = '" + file0.getNodeRef() + "' AND CONTAINS('*')");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME);
     }
 
     @TestRail (description = "Check we can use the CMIS LIKE syntax to match a prefix.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
     @Test (groups = TestGroup.SEARCH)
     public void matchNamesLikePrefix()
     {
-        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name LIKE '" + PREFIX + "%' AND CONTAINS('*')");
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name LIKE '" + PREFIX + "%'");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
     }
 
@@ -125,7 +121,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void matchNamesLikeSuffix()
     {
-        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name LIKE '%" + SUFFIX + "' AND CONTAINS('*')");
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name LIKE '%" + SUFFIX + "'");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
     }
 
@@ -143,8 +139,59 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     public void checkPermissionForUser2()
     {
         // Reuse the prefix query to check which documents user2 can access.
-        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name LIKE '" + PREFIX + "%' AND CONTAINS('*')");
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name LIKE '" + PREFIX + "%'");
         searchQueryService.expectResultsFromQuery(query, user2, FILE_2_NAME, USER_2_FILE_NAME);
+    }
+
+    @TestRail (description = "Check that we can match a document's name. Needs exact term search to be enabled to pass.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void matchDocumentName()
+    {
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name = '" + FILE_0_NAME + "'");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME);
+    }
+
+    @TestRail (description = "Check IN('value1','value2') syntax works. Needs exact term search to be enabled to pass.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkInSyntax()
+    {
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name IN ('" + FILE_0_NAME + "', '" + FILE_1_NAME + "')");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME);
+    }
+
+    @Test (groups = TestGroup.SEARCH)
+    public void negative_basicCMISQuery_missingFrom()
+    {
+        // note: ideally 400 but currently 500 (also for Solr) :-(
+
+        SearchRequest query1 = req("cmis", "SELECT *");
+        searchQueryService.expectErrorFromQuery(query1, user1, HttpStatus.INTERNAL_SERVER_ERROR, "expecting FROM");
+
+        SearchRequest query2 = req("cmis", "SELECT * FROM");
+        searchQueryService.expectErrorFromQuery(query2, user1, HttpStatus.INTERNAL_SERVER_ERROR, "no viable alternative at input");
+    }
+
+    @Test (groups = TestGroup.SEARCH)
+    public void negative_basicCMISQuery_invalidType()
+    {
+        // note: ideally 400 but currently 500 (also for Solr) :-(
+        SearchRequest query = req("SELECT * FROM cmis:unknown");
+        searchQueryService.expectErrorFromQuery(query, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown property: {http://www.alfresco.org/model/content/1.0}cmis");
+    }
+
+    @Test (groups = TestGroup.SEARCH)
+    public void negative_basicCMISQuery_invalidFieldName()
+    {
+        // note: ideally 400 but currently 500 (also for Solr) :-(
+
+        SearchRequest query1 = req("SELECT cmis:unknown FROM cmis:document");
+        searchQueryService.expectErrorFromQuery(query1, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown property: {http://www.alfresco.org/model/content/1.0}cmis");
+    
+        SearchRequest query2 = req("SELECT cm:unknown FROM cmis:document");
+        searchQueryService.expectErrorFromQuery(query2, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown property: {http://www.alfresco.org/model/content/1.0}cm");
+
+        SearchRequest query3 = req("SELECT my:custom FROM cmis:document");
+        searchQueryService.expectErrorFromQuery(query3, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown property: {http://www.alfresco.org/model/content/1.0}my");
     }
 
     private FileModel createContent(String filename, String content, SiteModel site, UserModel user)
