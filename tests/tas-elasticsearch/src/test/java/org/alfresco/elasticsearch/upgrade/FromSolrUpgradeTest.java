@@ -482,7 +482,7 @@ class ACSEnv implements AutoCloseable
 
     private Stream<GenericContainer> allContainers()
     {
-        return Stream.of(alfresco, postgres, transformRouter, transformCoreAllInOne, sharedFileStore, activemq);
+        return Stream.of(postgres, activemq, sharedFileStore, transformCoreAllInOne, transformRouter, alfresco);
     }
 }
 
