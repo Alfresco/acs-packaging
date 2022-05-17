@@ -11,10 +11,15 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
@@ -113,7 +118,14 @@ class UpgradeScenario implements AutoCloseable
     {
         try
         {
-            sharedContentStorePath = Files.createTempDirectory("alf_data");
+            FileAttribute<?>[] folderAttributes = new FileAttribute[]{};
+            if (FileSystems.getDefault().supportedFileAttributeViews().contains("posix"))
+            {
+                Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwxrwxrwx");
+                folderAttributes = new FileAttribute[]{ PosixFilePermissions.asFileAttribute(permissions) };
+            }
+            sharedContentStorePath = Files.createTempDirectory("alf_data", folderAttributes);
+            System.err.println("CREATED " + sharedContentStorePath + " / " + Arrays.toString(folderAttributes));
         } catch (IOException e)
         {
             throw new RuntimeException("Unexpected.", e);
