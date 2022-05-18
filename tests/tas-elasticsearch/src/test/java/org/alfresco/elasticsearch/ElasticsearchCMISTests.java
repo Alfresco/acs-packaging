@@ -10,6 +10,7 @@ import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
 import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.FileType;
+import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.model.UserModel;
@@ -40,6 +41,9 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     private static final String FILE_2_NAME = PREFIX + "_user2doc_" + SUFFIX;
     /** This is a file that user 1 doesn't have access to and so shouldn't be returned in their search results. */
     private static final String USER_2_FILE_NAME = PREFIX + "_user2only_" + SUFFIX;
+    private static final String FOLDER_PREFIX = getAlphabeticUUID();
+    private static final String FOLDER_0_NAME = FOLDER_PREFIX + "_folder0";
+    private static final String FOLDER_1_NAME = FOLDER_PREFIX + "_folder1";
 
     @Autowired
     private DataUser dataUser;
@@ -69,6 +73,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
      * Site1:
      * - Users: user1, userMultiSite
      * - Documents: FILE_0_NAME (owner: user1), FILE_1_NAME (owner: user1), FILE_2_NAME (owner: user2)
+     * - Folders: FOLDER_0_NAME (owner: user1), FOLDER_1_NAME (owner: user1)
      * <p>
      * Site2:
      * - Users: user2, userMultiSite
@@ -97,6 +102,9 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
         dataUser.removeUserFromSite(user2, siteModel1);
         // Also create another file that only user 2 has access to.
         createContent(USER_2_FILE_NAME, "This is a test file that user1 does not have access to, but it still contains " + UNIQUE_WORD, siteModel2, user2);
+
+        dataContent.usingUser(user1).usingSite(siteModel1).createFolder(new FolderModel(FOLDER_0_NAME));
+        dataContent.usingUser(user1).usingSite(siteModel1).createFolder(new FolderModel(FOLDER_1_NAME));
     }
 
     @TestRail (description = "Check all documents can be selected when we omit the where clause.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
@@ -198,6 +206,45 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
 
         SearchRequest query3 = req("SELECT my:custom FROM cmis:document");
         searchQueryService.expectErrorFromQuery(query3, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown property: {http://www.alfresco.org/model/content/1.0}my");
+    }
+
+    @TestRail (description = "Check all folders can be selected (including sites/doc libs).", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void selectFolders()
+    {
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:folder");
+        searchQueryService.expectResultsFromQuery(query, user1,
+                // We expect the site and the document library, ...
+                siteModel1.getId(), "documentLibrary",
+                // the two folders, ...
+                FOLDER_0_NAME, FOLDER_1_NAME,
+                // and the user home for the user performing the query.
+                user1.getUsername());
+    }
+
+    @TestRail (description = "Check that cmis:item is equivalent to all files and folders.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void selectItems()
+    {
+        // TODO Determine whether the error is consistent with Solr or not.
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:item");
+        searchQueryService.expectErrorFromQuery(query, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Type is not queryable cmis:item");
+    }
+
+    @TestRail (description = "Check that cm:cmobject includes both files and folders.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void selectObjects()
+    {
+        SearchRequest query = req("cmis", "SELECT * FROM cm:cmobject WHERE cmis:name IN ('" + FILE_0_NAME + "', '" + FOLDER_0_NAME + "')");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FOLDER_0_NAME);
+    }
+
+    @TestRail (description = "Check that CMIS queries for cm:person returns people.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void selectPeople()
+    {
+        SearchRequest query = req("cmis", "SELECT * FROM cm:person");
+        searchQueryService.expectNodeTypesFromQuery(query, user1, "cm:person");
     }
 
     private FileModel createContent(String filename, String content, SiteModel site, UserModel user)
