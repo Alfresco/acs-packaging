@@ -226,8 +226,8 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void selectItems()
     {
-        // TODO Determine whether the error is consistent with Solr or not.
         SearchRequest query = req("cmis", "SELECT * FROM cmis:item");
+        // This error is consistent with the way the DB and Solr handle the request.
         searchQueryService.expectErrorFromQuery(query, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Type is not queryable cmis:item");
     }
 
