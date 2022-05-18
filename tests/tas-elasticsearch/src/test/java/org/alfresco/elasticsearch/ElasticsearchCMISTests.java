@@ -99,13 +99,19 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
         createContent(USER_2_FILE_NAME, "This is a test file that user1 does not have access to, but it still contains " + UNIQUE_WORD, siteModel2, user2);
     }
 
-    //TODO Basic CMIS Query: "SELECT * FROM cmis:document"
+    @TestRail (description = "Check all documents can be selected when we omit the where clause.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void basicQuery()
+    {
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
+    }
 
     @TestRail (description = "Check documents can be selected using cmis:objectId.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
     @Test (groups = TestGroup.SEARCH)
     public void objectIdQuery()
     {
-        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:objectId = '" + file0.getNodeRef() + "' AND CONTAINS('*')");
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:objectId = '" + file0.getNodeRef() + "'");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME);
     }
 
