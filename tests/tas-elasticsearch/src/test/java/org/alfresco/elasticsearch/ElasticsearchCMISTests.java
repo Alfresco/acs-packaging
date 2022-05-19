@@ -32,6 +32,10 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
                       initializers = AlfrescoStackInitializer.class)
 /**
@@ -221,6 +225,15 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     {
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name <> '" + FILE_0_NAME + "'");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_1_NAME, FILE_2_NAME, file3Name);
+    }
+
+    @TestRail (description = "Check ORDER BY syntax works as expected", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkOrderByAscSyntax()
+    {
+        List<String> expectedList = orderNames(FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name IN('" + FILE_0_NAME + "','" + FILE_1_NAME + "','" + FILE_2_NAME + "') ORDER BY cmis:name ASC");
+        searchQueryService.expectResultsInOrder(query, user1, expectedList);
     }
 
     @TestRail (description = "Check IN('value1','value2') syntax works. Needs exact term search to be enabled to pass.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
@@ -588,5 +601,14 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
         return dataContent.usingUser(user)
             .usingSite(site)
             .uploadDocument(toUpload.getFile());
+    }
+
+    private List<String> orderNames(String... filename){
+        List<String> orderedNames = Arrays.stream(filename)
+                .sorted()
+                .collect(Collectors.toList());
+        System.out.println("filename = " + filename);
+        System.out.println("orderedNames = " + orderedNames);
+        return orderedNames;
     }
 }

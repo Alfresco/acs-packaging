@@ -5,6 +5,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -42,6 +43,12 @@ public class SearchQueryService
     {
         Consumer<SearchResponse> assertNotEmpty = searchResponse -> assertFalse(searchResponse.isEmpty());
         expectResultsFromQuery(searchRequest, testUser, assertNotEmpty);
+    }
+
+    public void expectResultsInOrder(SearchRequest searchRequest, UserModel user, List<String> expected)
+    {
+        Consumer<SearchResponse> response = searchResponse -> assertNamesInOrder(searchResponse, expected);
+        expectResultsFromQuery(searchRequest,user,response);
     }
 
     public void expectResultsFromQuery(SearchRequest searchRequest, UserModel user, String... expected)
@@ -110,7 +117,6 @@ public class SearchQueryService
         assertEquals(result, expectedList, "Unexpected search results.");
     }
 
-
     private void assertNames(SearchResponse actual, String... expected)
     {
         Set<String> result = actual.getEntries().stream()
@@ -119,6 +125,16 @@ public class SearchQueryService
                                    .collect(Collectors.toSet());
         Set<String> expectedList = Sets.newHashSet(expected);
         assertEquals(result, expectedList, "Unexpected search results.");
+    }
+
+    private void assertNamesInOrder(SearchResponse actual, List<String> expected)
+    {
+        List<String> result = actual.getEntries().stream()
+                .map(SearchNodeModel::getModel)
+                .map(SearchNodeModel::getName)
+                .collect(Collectors.toList());
+        System.out.println("result = " + result);
+        assertEquals(result, expected, "Unexpected search results.");
     }
 
     private void assertNodeTypes(SearchResponse actual, String... expected)
