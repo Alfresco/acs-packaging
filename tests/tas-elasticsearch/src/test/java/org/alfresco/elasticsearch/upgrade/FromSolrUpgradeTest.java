@@ -105,7 +105,6 @@ class UpgradeScenario implements AutoCloseable
             {
                 Files.setPosixFilePermissions(sharedContentStorePath, PosixFilePermissions.fromString("rwxrwxrwx"));
             }
-            System.err.println("CREATED!!!! " + sharedContentStorePath + " / " + PosixFilePermissions.fromString("rwxrwxrwx"));
         } catch (IOException e)
         {
             throw new RuntimeException("Unexpected.", e);
@@ -356,10 +355,6 @@ class ACSEnv implements AutoCloseable
                                 "-Xmx768m -XshowSettings:vm")
                 .withNetwork(network)
                 .withNetworkAliases("alfresco")
-                .withLogConsumer(f -> {
-                    OutputFrame of = (OutputFrame) f;
-                    System.out.print("[alfresco] " + of.getUtf8String());
-                })
                 .withExposedPorts(8080);
     }
 
@@ -398,13 +393,6 @@ class ACSEnv implements AutoCloseable
         {
             final String hostPath = alfDataHostPath.toAbsolutePath().toString();
             final BindMode bindMode = readOnlyContentStore ? BindMode.READ_ONLY : BindMode.READ_WRITE;
-            try
-            {
-                System.err.println("USING!!! " + hostPath + " in " + bindMode + " mode. Exists: " + new File(hostPath).exists() + ". Permissions: " + Files.getPosixFilePermissions(alfDataHostPath));
-            } catch (IOException e)
-            {
-                e.printStackTrace();
-            }
             alfresco.addFileSystemBind(hostPath, "/usr/local/tomcat/alf_data", bindMode);
         }
 
@@ -464,16 +452,13 @@ class ACSEnv implements AutoCloseable
         {
             try
             {
-                System.out.println("Expected: " + expected);
                 Optional<Set<String>> actual = repoHttpClient.searchForFiles(term);
-                System.out.println("Actual: " + actual);
                 if (actual.map(expected::equals).orElse(false)) return;
                 lastResult = actual.map(Object::toString).orElse("unknown");
                 Uninterruptibles.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
             } catch (IOException e)
             {
                 lastResult = e.getClass().getSimpleName() + ": " + e.getMessage();
-                System.err.println("Exception: " + lastResult);
                 Uninterruptibles.sleepUninterruptibly(1, TimeUnit.SECONDS);
             }
         }
@@ -728,7 +713,6 @@ class RepoWithSolrSearchEngine implements Closeable
             searchRequest.setEntity(new StringEntity(searchQuery(term), ContentType.APPLICATION_JSON));
 
             final Optional<Map<String, ?>> searchResult = getJsonResponse(searchRequest, HttpStatus.SC_OK);
-            System.err.println("JsonResponse: " + searchResult);
 
             final Optional<Collection<?>> possibleEntries = searchResult
                     .map(r -> r.get("list"))
@@ -756,16 +740,12 @@ class RepoWithSolrSearchEngine implements Closeable
 
         private Optional<Map<String, ?>> getJsonResponse(HttpUriRequest request, int requiredStatusCode) throws IOException
         {
-            System.err.println("Request: " + request);
             try (CloseableHttpResponse response = client.execute(request))
             {
-                System.err.println("Status: " + response.getStatusLine());
                 if (response.getStatusLine().getStatusCode() != requiredStatusCode)
                 {
                     return Optional.empty();
                 }
-
-                System.err.println("ContentType: " + ContentType.parse(response.getEntity().getContentType().getValue()));
 
                 final ContentType contentType = ContentType.parse(response.getEntity().getContentType().getValue());
                 if (!ContentType.APPLICATION_JSON.getMimeType().equals(contentType.getMimeType()))
@@ -773,11 +753,7 @@ class RepoWithSolrSearchEngine implements Closeable
                     return Optional.empty();
                 }
 
-                String entity = EntityUtils.toString(response.getEntity());
-                System.err.println("Entity: " + entity);
-                Map parsed = gson.fromJson(entity, Map.class);
-                System.err.println("Parsed: " + parsed);
-                return Optional.of(parsed);
+                return Optional.of(gson.fromJson(EntityUtils.toString(response.getEntity()), Map.class));
             }
         }
 
