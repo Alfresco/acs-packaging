@@ -128,18 +128,10 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     public void objectTypeIdQuery()
     {
         SearchRequest query1 = req("cmis", "SELECT * FROM cmis:folder WHERE cmis:objectTypeId = 'cmis:folder'");
-        searchQueryService.expectResultsFromQuery(query1, user1,
-                // We expect the document library, ...
-                "documentLibrary",
-                // the two folders, ...
-                FOLDER_0_NAME, FOLDER_1_NAME,
-                // and the user home for the user performing the query.
-                user1.getUsername());
+        searchQueryService.expectResultsFromQuery(query1, user1, "documentLibrary", FOLDER_0_NAME, FOLDER_1_NAME, user1.getUsername());
 
         SearchRequest query2 = req("cmis", "SELECT * FROM cmis:folder WHERE cmis:objectTypeId = 'F:st:site'");
-        searchQueryService.expectResultsFromQuery(query2, user1,
-                /// We expect the site, ...
-                siteModel1.getId());
+        searchQueryService.expectResultsFromQuery(query2, user1, siteModel1.getId());
     }
 
     @TestRail (description = "Check we can use the CMIS LIKE syntax to match a prefix.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
