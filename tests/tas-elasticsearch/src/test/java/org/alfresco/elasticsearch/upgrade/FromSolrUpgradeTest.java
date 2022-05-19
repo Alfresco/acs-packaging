@@ -56,6 +56,7 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.OutputFrame;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.images.builder.Transferable;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -80,6 +81,14 @@ public class FromSolrUpgradeTest
             Assert.assertTrue(elasticsearch.isIndexCreated());
             Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), 0);
             mirroredEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of());
+
+            mirroredEnv.reindexEverything();
+
+            for (int i = 0; i < 100; i++)
+            {
+                Uninterruptibles.sleepUninterruptibly(1, TimeUnit.SECONDS);
+                System.err.println(elasticsearch.getIndexedDocumentCount());
+            }
         }
     }
 }
@@ -473,6 +482,25 @@ class ACSEnv implements AutoCloseable
     private Stream<GenericContainer> allContainers()
     {
         return Stream.of(postgres, activemq, sharedFileStore, transformCoreAllInOne, transformRouter, alfresco);
+    }
+
+    public void reindexEverything()
+    {
+        final GenericContainer reIndexing = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-reindexing:3.1.1")
+                .withEnv("ELASTICSEARCH_INDEXNAME", "alfresco")
+                .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200")
+                .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
+                .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
+                .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config")
+                .withEnv("SPRING_DATASOURCE_URL", "jdbc:postgresql://postgres:5432/alfresco")
+                .withEnv("ALFRESCO_REINDEX_FROM_ID", "0")
+                .withEnv("ALFRESCO_REINDEX_TO_ID", "1000000000000")
+                .withEnv("ALFRESCO_REINDEX_JOB_NAME", "reindexByIds")
+                .withNetwork(alfresco.getNetwork());
+
+        reIndexing.start();
+        while (!reIndexing.isRunning());
+        while (reIndexing.isRunning());
     }
 }
 
