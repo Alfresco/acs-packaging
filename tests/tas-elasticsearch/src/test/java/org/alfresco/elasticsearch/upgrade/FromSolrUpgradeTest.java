@@ -71,34 +71,16 @@ public class FromSolrUpgradeTest
             System.out.println(initialEnv.uploadFile(getClass().getResource("test.pdf"), "test1.pdf"));
             initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf"));
 
-//            final Elasticsearch elasticsearch = scenario.startElasticsearch();
-//            Assert.assertFalse(elasticsearch.isIndexCreated());
-//
-//            ACSEnv mirroredEnv = scenario.startMirroredEnvWitElasticsearchBasedSearchService();
-//            mirroredEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of());
-//
-//            Assert.assertTrue(elasticsearch.isIndexCreated());
-//            Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), 0);
-//            mirroredEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of());
-        }
+            final Elasticsearch elasticsearch = scenario.startElasticsearch();
+            Assert.assertFalse(elasticsearch.isIndexCreated());
 
-//        try (RepoWithSolrSearchEngine initialEnv = RepoWithSolrSearchEngine.createRunning())
-//        {
-//            initialEnv.expectSearchResult(Duration.ofSeconds(5), "alabama", Set.of());
-//
-//            initialEnv.uploadFile(getClass().getResource("test.pdf"), "test1.pdf");
-//            initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf"));
-//
-//            initialEnv.uploadFile(getClass().getResource("test.pdf"), "test2.pdf");
-//            initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf", "test2.pdf"));
-//
-//            try (MirroredRepoWithElasticsearch mirroredEnv = initialEnv.mirrorCompletely())
-//            {
-//
-//            }
-//            String dump = initialEnv.dumpMetadataDb();
-//            System.out.println(dump);
-//        }
+            ACSEnv mirroredEnv = scenario.startMirroredEnvWitElasticsearchBasedSearchService();
+            mirroredEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of());
+
+            Assert.assertTrue(elasticsearch.isIndexCreated());
+            Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), 0);
+            mirroredEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of());
+        }
     }
 }
 
@@ -118,7 +100,7 @@ class UpgradeScenario implements AutoCloseable
     {
         try
         {
-            sharedContentStorePath = Files.createTempDirectory(Path.of(System.getProperty("user.home")), "alf_data");
+            sharedContentStorePath = Files.createTempDirectory("alf_data");
             if (FileSystems.getDefault().supportedFileAttributeViews().contains("posix"))
             {
                 Files.setPosixFilePermissions(sharedContentStorePath, PosixFilePermissions.fromString("rwxrwxrwx"));
