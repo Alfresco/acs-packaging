@@ -118,14 +118,12 @@ class UpgradeScenario implements AutoCloseable
     {
         try
         {
-            FileAttribute<?>[] folderAttributes = new FileAttribute[]{};
+            sharedContentStorePath = Files.createTempDirectory(Path.of(System.getProperty("user.home")), "alf_data");
             if (FileSystems.getDefault().supportedFileAttributeViews().contains("posix"))
             {
-                Set<PosixFilePermission> permissions = PosixFilePermissions.fromString("rwxrwxrwx");
-                folderAttributes = new FileAttribute[]{ PosixFilePermissions.asFileAttribute(permissions) };
+                Files.setPosixFilePermissions(sharedContentStorePath, PosixFilePermissions.fromString("rwxrwxrwx"));
             }
-            sharedContentStorePath = Files.createTempDirectory(Path.of(System.getProperty("user.home")), "alf_data", folderAttributes);
-            System.err.println("CREATED!!!! " + sharedContentStorePath + " / " + Arrays.toString(folderAttributes));
+            System.err.println("CREATED!!!! " + sharedContentStorePath + " / " + PosixFilePermissions.fromString("rwxrwxrwx"));
         } catch (IOException e)
         {
             throw new RuntimeException("Unexpected.", e);
