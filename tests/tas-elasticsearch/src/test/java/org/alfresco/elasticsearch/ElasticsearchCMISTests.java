@@ -247,6 +247,46 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
         searchQueryService.expectNodeTypesFromQuery(query, user1, "cm:person");
     }
 
+    @TestRail (description = "Check that we can use aliases in CMIS queries.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void tableAlias()
+    {
+        SearchRequest query = req("cmis", "SELECT d.cmis:name FROM cmis:document d WHERE d.cmis:name IN ('" + FILE_0_NAME + "')");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME);
+    }
+
+    @TestRail (description = "Check that we can use aliases with the AS keyword in CMIS queries.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void tableAliasWithAs()
+    {
+        SearchRequest query = req("cmis", "SELECT d.cmis:name FROM cmis:document AS d WHERE d.cmis:name IN ('" + FILE_0_NAME + "')");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME);
+    }
+
+    @TestRail (description = "Negative test for mismatched aliases in CMIS select clause.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void tableAlias_mismatchedAliasInSelect()
+    {
+        SearchRequest query = req("cmis", "SELECT z.cmis:name FROM cmis:document d WHERE d.cmis:name IN ('" + FILE_0_NAME + "')");
+        searchQueryService.expectErrorFromQuery(query, user1, HttpStatus.INTERNAL_SERVER_ERROR, "No selector for z");
+    }
+
+    @TestRail (description = "Negative test for mismatched aliases in CMIS where clause.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void tableAlias_mismatchedAliasInWhere()
+    {
+        SearchRequest query = req("cmis", "SELECT d.cmis:name FROM cmis:document d WHERE z.cmis:name IN ('" + FILE_0_NAME + "')");
+        searchQueryService.expectErrorFromQuery(query, user1, HttpStatus.INTERNAL_SERVER_ERROR, "No selector for z");
+    }
+
+    @TestRail (description = "Check that we can join two tables in CMIS queries.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void tableJoin()
+    {
+        SearchRequest query = req("cmis", "SELECT t.*, d.* FROM cm:titled t JOIN cmis:document d ON t.cmis:objectId = d.cmis:objectId WHERE d.cmis:name = '" + FILE_0_NAME + "'");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME);
+    }
+
     private FileModel createContent(String filename, String content, SiteModel site, UserModel user)
     {
         FileModel fileModel = new FileModel(filename, FileType.TEXT_PLAIN, content);
