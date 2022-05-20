@@ -75,6 +75,16 @@
         </profile>
 
         <profile>
+            <id>run-cmis-with-elastic</id>
+            <properties>
+                <suiteXmlFile>${project.basedir}/src/test/resources/cmis-elastic-suite.xml</suiteXmlFile>
+                <cmis.binding>browser</cmis.binding>
+                <cmis.basePath>/alfresco/api/-default-/public/cmis/versions/1.1/browser</cmis.basePath>
+                <excludedGroups>not_supported_on_cmis_browser|renditions|bug-browser.*|bug-atom.*|bug-ws.*</excludedGroups>
+            </properties>
+        </profile>
+
+        <profile>
             <id>run-cmis-webservices-with-aims</id>
             <properties>
                 <suiteXmlFile>${project.basedir}/src/test/resources/cmis-aims-suite.xml</suiteXmlFile>
