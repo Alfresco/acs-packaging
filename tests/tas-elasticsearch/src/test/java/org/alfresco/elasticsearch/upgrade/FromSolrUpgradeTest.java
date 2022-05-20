@@ -15,7 +15,9 @@ import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -28,6 +30,7 @@ import java.util.stream.Stream;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.ConnectToNetworkCmd;
+import com.github.dockerjava.api.command.CreateNetworkCmd;
 import com.github.dockerjava.api.model.ContainerNetwork;
 import com.google.common.util.concurrent.Uninterruptibles;
 import com.google.gson.Gson;
@@ -69,33 +72,45 @@ public class FromSolrUpgradeTest
             final Elasticsearch elasticsearch = scenario.startElasticsearch();
             Assert.assertFalse(elasticsearch.isIndexCreated());
 
-            ACSEnv mirroredEnv = scenario.startMirroredEnvWitElasticsearchBasedSearchService();
-            mirroredEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of());
-            Assert.assertEquals(initialEnv.getMaxNodeDbId(), mirroredEnv.getMaxNodeDbId());
+            final long initialReIndexingUpperBound;
 
-            Assert.assertTrue(elasticsearch.isIndexCreated());
-            Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), 0);
-            mirroredEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of());
-            long initialReIndexingUpperBound = mirroredEnv.getMaxNodeDbId();
-            mirroredEnv.reindexByIds(0, initialReIndexingUpperBound);
-            Assert.assertTrue(elasticsearch.getIndexedDocumentCount() > 0);
+            try (ACSEnv mirroredEnv = scenario.startMirroredEnvWitElasticsearchBasedSearchService())
+            {
+                mirroredEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of());
+                Assert.assertEquals(initialEnv.getMaxNodeDbId(), mirroredEnv.getMaxNodeDbId());
 
-            mirroredEnv.startLiveIndexing();
-            mirroredEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf"));
+                Assert.assertTrue(elasticsearch.isIndexCreated());
+                Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), 0);
+                mirroredEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of());
+
+                mirroredEnv.startLiveIndexing();
+                initialReIndexingUpperBound = mirroredEnv.getMaxNodeDbId();
+                mirroredEnv.reindexByIds(0, initialReIndexingUpperBound);
+                Assert.assertTrue(elasticsearch.getIndexedDocumentCount() > 0);
+                mirroredEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf"));
+            }
+
+            initialEnv.startLiveIndexing();
+            Uninterruptibles.sleepUninterruptibly(1, TimeUnit.MINUTES);
+            initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf"));
+            final long documentsCount = elasticsearch.getIndexedDocumentCount();
+            System.out.println(initialEnv.uploadFile(getClass().getResource("test.pdf"), "test2.pdf"));
+            initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf", "test2.pdf"));
+            Assert.assertTrue(elasticsearch.getIndexedDocumentCount() > documentsCount);
         }
     }
 }
 
 class UpgradeScenario implements AutoCloseable
 {
-    private final Network initialEnvNetwork = Network.newNetwork();
+    private final Network initialEnvNetwork = Network.builder().createNetworkCmdModifier(cmd -> cmd.withAttachable(true).withName("B")).build();
     private final GenericContainer solr6;
     private final ACSEnv initialEnv;
 
     private final Path sharedContentStorePath;
     private final Elasticsearch elasticsearch;
 
-    private final Network mirroredEnvNetwork = Network.newNetwork();
+    private final Network mirroredEnvNetwork = Network.builder().createNetworkCmdModifier(cmd -> cmd.withAttachable(true).withName("A")).build();
     private final ACSEnv mirroredEnv;
 
     public UpgradeScenario()
@@ -166,12 +181,12 @@ class Elasticsearch implements AutoCloseable
     private static final int ES_API_TIMEOUT_MS = 5_000;
 
     private final GenericContainer elasticsearch;
-    private final Collection<String> networksToConnectTo;
+    private final Collection<String> additionalNetworks;
     private final Gson gson = new Gson();
 
     public Elasticsearch(Network network, Network... networks)
     {
-        networksToConnectTo = Stream.of(networks).map(Network::getId).collect(Collectors.toUnmodifiableSet());
+        additionalNetworks = Stream.of(networks).map(Network::getId).collect(Collectors.toUnmodifiableSet());
 
         elasticsearch = new GenericContainer("elasticsearch:7.10.1")
                 .withEnv("xpack.security.enabled", "false")
@@ -181,14 +196,14 @@ class Elasticsearch implements AutoCloseable
                 .withExposedPorts(9200);
     }
 
-    public int getIndexedDocumentCount() throws IOException
+    public long getIndexedDocumentCount() throws IOException
     {
         final Map<String, ?> countResponse = gson.fromJson(getString("/alfresco/_count"), Map.class);
         return Optional
                 .ofNullable(countResponse.get("count"))
                 .filter(Number.class::isInstance)
                 .map(Number.class::cast)
-                .map(Number::intValue)
+                .map(Number::longValue)
                 .orElseThrow();
     }
 
@@ -217,6 +232,7 @@ class Elasticsearch implements AutoCloseable
             throw new IllegalArgumentException("Failed to create a valid url.", e);
         }
 
+        System.err.println("URL! " + url);
         final HttpURLConnection c = (HttpURLConnection) url.openConnection();
         c.setRequestMethod("GET");
         c.setConnectTimeout(ES_API_TIMEOUT_MS);
@@ -225,7 +241,9 @@ class Elasticsearch implements AutoCloseable
 
         try (BufferedReader r = new BufferedReader(new InputStreamReader(c.getInputStream())))
         {
-            return r.lines().collect(Collectors.joining(System.lineSeparator()));
+            String response = r.lines().collect(Collectors.joining(System.lineSeparator()));
+            System.err.println("Response! " + response);
+            return response;
         }
     }
 
@@ -237,34 +255,53 @@ class Elasticsearch implements AutoCloseable
         }
 
         elasticsearch.start();
-
-        for (int i = 0; i < 30; i++)
+        for (int i = 0; i < 3; i++)
         {
-            try
-            {
-                isIndexCreated();
-                return;
-            } catch (IOException io)
-            {
-                Uninterruptibles.sleepUninterruptibly(1, TimeUnit.SECONDS);
-            }
+            ACSEnv.waitFor("Elasticsearch Startup", Duration.ofMinutes(1), () -> {
+                try
+                {
+                    return !isIndexCreated();
+                } catch (IOException e)
+                {
+                    return false;
+                }
+            });
+            System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! IS RUNNING");
         }
 
-        connectElasticSearchToAllNetworks();
+        connectElasticSearchToAdditionalNetworks();
+        System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! NETWORK ATTACHED");
+
+        for (int i = 0; i < 3; i++)
+        {
+            ACSEnv.waitFor("Elasticsearch Startup", Duration.ofMinutes(1), () -> {
+                try
+                {
+                    return !isIndexCreated();
+                } catch (IOException e)
+                {
+                    return false;
+                }
+            });
+            System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! IS RUNNING");
+        }
     }
 
-    private void connectElasticSearchToAllNetworks()
+    private void connectElasticSearchToAdditionalNetworks()
     {
         final DockerClient client = elasticsearch.getDockerClient();
         final String containerId = elasticsearch.getContainerId();
 
-        networksToConnectTo
+        System.err.println(client.inspectContainerCmd(containerId).exec().getNetworkSettings());
+        additionalNetworks
                 .stream()
                 .map(client.connectToNetworkCmd()
                            .withContainerId(containerId)
                            .withContainerNetwork(new ContainerNetwork()
                                    .withAliases("elasticsearch"))::withNetworkId)
                 .forEach(ConnectToNetworkCmd::exec);
+
+        System.err.println(client.inspectContainerCmd(containerId).exec().getNetworkSettings());
     }
 
     @Override
@@ -278,10 +315,7 @@ class ACSEnv implements AutoCloseable
 {
     private final GenericContainer alfresco;
     private final GenericContainer postgres;
-    private final GenericContainer transformRouter;
-    private final GenericContainer transformCoreAllInOne;
-    private final GenericContainer sharedFileStore;
-    private final GenericContainer activemq;
+    private final List<GenericContainer> createdContainers = new ArrayList<>();
 
     private RepoHttpClient repoHttpClient;
 
@@ -291,32 +325,32 @@ class ACSEnv implements AutoCloseable
 
     public ACSEnv(final Network network, final String indexSubsystemName)
     {
-        postgres = new PostgreSQLContainer("postgres:13.3")
+        postgres = newContainer(PostgreSQLContainer.class,"postgres:13.3")
                 .withPassword("alfresco")
                 .withUsername("alfresco")
                 .withDatabaseName("alfresco")
                 .withNetwork(network)
                 .withNetworkAliases("postgres");
 
-        activemq = new GenericContainer("alfresco/alfresco-activemq:5.16.4-jre11-centos7")
+        newContainer(GenericContainer.class, "alfresco/alfresco-activemq:5.16.4-jre11-centos7")
                 .withNetwork(network)
                 .withNetworkAliases("activemq");
 
-        sharedFileStore = new GenericContainer("quay.io/alfresco/alfresco-shared-file-store:0.16.1")
+        newContainer(GenericContainer.class, "quay.io/alfresco/alfresco-shared-file-store:0.16.1")
                 .withEnv("JAVA_OPTS", " -Xmx384m -XshowSettings:vm")
                 .withEnv("scheduler.content.age.millis", "86400000")
                 .withEnv("scheduler.cleanup.interval", "86400000")
                 .withNetwork(network)
                 .withNetworkAliases("shared-file-store");
 
-        transformCoreAllInOne = new GenericContainer("alfresco/alfresco-transform-core-aio:2.5.7")
+        newContainer(GenericContainer.class, "alfresco/alfresco-transform-core-aio:2.5.7")
                 .withEnv("JAVA_OPTS", " -Xmx1024m -XshowSettings:vm")
                 .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
                 .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
                 .withNetwork(network)
                 .withNetworkAliases("transform-core-aio");
 
-        transformRouter = new GenericContainer<>("quay.io/alfresco/alfresco-transform-router:1.5.2")
+        newContainer(GenericContainer.class, "quay.io/alfresco/alfresco-transform-router:1.5.2")
                 .withEnv("JAVA_OPTS", " -Xmx384m -XshowSettings:vm")
                 .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
                 .withEnv("CORE_AIO_URL", "http://transform-core-aio:8090")
@@ -324,7 +358,7 @@ class ACSEnv implements AutoCloseable
                 .withNetwork(network)
                 .withNetworkAliases("transform-router");
 
-        alfresco = new GenericContainer("quay.io/alfresco/alfresco-content-repository:7.2.0")
+        alfresco = newContainer(GenericContainer.class, "quay.io/alfresco/alfresco-content-repository:7.2.0")
                 .withEnv("JAVA_TOOL_OPTIONS",
                         "-Dencryption.keystore.type=JCEKS " +
                                 "-Dencryption.cipherAlgorithm=DESede/CBC/PKCS5Padding " +
@@ -398,7 +432,7 @@ class ACSEnv implements AutoCloseable
             alfresco.addFileSystemBind(hostPath, "/usr/local/tomcat/alf_data", bindMode);
         }
 
-        allContainers().forEach(GenericContainer::start);
+        createdContainers.forEach(GenericContainer::start);
         repoHttpClient = new RepoHttpClient(URI.create("http://" + alfresco.getHost() + ":" + alfresco.getMappedPort(8080)));
 
         expectSearchResult(Duration.ofMinutes(5), UUID.randomUUID().toString(), Set.of());
@@ -439,7 +473,7 @@ class ACSEnv implements AutoCloseable
     @Override
     public void close()
     {
-        allContainers().forEach(GenericContainer::stop);
+        createdContainers.forEach(GenericContainer::stop);
     }
 
     public RepoHttpClient getRepoHttpClient()
@@ -477,14 +511,9 @@ class ACSEnv implements AutoCloseable
         return repoHttpClient.uploadFile(contentUrl, fileName);
     }
 
-    private Stream<GenericContainer> allContainers()
-    {
-        return Stream.of(postgres, activemq, sharedFileStore, transformCoreAllInOne, transformRouter, alfresco);
-    }
-
     public void reindexByIds(long fromId, long toId)
     {
-        final GenericContainer reIndexing = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-reindexing:3.1.1")
+        final GenericContainer reIndexing = newContainer(GenericContainer.class, "quay.io/alfresco/alfresco-elasticsearch-reindexing:3.1.1")
                 .withEnv("ELASTICSEARCH_INDEXNAME", "alfresco")
                 .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200")
                 .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
@@ -502,7 +531,7 @@ class ACSEnv implements AutoCloseable
         waitFor("Re-indexing Exit", Duration.ofMinutes(5), () -> !reIndexing.isRunning());
     }
 
-    private void waitFor(String description, final Duration timeout, final BooleanSupplier condition)
+    public static void waitFor(String description, final Duration timeout, final BooleanSupplier condition)
     {
         final Duration step = Duration.ofMillis(200);
         Duration remaining = timeout;
@@ -520,16 +549,30 @@ class ACSEnv implements AutoCloseable
 
     public void startLiveIndexing()
     {
-        final GenericContainer liveIndexing = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-live-indexing:3.1.1")
+        final GenericContainer liveIndexing = newContainer(GenericContainer.class, "quay.io/alfresco/alfresco-elasticsearch-live-indexing:3.1.1")
                 .withEnv("ELASTICSEARCH_INDEXNAME", "alfresco")
                 .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200")
                 .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
                 .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
                 .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config")
+                .withEnv("LOGGING_LEVEL_ORG_ALFRESCO", "DEBUG")
                 .withLogConsumer(of -> System.err.print("[liveIndexing]" + ((OutputFrame) of).getUtf8String()))
                 .withNetwork(alfresco.getNetwork());
 
         liveIndexing.start();
+    }
+
+    private <T extends GenericContainer> T  newContainer(Class<T> clazz, String imageRepository)
+    {
+        try
+        {
+            final T container = clazz.getConstructor(String.class).newInstance(imageRepository);
+            createdContainers.add(container);
+            return container;
+        } catch (Exception e)
+        {
+            throw new IllegalStateException("Unexpected!");
+        }
     }
 }
 
