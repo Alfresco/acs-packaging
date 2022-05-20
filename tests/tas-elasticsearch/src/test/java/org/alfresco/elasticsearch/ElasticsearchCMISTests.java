@@ -205,6 +205,14 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     }
 
     @Test (groups = TestGroup.SEARCH)
+    public void negative_objectTypeIdQuery_invalidObjectTypeId()
+    {
+        // note: ideally 400 but currently 500 (also for Solr) :-(
+        SearchRequest query = req("SELECT * FROM cmis:folder WHERE cmis:objectTypeId = 'unknown:site'");
+        searchQueryService.expectErrorFromQuery(query, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown property: {http://www.alfresco.org/model/content/1.0}cmis");
+    }
+
+    @Test (groups = TestGroup.SEARCH)
     public void negative_basicCMISQuery_invalidFieldName()
     {
         // note: ideally 400 but currently 500 (also for Solr) :-(
