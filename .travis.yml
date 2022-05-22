@@ -32,7 +32,7 @@ env:
     - TAS_ENVIRONMENT=./tests/environment
     # Release version has to start with real version (7.3.0-....) for the docker image to build successfully.
     - RELEASE_VERSION=7.3.0-A1
-    - DEVELOPMENT_VERSION=7.3.0-SNAPSHOT
+    - DEVELOPMENT_VERSION=7.3.0-A2-SNAPSHOT
     - DTAS_VERSION="${DTAS_VERSION:-v1.1}"
     - PYTHON_VERSION=3.7.12
 
