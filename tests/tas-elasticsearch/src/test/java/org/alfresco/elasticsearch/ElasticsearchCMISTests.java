@@ -134,6 +134,22 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
         searchQueryService.expectResultsFromQuery(query2, user1, siteModel1.getId());
     }
 
+    @TestRail (description = "Check folders can be selected using cmis:description is null.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void isNullQuery()
+    {
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:folder WHERE cmis:description IS NULL");
+        searchQueryService.expectResultsFromQuery(query, user1, "documentLibrary", FOLDER_0_NAME, FOLDER_1_NAME, user1.getUsername());
+    }
+
+    @TestRail (description = "Check folders can be selected using cmis:description is not null.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void isNotNullQuery()
+    {
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:folder WHERE cmis:description IS NOT NULL");
+        searchQueryService.expectResultsFromQuery(query, user1, siteModel1.getId());
+    }
+
     @TestRail (description = "Check we can use the CMIS LIKE syntax to match a prefix.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
     @Test (groups = TestGroup.SEARCH)
     public void matchNamesLikePrefix()
@@ -202,6 +218,20 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
         // note: ideally 400 but currently 500 (also for Solr) :-(
         SearchRequest query = req("SELECT * FROM cmis:unknown");
         searchQueryService.expectErrorFromQuery(query, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown property: {http://www.alfresco.org/model/content/1.0}cmis");
+    }
+
+    @Test (groups = TestGroup.SEARCH)
+    public void negative_isNullQuery_invalidField()
+    {
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:folder WHERE cmis:unknown IS NULL");
+        searchQueryService.expectErrorFromQuery(query, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown column/property cmis:unknown");
+    }
+
+    @Test (groups = TestGroup.SEARCH)
+    public void negative_isNotNullQuery_invalidField()
+    {
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:folder WHERE cmis:unknown IS NOT NULL");
+        searchQueryService.expectErrorFromQuery(query, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown column/property cmis:unknown");
     }
 
     @Test (groups = TestGroup.SEARCH)
