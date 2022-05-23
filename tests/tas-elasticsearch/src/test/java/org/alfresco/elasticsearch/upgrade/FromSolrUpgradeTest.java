@@ -9,6 +9,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,26 +27,32 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.ConnectToNetworkCmd;
-import com.github.dockerjava.api.command.CreateNetworkCmd;
 import com.github.dockerjava.api.model.ContainerNetwork;
 import com.google.common.util.concurrent.Uninterruptibles;
 import com.google.gson.Gson;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpMessage;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
@@ -90,13 +98,31 @@ public class FromSolrUpgradeTest
                 mirroredEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf"));
             }
 
-            initialEnv.startLiveIndexing();
-            Uninterruptibles.sleepUninterruptibly(1, TimeUnit.MINUTES);
-            initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf"));
             final long documentsCount = elasticsearch.getIndexedDocumentCount();
             System.out.println(initialEnv.uploadFile(getClass().getResource("test.pdf"), "test2.pdf"));
+            initialEnv.startLiveIndexing();
             initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf", "test2.pdf"));
-            Assert.assertTrue(elasticsearch.getIndexedDocumentCount() > documentsCount);
+            Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), documentsCount);
+
+            System.out.println(initialEnv.uploadFile(getClass().getResource("test.pdf"), "test3.pdf"));
+            initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf", "test2.pdf", "test3.pdf"));
+            Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), documentsCount + 1);
+
+            initialEnv.reindexByIds(initialReIndexingUpperBound, 1_000_000_000);
+            Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), documentsCount + 2);
+
+            System.out.println(initialEnv.uploadFile(getClass().getResource("test.pdf"), "test4.pdf"));
+            initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf", "test2.pdf", "test3.pdf", "test4.pdf"));
+            Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), documentsCount + 3);
+
+            initialEnv.setElasticsearchSearchService();
+            initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf", "test2.pdf", "test3.pdf", "test4.pdf"));
+
+            scenario.shutdownSolr();
+            initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf", "test2.pdf", "test3.pdf", "test4.pdf"));
+
+            System.out.println(initialEnv.uploadFile(getClass().getResource("test.pdf"), "test5.pdf"));
+            initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf", "test2.pdf", "test3.pdf", "test4.pdf", "test5.pdf"));
         }
     }
 }
@@ -151,6 +177,11 @@ class UpgradeScenario implements AutoCloseable
         solr6.start();
         initialEnv.start();
         return initialEnv;
+    }
+
+    public void shutdownSolr()
+    {
+        solr6.stop();
     }
 
     public Elasticsearch startElasticsearch()
@@ -232,7 +263,6 @@ class Elasticsearch implements AutoCloseable
             throw new IllegalArgumentException("Failed to create a valid url.", e);
         }
 
-        System.err.println("URL! " + url);
         final HttpURLConnection c = (HttpURLConnection) url.openConnection();
         c.setRequestMethod("GET");
         c.setConnectTimeout(ES_API_TIMEOUT_MS);
@@ -241,9 +271,7 @@ class Elasticsearch implements AutoCloseable
 
         try (BufferedReader r = new BufferedReader(new InputStreamReader(c.getInputStream())))
         {
-            String response = r.lines().collect(Collectors.joining(System.lineSeparator()));
-            System.err.println("Response! " + response);
-            return response;
+            return r.lines().collect(Collectors.joining(System.lineSeparator()));
         }
     }
 
@@ -266,11 +294,9 @@ class Elasticsearch implements AutoCloseable
                     return false;
                 }
             });
-            System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! IS RUNNING");
         }
 
         connectElasticSearchToAdditionalNetworks();
-        System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! NETWORK ATTACHED");
 
         for (int i = 0; i < 3; i++)
         {
@@ -283,7 +309,6 @@ class Elasticsearch implements AutoCloseable
                     return false;
                 }
             });
-            System.err.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! IS RUNNING");
         }
     }
 
@@ -292,7 +317,6 @@ class Elasticsearch implements AutoCloseable
         final DockerClient client = elasticsearch.getDockerClient();
         final String containerId = elasticsearch.getContainerId();
 
-        System.err.println(client.inspectContainerCmd(containerId).exec().getNetworkSettings());
         additionalNetworks
                 .stream()
                 .map(client.connectToNetworkCmd()
@@ -300,8 +324,6 @@ class Elasticsearch implements AutoCloseable
                            .withContainerNetwork(new ContainerNetwork()
                                    .withAliases("elasticsearch"))::withNetworkId)
                 .forEach(ConnectToNetworkCmd::exec);
-
-        System.err.println(client.inspectContainerCmd(containerId).exec().getNetworkSettings());
     }
 
     @Override
@@ -325,7 +347,7 @@ class ACSEnv implements AutoCloseable
 
     public ACSEnv(final Network network, final String indexSubsystemName)
     {
-        postgres = newContainer(PostgreSQLContainer.class,"postgres:13.3")
+        postgres = newContainer(PostgreSQLContainer.class, "postgres:13.3")
                 .withPassword("alfresco")
                 .withUsername("alfresco")
                 .withDatabaseName("alfresco")
@@ -511,6 +533,11 @@ class ACSEnv implements AutoCloseable
         return repoHttpClient.uploadFile(contentUrl, fileName);
     }
 
+    public void setElasticsearchSearchService() throws IOException
+    {
+        repoHttpClient.setSearchService("elasticsearch");
+    }
+
     public void reindexByIds(long fromId, long toId)
     {
         final GenericContainer reIndexing = newContainer(GenericContainer.class, "quay.io/alfresco/alfresco-elasticsearch-reindexing:3.1.1")
@@ -562,11 +589,11 @@ class ACSEnv implements AutoCloseable
         liveIndexing.start();
     }
 
-    private <T extends GenericContainer> T  newContainer(Class<T> clazz, String imageRepository)
+    private <T extends GenericContainer> T newContainer(Class<T> clazz, String image)
     {
         try
         {
-            final T container = clazz.getConstructor(String.class).newInstance(imageRepository);
+            final T container = clazz.getConstructor(String.class).newInstance(image);
             createdContainers.add(container);
             return container;
         } catch (Exception e)
@@ -593,11 +620,54 @@ class RepoHttpClient
     final Gson gson = new Gson();
     private final URI searchApiUri;
     private final URI fileUploadApiUri;
+    private final URI searchServiceAdminAppUri;
 
     RepoHttpClient(final URI repoBaseUri)
     {
         searchApiUri = repoBaseUri.resolve("/alfresco/api/-default-/public/search/versions/1/search");
         fileUploadApiUri = repoBaseUri.resolve("/alfresco/api/-default-/public/alfresco/versions/1/nodes/-my-/children");
+        searchServiceAdminAppUri = repoBaseUri.resolve("/alfresco/s/enterprise/admin/admin-searchservice");
+    }
+
+    public void setSearchService(String implementation) throws IOException
+    {
+        final HttpGet getCsrfToken = authenticate(new HttpGet(searchServiceAdminAppUri));
+        final HttpClientContext httpCtx = HttpClientContext.create();
+        httpCtx.setCookieStore(new BasicCookieStore());
+
+        final Cookie csrfCookie;
+
+        try (CloseableHttpResponse response = client.execute(getCsrfToken, httpCtx))
+        {
+            final Map<String, Cookie> cookies = httpCtx
+                    .getCookieStore()
+                    .getCookies()
+                    .stream()
+                    .collect(Collectors.toUnmodifiableMap(Cookie::getName, Function.identity()));
+
+            csrfCookie = Objects.requireNonNull(cookies.get("alf-csrftoken"));
+        }
+
+        final URI changeSearchServiceUri = URI.create(new URIBuilder(searchServiceAdminAppUri)
+                .addParameter("t", "/enterprise/admin/admin-searchservice")
+                .addParameter(csrfCookie.getName(), URLDecoder.decode(csrfCookie.getValue(), StandardCharsets.US_ASCII))
+                .toString());
+        final HttpEntity changeSearchServiceFormEntity = MultipartEntityBuilder
+                .create()
+                .setMode(HttpMultipartMode.BROWSER_COMPATIBLE)
+                .addTextBody("Alfresco:Type=Configuration,Category=Search,id1=manager|sourceBeanName", implementation)
+                .build();
+
+        final HttpPost changeSearchServiceRequest = authenticate(new HttpPost(changeSearchServiceUri));
+        changeSearchServiceRequest.setEntity(changeSearchServiceFormEntity);
+
+        try (CloseableHttpResponse response = client.execute(changeSearchServiceRequest, httpCtx))
+        {
+            if (response.getStatusLine().getStatusCode() != HttpStatus.SC_MOVED_PERMANENTLY)
+            {
+                throw new IllegalStateException("Couldn't switch to `" + implementation + "`.");
+            }
+        }
     }
 
     public UUID uploadFile(URL contentUrl, String fileName) throws IOException
@@ -610,8 +680,7 @@ class RepoHttpClient
                     .addBinaryBody("filedata", is, ContentType.DEFAULT_BINARY, fileName)
                     .build();
 
-            final HttpPost uploadRequest = new HttpPost(fileUploadApiUri);
-            uploadRequest.setHeader("Authorization", "Basic YWRtaW46YWRtaW4=");
+            final HttpPost uploadRequest = authenticate(new HttpPost(fileUploadApiUri));
             uploadRequest.setEntity(uploadEntity);
 
             final Optional<Map<String, ?>> uploadResult = getJsonResponse(uploadRequest, HttpStatus.SC_CREATED);
@@ -628,8 +697,7 @@ class RepoHttpClient
 
     public Optional<Set<String>> searchForFiles(String term) throws IOException
     {
-        final HttpPost searchRequest = new HttpPost(searchApiUri);
-        searchRequest.setHeader("Authorization", "Basic YWRtaW46YWRtaW4=");
+        final HttpPost searchRequest = authenticate(new HttpPost(searchApiUri));
         searchRequest.setEntity(new StringEntity(searchQuery(term), ContentType.APPLICATION_JSON));
 
         final Optional<Map<String, ?>> searchResult = getJsonResponse(searchRequest, HttpStatus.SC_OK);
@@ -656,6 +724,12 @@ class RepoHttpClient
                 .collect(Collectors.toUnmodifiableSet());
 
         return Optional.of(names);
+    }
+
+    private <T extends HttpMessage> T authenticate(T msg)
+    {
+        msg.setHeader("Authorization", "Basic YWRtaW46YWRtaW4=");
+        return msg;
     }
 
     private Optional<Map<String, ?>> getJsonResponse(HttpUriRequest request, int requiredStatusCode) throws IOException
