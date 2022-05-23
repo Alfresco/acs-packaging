@@ -46,6 +46,8 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
 {
     private static final String PREFIX = getAlphabeticUUID();
     private static final String SUFFIX = getAlphabeticUUID();
+    private static final String ASC = "ascending";
+    private static final String DESC = "descending";
     private static final String UNIQUE_WORD = getAlphabeticUUID();
     private static final String FILE_0_NAME = PREFIX + "_test.txt" + SUFFIX;
     private static final String FILE_1_NAME = "internal_" + PREFIX + "_and_" + SUFFIX + ".txt";
@@ -227,12 +229,21 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
         searchQueryService.expectResultsFromQuery(query, user1, FILE_1_NAME, FILE_2_NAME, file3Name);
     }
 
-    @TestRail (description = "Check ORDER BY syntax works as expected", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @TestRail (description = "Check ORDER BY syntax works as expected for ASCENDING order", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
     @Test (groups = TestGroup.SEARCH)
     public void checkOrderByAscSyntax()
     {
-        List<String> expectedList = orderNames(FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
-        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name IN('" + FILE_0_NAME + "','" + FILE_1_NAME + "','" + FILE_2_NAME + "') ORDER BY cmis:name ASC");
+        List<String> expectedList = orderNames(ASC, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
+        SearchRequest query = req("cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name IN('" + FILE_0_NAME + "','" + FILE_1_NAME + "','" + FILE_2_NAME + "') ORDER BY cmis:name ASC");
+        searchQueryService.expectResultsInOrder(query, user1, expectedList);
+    }
+
+    @TestRail (description = "Check ORDER BY syntax works as expected for DESCENDING order", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkOrderByDescSyntax()
+    {
+        List<String> expectedList = orderNames(DESC, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
+        SearchRequest query = req("cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name IN('" + FILE_0_NAME + "','" + FILE_1_NAME + "','" + FILE_2_NAME + "') ORDER BY cmis:name ASC");
         searchQueryService.expectResultsInOrder(query, user1, expectedList);
     }
 
@@ -585,30 +596,38 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     private List<String> getCreationDates(UserModel user, SiteModel site, FileModel... files)
     {
         return List.of(files)
-            .stream()
-            .map(FileModel::getCmisLocation)
-            .map(cmisLocation -> dataContent.usingUser(user).usingSite(site).getCMISDocument(cmisLocation))
-            .map(cmisDocument -> cmisDocument.<GregorianCalendar>getProperty("cmis:creationDate"))
-            .map(creationDateProperty -> creationDateProperty.<GregorianCalendar>getValue())
-            .map(GregorianCalendar::toInstant)
-            .map(Instant::toString)
-            .collect(toList());
+                .stream()
+                .map(FileModel::getCmisLocation)
+                .map(cmisLocation -> dataContent.usingUser(user).usingSite(site).getCMISDocument(cmisLocation))
+                .map(cmisDocument -> cmisDocument.<GregorianCalendar>getProperty("cmis:creationDate"))
+                .map(creationDateProperty -> creationDateProperty.<GregorianCalendar>getValue())
+                .map(GregorianCalendar::toInstant)
+                .map(Instant::toString)
+                .collect(toList());
     }
 
-    private FileModel uploadDocument(String filePath, UserModel user, SiteModel site) throws IOException
-    {
-        ClassPathResource toUpload = new ClassPathResource(filePath);
-        return dataContent.usingUser(user)
-            .usingSite(site)
-            .uploadDocument(toUpload.getFile());
-    }
-
-    private List<String> orderNames(String... filename){
+    private List<String> orderNames(String order, String... filename){
         List<String> orderedNames = Arrays.stream(filename)
                 .sorted()
                 .collect(Collectors.toList());
+        if(order == DESC){
+            reverseOrder(orderedNames);
+        }
         System.out.println("filename = " + filename);
         System.out.println("orderedNames = " + orderedNames);
         return orderedNames;
+    }
+
+    private static<T> void reverseOrder(List<T> names) {
+        //list is empty or last item remaining
+        if (names == null || names.size() <= 1) {
+            return;
+        }
+        // remove the first element
+        T value = names.remove(0);
+        // recur for remaining items
+        reverseOrder(names);
+        // insert the top element back after recurse for remaining items
+        names.add(value);
     }
 }
