@@ -607,9 +607,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     }
 
     private List<String> orderNames(String order, String... filename){
-        List<String> orderedNames = Arrays.stream(filename)
-                .sorted()
-                .collect(Collectors.toList());
+        List<String> orderedNames = Arrays.stream(filename).sorted().collect(Collectors.toList());
         if(order == DESC){
             reverseOrder(orderedNames);
         }
