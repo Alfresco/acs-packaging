@@ -205,7 +205,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     }
 
     @Test (groups = TestGroup.SEARCH)
-    public void negative_objectTypeIdQuery_invalidObjectTypeId()
+    public void negative_objectTypeIdQuery_invalidType()
     {
         // note: ideally 400 but currently 500 (also for Solr) :-(
         SearchRequest query = req("SELECT * FROM cmis:folder WHERE cmis:objectTypeId = 'unknown:site'");
