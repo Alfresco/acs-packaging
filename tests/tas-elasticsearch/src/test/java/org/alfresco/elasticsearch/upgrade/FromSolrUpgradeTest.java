@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -25,18 +26,25 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.ConnectToNetworkCmd;
 import com.github.dockerjava.api.model.ContainerNetwork;
+import com.google.common.util.concurrent.AtomicLongMap;
+import com.google.common.util.concurrent.RateLimiter;
 import com.google.common.util.concurrent.Uninterruptibles;
 import com.google.gson.Gson;
 
+import org.alfresco.elasticsearch.upgrade.AvailabilityProbe.ProbeResult;
+import org.alfresco.elasticsearch.upgrade.AvailabilityProbe.Stats;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpMessage;
 import org.apache.http.HttpStatus;
@@ -61,7 +69,6 @@ import org.testcontainers.containers.Container.ExecResult;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.images.builder.Transferable;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -76,6 +83,9 @@ public class FromSolrUpgradeTest
             final ACSEnv initialEnv = scenario.startInitialEnvWithSolrBasedSearchService();
             System.out.println(initialEnv.uploadFile(getClass().getResource("test.pdf"), "test1.pdf"));
             initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf"));
+
+            System.out.println("!!!!RUNNING");
+            final AvailabilityProbe probe = initialEnv.startSearchAPIAvailabilityProbe();
 
             final Elasticsearch elasticsearch = scenario.startElasticsearch();
             Assert.assertFalse(elasticsearch.isIndexCreated());
@@ -114,15 +124,20 @@ public class FromSolrUpgradeTest
             System.out.println(initialEnv.uploadFile(getClass().getResource("test.pdf"), "test4.pdf"));
             initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf", "test2.pdf", "test3.pdf", "test4.pdf"));
             Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), documentsCount + 3);
-
+            System.out.println("!!!!SWITCHING");
             initialEnv.setElasticsearchSearchService();
+            System.out.println("!!!!SWITCHED");
             initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf", "test2.pdf", "test3.pdf", "test4.pdf"));
 
+            System.out.println("!!!!SHUTTING DOWN");
             scenario.shutdownSolr();
+            System.out.println("!!!!SHUT DOWN");
             initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf", "test2.pdf", "test3.pdf", "test4.pdf"));
 
             System.out.println(initialEnv.uploadFile(getClass().getResource("test.pdf"), "test5.pdf"));
             initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf", "test2.pdf", "test3.pdf", "test4.pdf", "test5.pdf"));
+            final Stats availabilityStats = probe.stop();
+            Assert.assertTrue(availabilityStats.getSuccessRatioInPercents() >= 99, "Search was unavailable. Stats: " + availabilityStats);
         }
     }
 }
@@ -433,6 +448,22 @@ class ACSEnv implements AutoCloseable
         alfDataHostPath = hostPath;
     }
 
+    public AvailabilityProbe startSearchAPIAvailabilityProbe()
+    {
+        return AvailabilityProbe.createRunning(10, this::checkSearchAPIAvailability);
+    }
+
+    private ProbeResult checkSearchAPIAvailability()
+    {
+        try
+        {
+            return repoHttpClient.searchForFiles("babekyrtso").map(v -> ProbeResult.ok()).orElseGet(ProbeResult::fail);
+        } catch (Exception e)
+        {
+            return ProbeResult.fail(e);
+        }
+    }
+
     public void start()
     {
         if (alfresco.isRunning())
@@ -550,7 +581,6 @@ class ACSEnv implements AutoCloseable
                 .withEnv("ALFRESCO_REINDEX_FROM_ID", Long.toString(fromId))
                 .withEnv("ALFRESCO_REINDEX_TO_ID", Long.toString(toId))
                 .withEnv("ALFRESCO_REINDEX_JOB_NAME", "reindexByIds")
-                .withLogConsumer(of -> System.err.print("[reIndexing]" + ((OutputFrame) of).getUtf8String()))
                 .withNetwork(alfresco.getNetwork());
 
         reIndexing.start();
@@ -582,8 +612,6 @@ class ACSEnv implements AutoCloseable
                 .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
                 .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
                 .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config")
-                .withEnv("LOGGING_LEVEL_ORG_ALFRESCO", "DEBUG")
-                .withLogConsumer(of -> System.err.print("[liveIndexing]" + ((OutputFrame) of).getUtf8String()))
                 .withNetwork(alfresco.getNetwork());
 
         liveIndexing.start();
@@ -754,5 +782,128 @@ class RepoHttpClient
     private String searchQuery(String term)
     {
         return "{\"query\":{\"language\":\"afts\",\"query\":\"" + term + "\"}}";
+    }
+}
+
+class AvailabilityProbe
+{
+    private final Thread thread;
+    private final RateLimiter rateLimiter;
+    private final AtomicBoolean stopRequested = new AtomicBoolean();
+    private final Supplier<ProbeResult> probingFunction;
+    private AtomicLongMap<ProbeResult> stats = AtomicLongMap.create();
+
+    public static AvailabilityProbe createRunning(int requestsPerSecond, Supplier<ProbeResult> probingFunction)
+    {
+        final AvailabilityProbe probe = new AvailabilityProbe(requestsPerSecond, probingFunction);
+        probe.start();
+        return probe;
+    }
+
+    private AvailabilityProbe(int requestsPerSecond, Supplier<ProbeResult> probingFunction)
+    {
+        rateLimiter = RateLimiter.create(requestsPerSecond);
+        this.probingFunction = probingFunction;
+        thread = new Thread(this::probing);
+    }
+
+    public Stats getStats()
+    {
+        return new Stats(stats.asMap());
+    }
+
+    public Stats stop()
+    {
+        stopRequested.set(true);
+        Uninterruptibles.joinUninterruptibly(thread, 10, TimeUnit.SECONDS);
+        return getStats();
+    }
+
+    private void start()
+    {
+        if (thread.isAlive()) return;
+        thread.start();
+    }
+
+    private void probing()
+    {
+        while (!stopRequested.get())
+        {
+            rateLimiter.acquire();
+            stats.incrementAndGet(probingFunction.get());
+        }
+    }
+
+    public static class Stats
+    {
+        private final Map<ProbeResult, Long> results;
+
+        private Stats(Map<ProbeResult, Long> results)
+        {
+            this.results = Map.copyOf(results);
+        }
+
+        @Override
+        public String toString()
+        {
+            return results.toString();
+        }
+
+        public int getSuccessRatioInPercents()
+        {
+            System.out.println(results);
+            final long ok = Optional.ofNullable(results.get(ProbeResult.ok())).orElse(0L);
+            if (ok == 0) return 0;
+
+            final long total = results.values().stream().mapToLong(Number::longValue).sum();
+            return (int)(((ok * 1000) / total) / 10);
+        }
+    }
+
+    public static class ProbeResult
+    {
+        private final Object result;
+        private static final ProbeResult OK = new ProbeResult("OK");
+        private static final ProbeResult FAIL = new ProbeResult("FAIL");
+        private static final ConcurrentHashMap<Class<? extends Throwable>, ProbeResult> FAILURES_CACHE = new ConcurrentHashMap<>();
+
+        public static ProbeResult ok()
+        {
+            return OK;
+        }
+
+        public static ProbeResult fail()
+        {
+            return FAIL;
+        }
+
+        public static ProbeResult fail(Throwable reason)
+        {
+            if (reason == null) return fail();
+            return FAILURES_CACHE.computeIfAbsent(reason.getClass(), ProbeResult::new);
+        }
+
+        private ProbeResult(Object result)
+        {
+            this.result = Objects.requireNonNull(result);
+        }
+
+        @Override
+        public String toString()
+        {
+            return result.toString();
+        }
+
+        @Override
+        public boolean equals(Object o)
+        {
+            return (this == o) || (getClass() == o.getClass() && this.result.equals(((ProbeResult) o).result));
+        }
+
+        @Override
+        public int hashCode()
+        {
+            return Objects.hash(result);
+        }
     }
 }
