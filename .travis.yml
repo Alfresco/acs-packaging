@@ -172,6 +172,14 @@ jobs:
       script:
         - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-atom-with-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
 
+    - name: "CMIS TAS tests - Elastic Search (CMIS API)"
+        if: commit_message !~ /\[skip search\]/
+        before_script:
+          - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml
+          - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+        script:
+          - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
+
     - name: "Sync Service TAS tests"
       if: commit_message !~ /\[skip tas\]/
       before_script:
@@ -180,7 +188,7 @@ jobs:
       script:
         - travis_wait 20 mvn -B install -ntp -f tests/tas-sync-service/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
-    - name: "Elasticsearch TAS tests"
+    - name: "Elasticsearch TAS tests (Search API)"
       if: commit_message !~ /\[skip search\]/
       script:
        - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false
