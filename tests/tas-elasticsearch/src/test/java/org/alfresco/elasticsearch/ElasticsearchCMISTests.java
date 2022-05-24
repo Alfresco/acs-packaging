@@ -176,12 +176,28 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME);
     }
 
+    @TestRail (description = "Check that we can search by document name not matching. Needs exact term search to be enabled to pass.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void doesNotMatchDocumentName()
+    {
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name <> '" + FILE_0_NAME + "'");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_1_NAME, FILE_2_NAME);
+    }
+
     @TestRail (description = "Check IN('value1','value2') syntax works. Needs exact term search to be enabled to pass.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
     @Test (groups = TestGroup.SEARCH)
     public void checkInSyntax()
     {
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name IN ('" + FILE_0_NAME + "', '" + FILE_1_NAME + "')");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME);
+    }
+
+    @TestRail (description = "Check NOT IN('value1','value2') syntax works. Needs exact term search to be enabled to pass.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkNotInSyntax()
+    {
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name NOT IN ('" + FILE_0_NAME + "', '" + FILE_1_NAME + "')");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_2_NAME);
     }
 
     @Test (groups = TestGroup.SEARCH)
