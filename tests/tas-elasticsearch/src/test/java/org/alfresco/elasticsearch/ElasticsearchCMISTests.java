@@ -228,7 +228,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     }
 
     @Test (groups = TestGroup.SEARCH)
-    public void negative_basicTypeIdQuery_invalidType()
+    public void negative_baseTypeIdQuery_invalidType()
     {
         // note: ideally 400 but currently 500 (also for Solr) :-(
         SearchRequest query = req("SELECT * FROM cmis:folder WHERE cmis:baseTypeId = 'cmis:unknown'");
