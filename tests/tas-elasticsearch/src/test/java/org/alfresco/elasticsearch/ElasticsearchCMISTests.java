@@ -134,6 +134,14 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
         searchQueryService.expectResultsFromQuery(query2, user1, siteModel1.getId());
     }
 
+    @TestRail (description = "Check folders can be selected using cmis:baseTypeId.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void baseTypeIdQuery()
+    {
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:folder WHERE cmis:baseTypeId = 'cmis:folder'");
+        searchQueryService.expectResultsFromQuery(query, user1, "documentLibrary", FOLDER_0_NAME, FOLDER_1_NAME, user1.getUsername(), siteModel1.getId());
+    }
+
     @TestRail (description = "Check folders can be selected using cmis:description is null.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
     @Test (groups = TestGroup.SEARCH)
     public void isNullQuery()
@@ -221,6 +229,14 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     }
 
     @Test (groups = TestGroup.SEARCH)
+    public void negative_objectTypeIdQuery_invalidType()
+    {
+        // note: ideally 400 but currently 500 (also for Solr) :-(
+        SearchRequest query = req("SELECT * FROM cmis:folder WHERE cmis:objectTypeId = 'unknown:site'");
+        searchQueryService.expectErrorFromQuery(query, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown property: {http://www.alfresco.org/model/content/1.0}cmis");
+    }
+
+    @Test (groups = TestGroup.SEARCH)
     public void negative_isNullQuery_invalidField()
     {
         SearchRequest query = req("cmis", "SELECT * FROM cmis:folder WHERE cmis:unknown IS NULL");
@@ -247,6 +263,14 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
 
         SearchRequest query3 = req("SELECT my:custom FROM cmis:document");
         searchQueryService.expectErrorFromQuery(query3, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown property: {http://www.alfresco.org/model/content/1.0}my");
+    }
+
+    @Test (groups = TestGroup.SEARCH)
+    public void negative_baseTypeIdQuery_invalidType()
+    {
+        // note: ideally 400 but currently 500 (also for Solr) :-(
+        SearchRequest query = req("SELECT * FROM cmis:folder WHERE cmis:baseTypeId = 'cmis:unknown'");
+        searchQueryService.expectErrorFromQuery(query, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown property: {http://www.alfresco.org/model/content/1.0}cmis");
     }
 
     @TestRail (description = "Check all folders can be selected (including sites/doc libs).", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
