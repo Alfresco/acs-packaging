@@ -252,6 +252,7 @@ class ACSEnv implements AutoCloseable
                 .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
                 .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config")
                 .withEnv("SPRING_DATASOURCE_URL", "jdbc:postgresql://postgres:5432/alfresco")
+                .withEnv("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true")
                 .withEnv("ALFRESCO_REINDEX_FROM_ID", Long.toString(fromId))
                 .withEnv("ALFRESCO_REINDEX_TO_ID", Long.toString(toId))
                 .withEnv("ALFRESCO_REINDEX_JOB_NAME", "reindexByIds")

@@ -2,55 +2,25 @@ package org.alfresco.elasticsearch.upgrade;
 
 interface Config
 {
-    default String getRepositoryImage()
-    {
-        return "alfresco/alfresco-content-repository:latest";
-    }
+    String getRepositoryImage();
 
-    default String getSearchServiceImageName()
-    {
-        return "alfresco/alfresco-search-services:2.0.3";
-    }
+    String getSearchServiceImageName();
 
-    default String getPostgreSQLImage()
-    {
-        return "postgres:13.3";
-    }
+    String getPostgreSQLImage();
 
-    default String getActiveMqImage()
-    {
-        return "alfresco/alfresco-activemq:5.16.4-jre11-centos7";
-    }
+    String getActiveMqImage();
 
-    default String getSharedFileStoreImage()
-    {
-        return "quay.io/alfresco/alfresco-shared-file-store:0.16.1";
-    }
+    String getSharedFileStoreImage();
 
-    default String getTransformCoreAIOImage()
-    {
-        return "alfresco/alfresco-transform-core-aio:2.5.7";
-    }
+    String getTransformCoreAIOImage();
 
-    default String getTransformRouterImage()
-    {
-        return "quay.io/alfresco/alfresco-transform-router:1.5.2";
-    }
+    String getTransformRouterImage();
 
-    default String getReIndexingImage()
-    {
-        return "quay.io/alfresco/alfresco-elasticsearch-reindexing:3.1.1";
-    }
+    String getReIndexingImage();
 
-    default String getLiveIndexingImage()
-    {
-        return "quay.io/alfresco/alfresco-elasticsearch-live-indexing:3.1.1";
-    }
+    String getLiveIndexingImage();
 
-    default String getElasticsearchImage()
-    {
-        return "elasticsearch:7.10.1";
-    }
+    String getElasticsearchImage();
 
     default String getElasticsearchHostname()
     {
