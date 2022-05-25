@@ -7,6 +7,7 @@ import static org.alfresco.elasticsearch.AlfrescoStackInitializer.getImagesConfi
 import java.io.IOException;
 import java.net.URL;
 
+import org.alfresco.elasticsearch.EnvHelper;
 import org.alfresco.elasticsearch.upgrade.AvailabilityProbe.Stats;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -135,7 +136,7 @@ public class FromSolrUpgradeTest
             @Override
             public String getSearchServiceImageName()
             {
-                return "alfresco/alfresco-search-services:2.0.3";
+                return "alfresco/alfresco-search-services:" + EnvHelper.getEnvProperty("SOLR6_TAG");
             }
 
             @Override
