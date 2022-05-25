@@ -198,7 +198,7 @@ jobs:
       script:
        - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false
 
-    - name: "Elasticsearch Upgrade tests"
+    - name: "Elasticsearch Upgrade TAS tests"
       if: commit_message !~ /\[skip search\]/
       vm:
         size: large
