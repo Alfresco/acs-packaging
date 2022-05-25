@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>content-repository-tests</artifactId>
-        <version>23.1.0-SNAPSHOT</version>
+        <version>7.3.0-A2-SNAPSHOT</version>
     </parent>
 
     <developers>
@@ -71,6 +71,16 @@
                 <cmis.binding>atom</cmis.binding>
                 <cmis.basePath>/alfresco/api/-default-/public/cmis/versions/1.1/atom</cmis.basePath>
                 <excludedGroups>not_supported_on_cmis_atom|renditions|bug-atom.*</excludedGroups>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>run-cmis-with-elastic</id>
+            <properties>
+                <suiteXmlFile>${project.basedir}/src/test/resources/cmis-elastic-suite.xml</suiteXmlFile>
+                <cmis.binding>browser</cmis.binding>
+                <cmis.basePath>/alfresco/api/-default-/public/cmis/versions/1.1/browser</cmis.basePath>
+                <excludedGroups>not_supported_on_cmis_browser|renditions|bug-browser.*|bug-atom.*|bug-ws.*</excludedGroups>
             </properties>
         </profile>
 
