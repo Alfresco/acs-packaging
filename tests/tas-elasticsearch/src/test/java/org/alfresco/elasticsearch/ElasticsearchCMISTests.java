@@ -1,7 +1,13 @@
 package org.alfresco.elasticsearch;
 
+import static java.util.stream.Collectors.toList;
+
 import static org.alfresco.elasticsearch.SearchQueryService.req;
 import static org.alfresco.elasticsearch.TestDataUtility.getAlphabeticUUID;
+
+import java.time.Instant;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.utility.constants.UserRole;
@@ -17,7 +23,6 @@ import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
@@ -66,6 +71,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     private SiteModel siteModel1;
     private SiteModel siteModel2;
     private FileModel file0;
+    private List<String> fileCreationDates;
 
     /**
      * Data will be prepared using the schema below:
@@ -96,8 +102,11 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
         dataUser.addUserToSite(userMultiSite, siteModel2, UserRole.SiteContributor);
 
         file0 = createContent(FILE_0_NAME, "This is the first test containing " + UNIQUE_WORD, siteModel1, user1);
-        createContent(FILE_1_NAME, "This is another TEST file containing " + UNIQUE_WORD, siteModel1, user1);
-        createContent(FILE_2_NAME, "This Test file is owned by user2 " + UNIQUE_WORD, siteModel1, user2);
+        FileModel file1 = createContent(FILE_1_NAME, "This is another TEST file containing " + UNIQUE_WORD, siteModel1, user1);
+        FileModel file2 = createContent(FILE_2_NAME, "This Test file is owned by user2 " + UNIQUE_WORD, siteModel1, user2);
+
+        fileCreationDates = getCreationDates(file0, file1, file2);
+
         // Remove user 2 from site, but he keeps ownership on FILE_2_NAME.
         dataUser.removeUserFromSite(user2, siteModel1);
         // Also create another file that only user 2 has access to.
@@ -198,6 +207,42 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     {
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name NOT IN ('" + FILE_0_NAME + "', '" + FILE_1_NAME + "')");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_2_NAME);
+    }
+
+    @TestRail (description = "Check > TIMESTAMP 'some-date' syntax works.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkAfterDateSyntax()
+    {
+        String file0CreationDate = fileCreationDates.get(0);
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:creationDate > TIMESTAMP '" + file0CreationDate + "'");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_1_NAME, FILE_2_NAME);
+    }
+
+    @TestRail (description = "Check >= TIMESTAMP 'some-date' syntax works.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkAfterOrSameDateSyntax()
+    {
+        String file0CreationDate = fileCreationDates.get(0);
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:creationDate >= TIMESTAMP '" + file0CreationDate + "'");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
+    }
+
+    @TestRail (description = "Check < TIMESTAMP 'some-date' syntax works.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkBeforeDateSyntax()
+    {
+        String file2CreationDate = fileCreationDates.get(2);
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:creationDate < TIMESTAMP '" + file2CreationDate + "'");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME);
+    }
+
+    @TestRail (description = "Check <= TIMESTAMP 'some-date' syntax works.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkBeforeOrSameDateSyntax()
+    {
+        String file2CreationDate = fileCreationDates.get(2);
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:creationDate <= TIMESTAMP '" + file2CreationDate + "'");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
     }
 
     @Test (groups = TestGroup.SEARCH)
@@ -327,5 +372,23 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
         FileModel fileModel = new FileModel(filename, FileType.TEXT_PLAIN, content);
         return dataContent.usingUser(user).usingSite(site)
                           .createContent(fileModel);
+    }
+
+    private List<String> getCreationDates(FileModel... files)
+    {
+        return getCreationDates(user1, siteModel1, files);
+    }
+
+    private List<String> getCreationDates(UserModel user, SiteModel site, FileModel... files)
+    {
+        return List.of(files)
+            .stream()
+            .map(FileModel::getCmisLocation)
+            .map(cmisLocation -> dataContent.usingUser(user).usingSite(site).getCMISDocument(cmisLocation))
+            .map(cmisDocument -> cmisDocument.<GregorianCalendar>getProperty("cmis:creationDate"))
+            .map(creationDateProperty -> creationDateProperty.<GregorianCalendar>getValue())
+            .map(GregorianCalendar::toInstant)
+            .map(Instant::toString)
+            .collect(toList());
     }
 }
