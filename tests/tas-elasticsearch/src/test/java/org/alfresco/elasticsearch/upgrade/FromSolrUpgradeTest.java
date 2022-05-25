@@ -136,7 +136,7 @@ public class FromSolrUpgradeTest
             @Override
             public String getSearchServiceImageName()
             {
-                return "alfresco/alfresco-search-services:" + EnvHelper.getEnvProperty("SOLR6_TAG");
+                return "quay.io/alfresco/insight-engine:" + EnvHelper.getEnvProperty("SOLR6_TAG");
             }
 
             @Override
