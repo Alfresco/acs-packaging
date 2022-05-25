@@ -2,14 +2,14 @@ package org.alfresco.elasticsearch.upgrade;
 
 interface Config
 {
-    default String getElasticsearchHostname()
+    default String getRepositoryImage()
     {
-        return "elasticsearch";
+        return "alfresco/alfresco-content-repository:latest";
     }
 
-    default String getElasticsearchImage()
+    default String getSearchServiceImageName()
     {
-        return "elasticsearch:7.10.1";
+        return "alfresco/alfresco-search-services:2.0.3";
     }
 
     default String getPostgreSQLImage()
@@ -37,11 +37,6 @@ interface Config
         return "quay.io/alfresco/alfresco-transform-router:1.5.2";
     }
 
-    default String getRepositoryImage()
-    {
-        return "quay.io/alfresco/alfresco-content-repository:7.2.0";
-    }
-
     default String getReIndexingImage()
     {
         return "quay.io/alfresco/alfresco-elasticsearch-reindexing:3.1.1";
@@ -52,13 +47,18 @@ interface Config
         return "quay.io/alfresco/alfresco-elasticsearch-live-indexing:3.1.1";
     }
 
+    default String getElasticsearchImage()
+    {
+        return "elasticsearch:7.10.1";
+    }
+
+    default String getElasticsearchHostname()
+    {
+        return "elasticsearch";
+    }
+
     default String getIndexName()
     {
         return "alfresco";
-    }
-
-    default String getSearchServiceImageName()
-    {
-        return "alfresco/alfresco-search-services:2.0.3";
     }
 }
