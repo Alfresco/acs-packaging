@@ -1,11 +1,12 @@
 package org.alfresco.elasticsearch.upgrade;
 
+import static java.time.Duration.ofMinutes;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -17,7 +18,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -75,16 +75,23 @@ import org.testng.annotations.Test;
 
 public class FromSolrUpgradeTest
 {
+    private static final URL TEST_FILE_URL = FromSolrUpgradeTest.class.getResource("babekyrtso.pdf");
+    private static final String SEARCH_TERM = "babekyrtso";
+    private static final String FILE_UPLOADED_BEFORE_INITIAL_REINDEXING = "before-initial-re-indexing.pdf";
+    private static final String FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING = "before-live-indexing.pdf";
+    private static final String FILE_UPLOADED_AFTER_STARTING_LIVE_INDEXING = "after-live-indexing.pdf";
+    private static final String FILE_UPLOADED_BEFORE_SWITCHING_TO_ELASTICSEARCH = "before-switch.pdf";
+    private static final String FILE_UPLOADED_AFTER_SWITCHING_TO_ELASTICSEARCH = "after-switch.pdf";
+
     @Test
     public void testIt() throws IOException
     {
         try (final UpgradeScenario scenario = new UpgradeScenario())
         {
             final ACSEnv initialEnv = scenario.startInitialEnvWithSolrBasedSearchService();
-            System.out.println(initialEnv.uploadFile(getClass().getResource("test.pdf"), "test1.pdf"));
-            initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf"));
+            initialEnv.uploadFile(TEST_FILE_URL, FILE_UPLOADED_BEFORE_INITIAL_REINDEXING);
+            initialEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM, FILE_UPLOADED_BEFORE_INITIAL_REINDEXING);
 
-            System.out.println("!!!!RUNNING");
             final AvailabilityProbe probe = initialEnv.startSearchAPIAvailabilityProbe();
 
             final Elasticsearch elasticsearch = scenario.startElasticsearch();
@@ -94,48 +101,84 @@ public class FromSolrUpgradeTest
 
             try (ACSEnv mirroredEnv = scenario.startMirroredEnvWitElasticsearchBasedSearchService())
             {
-                mirroredEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of());
+                mirroredEnv.expectNoSearchResult(ofMinutes(1), SEARCH_TERM);
                 Assert.assertEquals(initialEnv.getMaxNodeDbId(), mirroredEnv.getMaxNodeDbId());
 
                 Assert.assertTrue(elasticsearch.isIndexCreated());
                 Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), 0);
-                mirroredEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of());
+                mirroredEnv.expectNoSearchResult(ofMinutes(1), SEARCH_TERM);
 
                 mirroredEnv.startLiveIndexing();
+
                 initialReIndexingUpperBound = mirroredEnv.getMaxNodeDbId();
                 mirroredEnv.reindexByIds(0, initialReIndexingUpperBound);
+
                 Assert.assertTrue(elasticsearch.getIndexedDocumentCount() > 0);
-                mirroredEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf"));
+                mirroredEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM, FILE_UPLOADED_BEFORE_INITIAL_REINDEXING);
             }
 
             final long documentsCount = elasticsearch.getIndexedDocumentCount();
-            System.out.println(initialEnv.uploadFile(getClass().getResource("test.pdf"), "test2.pdf"));
+            initialEnv.uploadFile(TEST_FILE_URL, FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING);
+
             initialEnv.startLiveIndexing();
-            initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf", "test2.pdf"));
+
+            initialEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM,
+                    FILE_UPLOADED_BEFORE_INITIAL_REINDEXING,
+                    FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING);
+            //Live indexing was not running so FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING hasn't been indexed
             Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), documentsCount);
 
-            System.out.println(initialEnv.uploadFile(getClass().getResource("test.pdf"), "test3.pdf"));
-            initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf", "test2.pdf", "test3.pdf"));
+            initialEnv.uploadFile(TEST_FILE_URL, FILE_UPLOADED_AFTER_STARTING_LIVE_INDEXING);
+            initialEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM,
+                    FILE_UPLOADED_BEFORE_INITIAL_REINDEXING,
+                    FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING,
+                    FILE_UPLOADED_AFTER_STARTING_LIVE_INDEXING);
+            //FILE_UPLOADED_AFTER_STARTING_LIVE_INDEXING has been indexed, but we still have a gap.
+            // FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING is still not indexed
             Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), documentsCount + 1);
 
             initialEnv.reindexByIds(initialReIndexingUpperBound, 1_000_000_000);
+            //Gap has been closed by running reindexing. Both FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING and
+            // FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING have been indexed.
             Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), documentsCount + 2);
 
-            System.out.println(initialEnv.uploadFile(getClass().getResource("test.pdf"), "test4.pdf"));
-            initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf", "test2.pdf", "test3.pdf", "test4.pdf"));
+            initialEnv.uploadFile(TEST_FILE_URL, FILE_UPLOADED_BEFORE_SWITCHING_TO_ELASTICSEARCH);
+            initialEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM,
+                    FILE_UPLOADED_BEFORE_INITIAL_REINDEXING,
+                    FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING,
+                    FILE_UPLOADED_AFTER_STARTING_LIVE_INDEXING,
+                    FILE_UPLOADED_BEFORE_SWITCHING_TO_ELASTICSEARCH);
+            //Live indexing is still running so FILE_UPLOADED_BEFORE_SWITCHING_TO_ELASTICSEARCH should be indexed as well.
             Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), documentsCount + 3);
-            System.out.println("!!!!SWITCHING");
+
             initialEnv.setElasticsearchSearchService();
-            System.out.println("!!!!SWITCHED");
-            initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf", "test2.pdf", "test3.pdf", "test4.pdf"));
 
-            System.out.println("!!!!SHUTTING DOWN");
+            //Now we use ES. Check if we still have valid result.
+            initialEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM,
+                    FILE_UPLOADED_BEFORE_INITIAL_REINDEXING,
+                    FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING,
+                    FILE_UPLOADED_AFTER_STARTING_LIVE_INDEXING,
+                    FILE_UPLOADED_BEFORE_SWITCHING_TO_ELASTICSEARCH);
+
             scenario.shutdownSolr();
-            System.out.println("!!!!SHUT DOWN");
-            initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf", "test2.pdf", "test3.pdf", "test4.pdf"));
 
-            System.out.println(initialEnv.uploadFile(getClass().getResource("test.pdf"), "test5.pdf"));
-            initialEnv.expectSearchResult(Duration.ofMinutes(1), "babekyrtso", Set.of("test1.pdf", "test2.pdf", "test3.pdf", "test4.pdf", "test5.pdf"));
+            //Solr has been stopped. Check if we still have valid result.
+            initialEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM,
+                    FILE_UPLOADED_BEFORE_INITIAL_REINDEXING,
+                    FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING,
+                    FILE_UPLOADED_AFTER_STARTING_LIVE_INDEXING,
+                    FILE_UPLOADED_BEFORE_SWITCHING_TO_ELASTICSEARCH);
+
+            initialEnv.uploadFile(TEST_FILE_URL, FILE_UPLOADED_AFTER_SWITCHING_TO_ELASTICSEARCH);
+
+            //Check if FILE_UPLOADED_AFTER_SWITCHING_TO_ELASTICSEARCH is part of the search result.
+            initialEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM,
+                    FILE_UPLOADED_BEFORE_INITIAL_REINDEXING,
+                    FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING,
+                    FILE_UPLOADED_AFTER_STARTING_LIVE_INDEXING,
+                    FILE_UPLOADED_BEFORE_SWITCHING_TO_ELASTICSEARCH,
+                    FILE_UPLOADED_AFTER_SWITCHING_TO_ELASTICSEARCH);
+
             final Stats availabilityStats = probe.stop();
             Assert.assertTrue(availabilityStats.getSuccessRatioInPercents() >= 99, "Search was unavailable. Stats: " + availabilityStats);
         }
@@ -144,31 +187,24 @@ public class FromSolrUpgradeTest
 
 class UpgradeScenario implements AutoCloseable
 {
-    private final Network initialEnvNetwork = Network.builder().createNetworkCmdModifier(cmd -> cmd.withAttachable(true).withName("B")).build();
-    private final GenericContainer solr6;
+    private final GenericContainer<?> solr6;
     private final ACSEnv initialEnv;
 
-    private final Path sharedContentStorePath;
+
     private final Elasticsearch elasticsearch;
 
-    private final Network mirroredEnvNetwork = Network.builder().createNetworkCmdModifier(cmd -> cmd.withAttachable(true).withName("A")).build();
     private final ACSEnv mirroredEnv;
 
     public UpgradeScenario()
     {
-        try
-        {
-            sharedContentStorePath = Files.createTempDirectory("alf_data");
-            if (FileSystems.getDefault().supportedFileAttributeViews().contains("posix"))
-            {
-                Files.setPosixFilePermissions(sharedContentStorePath, PosixFilePermissions.fromString("rwxrwxrwx"));
-            }
-        } catch (IOException e)
-        {
-            throw new RuntimeException("Unexpected.", e);
-        }
+        //We need to keep these networks in stable lexicographical order. By default, UUIDs are used and in wrong order
+        // attaching a running container to second network clears exposed ports.
+        final Network initialEnvNetwork = createNetwork("B");
+        final Network mirroredEnvNetwork = createNetwork("A");
 
-        solr6 = new GenericContainer("alfresco/alfresco-search-services:2.0.3")
+        final Path sharedContentStorePath = createSharedContentStoreDirectory();
+
+        solr6 = new GenericContainer<>("alfresco/alfresco-search-services:2.0.3")
                 .withEnv("SOLR_ALFRESCO_HOST", "alfresco")
                 .withEnv("SOLR_ALFRESCO_PORT", "8080")
                 .withEnv("SOLR_SOLR_HOST", "solr6")
@@ -185,6 +221,30 @@ class UpgradeScenario implements AutoCloseable
 
         mirroredEnv = new ACSEnv(mirroredEnvNetwork, "elasticsearch");
         mirroredEnv.setReadOnlyContentStoreHostPath(sharedContentStorePath);
+    }
+
+    private static Path createSharedContentStoreDirectory()
+    {
+        try
+        {
+            final Path tempDir = Files.createTempDirectory("alf_data");
+            if (FileSystems.getDefault().supportedFileAttributeViews().contains("posix"))
+            {
+                Files.setPosixFilePermissions(tempDir, PosixFilePermissions.fromString("rwxrwxrwx"));
+            }
+            return tempDir;
+        } catch (IOException e)
+        {
+            throw new RuntimeException("Couldn't create aa temp directory.", e);
+        }
+    }
+
+    private static Network createNetwork(String prefix)
+    {
+        return Network
+                .builder()
+                .createNetworkCmdModifier(cmd -> cmd.withAttachable(true).withName(prefix + UUID.randomUUID()))
+                .build();
     }
 
     public ACSEnv startInitialEnvWithSolrBasedSearchService()
@@ -226,7 +286,7 @@ class Elasticsearch implements AutoCloseable
 {
     private static final int ES_API_TIMEOUT_MS = 5_000;
 
-    private final GenericContainer elasticsearch;
+    private final GenericContainer<?> elasticsearch;
     private final Collection<String> additionalNetworks;
     private final Gson gson = new Gson();
 
@@ -234,7 +294,7 @@ class Elasticsearch implements AutoCloseable
     {
         additionalNetworks = Stream.of(networks).map(Network::getId).collect(Collectors.toUnmodifiableSet());
 
-        elasticsearch = new GenericContainer("elasticsearch:7.10.1")
+        elasticsearch = new GenericContainer<>("elasticsearch:7.10.1")
                 .withEnv("xpack.security.enabled", "false")
                 .withEnv("discovery.type", "single-node")
                 .withNetworkAliases("elasticsearch")
@@ -244,7 +304,7 @@ class Elasticsearch implements AutoCloseable
 
     public long getIndexedDocumentCount() throws IOException
     {
-        final Map<String, ?> countResponse = gson.fromJson(getString("/alfresco/_count"), Map.class);
+        final Map<?, ?> countResponse = gson.fromJson(getString("/alfresco/_count"), Map.class);
         return Optional
                 .ofNullable(countResponse.get("count"))
                 .filter(Number.class::isInstance)
@@ -300,7 +360,7 @@ class Elasticsearch implements AutoCloseable
         elasticsearch.start();
         for (int i = 0; i < 3; i++)
         {
-            ACSEnv.waitFor("Elasticsearch Startup", Duration.ofMinutes(1), () -> {
+            ACSEnv.waitFor("Elasticsearch Startup", ofMinutes(1), () -> {
                 try
                 {
                     return !isIndexCreated();
@@ -315,7 +375,7 @@ class Elasticsearch implements AutoCloseable
 
         for (int i = 0; i < 3; i++)
         {
-            ACSEnv.waitFor("Elasticsearch Startup", Duration.ofMinutes(1), () -> {
+            ACSEnv.waitFor("Elasticsearch Startup", ofMinutes(1), () -> {
                 try
                 {
                     return !isIndexCreated();
@@ -350,9 +410,9 @@ class Elasticsearch implements AutoCloseable
 
 class ACSEnv implements AutoCloseable
 {
-    private final GenericContainer alfresco;
-    private final GenericContainer postgres;
-    private final List<GenericContainer> createdContainers = new ArrayList<>();
+    private final GenericContainer<?> alfresco;
+    private final GenericContainer<?> postgres;
+    private final List<GenericContainer<?>> createdContainers = new ArrayList<>();
 
     private RepoHttpClient repoHttpClient;
 
@@ -488,7 +548,7 @@ class ACSEnv implements AutoCloseable
         createdContainers.forEach(GenericContainer::start);
         repoHttpClient = new RepoHttpClient(URI.create("http://" + alfresco.getHost() + ":" + alfresco.getMappedPort(8080)));
 
-        expectSearchResult(Duration.ofMinutes(5), UUID.randomUUID().toString(), Set.of());
+        expectNoSearchResult(ofMinutes(5), UUID.randomUUID().toString());
     }
 
     public String getMetadataDump()
@@ -498,7 +558,7 @@ class ACSEnv implements AutoCloseable
 
     public long getMaxNodeDbId()
     {
-        return Long.valueOf(execInPostgres("psql -U alfresco -t -c 'SELECT max(id) FROM alf_node'").getStdout().strip());
+        return Long.parseLong(execInPostgres("psql -U alfresco -t -c 'SELECT max(id) FROM alf_node'").getStdout().strip());
     }
 
     private ExecResult execInPostgres(String command)
@@ -529,34 +589,28 @@ class ACSEnv implements AutoCloseable
         createdContainers.forEach(GenericContainer::stop);
     }
 
-    public RepoHttpClient getRepoHttpClient()
+    public void expectNoSearchResult(Duration timeout, String term)
     {
-        if (repoHttpClient == null)
-        {
-            throw new IllegalStateException("Client not available. Environment not started.");
-        }
-        return repoHttpClient;
+        expectSearchResult(timeout, term);
     }
 
-    public void expectSearchResult(Duration timeout, String term, Set<String> expected)
+    public void expectSearchResult(Duration timeout, String term, String... expectedFiles)
     {
-        final Instant start = Instant.now();
-        String lastResult = "unknown";
-        while (Instant.now().isBefore(start.plus(timeout)))
-        {
+        final Set<String> expected = Stream
+                .of(expectedFiles)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toUnmodifiableSet());
+
+        waitFor("Reaching the point where `" + expected + "` is returned.", timeout, () -> {
             try
             {
                 Optional<Set<String>> actual = repoHttpClient.searchForFiles(term);
-                if (actual.map(expected::equals).orElse(false)) return;
-                lastResult = actual.map(Object::toString).orElse("unknown");
-                Uninterruptibles.sleepUninterruptibly(500, TimeUnit.MILLISECONDS);
+                return actual.map(expected::equals).orElse(false);
             } catch (IOException e)
             {
-                lastResult = e.getClass().getSimpleName() + ": " + e.getMessage();
-                Uninterruptibles.sleepUninterruptibly(1, TimeUnit.SECONDS);
+                return false;
             }
-        }
-        throw new IllegalStateException("Couldn't reach the point where `" + expected + "` was returned. Last seen result: `" + lastResult + "`");
+        });
     }
 
     public UUID uploadFile(URL contentUrl, String fileName) throws IOException
@@ -571,7 +625,7 @@ class ACSEnv implements AutoCloseable
 
     public void reindexByIds(long fromId, long toId)
     {
-        final GenericContainer reIndexing = newContainer(GenericContainer.class, "quay.io/alfresco/alfresco-elasticsearch-reindexing:3.1.1")
+        final GenericContainer<?> reIndexing = newContainer(GenericContainer.class, "quay.io/alfresco/alfresco-elasticsearch-reindexing:3.1.1")
                 .withEnv("ELASTICSEARCH_INDEXNAME", "alfresco")
                 .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200")
                 .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
@@ -584,29 +638,28 @@ class ACSEnv implements AutoCloseable
                 .withNetwork(alfresco.getNetwork());
 
         reIndexing.start();
-        waitFor("Re-indexing Startup", Duration.ofMinutes(1), reIndexing::isRunning);
-        waitFor("Re-indexing Exit", Duration.ofMinutes(5), () -> !reIndexing.isRunning());
+        waitFor("Re-indexing Startup", ofMinutes(1), reIndexing::isRunning);
+        waitFor("Re-indexing Exit", ofMinutes(5), () -> !reIndexing.isRunning());
     }
 
     public static void waitFor(String description, final Duration timeout, final BooleanSupplier condition)
     {
-        final Duration step = Duration.ofMillis(200);
-        Duration remaining = timeout;
-        while (!remaining.isNegative())
+        final RateLimiter rateLimiter = RateLimiter.create(5);
+        final long numberOfIterations = Math.max(1L, timeout.getSeconds() * (long) rateLimiter.getRate());
+        for (long i = 0; i < numberOfIterations; i++)
         {
+            rateLimiter.acquire();
             if (condition.getAsBoolean())
             {
                 return;
             }
-            remaining = remaining.minus(step);
-            Uninterruptibles.sleepUninterruptibly(step.toMillis(), TimeUnit.MILLISECONDS);
         }
-        throw new IllegalStateException("Failed to wait for " + description + ".");
+        throw new RuntimeException("Failed to wait for " + description + ".");
     }
 
     public void startLiveIndexing()
     {
-        final GenericContainer liveIndexing = newContainer(GenericContainer.class, "quay.io/alfresco/alfresco-elasticsearch-live-indexing:3.1.1")
+        final GenericContainer<?> liveIndexing = newContainer(GenericContainer.class, "quay.io/alfresco/alfresco-elasticsearch-live-indexing:3.1.1")
                 .withEnv("ELASTICSEARCH_INDEXNAME", "alfresco")
                 .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200")
                 .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
@@ -617,7 +670,7 @@ class ACSEnv implements AutoCloseable
         liveIndexing.start();
     }
 
-    private <T extends GenericContainer> T newContainer(Class<T> clazz, String image)
+    private <T extends GenericContainer<?>> T newContainer(Class<T> clazz, String image)
     {
         try
         {
@@ -711,7 +764,7 @@ class RepoHttpClient
             final HttpPost uploadRequest = authenticate(new HttpPost(fileUploadApiUri));
             uploadRequest.setEntity(uploadEntity);
 
-            final Optional<Map<String, ?>> uploadResult = getJsonResponse(uploadRequest, HttpStatus.SC_CREATED);
+            final Optional<Map<?, ?>> uploadResult = getJsonResponse(uploadRequest, HttpStatus.SC_CREATED);
 
             return uploadResult
                     .map(r -> r.get("entry"))
@@ -728,13 +781,13 @@ class RepoHttpClient
         final HttpPost searchRequest = authenticate(new HttpPost(searchApiUri));
         searchRequest.setEntity(new StringEntity(searchQuery(term), ContentType.APPLICATION_JSON));
 
-        final Optional<Map<String, ?>> searchResult = getJsonResponse(searchRequest, HttpStatus.SC_OK);
+        final Optional<Map<?, ?>> searchResult = getJsonResponse(searchRequest, HttpStatus.SC_OK);
 
         final Optional<Collection<?>> possibleEntries = searchResult
                 .map(r -> r.get("list"))
                 .filter(Map.class::isInstance).map(Map.class::cast)
                 .map(m -> m.get("entries"))
-                .filter(Collection.class::isInstance).map(Collection.class::cast);
+                .filter(Collection.class::isInstance).map(c -> (Collection<?>) c);
 
         if (possibleEntries.isEmpty())
         {
@@ -760,7 +813,7 @@ class RepoHttpClient
         return msg;
     }
 
-    private Optional<Map<String, ?>> getJsonResponse(HttpUriRequest request, int requiredStatusCode) throws IOException
+    private Optional<Map<?, ?>> getJsonResponse(HttpUriRequest request, int requiredStatusCode) throws IOException
     {
         try (CloseableHttpResponse response = client.execute(request))
         {
@@ -791,7 +844,7 @@ class AvailabilityProbe
     private final RateLimiter rateLimiter;
     private final AtomicBoolean stopRequested = new AtomicBoolean();
     private final Supplier<ProbeResult> probingFunction;
-    private AtomicLongMap<ProbeResult> stats = AtomicLongMap.create();
+    private final AtomicLongMap<ProbeResult> stats = AtomicLongMap.create();
 
     public static AvailabilityProbe createRunning(int requestsPerSecond, Supplier<ProbeResult> probingFunction)
     {
@@ -851,12 +904,11 @@ class AvailabilityProbe
 
         public int getSuccessRatioInPercents()
         {
-            System.out.println(results);
             final long ok = Optional.ofNullable(results.get(ProbeResult.ok())).orElse(0L);
             if (ok == 0) return 0;
 
             final long total = results.values().stream().mapToLong(Number::longValue).sum();
-            return (int)(((ok * 1000) / total) / 10);
+            return (int) (((ok * 1000) / total) / 10);
         }
     }
 
