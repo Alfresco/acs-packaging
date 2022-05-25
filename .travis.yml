@@ -179,16 +179,16 @@ jobs:
 #        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
 #      script:
 #        - travis_wait 20 mvn -B install -ntp -f tests/tas-sync-service/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
-#
-#    - name: "Elasticsearch TAS tests"
-#      if: commit_message !~ /\[skip search\]/
-#      script:
-#       - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false
-#
-#    - name: "Elasticsearch Basic Auth TAS tests"
-#      if: commit_message !~ /\[skip search\]/
-#      script:
-#       - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false
+
+    - name: "Elasticsearch TAS tests"
+      if: commit_message !~ /\[skip search\]/
+      script:
+       - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false
+
+    - name: "Elasticsearch Basic Auth TAS tests"
+      if: commit_message !~ /\[skip search\]/
+      script:
+       - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false
 
     - name: "Elasticsearch Upgrade tests"
       if: commit_message !~ /\[skip search\]/
