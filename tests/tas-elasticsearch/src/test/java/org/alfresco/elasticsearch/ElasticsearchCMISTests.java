@@ -245,6 +245,44 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
     }
 
+    @TestRail (description = "Check = TIMESTAMP 'some-date' syntax works.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkMatchesDateSyntax()
+    {
+        String file0CreationDate = fileCreationDates.get(0);
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:creationDate = TIMESTAMP '" + file0CreationDate + "'");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME);
+    }
+
+    @TestRail (description = "Check <> TIMESTAMP 'some-date' syntax works.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkDoesNotMatchDateSyntax()
+    {
+        String file0CreationDate = fileCreationDates.get(0);
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:creationDate <> TIMESTAMP '" + file0CreationDate + "'");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_1_NAME, FILE_2_NAME);
+    }
+
+    @TestRail (description = "Check IN (TIMESTAMP 'some-date', TIMESTAMP 'some-other-date') syntax works.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkInDatesSyntax()
+    {
+        String file0CreationDate = fileCreationDates.get(0);
+        String file1CreationDate = fileCreationDates.get(1);
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:creationDate IN (TIMESTAMP '" + file0CreationDate + "', TIMESTAMP '" + file1CreationDate + "')");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME);
+    }
+
+    @TestRail (description = "Check NOT IN (TIMESTAMP 'some-date', TIMESTAMP 'some-other-date') syntax works.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkNotInDatesSyntax()
+    {
+        String file0CreationDate = fileCreationDates.get(0);
+        String file1CreationDate = fileCreationDates.get(1);
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:creationDate NOT IN (TIMESTAMP '" + file0CreationDate + "', TIMESTAMP '" + file1CreationDate + "')");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_2_NAME);
+    }
+
     @Test (groups = TestGroup.SEARCH)
     public void negative_basicCMISQuery_missingFrom()
     {
