@@ -33,6 +33,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -243,7 +244,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     public void checkOrderByDescSyntax()
     {
         List<String> expectedList = orderNames(DESC, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
-        SearchRequest query = req("cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name IN('" + FILE_0_NAME + "','" + FILE_1_NAME + "','" + FILE_2_NAME + "') ORDER BY cmis:name ASC");
+        SearchRequest query = req("cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name IN('" + FILE_0_NAME + "','" + FILE_1_NAME + "','" + FILE_2_NAME + "') ORDER BY cmis:name DESC");
         searchQueryService.expectResultsInOrder(query, user1, expectedList);
     }
 
@@ -609,23 +610,11 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     private List<String> orderNames(String order, String... filename){
         List<String> orderedNames = Arrays.stream(filename).sorted().collect(Collectors.toList());
         if(order == DESC){
-            reverseOrder(orderedNames);
+            orderedNames = orderedNames.stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList());
         }
         System.out.println("filename = " + filename);
         System.out.println("orderedNames = " + orderedNames);
         return orderedNames;
     }
 
-    private static<T> void reverseOrder(List<T> names) {
-        //list is empty or last item remaining
-        if (names == null || names.size() <= 1) {
-            return;
-        }
-        // remove the first element
-        T value = names.remove(0);
-        // recur for remaining items
-        reverseOrder(names);
-        // insert the top element back after recurse for remaining items
-        names.add(value);
-    }
 }
