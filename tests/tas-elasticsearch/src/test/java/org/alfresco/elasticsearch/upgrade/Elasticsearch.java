@@ -117,18 +117,15 @@ class Elasticsearch implements AutoCloseable
 
     private void waitForAvailability()
     {
-        for (int i = 0; i < 3; i++)
-        {
-            waitFor("Elasticsearch Startup", ofMinutes(1), () -> {
-                try
-                {
-                    return !isIndexCreated();
-                } catch (IOException e)
-                {
-                    return false;
-                }
-            });
-        }
+        waitFor("Elasticsearch Startup", ofMinutes(1), () -> {
+            try
+            {
+                return !isIndexCreated();
+            } catch (IOException e)
+            {
+                return false;
+            }
+        });
     }
 
     private void connectElasticSearchToAdditionalNetworks()
