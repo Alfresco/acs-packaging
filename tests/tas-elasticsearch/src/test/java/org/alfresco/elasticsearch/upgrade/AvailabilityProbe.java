@@ -32,6 +32,7 @@ class AvailabilityProbe
         rateLimiter = RateLimiter.create(requestsPerSecond);
         this.probingFunction = probingFunction;
         thread = new Thread(this::probing);
+        thread.setDaemon(true);
     }
 
     public Stats getStats()
