@@ -20,11 +20,9 @@ class AvailabilityProbe
     private final Supplier<ProbeResult> probingFunction;
     private final AtomicLongMap<ProbeResult> stats = AtomicLongMap.create();
 
-    public static AvailabilityProbe createRunning(int requestsPerSecond, Supplier<ProbeResult> probingFunction)
+    public static AvailabilityProbe create(int requestsPerSecond, Supplier<ProbeResult> probingFunction)
     {
-        final AvailabilityProbe probe = new AvailabilityProbe(requestsPerSecond, probingFunction);
-        probe.start();
-        return probe;
+        return new AvailabilityProbe(requestsPerSecond, probingFunction);
     }
 
     private AvailabilityProbe(int requestsPerSecond, Supplier<ProbeResult> probingFunction)
@@ -47,7 +45,7 @@ class AvailabilityProbe
         return getStats();
     }
 
-    private void start()
+    public void start()
     {
         if (thread.isAlive()) return;
         thread.start();

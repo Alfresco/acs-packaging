@@ -15,6 +15,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,6 +39,8 @@ class ACSEnv implements AutoCloseable
     private String metadataDumpToRestore;
     private Path alfDataHostPath;
     private boolean readOnlyContentStore;
+
+    private final AtomicReference<AvailabilityProbe> searchAPIAvailabilityProbe = new AtomicReference<>();
 
     public ACSEnv(Config cfg, final Network network, final String indexSubsystemName)
     {
@@ -70,9 +73,19 @@ class ACSEnv implements AutoCloseable
         alfDataHostPath = hostPath;
     }
 
-    public AvailabilityProbe startSearchAPIAvailabilityProbe()
+    public AvailabilityProbe getRunningSearchAPIAvailabilityProbe()
     {
-        return AvailabilityProbe.createRunning(10, this::checkSearchAPIAvailability);
+        final AvailabilityProbe current = searchAPIAvailabilityProbe.get();
+        if (current != null) return current;
+
+        final AvailabilityProbe created = AvailabilityProbe.create(10, this::checkSearchAPIAvailability);
+        if (searchAPIAvailabilityProbe.compareAndSet(null, created))
+        {
+            created.start();
+            return created;
+        }
+
+        return searchAPIAvailabilityProbe.get();
     }
 
     private ProbeResult checkSearchAPIAvailability()
@@ -148,6 +161,7 @@ class ACSEnv implements AutoCloseable
     @Override
     public void close()
     {
+        Optional.ofNullable(searchAPIAvailabilityProbe.get()).ifPresent(AvailabilityProbe::stop);
         createdContainers.forEach(GenericContainer::stop);
     }
 

@@ -31,7 +31,7 @@ public class FromSolrUpgradeTest
             initialEnv.uploadFile(TEST_FILE_URL, FILE_UPLOADED_BEFORE_INITIAL_REINDEXING);
             initialEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM, FILE_UPLOADED_BEFORE_INITIAL_REINDEXING);
 
-            final AvailabilityProbe probe = initialEnv.startSearchAPIAvailabilityProbe();
+            final AvailabilityProbe probe = initialEnv.getRunningSearchAPIAvailabilityProbe();
 
             final Elasticsearch elasticsearch = scenario.startElasticsearch();
             Assert.assertFalse(elasticsearch.isIndexCreated());
