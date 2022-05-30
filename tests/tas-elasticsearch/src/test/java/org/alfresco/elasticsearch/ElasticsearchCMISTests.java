@@ -32,11 +32,6 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
                       initializers = AlfrescoStackInitializer.class)
 /**
@@ -47,8 +42,6 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
 {
     private static final String PREFIX = getAlphabeticUUID();
     private static final String SUFFIX = getAlphabeticUUID();
-    private static final String ASC = "ascending";
-    private static final String DESC = "descending";
     private static final String UNIQUE_WORD = getAlphabeticUUID();
     private static final String FILE_0_NAME = PREFIX + "_test.txt" + SUFFIX;
     private static final String FILE_1_NAME = "internal_" + PREFIX + "_and_" + SUFFIX + ".txt";
@@ -234,18 +227,16 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void checkOrderByAscSyntax()
     {
-        List<String> expectedList = orderNames(ASC, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
         SearchRequest query = req("cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name IN('" + FILE_0_NAME + "','" + FILE_1_NAME + "','" + FILE_2_NAME + "') ORDER BY cmis:name ASC");
-        searchQueryService.expectResultsInOrder(query, user1, expectedList);
+        searchQueryService.expectResultsInOrder(query, user1, true, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
     }
 
     @TestRail (description = "Check ORDER BY syntax works as expected for DESCENDING order", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
     @Test (groups = TestGroup.SEARCH)
     public void checkOrderByDescSyntax()
     {
-        List<String> expectedList = orderNames(DESC, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
         SearchRequest query = req("cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name IN('" + FILE_0_NAME + "','" + FILE_1_NAME + "','" + FILE_2_NAME + "') ORDER BY cmis:name DESC");
-        searchQueryService.expectResultsInOrder(query, user1, expectedList);
+        searchQueryService.expectResultsInOrder(query, user1, false, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
     }
 
     @TestRail (description = "Check IN('value1','value2') syntax works. Needs exact term search to be enabled to pass.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
@@ -605,14 +596,6 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
             .map(GregorianCalendar::toInstant)
             .map(Instant::toString)
             .collect(toList());
-    }
-
-    private List<String> orderNames(String order, String... filename){
-        List<String> orderedNames = Arrays.stream(filename).sorted().collect(Collectors.toList());
-        if(order == DESC){
-            orderedNames = orderedNames.stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList());
-        }
-        return orderedNames;
     }
 
     private FileModel uploadDocument(String filePath, UserModel user, SiteModel site) throws IOException

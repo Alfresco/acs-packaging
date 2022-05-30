@@ -5,6 +5,8 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -45,9 +47,9 @@ public class SearchQueryService
         expectResultsFromQuery(searchRequest, testUser, assertNotEmpty);
     }
 
-    public void expectResultsInOrder(SearchRequest searchRequest, UserModel user, List<String> expected)
+    public void expectResultsInOrder(SearchRequest searchRequest, UserModel user, boolean isAscending, String... expected)
     {
-        Consumer<SearchResponse> response = searchResponse -> assertNamesInOrder(searchResponse, expected);
+        Consumer<SearchResponse> response = searchResponse -> assertNamesInOrder(searchResponse, isAscending, expected);
         expectResultsFromQuery(searchRequest,user,response);
     }
 
@@ -127,13 +129,22 @@ public class SearchQueryService
         assertEquals(result, expectedList, "Unexpected search results.");
     }
 
-    private void assertNamesInOrder(SearchResponse actual, List<String> expected)
+    private List<String> orderNames(boolean isAscending, String... filename){
+        List<String> orderedNames = Arrays.stream(filename).sorted().collect(Collectors.toList());
+        if(!isAscending){
+            orderedNames = orderedNames.stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList());
+        }
+        return orderedNames;
+    }
+
+    private void assertNamesInOrder(SearchResponse actual, boolean isAscending, String... expected)
     {
+        List<String> expectedInOrder = orderNames(isAscending, expected);
         List<String> result = actual.getEntries().stream()
                 .map(SearchNodeModel::getModel)
                 .map(SearchNodeModel::getName)
                 .collect(Collectors.toList());
-        assertEquals(result, expected, "Unexpected search results.");
+        assertEquals(result, expectedInOrder, "Unexpected search results.");
     }
 
     private void assertNodeTypes(SearchResponse actual, String... expected)
