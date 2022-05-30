@@ -1,7 +1,14 @@
 package org.alfresco.elasticsearch;
 
+import static java.util.stream.Collectors.toList;
+
 import static org.alfresco.elasticsearch.SearchQueryService.req;
 import static org.alfresco.elasticsearch.TestDataUtility.getAlphabeticUUID;
+
+import java.io.IOException;
+import java.time.Instant;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.utility.constants.UserRole;
@@ -17,8 +24,8 @@ import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -44,6 +51,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     private static final String FOLDER_PREFIX = getAlphabeticUUID();
     private static final String FOLDER_0_NAME = FOLDER_PREFIX + "_folder0";
     private static final String FOLDER_1_NAME = FOLDER_PREFIX + "_folder1";
+    private static final int X_DIMENSION = 48;
 
     @Autowired
     private DataUser dataUser;
@@ -66,13 +74,15 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     private SiteModel siteModel1;
     private SiteModel siteModel2;
     private FileModel file0;
+    private List<String> fileCreationDates;
+    private String file3Name;
 
     /**
      * Data will be prepared using the schema below:
      * <p>
      * Site1:
      * - Users: user1, userMultiSite
-     * - Documents: FILE_0_NAME (owner: user1), FILE_1_NAME (owner: user1), FILE_2_NAME (owner: user2)
+     * - Documents: FILE_0_NAME (owner: user1), FILE_1_NAME (owner: user1), FILE_2_NAME (owner: user2), file3Name (owner: user1)
      * - Folders: FOLDER_0_NAME (owner: user1), FOLDER_1_NAME (owner: user1)
      * <p>
      * Site2:
@@ -80,7 +90,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
      * - Documents: USER_2_FILE_NAME (owner: user2)
      */
     @BeforeClass(alwaysRun = true)
-    public void dataPreparation()
+    public void dataPreparation() throws IOException
     {
         serverHealth.assertServerIsOnline();
 
@@ -96,8 +106,13 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
         dataUser.addUserToSite(userMultiSite, siteModel2, UserRole.SiteContributor);
 
         file0 = createContent(FILE_0_NAME, "This is the first test containing " + UNIQUE_WORD, siteModel1, user1);
-        createContent(FILE_1_NAME, "This is another TEST file containing " + UNIQUE_WORD, siteModel1, user1);
-        createContent(FILE_2_NAME, "This Test file is owned by user2 " + UNIQUE_WORD, siteModel1, user2);
+        FileModel file1 = createContent(FILE_1_NAME, "This is another TEST file containing " + UNIQUE_WORD, siteModel1, user1);
+        FileModel file2 = createContent(FILE_2_NAME, "This Test file is owned by user2 " + UNIQUE_WORD, siteModel1, user2);
+        FileModel file3 = uploadDocument("test-data/alfresco-logo.png", user1, siteModel1);
+        file3Name = file3.getName();
+
+        fileCreationDates = getCreationDates(file0, file1, file2);
+
         // Remove user 2 from site, but he keeps ownership on FILE_2_NAME.
         dataUser.removeUserFromSite(user2, siteModel1);
         // Also create another file that only user 2 has access to.
@@ -112,7 +127,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     public void basicQuery()
     {
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document");
-        searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME, file3Name);
     }
 
     @TestRail (description = "Check documents can be selected using cmis:objectId.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
@@ -200,12 +215,202 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME);
     }
 
+    @TestRail (description = "Check that we can search by document name not matching. Needs exact term search to be enabled to pass.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void doesNotMatchDocumentName()
+    {
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name <> '" + FILE_0_NAME + "'");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_1_NAME, FILE_2_NAME, file3Name);
+    }
+
     @TestRail (description = "Check IN('value1','value2') syntax works. Needs exact term search to be enabled to pass.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
     @Test (groups = TestGroup.SEARCH)
     public void checkInSyntax()
     {
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name IN ('" + FILE_0_NAME + "', '" + FILE_1_NAME + "')");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME);
+    }
+
+    @TestRail (description = "Check NOT IN('value1','value2') syntax works. Needs exact term search to be enabled to pass.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkNotInSyntax()
+    {
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name NOT IN ('" + FILE_0_NAME + "', '" + FILE_1_NAME + "')");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_2_NAME, file3Name);
+    }
+
+    @TestRail (description = "Check > TIMESTAMP 'some-date' syntax works.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkAfterDateSyntax()
+    {
+        String file0CreationDate = fileCreationDates.get(0);
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:creationDate > TIMESTAMP '" + file0CreationDate + "'");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_1_NAME, FILE_2_NAME, file3Name);
+    }
+
+    @TestRail (description = "Check >= TIMESTAMP 'some-date' syntax works.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkAfterOrSameDateSyntax()
+    {
+        String file0CreationDate = fileCreationDates.get(0);
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:creationDate >= TIMESTAMP '" + file0CreationDate + "'");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME, file3Name);
+    }
+
+    @TestRail (description = "Check < TIMESTAMP 'some-date' syntax works.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkBeforeDateSyntax()
+    {
+        String file2CreationDate = fileCreationDates.get(2);
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:creationDate < TIMESTAMP '" + file2CreationDate + "'");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME);
+    }
+
+    @TestRail (description = "Check <= TIMESTAMP 'some-date' syntax works.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkBeforeOrSameDateSyntax()
+    {
+        String file2CreationDate = fileCreationDates.get(2);
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:creationDate <= TIMESTAMP '" + file2CreationDate + "'");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
+    }
+
+    @TestRail (description = "Check = TIMESTAMP 'some-date' syntax works.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkMatchesDateSyntax()
+    {
+        String file0CreationDate = fileCreationDates.get(0);
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:creationDate = TIMESTAMP '" + file0CreationDate + "'");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME);
+    }
+
+    @TestRail (description = "Check <> TIMESTAMP 'some-date' syntax works.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkDoesNotMatchDateSyntax()
+    {
+        String file0CreationDate = fileCreationDates.get(0);
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:creationDate <> TIMESTAMP '" + file0CreationDate + "'");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_1_NAME, FILE_2_NAME, file3Name);
+    }
+
+    @TestRail (description = "Check IN (TIMESTAMP 'some-date', TIMESTAMP 'some-other-date') syntax works.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkInDatesSyntax()
+    {
+        String file0CreationDate = fileCreationDates.get(0);
+        String file1CreationDate = fileCreationDates.get(1);
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:creationDate IN (TIMESTAMP '" + file0CreationDate + "', TIMESTAMP '" + file1CreationDate + "')");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME);
+    }
+
+    @TestRail (description = "Check NOT IN (TIMESTAMP 'some-date', TIMESTAMP 'some-other-date') syntax works.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkNotInDatesSyntax()
+    {
+        String file0CreationDate = fileCreationDates.get(0);
+        String file1CreationDate = fileCreationDates.get(1);
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:creationDate NOT IN (TIMESTAMP '" + file0CreationDate + "', TIMESTAMP '" + file1CreationDate + "')");
+        searchQueryService.expectResultsFromQuery(query, user1, FILE_2_NAME, file3Name);
+    }
+
+    @TestRail (description = "Check = works for integer values.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkEqualIntegerSyntax()
+    {
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document AS D JOIN exif:exif AS E ON D.cmis:objectId = E.cmis:objectId WHERE E.exif:pixelXDimension = " + X_DIMENSION);
+        query.setInclude(List.of("properties"));
+        searchQueryService.expectResultsFromQuery(query, user1, file3Name);
+    }
+
+    @TestRail (description = "Check <> works for integer values.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkDifferentThanIntegerSyntax()
+    {
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document AS D JOIN exif:exif AS E ON D.cmis:objectId = E.cmis:objectId WHERE E.exif:pixelXDimension <> " + X_DIMENSION);
+        query.setInclude(List.of("properties"));
+        searchQueryService.expectNoResultsFromQuery(query, user1);
+    }
+
+    @TestRail (description = "Check > works for integer values.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkGreaterThanIntegerSyntax()
+    {
+        int lessThanX = X_DIMENSION - 1;
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document AS D JOIN exif:exif AS E ON D.cmis:objectId = E.cmis:objectId WHERE E.exif:pixelXDimension > " + lessThanX);
+        query.setInclude(List.of("properties"));
+        searchQueryService.expectResultsFromQuery(query, user1, file3Name);
+
+        query = req("cmis", "SELECT * FROM cmis:document AS D JOIN exif:exif AS E ON D.cmis:objectId = E.cmis:objectId WHERE E.exif:pixelXDimension > " + X_DIMENSION);
+        query.setInclude(List.of("properties"));
+        searchQueryService.expectNoResultsFromQuery(query, user1);
+    }
+
+    @TestRail (description = "Check >= works for integer values.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkGreaterThanOrEqualIntegerSyntax()
+    {
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document AS D JOIN exif:exif AS E ON D.cmis:objectId = E.cmis:objectId WHERE E.exif:pixelXDimension >= " + X_DIMENSION);
+        query.setInclude(List.of("properties"));
+        searchQueryService.expectResultsFromQuery(query, user1, file3Name);
+
+        int moreThanX = X_DIMENSION + 1;
+        query = req("cmis", "SELECT * FROM cmis:document AS D JOIN exif:exif AS E ON D.cmis:objectId = E.cmis:objectId WHERE E.exif:pixelXDimension >= " + moreThanX);
+        query.setInclude(List.of("properties"));
+        searchQueryService.expectNoResultsFromQuery(query, user1);
+    }
+
+    @TestRail (description = "Check < works for integer values.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkLessThanIntegerSyntax()
+    {
+        int moreThanX = X_DIMENSION + 1;
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document AS D JOIN exif:exif AS E ON D.cmis:objectId = E.cmis:objectId WHERE E.exif:pixelXDimension < " + moreThanX);
+        query.setInclude(List.of("properties"));
+        searchQueryService.expectResultsFromQuery(query, user1, file3Name);
+
+        query = req("cmis", "SELECT * FROM cmis:document AS D JOIN exif:exif AS E ON D.cmis:objectId = E.cmis:objectId WHERE E.exif:pixelXDimension < " + X_DIMENSION);
+        query.setInclude(List.of("properties"));
+        searchQueryService.expectNoResultsFromQuery(query, user1);
+    }
+
+    @TestRail (description = "Check <= works for integer values.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkLessThanOrEqualIntegerSyntax()
+    {
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document AS D JOIN exif:exif AS E ON D.cmis:objectId = E.cmis:objectId WHERE E.exif:pixelXDimension <= " + X_DIMENSION);
+        query.setInclude(List.of("properties"));
+        searchQueryService.expectResultsFromQuery(query, user1, file3Name);
+
+        int lessThanX = X_DIMENSION - 1;
+        query = req("cmis", "SELECT * FROM cmis:document AS D JOIN exif:exif AS E ON D.cmis:objectId = E.cmis:objectId WHERE E.exif:pixelXDimension <= " + lessThanX);
+        query.setInclude(List.of("properties"));
+        searchQueryService.expectNoResultsFromQuery(query, user1);
+    }
+
+    @TestRail (description = "Check IN (x, y) works for integer values.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkInIntegersSyntax()
+    {
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document AS D JOIN exif:exif AS E ON D.cmis:objectId = E.cmis:objectId WHERE E.exif:pixelXDimension IN (" + X_DIMENSION + ", " + 0 + ")");
+        query.setInclude(List.of("properties"));
+        searchQueryService.expectResultsFromQuery(query, user1, file3Name);
+
+        query = req("cmis", "SELECT * FROM cmis:document AS D JOIN exif:exif AS E ON D.cmis:objectId = E.cmis:objectId WHERE E.exif:pixelXDimension IN (" + 0 + ", " + -1 + ")");
+        query.setInclude(List.of("properties"));
+        searchQueryService.expectNoResultsFromQuery(query, user1);
+    }
+
+    @TestRail (description = "Check NOT IN (x, y) works for integer values.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkNotInIntegersSyntax()
+    {
+        SearchRequest query = req("cmis", "SELECT * FROM cmis:document AS D JOIN exif:exif AS E ON D.cmis:objectId = E.cmis:objectId WHERE E.exif:pixelXDimension NOT IN (" + X_DIMENSION + ", " + 0 + ")");
+        query.setInclude(List.of("properties"));
+        searchQueryService.expectNoResultsFromQuery(query, user1);
+
+        query = req("cmis", "SELECT * FROM cmis:document AS D JOIN exif:exif AS E ON D.cmis:objectId = E.cmis:objectId WHERE E.exif:pixelXDimension NOT IN (" + 0 + ", " + -1 + ")");
+        query.setInclude(List.of("properties"));
+        searchQueryService.expectResultsFromQuery(query, user1, file3Name);
     }
 
     @Test (groups = TestGroup.SEARCH)
@@ -357,5 +562,31 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
         FileModel fileModel = new FileModel(filename, FileType.TEXT_PLAIN, content);
         return dataContent.usingUser(user).usingSite(site)
                           .createContent(fileModel);
+    }
+
+    private List<String> getCreationDates(FileModel... files)
+    {
+        return getCreationDates(user1, siteModel1, files);
+    }
+
+    private List<String> getCreationDates(UserModel user, SiteModel site, FileModel... files)
+    {
+        return List.of(files)
+            .stream()
+            .map(FileModel::getCmisLocation)
+            .map(cmisLocation -> dataContent.usingUser(user).usingSite(site).getCMISDocument(cmisLocation))
+            .map(cmisDocument -> cmisDocument.<GregorianCalendar>getProperty("cmis:creationDate"))
+            .map(creationDateProperty -> creationDateProperty.<GregorianCalendar>getValue())
+            .map(GregorianCalendar::toInstant)
+            .map(Instant::toString)
+            .collect(toList());
+    }
+
+    private FileModel uploadDocument(String filePath, UserModel user, SiteModel site) throws IOException
+    {
+        ClassPathResource toUpload = new ClassPathResource(filePath);
+        return dataContent.usingUser(user)
+            .usingSite(site)
+            .uploadDocument(toUpload.getFile());
     }
 }
