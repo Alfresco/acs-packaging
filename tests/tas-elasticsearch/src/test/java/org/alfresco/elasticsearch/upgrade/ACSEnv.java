@@ -42,73 +42,15 @@ class ACSEnv implements AutoCloseable
     public ACSEnv(Config cfg, final Network network, final String indexSubsystemName)
     {
         this.cfg = cfg;
-        postgres = newContainer(PostgreSQLContainer.class, cfg.getPostgreSQLImage())
-                .withPassword("alfresco")
-                .withUsername("alfresco")
-                .withDatabaseName("alfresco")
-                .withNetwork(network)
-                .withNetworkAliases("postgres");
 
-        newContainer(GenericContainer.class, cfg.getActiveMqImage())
-                .withNetwork(network)
-                .withNetworkAliases("activemq");
+        postgres = createPostgresContainer(network);
 
-        newContainer(GenericContainer.class, cfg.getSharedFileStoreImage())
-                .withEnv("JAVA_OPTS", " -Xmx384m -XshowSettings:vm")
-                .withEnv("scheduler.content.age.millis", "86400000")
-                .withEnv("scheduler.cleanup.interval", "86400000")
-                .withNetwork(network)
-                .withNetworkAliases("shared-file-store");
+        createActiveMqContainer(network);
+        createSharedFileStoreContainer(network);
+        createTransformCoreAIOContainer(network);
+        createTransformRouterContainer(network);
 
-        newContainer(GenericContainer.class, cfg.getTransformCoreAIOImage())
-                .withEnv("JAVA_OPTS", " -Xmx1024m -XshowSettings:vm")
-                .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
-                .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
-                .withNetwork(network)
-                .withNetworkAliases("transform-core-aio");
-
-        newContainer(GenericContainer.class, cfg.getTransformRouterImage())
-                .withEnv("JAVA_OPTS", " -Xmx384m -XshowSettings:vm")
-                .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
-                .withEnv("CORE_AIO_URL", "http://transform-core-aio:8090")
-                .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
-                .withNetwork(network)
-                .withNetworkAliases("transform-router");
-
-        alfresco = newContainer(GenericContainer.class, cfg.getRepositoryImage())
-                .withEnv("JAVA_TOOL_OPTIONS",
-                        "-Dencryption.keystore.type=JCEKS " +
-                                "-Dencryption.cipherAlgorithm=DESede/CBC/PKCS5Padding " +
-                                "-Dencryption.keyAlgorithm=DESede " +
-                                "-Dencryption.keystore.location=/usr/local/tomcat/shared/classes/alfresco/extension/keystore/keystore " +
-                                "-Dmetadata-keystore.password=mp6yc0UD9e -Dmetadata-keystore.aliases=metadata " +
-                                "-Dmetadata-keystore.metadata.password=oKIWzVdEdA -Dmetadata-keystore.metadata.algorithm=DESede")
-                .withEnv("JAVA_OPTS",
-                        "-Ddb.driver=org.postgresql.Driver " +
-                                "-Ddb.username=alfresco " +
-                                "-Ddb.password=alfresco " +
-                                "-Ddb.url=jdbc:postgresql://postgres:5432/alfresco " +
-                                "-Dsolr.host=solr6 " +
-                                "-Dsolr.port=8983 " +
-                                "-Dsolr.secureComms=secret " +
-                                "-Dsolr.sharedSecret=secret " +
-                                "-Dsolr.base.url=/solr " +
-                                "-Delasticsearch.createIndexIfNotExists=true " +
-                                "-Delasticsearch.host=" + cfg.getElasticsearchHostname() + " " +
-                                "-Delasticsearch.indexName=" + cfg.getIndexName() + " " +
-                                "-Dindex.subsystem.name=" + indexSubsystemName + " " +
-                                "-Dalfresco.host=localhost " +
-                                "-Dalfresco.port=8080 " +
-                                "-Dmessaging.broker.url=\"failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true\" " +
-                                "-Ddeployment.method=DOCKER_COMPOSE " +
-                                "-Dtransform.service.enabled=true " +
-                                "-Dtransform.service.url=http://transform-router:8095 " +
-                                "-Dsfs.url=http://shared-file-store:8099/ " +
-                                "-DlocalTransform.core-aio.url=http://transform-core-aio:8090/ " +
-                                "-Xmx768m -XshowSettings:vm")
-                .withNetwork(network)
-                .withNetworkAliases("alfresco")
-                .withExposedPorts(8080);
+        alfresco = createRepositoryContainer(network, indexSubsystemName);
     }
 
     public void setMetadataDumpToRestore(String metadataDumpToRestore)
@@ -245,7 +187,108 @@ class ACSEnv implements AutoCloseable
 
     public void reindexByIds(long fromId, long toId)
     {
-        final GenericContainer<?> reIndexing = newContainer(GenericContainer.class, cfg.getReIndexingImage())
+        final GenericContainer<?> reIndexing = createReIndexingContainer(fromId, toId);
+
+        reIndexing.start();
+        waitFor("Re-indexing Startup", ofMinutes(1), reIndexing::isRunning);
+        waitFor("Re-indexing Exit", ofMinutes(5), () -> !reIndexing.isRunning());
+    }
+
+    public void startLiveIndexing()
+    {
+        final GenericContainer<?> liveIndexing = createLiveIndexingContainer();
+        liveIndexing.start();
+    }
+
+    private GenericContainer<?> createRepositoryContainer(Network network, String indexSubsystemName)
+    {
+        return newContainer(GenericContainer.class, cfg.getRepositoryImage())
+                .withEnv("JAVA_TOOL_OPTIONS",
+                        "-Dencryption.keystore.type=JCEKS " +
+                                "-Dencryption.cipherAlgorithm=DESede/CBC/PKCS5Padding " +
+                                "-Dencryption.keyAlgorithm=DESede " +
+                                "-Dencryption.keystore.location=/usr/local/tomcat/shared/classes/alfresco/extension/keystore/keystore " +
+                                "-Dmetadata-keystore.password=mp6yc0UD9e -Dmetadata-keystore.aliases=metadata " +
+                                "-Dmetadata-keystore.metadata.password=oKIWzVdEdA -Dmetadata-keystore.metadata.algorithm=DESede")
+                .withEnv("JAVA_OPTS",
+                        "-Ddb.driver=org.postgresql.Driver " +
+                                "-Ddb.username=alfresco " +
+                                "-Ddb.password=alfresco " +
+                                "-Ddb.url=jdbc:postgresql://postgres:5432/alfresco " +
+                                "-Dsolr.host=solr6 " +
+                                "-Dsolr.port=8983 " +
+                                "-Dsolr.secureComms=secret " +
+                                "-Dsolr.sharedSecret=secret " +
+                                "-Dsolr.base.url=/solr " +
+                                "-Delasticsearch.createIndexIfNotExists=true " +
+                                "-Delasticsearch.host=" + cfg.getElasticsearchHostname() + " " +
+                                "-Delasticsearch.indexName=" + cfg.getIndexName() + " " +
+                                "-Dindex.subsystem.name=" + indexSubsystemName + " " +
+                                "-Dalfresco.host=localhost " +
+                                "-Dalfresco.port=8080 " +
+                                "-Dmessaging.broker.url=\"failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true\" " +
+                                "-Ddeployment.method=DOCKER_COMPOSE " +
+                                "-Dtransform.service.enabled=true " +
+                                "-Dtransform.service.url=http://transform-router:8095 " +
+                                "-Dsfs.url=http://shared-file-store:8099/ " +
+                                "-DlocalTransform.core-aio.url=http://transform-core-aio:8090/ " +
+                                "-Xmx768m -XshowSettings:vm")
+                .withNetwork(network)
+                .withNetworkAliases("alfresco")
+                .withExposedPorts(8080);
+    }
+
+    private void createTransformRouterContainer(Network network)
+    {
+        newContainer(GenericContainer.class, cfg.getTransformRouterImage())
+                .withEnv("JAVA_OPTS", " -Xmx384m -XshowSettings:vm")
+                .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
+                .withEnv("CORE_AIO_URL", "http://transform-core-aio:8090")
+                .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
+                .withNetwork(network)
+                .withNetworkAliases("transform-router");
+    }
+
+    private void createTransformCoreAIOContainer(Network network)
+    {
+        newContainer(GenericContainer.class, cfg.getTransformCoreAIOImage())
+                .withEnv("JAVA_OPTS", " -Xmx1024m -XshowSettings:vm")
+                .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
+                .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
+                .withNetwork(network)
+                .withNetworkAliases("transform-core-aio");
+    }
+
+    private void createSharedFileStoreContainer(Network network)
+    {
+        newContainer(GenericContainer.class, cfg.getSharedFileStoreImage())
+                .withEnv("JAVA_OPTS", " -Xmx384m -XshowSettings:vm")
+                .withEnv("scheduler.content.age.millis", "86400000")
+                .withEnv("scheduler.cleanup.interval", "86400000")
+                .withNetwork(network)
+                .withNetworkAliases("shared-file-store");
+    }
+
+    private void createActiveMqContainer(Network network)
+    {
+        newContainer(GenericContainer.class, cfg.getActiveMqImage())
+                .withNetwork(network)
+                .withNetworkAliases("activemq");
+    }
+
+    private GenericContainer<?> createPostgresContainer(Network network)
+    {
+        return newContainer(PostgreSQLContainer.class, cfg.getPostgreSQLImage())
+                .withPassword("alfresco")
+                .withUsername("alfresco")
+                .withDatabaseName("alfresco")
+                .withNetwork(network)
+                .withNetworkAliases("postgres");
+    }
+
+    private GenericContainer<?> createReIndexingContainer(long fromId, long toId)
+    {
+        return newContainer(GenericContainer.class, cfg.getReIndexingImage())
                 .withEnv("ELASTICSEARCH_INDEXNAME", cfg.getIndexName())
                 .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://" + cfg.getElasticsearchHostname() + ":9200")
                 .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
@@ -257,23 +300,17 @@ class ACSEnv implements AutoCloseable
                 .withEnv("ALFRESCO_REINDEX_TO_ID", Long.toString(toId))
                 .withEnv("ALFRESCO_REINDEX_JOB_NAME", "reindexByIds")
                 .withNetwork(alfresco.getNetwork());
-
-        reIndexing.start();
-        waitFor("Re-indexing Startup", ofMinutes(1), reIndexing::isRunning);
-        waitFor("Re-indexing Exit", ofMinutes(5), () -> !reIndexing.isRunning());
     }
 
-    public void startLiveIndexing()
+    private GenericContainer<?> createLiveIndexingContainer()
     {
-        final GenericContainer<?> liveIndexing = newContainer(GenericContainer.class, cfg.getLiveIndexingImage())
+        return newContainer(GenericContainer.class, cfg.getLiveIndexingImage())
                 .withEnv("ELASTICSEARCH_INDEXNAME", cfg.getIndexName())
                 .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://" + cfg.getElasticsearchHostname() + ":9200")
                 .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
                 .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
                 .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config")
                 .withNetwork(alfresco.getNetwork());
-
-        liveIndexing.start();
     }
 
     private <T extends GenericContainer<?>> T newContainer(Class<T> clazz, String image)
