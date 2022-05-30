@@ -597,14 +597,14 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     private List<String> getCreationDates(UserModel user, SiteModel site, FileModel... files)
     {
         return List.of(files)
-                .stream()
-                .map(FileModel::getCmisLocation)
-                .map(cmisLocation -> dataContent.usingUser(user).usingSite(site).getCMISDocument(cmisLocation))
-                .map(cmisDocument -> cmisDocument.<GregorianCalendar>getProperty("cmis:creationDate"))
-                .map(creationDateProperty -> creationDateProperty.<GregorianCalendar>getValue())
-                .map(GregorianCalendar::toInstant)
-                .map(Instant::toString)
-                .collect(toList());
+            .stream()
+            .map(FileModel::getCmisLocation)
+            .map(cmisLocation -> dataContent.usingUser(user).usingSite(site).getCMISDocument(cmisLocation))
+            .map(cmisDocument -> cmisDocument.<GregorianCalendar>getProperty("cmis:creationDate"))
+            .map(creationDateProperty -> creationDateProperty.<GregorianCalendar>getValue())
+            .map(GregorianCalendar::toInstant)
+            .map(Instant::toString)
+            .collect(toList());
     }
 
     private List<String> orderNames(String order, String... filename){
@@ -612,9 +612,14 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
         if(order == DESC){
             orderedNames = orderedNames.stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList());
         }
-        System.out.println("filename = " + filename);
-        System.out.println("orderedNames = " + orderedNames);
         return orderedNames;
     }
 
+    private FileModel uploadDocument(String filePath, UserModel user, SiteModel site) throws IOException
+    {
+        ClassPathResource toUpload = new ClassPathResource(filePath);
+        return dataContent.usingUser(user)
+            .usingSite(site)
+            .uploadDocument(toUpload.getFile());
+    }
 }

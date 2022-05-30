@@ -133,7 +133,6 @@ public class SearchQueryService
                 .map(SearchNodeModel::getModel)
                 .map(SearchNodeModel::getName)
                 .collect(Collectors.toList());
-        System.out.println("result = " + result);
         assertEquals(result, expected, "Unexpected search results.");
     }
 
