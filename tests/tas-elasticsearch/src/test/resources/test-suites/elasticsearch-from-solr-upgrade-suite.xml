@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Test upgrade procedure" preserve-order="true" verbose="1">
+   <test name="elasticsearch-from-solr-upgrade" verbose="3" preserve-order="true">
+      <packages>
+         <package name="org.alfresco.elasticsearch.upgrade"/>
+      </packages>
+   </test>
+</suite>

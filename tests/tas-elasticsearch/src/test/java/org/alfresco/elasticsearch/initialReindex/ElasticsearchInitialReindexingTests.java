@@ -1,6 +1,6 @@
 package org.alfresco.elasticsearch.initialReindex;
 
-import static org.alfresco.elasticsearch.AlfrescoStackInitializer.getElasticsearchConnectorImageTag;
+import static org.alfresco.elasticsearch.AlfrescoStackInitializer.getImagesConfig;
 import static org.alfresco.elasticsearch.SearchQueryService.req;
 
 import java.util.HashMap;
@@ -121,7 +121,7 @@ public class ElasticsearchInitialReindexingTests extends AbstractTestNGSpringCon
                        "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config"));
         env.putAll(envParam);
 
-        try (GenericContainer reindexingComponent = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-reindexing:" + getElasticsearchConnectorImageTag())
+        try (GenericContainer reindexingComponent = new GenericContainer(getImagesConfig().getReIndexingImage())
                                                             .withEnv(env)
                                                             .withNetwork(AlfrescoStackInitializer.network)
                                                             .withStartupCheckStrategy(

@@ -26,15 +26,10 @@ public class AlfrescoStackInitializerESBasicAuth extends AlfrescoStackInitialize
     }
 
     @Override
-    protected ElasticsearchContainer createElasticContainer(Properties env)
+    protected ElasticsearchContainer createElasticContainer()
     {
-        return new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch:" + env.getProperty("ES_TAG"))
-            .withNetwork(network)
-            .withNetworkAliases("elasticsearch")
-            .withExposedPorts(9200)
+        return super.createElasticContainer()
             .withEnv("xpack.security.enabled", "true")
-            .withEnv("discovery.type", "single-node")
-            .withEnv("ES_JAVA_OPTS", "-Xms1g -Xmx1g")
             .withEnv("ELASTIC_PASSWORD", ELASTICSEARCH_PASSWORD);
     }
 
