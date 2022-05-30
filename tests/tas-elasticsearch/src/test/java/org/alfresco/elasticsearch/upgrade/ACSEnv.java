@@ -7,6 +7,7 @@ import static org.alfresco.elasticsearch.upgrade.Utils.waitFor;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -109,7 +110,7 @@ class ACSEnv implements AutoCloseable
         if (metadataDumpToRestore != null)
         {
             postgres.start();
-            postgres.copyFileToContainer(Transferable.of(metadataDumpToRestore), "/opt/alfresco/pg-dump-alfresco.sql");
+            postgres.copyFileToContainer(Transferable.of(metadataDumpToRestore.getBytes(StandardCharsets.UTF_8)), "/opt/alfresco/pg-dump-alfresco.sql");
             execInPostgres("cat /opt/alfresco/pg-dump-alfresco.sql | psql -U alfresco");
         }
 
