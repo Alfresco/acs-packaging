@@ -3,7 +3,7 @@ version: "2"
 services:
   alfresco:
     image: quay.io/alfresco/alfresco-content-repository:${ALFRESCO_TAG}
-    mem_limit: 1700m
+    mem_limit: 3400m
     environment:
       CATALINA_OPTS: "-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n"
       JAVA_TOOL_OPTIONS: "
@@ -142,6 +142,7 @@ services:
 
   elasticsearch:
     image: elasticsearch:${ELASTICSEARCH_TAG}
+    mem_limit: 1700m
     environment:
       - xpack.security.enabled=false
       - discovery.type=single-node
