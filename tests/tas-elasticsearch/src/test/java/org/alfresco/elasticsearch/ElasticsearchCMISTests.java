@@ -223,6 +223,22 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
         searchQueryService.expectResultsFromQuery(query, user1, FILE_1_NAME, FILE_2_NAME, file3Name);
     }
 
+    @TestRail (description = "Check ORDER BY syntax works as expected for ASCENDING order", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkOrderByAscSyntax()
+    {
+        SearchRequest query = req("cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name IN('" + FILE_0_NAME + "','" + FILE_1_NAME + "','" + FILE_2_NAME + "') ORDER BY cmis:name ASC");
+        searchQueryService.expectResultsInOrder(query, user1, true, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
+    }
+
+    @TestRail (description = "Check ORDER BY syntax works as expected for DESCENDING order", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test (groups = TestGroup.SEARCH)
+    public void checkOrderByDescSyntax()
+    {
+        SearchRequest query = req("cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name IN('" + FILE_0_NAME + "','" + FILE_1_NAME + "','" + FILE_2_NAME + "') ORDER BY cmis:name DESC");
+        searchQueryService.expectResultsInOrder(query, user1, false, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
+    }
+
     @TestRail (description = "Check IN('value1','value2') syntax works. Needs exact term search to be enabled to pass.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
     @Test (groups = TestGroup.SEARCH)
     public void checkInSyntax()
