@@ -1,14 +1,12 @@
 package org.alfresco.elasticsearch;
 
-import static org.alfresco.elasticsearch.EnvHelper.getEnvProperty;
-import static org.alfresco.elasticsearch.MavenPropertyHelper.getMavenProperty;
-
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Properties;
 
+import org.alfresco.elasticsearch.config.DefaultImagesConfig;
+import org.alfresco.elasticsearch.config.ImagesConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContextInitializer;
@@ -64,23 +62,21 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
             }
         }
 
-        Properties env = EnvHelper.loadEnvProperties();
-
         network = Network.newNetwork();
 
         alfresco = createAlfrescoContainer();
 
-        GenericContainer transformRouter = createTransformRouterContainer(env);
+        GenericContainer transformRouter = createTransformRouterContainer();
 
-        GenericContainer transformCore = createTransformCoreContainer(env);
+        GenericContainer transformCore = createTransformCoreContainer();
 
-        GenericContainer sfs = createSfsContainer(env);
+        GenericContainer sfs = createSfsContainer();
 
-        PostgreSQLContainer postgres = createPosgresContainer(env);
+        PostgreSQLContainer postgres = createPosgresContainer();
 
-        GenericContainer activemq = createAMQContainer(env);
+        GenericContainer activemq = createAMQContainer();
 
-        elasticsearch = createElasticContainer(env);
+        elasticsearch = createElasticContainer();
 
         startOrFail(elasticsearch);
 
@@ -93,7 +89,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         // We don't want Kibana to run on our CI, but it can be useful when investigating issues locally.
         if (Objects.equals(System.getProperty("kibana"), "true"))
         {
-            kibana = createKibanaContainer(elasticsearch);
+            kibana = createKibanaContainer();
             startOrFail(kibana);
         }
 
@@ -111,16 +107,6 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     }
 
-    public static String getElasticsearchConnectorImageTag()
-    {
-        final String fromEnv = getEnvProperty("ES_CONNECTOR_TAG");
-        if (fromEnv != null && !fromEnv.isBlank())
-        {
-            return fromEnv;
-        }
-        return getMavenProperty("dependency.elasticsearch-shared.version");
-    }
-
     /**
      * Run the alfresco-elasticsearch-reindexing container with path reindexing enabled.
      */
@@ -136,7 +122,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                         "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config",
                         "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
 
-        try (GenericContainer reindexingComponent = new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-reindexing:" + getElasticsearchConnectorImageTag())
+        try (GenericContainer reindexingComponent = new GenericContainer(getImagesConfig().getReIndexingImage())
                 .withEnv(env)
                 .withNetwork(AlfrescoStackInitializer.network)
                 .withStartupCheckStrategy(
@@ -160,7 +146,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     protected GenericContainer createLiveIndexingContainer()
     {
-        return new GenericContainer("quay.io/alfresco/alfresco-elasticsearch-live-indexing:" + getElasticsearchConnectorImageTag())
+        return new GenericContainer(getImagesConfig().getLiveIndexingImage())
                        .withNetwork(network)
                        .withNetworkAliases("live-indexing")
                        .withEnv("ELASTICSEARCH_INDEXNAME", CUSTOM_ALFRESCO_INDEX)
@@ -170,9 +156,9 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                        .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config");
     }
 
-    protected ElasticsearchContainer createElasticContainer(Properties env)
+    protected ElasticsearchContainer createElasticContainer()
     {
-        return new ElasticsearchContainer("docker.elastic.co/elasticsearch/elasticsearch:" + env.getProperty("ES_TAG"))
+        return new ElasticsearchContainer(getImagesConfig().getElasticsearchImage())
                 .withNetwork(network)
                 .withNetworkAliases("elasticsearch")
                 .withExposedPorts(9200)
@@ -181,18 +167,18 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                 .withEnv("ES_JAVA_OPTS", "-Xms1g -Xmx1g");
     }
 
-    protected GenericContainer createKibanaContainer(ElasticsearchContainer elasticsearch)
+    protected GenericContainer createKibanaContainer()
     {
-        return new GenericContainer("kibana:7.10.1")
+        return new GenericContainer(getImagesConfig().getKibanaImage())
                 .withNetwork(network)
                 .withNetworkAliases("kibana")
                 .withExposedPorts(5601)
                 .withEnv("ELASTICSEARCH_HOSTS", "http://elasticsearch:9200");
     }
 
-    private GenericContainer createAMQContainer(Properties env)
+    private GenericContainer createAMQContainer()
     {
-        return new GenericContainer("alfresco/alfresco-activemq:" + env.getProperty("ACTIVEMQ_TAG"))
+        return new GenericContainer(getImagesConfig().getActiveMqImage())
                        .withNetwork(network)
                        .withNetworkAliases("activemq")
                        .withEnv("JAVA_OPTS", "-Xms256m -Xmx512m")
@@ -201,9 +187,9 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                        .withExposedPorts(61616, 8161, 5672, 61613);
     }
 
-    private PostgreSQLContainer createPosgresContainer(Properties env)
+    private PostgreSQLContainer createPosgresContainer()
     {
-        return (PostgreSQLContainer) new PostgreSQLContainer("postgres:" + env.getProperty("POSTGRES_TAG"))
+        return (PostgreSQLContainer) new PostgreSQLContainer(getImagesConfig().getPostgreSQLImage())
                                              .withPassword("alfresco")
                                              .withUsername("alfresco")
                                              .withDatabaseName("alfresco")
@@ -212,9 +198,9 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                              .withStartupTimeout(Duration.ofMinutes(2));
     }
 
-    private GenericContainer createSfsContainer(Properties env)
+    private GenericContainer createSfsContainer()
     {
-        return new GenericContainer("alfresco/alfresco-shared-file-store:" + env.getProperty("SFS_TAG"))
+        return new GenericContainer(getImagesConfig().getSharedFileStoreImage())
                        .withNetwork(network)
                        .withNetworkAliases("shared-file-store")
                        .withEnv("JAVA_OPTS", "-Xms256m -Xmx256m")
@@ -225,9 +211,9 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                        .withStartupTimeout(Duration.ofMinutes(2));
     }
 
-    private GenericContainer createTransformCoreContainer(Properties env)
+    private GenericContainer createTransformCoreContainer()
     {
-        return new GenericContainer("alfresco/alfresco-transform-core-aio:" + env.getProperty("TRANSFORMERS_TAG"))
+        return new GenericContainer(getImagesConfig().getTransformCoreAIOImage())
                        .withNetwork(network)
                        .withNetworkAliases("transform-core-aio")
                        .withEnv("JAVA_OPTS", "-Xms512m -Xmx512m")
@@ -238,9 +224,9 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                        .withStartupTimeout(Duration.ofMinutes(2));
     }
 
-    private GenericContainer createTransformRouterContainer(Properties env)
+    private GenericContainer createTransformRouterContainer()
     {
-        return new GenericContainer("quay.io/alfresco/alfresco-transform-router:" + env.getProperty("TRANSFORM_ROUTER_TAG"))
+        return new GenericContainer(getImagesConfig().getTransformRouterImage())
                        .withNetwork(network)
                        .withNetworkAliases("transform-router")
                        .withEnv("JAVA_OPTS", "-Xms256m -Xmx256m")
@@ -254,7 +240,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     protected GenericContainer createAlfrescoContainer()
     {
-        return new GenericContainer("alfresco/alfresco-content-repository:latest")
+        return new GenericContainer(getImagesConfig().getRepositoryImage())
+                       .withEnv("CATALINA_OPTS", "\"-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n\"")
                        .withEnv("JAVA_TOOL_OPTIONS",
                                 "-Dencryption.keystore.type=JCEKS " +
                                 "-Dencryption.cipherAlgorithm=DESede/CBC/PKCS5Padding " +
@@ -291,4 +278,10 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                        .withStartupTimeout(Duration.ofMinutes(7))
                        .withExposedPorts(8080);
     }
+
+    public static ImagesConfig getImagesConfig()
+    {
+        return DefaultImagesConfig.INSTANCE;
+    }
+
 }
