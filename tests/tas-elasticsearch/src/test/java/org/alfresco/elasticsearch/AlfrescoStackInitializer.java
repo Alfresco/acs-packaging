@@ -240,6 +240,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     protected GenericContainer createAlfrescoContainer()
     {
         return new GenericContainer(getImagesConfig().getRepositoryImage())
+                       .withEnv("CATALINA_OPTS", "\"-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n\"")
                        .withEnv("JAVA_TOOL_OPTIONS",
                                 "-Dencryption.keystore.type=JCEKS " +
                                 "-Dencryption.cipherAlgorithm=DESede/CBC/PKCS5Padding " +
