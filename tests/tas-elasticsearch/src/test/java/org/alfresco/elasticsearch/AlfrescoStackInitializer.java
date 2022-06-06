@@ -356,7 +356,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         @Override
         public String getSharedFileStoreImage()
         {
-            return "alfresco/alfresco-shared-file-store:" + envProperties.apply("SFS_TAG");
+            return "quay.io/alfresco/alfresco-shared-file-store:" + envProperties.apply("SFS_TAG");
         }
 
         @Override
