@@ -31,8 +31,8 @@ env:
     - TAS_SCRIPTS=../alfresco-community-repo/packaging/tests/scripts
     - TAS_ENVIRONMENT=./tests/environment
     # Release version has to start with real version (7.3.0-....) for the docker image to build successfully.
-    - RELEASE_VERSION=7.3.0-A2
-    - DEVELOPMENT_VERSION=7.3.0-A3-SNAPSHOT
+    - RELEASE_VERSION=7.3.0-A6
+    - DEVELOPMENT_VERSION=7.3.0-A7-SNAPSHOT
     - DTAS_VERSION="${DTAS_VERSION:-v1.1}"
     - PYTHON_VERSION=3.7.12
 
@@ -197,6 +197,13 @@ jobs:
       if: commit_message !~ /\[skip search\]/
       script:
        - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false
+
+    - name: "Elasticsearch Upgrade TAS tests"
+      if: commit_message !~ /\[skip search\]/
+      vm:
+        size: large
+      script:
+        - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false
 
     - name: "All AMPs tests"
       before_script:
