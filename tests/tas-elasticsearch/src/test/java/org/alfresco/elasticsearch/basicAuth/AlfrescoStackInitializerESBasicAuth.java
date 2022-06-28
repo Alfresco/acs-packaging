@@ -26,11 +26,22 @@ public class AlfrescoStackInitializerESBasicAuth extends AlfrescoStackInitialize
     }
 
     @Override
-    protected ElasticsearchContainer createElasticContainer()
+    protected GenericContainer createSearchEngineContainer()
     {
-        return super.createElasticContainer()
-            .withEnv("xpack.security.enabled", "true")
-            .withEnv("ELASTIC_PASSWORD", ELASTICSEARCH_PASSWORD);
+        ImagesConfig.SearchEngine usedEngine = getImagesConfig().usedSearchEngine();
+
+        if(ImagesConfig.SearchEngine.OPENSEARCH_ENGINE.equals(usedEngine))
+        {
+            return super.createOpensearchContainer()
+                    .withEnv("plugins.security.disabled", "false")
+                    .withEnv("OPENSEARCH_PASSWORD", ELASTICSEARCH_PASSWORD);
+        }
+        else
+        {
+            return super.createElasticContainer()
+                    .withEnv("xpack.security.enabled", "true")
+                    .withEnv("ELASTIC_PASSWORD", ELASTICSEARCH_PASSWORD);
+        }
     }
 
     @Override

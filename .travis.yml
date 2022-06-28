@@ -180,6 +180,14 @@ jobs:
       script:
         - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
 
+    - name: "CMIS TAS tests - Open Search (CMIS API)"
+        if: commit_message !~ /\[skip search\]/
+        before_script:
+          - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-opensearch-tests.yml
+          - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+        script:
+          - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
+
     - name: "Sync Service TAS tests"
       if: commit_message !~ /\[skip tas\]/
       before_script:
@@ -191,19 +199,36 @@ jobs:
     - name: "Elasticsearch TAS tests (Search API)"
       if: commit_message !~ /\[skip search\]/
       script:
-       - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false
+       - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false -Dsearch.engine.used=elasticsearch
+
+    - name: "Opensearchsearch TAS tests (Search API)"
+      if: commit_message !~ /\[skip search\]/
+      script:
+        - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false -Dsearch.engine.used=opensearch
 
     - name: "Elasticsearch Basic Auth TAS tests"
       if: commit_message !~ /\[skip search\]/
       script:
-       - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false
+       - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false -Dsearch.engine.used=elasticsearch
+
+    - name: "Opensearch Basic Auth TAS tests"
+      if: commit_message !~ /\[skip search\]/
+      script:
+        - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false -Dsearch.engine.used=opensearch
 
     - name: "Elasticsearch Upgrade TAS tests"
       if: commit_message !~ /\[skip search\]/
       vm:
         size: large
       script:
-        - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false
+        - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false -Dsearch.engine.used=elasticsearch
+
+    - name: "Opensearch Upgrade TAS tests"
+      if: commit_message !~ /\[skip search\]/
+      vm:
+        size: large
+      script:
+        - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false -Dsearch.engine.used=opensearch
 
     - name: "All AMPs tests"
       before_script:

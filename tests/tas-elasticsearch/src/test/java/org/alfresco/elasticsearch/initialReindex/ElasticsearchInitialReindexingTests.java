@@ -75,8 +75,8 @@ public class ElasticsearchInitialReindexingTests extends AbstractTestNGSpringCon
 
         Step.STEP("create ES client");
         elasticClient = new RestHighLevelClient(
-                RestClient.builder(new HttpHost(AlfrescoStackInitializer.elasticsearch.getContainerIpAddress(),
-                                                AlfrescoStackInitializer.elasticsearch.getFirstMappedPort(),
+                RestClient.builder(new HttpHost(AlfrescoStackInitializer.searchEngineContainer.getContainerIpAddress(),
+                                                AlfrescoStackInitializer.searchEngineContainer.getFirstMappedPort(),
                                                 "http")));
 
     }

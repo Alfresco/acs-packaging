@@ -19,7 +19,6 @@ import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.startupcheck.IndefiniteWaitOneShotStartupCheckStrategy;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.containers.wait.strategy.Wait;
-import org.testcontainers.elasticsearch.ElasticsearchContainer;
 import org.testcontainers.lifecycle.Startable;
 import org.testcontainers.lifecycle.Startables;
 import org.testng.Assert;
@@ -34,10 +33,10 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     public static GenericContainer alfresco;
 
-    public static ElasticsearchContainer elasticsearch;
+    public static GenericContainer searchEngineContainer;
 
     /** To create the kibana container for a test run then pass -Dkibana=true as an argument to the mvn command. */
-    public static GenericContainer kibana;
+    public static GenericContainer dashboardsContainer;
 
     public static GenericContainer liveIndexer;
 
@@ -76,9 +75,9 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         GenericContainer activemq = createAMQContainer();
 
-        elasticsearch = createElasticContainer();
+        searchEngineContainer = createSearchEngineContainer();
 
-        startOrFail(elasticsearch);
+        startOrFail(searchEngineContainer);
 
         startOrFail(postgres);
 
@@ -89,8 +88,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         // We don't want Kibana to run on our CI, but it can be useful when investigating issues locally.
         if (Objects.equals(System.getProperty("kibana"), "true"))
         {
-            kibana = createKibanaContainer();
-            startOrFail(kibana);
+            dashboardsContainer = createDashboardsContainer();
+            startOrFail(dashboardsContainer);
         }
 
         liveIndexer = createLiveIndexingContainer();
@@ -156,15 +155,47 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                        .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config");
     }
 
-    protected ElasticsearchContainer createElasticContainer()
+    protected GenericContainer createSearchEngineContainer()
     {
-        return new ElasticsearchContainer(getImagesConfig().getElasticsearchImage())
+        return getImagesConfig().usedSearchEngine() == ImagesConfig.SearchEngine.OPENSEARCH_ENGINE ?
+                createOpensearchContainer() : createElasticContainer();
+    }
+
+    protected GenericContainer createDashboardsContainer()
+    {
+        return getImagesConfig().usedSearchEngine() == ImagesConfig.SearchEngine.OPENSEARCH_ENGINE ?
+                createOpensearchDashboardsContainer() : createKibanaContainer();
+    }
+
+    protected GenericContainer createElasticContainer()
+    {
+        return new GenericContainer(getImagesConfig().getElasticsearchImage())
                 .withNetwork(network)
                 .withNetworkAliases("elasticsearch")
                 .withExposedPorts(9200)
                 .withEnv("xpack.security.enabled", "false")
                 .withEnv("discovery.type", "single-node")
                 .withEnv("ES_JAVA_OPTS", "-Xms1g -Xmx1g");
+    }
+
+    protected GenericContainer createOpensearchContainer()
+    {
+        return new GenericContainer(getImagesConfig().getOpensearchImage())
+                .withNetwork(network)
+                .withNetworkAliases("elasticsearch")
+                .withExposedPorts(9200)
+                .withEnv("plugins.security.disabled", "true")
+                .withEnv("discovery.type", "single-node")
+                .withEnv("OPENSEARCH_JAVA_OPTS", "-Xms1g -Xmx1g");
+    }
+
+    protected GenericContainer createOpensearchDashboardsContainer()
+    {
+        return new GenericContainer(getImagesConfig().getOpensearchDashboardsImage())
+                .withNetwork(network)
+                .withNetworkAliases("kibana")
+                .withExposedPorts(5601)
+                .withEnv("ELASTICSEARCH_HOSTS", "http://elasticsearch:9200");
     }
 
     protected GenericContainer createKibanaContainer()
@@ -290,11 +321,32 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     public interface ImagesConfig
     {
+        enum SearchEngine {
+            OPENSEARCH_ENGINE("opensearch"),
+            ELASTICSEARCH_ENGINE("elasticsearch");
+
+            private final String name;
+
+            SearchEngine(String name)
+            {
+                this.name = name;
+            }
+
+            public String getName()
+            {
+                return this.name;
+            }
+        }
+
         String getReIndexingImage();
 
         String getLiveIndexingImage();
 
         String getElasticsearchImage();
+
+        String getOpensearchImage();
+
+        String getOpensearchDashboardsImage();
 
         String getActiveMqImage();
 
@@ -309,6 +361,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         String getRepositoryImage();
 
         String getKibanaImage();
+
+        SearchEngine usedSearchEngine();
     }
 
     private static final class DefaultImagesConfig implements ImagesConfig
@@ -339,6 +393,16 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         public String getElasticsearchImage()
         {
             return "docker.elastic.co/elasticsearch/elasticsearch:" + envProperties.apply("ES_TAG");
+        }
+
+        @Override
+        public String getOpensearchImage() {
+            return "opensearchproject/opensearch:" + envProperties.apply("OPENSEARCH_TAG");
+        }
+
+        @Override
+        public String getOpensearchDashboardsImage() {
+            return "opensearchproject/opensearch-dashboards:" + envProperties.apply("OPENSEARCH_DASHBOARDS_TAG");
         }
 
         @Override
@@ -381,6 +445,22 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         public String getKibanaImage()
         {
             return "kibana:7.10.1";
+        }
+
+        @Override
+        public SearchEngine usedSearchEngine() {
+            String engine = mavenProperties.apply("search.engine.used");
+
+            if(SearchEngine.OPENSEARCH_ENGINE.getName().equals(engine))
+            {
+                return SearchEngine.OPENSEARCH_ENGINE;
+            }
+            if(SearchEngine.ELASTICSEARCH_ENGINE.getName().equals(engine))
+            {
+                return SearchEngine.ELASTICSEARCH_ENGINE;
+            }
+
+            throw new IllegalArgumentException("Property 'search.engine.used' not set properly.");
         }
 
         private String getElasticsearchConnectorImageTag()
