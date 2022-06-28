@@ -199,36 +199,36 @@ jobs:
     - name: "Elasticsearch TAS tests (Search API)"
       if: commit_message !~ /\[skip search\]/
       script:
-       - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false -Dsearch.engine.used=elasticsearch
+       - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.used=elasticsearch"
 
     - name: "Opensearchsearch TAS tests (Search API)"
       if: commit_message !~ /\[skip search\]/
       script:
-        - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false -Dsearch.engine.used=opensearch
+        - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.used=opensearch"
 
     - name: "Elasticsearch Basic Auth TAS tests"
       if: commit_message !~ /\[skip search\]/
       script:
-       - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false -Dsearch.engine.used=elasticsearch
+       - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.used=elasticsearch"
 
     - name: "Opensearch Basic Auth TAS tests"
       if: commit_message !~ /\[skip search\]/
       script:
-        - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false -Dsearch.engine.used=opensearch
+        - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.used=opensearch"
 
     - name: "Elasticsearch Upgrade TAS tests"
       if: commit_message !~ /\[skip search\]/
       vm:
         size: large
       script:
-        - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false -Dsearch.engine.used=elasticsearch
+        - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.used=elasticsearch"
 
     - name: "Opensearch Upgrade TAS tests"
       if: commit_message !~ /\[skip search\]/
       vm:
         size: large
       script:
-        - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false -Dsearch.engine.used=opensearch
+        - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.used=opensearch"
 
     - name: "All AMPs tests"
       before_script:
