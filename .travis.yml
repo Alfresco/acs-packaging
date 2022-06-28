@@ -181,12 +181,12 @@ jobs:
         - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
 
     - name: "CMIS TAS tests - Open Search (CMIS API)"
-        if: commit_message !~ /\[skip search\]/
-        before_script:
-          - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-opensearch-tests.yml
-          - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-        script:
-          - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
+      if: commit_message !~ /\[skip search\]/
+      before_script:
+        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-opensearch-tests.yml
+        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+      script:
+        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
 
     - name: "Sync Service TAS tests"
       if: commit_message !~ /\[skip tas\]/
