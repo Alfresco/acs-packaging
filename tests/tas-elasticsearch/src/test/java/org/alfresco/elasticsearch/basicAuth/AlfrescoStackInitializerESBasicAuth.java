@@ -2,9 +2,6 @@ package org.alfresco.elasticsearch.basicAuth;
 
 import org.alfresco.elasticsearch.AlfrescoStackInitializer;
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.elasticsearch.ElasticsearchContainer;
-
-import java.util.Properties;
 
 /**
  * ACS Stack Docker Compose initializer with Basic Authentication for Elasticsearch service.
@@ -13,8 +10,8 @@ public class AlfrescoStackInitializerESBasicAuth extends AlfrescoStackInitialize
 {
 
     // Default Elasticsearch credentials
-    private static final String ELASTICSEARCH_USERNAME = "elastic";
-    private static final String ELASTICSEARCH_PASSWORD = "bob123";
+    private static final String ELASTICSEARCH_USERNAME = "admin";
+    private static final String ELASTICSEARCH_PASSWORD = "admin";
 
     @Override
     protected GenericContainer createLiveIndexingContainer()
@@ -34,7 +31,7 @@ public class AlfrescoStackInitializerESBasicAuth extends AlfrescoStackInitialize
         {
             return super.createOpensearchContainer()
                     .withEnv("plugins.security.disabled", "false")
-                    .withEnv("OPENSEARCH_PASSWORD", ELASTICSEARCH_PASSWORD);
+                    .withEnv("plugins.security.ssl.http.enabled", "false");
         }
         else
         {
