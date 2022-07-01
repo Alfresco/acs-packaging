@@ -11,15 +11,29 @@ public class AlfrescoStackInitializerESBasicAuth extends AlfrescoStackInitialize
 {
 
     // Default Elasticsearch credentials
-    private static final String ELASTICSEARCH_USERNAME = "admin";
-    private static final String ELASTICSEARCH_PASSWORD = "admin";
+    private static final String ELASTICSEARCH_USERNAME = "elastic";
+    private static final String ELASTICSEARCH_PASSWORD = "bob123";
+
+    private static final String OPENSEARCH_USERNAME = "admin";
+    private static final String OPENSEARCH_PASSWORD = "admin";
 
     @Override
     protected GenericContainer createLiveIndexingContainer()
     {
           GenericContainer container = super.createLiveIndexingContainer();
-          container.withEnv("SPRING_ELASTICSEARCH_REST_USERNAME", ELASTICSEARCH_USERNAME);
-          container.withEnv("SPRING_ELASTICSEARCH_REST_PASSWORD", ELASTICSEARCH_PASSWORD);
+          SearchEngineType usedEngine = getImagesConfig().getSearchEngineType();
+
+          if(SearchEngineType.OPENSEARCH_ENGINE.equals(usedEngine))
+          {
+              container.withEnv("SPRING_ELASTICSEARCH_REST_USERNAME", OPENSEARCH_USERNAME);
+              container.withEnv("SPRING_ELASTICSEARCH_REST_PASSWORD", OPENSEARCH_PASSWORD);
+          }
+          else
+          {
+              container.withEnv("SPRING_ELASTICSEARCH_REST_USERNAME", ELASTICSEARCH_USERNAME);
+              container.withEnv("SPRING_ELASTICSEARCH_REST_PASSWORD", ELASTICSEARCH_PASSWORD);
+          }
+
           return container;
     }
 
@@ -47,8 +61,21 @@ public class AlfrescoStackInitializerESBasicAuth extends AlfrescoStackInitialize
     {
         GenericContainer container = super.createAlfrescoContainer();
         String javaOpts = (String) container.getEnvMap().get("JAVA_OPTS");
-        javaOpts = javaOpts + " -Delasticsearch.user=" + ELASTICSEARCH_USERNAME + " " +
-            "-Delasticsearch.password=" + ELASTICSEARCH_PASSWORD;
+
+        SearchEngineType usedEngine = getImagesConfig().getSearchEngineType();
+
+        if(SearchEngineType.OPENSEARCH_ENGINE.equals(usedEngine))
+        {
+            javaOpts = javaOpts + " -Delasticsearch.user=" + OPENSEARCH_USERNAME + " " +
+                    "-Delasticsearch.password=" + OPENSEARCH_PASSWORD;
+        }
+        else
+        {
+            javaOpts = javaOpts + " -Delasticsearch.user=" + ELASTICSEARCH_USERNAME + " " +
+                    "-Delasticsearch.password=" + ELASTICSEARCH_PASSWORD;
+        }
+
+
         container.getEnvMap().put("JAVA_OPTS", javaOpts);
         return container;
     }
