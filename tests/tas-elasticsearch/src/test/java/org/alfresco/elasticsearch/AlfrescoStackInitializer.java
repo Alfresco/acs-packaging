@@ -22,6 +22,7 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.lifecycle.Startable;
 import org.testcontainers.lifecycle.Startables;
 import org.testng.Assert;
+import org.testng.util.Strings;
 
 public class AlfrescoStackInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext>
 {
@@ -157,13 +158,13 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     protected GenericContainer createSearchEngineContainer()
     {
-        return getImagesConfig().usedSearchEngine() == ImagesConfig.SearchEngine.OPENSEARCH_ENGINE ?
+        return getImagesConfig().getSearchEngineType() == SearchEngineType.OPENSEARCH_ENGINE ?
                 createOpensearchContainer() : createElasticContainer();
     }
 
     protected GenericContainer createDashboardsContainer()
     {
-        return getImagesConfig().usedSearchEngine() == ImagesConfig.SearchEngine.OPENSEARCH_ENGINE ?
+        return getImagesConfig().getSearchEngineType() == SearchEngineType.OPENSEARCH_ENGINE ?
                 createOpensearchDashboardsContainer() : createKibanaContainer();
     }
 
@@ -321,23 +322,6 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     public interface ImagesConfig
     {
-        enum SearchEngine {
-            OPENSEARCH_ENGINE("opensearch"),
-            ELASTICSEARCH_ENGINE("elasticsearch");
-
-            private final String name;
-
-            SearchEngine(String name)
-            {
-                this.name = name;
-            }
-
-            public String getName()
-            {
-                return this.name;
-            }
-        }
-
         String getReIndexingImage();
 
         String getLiveIndexingImage();
@@ -362,7 +346,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         String getKibanaImage();
 
-        SearchEngine usedSearchEngine();
+        SearchEngineType getSearchEngineType();
     }
 
     private static final class DefaultImagesConfig implements ImagesConfig
@@ -448,19 +432,14 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         }
 
         @Override
-        public SearchEngine usedSearchEngine() {
-            String engine = mavenProperties.apply("search.engine.used");
-
-            if(SearchEngine.OPENSEARCH_ENGINE.getName().equals(engine))
+        public SearchEngineType getSearchEngineType() {
+            String searchEngineTypeProperty = mavenProperties.apply("search.engine.type");
+            if(Strings.isNullOrEmpty(searchEngineTypeProperty))
             {
-                return SearchEngine.OPENSEARCH_ENGINE;
-            }
-            if(SearchEngine.ELASTICSEARCH_ENGINE.getName().equals(engine))
-            {
-                return SearchEngine.ELASTICSEARCH_ENGINE;
-            }
+                throw new IllegalArgumentException("Property 'search.engine.type' not set.");
 
-            throw new IllegalArgumentException("Property 'search.engine.used' not set properly.");
+            }
+            return SearchEngineType.from(searchEngineTypeProperty);
         }
 
         private String getElasticsearchConnectorImageTag()

@@ -1,6 +1,7 @@
 package org.alfresco.elasticsearch.basicAuth;
 
 import org.alfresco.elasticsearch.AlfrescoStackInitializer;
+import org.alfresco.elasticsearch.SearchEngineType;
 import org.testcontainers.containers.GenericContainer;
 
 /**
@@ -25,9 +26,9 @@ public class AlfrescoStackInitializerESBasicAuth extends AlfrescoStackInitialize
     @Override
     protected GenericContainer createSearchEngineContainer()
     {
-        ImagesConfig.SearchEngine usedEngine = getImagesConfig().usedSearchEngine();
+        SearchEngineType usedEngine = getImagesConfig().getSearchEngineType();
 
-        if(ImagesConfig.SearchEngine.OPENSEARCH_ENGINE.equals(usedEngine))
+        if(SearchEngineType.OPENSEARCH_ENGINE.equals(usedEngine))
         {
             return super.createOpensearchContainer()
                     .withEnv("plugins.security.disabled", "false")

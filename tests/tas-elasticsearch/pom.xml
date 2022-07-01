@@ -21,21 +21,21 @@
       <id>elastic</id>
       <properties>
         <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/elasticsearch-suite.xml</suiteXmlFile>
-        <search.engine.used></search.engine.used>
+        <search.engine.type></search.engine.type>
       </properties>
     </profile>
     <profile>
       <id>elastic-basic-auth</id>
       <properties>
         <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/elasticsearch-basic-auth-suite.xml</suiteXmlFile>
-        <search.engine.used></search.engine.used>
+        <search.engine.type></search.engine.type>
       </properties>
     </profile>
     <profile>
       <id>elastic-upgrade</id>
       <properties>
         <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/elasticsearch-from-solr-upgrade-suite.xml</suiteXmlFile>
-        <search.engine.used></search.engine.used>
+        <search.engine.type></search.engine.type>
       </properties>
     </profile>
   </profiles>
