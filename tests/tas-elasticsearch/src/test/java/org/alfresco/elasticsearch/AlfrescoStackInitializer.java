@@ -80,6 +80,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         startOrFail(searchEngineContainer);
 
+        configureSecuritySettings(searchEngineContainer);
+
         startOrFail(postgres);
 
         startOrFail(activemq, sfs);
@@ -105,6 +107,11 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                                                   "alfresco.server=" + alfresco.getContainerIpAddress(),
                                                                   "alfresco.port=" + alfresco.getFirstMappedPort());
 
+    }
+
+    public void configureSecuritySettings(GenericContainer searchEngineContainer)
+    {
+        //empty for default execution
     }
 
     /**

@@ -4,6 +4,8 @@ import org.alfresco.elasticsearch.AlfrescoStackInitializer;
 import org.alfresco.elasticsearch.SearchEngineType;
 import org.testcontainers.containers.GenericContainer;
 
+import java.io.IOException;
+
 /**
  * ACS Stack Docker Compose initializer with Basic Authentication for Elasticsearch service.
  */
@@ -11,30 +13,114 @@ public class AlfrescoStackInitializerESBasicAuth extends AlfrescoStackInitialize
 {
 
     // Default Elasticsearch credentials
-    private static final String ELASTICSEARCH_USERNAME = "elastic";
-    private static final String ELASTICSEARCH_PASSWORD = "bob123";
+    private static final String SEARCH_ENGINE_USERNAME = "elastic";
+    private static final String SEARCH_ENGINE_PASSWORD = "bob123";
+    private static final String OPENSEARCH_TEST_ROLE = "test_role";
 
-    private static final String OPENSEARCH_USERNAME = "admin";
-    private static final String OPENSEARCH_PASSWORD = "admin";
+    @Override
+    public void configureSecuritySettings(GenericContainer searchEngineContainer)
+    {
+        SearchEngineType usedEngine = getImagesConfig().getSearchEngineType();
+
+        if(SearchEngineType.OPENSEARCH_ENGINE.equals(usedEngine))
+        {
+            configureNewUser(searchEngineContainer);
+        }
+    }
+
+    private void configureNewUser(GenericContainer opensearchContainer)
+    {
+        try
+        {
+            //Using password hash for setting up test only
+            String passwordHash = hashPassword(opensearchContainer, SEARCH_ENGINE_PASSWORD);
+
+            addNewUser(opensearchContainer, SEARCH_ENGINE_USERNAME, passwordHash);
+            addNewRole(opensearchContainer, OPENSEARCH_TEST_ROLE, CUSTOM_ALFRESCO_INDEX);
+            addNewRoleMapping(opensearchContainer, OPENSEARCH_TEST_ROLE, SEARCH_ENGINE_USERNAME);
+            applyNewSecurityConfigs(opensearchContainer);
+        }
+        catch (IOException | InterruptedException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private String hashPassword(GenericContainer opensearchContainer, String password) throws IOException, InterruptedException
+    {
+        return opensearchContainer.execInContainer("/usr/share/opensearch/plugins/opensearch-security/tools/hash.sh", "-p", password)
+                .getStdout().strip();
+    }
+
+    private void applyNewSecurityConfigs(GenericContainer opensearchContainer) throws IOException, InterruptedException
+    {
+        opensearchContainer.execInContainer("sh", "-c", "/usr/share/opensearch/plugins/opensearch-security/tools/securityadmin.sh " +
+                "-cd /usr/share/opensearch/plugins/opensearch-security/securityconfig " +
+                "-icl -nhnv " +
+                "-cert /usr/share/opensearch/config/kirk.pem " +
+                "-cacert /usr/share/opensearch/config/root-ca.pem " +
+                "-key /usr/share/opensearch/config/kirk-key.pem"
+        );
+    }
+
+    private void addNewRoleMapping(GenericContainer opensearchContainer, String role, String username) throws IOException, InterruptedException
+    {
+        opensearchContainer.execInContainer(
+                "sh", "-c", "echo '\n\n" + newOpensearchRoleMapping(role, username) +"' >> /usr/share/opensearch/plugins/opensearch-security/securityconfig/roles_mapping.yml"
+        );
+    }
+
+    private void addNewRole(GenericContainer opensearchContainer, String role, String index) throws IOException, InterruptedException
+    {
+        opensearchContainer.execInContainer(
+                "sh", "-c", "echo '\n\n" + newOpensearchRule(role, index) +"' >> /usr/share/opensearch/plugins/opensearch-security/securityconfig/roles.yml"
+        );
+    }
+
+    private void addNewUser(GenericContainer opensearchContainer, String username, String passwordHash) throws IOException, InterruptedException
+    {
+        opensearchContainer.execInContainer(
+                "sh", "-c", "echo '\n\n" + newOpensearchUser(username, passwordHash) +"' >> /usr/share/opensearch/plugins/opensearch-security/securityconfig/internal_users.yml"
+        );
+    }
+
+    private String newOpensearchUser(String username, String passwordHash)
+    {
+        return username +":\n" +
+                "  hash: \"" + passwordHash +"\"\n" +
+                "  reserved: false\n" +
+                "  backend_roles:\n" +
+                "  - \"all_access\"\n" +
+                "  description: \"New user for testing purposes\"";
+    }
+
+    private String newOpensearchRule(String role, String indexName)
+    {
+        return role + ":\n" +
+                "  cluster_permissions:\n" +
+                "    - cluster_all\n" +
+                "  index_permissions:\n" +
+                "    - index_patterns:\n" +
+                "      - \"" + indexName + "\"\n" +
+                "      allowed_actions:\n" +
+                "        - \"*\"\n";
+    }
+
+    private String newOpensearchRoleMapping(String role, String user)
+    {
+        return role + ":\n" +
+                "  reserved: true\n" +
+                "  users:\n" +
+                "  - \"" + user + "\"";
+    }
 
     @Override
     protected GenericContainer createLiveIndexingContainer()
     {
-          GenericContainer container = super.createLiveIndexingContainer();
-          SearchEngineType usedEngine = getImagesConfig().getSearchEngineType();
-
-          if(SearchEngineType.OPENSEARCH_ENGINE.equals(usedEngine))
-          {
-              container.withEnv("SPRING_ELASTICSEARCH_REST_USERNAME", OPENSEARCH_USERNAME);
-              container.withEnv("SPRING_ELASTICSEARCH_REST_PASSWORD", OPENSEARCH_PASSWORD);
-          }
-          else
-          {
-              container.withEnv("SPRING_ELASTICSEARCH_REST_USERNAME", ELASTICSEARCH_USERNAME);
-              container.withEnv("SPRING_ELASTICSEARCH_REST_PASSWORD", ELASTICSEARCH_PASSWORD);
-          }
-
-          return container;
+        GenericContainer container = super.createLiveIndexingContainer();
+        container.withEnv("SPRING_ELASTICSEARCH_REST_USERNAME", SEARCH_ENGINE_USERNAME);
+        container.withEnv("SPRING_ELASTICSEARCH_REST_PASSWORD", SEARCH_ENGINE_PASSWORD);
+        return container;
     }
 
     @Override
@@ -52,7 +138,7 @@ public class AlfrescoStackInitializerESBasicAuth extends AlfrescoStackInitialize
         {
             return super.createElasticContainer()
                     .withEnv("xpack.security.enabled", "true")
-                    .withEnv("ELASTIC_PASSWORD", ELASTICSEARCH_PASSWORD);
+                    .withEnv("ELASTIC_PASSWORD", SEARCH_ENGINE_PASSWORD);
         }
     }
 
@@ -61,21 +147,8 @@ public class AlfrescoStackInitializerESBasicAuth extends AlfrescoStackInitialize
     {
         GenericContainer container = super.createAlfrescoContainer();
         String javaOpts = (String) container.getEnvMap().get("JAVA_OPTS");
-
-        SearchEngineType usedEngine = getImagesConfig().getSearchEngineType();
-
-        if(SearchEngineType.OPENSEARCH_ENGINE.equals(usedEngine))
-        {
-            javaOpts = javaOpts + " -Delasticsearch.user=" + OPENSEARCH_USERNAME + " " +
-                    "-Delasticsearch.password=" + OPENSEARCH_PASSWORD;
-        }
-        else
-        {
-            javaOpts = javaOpts + " -Delasticsearch.user=" + ELASTICSEARCH_USERNAME + " " +
-                    "-Delasticsearch.password=" + ELASTICSEARCH_PASSWORD;
-        }
-
-
+        javaOpts = javaOpts + " -Delasticsearch.user=" + SEARCH_ENGINE_USERNAME + " " +
+                "-Delasticsearch.password=" + SEARCH_ENGINE_PASSWORD;
         container.getEnvMap().put("JAVA_OPTS", javaOpts);
         return container;
     }
