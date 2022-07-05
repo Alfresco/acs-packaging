@@ -46,7 +46,11 @@ class Elasticsearch implements AutoCloseable
                 .withEnv("discovery.type", "single-node")
                 .withNetworkAliases(cfg.getElasticsearchHostname())
                 .withNetwork(network)
-                .withExposedPorts(9200);
+                .withExposedPorts(9200).withCreateContainerCmdModifier(cmd -> {
+                    cmd.getHostConfig()
+                            .withMemory((long)1700*1024*1024)
+                            .withMemorySwap((long)3400*1024*1024);
+                });
 
         if(SearchEngineType.ELASTICSEARCH_ENGINE == cfg.getSearchEngineType())
         {
