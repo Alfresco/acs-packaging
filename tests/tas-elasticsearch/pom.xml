@@ -78,19 +78,6 @@
       <artifactId>alfresco-elasticsearch-shared</artifactId>
       <version>${dependency.elasticsearch-shared.version}</version>
       <scope>test</scope>
-      <!--        Temporary dependency exclusion, remove once  ACS-3137 is completed.-->
-      <exclusions>
-        <exclusion>
-          <groupId>org.elasticsearch.client</groupId>
-          <artifactId>elasticsearch-rest-high-level-client</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <!--        Temporary defined dependency, remove once  ACS-3137 is completed.-->
-    <dependency>
-      <groupId>org.opensearch.client</groupId>
-      <artifactId>opensearch-rest-high-level-client</artifactId>
-      <version>1.0.0</version>
     </dependency>
     <dependency>
       <groupId>org.jsoup</groupId>

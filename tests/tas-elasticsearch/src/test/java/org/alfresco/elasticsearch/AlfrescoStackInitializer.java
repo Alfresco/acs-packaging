@@ -435,7 +435,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         @Override
         public String getKibanaImage()
         {
-            return "kibana:7.10.1";
+            return "kibana:" + envProperties.apply("KIBANA_TAG");
         }
 
         @Override
