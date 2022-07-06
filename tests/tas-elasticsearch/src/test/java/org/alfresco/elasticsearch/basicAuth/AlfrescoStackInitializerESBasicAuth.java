@@ -7,7 +7,7 @@ import org.testcontainers.containers.GenericContainer;
 import java.io.IOException;
 
 /**
- * ACS Stack Docker Compose initializer with Basic Authentication for Elasticsearch service.
+ * ACS Stack Docker Compose initializer with Basic Authentication for Search Engine service (Opensearch or Elasticsearch).
  */
 public class AlfrescoStackInitializerESBasicAuth extends AlfrescoStackInitializer
 {

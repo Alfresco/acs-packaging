@@ -201,7 +201,7 @@ jobs:
       script:
        - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch"
 
-    - name: "Opensearchsearch TAS tests (Search API)"
+    - name: "Opensearch TAS tests (Search API)"
       if: commit_message !~ /\[skip search\]/
       script:
         - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch"
