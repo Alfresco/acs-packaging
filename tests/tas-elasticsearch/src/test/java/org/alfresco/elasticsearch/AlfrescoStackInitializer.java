@@ -177,24 +177,34 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     protected GenericContainer createElasticContainer()
     {
-        return new GenericContainer(getImagesConfig().getElasticsearchImage())
+        return new GenericContainer<>(getImagesConfig().getElasticsearchImage())
                 .withNetwork(network)
                 .withNetworkAliases("elasticsearch")
                 .withExposedPorts(9200)
                 .withEnv("xpack.security.enabled", "false")
                 .withEnv("discovery.type", "single-node")
-                .withEnv("ES_JAVA_OPTS", "-Xms1g -Xmx1g");
+                .withEnv("ES_JAVA_OPTS", "-Xms1g -Xmx1g")
+                .withCreateContainerCmdModifier(cmd -> {
+                    cmd.getHostConfig()
+                            .withMemory((long) 1700 * 1024 * 1024)
+                            .withMemorySwap((long) 3400 * 1024 * 1024);
+                });
     }
 
     protected GenericContainer createOpensearchContainer()
     {
-        return new GenericContainer(getImagesConfig().getOpensearchImage())
+        return new GenericContainer<>(getImagesConfig().getOpensearchImage())
                 .withNetwork(network)
                 .withNetworkAliases("elasticsearch")
                 .withExposedPorts(9200)
                 .withEnv("plugins.security.disabled", "true")
                 .withEnv("discovery.type", "single-node")
-                .withEnv("OPENSEARCH_JAVA_OPTS", "-Xms1g -Xmx1g");
+                .withEnv("OPENSEARCH_JAVA_OPTS", "-Xms1g -Xmx1g")
+                .withCreateContainerCmdModifier(cmd -> {
+                    cmd.getHostConfig()
+                            .withMemory((long)1700*1024*1024)
+                            .withMemorySwap((long)3400*1024*1024);
+    });
     }
 
     protected GenericContainer createOpensearchDashboardsContainer()
