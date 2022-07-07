@@ -23,6 +23,7 @@ import com.github.dockerjava.api.command.ConnectToNetworkCmd;
 import com.github.dockerjava.api.model.ContainerNetwork;
 import com.google.gson.Gson;
 
+import org.alfresco.elasticsearch.SearchEngineType;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 
@@ -31,7 +32,7 @@ class Elasticsearch implements AutoCloseable
     private static final int ES_API_TIMEOUT_MS = 5_000;
 
     private final Config cfg;
-    private final GenericContainer<?> elasticsearch;
+    private final GenericContainer<?> searchContainer;
     private final Collection<String> additionalNetworks;
     private final Gson gson = new Gson();
 
@@ -41,12 +42,25 @@ class Elasticsearch implements AutoCloseable
 
         additionalNetworks = Stream.of(networks).map(Network::getId).collect(Collectors.toUnmodifiableSet());
 
-        elasticsearch = new GenericContainer<>(cfg.getElasticsearchImage())
-                .withEnv("xpack.security.enabled", "false")
+        searchContainer = new GenericContainer<>(cfg.getSearchEngineImage())
                 .withEnv("discovery.type", "single-node")
                 .withNetworkAliases(cfg.getElasticsearchHostname())
                 .withNetwork(network)
-                .withExposedPorts(9200);
+                .withExposedPorts(9200).withCreateContainerCmdModifier(cmd -> {
+                    cmd.getHostConfig()
+                            .withMemory((long)1700*1024*1024)
+                            .withMemorySwap((long)3400*1024*1024);
+                });
+
+        if(SearchEngineType.ELASTICSEARCH_ENGINE == cfg.getSearchEngineType())
+        {
+            searchContainer.withEnv("xpack.security.enabled", "false");
+        }
+        if(SearchEngineType.OPENSEARCH_ENGINE == cfg.getSearchEngineType())
+        {
+            searchContainer.withEnv("plugins.security.disabled", "true");
+        }
+
     }
 
     public long getIndexedDocumentCount() throws IOException
@@ -89,12 +103,12 @@ class Elasticsearch implements AutoCloseable
 
     public void start()
     {
-        if (elasticsearch.isRunning())
+        if (searchContainer.isRunning())
         {
             throw new IllegalStateException("Already started");
         }
 
-        elasticsearch.start();
+        searchContainer.start();
         waitForAvailability();
 
         connectElasticSearchToAdditionalNetworks();
@@ -106,7 +120,7 @@ class Elasticsearch implements AutoCloseable
         try
         {
             final URI uri = URI
-                    .create("http://" + elasticsearch.getHost() + ":" + elasticsearch.getMappedPort(9200))
+                    .create("http://" + searchContainer.getHost() + ":" + searchContainer.getMappedPort(9200))
                     .resolve(path);
             return uri.toURL();
         } catch (MalformedURLException e)
@@ -130,21 +144,21 @@ class Elasticsearch implements AutoCloseable
 
     private void connectElasticSearchToAdditionalNetworks()
     {
-        final DockerClient client = elasticsearch.getDockerClient();
-        final String containerId = elasticsearch.getContainerId();
+        final DockerClient client = searchContainer.getDockerClient();
+        final String containerId = searchContainer.getContainerId();
 
         additionalNetworks
                 .stream()
                 .map(client.connectToNetworkCmd()
                            .withContainerId(containerId)
                            .withContainerNetwork(new ContainerNetwork()
-                                   .withAliases(elasticsearch.getNetworkAliases()))::withNetworkId)
+                                   .withAliases(searchContainer.getNetworkAliases()))::withNetworkId)
                 .forEach(ConnectToNetworkCmd::exec);
     }
 
     @Override
     public void close()
     {
-        elasticsearch.close();
+        searchContainer.close();
     }
 }

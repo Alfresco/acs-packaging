@@ -19,10 +19,10 @@ import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.startupcheck.IndefiniteWaitOneShotStartupCheckStrategy;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.containers.wait.strategy.Wait;
-import org.testcontainers.elasticsearch.ElasticsearchContainer;
 import org.testcontainers.lifecycle.Startable;
 import org.testcontainers.lifecycle.Startables;
 import org.testng.Assert;
+import org.testng.util.Strings;
 
 public class AlfrescoStackInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext>
 {
@@ -34,10 +34,10 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     public static GenericContainer alfresco;
 
-    public static ElasticsearchContainer elasticsearch;
+    public static GenericContainer searchEngineContainer;
 
     /** To create the kibana container for a test run then pass -Dkibana=true as an argument to the mvn command. */
-    public static GenericContainer kibana;
+    public static GenericContainer dashboardsContainer;
 
     public static GenericContainer liveIndexer;
 
@@ -76,9 +76,11 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         GenericContainer activemq = createAMQContainer();
 
-        elasticsearch = createElasticContainer();
+        searchEngineContainer = createSearchEngineContainer();
 
-        startOrFail(elasticsearch);
+        startOrFail(searchEngineContainer);
+
+        configureSecuritySettings(searchEngineContainer);
 
         startOrFail(postgres);
 
@@ -89,8 +91,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         // We don't want Kibana to run on our CI, but it can be useful when investigating issues locally.
         if (Objects.equals(System.getProperty("kibana"), "true"))
         {
-            kibana = createKibanaContainer();
-            startOrFail(kibana);
+            dashboardsContainer = createDashboardsContainer();
+            startOrFail(dashboardsContainer);
         }
 
         liveIndexer = createLiveIndexingContainer();
@@ -105,6 +107,11 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                                                   "alfresco.server=" + alfresco.getContainerIpAddress(),
                                                                   "alfresco.port=" + alfresco.getFirstMappedPort());
 
+    }
+
+    public void configureSecuritySettings(GenericContainer searchEngineContainer)
+    {
+        //empty for default execution
     }
 
     /**
@@ -156,15 +163,57 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                        .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config");
     }
 
-    protected ElasticsearchContainer createElasticContainer()
+    protected GenericContainer createSearchEngineContainer()
     {
-        return new ElasticsearchContainer(getImagesConfig().getElasticsearchImage())
+        return getImagesConfig().getSearchEngineType() == SearchEngineType.OPENSEARCH_ENGINE ?
+                createOpensearchContainer() : createElasticContainer();
+    }
+
+    protected GenericContainer createDashboardsContainer()
+    {
+        return getImagesConfig().getSearchEngineType() == SearchEngineType.OPENSEARCH_ENGINE ?
+                createOpensearchDashboardsContainer() : createKibanaContainer();
+    }
+
+    protected GenericContainer createElasticContainer()
+    {
+        return new GenericContainer<>(getImagesConfig().getElasticsearchImage())
                 .withNetwork(network)
                 .withNetworkAliases("elasticsearch")
                 .withExposedPorts(9200)
                 .withEnv("xpack.security.enabled", "false")
                 .withEnv("discovery.type", "single-node")
-                .withEnv("ES_JAVA_OPTS", "-Xms1g -Xmx1g");
+                .withEnv("ES_JAVA_OPTS", "-Xms1g -Xmx1g")
+                .withCreateContainerCmdModifier(cmd -> {
+                    cmd.getHostConfig()
+                            .withMemory((long) 1700 * 1024 * 1024)
+                            .withMemorySwap((long) 3400 * 1024 * 1024);
+                });
+    }
+
+    protected GenericContainer createOpensearchContainer()
+    {
+        return new GenericContainer<>(getImagesConfig().getOpensearchImage())
+                .withNetwork(network)
+                .withNetworkAliases("elasticsearch")
+                .withExposedPorts(9200)
+                .withEnv("plugins.security.disabled", "true")
+                .withEnv("discovery.type", "single-node")
+                .withEnv("OPENSEARCH_JAVA_OPTS", "-Xms1g -Xmx1g")
+                .withCreateContainerCmdModifier(cmd -> {
+                    cmd.getHostConfig()
+                            .withMemory((long)1700*1024*1024)
+                            .withMemorySwap((long)3400*1024*1024);
+    });
+    }
+
+    protected GenericContainer createOpensearchDashboardsContainer()
+    {
+        return new GenericContainer(getImagesConfig().getOpensearchDashboardsImage())
+                .withNetwork(network)
+                .withNetworkAliases("kibana")
+                .withExposedPorts(5601)
+                .withEnv("ELASTICSEARCH_HOSTS", "http://elasticsearch:9200");
     }
 
     protected GenericContainer createKibanaContainer()
@@ -296,6 +345,10 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         String getElasticsearchImage();
 
+        String getOpensearchImage();
+
+        String getOpensearchDashboardsImage();
+
         String getActiveMqImage();
 
         String getTransformRouterImage();
@@ -309,6 +362,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         String getRepositoryImage();
 
         String getKibanaImage();
+
+        SearchEngineType getSearchEngineType();
     }
 
     private static final class DefaultImagesConfig implements ImagesConfig
@@ -339,6 +394,16 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         public String getElasticsearchImage()
         {
             return "docker.elastic.co/elasticsearch/elasticsearch:" + envProperties.apply("ES_TAG");
+        }
+
+        @Override
+        public String getOpensearchImage() {
+            return "opensearchproject/opensearch:" + envProperties.apply("OPENSEARCH_TAG");
+        }
+
+        @Override
+        public String getOpensearchDashboardsImage() {
+            return "opensearchproject/opensearch-dashboards:" + envProperties.apply("OPENSEARCH_DASHBOARDS_TAG");
         }
 
         @Override
@@ -380,7 +445,18 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         @Override
         public String getKibanaImage()
         {
-            return "kibana:7.10.1";
+            return "kibana:" + envProperties.apply("KIBANA_TAG");
+        }
+
+        @Override
+        public SearchEngineType getSearchEngineType() {
+            String searchEngineTypeProperty = mavenProperties.apply("search.engine.type");
+            if(Strings.isNullOrEmpty(searchEngineTypeProperty))
+            {
+                throw new IllegalArgumentException("Property 'search.engine.type' not set.");
+
+            }
+            return SearchEngineType.from(searchEngineTypeProperty);
         }
 
         private String getElasticsearchConnectorImageTag()

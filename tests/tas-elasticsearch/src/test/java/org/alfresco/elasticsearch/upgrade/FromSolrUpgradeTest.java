@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.URL;
 
 import org.alfresco.elasticsearch.EnvHelper;
+import org.alfresco.elasticsearch.SearchEngineType;
 import org.alfresco.elasticsearch.upgrade.AvailabilityProbe.Stats;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -185,6 +186,22 @@ public class FromSolrUpgradeTest
             public String getElasticsearchImage()
             {
                 return getImagesConfig().getElasticsearchImage();
+            }
+
+            @Override
+            public String getOpensearchImage() {
+                return getImagesConfig().getOpensearchImage();
+            }
+
+            @Override
+            public String getSearchEngineImage() {
+                return getImagesConfig().getSearchEngineType() == SearchEngineType.OPENSEARCH_ENGINE ?
+                        getOpensearchImage() : getElasticsearchImage();
+            }
+
+            @Override
+            public SearchEngineType getSearchEngineType() {
+                return getImagesConfig().getSearchEngineType();
             }
         };
     }

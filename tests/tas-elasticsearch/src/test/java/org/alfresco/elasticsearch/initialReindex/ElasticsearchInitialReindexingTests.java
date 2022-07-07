@@ -17,8 +17,8 @@ import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.report.log.Step;
 import org.apache.http.HttpHost;
-import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestHighLevelClient;
+import org.opensearch.client.RestClient;
+import org.opensearch.client.RestHighLevelClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,8 +75,8 @@ public class ElasticsearchInitialReindexingTests extends AbstractTestNGSpringCon
 
         Step.STEP("create ES client");
         elasticClient = new RestHighLevelClient(
-                RestClient.builder(new HttpHost(AlfrescoStackInitializer.elasticsearch.getContainerIpAddress(),
-                                                AlfrescoStackInitializer.elasticsearch.getFirstMappedPort(),
+                RestClient.builder(new HttpHost(AlfrescoStackInitializer.searchEngineContainer.getContainerIpAddress(),
+                                                AlfrescoStackInitializer.searchEngineContainer.getFirstMappedPort(),
                                                 "http")));
 
     }

@@ -1,5 +1,7 @@
 package org.alfresco.elasticsearch.upgrade;
 
+import org.alfresco.elasticsearch.SearchEngineType;
+
 interface Config
 {
     String getRepositoryImage();
@@ -21,6 +23,12 @@ interface Config
     String getLiveIndexingImage();
 
     String getElasticsearchImage();
+
+    String getOpensearchImage();
+
+    String getSearchEngineImage();
+
+    SearchEngineType getSearchEngineType();
 
     default String getElasticsearchHostname()
     {
