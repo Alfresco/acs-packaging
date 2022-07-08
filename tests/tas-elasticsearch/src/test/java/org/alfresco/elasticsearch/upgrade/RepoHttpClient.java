@@ -1,5 +1,6 @@
 package org.alfresco.elasticsearch.upgrade;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -55,12 +56,14 @@ class RepoHttpClient
     private final URI searchApiUri;
     private final URI fileUploadApiUri;
     private final URI searchServiceAdminAppUri;
+    private final URI uploadLicenseAdminApiUri;
 
     RepoHttpClient(final URI repoBaseUri)
     {
         searchApiUri = repoBaseUri.resolve("/alfresco/api/-default-/public/search/versions/1/search");
         fileUploadApiUri = repoBaseUri.resolve("/alfresco/api/-default-/public/alfresco/versions/1/nodes/-my-/children");
         searchServiceAdminAppUri = repoBaseUri.resolve("/alfresco/s/enterprise/admin/admin-searchservice");
+        uploadLicenseAdminApiUri = repoBaseUri.resolve("/alfresco/s/enterprise/admin/admin-license-upload");
     }
 
     public void setSearchService(String implementation) throws IOException
@@ -102,6 +105,48 @@ class RepoHttpClient
                 throw new IllegalStateException("Couldn't switch to `" + implementation + "`.");
             }
         }
+    }
+
+    public void uploadLicense(String licensePath) throws IOException
+    {
+        final HttpGet getCsrfToken = authenticate(new HttpGet(uploadLicenseAdminApiUri));
+        final HttpClientContext httpCtx = HttpClientContext.create();
+        httpCtx.setCookieStore(new BasicCookieStore());
+
+        final Cookie csrfCookie;
+
+        try (CloseableHttpResponse response = client.execute(getCsrfToken, httpCtx))
+        {
+            final Map<String, Cookie> cookies = httpCtx
+                    .getCookieStore()
+                    .getCookies()
+                    .stream()
+                    .collect(Collectors.toUnmodifiableMap(Cookie::getName, Function.identity()));
+
+            csrfCookie = Objects.requireNonNull(cookies.get("alf-csrftoken"));
+        }
+
+
+        File license = new File(licensePath);
+
+        final URI uploadLicenseAdminCsrfApiUri = URI.create(new URIBuilder(uploadLicenseAdminApiUri)
+                .addParameter(csrfCookie.getName(), URLDecoder.decode(csrfCookie.getValue(), StandardCharsets.US_ASCII))
+                .toString());
+
+        final HttpEntity uploadEntity = MultipartEntityBuilder
+                .create()
+                .setMode(HttpMultipartMode.STRICT)
+                .addBinaryBody("license", license)
+                .build();
+
+        final HttpPost uploadRequest = authenticate(new HttpPost(uploadLicenseAdminCsrfApiUri));
+        uploadRequest.setEntity(uploadEntity);
+
+        try (CloseableHttpResponse response = client.execute(uploadRequest, httpCtx))
+        {
+            System.out.println(gson.fromJson(EntityUtils.toString(response.getEntity()), Map.class));
+        }
+
     }
 
     public UUID uploadFile(URL contentUrl, String fileName) throws IOException

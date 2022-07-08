@@ -83,12 +83,12 @@ public class FromOldACSWithSolrUpgradeTest
                 .withLogConsumer(of -> System.err.print("[solr6] " + of.getUtf8String()));
         solr6.start();
 
-//        GenericContainer share = new GenericContainer("quay.io/alfresco/alfresco-share-52:5.2.6")
-//                .withEnv("MEM_LIMIT", "1200m")
-//                .withNetwork(oldAcsNetwork)
-//                .withNetworkAliases("share")
-//                .withExposedPorts(8080);
-//        share.start();
+        GenericContainer share = new GenericContainer("quay.io/alfresco/alfresco-share-52:5.2.6")
+                .withEnv("MEM_LIMIT", "1200m")
+                .withNetwork(initialEnvNetwork)
+                .withNetworkAliases("share")
+                .withExposedPorts(8080);
+        share.start();
 
         RepoHttpClient repoHttpClient = new RepoHttpClient(URI.create("http://" + alfresco.getHost() + ":" + alfresco.getMappedPort(8080)));
         expectNoSearchResult(repoHttpClient, ofMinutes(5), UUID.randomUUID().toString());
@@ -111,6 +111,30 @@ public class FromOldACSWithSolrUpgradeTest
         Assert.assertFalse(elasticsearch.isIndexCreated());
 
         mirroredEnv.start();
+
+        Thread.sleep(1000 * 60 * 3);
+
+        mirroredEnv.uploadLicense("src/test/resources/alf73-allenabled.lic");
+
+        mirroredEnv.expectNoSearchResult(ofMinutes(5), UUID.randomUUID().toString());
+
+        mirroredEnv.expectNoSearchResult(ofMinutes(1), SEARCH_TERM);
+
+        Assert.assertTrue(elasticsearch.isIndexCreated());
+        Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), 0);
+        mirroredEnv.expectNoSearchResult(ofMinutes(1), SEARCH_TERM);
+
+        mirroredEnv.startLiveIndexing();
+
+        final long initialReIndexingUpperBound = mirroredEnv.getMaxNodeDbId();
+        mirroredEnv.reindexByIds(0, initialReIndexingUpperBound);
+
+        Assert.assertTrue(elasticsearch.getIndexedDocumentCount() > 0);
+        mirroredEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM, "after-startup.pdf");
+
+
+
+        Thread.sleep(10000);
     }
 
     private static Path createSharedContentStoreDirectory()

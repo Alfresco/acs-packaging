@@ -199,6 +199,11 @@ class ACSEnv implements AutoCloseable
         repoHttpClient.setSearchService("elasticsearch");
     }
 
+    public void uploadLicense(String licensePath) throws IOException
+    {
+        repoHttpClient.uploadLicense(licensePath);
+    }
+
     public void reindexByIds(long fromId, long toId)
     {
         final GenericContainer<?> reIndexing = createReIndexingContainer(fromId, toId);
