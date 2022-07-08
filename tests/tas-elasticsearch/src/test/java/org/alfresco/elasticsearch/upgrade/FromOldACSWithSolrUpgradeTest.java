@@ -32,11 +32,13 @@ public class FromOldACSWithSolrUpgradeTest
 {
     private static final URL TEST_FILE_URL = FromSolrUpgradeTest.class.getResource("babekyrtso.pdf");
     private static final String SEARCH_TERM = "babekyrtso";
+    public static final String AFTER_STARTUP_PDF = "after-startup.pdf";
 
     @Test
     public void testIt() throws InterruptedException, IOException
     {
-        final Path sharedContentStorePath = createSharedContentStoreDirectory();
+        final Path oldEnvContentStorePath = createTempContentStoreDirectory();
+        final Path mirroredEnvContentStorePath = createTempContentStoreDirectory();
 
         Network initialEnvNetwork = Network
                 .builder()
@@ -67,7 +69,7 @@ public class FromOldACSWithSolrUpgradeTest
                 .withNetwork(initialEnvNetwork)
                 .withNetworkAliases("alfresco")
                 .withLogConsumer(of -> System.err.print("[alfresco] " + of.getUtf8String()))
-                .withFileSystemBind(sharedContentStorePath.toAbsolutePath().toString(), "/usr/local/alf_data", BindMode.READ_WRITE);
+                .withFileSystemBind(oldEnvContentStorePath.toAbsolutePath().toString(), "/usr/local/alf_data", BindMode.READ_WRITE);
         alfresco.start();
 
         GenericContainer solr6 = new GenericContainer<>("alfresco/alfresco-search-services:1.3.0.6")
@@ -93,8 +95,8 @@ public class FromOldACSWithSolrUpgradeTest
         RepoHttpClient repoHttpClient = new RepoHttpClient(URI.create("http://" + alfresco.getHost() + ":" + alfresco.getMappedPort(8080)));
         expectNoSearchResult(repoHttpClient, ofMinutes(5), UUID.randomUUID().toString());
 
-        uploadFile(repoHttpClient, TEST_FILE_URL, "after-startup.pdf");
-        expectSearchResult(repoHttpClient, ofMinutes(1), SEARCH_TERM, "after-startup.pdf");
+        uploadFile(repoHttpClient, TEST_FILE_URL, AFTER_STARTUP_PDF);
+        expectSearchResult(repoHttpClient, ofMinutes(1), SEARCH_TERM, AFTER_STARTUP_PDF);
 
         String dump = getMetadataDump(postgres);
         System.out.println(dump);
@@ -102,7 +104,7 @@ public class FromOldACSWithSolrUpgradeTest
         Elasticsearch elasticsearch = new Elasticsearch(getUpgradeScenarioConfig(), mirroredEnvNetwork, initialEnvNetwork);
 
         ACSEnv mirroredEnv = new ACSEnv(getUpgradeScenarioConfig(), mirroredEnvNetwork, "elasticsearch");
-        mirroredEnv.setContentStoreHostPath(sharedContentStorePath);
+        mirroredEnv.setReadOnlyContentStoreHostPath(mirroredEnvContentStorePath);
         mirroredEnv.setMetadataDumpToRestore(dump);
 
 
@@ -126,14 +128,14 @@ public class FromOldACSWithSolrUpgradeTest
         mirroredEnv.reindexByIds(0, initialReIndexingUpperBound);
 
         Assert.assertTrue(elasticsearch.getIndexedDocumentCount() > 0);
-        mirroredEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM, "after-startup.pdf");
+        mirroredEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM, AFTER_STARTUP_PDF);
 
 
 
         Thread.sleep(10000);
     }
 
-    private static Path createSharedContentStoreDirectory()
+    private static Path createTempContentStoreDirectory()
     {
         try
         {
