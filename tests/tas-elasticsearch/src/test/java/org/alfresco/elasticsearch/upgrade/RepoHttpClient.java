@@ -57,6 +57,7 @@ class RepoHttpClient
     private final URI fileUploadApiUri;
     private final URI searchServiceAdminAppUri;
     private final URI uploadLicenseAdminApiUri;
+    private final URI serverApiUri;
 
     RepoHttpClient(final URI repoBaseUri)
     {
@@ -64,6 +65,7 @@ class RepoHttpClient
         fileUploadApiUri = repoBaseUri.resolve("/alfresco/api/-default-/public/alfresco/versions/1/nodes/-my-/children");
         searchServiceAdminAppUri = repoBaseUri.resolve("/alfresco/s/enterprise/admin/admin-searchservice");
         uploadLicenseAdminApiUri = repoBaseUri.resolve("/alfresco/s/enterprise/admin/admin-license-upload");
+        serverApiUri = repoBaseUri.resolve("/alfresco/service/api/server");
     }
 
     public void setSearchService(String implementation) throws IOException
@@ -107,7 +109,7 @@ class RepoHttpClient
         }
     }
 
-    public void uploadLicense(String licensePath) throws IOException
+    public boolean uploadLicense(String licensePath) throws IOException
     {
         final HttpGet getCsrfToken = authenticate(new HttpGet(uploadLicenseAdminApiUri));
         final HttpClientContext httpCtx = HttpClientContext.create();
@@ -144,9 +146,18 @@ class RepoHttpClient
 
         try (CloseableHttpResponse response = client.execute(uploadRequest, httpCtx))
         {
-            System.out.println(gson.fromJson(EntityUtils.toString(response.getEntity()), Map.class));
+            return gson.fromJson(EntityUtils.toString(response.getEntity()), Map.class).get("success").equals(true);
         }
 
+    }
+
+    public boolean isServerUp() throws IOException
+    {
+        final HttpGet healthCheckRequest = authenticate(new HttpGet(serverApiUri));
+        try (CloseableHttpResponse response = client.execute(healthCheckRequest))
+        {
+            return response.getStatusLine().getStatusCode() == HttpStatus.SC_OK;
+        }
     }
 
     public UUID uploadFile(URL contentUrl, String fileName) throws IOException

@@ -123,7 +123,8 @@ class ACSEnv implements AutoCloseable
         createdContainers.forEach(GenericContainer::start);
         repoHttpClient = new RepoHttpClient(URI.create("http://" + alfresco.getHost() + ":" + alfresco.getMappedPort(8080)));
 
-        expectNoSearchResult(ofMinutes(5), UUID.randomUUID().toString());
+        waitUntilServerIsUp(ofMinutes(5));
+
     }
 
     public String getMetadataDump()
@@ -170,6 +171,19 @@ class ACSEnv implements AutoCloseable
         expectSearchResult(timeout, term);
     }
 
+    public void waitUntilServerIsUp(Duration timeout)
+    {
+        waitFor("Reaching the point where server is still not running.", timeout, () -> {
+            try
+            {
+                return repoHttpClient.isServerUp();
+            } catch (IOException e)
+            {
+                return false;
+            }
+        });
+    }
+
     public void expectSearchResult(Duration timeout, String term, String... expectedFiles)
     {
         final Set<String> expected = Stream
@@ -199,9 +213,9 @@ class ACSEnv implements AutoCloseable
         repoHttpClient.setSearchService("elasticsearch");
     }
 
-    public void uploadLicense(String licensePath) throws IOException
+    public boolean uploadLicense(String licensePath) throws IOException
     {
-        repoHttpClient.uploadLicense(licensePath);
+        return repoHttpClient.uploadLicense(licensePath);
     }
 
     public void reindexByIds(long fromId, long toId)

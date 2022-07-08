@@ -92,7 +92,6 @@ public class FromOldACSWithSolrUpgradeTest
 
         RepoHttpClient repoHttpClient = new RepoHttpClient(URI.create("http://" + alfresco.getHost() + ":" + alfresco.getMappedPort(8080)));
         expectNoSearchResult(repoHttpClient, ofMinutes(5), UUID.randomUUID().toString());
-        System.out.println("It works");
 
         uploadFile(repoHttpClient, TEST_FILE_URL, "after-startup.pdf");
         expectSearchResult(repoHttpClient, ofMinutes(1), SEARCH_TERM, "after-startup.pdf");
@@ -112,18 +111,15 @@ public class FromOldACSWithSolrUpgradeTest
 
         mirroredEnv.start();
 
-        Thread.sleep(1000 * 60 * 3);
-
-        mirroredEnv.uploadLicense("src/test/resources/alf73-allenabled.lic");
-
-        mirroredEnv.expectNoSearchResult(ofMinutes(5), UUID.randomUUID().toString());
+        //TODO: adjust path to license
+        Assert.assertTrue(mirroredEnv.uploadLicense("src/test/resources/alf73-allenabled.lic"));
 
         mirroredEnv.expectNoSearchResult(ofMinutes(1), SEARCH_TERM);
 
         Assert.assertTrue(elasticsearch.isIndexCreated());
         Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), 0);
-        mirroredEnv.expectNoSearchResult(ofMinutes(1), SEARCH_TERM);
 
+        mirroredEnv.expectNoSearchResult(ofMinutes(1), SEARCH_TERM);
         mirroredEnv.startLiveIndexing();
 
         final long initialReIndexingUpperBound = mirroredEnv.getMaxNodeDbId();
