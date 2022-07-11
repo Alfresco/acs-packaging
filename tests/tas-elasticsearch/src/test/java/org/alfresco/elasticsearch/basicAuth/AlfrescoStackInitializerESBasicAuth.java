@@ -1,10 +1,10 @@
 package org.alfresco.elasticsearch.basicAuth;
 
-import org.alfresco.elasticsearch.AlfrescoStackInitializer;
-import org.alfresco.elasticsearch.SearchEngineType;
-import org.testcontainers.containers.GenericContainer;
-
 import java.io.IOException;
+
+import org.alfresco.tas.AlfrescoStackInitializer;
+import org.alfresco.tas.SearchEngineType;
+import org.testcontainers.containers.GenericContainer;
 
 /**
  * ACS Stack Docker Compose initializer with Basic Authentication for Search Engine service (Opensearch or Elasticsearch).

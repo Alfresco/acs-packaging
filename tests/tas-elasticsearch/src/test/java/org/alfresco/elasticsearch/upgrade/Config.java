@@ -1,6 +1,6 @@
 package org.alfresco.elasticsearch.upgrade;
 
-import org.alfresco.elasticsearch.SearchEngineType;
+import org.alfresco.tas.SearchEngineType;
 
 interface Config
 {

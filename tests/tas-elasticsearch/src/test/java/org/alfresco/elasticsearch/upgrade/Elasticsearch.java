@@ -23,7 +23,7 @@ import com.github.dockerjava.api.command.ConnectToNetworkCmd;
 import com.github.dockerjava.api.model.ContainerNetwork;
 import com.google.gson.Gson;
 
-import org.alfresco.elasticsearch.SearchEngineType;
+import org.alfresco.tas.SearchEngineType;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 
