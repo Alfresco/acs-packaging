@@ -1,7 +1,7 @@
 package org.alfresco.elasticsearch.reindexing;
 
 import static org.alfresco.elasticsearch.SearchQueryService.req;
-import static org.alfresco.elasticsearch.TestDataUtility.getAlphabeticUUID;
+import static org.alfresco.tas.TestDataUtility.getAlphabeticUUID;
 
 import org.alfresco.elasticsearch.SearchQueryService;
 import org.alfresco.rest.search.SearchRequest;

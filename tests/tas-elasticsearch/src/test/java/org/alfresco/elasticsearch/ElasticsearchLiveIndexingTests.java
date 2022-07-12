@@ -3,7 +3,7 @@ package org.alfresco.elasticsearch;
 import static java.util.Arrays.asList;
 
 import static org.alfresco.elasticsearch.SearchQueryService.req;
-import static org.alfresco.elasticsearch.TestDataUtility.getAlphabeticUUID;
+import static org.alfresco.tas.TestDataUtility.getAlphabeticUUID;
 
 import java.util.Map;
 import java.util.function.Predicate;
