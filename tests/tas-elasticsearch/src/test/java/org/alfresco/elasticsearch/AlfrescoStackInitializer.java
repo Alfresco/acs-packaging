@@ -374,7 +374,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         @Override
         public String getRepositoryImage()
         {
-            return "quay.io/alfresco/alfresco-content-repository:7.3.0-M1";
+            return "alfresco/alfresco-content-repository:latest";
         }
 
         @Override
