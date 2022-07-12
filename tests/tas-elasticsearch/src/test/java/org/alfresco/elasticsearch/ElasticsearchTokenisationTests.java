@@ -2,6 +2,7 @@ package org.alfresco.elasticsearch;
 
 import static org.alfresco.elasticsearch.SearchQueryService.req;
 
+import org.alfresco.tas.AlfrescoStackInitializer;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;

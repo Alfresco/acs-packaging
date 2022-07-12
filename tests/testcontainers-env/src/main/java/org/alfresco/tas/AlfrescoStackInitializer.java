@@ -1,4 +1,4 @@
-package org.alfresco.elasticsearch;
+package org.alfresco.tas;
 
 import java.time.Duration;
 import java.util.HashMap;

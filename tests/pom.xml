@@ -11,6 +11,7 @@
     </parent>
 
     <modules>
+        <module>testcontainers-env</module>
         <module>tas-restapi</module>
         <module>tas-cmis</module>
         <module>tas-email</module>

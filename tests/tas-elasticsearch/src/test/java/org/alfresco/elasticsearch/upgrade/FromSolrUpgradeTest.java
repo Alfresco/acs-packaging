@@ -2,14 +2,14 @@ package org.alfresco.elasticsearch.upgrade;
 
 import static java.time.Duration.ofMinutes;
 
-import static org.alfresco.elasticsearch.AlfrescoStackInitializer.getImagesConfig;
+import static org.alfresco.tas.AlfrescoStackInitializer.getImagesConfig;
 
 import java.io.IOException;
 import java.net.URL;
 
-import org.alfresco.elasticsearch.EnvHelper;
-import org.alfresco.elasticsearch.SearchEngineType;
 import org.alfresco.elasticsearch.upgrade.AvailabilityProbe.Stats;
+import org.alfresco.tas.EnvHelper;
+import org.alfresco.tas.SearchEngineType;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

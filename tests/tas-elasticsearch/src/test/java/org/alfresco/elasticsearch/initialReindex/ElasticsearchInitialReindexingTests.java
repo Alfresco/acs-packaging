@@ -1,15 +1,15 @@
 package org.alfresco.elasticsearch.initialReindex;
 
-import static org.alfresco.elasticsearch.AlfrescoStackInitializer.getImagesConfig;
 import static org.alfresco.elasticsearch.SearchQueryService.req;
+import static org.alfresco.tas.AlfrescoStackInitializer.getImagesConfig;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.alfresco.elasticsearch.AlfrescoStackInitializer;
 import org.alfresco.elasticsearch.SearchQueryService;
 import org.alfresco.rest.search.SearchRequest;
+import org.alfresco.tas.AlfrescoStackInitializer;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
