@@ -81,4 +81,18 @@ public class ACSEnv52 extends BaseACSEnv
                 .withNetwork(network)
                 .withNetworkAliases("alfresco");
     }
+
+    public ACSEnv upgrade(Config cfg)
+    {
+        removeCreatedContainer(postgres);
+        close();
+
+        final ACSEnv upgradedEnv = new ACSEnv(postgres, cfg, "elasticsearch");
+
+        upgradedEnv.setContentStoreHostPath(this.getContentStoreHostPath());
+
+        return upgradedEnv;
+    }
+
+
 }

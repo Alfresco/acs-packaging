@@ -24,6 +24,7 @@ public class FromOldACSWithSolrUpgradeTest
     public static final String FILE_UPLOADED_AFTER_INITIAL_ENVIRONMENT_STARTUP = "after-startup.pdf";
     public static final String FILE_UPLOADED_AFTER_TAKING_DUMP = "after-dump.pdf";
     public static final String FILE_UPLOADED_BEFORE_UPGRADING_INITIAL_ENVIRONMENT = "before-upgrade.pdf";
+    public static final String FILE_UPLOADED_AFTER_UPGRADE = "after-upgrade.pdf";
 
     @Test
     public void testIt() throws IOException
@@ -43,6 +44,7 @@ public class FromOldACSWithSolrUpgradeTest
             acs52.uploadFile(TEST_FILE_URL, FILE_UPLOADED_AFTER_INITIAL_ENVIRONMENT_STARTUP);
             acs52.expectSearchResult(ofMinutes(1), SEARCH_TERM, FILE_UPLOADED_AFTER_INITIAL_ENVIRONMENT_STARTUP);
 
+            final long initialReIndexingUpperBound = acs52.getMaxNodeDbId();
             String dump = acs52.getMetadataDump();
 
             acs52.uploadFile(TEST_FILE_URL, FILE_UPLOADED_AFTER_TAKING_DUMP);
@@ -61,7 +63,7 @@ public class FromOldACSWithSolrUpgradeTest
 
                 mirroredEnv.start();
 
-                Assert.assertTrue(mirroredEnv.uploadLicense("/Users/pzurek/Downloads/alf73-allenabled.lic"));
+                Assert.assertTrue(mirroredEnv.uploadLicence("/Users/pzurek/Downloads/alf73-allenabled.lic"));
 
                 mirroredEnv.expectNoSearchResult(ofMinutes(1), SEARCH_TERM);
 
@@ -69,8 +71,6 @@ public class FromOldACSWithSolrUpgradeTest
                 Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), 0);
 
                 mirroredEnv.startLiveIndexing();
-
-                final long initialReIndexingUpperBound = mirroredEnv.getMaxNodeDbId();
                 mirroredEnv.reindexByIds(0, initialReIndexingUpperBound);
 
                 Assert.assertTrue(elasticsearch.getIndexedDocumentCount() > 0);
@@ -82,6 +82,28 @@ public class FromOldACSWithSolrUpgradeTest
                     FILE_UPLOADED_AFTER_INITIAL_ENVIRONMENT_STARTUP,
                     FILE_UPLOADED_AFTER_TAKING_DUMP,
                     FILE_UPLOADED_BEFORE_UPGRADING_INITIAL_ENVIRONMENT);
+
+            try (final ACSEnv upgradedEnv = acs52.upgrade(getUpgradeScenarioConfig()))
+            {
+                upgradedEnv.start();
+                Assert.assertTrue(upgradedEnv.uploadLicence("/Users/pzurek/Downloads/alf73-allenabled.lic"));
+                upgradedEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM, FILE_UPLOADED_AFTER_INITIAL_ENVIRONMENT_STARTUP);
+
+                upgradedEnv.startLiveIndexing();
+
+                upgradedEnv.reindexByIds(initialReIndexingUpperBound, 1_000_000_000);
+                upgradedEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM,
+                        FILE_UPLOADED_AFTER_INITIAL_ENVIRONMENT_STARTUP,
+                        FILE_UPLOADED_AFTER_TAKING_DUMP,
+                        FILE_UPLOADED_BEFORE_UPGRADING_INITIAL_ENVIRONMENT);
+
+                upgradedEnv.uploadFile(TEST_FILE_URL, FILE_UPLOADED_AFTER_UPGRADE);
+                upgradedEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM,
+                        FILE_UPLOADED_AFTER_INITIAL_ENVIRONMENT_STARTUP,
+                        FILE_UPLOADED_AFTER_TAKING_DUMP,
+                        FILE_UPLOADED_BEFORE_UPGRADING_INITIAL_ENVIRONMENT,
+                        FILE_UPLOADED_AFTER_UPGRADE);
+            }
         }
     }
 

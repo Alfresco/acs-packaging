@@ -53,6 +53,11 @@ public abstract class BaseACSEnv implements AutoCloseable
         alfDataHostPath = hostPath;
     }
 
+    public Path getContentStoreHostPath()
+    {
+        return alfDataHostPath;
+    }
+
     public void setReadOnlyContentStoreHostPath(Path hostPath)
     {
         readOnlyContentStore = true;
@@ -128,9 +133,9 @@ public abstract class BaseACSEnv implements AutoCloseable
         repoHttpClient.setSearchService("elasticsearch");
     }
 
-    public boolean uploadLicense(String licensePath) throws IOException
+    public boolean uploadLicence(String licencePath) throws IOException
     {
-        return repoHttpClient.uploadLicense(licensePath);
+        return repoHttpClient.uploadLicense(licencePath);
     }
 
     public void expectNoSearchResult(Duration timeout, String term)
@@ -173,6 +178,16 @@ public abstract class BaseACSEnv implements AutoCloseable
         {
             throw new RuntimeException("Failed to create a container for `" + image + "`.", e);
         }
+    }
+
+    protected void removeCreatedContainer(GenericContainer<?> container)
+    {
+        createdContainers.remove(container);
+    }
+
+    protected void registerCreatedContainer(GenericContainer<?> container)
+    {
+        createdContainers.add(container);
     }
 
     private void waitUntilServerIsUp(Duration timeout)

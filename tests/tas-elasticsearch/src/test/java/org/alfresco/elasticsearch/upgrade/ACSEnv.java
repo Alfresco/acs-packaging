@@ -28,6 +28,22 @@ class ACSEnv extends BaseACSEnv
         alfresco = createRepositoryContainer(network, indexSubsystemName);
     }
 
+    public ACSEnv(GenericContainer<?> postgres, Config cfg, String indexSubsystemName)
+    {
+        Network network = postgres.getNetwork();
+        this.cfg = cfg;
+
+        this.postgres = postgres;
+        registerCreatedContainer(postgres);
+
+        createActiveMqContainer(network);
+        createSharedFileStoreContainer(network);
+        createTransformCoreAIOContainer(network);
+        createTransformRouterContainer(network);
+
+        alfresco = createRepositoryContainer(network, indexSubsystemName);
+    }
+
     @Override
     public GenericContainer<?> getAlfresco()
     {
