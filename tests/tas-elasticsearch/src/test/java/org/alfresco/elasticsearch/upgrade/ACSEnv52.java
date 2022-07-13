@@ -4,13 +4,14 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-public class ACSEnv52 extends BaseACSEnv
+class ACSEnv52 extends LegacyACSEnv
 {
     private final GenericContainer<?> postgres;
     private final GenericContainer<?> alfresco;
 
-    public ACSEnv52(final Network network)
+    public ACSEnv52(Config cfg, final Network network)
     {
+        super(cfg);
         postgres = createPostgresContainer(network);
 
         createLibreOfficeContainer(network);
@@ -82,7 +83,8 @@ public class ACSEnv52 extends BaseACSEnv
                 .withNetworkAliases("alfresco");
     }
 
-    public ACSEnv upgrade(Config cfg)
+    @Override
+    public ACSEnv upgradeToCurrent()
     {
         removeCreatedContainer(postgres);
         close();
@@ -93,6 +95,4 @@ public class ACSEnv52 extends BaseACSEnv
 
         return upgradedEnv;
     }
-
-
 }

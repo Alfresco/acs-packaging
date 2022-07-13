@@ -20,14 +20,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.alfresco.elasticsearch.upgrade.AvailabilityProbe.ProbeResult;
-import org.jetbrains.annotations.NotNull;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.Container.ExecResult;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.images.builder.Transferable;
 
-public abstract class BaseACSEnv implements AutoCloseable
+abstract class BaseACSEnv implements AutoCloseable
 {
+    protected final Config cfg;
     private final List<GenericContainer<?>> createdContainers = new ArrayList<>();
 
     private RepoHttpClient repoHttpClient;
@@ -37,6 +37,11 @@ public abstract class BaseACSEnv implements AutoCloseable
     private boolean readOnlyContentStore;
 
     private final AtomicReference<AvailabilityProbe> searchAPIAvailabilityProbe = new AtomicReference<>();
+
+    protected BaseACSEnv(Config cfg)
+    {
+        this.cfg = Objects.requireNonNull(cfg);
+    }
 
     protected abstract GenericContainer<?> getAlfresco();
 
@@ -133,9 +138,16 @@ public abstract class BaseACSEnv implements AutoCloseable
         repoHttpClient.setSearchService("elasticsearch");
     }
 
-    public boolean uploadLicence(String licencePath) throws IOException
+    public boolean uploadLicence(String licencePath)
     {
-        return repoHttpClient.uploadLicense(licencePath);
+        try
+        {
+            return repoHttpClient.uploadLicense(licencePath);
+        }
+        catch (IOException e)
+        {
+            throw new RuntimeException("Failed to upload a licence.", e);
+        }
     }
 
     public void expectNoSearchResult(Duration timeout, String term)

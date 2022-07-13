@@ -10,13 +10,12 @@ import org.testcontainers.containers.PostgreSQLContainer;
 
 class ACSEnv extends BaseACSEnv
 {
-    private final Config cfg;
     private final GenericContainer<?> postgres;
     private final GenericContainer<?> alfresco;
 
     public ACSEnv(Config cfg, final Network network, final String indexSubsystemName)
     {
-        this.cfg = cfg;
+        super(cfg);
 
         postgres = createPostgresContainer(network);
 
@@ -30,8 +29,8 @@ class ACSEnv extends BaseACSEnv
 
     public ACSEnv(GenericContainer<?> postgres, Config cfg, String indexSubsystemName)
     {
+        super(cfg);
         Network network = postgres.getNetwork();
-        this.cfg = cfg;
 
         this.postgres = postgres;
         registerCreatedContainer(postgres);
