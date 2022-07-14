@@ -186,7 +186,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                 .withEnv("ES_JAVA_OPTS", "-Xms1g -Xmx1g")
                 .withCreateContainerCmdModifier(cmd -> {
                     cmd.getHostConfig()
-                            .withMemory((long) 1700 * 1024 * 1024)
+                            .withMemory((long) 3400 * 1024 * 1024)
                             .withMemorySwap((long) 3400 * 1024 * 1024);
                 });
     }
@@ -202,7 +202,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                 .withEnv("OPENSEARCH_JAVA_OPTS", "-Xms1g -Xmx1g")
                 .withCreateContainerCmdModifier(cmd -> {
                     cmd.getHostConfig()
-                            .withMemory((long)1700*1024*1024)
+                            .withMemory((long)3400*1024*1024)
                             .withMemorySwap((long)3400*1024*1024);
     });
     }
@@ -439,7 +439,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         @Override
         public String getRepositoryImage()
         {
-            return "alfresco/alfresco-content-repository:latest";
+            return "quay.io/alfresco/alfresco-content-repository:7.3.0-M1";
         }
 
         @Override
