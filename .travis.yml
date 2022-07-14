@@ -188,7 +188,6 @@ jobs:
     - name: "Elasticsearch Basic Auth TAS tests"
       if: commit_message !~ /\[skip search\]/
       script:
-        - watch -n 1 docker ps -a &
         - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false
 
 #    - name: "Elasticsearch Upgrade TAS tests"
