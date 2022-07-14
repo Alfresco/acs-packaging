@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
+import com.github.dockerjava.api.command.CreateContainerCmd;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContextInitializer;
@@ -186,7 +187,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                 .withEnv("ES_JAVA_OPTS", "-Xms1g -Xmx1g")
                 .withCreateContainerCmdModifier(cmd -> {
                     cmd.getHostConfig()
-                            .withMemory((long) 1700 * 1024 * 1024)
+                            .withMemory((long) 3400 * 1024 * 1024)
                             .withMemorySwap((long) 3400 * 1024 * 1024);
                 });
     }
@@ -202,8 +203,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                 .withEnv("OPENSEARCH_JAVA_OPTS", "-Xms1g -Xmx1g")
                 .withCreateContainerCmdModifier(cmd -> {
                     cmd.getHostConfig()
-                            .withMemory((long)1700*1024*1024)
-                            .withMemorySwap((long)3400*1024*1024);
+                            .withMemory((long) 3400*1024*1024)
+                            .withMemorySwap((long) 3400*1024*1024);
     });
     }
 
