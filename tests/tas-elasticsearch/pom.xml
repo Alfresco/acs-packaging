@@ -9,7 +9,7 @@
   <parent>
     <groupId>org.alfresco</groupId>
     <artifactId>content-repository-tests</artifactId>
-    <version>7.3.0-A6-SNAPSHOT</version>
+    <version>7.3.0-A6</version>
   </parent>
 
   <profiles>
@@ -17,21 +17,21 @@
       <id>elastic</id>
       <properties>
         <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/elasticsearch-suite.xml</suiteXmlFile>
-        <search.engine.type></search.engine.type>
+        <search.engine.type />
       </properties>
     </profile>
     <profile>
       <id>elastic-basic-auth</id>
       <properties>
         <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/elasticsearch-basic-auth-suite.xml</suiteXmlFile>
-        <search.engine.type></search.engine.type>
+        <search.engine.type />
       </properties>
     </profile>
     <profile>
       <id>elastic-upgrade</id>
       <properties>
         <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/elasticsearch-from-solr-upgrade-suite.xml</suiteXmlFile>
-        <search.engine.type></search.engine.type>
+        <search.engine.type />
       </properties>
     </profile>
   </profiles>
