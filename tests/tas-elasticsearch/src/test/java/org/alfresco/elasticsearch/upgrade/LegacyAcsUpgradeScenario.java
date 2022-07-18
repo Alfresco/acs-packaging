@@ -60,6 +60,7 @@ public class LegacyAcsUpgradeScenario implements AutoCloseable
             final Path cs = initialEnvContentStorePath.resolve("contentstore");
             System.out.println("initialEnvContentStorePath.contentstore: " + cs);
             System.out.println("\t" + PosixFilePermissions.toString(Files.getPosixFilePermissions(cs)));
+            System.out.println("\tRunning as: " + System.getProperty("user.name"));
             System.out.println("mirroredEnvContentStorePath: " + mirroredEnvContentStorePath);
             Files.walkFileTree(initialEnvContentStorePath, new SimpleFileVisitor<Path>(){
                 @Override
