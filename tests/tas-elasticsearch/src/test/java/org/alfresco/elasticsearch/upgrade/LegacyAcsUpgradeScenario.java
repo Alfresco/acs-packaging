@@ -71,7 +71,7 @@ public class LegacyAcsUpgradeScenario implements AutoCloseable
                 public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException
                 {
                     System.out.print(dir);
-                    System.out.println(" F-> " + PosixFilePermissions.toString(Files.getPosixFilePermissions(file)));
+                    System.out.println(" F-> " + PosixFilePermissions.toString(Files.getPosixFilePermissions(dir)));
                     return super.preVisitDirectory(dir, attrs);
                 }
             });
