@@ -57,6 +57,9 @@ public class LegacyAcsUpgradeScenario implements AutoCloseable
         try
         {
             System.out.println("initialEnvContentStorePath: " + initialEnvContentStorePath);
+            final Path cs = initialEnvContentStorePath.resolve("contentstore");
+            System.out.println("initialEnvContentStorePath.contentstore: " + cs);
+            System.out.println("\t" + PosixFilePermissions.toString(Files.getPosixFilePermissions(cs)));
             System.out.println("mirroredEnvContentStorePath: " + mirroredEnvContentStorePath);
             Files.walkFileTree(initialEnvContentStorePath, new SimpleFileVisitor<Path>(){
                 @Override
@@ -71,7 +74,7 @@ public class LegacyAcsUpgradeScenario implements AutoCloseable
                 public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException
                 {
                     System.out.print(dir);
-                    System.out.println(" F-> " + PosixFilePermissions.toString(Files.getPosixFilePermissions(dir)));
+                    System.out.println(" D-> " + PosixFilePermissions.toString(Files.getPosixFilePermissions(dir)));
                     return super.preVisitDirectory(dir, attrs);
                 }
             });
