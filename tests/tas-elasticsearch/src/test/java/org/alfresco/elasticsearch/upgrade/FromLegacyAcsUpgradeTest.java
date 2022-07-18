@@ -12,10 +12,10 @@ import java.nio.file.Path;
 import java.util.UUID;
 
 import org.alfresco.elasticsearch.EnvHelper;
-import org.junit.Test;
 import org.springframework.util.FileSystemUtils;
 import org.testcontainers.containers.Network;
 import org.testng.Assert;
+import org.testng.annotations.Test;
 
 public class FromLegacyAcsUpgradeTest
 {
@@ -67,86 +67,6 @@ public class FromLegacyAcsUpgradeTest
 
             try (final ACSEnv upgradedEnv = scenario.upgradeLegacyEnvironmentToCurrent())
             {
-                upgradedEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM, FILE_UPLOADED_AFTER_LEGACY_ENVIRONMENT_STARTUP);
-
-                upgradedEnv.startLiveIndexing();
-
-                upgradedEnv.reindexByIds(initialReIndexingUpperBound, 1_000_000_000);
-                upgradedEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM,
-                        FILE_UPLOADED_AFTER_LEGACY_ENVIRONMENT_STARTUP,
-                        FILE_UPLOADED_WHILE_MIRRORING,
-                        FILE_UPLOADED_BEFORE_UPGRADING_LEGACY_ENVIRONMENT);
-
-                upgradedEnv.uploadFile(TEST_FILE_URL, FILE_UPLOADED_AFTER_UPGRADE);
-                upgradedEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM,
-                        FILE_UPLOADED_AFTER_LEGACY_ENVIRONMENT_STARTUP,
-                        FILE_UPLOADED_WHILE_MIRRORING,
-                        FILE_UPLOADED_BEFORE_UPGRADING_LEGACY_ENVIRONMENT,
-                        FILE_UPLOADED_AFTER_UPGRADE);
-            }
-        }
-    }
-
-    public void testIt() throws IOException
-    {
-        final Path oldEnvContentStorePath = createTempContentStoreDirectory();
-        final Path mirroredEnvContentStorePath = createTempContentStoreDirectory();
-
-        final Network initialEnvNetwork = createNetwork("B");
-        final Network mirroredEnvNetwork = createNetwork("A");
-
-        try (final ACSEnv52 acs52 = new ACSEnv52(getUpgradeScenarioConfig(), initialEnvNetwork))
-        {
-            acs52.setContentStoreHostPath(oldEnvContentStorePath);
-            acs52.start();
-
-            acs52.expectNoSearchResult(ofMinutes(5), UUID.randomUUID().toString());
-            acs52.uploadFile(TEST_FILE_URL, FILE_UPLOADED_AFTER_LEGACY_ENVIRONMENT_STARTUP);
-            acs52.expectSearchResult(ofMinutes(1), SEARCH_TERM, FILE_UPLOADED_AFTER_LEGACY_ENVIRONMENT_STARTUP);
-
-            final long initialReIndexingUpperBound = acs52.getMaxNodeDbId();
-            String dump = acs52.getMetadataDump();
-
-            acs52.uploadFile(TEST_FILE_URL, FILE_UPLOADED_WHILE_MIRRORING);
-            acs52.expectSearchResult(ofMinutes(1), SEARCH_TERM, FILE_UPLOADED_AFTER_LEGACY_ENVIRONMENT_STARTUP, FILE_UPLOADED_WHILE_MIRRORING);
-
-            final Elasticsearch elasticsearch = new Elasticsearch(getUpgradeScenarioConfig(), mirroredEnvNetwork, initialEnvNetwork);
-
-            try (final ACSEnv mirroredEnv = new ACSEnv(getUpgradeScenarioConfig(), mirroredEnvNetwork, "elasticsearch"))
-            {
-                mirroredEnv.setContentStoreHostPath(mirroredEnvContentStorePath);
-                mirroredEnv.setMetadataDumpToRestore(dump);
-                FileSystemUtils.copyRecursively(oldEnvContentStorePath, mirroredEnvContentStorePath);
-
-                elasticsearch.start();
-                Assert.assertFalse(elasticsearch.isIndexCreated());
-
-                mirroredEnv.start();
-
-                Assert.assertTrue(mirroredEnv.uploadLicence("/Users/pzurek/Downloads/alf73-allenabled.lic"));
-
-                mirroredEnv.expectNoSearchResult(ofMinutes(1), SEARCH_TERM);
-
-                Assert.assertTrue(elasticsearch.isIndexCreated());
-                Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), 0);
-
-                mirroredEnv.startLiveIndexing();
-                mirroredEnv.reindexByIds(0, initialReIndexingUpperBound);
-
-                Assert.assertTrue(elasticsearch.getIndexedDocumentCount() > 0);
-                mirroredEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM, FILE_UPLOADED_AFTER_LEGACY_ENVIRONMENT_STARTUP);
-            }
-
-            acs52.uploadFile(TEST_FILE_URL, FILE_UPLOADED_BEFORE_UPGRADING_LEGACY_ENVIRONMENT);
-            acs52.expectSearchResult(ofMinutes(1), SEARCH_TERM,
-                    FILE_UPLOADED_AFTER_LEGACY_ENVIRONMENT_STARTUP,
-                    FILE_UPLOADED_WHILE_MIRRORING,
-                    FILE_UPLOADED_BEFORE_UPGRADING_LEGACY_ENVIRONMENT);
-
-            try (final ACSEnv upgradedEnv = acs52.upgradeToCurrent())
-            {
-                upgradedEnv.start();
-                Assert.assertTrue(upgradedEnv.uploadLicence("/Users/pzurek/Downloads/alf73-allenabled.lic"));
                 upgradedEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM, FILE_UPLOADED_AFTER_LEGACY_ENVIRONMENT_STARTUP);
 
                 upgradedEnv.startLiveIndexing();
