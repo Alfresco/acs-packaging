@@ -11,6 +11,7 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.PosixFilePermissions;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.util.FileSystemUtils;
 import org.testcontainers.containers.Network;
 
@@ -61,6 +62,7 @@ public class LegacyAcsUpgradeScenario implements AutoCloseable
             System.out.println("initialEnvContentStorePath.contentstore: " + cs);
             System.out.println("\t" + PosixFilePermissions.toString(Files.getPosixFilePermissions(cs)));
             System.out.println("\tRunning as: " + System.getProperty("user.name"));
+            IOUtils.copy(Runtime.getRuntime().exec("ls -alh " + initialEnvContentStorePath).getInputStream(), System.out);
             System.out.println("mirroredEnvContentStorePath: " + mirroredEnvContentStorePath);
             Files.walkFileTree(initialEnvContentStorePath, new SimpleFileVisitor<Path>(){
                 @Override
