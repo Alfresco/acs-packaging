@@ -176,7 +176,7 @@ abstract class BaseACSEnv implements AutoCloseable
 
     public void exposeContentStore()
     {
-        execInContainer(getAlfresco(), "chmod -R 777 " + getContainerAlfDataPath());
+        execInContainer(getAlfresco(), "chmod -R 755 " + getContainerAlfDataPath());
     }
 
     protected String getContainerAlfDataPath()
