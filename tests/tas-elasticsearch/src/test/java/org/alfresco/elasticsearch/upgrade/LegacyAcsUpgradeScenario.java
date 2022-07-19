@@ -115,7 +115,7 @@ public class LegacyAcsUpgradeScenario implements AutoCloseable
 
     private void uploadLicence(ACSEnv env)
     {
-        if (!env.uploadLicence("/Users/pzurek/Downloads/alf73-allenabled.lic"))
+        if (!env.uploadLicence("/tmp/licence.lic"))
         {
             throw new RuntimeException("Failed to upload licence.");
         }
