@@ -7,6 +7,7 @@ import static org.alfresco.elasticsearch.upgrade.Utils.waitFor;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.output.OutputFrame;
 
 class ACSEnv extends BaseACSEnv
 {
@@ -105,6 +106,7 @@ class ACSEnv extends BaseACSEnv
                                 "-Xmx768m -XshowSettings:vm")
                 .withNetwork(network)
                 .withNetworkAliases("alfresco")
+                .withLogConsumer(of -> System.out.print("[alf] " + ((OutputFrame)of).getUtf8String()))
                 .withExposedPorts(8080);
     }
 
