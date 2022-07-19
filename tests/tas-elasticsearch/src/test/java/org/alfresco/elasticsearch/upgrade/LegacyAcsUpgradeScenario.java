@@ -57,6 +57,7 @@ public class LegacyAcsUpgradeScenario implements AutoCloseable
         mirroredEnv.setMetadataDumpToRestore(initialEnv.getMetadataDump());
         try
         {
+            initialEnv.exposeContentStore();
             System.out.println("initialEnvContentStorePath: " + initialEnvContentStorePath);
             final Path cs = initialEnvContentStorePath.resolve("contentstore");
             System.out.println("initialEnvContentStorePath.contentstore: " + cs);

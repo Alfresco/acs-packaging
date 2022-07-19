@@ -174,6 +174,11 @@ abstract class BaseACSEnv implements AutoCloseable
         });
     }
 
+    public void exposeContentStore()
+    {
+        execInContainer(getAlfresco(), "chmod -R 777 " + getContainerAlfDataPath());
+    }
+
     protected String getContainerAlfDataPath()
     {
         return "/usr/local/tomcat/alf_data";
@@ -217,10 +222,15 @@ abstract class BaseACSEnv implements AutoCloseable
 
     private ExecResult execInPostgres(String command)
     {
+        return execInContainer(getPostgres(), command);
+    }
+
+    private ExecResult execInContainer(GenericContainer<?> container, String command)
+    {
         final ExecResult result;
         try
         {
-            result = getPostgres().execInContainer("sh", "-c", command);
+            result = container.execInContainer("sh", "-c", command);
         } catch (IOException e)
         {
             throw new RuntimeException("Failed to execute command `" + command + "`.", e);
