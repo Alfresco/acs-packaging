@@ -65,23 +65,24 @@ public class LegacyAcsUpgradeScenario implements AutoCloseable
             System.out.println("\tRunning as: " + System.getProperty("user.name"));
             IOUtils.copy(Runtime.getRuntime().exec("ls -alh " + initialEnvContentStorePath).getInputStream(), System.out);
             System.out.println("mirroredEnvContentStorePath: " + mirroredEnvContentStorePath);
-            Files.walkFileTree(initialEnvContentStorePath, new SimpleFileVisitor<Path>(){
-                @Override
-                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException
-                {
-                    System.out.print(file);
-                    System.out.println(" F-> " + PosixFilePermissions.toString(Files.getPosixFilePermissions(file)));
-                    return super.visitFile(file, attrs);
-                }
-
-                @Override
-                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException
-                {
-                    System.out.print(dir);
-                    System.out.println(" D-> " + PosixFilePermissions.toString(Files.getPosixFilePermissions(dir)));
-                    return super.preVisitDirectory(dir, attrs);
-                }
-            });
+            IOUtils.copy(Runtime.getRuntime().exec("ls -alh " + mirroredEnvContentStorePath).getInputStream(), System.out);
+//            Files.walkFileTree(initialEnvContentStorePath, new SimpleFileVisitor<Path>(){
+//                @Override
+//                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException
+//                {
+//                    System.out.print(file);
+//                    System.out.println(" F-> " + PosixFilePermissions.toString(Files.getPosixFilePermissions(file)));
+//                    return super.visitFile(file, attrs);
+//                }
+//
+//                @Override
+//                public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException
+//                {
+//                    System.out.print(dir);
+//                    System.out.println(" D-> " + PosixFilePermissions.toString(Files.getPosixFilePermissions(dir)));
+//                    return super.preVisitDirectory(dir, attrs);
+//                }
+//            });
             FileSystemUtils.copyRecursively(initialEnvContentStorePath, mirroredEnvContentStorePath);
         }
         catch (IOException e)
