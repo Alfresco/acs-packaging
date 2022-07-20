@@ -16,14 +16,18 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import com.github.dockerjava.api.command.CreateContainerCmd;
 
 import org.alfresco.elasticsearch.upgrade.AvailabilityProbe.ProbeResult;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.Container.ExecResult;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.images.builder.ImageFromDockerfile;
 import org.testcontainers.images.builder.Transferable;
 
 abstract class BaseACSEnv implements AutoCloseable
@@ -193,6 +197,19 @@ abstract class BaseACSEnv implements AutoCloseable
         try
         {
             final T container = clazz.getConstructor(String.class).newInstance(image);
+            createdContainers.add(container);
+            return container;
+        } catch (Exception e)
+        {
+            throw new RuntimeException("Failed to create a container for `" + image + "`.", e);
+        }
+    }
+
+    protected <T extends GenericContainer<?>> T newContainer(Class<T> clazz, ImageFromDockerfile image)
+    {
+        try
+        {
+            final T container = clazz.getConstructor(Future.class).newInstance(image);
             createdContainers.add(container);
             return container;
         } catch (Exception e)
