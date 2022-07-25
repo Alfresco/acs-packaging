@@ -60,7 +60,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Oracle | 19c (19.3)  | |
 | PostgreSQL | 14.4 | 13.7 |
 | MariaDB | 10.6 | 10.5, 10.4 |
-| Amazon Aurora PostgreSQL | 12.4 |
+| Amazon Aurora PostgreSQL | 14.3 |
 
 ##### Database Connectors
 | Component | Recommended | Also Available |
