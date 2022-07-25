@@ -118,7 +118,7 @@ services:
             TRAVIS_BUILD_NUMBER: "${TRAVIS_BUILD_NUMBER}"
 
     postgres:
-        image: postgres:13.3
+        image: postgres:14.4
         mem_limit: 512m
         environment:
             - POSTGRES_PASSWORD=alfresco
