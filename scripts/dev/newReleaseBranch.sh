@@ -495,9 +495,9 @@ createProjectBranchesFromAcsVersion() {
   local schemaMultiple="${5}"
   local message="${6}"
 
-  createBranchFromTag acs-packaging             "${hotFixVersion}"        "${branch}"
-  modifyProject "${version}"                    "${branchType}"           "${schemaMultiple}"       dev Packaging NewBranch
-  commitAndPush "${message} [skip ci]"
+#  createBranchFromTag acs-packaging             "${hotFixVersion}"        "${branch}"
+#  modifyProject "${version}"                    "${branchType}"           "${schemaMultiple}"       dev Packaging NewBranch
+#  commitAndPush "${message} [skip ci]"
 
   shareVersion=`getPomProperty                  acs-packaging              "<dependency.alfresco-enterprise-share.version>"`
   createBranchFromTag alfresco-enterprise-share "${shareVersion}"          "${branch}"
