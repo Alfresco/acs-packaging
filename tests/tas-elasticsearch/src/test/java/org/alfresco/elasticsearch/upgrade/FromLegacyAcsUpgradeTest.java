@@ -3,17 +3,12 @@ package org.alfresco.elasticsearch.upgrade;
 import static java.time.Duration.ofMinutes;
 
 import static org.alfresco.elasticsearch.AlfrescoStackInitializer.getImagesConfig;
-import static org.alfresco.elasticsearch.upgrade.Utils.createNetwork;
-import static org.alfresco.elasticsearch.upgrade.Utils.createTempContentStoreDirectory;
 
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Path;
 import java.util.UUID;
 
 import org.alfresco.elasticsearch.EnvHelper;
-import org.springframework.util.FileSystemUtils;
-import org.testcontainers.containers.Network;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

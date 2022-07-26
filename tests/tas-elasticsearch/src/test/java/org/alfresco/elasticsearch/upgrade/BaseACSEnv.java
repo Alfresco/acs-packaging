@@ -147,7 +147,7 @@ abstract class BaseACSEnv implements AutoCloseable
     {
         try
         {
-            System.out.println("Lic (" + licencePath + ") size: " + Files.size(Path.of("/tmp/licence.lic")));
+            System.out.println("Lic (" + licencePath + ") size: " + Files.size(Path.of(licencePath)));
             return repoHttpClient.uploadLicense(licencePath);
         }
         catch (IOException e)

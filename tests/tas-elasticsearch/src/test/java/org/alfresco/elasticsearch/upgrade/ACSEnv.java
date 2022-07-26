@@ -4,8 +4,6 @@ import static java.time.Duration.ofMinutes;
 
 import static org.alfresco.elasticsearch.upgrade.Utils.waitFor;
 
-import com.github.dockerjava.api.command.CreateContainerCmd;
-
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
