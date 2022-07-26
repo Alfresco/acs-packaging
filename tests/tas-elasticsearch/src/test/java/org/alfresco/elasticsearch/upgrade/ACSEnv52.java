@@ -3,6 +3,7 @@ package org.alfresco.elasticsearch.upgrade;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.output.OutputFrame;
 
 class ACSEnv52 extends LegacyACSEnv
 {
@@ -80,6 +81,7 @@ class ACSEnv52 extends LegacyACSEnv
                                 "-Dsolr.base.url=/solr " +
                                 "-Dindex.subsystem.name=solr6")
                 .withNetwork(network)
+                .withLogConsumer(of -> System.out.print("[legacy] " + ((OutputFrame)of).getUtf8String()))
                 .withNetworkAliases("alfresco");
     }
 

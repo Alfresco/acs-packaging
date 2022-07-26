@@ -118,7 +118,7 @@ class ACSEnv extends BaseACSEnv
                                 "-Xmx768m -XshowSettings:vm")
                 .withNetwork(network)
                 .withNetworkAliases("alfresco")
-                .withLogConsumer(of -> System.out.print("[alf] " + ((OutputFrame)of).getUtf8String()))
+                .withLogConsumer(of -> System.out.print("[current] " + ((OutputFrame)of).getUtf8String()))
                 .withExposedPorts(8080);
     }
 
