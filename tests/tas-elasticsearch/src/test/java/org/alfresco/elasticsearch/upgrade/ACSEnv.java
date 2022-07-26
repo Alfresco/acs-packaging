@@ -7,8 +7,6 @@ import static org.alfresco.elasticsearch.upgrade.Utils.waitFor;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.containers.output.OutputFrame;
-import org.testcontainers.images.builder.ImageFromDockerfile;
 
 class ACSEnv extends BaseACSEnv
 {
@@ -74,17 +72,6 @@ class ACSEnv extends BaseACSEnv
 
     private GenericContainer<?> createRepositoryContainer(Network network, String indexSubsystemName)
     {
-        //log4j.logger.org.alfresco.service.descriptor.DescriptorService=debug
-        ///usr/local/tomcat/webapps/alfresco/WEB-INF/classes/log4j.properties
-
-//        final ImageFromDockerfile repoImage = new ImageFromDockerfile("repo-with-debug-logs")
-//                .withDockerfileFromBuilder(builder -> builder
-//                        .from(cfg.getRepositoryImage())
-//                        .user("root")
-//                        .run("printf \"\\nlog4j.logger.org.alfresco.service.descriptor.DescriptorService=debug\\nlog4j.logger.org.alfresco.enterprise.license.LicenseComponent=debug\\n\" >> /usr/local/tomcat/webapps/alfresco/WEB-INF/classes/log4j.properties")
-//                        .user("alfresco")
-//                        .build());
-
         return newContainer(GenericContainer.class, cfg.getRepositoryImage())
                 .withEnv("JAVA_TOOL_OPTIONS",
                         "-Dencryption.keystore.type=JCEKS " +
@@ -118,7 +105,6 @@ class ACSEnv extends BaseACSEnv
                                 "-Xmx768m -XshowSettings:vm")
                 .withNetwork(network)
                 .withNetworkAliases("alfresco")
-                .withLogConsumer(of -> System.out.print("[current] " + ((OutputFrame)of).getUtf8String()))
                 .withExposedPorts(8080);
     }
 

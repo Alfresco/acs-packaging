@@ -22,7 +22,7 @@ public class FromSolrUpgradeTest
     private static final String FILE_UPLOADED_BEFORE_SWITCHING_TO_ELASTICSEARCH = "before-switch.pdf";
     private static final String FILE_UPLOADED_AFTER_SWITCHING_TO_ELASTICSEARCH = "after-switch.pdf";
 
-    //@Test
+    @Test
     public void testZeroDowntimeUpgradeFromSolrToElasticsearch() throws IOException
     {
         try (final UpgradeScenario scenario = new UpgradeScenario(getUpgradeScenarioConfig()))

@@ -3,7 +3,6 @@ package org.alfresco.elasticsearch.upgrade;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 
 class ACSEnv52 extends LegacyACSEnv
@@ -73,6 +72,7 @@ class ACSEnv52 extends LegacyACSEnv
 
     private GenericContainer<?> createRepositoryContainer(Network network)
     {
+        //We are going to share the content repository so we need to align the uid and gid for the alfresco user
         final ImageFromDockerfile repoImage = new ImageFromDockerfile("repo-with-changed-uid-and-gid")
                 .withDockerfileFromBuilder(builder -> builder
                         .from("quay.io/alfresco/alfresco-content-repository-52:5.2.6")
@@ -90,7 +90,6 @@ class ACSEnv52 extends LegacyACSEnv
                                 "-Dsolr.base.url=/solr " +
                                 "-Dindex.subsystem.name=solr6")
                 .withNetwork(network)
-                .withLogConsumer(of -> System.out.print("[legacy] " + ((OutputFrame)of).getUtf8String()))
                 .withNetworkAliases("alfresco");
     }
 

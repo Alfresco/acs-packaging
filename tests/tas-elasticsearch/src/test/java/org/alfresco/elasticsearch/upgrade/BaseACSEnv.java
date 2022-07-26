@@ -21,8 +21,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.github.dockerjava.api.command.CreateContainerCmd;
-
 import org.alfresco.elasticsearch.upgrade.AvailabilityProbe.ProbeResult;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.Container.ExecResult;
@@ -178,13 +176,6 @@ abstract class BaseACSEnv implements AutoCloseable
                 return false;
             }
         });
-    }
-
-    public void exposeContentStore()
-    {
-        System.out.println(execInContainer(getAlfresco(), "ls -alh " + getContainerAlfDataPath()).getStdout());
-        execInContainer(getAlfresco(), "chmod -R 777 " + getContainerAlfDataPath() + "/*");
-        System.out.println(execInContainer(getAlfresco(), "ls -alh " + getContainerAlfDataPath()).getStdout());
     }
 
     protected String getContainerAlfDataPath()
