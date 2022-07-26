@@ -48,8 +48,8 @@ public class LegacyAcsUpgradeScenario implements AutoCloseable
     {
         try
         {
+            initialEnv.exposeContentStore();
             IOUtils.copy(Runtime.getRuntime().exec("ls -alh " + sharedContentStorePath).getInputStream(), System.out);
-            mirroredEnv.exposeContentStore();
         } catch (IOException e)
         {
             throw new RuntimeException(e);
