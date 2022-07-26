@@ -183,7 +183,7 @@ abstract class BaseACSEnv implements AutoCloseable
     public void exposeContentStore()
     {
         System.out.println(execInContainer(getAlfresco(), "ls -alh " + getContainerAlfDataPath()).getStdout());
-        execInContainer(getAlfresco(), "chmod -R 755 " + getContainerAlfDataPath() + "/*");
+        execInContainer(getAlfresco(), "chmod -R 777 " + getContainerAlfDataPath() + "/*");
         System.out.println(execInContainer(getAlfresco(), "ls -alh " + getContainerAlfDataPath()).getStdout());
     }
 
