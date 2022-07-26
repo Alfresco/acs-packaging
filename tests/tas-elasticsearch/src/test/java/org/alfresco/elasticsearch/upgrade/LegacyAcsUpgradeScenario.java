@@ -5,6 +5,7 @@ import static org.alfresco.elasticsearch.upgrade.Utils.createTempContentStoreDir
 
 import java.nio.file.Path;
 
+import org.apache.commons.io.IOUtils;
 import org.testcontainers.containers.Network;
 
 public class LegacyAcsUpgradeScenario implements AutoCloseable
@@ -44,6 +45,9 @@ public class LegacyAcsUpgradeScenario implements AutoCloseable
 
     public ACSEnv startMirroredEnvWitElasticsearchBasedSearchService()
     {
+        IOUtils.copy(Runtime.getRuntime().exec("ls -alh " + sharedContentStorePath).getInputStream(), System.out);
+
+
         mirroredEnv.setMetadataDumpToRestore(initialEnv.getMetadataDump());
         mirroredEnv.start();
 
