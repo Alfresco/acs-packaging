@@ -77,15 +77,15 @@ class ACSEnv extends BaseACSEnv
         //log4j.logger.org.alfresco.service.descriptor.DescriptorService=debug
         ///usr/local/tomcat/webapps/alfresco/WEB-INF/classes/log4j.properties
 
-        final ImageFromDockerfile repoImage = new ImageFromDockerfile("repo-with-debug-logs")
-                .withDockerfileFromBuilder(builder -> builder
-                        .from(cfg.getRepositoryImage())
-                        .user("root")
-                        .run("printf \"\\nlog4j.logger.org.alfresco.service.descriptor.DescriptorService=debug\\nlog4j.logger.org.alfresco.enterprise.license.LicenseComponent=debug\\n\" >> /usr/local/tomcat/webapps/alfresco/WEB-INF/classes/log4j.properties")
-                        .user("alfresco")
-                        .build());
+//        final ImageFromDockerfile repoImage = new ImageFromDockerfile("repo-with-debug-logs")
+//                .withDockerfileFromBuilder(builder -> builder
+//                        .from(cfg.getRepositoryImage())
+//                        .user("root")
+//                        .run("printf \"\\nlog4j.logger.org.alfresco.service.descriptor.DescriptorService=debug\\nlog4j.logger.org.alfresco.enterprise.license.LicenseComponent=debug\\n\" >> /usr/local/tomcat/webapps/alfresco/WEB-INF/classes/log4j.properties")
+//                        .user("alfresco")
+//                        .build());
 
-        return newContainer(GenericContainer.class, repoImage)
+        return newContainer(GenericContainer.class, cfg.getRepositoryImage())
                 .withEnv("JAVA_TOOL_OPTIONS",
                         "-Dencryption.keystore.type=JCEKS " +
                                 "-Dencryption.cipherAlgorithm=DESede/CBC/PKCS5Padding " +

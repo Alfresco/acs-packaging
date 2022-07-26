@@ -230,7 +230,7 @@ abstract class BaseACSEnv implements AutoCloseable
 
     private void waitUntilServerIsUp(Duration timeout)
     {
-        waitFor("Reaching the point where server is still not running.", timeout, () -> {
+        waitFor("Reaching the point where server is up and running.", timeout, () -> {
             try
             {
                 return repoHttpClient.isServerUp();

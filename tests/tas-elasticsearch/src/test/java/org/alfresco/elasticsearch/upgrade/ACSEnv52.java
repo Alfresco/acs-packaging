@@ -4,6 +4,7 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.OutputFrame;
+import org.testcontainers.images.builder.ImageFromDockerfile;
 
 class ACSEnv52 extends LegacyACSEnv
 {
@@ -72,7 +73,15 @@ class ACSEnv52 extends LegacyACSEnv
 
     private GenericContainer<?> createRepositoryContainer(Network network)
     {
-        return newContainer(GenericContainer.class, "quay.io/alfresco/alfresco-content-repository-52:5.2.6")
+        final ImageFromDockerfile repoImage = new ImageFromDockerfile("repo-with-changed-uid-and-gid")
+                .withDockerfileFromBuilder(builder -> builder
+                        .from("quay.io/alfresco/alfresco-content-repository-52:5.2.6")
+                        .user("root")
+                        .run("groupmod -g 33000 alfresco && usermod -u 33000 alfresco && chgrp -R -h alfresco /usr/local/tomcat && chown -R -h alfresco /usr/local/tomcat")
+                        .user("alfresco")
+                        .build());
+
+        return newContainer(GenericContainer.class, repoImage)
                 .withExposedPorts(8080)
                 .withEnv("JAVA_TOOL_OPTIONS",
                         "-Dsolr.host=solr6 " +
