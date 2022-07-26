@@ -3,6 +3,7 @@ package org.alfresco.elasticsearch.upgrade;
 import static org.alfresco.elasticsearch.upgrade.Utils.createNetwork;
 import static org.alfresco.elasticsearch.upgrade.Utils.createTempContentStoreDirectory;
 
+import java.io.IOException;
 import java.nio.file.Path;
 
 import org.apache.commons.io.IOUtils;
@@ -45,7 +46,13 @@ public class LegacyAcsUpgradeScenario implements AutoCloseable
 
     public ACSEnv startMirroredEnvWitElasticsearchBasedSearchService()
     {
-        IOUtils.copy(Runtime.getRuntime().exec("ls -alh " + sharedContentStorePath).getInputStream(), System.out);
+        try
+        {
+            IOUtils.copy(Runtime.getRuntime().exec("ls -alh " + sharedContentStorePath).getInputStream(), System.out);
+        } catch (IOException e)
+        {
+            throw new RuntimeException(e);
+        }
 
 
         mirroredEnv.setMetadataDumpToRestore(initialEnv.getMetadataDump());
