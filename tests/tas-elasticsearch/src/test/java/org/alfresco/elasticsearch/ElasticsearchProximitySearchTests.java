@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.alfresco.rest.search.SearchRequest;
+import org.alfresco.tas.AlfrescoStackInitializer;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataUser;
 import org.alfresco.utility.model.ContentModel;

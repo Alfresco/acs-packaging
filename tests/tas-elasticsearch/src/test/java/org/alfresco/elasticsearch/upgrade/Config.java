@@ -1,8 +1,9 @@
 package org.alfresco.elasticsearch.upgrade;
 
-import static org.alfresco.elasticsearch.AlfrescoStackInitializer.getImagesConfig;
+import static org.alfresco.tas.AlfrescoStackInitializer.getImagesConfig;
 
-import org.alfresco.elasticsearch.EnvHelper;
+import org.alfresco.tas.EnvHelper;
+import org.alfresco.tas.SearchEngineType;
 
 interface Config
 {
@@ -25,6 +26,12 @@ interface Config
     String getLiveIndexingImage();
 
     String getElasticsearchImage();
+
+    String getOpensearchImage();
+
+    String getSearchEngineImage();
+
+    SearchEngineType getSearchEngineType();
 
     default String getElasticsearchHostname()
     {
@@ -98,6 +105,22 @@ interface Config
             public String getElasticsearchImage()
             {
                 return getImagesConfig().getElasticsearchImage();
+            }
+
+            @Override
+            public String getOpensearchImage() {
+                return getImagesConfig().getOpensearchImage();
+            }
+
+            @Override
+            public String getSearchEngineImage() {
+                return getImagesConfig().getSearchEngineType() == SearchEngineType.OPENSEARCH_ENGINE ?
+                        getOpensearchImage() : getElasticsearchImage();
+            }
+
+            @Override
+            public SearchEngineType getSearchEngineType() {
+                return getImagesConfig().getSearchEngineType();
             }
         };
     }

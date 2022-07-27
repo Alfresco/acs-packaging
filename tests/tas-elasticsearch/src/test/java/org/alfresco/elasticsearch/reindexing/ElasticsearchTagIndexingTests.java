@@ -15,10 +15,10 @@ import java.util.stream.Collectors;
 
 import org.alfresco.dataprep.AlfrescoHttpClient;
 import org.alfresco.dataprep.AlfrescoHttpClientFactory;
-import org.alfresco.elasticsearch.AlfrescoStackInitializer;
 import org.alfresco.elasticsearch.SearchQueryService;
 import org.alfresco.rest.core.RestWrapper;
 import org.alfresco.rest.search.SearchRequest;
+import org.alfresco.tas.AlfrescoStackInitializer;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataUser;
 import org.alfresco.utility.model.ContentModel;

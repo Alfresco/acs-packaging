@@ -141,10 +141,10 @@ services:
       - share
 
   elasticsearch:
-    image: elasticsearch:${ELASTICSEARCH_TAG}
+    image: opensearchproject/opensearch:${OPENSEARCH_TAG}
     mem_limit: 1700m
     environment:
-      - xpack.security.enabled=false
+      - plugins.security.disabled=true
       - discovery.type=single-node
     ulimits:
       memlock:
@@ -162,7 +162,7 @@ services:
       - 9300:9300
 
   kibana:
-    image: kibana:${KIBANA_TAG}
+    image: opensearchproject/opensearch-dashboards:${OPENSEARCH_DASHBOARDS_TAG}
     mem_limit: 256m
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200

@@ -3,7 +3,7 @@ package org.alfresco.elasticsearch;
 import static java.util.stream.Collectors.toList;
 
 import static org.alfresco.elasticsearch.SearchQueryService.req;
-import static org.alfresco.elasticsearch.TestDataUtility.getAlphabeticUUID;
+import static org.alfresco.tas.TestDataUtility.getAlphabeticUUID;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -11,6 +11,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.alfresco.rest.search.SearchRequest;
+import org.alfresco.tas.AlfrescoStackInitializer;
 import org.alfresco.utility.constants.UserRole;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;

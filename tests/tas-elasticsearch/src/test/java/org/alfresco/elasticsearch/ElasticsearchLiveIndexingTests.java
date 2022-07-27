@@ -3,7 +3,7 @@ package org.alfresco.elasticsearch;
 import static java.util.Arrays.asList;
 
 import static org.alfresco.elasticsearch.SearchQueryService.req;
-import static org.alfresco.elasticsearch.TestDataUtility.getAlphabeticUUID;
+import static org.alfresco.tas.TestDataUtility.getAlphabeticUUID;
 
 import java.util.Map;
 import java.util.function.Predicate;
@@ -13,6 +13,7 @@ import org.alfresco.dataprep.AlfrescoHttpClientFactory;
 import org.alfresco.rest.search.RestRequestQueryModel;
 import org.alfresco.rest.search.SearchNodeModel;
 import org.alfresco.rest.search.SearchRequest;
+import org.alfresco.tas.AlfrescoStackInitializer;
 import org.alfresco.utility.constants.UserRole;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;

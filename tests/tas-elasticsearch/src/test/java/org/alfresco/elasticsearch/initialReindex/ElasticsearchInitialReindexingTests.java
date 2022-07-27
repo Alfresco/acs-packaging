@@ -1,15 +1,15 @@
 package org.alfresco.elasticsearch.initialReindex;
 
-import static org.alfresco.elasticsearch.AlfrescoStackInitializer.getImagesConfig;
 import static org.alfresco.elasticsearch.SearchQueryService.req;
+import static org.alfresco.tas.AlfrescoStackInitializer.getImagesConfig;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.alfresco.elasticsearch.AlfrescoStackInitializer;
 import org.alfresco.elasticsearch.SearchQueryService;
 import org.alfresco.rest.search.SearchRequest;
+import org.alfresco.tas.AlfrescoStackInitializer;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
@@ -17,8 +17,8 @@ import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.report.log.Step;
 import org.apache.http.HttpHost;
-import org.elasticsearch.client.RestClient;
-import org.elasticsearch.client.RestHighLevelClient;
+import org.opensearch.client.RestClient;
+import org.opensearch.client.RestHighLevelClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,8 +75,8 @@ public class ElasticsearchInitialReindexingTests extends AbstractTestNGSpringCon
 
         Step.STEP("create ES client");
         elasticClient = new RestHighLevelClient(
-                RestClient.builder(new HttpHost(AlfrescoStackInitializer.elasticsearch.getContainerIpAddress(),
-                                                AlfrescoStackInitializer.elasticsearch.getFirstMappedPort(),
+                RestClient.builder(new HttpHost(AlfrescoStackInitializer.searchEngineContainer.getContainerIpAddress(),
+                                                AlfrescoStackInitializer.searchEngineContainer.getFirstMappedPort(),
                                                 "http")));
 
     }

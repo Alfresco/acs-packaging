@@ -33,8 +33,8 @@ env:
     - ALF_LICENCE_S3_PATH=s3://acs-license/acs/alf73-allenabled.lic
     - ALF_LICENCE_LOCAL_PATH=/tmp/licence.lic
     # Release version has to start with real version (7.3.0-....) for the docker image to build successfully.
-    - RELEASE_VERSION=7.3.0-A6
-    - DEVELOPMENT_VERSION=7.3.0-A7-SNAPSHOT
+    - RELEASE_VERSION=7.3.0-M2
+    - DEVELOPMENT_VERSION=7.3.0-A9-SNAPSHOT
     - DTAS_VERSION="${DTAS_VERSION:-v1.1}"
     - PYTHON_VERSION=3.7.12
 
@@ -182,6 +182,14 @@ jobs:
       script:
         - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
 
+    - name: "CMIS TAS tests - Open Search (CMIS API)"
+      if: commit_message !~ /\[skip search\]/
+      before_script:
+        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-opensearch-tests.yml
+        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+      script:
+        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
+
     - name: "Sync Service TAS tests"
       if: commit_message !~ /\[skip tas\]/
       before_script:
@@ -192,13 +200,27 @@ jobs:
 
     - name: "Elasticsearch TAS tests (Search API)"
       if: commit_message !~ /\[skip search\]/
+      vm:
+        size: large
       script:
-       - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false
+       - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch"
+
+    - name: "Opensearch TAS tests (Search API)"
+      if: commit_message !~ /\[skip search\]/
+      vm:
+        size: large
+      script:
+        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch"
 
     - name: "Elasticsearch Basic Auth TAS tests"
       if: commit_message !~ /\[skip search\]/
       script:
-       - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false
+       - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch"
+
+    - name: "Opensearch Basic Auth TAS tests"
+      if: commit_message !~ /\[skip search\]/
+      script:
+        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch"
 
     - name: "Elasticsearch Upgrade TAS tests"
       if: commit_message !~ /\[skip search\]/
@@ -207,7 +229,16 @@ jobs:
       script:
         - pip install awscli
         - AWS_ACCESS_KEY_ID=${LICENCES_AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${LICENCES_AWS_SECRET_ACCESS_KEY} aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
-        - travis_wait 30 mvn -B install -ntp -f tests/tas-elasticsearch/pom.xml -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false
+        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch"
+
+    - name: "Opensearch Upgrade TAS tests"
+      if: commit_message !~ /\[skip search\]/
+      vm:
+        size: large
+      script:
+        - pip install awscli
+        - AWS_ACCESS_KEY_ID=${LICENCES_AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${LICENCES_AWS_SECRET_ACCESS_KEY} aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
+        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch"
 
     - name: "All AMPs tests"
       before_script:

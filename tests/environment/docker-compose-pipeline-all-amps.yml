@@ -118,7 +118,7 @@ services:
             TRAVIS_BUILD_NUMBER: "${TRAVIS_BUILD_NUMBER}"
 
     postgres:
-        image: postgres:13.3
+        image: postgres:14.4
         mem_limit: 512m
         environment:
             - POSTGRES_PASSWORD=alfresco
@@ -160,7 +160,7 @@ services:
             - 61613:61613 # STOMP
 
     digital-workspace:
-        image: quay.io/alfresco/alfresco-digital-workspace:2.0.0-adw
+        image: quay.io/alfresco/alfresco-digital-workspace:${DIGITAL_WORKSPACE_TAG}
         mem_limit: 128m
         environment:
             BASE_PATH: ./
@@ -179,7 +179,7 @@ services:
             - share
 
     sync-service:
-        image: quay.io/alfresco/service-sync:4.0.0-M1
+        image: quay.io/alfresco/service-sync:4.0.0-M2
         mem_limit: 1g
         environment:
             JAVA_OPTS : "

@@ -1,4 +1,4 @@
-package org.alfresco.elasticsearch;
+package org.alfresco.tas;
 
 import java.io.FileReader;
 import java.util.Properties;

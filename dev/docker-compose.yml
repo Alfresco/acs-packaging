@@ -43,7 +43,7 @@ services:
             - shared-file-store-volume:/tmp/Alfresco/sfs
 
     postgres:
-        image: postgres:13.3
+        image: postgres:14.4
         mem_limit: 512m
         environment:
             - POSTGRES_PASSWORD=alfresco
@@ -54,7 +54,7 @@ services:
             - 5432:5432
 
     solr6:
-        image: quay.io/alfresco/insight-engine:2.0.3
+        image: quay.io/alfresco/insight-engine:2.0.4
         environment:
             #Solr needs to know how to register itself with Alfresco
             SOLR_ALFRESCO_HOST: "host.docker.internal"
