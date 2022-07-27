@@ -74,9 +74,15 @@ public class LegacyAcsUpgradeScenario implements AutoCloseable
 
     private void uploadLicence(ACSEnv env)
     {
-        if (!env.uploadLicence("/tmp/licence.lic"))
+        final String licencePath = getTargetAcsLicencePath();
+        if (!env.uploadLicence(licencePath))
         {
-            throw new RuntimeException("Failed to upload licence.");
+            throw new RuntimeException("Failed to upload licence from `" + licencePath + "`.");
         }
+    }
+
+    private String getTargetAcsLicencePath()
+    {
+        return System.getenv("ALF_LICENCE_LOCAL_PATH");
     }
 }
