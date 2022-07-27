@@ -147,7 +147,6 @@ class RepoHttpClient
         try (CloseableHttpResponse response = client.execute(uploadRequest, httpCtx))
         {
             String responseBody = EntityUtils.toString(response.getEntity());
-            System.out.println("!!!!!!!!! responseStatus: " + response.getStatusLine().getStatusCode() + ", responseBody: " + responseBody);
             return gson.fromJson(responseBody, Map.class).get("success").equals(true);
         }
 

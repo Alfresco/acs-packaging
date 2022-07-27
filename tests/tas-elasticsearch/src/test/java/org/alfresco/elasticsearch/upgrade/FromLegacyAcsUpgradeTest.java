@@ -2,13 +2,12 @@ package org.alfresco.elasticsearch.upgrade;
 
 import static java.time.Duration.ofMinutes;
 
-import static org.alfresco.elasticsearch.AlfrescoStackInitializer.getImagesConfig;
+import static org.alfresco.elasticsearch.upgrade.Config.getUpgradeScenarioConfig;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.UUID;
 
-import org.alfresco.elasticsearch.EnvHelper;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -80,71 +79,5 @@ public class FromLegacyAcsUpgradeTest
                         FILE_UPLOADED_AFTER_UPGRADE);
             }
         }
-    }
-
-    private Config getUpgradeScenarioConfig()
-    {
-        return new Config()
-        {
-            @Override
-            public String getRepositoryImage()
-            {
-                return getImagesConfig().getRepositoryImage();
-            }
-
-            @Override
-            public String getSearchServiceImageName()
-            {
-                return "quay.io/alfresco/insight-engine:" + EnvHelper.getEnvProperty("SOLR6_TAG");
-            }
-
-            @Override
-            public String getPostgreSQLImage()
-            {
-                return getImagesConfig().getPostgreSQLImage();
-            }
-
-            @Override
-            public String getActiveMqImage()
-            {
-                return getImagesConfig().getActiveMqImage();
-            }
-
-            @Override
-            public String getSharedFileStoreImage()
-            {
-                return getImagesConfig().getSharedFileStoreImage();
-            }
-
-            @Override
-            public String getTransformCoreAIOImage()
-            {
-                return getImagesConfig().getTransformCoreAIOImage();
-            }
-
-            @Override
-            public String getTransformRouterImage()
-            {
-                return getImagesConfig().getTransformRouterImage();
-            }
-
-            @Override
-            public String getReIndexingImage()
-            {
-                return getImagesConfig().getReIndexingImage();
-            }
-
-            @Override
-            public String getLiveIndexingImage()
-            {
-                return getImagesConfig().getLiveIndexingImage();
-            }
-
-            @Override
-            public String getElasticsearchImage()
-            {
-                return getImagesConfig().getElasticsearchImage();
-            }
-        };
     }
 }

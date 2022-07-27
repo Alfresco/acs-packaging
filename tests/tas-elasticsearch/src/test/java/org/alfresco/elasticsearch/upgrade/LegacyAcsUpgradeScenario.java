@@ -3,13 +3,11 @@ package org.alfresco.elasticsearch.upgrade;
 import static org.alfresco.elasticsearch.upgrade.Utils.createNetwork;
 import static org.alfresco.elasticsearch.upgrade.Utils.createTempContentStoreDirectory;
 
-import java.io.IOException;
 import java.nio.file.Path;
 
-import org.apache.commons.io.IOUtils;
 import org.testcontainers.containers.Network;
 
-public class LegacyAcsUpgradeScenario implements AutoCloseable
+class LegacyAcsUpgradeScenario implements AutoCloseable
 {
     private final LegacyACSEnv initialEnv;
     private final Elasticsearch elasticsearch;
