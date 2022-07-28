@@ -1,5 +1,6 @@
 package org.alfresco.elasticsearch.upgrade;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -55,12 +56,16 @@ class RepoHttpClient
     private final URI searchApiUri;
     private final URI fileUploadApiUri;
     private final URI searchServiceAdminAppUri;
+    private final URI uploadLicenseAdminApiUri;
+    private final URI serverApiUri;
 
     RepoHttpClient(final URI repoBaseUri)
     {
         searchApiUri = repoBaseUri.resolve("/alfresco/api/-default-/public/search/versions/1/search");
         fileUploadApiUri = repoBaseUri.resolve("/alfresco/api/-default-/public/alfresco/versions/1/nodes/-my-/children");
         searchServiceAdminAppUri = repoBaseUri.resolve("/alfresco/s/enterprise/admin/admin-searchservice");
+        uploadLicenseAdminApiUri = repoBaseUri.resolve("/alfresco/s/enterprise/admin/admin-license-upload");
+        serverApiUri = repoBaseUri.resolve("/alfresco/service/api/server");
     }
 
     public void setSearchService(String implementation) throws IOException
@@ -101,6 +106,58 @@ class RepoHttpClient
             {
                 throw new IllegalStateException("Couldn't switch to `" + implementation + "`.");
             }
+        }
+    }
+
+    public boolean uploadLicense(String licensePath) throws IOException
+    {
+        final HttpGet getCsrfToken = authenticate(new HttpGet(uploadLicenseAdminApiUri));
+        final HttpClientContext httpCtx = HttpClientContext.create();
+        httpCtx.setCookieStore(new BasicCookieStore());
+
+        final Cookie csrfCookie;
+
+        try (CloseableHttpResponse response = client.execute(getCsrfToken, httpCtx))
+        {
+            final Map<String, Cookie> cookies = httpCtx
+                    .getCookieStore()
+                    .getCookies()
+                    .stream()
+                    .collect(Collectors.toUnmodifiableMap(Cookie::getName, Function.identity()));
+
+            csrfCookie = Objects.requireNonNull(cookies.get("alf-csrftoken"));
+        }
+
+
+        File license = new File(licensePath);
+
+        final URI uploadLicenseAdminCsrfApiUri = URI.create(new URIBuilder(uploadLicenseAdminApiUri)
+                .addParameter(csrfCookie.getName(), URLDecoder.decode(csrfCookie.getValue(), StandardCharsets.US_ASCII))
+                .toString());
+
+        final HttpEntity uploadEntity = MultipartEntityBuilder
+                .create()
+                .setMode(HttpMultipartMode.STRICT)
+                .addBinaryBody("license", license)
+                .build();
+
+        final HttpPost uploadRequest = authenticate(new HttpPost(uploadLicenseAdminCsrfApiUri));
+        uploadRequest.setEntity(uploadEntity);
+
+        try (CloseableHttpResponse response = client.execute(uploadRequest, httpCtx))
+        {
+            String responseBody = EntityUtils.toString(response.getEntity());
+            return gson.fromJson(responseBody, Map.class).get("success").equals(true);
+        }
+
+    }
+
+    public boolean isServerUp() throws IOException
+    {
+        final HttpGet healthCheckRequest = authenticate(new HttpGet(serverApiUri));
+        try (CloseableHttpResponse response = client.execute(healthCheckRequest))
+        {
+            return response.getStatusLine().getStatusCode() == HttpStatus.SC_OK;
         }
     }
 

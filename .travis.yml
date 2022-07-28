@@ -30,6 +30,8 @@ env:
   global:
     - TAS_SCRIPTS=../alfresco-community-repo/packaging/tests/scripts
     - TAS_ENVIRONMENT=./tests/environment
+    - ALF_LICENCE_S3_PATH=s3://acs-license/acs/alf73-allenabled.lic
+    - ALF_LICENCE_LOCAL_PATH=/tmp/licence.lic
     # Release version has to start with real version (7.3.0-....) for the docker image to build successfully.
     - RELEASE_VERSION=7.3.0-M2
     - DEVELOPMENT_VERSION=7.3.0-A9-SNAPSHOT
@@ -225,6 +227,8 @@ jobs:
       vm:
         size: large
       script:
+        - pip install awscli
+        - AWS_ACCESS_KEY_ID=${LICENCES_AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${LICENCES_AWS_SECRET_ACCESS_KEY} aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
         - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch"
 
     - name: "Opensearch Upgrade TAS tests"
@@ -232,6 +236,8 @@ jobs:
       vm:
         size: large
       script:
+        - pip install awscli
+        - AWS_ACCESS_KEY_ID=${LICENCES_AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${LICENCES_AWS_SECRET_ACCESS_KEY} aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
         - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch"
 
     - name: "All AMPs tests"
