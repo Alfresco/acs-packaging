@@ -4,47 +4,18 @@ import static java.time.Duration.ofMinutes;
 
 import static org.alfresco.elasticsearch.upgrade.Utils.waitFor;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import java.nio.file.Path;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import org.alfresco.elasticsearch.upgrade.AvailabilityProbe.ProbeResult;
-import org.testcontainers.containers.BindMode;
-import org.testcontainers.containers.Container.ExecResult;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.images.builder.Transferable;
 
-class ACSEnv implements AutoCloseable
+class ACSEnv extends BaseACSEnv
 {
-    private final Config cfg;
-    private final GenericContainer<?> alfresco;
     private final GenericContainer<?> postgres;
-    private final List<GenericContainer<?>> createdContainers = new ArrayList<>();
-
-    private RepoHttpClient repoHttpClient;
-
-    private String metadataDumpToRestore;
-    private Path alfDataHostPath;
-    private boolean readOnlyContentStore;
-
-    private final AtomicReference<AvailabilityProbe> searchAPIAvailabilityProbe = new AtomicReference<>();
+    private final GenericContainer<?> alfresco;
 
     public ACSEnv(Config cfg, final Network network, final String indexSubsystemName)
     {
-        this.cfg = cfg;
+        super(cfg);
 
         postgres = createPostgresContainer(network);
 
@@ -56,147 +27,32 @@ class ACSEnv implements AutoCloseable
         alfresco = createRepositoryContainer(network, indexSubsystemName);
     }
 
-    public void setMetadataDumpToRestore(String metadataDumpToRestore)
+    public ACSEnv(GenericContainer<?> postgres, Config cfg, String indexSubsystemName)
     {
-        this.metadataDumpToRestore = Objects.requireNonNull(metadataDumpToRestore);
-    }
+        super(cfg);
+        Network network = postgres.getNetwork();
 
-    public void setContentStoreHostPath(Path hostPath)
-    {
-        readOnlyContentStore = false;
-        alfDataHostPath = hostPath;
-    }
+        this.postgres = postgres;
+        registerCreatedContainer(postgres);
 
-    public void setReadOnlyContentStoreHostPath(Path hostPath)
-    {
-        readOnlyContentStore = true;
-        alfDataHostPath = hostPath;
-    }
+        createActiveMqContainer(network);
+        createSharedFileStoreContainer(network);
+        createTransformCoreAIOContainer(network);
+        createTransformRouterContainer(network);
 
-    public AvailabilityProbe getRunningSearchAPIAvailabilityProbe()
-    {
-        final AvailabilityProbe current = searchAPIAvailabilityProbe.get();
-        if (current != null) return current;
-
-        final AvailabilityProbe created = AvailabilityProbe.create(10, this::checkSearchAPIAvailability);
-        if (searchAPIAvailabilityProbe.compareAndSet(null, created))
-        {
-            created.start();
-            return created;
-        }
-
-        return searchAPIAvailabilityProbe.get();
-    }
-
-    private ProbeResult checkSearchAPIAvailability()
-    {
-        try
-        {
-            return repoHttpClient.searchForFiles("babekyrtso").map(v -> ProbeResult.ok()).orElseGet(ProbeResult::fail);
-        } catch (Exception e)
-        {
-            return ProbeResult.fail(e);
-        }
-    }
-
-    public void start()
-    {
-        if (alfresco.isRunning())
-        {
-            throw new IllegalStateException("Already started");
-        }
-
-        if (metadataDumpToRestore != null)
-        {
-            postgres.start();
-            postgres.copyFileToContainer(Transferable.of(metadataDumpToRestore), "/opt/alfresco/pg-dump-alfresco.sql");
-            execInPostgres("cat /opt/alfresco/pg-dump-alfresco.sql | psql -U alfresco");
-        }
-
-        if (alfDataHostPath != null)
-        {
-            final String hostPath = alfDataHostPath.toAbsolutePath().toString();
-            final BindMode bindMode = readOnlyContentStore ? BindMode.READ_ONLY : BindMode.READ_WRITE;
-            alfresco.addFileSystemBind(hostPath, "/usr/local/tomcat/alf_data", bindMode);
-        }
-
-        createdContainers.forEach(GenericContainer::start);
-        repoHttpClient = new RepoHttpClient(URI.create("http://" + alfresco.getHost() + ":" + alfresco.getMappedPort(8080)));
-
-        expectNoSearchResult(ofMinutes(5), UUID.randomUUID().toString());
-    }
-
-    public String getMetadataDump()
-    {
-        return execInPostgres("pg_dump -c -U alfresco alfresco").getStdout();
-    }
-
-    public long getMaxNodeDbId()
-    {
-        return Long.parseLong(execInPostgres("psql -U alfresco -t -c 'SELECT max(id) FROM alf_node'").getStdout().strip());
-    }
-
-    private ExecResult execInPostgres(String command)
-    {
-        final ExecResult result;
-        try
-        {
-            result = postgres.execInContainer("sh", "-c", command);
-        } catch (IOException e)
-        {
-            throw new RuntimeException("Failed to execute command `" + command + "`.", e);
-        } catch (InterruptedException e)
-        {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException("Command execution has been interrupted..", e);
-        }
-        if (result.getExitCode() != 0)
-        {
-            throw new RuntimeException("Failed to execute command `" + command + "`. " + result.getStderr());
-        }
-
-        return result;
+        alfresco = createRepositoryContainer(network, indexSubsystemName);
     }
 
     @Override
-    public void close()
+    public GenericContainer<?> getAlfresco()
     {
-        Optional.ofNullable(searchAPIAvailabilityProbe.get()).ifPresent(AvailabilityProbe::stop);
-        createdContainers.forEach(GenericContainer::stop);
+        return alfresco;
     }
 
-    public void expectNoSearchResult(Duration timeout, String term)
+    @Override
+    public GenericContainer<?> getPostgres()
     {
-        expectSearchResult(timeout, term);
-    }
-
-    public void expectSearchResult(Duration timeout, String term, String... expectedFiles)
-    {
-        final Set<String> expected = Stream
-                .of(expectedFiles)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toUnmodifiableSet());
-
-        waitFor("Reaching the point where `" + expected + "` is returned.", timeout, () -> {
-            try
-            {
-                Optional<Set<String>> actual = repoHttpClient.searchForFiles(term);
-                return actual.map(expected::equals).orElse(false);
-            } catch (IOException e)
-            {
-                return false;
-            }
-        });
-    }
-
-    public UUID uploadFile(URL contentUrl, String fileName) throws IOException
-    {
-        return repoHttpClient.uploadFile(contentUrl, fileName);
-    }
-
-    public void setElasticsearchSearchService() throws IOException
-    {
-        repoHttpClient.setSearchService("elasticsearch");
+        return postgres;
     }
 
     public void reindexByIds(long fromId, long toId)
@@ -325,18 +181,5 @@ class ACSEnv implements AutoCloseable
                 .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
                 .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config")
                 .withNetwork(alfresco.getNetwork());
-    }
-
-    private <T extends GenericContainer<?>> T newContainer(Class<T> clazz, String image)
-    {
-        try
-        {
-            final T container = clazz.getConstructor(String.class).newInstance(image);
-            createdContainers.add(container);
-            return container;
-        } catch (Exception e)
-        {
-            throw new RuntimeException("Failed to create a container for `" + image + "`.", e);
-        }
     }
 }
