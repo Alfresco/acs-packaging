@@ -180,6 +180,7 @@ jobs:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
         - docker ps -a
+        - docker logs -f environment_alfresco_1 &
       script:
         - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
 
