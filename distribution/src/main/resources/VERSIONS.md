@@ -94,7 +94,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Java
 | Component | Recommended | Also Available |
 |---|---|---|
-| OpenJDK | 17.0.2 | 11.0.7 |
+| OpenJDK | 17.0.4 | 11.0.7 |
 | Amazon Corretto | 17 | 11 |
 
 ##### Message Broker
