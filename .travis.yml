@@ -246,6 +246,8 @@ jobs:
       script:
         - ./tests/scripts/checkLibraryDuplicates.sh ./tests/tas-all-amps/target/war/alfresco/WEB-INF/lib
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-all-amps-test.yml
+        - docker ps -a
+        - docker logs -f environment_alfresco_1 &
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
         - travis_wait 20 mvn -B install -ntp -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
 
