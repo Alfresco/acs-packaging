@@ -61,7 +61,7 @@ jobs:
       if: branch = master OR branch =~ /release\/.*/
       # Run Veracode
       install: skip
-      script: travis_wait 30 bash scripts/travis/source_clear.sh
+      script: travis_wait 30 mvn -B -ntp -q clean install -DskipTests -Dmaven.javadoc.skip=true com.srcclr:srcclr-maven-plugin:scan -Dcom.srcclr.apiToken=${SRCCLR_API_TOKEN}
 
     - name: "REST API TAS tests part1"
       if: commit_message =~ /\[tas\]/
