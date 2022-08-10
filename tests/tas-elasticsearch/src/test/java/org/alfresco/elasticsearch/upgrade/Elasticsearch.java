@@ -48,7 +48,7 @@ class Elasticsearch implements AutoCloseable
                 .withNetwork(network)
                 .withExposedPorts(9200).withCreateContainerCmdModifier(cmd -> {
                     cmd.getHostConfig()
-                            .withMemory((long)1700*1024*1024)
+                            .withMemory((long)3400*1024*1024)
                             .withMemorySwap((long)3400*1024*1024);
                 });
 
