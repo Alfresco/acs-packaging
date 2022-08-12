@@ -242,6 +242,7 @@ jobs:
 
     - name: "All AMPs tests"
       before_script:
+        - docker-compose pull --ignore-pull-failures --quiet &
         - travis_retry travis_wait 20 mvn -B -q install -ntp -f tests/tas-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
       script:
         - ./tests/scripts/checkLibraryDuplicates.sh ./tests/tas-all-amps/target/war/alfresco/WEB-INF/lib
