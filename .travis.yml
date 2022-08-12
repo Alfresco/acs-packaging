@@ -241,8 +241,9 @@ jobs:
         - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch"
 
     - name: "All AMPs tests"
-      before_script:
+      before_install:
         - docker-compose pull --ignore-pull-failures --quiet &
+      before_script:
         - travis_retry travis_wait 20 mvn -B -q install -ntp -f tests/tas-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
       script:
         - ./tests/scripts/checkLibraryDuplicates.sh ./tests/tas-all-amps/target/war/alfresco/WEB-INF/lib
