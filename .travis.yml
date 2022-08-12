@@ -242,7 +242,7 @@ jobs:
 
     - name: "All AMPs tests"
       before_install:
-        - docker-compose pull --ignore-pull-failures --quiet &
+        - docker-compose -f ${TAS_ENVIRONMENT}/docker-compose-all-amps-test.yml pull --ignore-pull-failures --quiet &
       before_script:
         - travis_retry travis_wait 20 mvn -B -q install -ntp -f tests/tas-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
       script:
