@@ -117,6 +117,11 @@
             <artifactId>json-path</artifactId>
             <version>${dependency.jakarta-json-path.version}</version>
         </dependency>
+        <dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+            <version>2.4.8</version>
+        </dependency>
     </dependencies>
 
     <build>
