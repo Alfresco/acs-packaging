@@ -11,7 +11,7 @@ jobs:
       - name: create report filename
         run: |
           branch_name=$(echo ${{ github.ref_name }} | sed "s|/|_|g")
-          echo "REPORT_FILE=report-${{ github.event.repository.name }}-${{ branch_name }}-$(date +%s).json" >> ${GITHUB_ENV}
+          echo "REPORT_FILE=report-${{ github.event.repository.name }}-${branch_name}-$(date +%s).json" >> ${GITHUB_ENV}
       - name: perform build
         run: sleep 10
       - name: create report
