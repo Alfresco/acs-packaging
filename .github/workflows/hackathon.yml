@@ -4,7 +4,7 @@ on:
   push:
 
 jobs:
-  sleep:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -18,7 +18,28 @@ jobs:
         run: |
           mkdir reports
           echo '{"build": "testBuild","commitId": "123456","artifacts": [{"name": "alfresco.war","sha1": "123456"}]}' > reports/${{ env.REPORT_FILE }}
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
-          name: artifact-report.json
+          name: ${{ env.REPORT_FILE }}
           path: reports/${{ env.REPORT_FILE }}
+
+  report:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: reports/${{ env.REPORT_FILE }}
+
+    - name: Upload report to S3 bucket
+    uses: tpaschalis/s3-sync-action@master
+    with:
+      args: --acl private
+    env:
+      FILE: reports/${{ env.REPORT_FILE }}
+      AWS_REGION: 'eu-west-1'
+      AWS_S3_BUCKET: ${{ secrets.HACKATHON_AUDIT_AWS_S3_BUCKET }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.HACKATHON_AUDIT_AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.HACKATHON_AUDIT_AWS_SECRET_ACCESS_KEY }}
