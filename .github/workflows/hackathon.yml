@@ -8,14 +8,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: set timestamp
+      - name: create report filename
         run: |
-          echo "TIMESTAMP=$(date +%s)" >> ${GITHUB_ENV}
+          branch_name=$(echo ${{ github.ref_name }} | sed "s|/|_|g")
+          echo "REPORT_FILE=report-${{ github.event.repository.name }}-${{ branch_name }}-$(date +%s).json" >> ${GITHUB_ENV}
       - name: perform build
-        run: sleep 120
+        run: sleep 10
       - name: create report
         run: |
-          mkdir reports && echo '{"build": "testBuild","commitId": "123456","artifacts": [{"name": "alfresco.war","sha1": "123456"}]}' > reports/report-${{ github.event.repository.name }}-${{ github.ref_name }}-${{ env.TIMESTAMP }}.json
+          mkdir reports
+          echo '{"build": "testBuild","commitId": "123456","artifacts": [{"name": "alfresco.war","sha1": "123456"}]}' > reports/${{ env.REPORT_FILE }}
       - uses: actions/upload-artifact@v2
         with:
           name: artifact-report.json
