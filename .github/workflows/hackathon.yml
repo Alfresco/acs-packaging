@@ -20,10 +20,11 @@ jobs:
           echo '{"build": "testBuild","commitId": "123456","artifacts": [{"name": "alfresco.war","sha1": "123456"}]}' > reports/${{ env.REPORT_FILE }}
       - uses: actions/upload-artifact@v3
         with:
-          name: ${{ env.REPORT_FILE }}
+          name: report
           path: reports/${{ env.REPORT_FILE }}
 
   report:
+    needs: build
     runs-on: ubuntu-latest
     
     steps:
@@ -31,14 +32,14 @@ jobs:
 
     - uses: actions/download-artifact@v2
       with:
-        name: reports/${{ env.REPORT_FILE }}
+        name: report
 
     - name: Upload report to S3 bucket
       uses: tpaschalis/s3-sync-action@master
       with:
         args: --acl private
       env:
-        FILE: reports/${{ env.REPORT_FILE }}
+        FILE: reports/*
         AWS_REGION: 'eu-west-1'
         AWS_S3_BUCKET: ${{ secrets.HACKATHON_AUDIT_AWS_S3_BUCKET }}
         AWS_ACCESS_KEY_ID: ${{ secrets.HACKATHON_AUDIT_AWS_ACCESS_KEY_ID }}
