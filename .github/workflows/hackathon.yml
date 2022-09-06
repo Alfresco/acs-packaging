@@ -34,12 +34,12 @@ jobs:
         name: reports/${{ env.REPORT_FILE }}
 
     - name: Upload report to S3 bucket
-    uses: tpaschalis/s3-sync-action@master
-    with:
-      args: --acl private
-    env:
-      FILE: reports/${{ env.REPORT_FILE }}
-      AWS_REGION: 'eu-west-1'
-      AWS_S3_BUCKET: ${{ secrets.HACKATHON_AUDIT_AWS_S3_BUCKET }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.HACKATHON_AUDIT_AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.HACKATHON_AUDIT_AWS_SECRET_ACCESS_KEY }}
+      uses: tpaschalis/s3-sync-action@master
+      with:
+        args: --acl private
+      env:
+        FILE: reports/${{ env.REPORT_FILE }}
+        AWS_REGION: 'eu-west-1'
+        AWS_S3_BUCKET: ${{ secrets.HACKATHON_AUDIT_AWS_S3_BUCKET }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.HACKATHON_AUDIT_AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.HACKATHON_AUDIT_AWS_SECRET_ACCESS_KEY }}
