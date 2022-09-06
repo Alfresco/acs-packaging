@@ -33,6 +33,7 @@ jobs:
     - uses: actions/download-artifact@v2
       with:
         name: report
+        path: reports
 
     - name: Upload report to S3 bucket
       uses: tpaschalis/s3-sync-action@master
