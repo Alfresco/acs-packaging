@@ -34,7 +34,7 @@ jobs:
           path: reports/${{ env.REPORT_FILE }}
 
   report:
-    needs: build
+    needs: release
     runs-on: ubuntu-latest
     
     steps:
