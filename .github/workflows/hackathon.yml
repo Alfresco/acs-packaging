@@ -4,17 +4,7 @@ on:
   push:
 
 jobs:
-  verify:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Check there is nothing still running
-        run: bash ./scripts/dev/gha-monitoring.sh -m pat
-        env:
-          GITHUB_PAT: ${{ secrets.BOT_GITHUB_TOKEN }}
-
-  release:
-    needs: verify
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
