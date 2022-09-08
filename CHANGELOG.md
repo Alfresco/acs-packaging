@@ -1,3 +1,12 @@
+<h1>        7.1.0.4
+</h1>
+<h2>        PropTablesCleanerJob hotfix
+</h2>
+<ul>
+<li>[<a href='https://alfresco.atlassian.net/browse/MNT-23176'>MNT-23176</a>] - Revert ACS-1600
+</li>
+</ul>
+<br>
 <h1>        7.1.0.3
 </h1>
 <h2>        Community distribution zip
