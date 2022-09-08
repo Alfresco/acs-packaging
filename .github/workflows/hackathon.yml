@@ -11,7 +11,7 @@ jobs:
       - name: Verify
         run: bash ./scripts/dev/gha-monitoring.sh -m pat
         env:
-          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_PAT: ${{ secrets.BOT_GITHUB_TOKEN }}
 #
 #  build:
 #    runs-on: ubuntu-latest
