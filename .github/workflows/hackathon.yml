@@ -4,44 +4,53 @@ on:
   push:
 
 jobs:
-  build:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: create report filename
-        run: |
-          branch_name=$(echo ${{ github.ref_name }} | sed "s|/|_|g")
-          echo "REPORT_FILE=report-${{ github.event.repository.name }}-${branch_name}-$(date +%s).json" >> ${GITHUB_ENV}
-      - name: perform build
-        run: sleep 10
-      - name: create report
-        run: |
-          mkdir reports
-          echo '{"build": "testBuild","commitId": "123456","artifacts": [{"name": "alfresco.war","sha1": "123456"}]}' > reports/${{ env.REPORT_FILE }}
-      - uses: actions/upload-artifact@v3
-        with:
-          name: report
-          path: reports/${{ env.REPORT_FILE }}
-
-  report:
-    needs: build
-    runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v3
-
-    - uses: actions/download-artifact@v2
-      with:
-        name: report
-        path: reports
-
-    - name: Upload report to S3 bucket
-      uses: tpaschalis/s3-sync-action@master
-      with:
-        args: --acl private
-      env:
-        FILE: reports/*
-        AWS_REGION: 'eu-west-1'
-        AWS_S3_BUCKET: ${{ secrets.HACKATHON_AUDIT_AWS_S3_BUCKET }}
-        AWS_ACCESS_KEY_ID: ${{ secrets.HACKATHON_AUDIT_AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.HACKATHON_AUDIT_AWS_SECRET_ACCESS_KEY }}
+      - name: Verify
+        run: bash ./scripts/gha-monitoring.sh -m pat
+        env:
+          GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+#
+#  build:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v3
+#      - name: create report filename
+#        run: |
+#          branch_name=$(echo ${{ github.ref_name }} | sed "s|/|_|g")
+#          echo "REPORT_FILE=report-${{ github.event.repository.name }}-${branch_name}-$(date +%s).json" >> ${GITHUB_ENV}
+#      - name: perform build
+#        run: sleep 10
+#      - name: create report
+#        run: |
+#          mkdir reports
+#          echo '{"build": "testBuild","commitId": "123456","artifacts": [{"name": "alfresco.war","sha1": "123456"}]}' > reports/${{ env.REPORT_FILE }}
+#      - uses: actions/upload-artifact@v3
+#        with:
+#          name: report
+#          path: reports/${{ env.REPORT_FILE }}
+#
+#  report:
+#    needs: build
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#    - uses: actions/checkout@v3
+#
+#    - uses: actions/download-artifact@v2
+#      with:
+#        name: report
+#        path: reports
+#
+#    - name: Upload report to S3 bucket
+#      uses: tpaschalis/s3-sync-action@master
+#      with:
+#        args: --acl private
+#      env:
+#        FILE: reports/*
+#        AWS_REGION: 'eu-west-1'
+#        AWS_S3_BUCKET: ${{ secrets.HACKATHON_AUDIT_AWS_S3_BUCKET }}
+#        AWS_ACCESS_KEY_ID: ${{ secrets.HACKATHON_AUDIT_AWS_ACCESS_KEY_ID }}
+#        AWS_SECRET_ACCESS_KEY: ${{ secrets.HACKATHON_AUDIT_AWS_SECRET_ACCESS_KEY }}
