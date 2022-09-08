@@ -28,7 +28,8 @@ jobs:
       - name: create report
         run: |
           mkdir reports
-          echo '{"build": "testBuild","commitId": "123456","artifacts": [{"name": "alfresco.war","sha1": "123456"}]}' > reports/${{ env.REPORT_FILE }}
+          sha1=$(echo "cat alfresco.war goes here" | sha1sum | sed "s| .*||g")
+          echo '{"build": "testBuild","commitId": "${GITHUB_SHA}","artifacts": [{"name": "alfresco.war","sha1": "${sha1}"}]}' > reports/${{ env.REPORT_FILE }}
       - uses: actions/upload-artifact@v3
         with:
           name: report
