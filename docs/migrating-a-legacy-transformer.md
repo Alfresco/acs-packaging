@@ -28,7 +28,7 @@ the ACS Spring Bean configuration.
 The steps to create and migrate a Legacy Transformer into a custom
 T-Engine are as follows:
 
-1. Create a custom T-Engine. The [Creating a T-Engine](creating-a-t-engine.md) section walks through how to
+1. [creating-a-t-engine.md](creating-a-t-engine.md) walks through how to
 develop, configure and run a new t-Engine using a simple Hello World
 example.
 2. Migrate the custom Legacy Transformer Java code into the new T-Engine
@@ -40,8 +40,9 @@ See how to add a custom pipelines in [Configure a pipeline of Local Transforms](
 5. Configure ACS to use the new custom T-Engine as described in [Configure a T-Engine as a Local Transform](custom-transforms-and-renditions.md#configure-a-t-engine-as-a-local-transform).
 
 ## Migrating custom transform code
-Legacy Transformers are implemented by extending a now deprecated class
-`org.alfresco.repo.content.transform.AbstractContentTransformer2`.
+Legacy Transformers were implemented by extending a class
+`org.alfresco.repo.content.transform.AbstractContentTransformer2`
+which was removed in ACS 7.
 This implementation requires the Legacy Transformer to define functionality
 by implementing the following abstract methods:
 * **isTransformableMimetype**
@@ -52,16 +53,16 @@ Example of a [legacy Transformer](https://github.com/Alfresco/alfresco-helloworl
 ```java
 public boolean isTransformableMimetype(String sourceMimetype, String targetMimetype, TransformationOptions options)
 ```
-The `isTransformableMimetype` method allows ACS to determine whether
+The `isTransformableMimetype` method allowed ACS to determine whether
 this transformer is applicable for a given transform request.
 When migrating a Legacy Transformer to a T-Engine, this method is no longer
 needed.
 
 **How to migrate:**
 
-This functionality is now defined via a JSON file served by T-Engines.
-See how to define the configuration in the
-[engine configuration](#t-engine-configuration) section.
+This functionality is now handled by the t-engine base, but is controlled by configuration returned
+from the `getTransformConfig` method of the `TransformEngine` interface. See how to define the
+configuration in [Transformer Config](custom-transforms-and-renditions.md#transformer-config).
 
 ### Migrating transformInternal
 ```java
@@ -75,33 +76,9 @@ A **TransformationOptions** parameter provides the transform options.
 
 **How to migrate:**
 
->Notice how the signature of the [Legacy Transformer's](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/alfresco-helloworld-transformer-amp/helloworld-amp/src/main/java/org/alfresco/content/transform/HelloWorldTransformer.java#L35) `transformInternal`
-method is similar to the Hello World T-Engine's `transformInternal` method
-in [HelloWorldController.java](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/alfresco-helloworld-transformer-engine/src/main/java/org/alfresco/transformer/HelloWorldController.java#L177).
+Notice how the signature of the [Legacy Transformer's](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/alfresco-helloworld-transformer-amp/helloworld-amp/src/main/java/org/alfresco/content/transform/HelloWorldTransformer.java#L35) `transformInternal`
+method is similar to the `transform` method of the `CustomTransformer` interface, implemented by  [HelloTransformer.java](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/helloworld-t-engine/src/main/java/org/alfresco/transform/HelloTransformer.java#L47).
 
-The [Custom transform API](creating-a-t-engine.md#custom-transform-api) section describes how
-to add transform logic to a custom T-Engine. In short, the logic in
-the `transformInternal` method in a Legacy Transformer can be copied
-into a new T-Engine and modified to use the parameters provided by
-the `/transform` endpoint.
-An example of this can be seen in the **HelloWorldController.java**.
-
-* Requests to a T-Engine's `/transform` endpoint contain a multipart file.
-This is equivalent to the **ContentReader** parameter.
-* The response from the `/transform` endpoint contains the transformed file.
-This is equivalent to the **ContentWriter** parameter.
-* Requests to a T-Engine's `/transform` endpoint contain a list of
-transform options as defined by the [T-Engine configuration](creating-a-t-engine.md#t-engine-configuration).
-These are equivalent to the options in the **TransformationOptions** parameter
-see [engine_config](https://github.com/Alfresco/alfresco-transform-core/blob/master/docs/engine_config.md)
-for more information.
-In Legacy Transformers, it was possible to create new transform options by
-subclassing `TransformationOptions`, or implement `TransformationSourceOptions`
-which then needed to be marshaled and un-marshaled. If custom
-options were defined, then `org.alfresco.repo.renditions2.TransformationOptionsConverter` needed to be subclassed.
-These new classes would then be added as Spring Beans to the Repository's Application Context.
-This is no longer the case when creating new out of process T-Engines, new transform options are only added via
-the **engine_config**.
 
 ## Migrating a Pipeline Transformer
 
