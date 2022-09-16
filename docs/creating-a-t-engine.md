@@ -2,8 +2,7 @@ For context see [Custom Transforms and Renditions](custom-transforms-and-renditi
 
 # Creating a T-Engine
 
-This page will describe how to develop, configure and run custom
-transformers running within a T-Engine. You may also find the [alfresco-base-t-engine README](https://github.com/Alfresco/alfresco-transform-core/blob/master/engines/base/README.md) useful.
+This page will describe how to develop, configure and run custom transformers as T-Engines. You may also find the [alfresco-base-t-engine README](https://github.com/Alfresco/alfresco-transform-core/blob/master/engines/base/README.md) useful.
  
 We will use code from an example [helloworld-t-engine](https://github.com/Alfresco/alfresco-helloworld-transformer/tree/master/helloworld-t-engine)
 project in GitHub. This T-Engine contains a single transformer but there
@@ -19,7 +18,7 @@ technologies:
 * Docker
 
 Custom T-Engines may also be used to extract or embed Metadata, as they are just a specialist form of transform.
-For more information see (metadata-extract-embed.md)[metadata-extract-embed.md].
+For more information see [metadata-extract-embed.md](metadata-extract-embed.md).
 
 ## Developing and Debugging T-Engines
 
@@ -30,9 +29,9 @@ which is a sub project of Alfresco Transform Core.
 The Alfresco Transformer Base brings in Spring Boot capabilities
 as well as base classes which assist in the creation of new T-Engines.
 We are going to take a look at:
- * How to [set up](#project-setup) a project.
- * How to specify [T-Engine configuration](#t-engine-configuration), which declares what the T-Engine can transform.
- * How to implement a [Custom T-Engine](#custom-t-engine), which includes the code that performs the transform.
+ * How to set up a project.
+ * How to specify T-Engine configuration, which declares what the T-Engine can transform.
+ * How to implement a Custom T-Engine, which includes the code that performs the transform.
  * Running and testing the T-Engine.
  * Useful debug options.
 
@@ -69,8 +68,9 @@ The alfresco-base-t-engine takes care of the rest. Take a look at the
 [HelloWorldTransformEngine.java](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/helloworld-t-engine/src/main/java/org/alfresco/transform/HelloWorldTransformEngine.java)
 and [HelloWorldTransformer.java](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/helloworld-t-engine/src/main/java/org/alfresco/transform/HelloWorldTransformer.java).
 
-The TransformEngine and CustomTransformers implementations **MUST** as Spring components (have a
-`@Component` annotation) and be in or under `org.alfresco.transform`.
+The TransformEngine and CustomTransformers implementations **MUST** be Spring components (have a
+`@Component` annotation) and be in or under `org.alfresco.transform`. To use additional packages see
+[Using custom package names](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/helloworld-t-engine/README.md#using-custom-package-names)
 
 #### CustomTransformer transform
 
@@ -145,8 +145,8 @@ as the one used by the [Tika T-Engine](https://github.com/Alfresco/alfresco-tran
   **language**. Unless an option has a **"required": true** field it is
   considered to be optional. If you look at the [Tika T-Engine](https://github.com/Alfresco/alfresco-transform-core/blob/master/engines/tika/src/main/resources/tika_engine_config.json)
   file, you can see options may also be grouped. You don't need to
-  specify *sourceMimetype*, *sourceExtension*, *sourceEncoding*, *targetMimetype*,
-  *targetExtension* or *timeout* as options as these are available to all transformers.
+  specify *sourceMimetype*, *targetMimetype* or *timeout* as options as
+  these are available to all transformers.
 
 * **transformers** - A list of transformer definitions.
   Each transformer definition should have a unique **transformerName**,
@@ -193,11 +193,12 @@ which can be found in the [helloworld-t-engine](https://github.com/Alfresco/alfr
     T-Engines
     ```
 5. In a browser go to http://localhost:8090/. For convenience the
-Hello World T-Engine, provides an [HTML form](https://github.com/Alfresco/helloworld-t-engine/blob/master/helloworld-t-engine/src/main/resources/templates/transformForm.html)
-to POST requests to the **/transform** endpoint.
+Hello World T-Engine, provides a test page to POST requests to the **/transform** endpoint.
 6. In the HTML Form, choose the **source_file.txt**.
 Specify a language, supported languages are: English, Spanish, German.
-7. Click **Transform** and then view the downloaded file.
+7. Enter `text/plain` as the source mimetypes
+8. Select `html` from the target mimetypes choice dropdown.
+9. Click **Transform** and then view the downloaded file.
 
 #### Logs
 
