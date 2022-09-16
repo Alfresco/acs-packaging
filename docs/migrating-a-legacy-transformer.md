@@ -28,7 +28,7 @@ the ACS Spring Bean configuration.
 The steps to create and migrate a Legacy Transformer into a custom
 T-Engine are as follows:
 
-1. [creating-a-t-engine.md](creating-a-t-engine.md) walks through how to
+1. [Creating a T-Engine](creating-a-t-engine.md) walks through how to
 develop, configure and run a new t-Engine using a simple Hello World
 example.
 2. Migrate the custom Legacy Transformer Java code into the new T-Engine
@@ -36,7 +36,7 @@ as described in [Migrating custom transform code](#migrating-custom-transform-co
 3. Migrate any custom renditions defined as Spring Beans.
 See how to add custom renditions in [Configure a custom rendition](custom-transforms-and-renditions.md#configure-a-custom-rendition)
 4. Migrate any custom pipelines defined as Spring Beans.
-See how to add a custom pipelines in [Configure a pipeline of Local Transforms](custom-transforms-and-renditions.md#configure-a-custom-transform-pipeline).
+See how to add a custom pipelines in [Configure a pipeline of Local Transforms](custom-transforms-and-renditions.md#transform-pipelines).
 5. Configure ACS to use the new custom T-Engine as described in [Configure a T-Engine as a Local Transform](custom-transforms-and-renditions.md#configure-a-t-engine-as-a-local-transform).
 
 ## Migrating custom transform code
@@ -49,7 +49,7 @@ by implementing the following abstract methods:
 * **transformInternal**
 
 ### Migrating isTransformableMimetype
-Example of a [legacy Transformer](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/alfresco-helloworld-transformer-amp/helloworld-amp/src/main/java/org/alfresco/content/transform/HelloWorldTransformer.java).
+Example of a [legacy Transformer](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/alfresco-helloworld-transformer-amp/helloworld-amp/src/main/java/org/alfresco/content/transform/HelloWorldTransformer.java#L56).
 ```java
 public boolean isTransformableMimetype(String sourceMimetype, String targetMimetype, TransformationOptions options)
 ```
@@ -61,7 +61,7 @@ needed.
 **How to migrate:**
 
 This functionality is now handled by the t-engine base, but is controlled by configuration returned
-from the `getTransformConfig` method of the `TransformEngine` interface. See how to define the
+from the [getTransformConfig](https://github.com/Alfresco/alfresco-transform-core/blob/master/engines/base/src/main/java/org/alfresco/transform/base/TransformEngine.java#L57) method of the `TransformEngine` interface. See how to define the
 configuration in [Transformer Config](custom-transforms-and-renditions.md#transformer-config).
 
 ### Migrating transformInternal
@@ -77,7 +77,8 @@ A **TransformationOptions** parameter provides the transform options.
 **How to migrate:**
 
 Notice how the signature of the [Legacy Transformer's](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/alfresco-helloworld-transformer-amp/helloworld-amp/src/main/java/org/alfresco/content/transform/HelloWorldTransformer.java#L35) `transformInternal`
-method is similar to the `transform` method of the `CustomTransformer` interface, implemented by  [HelloTransformer.java](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/helloworld-t-engine/src/main/java/org/alfresco/transform/HelloTransformer.java#L47).
+method is similar to the [transform](https://github.com/Alfresco/alfresco-transform-core/blob/master/engines/base/src/main/java/org/alfresco/transform/base/CustomTransformer.java#L46)
+method of the `CustomTransformer` interface, implemented by  [HelloTransformer.java](https://github.com/Alfresco/alfresco-helloworld-transformer/blob/master/helloworld-t-engine/src/main/java/org/alfresco/transform/HelloTransformer.java#L47).
 
 
 ## Migrating a Pipeline Transformer
@@ -105,17 +106,15 @@ Sample configuration of Legacy Transformer Pipeline
 
 ```
 
-**Local Transformers Pipelines**
+**How to migrate:**
 
->For details see section [Configure a custom transform pipeline](custom-transforms-and-renditions.md#configure-a-custom-transform-pipeline).
+>See [Transform pipelines](custom-transforms-and-renditions.md#transform-pipelines).
 
-Pipeline definitions for Local Transformers are done via JSON rather than alfresco-global.properties
-In contrast with the Legacy Transformer Pipelines:
-* Transformer configuration uses **Media Types** instead of **Extensions**.
-* A pipeline transformer does not inherit any Source-Target Mimetypes from any
-of Transformers used in its definition, transformations are listed explicitly under
-*supportedSourceAndTargetList*, therefore there is no need for a property similar to `.extension.Ext1.Ext2.supported=false`.
-* `priority` option is now used in `supportedSourceAndTargetList` for each
- transform individually instead on the whole transformer.
-* There is no `.available=false` property, a transformer cannot be disabled.
-To disable a pipeline transformer, its configuration should to be removed.
+Pipeline definitions are done via JSON rather than alfresco-global.properties. The JSON is able to
+perform all the operations that were previously available with alfresco-global.properties with the
+following exceptions:
+
+* Timeouts have not been implemented;
+* The concept of reading a specified number of bytes and then stopping has not been implemented;
+* Transformers cannot be disabled with a `.available=false` property. They can however be removed
+  by later transform config.
