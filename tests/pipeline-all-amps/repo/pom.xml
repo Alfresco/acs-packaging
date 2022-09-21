@@ -12,6 +12,22 @@
     <packaging>pom</packaging>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>io.fabric8</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <configuration combine.self="override">
+                        <images>
+                            <image>
+                                <name>alfresco/dev:${image.tag}-repo</name>
+                                <registry>${image.registry}</registry>
+                            </image>
+                        </images>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
