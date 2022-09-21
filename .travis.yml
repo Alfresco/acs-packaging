@@ -42,7 +42,7 @@ stages:
   - name: test
     if: commit_message !~ /\[skip tests\]/
   - name: docker_latest
-    if: (commit_message !~ /\[skip docker_latest\]/ AND branch = master AND type != pull_request AND fork = false) OR branch = feature/ACS-3522_SAML-deprecation
+    if: commit_message !~ /\[skip docker_latest\]/ AND branch = master AND type != pull_request AND fork = false
   - name: docker_release
     if: commit_message !~ /\[skip docker_release\]/ AND branch =~ /release\/.*/ AND type != pull_request AND fork = false
   - name: release
@@ -280,7 +280,7 @@ jobs:
     - name: "Update latest and Single Pipeline <acs>-<build> images"
       stage: docker_latest
       script:
-        - travis_retry travis_wait 30 mvn -f tests/pipeline-all-amps/pom.xml -B -V clean install -ntp -DskipTests -Dmaven.javadoc.skip=true -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Dimage.tag=no-saml -Pags -Ppush-docker-images,pipeline
+        - travis_retry travis_wait 30 mvn -B -V clean install -ntp -DskipTests -Dmaven.javadoc.skip=true -Dbuild-number=${TRAVIS_BUILD_NUMBER} -Pags -Ppush-docker-images,pipeline
 
     - name: "Update release and Single Pipeline <acs>-<build> images"
       stage: docker_release

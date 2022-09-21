@@ -25,7 +25,7 @@
                     <configuration combine.self="override">
                         <images>
                             <image>
-                                <name>alfresco/dev:${image.tag}</name>
+                                <name>alfresco/${project.artifactId}:${image.tag}</name>
                                 <registry>${image.registry}</registry>
                             </image>
                         </images>
