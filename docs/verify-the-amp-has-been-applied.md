@@ -57,7 +57,6 @@ docker rm CONTAINER_ID
 
 ```bash
 2018-06-04 13:27:22,103  INFO  [repo.module.ModuleServiceImpl] [localhost-startStop-1] Starting module 'alfresco-aos-module' version 1.2.0.
-2018-06-04 13:27:22,121  INFO  [repo.module.ModuleServiceImpl] [localhost-startStop-1] Starting module 'alfresco-saml-repo' version 1.1.0.
 2018-06-04 13:27:22,154  INFO  [repo.module.ModuleServiceImpl] [localhost-startStop-1] Starting module 'org.alfresco.integrations.google.docs' version 3.1.0
 2018-06-04 13:27:22,170  INFO  [repo.module.ModuleServiceImpl] [localhost-startStop-1] Starting module 'alfresco-share-services' version 6.0.0.
 2018-06-04 13:27:22,186  INFO  [repo.module.ModuleServiceImpl] [localhost-startStop-1] Starting module 'alfresco-trashcan-cleaner' version 2.3.

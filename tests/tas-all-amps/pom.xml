@@ -246,22 +246,6 @@
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                         </artifactItem>
                                         <artifactItem>
-                                            <groupId>org.alfresco.saml</groupId>
-                                            <artifactId>alfresco-saml-repo</artifactId>
-                                            <version>${alfresco.saml.version}</version>
-                                            <type>amp</type>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                        </artifactItem>
-                                        <artifactItem>
-                                            <groupId>org.alfresco.saml</groupId>
-                                            <artifactId>alfresco-saml-share</artifactId>
-                                            <version>${alfresco.saml.version}</version>
-                                            <type>amp</type>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
-                                        </artifactItem>
-                                        <artifactItem>
                                             <groupId>org.alfresco</groupId>
                                             <artifactId>alfresco-governance-services-enterprise-repo</artifactId>
                                             <version>${dependency.alfresco-enterprise-repo.version}</version>
