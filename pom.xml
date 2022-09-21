@@ -22,7 +22,6 @@
         <alfresco.s3connector.version>5.0.0</alfresco.s3connector.version>
         <alfresco.azure-connector.version>3.0.1-A1</alfresco.azure-connector.version>
         <alfresco.salesforce-connector.version>2.3.7</alfresco.salesforce-connector.version>
-        <alfresco.saml.version>1.2.3</alfresco.saml.version>
         <alfresco.outlook.version>2.9.0</alfresco.outlook.version>
         <alfresco.transformation-engine.version>2.3.1</alfresco.transformation-engine.version>
         <alfresco.desktop-sync.version>3.7.3-A1</alfresco.desktop-sync.version>
@@ -225,18 +224,6 @@
                 <groupId>org.alfresco.services.sync</groupId>
                 <artifactId>alfresco-device-sync-repo</artifactId>
                 <version>${alfresco.desktop-sync.version}</version>
-                <type>amp</type>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco.saml</groupId>
-                <artifactId>alfresco-saml-share</artifactId>
-                <version>${alfresco.saml.version}</version>
-                <type>amp</type>
-            </dependency>
-            <dependency>
-                <groupId>org.alfresco.saml</groupId>
-                <artifactId>alfresco-saml-repo</artifactId>
-                <version>${alfresco.saml.version}</version>
                 <type>amp</type>
             </dependency>
         </dependencies>

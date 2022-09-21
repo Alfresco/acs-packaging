@@ -46,11 +46,6 @@
                     "installed": true
                 },
                 {
-                    "id": "alfresco-saml-repo",
-                    "version": "${alfresco.saml.version}",
-                    "installed": true
-                },
-                {
                     "id": "org_alfresco_integrations_S3Connector",
                     "version": "${alfresco.s3connector.version}",
                     "installed": true
