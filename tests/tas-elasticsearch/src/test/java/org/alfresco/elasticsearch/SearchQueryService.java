@@ -115,7 +115,7 @@ public class SearchQueryService
                                    .map(SearchNodeModel::getId)
                                    .collect(Collectors.toSet());
         Set<String> expectedList = Sets.newHashSet(expected);
-        assertEquals(result, expectedList, "Unexpected search results.");
+        assertEquals(result, expectedList, "Unexpected search results - got " + result + " expected " + expectedList);
     }
 
     private void assertNames(SearchResponse actual, String... expected)
@@ -125,7 +125,7 @@ public class SearchQueryService
                                    .map(SearchNodeModel::getName)
                                    .collect(Collectors.toSet());
         Set<String> expectedList = Sets.newHashSet(expected);
-        assertEquals(result, expectedList, "Unexpected search results.");
+        assertEquals(result, expectedList, "Unexpected search results - got " + result + " expected " + expectedList);
     }
 
     private List<String> orderNames(boolean isAscending, String... filename){
@@ -143,7 +143,7 @@ public class SearchQueryService
                 .map(SearchNodeModel::getModel)
                 .map(SearchNodeModel::getName)
                 .collect(Collectors.toList());
-        assertEquals(result, expectedInOrder, "Unexpected search results.");
+        assertEquals(result, expectedInOrder, "Unexpected search results - got " + result + " expected " + expectedInOrder);
     }
 
     private void assertNodeTypes(SearchResponse actual, String... expected)
@@ -153,7 +153,7 @@ public class SearchQueryService
                                    .map(SearchNodeModel::getNodeType)
                                    .collect(Collectors.toSet());
         Set<String> expectedList = Sets.newHashSet(expected);
-        assertEquals(result, expectedList, "Unexpected search results.");
+        assertEquals(result, expectedList, "Unexpected search results - got " + result + " expected " + expectedList);
     }
 
     private void assertAllSearchResults(SearchResponse actual, Predicate<SearchNodeModel> assertion, Function<SearchNodeModel, String> failureMessageFunction)
