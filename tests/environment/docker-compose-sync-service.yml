@@ -55,7 +55,7 @@ services:
       environment:
         - MYSQL_PASSWORD=alfresco
         - MYSQL_USER=alfresco
-        - POSTGRES_DB=alfresco
+        - MYSQL_DATABASE=alfresco
       ports:
         - 5432:5432
 
