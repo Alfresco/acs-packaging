@@ -84,14 +84,14 @@ services:
   sync-service:
     depends_on:
       - alfresco
-      - mysql
+      - postgres
       - activemq
     image: quay.io/alfresco/service-sync:${SYNC_SERVICE_TAG}
     environment:
       JAVA_OPTS :
         "
-        -Ddb.driver=com.mysql.cj.jdbc.Driver
-        -Ddb.url=jdbc:mysql://mysql:5432/alfresco
+        -Dsql.db.driver=org.postgresql.Driver
+        -Dsql.db.url=jdbc:postgresql://postgres:5432/alfresco
         -Dsql.db.username=alfresco
         -Dsql.db.password=alfresco
         -Dmessaging.broker.host=activemq
