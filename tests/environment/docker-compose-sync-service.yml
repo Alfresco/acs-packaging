@@ -11,7 +11,7 @@ version: "3"
 services:
   alfresco:
     depends_on:
-      - postgres
+      - mysql
       - activemq
     image: alfresco/alfresco-content-repository:latest
     environment:
