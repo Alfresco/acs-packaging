@@ -201,14 +201,6 @@ jobs:
       script:
        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch"
 
-    - name: "Elasticsearch TAS tests (Search API) MySQL"
-      if: commit_message !~ /\[skip search\]/
-      vm:
-        size: large
-      script:
-        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch"
-
-
     - name: "Opensearch TAS tests (Search API)"
       if: commit_message !~ /\[skip search\]/
       vm:
