@@ -14,6 +14,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.support.TestPropertySourceUtils;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
@@ -75,6 +76,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         PostgreSQLContainer postgres = createPosgresContainer();
 
+        MySQLContainer mysql = createMySqlContainer();
+
         GenericContainer activemq = createAMQContainer();
 
         searchEngineContainer = createSearchEngineContainer();
@@ -83,7 +86,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         configureSecuritySettings(searchEngineContainer);
 
-        startOrFail(postgres);
+        startOrFail(mysql);
 
         startOrFail(activemq, sfs);
 
@@ -248,6 +251,19 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                              .withStartupTimeout(Duration.ofMinutes(2));
     }
 
+
+    private MySQLContainer createMySqlContainer()
+    {
+        return (MySQLContainer) new MySQLContainer(getImagesConfig().getMySQLImage())
+                                            .withPassword("alfresco")
+                                            .withUsername("alfresco")
+                                            .withDatabaseName("alfresco")
+                                            .withNetwork(network)
+                                            .withNetworkAliases("postgres")
+                                            .withStartupTimeout(Duration.ofMinutes(2));
+
+    }
+
     private GenericContainer createSfsContainer()
     {
         return new GenericContainer(getImagesConfig().getSharedFileStoreImage())
@@ -360,6 +376,10 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         String getPostgreSQLImage();
 
+        String getMySQLImage();
+
+        String getDatabaseType();
+
         String getRepositoryImage();
 
         String getKibanaImage();
@@ -435,6 +455,24 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         public String getPostgreSQLImage()
         {
             return "postgres:" + envProperties.apply("POSTGRES_TAG");
+        }
+
+        @Override
+        public String getMySQLImage()
+        {
+            return "mysql:" + envProperties.apply("MYSQL_TAG");
+        }
+
+        //TODO: Add mechanism to switch database.
+        @Override
+        public String getDatabaseType() {
+            String searchEngineTypeProperty = mavenProperties.apply("database.type");
+            if(Strings.isNullOrEmpty(searchEngineTypeProperty))
+            {
+                throw new IllegalArgumentException("Property 'search.engine.type' not set.");
+
+            }
+            return searchEngineTypeProperty;
         }
 
         @Override
