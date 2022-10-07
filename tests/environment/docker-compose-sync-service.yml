@@ -30,10 +30,10 @@ services:
         "
         -Dalfresco.port=8082
         -Daos.baseUrlOverwrite=http://localhost:8082/alfresco/aos
-        -Ddb.driver=org.postgresql.Driver
+        -Ddb.driver=com.mysql.cj.jdbc.Driver
         -Ddb.username=alfresco
         -Ddb.password=alfresco
-        -Ddb.url=jdbc:postgresql://postgres:5432/alfresco
+        -Ddb.url=jdbc:mysql://mysql:5432/alfresco
         -Dalfresco.restApi.basicAuthScheme=true
         -Dmessaging.broker.url=\"failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true\"
         -Dsolr.host=solr6
@@ -55,9 +55,21 @@ services:
     environment:
       - POSTGRES_PASSWORD=alfresco
       - POSTGRES_USER=alfresco
-      - POSTGRES_DB=alfresco
+      - MYSQL_DATABASE=alfresco
     ports:
       - 5432:5432
+      -
+
+
+  mysql:
+      image: library/mysql:8.0.30
+      environment:
+        - MYSQL_PASSWORD=alfresco
+        - MYSQL_USER=alfresco
+        - POSTGRES_DB=alfresco
+      ports:
+        - 5432:5432
+        -
 
   solr6:
     depends_on:
