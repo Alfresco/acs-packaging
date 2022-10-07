@@ -50,17 +50,6 @@ services:
       - 8082:8080
       - 8000:8000
 
-  postgres:
-    image: library/postgres:${POSTGRES_TAG}
-    environment:
-      - POSTGRES_PASSWORD=alfresco
-      - POSTGRES_USER=alfresco
-      - MYSQL_DATABASE=alfresco
-    ports:
-      - 5432:5432
-      -
-
-
   mysql:
       image: library/mysql:8.0.30
       environment:
@@ -69,7 +58,6 @@ services:
         - POSTGRES_DB=alfresco
       ports:
         - 5432:5432
-        -
 
   solr6:
     depends_on:
