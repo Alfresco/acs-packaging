@@ -128,7 +128,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     public void basicQuery()
     {
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document");
-        searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME, file3Name);
+        searchQueryService.expectResultsInclude(query, user1, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME, file3Name);
     }
 
     @TestRail (description = "Check documents can be selected using cmis:objectId.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
@@ -144,10 +144,10 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     public void objectTypeIdQuery()
     {
         SearchRequest query1 = req("cmis", "SELECT * FROM cmis:folder WHERE cmis:objectTypeId = 'cmis:folder'");
-        searchQueryService.expectResultsFromQuery(query1, user1, "documentLibrary", FOLDER_0_NAME, FOLDER_1_NAME, user1.getUsername());
+        searchQueryService.expectResultsInclude(query1, user1, "documentLibrary", FOLDER_0_NAME, FOLDER_1_NAME, user1.getUsername());
 
         SearchRequest query2 = req("cmis", "SELECT * FROM cmis:folder WHERE cmis:objectTypeId = 'F:st:site'");
-        searchQueryService.expectResultsFromQuery(query2, user1, siteModel1.getId());
+        searchQueryService.expectResultsInclude(query2, user1, siteModel1.getId());
     }
 
     @TestRail (description = "Check folders can be selected using cmis:baseTypeId.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
@@ -155,7 +155,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     public void baseTypeIdQuery()
     {
         SearchRequest query = req("cmis", "SELECT * FROM cmis:folder WHERE cmis:baseTypeId = 'cmis:folder'");
-        searchQueryService.expectResultsFromQuery(query, user1, "documentLibrary", FOLDER_0_NAME, FOLDER_1_NAME, user1.getUsername(), siteModel1.getId());
+        searchQueryService.expectResultsInclude(query, user1, "documentLibrary", FOLDER_0_NAME, FOLDER_1_NAME, user1.getUsername(), siteModel1.getId());
     }
 
     @TestRail (description = "Check folders can be selected using cmis:description is null.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
@@ -163,7 +163,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     public void isNullQuery()
     {
         SearchRequest query = req("cmis", "SELECT * FROM cmis:folder WHERE cmis:description IS NULL");
-        searchQueryService.expectResultsFromQuery(query, user1, "documentLibrary", FOLDER_0_NAME, FOLDER_1_NAME, user1.getUsername());
+        searchQueryService.expectResultsInclude(query, user1, "documentLibrary", FOLDER_0_NAME, FOLDER_1_NAME, user1.getUsername());
     }
 
     @TestRail (description = "Check folders can be selected using cmis:description is not null.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
@@ -171,7 +171,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     public void isNotNullQuery()
     {
         SearchRequest query = req("cmis", "SELECT * FROM cmis:folder WHERE cmis:description IS NOT NULL");
-        searchQueryService.expectResultsFromQuery(query, user1, siteModel1.getId());
+        searchQueryService.expectResultsInclude(query, user1, siteModel1.getId());
     }
 
     @TestRail (description = "Check we can use the CMIS LIKE syntax to match a prefix.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
@@ -500,7 +500,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     public void selectFolders()
     {
         SearchRequest query = req("cmis", "SELECT * FROM cmis:folder");
-        searchQueryService.expectResultsFromQuery(query, user1,
+        searchQueryService.expectResultsInclude(query, user1,
                 // We expect the site and the document library, ...
                 siteModel1.getId(), "documentLibrary",
                 // the two folders, ...

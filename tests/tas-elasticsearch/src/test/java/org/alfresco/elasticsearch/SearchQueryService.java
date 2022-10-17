@@ -58,6 +58,13 @@ public class SearchQueryService
         expectResultsFromQuery(searchRequest, user, assertNames);
     }
 
+    /** Check that the specified results are all included in the result set. */
+    public void expectResultsInclude(SearchRequest searchRequest, UserModel user, String... expected)
+    {
+        Consumer<SearchResponse> assertNames = searchResponse -> assertNamesInclude(searchResponse, expected);
+        expectResultsFromQuery(searchRequest, user, assertNames);
+    }
+
     public void expectNodeTypesFromQuery(SearchRequest searchRequest, UserModel user, String... expected)
     {
         Consumer<SearchResponse> assertNodeTypes = searchResponse -> assertNodeTypes(searchResponse, expected);
@@ -126,6 +133,19 @@ public class SearchQueryService
                                    .collect(Collectors.toSet());
         Set<String> expectedList = Sets.newHashSet(expected);
         assertEquals(result, expectedList, "Unexpected search results - got " + result + " expected " + expectedList);
+    }
+
+    /** Check that the given names are included in the result set. */
+    private void assertNamesInclude(SearchResponse actual, String... expected)
+    {
+        Set<String> expectedSet = Sets.newHashSet(expected);
+        // Filter to only include results that were expected.
+        Set<String> filteredResults = actual.getEntries().stream()
+                                            .map(SearchNodeModel::getModel)
+                                            .map(SearchNodeModel::getName)
+                                            .filter(name -> expectedSet.contains(name))
+                                            .collect(Collectors.toSet());
+        assertEquals(filteredResults, expectedSet, "Did not receive all the expected search results - got " + filteredResults + " from expected set " + expectedSet);
     }
 
     private List<String> orderNames(boolean isAscending, String... filename){

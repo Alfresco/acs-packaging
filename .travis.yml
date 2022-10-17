@@ -33,8 +33,8 @@ env:
     - ALF_LICENCE_S3_PATH=s3://acs-license/acs/alf73-allenabled.lic
     - ALF_LICENCE_LOCAL_PATH=/tmp/licence.lic
     # Release version has to start with real version (7.3.0-....) for the docker image to build successfully.
-    - RELEASE_VERSION=7.3.0-A26
-    - DEVELOPMENT_VERSION=7.3.0-A27-SNAPSHOT
+    - RELEASE_VERSION=7.3.0-A28
+    - DEVELOPMENT_VERSION=7.3.0-A29-SNAPSHOT
     - DTAS_VERSION="${DTAS_VERSION:-v1.1}"
     - PYTHON_VERSION=3.7.12
 
@@ -166,6 +166,26 @@ jobs:
       script:
         - travis_wait 60 mvn -B install -ntp -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
       after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-restapi"
+
+    - name: "CMIS TAS tests with AIMS - BROWSER binding"
+      if: commit_message !~ /\[skip tas\]/ AND fork = false # AIMS docker image requires access to quay.io
+      before_script:
+        # AIMS cannot be configured via localhost
+        - export HOST_IP=$(hostname  -I | cut -f1 -d' ')
+        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-aims.yml
+        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco" 180
+      script:
+        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-browser-with-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
+
+    - name: "CMIS TAS tests with AIMS - ATOM binding"
+      if: commit_message !~ /\[skip tas\]/ AND fork = false # AIMS docker image requires access to quay.io
+      before_script:
+        # AIMS cannot be configured via localhost
+        - export HOST_IP=$(hostname  -I | cut -f1 -d' ')
+        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-aims.yml
+        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco" 180
+      script:
+        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-atom-with-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
 
     - name: "CMIS TAS tests - Elastic Search (CMIS API)"
       if: commit_message !~ /\[skip search\]/
