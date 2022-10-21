@@ -344,7 +344,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                        .waitingFor(new LogMessageWaitStrategy().withRegEx(".*Server startup in.*\\n"))
                        .withStartupTimeout(Duration.ofMinutes(7))
                        .withFileSystemBind(
-                               "jdbc/mysql-connector-java-8.0.30.jar",
+                               "./jdbc/mysql-connector-java-8.0.30.jar",
                                "/usr/local/tomcat/lib/mysql-connector-java-8.0.30.jar",
                                BindMode.READ_ONLY)
                        .withExposedPorts(8080, 8000)
