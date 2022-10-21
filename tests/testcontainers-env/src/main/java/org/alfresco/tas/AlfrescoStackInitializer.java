@@ -317,10 +317,10 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 "-Dmetadata-keystore.metadata.password=oKIWzVdEdA -Dmetadata-keystore.metadata.algorithm=DESede")
                        .withEnv("JAVA_OPTS",
                                 "-Delasticsearch.createIndexIfNotExists=true " +
-                                "-Ddb.driver=org.postgresql.Driver " +
+                                "-Ddb.driver=com.mysql.cj.jdbc.Driver " +
                                 "-Ddb.username=alfresco " +
                                 "-Ddb.password=alfresco " +
-                                "-Ddb.url=jdbc:postgresql://postgres:5432/alfresco " +
+                                "-Ddb.url=jdbc:mysql://mysql:3306/alfresco " +
                                 "-Dindex.subsystem.name=elasticsearch " +
                                 "-Delasticsearch.host=elasticsearch " +
                                 "-Delasticsearch.indexName=" + CUSTOM_ALFRESCO_INDEX + " " +
@@ -343,6 +343,10 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                        .withNetworkAliases("alfresco")
                        .waitingFor(new LogMessageWaitStrategy().withRegEx(".*Server startup in.*\\n"))
                        .withStartupTimeout(Duration.ofMinutes(7))
+                       .withFileSystemBind(
+                               "jdbc/mysql-connector-java-8.0.30.jar",
+                               "/usr/local/tomcat/lib/mysql-connector-java-8.0.30.jar",
+                               BindMode.READ_ONLY)
                        .withExposedPorts(8080, 8000)
                        .withClasspathResourceMapping("exactTermSearch.properties",
                         "/usr/local/tomcat/webapps/alfresco/WEB-INF/classes/alfresco/search/elasticsearch/config/exactTermSearch.properties",
