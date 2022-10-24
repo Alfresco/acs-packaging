@@ -68,6 +68,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         network = Network.newNetwork();
 
+        JdbcDatabaseContainer database = createDatabaseContainer();
+
         alfresco = createAlfrescoContainer();
 
         GenericContainer transformRouter = createTransformRouterContainer();
@@ -75,12 +77,6 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         GenericContainer transformCore = createTransformCoreContainer();
 
         GenericContainer sfs = createSfsContainer();
-
-        PostgreSQLContainer postgres = createPosgresContainer();
-
-        MySQLContainer mysql = createMySqlContainer();
-
-        JdbcDatabaseContainer database = createDatabaseContainer();
 
         GenericContainer activemq = createAMQContainer();
 
@@ -90,7 +86,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         configureSecuritySettings(searchEngineContainer);
 
-        startOrFail(mysql);
+        startOrFail(database);
 
         startOrFail(activemq, sfs);
 
