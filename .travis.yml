@@ -219,24 +219,24 @@ jobs:
       vm:
         size: large
       script:
-       - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=postgres"
+       - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=postgresql"
 
     - name: "Opensearch TAS tests (Search API)"
       if: commit_message !~ /\[skip search\]/
       vm:
         size: large
       script:
-        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch" "-Ddatabase.type=postgres"
+        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch" "-Ddatabase.type=postgresql"
 
     - name: "Elasticsearch Basic Auth TAS tests"
       if: commit_message !~ /\[skip search\]/
       script:
-       - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=postgres"
+       - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=postgresql"
 
     - name: "Opensearch Basic Auth TAS tests"
       if: commit_message !~ /\[skip search\]/
       script:
-        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch" "-Ddatabase.type=postgres"
+        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch" "-Ddatabase.type=postgresql"
 
     - name: "Elasticsearch Upgrade TAS tests"
       if: commit_message !~ /\[skip search\]/
@@ -245,7 +245,7 @@ jobs:
       script:
         - pip install awscli
         - AWS_ACCESS_KEY_ID=${LICENCES_AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${LICENCES_AWS_SECRET_ACCESS_KEY} aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
-        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=postgres"
+        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=postgresql"
 
     - name: "Opensearch Upgrade TAS tests"
       if: commit_message !~ /\[skip search\]/
@@ -254,7 +254,7 @@ jobs:
       script:
         - pip install awscli
         - AWS_ACCESS_KEY_ID=${LICENCES_AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${LICENCES_AWS_SECRET_ACCESS_KEY} aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
-        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch" "-Ddatabase.type=postgres"
+        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch" "-Ddatabase.type=postgresql"
 
     - name: "All AMPs tests"
       before_script:

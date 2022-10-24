@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-import com.github.dockerjava.api.command.CreateContainerCmd;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContextInitializer;
@@ -122,13 +121,13 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     {
         switch (getImagesConfig().getDatabaseType())
         {
-            case POSTGRES_DB:
-                databasePropertyString = "-Ddb.driver=com.mysql.cj.jdbc.Driver " +
-                    "-Ddb.url=jdbc:mysql://mysql:3306/alfresco ";
+            case POSTGRESQL_DB:
+                databasePropertyString = "-Ddb.driver=org.postgresql.Driver " +
+                        "-Ddb.url=jdbc:postgresql://postgres:5432/alfresco ";
                 return createPosgresContainer();
             case MYSQL_DB:
                 databasePropertyString = "-Ddb.driver=com.mysql.cj.jdbc.Driver " +
-                    "-Ddb.url=jdbc:mysql://mysql:3306/alfresco ";
+                        "-Ddb.url=jdbc:mysql://mysql:3306/alfresco ";
                 return createMySqlContainer();
             default:
                 throw new IllegalArgumentException("Database not set.");

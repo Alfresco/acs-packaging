@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public enum DatabaseType
 {
-    POSTGRES_DB("postgres"),
+    POSTGRESQL_DB("postgresql"),
     MYSQL_DB("mysql");
 
     private final String type;
