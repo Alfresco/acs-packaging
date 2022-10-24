@@ -14,6 +14,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.support.TestPropertySourceUtils;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -31,6 +32,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     public static final String CUSTOM_ALFRESCO_INDEX = "custom-alfresco-index";
     private static Logger LOGGER = LoggerFactory.getLogger(AlfrescoStackInitializer.class);
     private static Slf4jLogConsumer LOG_CONSUMER = new Slf4jLogConsumer(LOGGER);
+
+    String databasePropertyString;
 
     public static Network network;
 
@@ -78,6 +81,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         MySQLContainer mysql = createMySqlContainer();
 
+        JdbcDatabaseContainer database = createDatabaseContainer();
+
         GenericContainer activemq = createAMQContainer();
 
         searchEngineContainer = createSearchEngineContainer();
@@ -111,6 +116,23 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                                                   "alfresco.server=" + alfresco.getContainerIpAddress(),
                                                                   "alfresco.port=" + alfresco.getFirstMappedPort());
 
+    }
+
+    private JdbcDatabaseContainer createDatabaseContainer()
+    {
+        switch (getImagesConfig().getDatabaseType())
+        {
+            case POSTGRES_DB:
+                databasePropertyString = "-Ddb.driver=com.mysql.cj.jdbc.Driver " +
+                    "-Ddb.url=jdbc:mysql://mysql:3306/alfresco ";
+                return createPosgresContainer();
+            case MYSQL_DB:
+                databasePropertyString = "-Ddb.driver=com.mysql.cj.jdbc.Driver " +
+                    "-Ddb.url=jdbc:mysql://mysql:3306/alfresco ";
+                return createMySqlContainer();
+            default:
+                throw new IllegalArgumentException("Database not set.");
+        }
     }
 
     public void configureSecuritySettings(GenericContainer searchEngineContainer)
@@ -316,38 +338,38 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 "-Dmetadata-keystore.password=mp6yc0UD9e -Dmetadata-keystore.aliases=metadata " +
                                 "-Dmetadata-keystore.metadata.password=oKIWzVdEdA -Dmetadata-keystore.metadata.algorithm=DESede")
                        .withEnv("JAVA_OPTS",
-                                "-Delasticsearch.createIndexIfNotExists=true " +
-                                "-Ddb.driver=com.mysql.cj.jdbc.Driver " +
-                                "-Ddb.username=alfresco " +
-                                "-Ddb.password=alfresco " +
-                                "-Ddb.url=jdbc:mysql://mysql:3306/alfresco " +
-                                "-Dindex.subsystem.name=elasticsearch " +
-                                "-Delasticsearch.host=elasticsearch " +
-                                "-Delasticsearch.indexName=" + CUSTOM_ALFRESCO_INDEX + " " +
-                                "-Dshare.host=127.0.0.1 " +
-                                "-Dshare.port=8080 " +
-                                "-Dalfresco.host=localhost " +
-                                "-Dalfresco.port=8080 " +
-                                "-Daos.baseUrlOverwrite=http://localhost:8080/alfresco/aos " +
-                                "-Dmessaging.broker.url=\"failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true\" " +
-                                "-Ddeployment.method=DOCKER_COMPOSE " +
-                                "-Dtransform.service.enabled=true " +
-                                "-Dtransform.service.url=http://transform-router:8095 " +
-                                "-Dsfs.url=http://shared-file-store:8099 " +
-                                "-DlocalTransform.core-aio.url=http://transform-core-aio:8090/ " +
-                                "-Dcsrf.filter.enabled=false " +
-                                "-Dalfresco.restApi.basicAuthScheme=true " +
-                                "-Dquery.cmis.queryConsistency=EVENTUAL " +
-                                "-Xms1500m -Xmx1500m ")
+                               "-Delasticsearch.createIndexIfNotExists=true " +
+                                       databasePropertyString +
+                                       "-Ddb.username=alfresco " +
+                                       "-Ddb.password=alfresco " +
+                                       "-Dindex.subsystem.name=elasticsearch " +
+                                       "-Delasticsearch.host=elasticsearch " +
+                                       "-Delasticsearch.indexName=" + CUSTOM_ALFRESCO_INDEX + " " +
+                                       "-Dshare.host=127.0.0.1 " +
+                                       "-Dshare.port=8080 " +
+                                       "-Dalfresco.host=localhost " +
+                                       "-Dalfresco.port=8080 " +
+                                       "-Daos.baseUrlOverwrite=http://localhost:8080/alfresco/aos " +
+                                       "-Dmessaging.broker.url=\"failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true\" " +
+                                       "-Ddeployment.method=DOCKER_COMPOSE " +
+                                       "-Dtransform.service.enabled=true " +
+                                       "-Dtransform.service.url=http://transform-router:8095 " +
+                                       "-Dsfs.url=http://shared-file-store:8099 " +
+                                       "-DlocalTransform.core-aio.url=http://transform-core-aio:8090/ " +
+                                       "-Dcsrf.filter.enabled=false " +
+                                       "-Dalfresco.restApi.basicAuthScheme=true " +
+                                       "-Dquery.cmis.queryConsistency=EVENTUAL " +
+                                       "-Xms1500m -Xmx1500m ")
                        .withNetwork(network)
                        .withNetworkAliases("alfresco")
                        .waitingFor(new LogMessageWaitStrategy().withRegEx(".*Server startup in.*\\n"))
                        .withStartupTimeout(Duration.ofMinutes(7))
                        .withFileSystemBind(
-                               "./jdbc/mysql-connector-java-8.0.30.jar",
+                               "/Users/Kacper.Magdziarz@hyland.com/IdeaProjects/acs-packaging/tests/testcontainers-env/src/main/resources/jdbc/mysql-connector-java-8.0.30.jar",
                                "/usr/local/tomcat/lib/mysql-connector-java-8.0.30.jar",
                                BindMode.READ_ONLY)
                        .withExposedPorts(8080, 8000)
+                       .withLogConsumer(outputFrame -> System.out.print("[Container]: " + outputFrame.toString()))
                        .withClasspathResourceMapping("exactTermSearch.properties",
                         "/usr/local/tomcat/webapps/alfresco/WEB-INF/classes/alfresco/search/elasticsearch/config/exactTermSearch.properties",
                         BindMode.READ_ONLY);
@@ -382,7 +404,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         String getMySQLImage();
 
-        String getDatabaseType();
+        DatabaseType getDatabaseType();
 
         String getRepositoryImage();
 
@@ -467,22 +489,21 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
             return "mysql:" + envProperties.apply("MYSQL_TAG");
         }
 
-        //TODO: Add mechanism to switch database.
         @Override
-        public String getDatabaseType() {
-            String searchEngineTypeProperty = mavenProperties.apply("database.type");
-            if(Strings.isNullOrEmpty(searchEngineTypeProperty))
+        public DatabaseType getDatabaseType() {
+            String databaseTypeProperty = mavenProperties.apply("database.type");
+            if(Strings.isNullOrEmpty(databaseTypeProperty))
             {
-                throw new IllegalArgumentException("Property 'search.engine.type' not set.");
+                throw new IllegalArgumentException("Property 'database.type' not set.");
 
             }
-            return searchEngineTypeProperty;
+            return DatabaseType.from(databaseTypeProperty);
         }
 
         @Override
         public String getRepositoryImage()
         {
-            return "alfresco/alfresco-content-repository:latest";
+            return "quay.io/alfresco/alfresco-content-repository:7.3.0-A29";
         }
 
         @Override
