@@ -106,9 +106,6 @@ fi
 # Build the current project
 mvn -B -ntp -V -q install -DskipTests -Dmaven.javadoc.skip=true -Pbuild-docker-images -Pags ${REPO_IMAGE} ${SHARE_IMAGE}
 
-# Build container for databases TAS tests
-docker build alfresco-repository-databases .
-
 popd
 set +vex
 echo "=========================== Finishing Build Script =========================="
