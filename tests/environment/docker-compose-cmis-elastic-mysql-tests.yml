@@ -22,7 +22,7 @@ services:
         -Ddb.driver=com.mysql.cj.jdbc.Driver
         -Ddb.username=alfresco
         -Ddb.password=alfresco
-        -Ddb.url=jdbc:mysql://mysql:3306/alfresc
+        -Ddb.url=jdbc:mysql://mysql:3306/alfresco
         -Dindex.subsystem.name=elasticsearch
         -Delasticsearch.host=elasticsearch
         -Delasticsearch.indexName=${ELASTICSEARCH_INDEX_NAME}
