@@ -39,7 +39,6 @@ env:
     - PYTHON_VERSION=3.7.12
 
 stages:
-  - name: build
   - name: test
     if: commit_message !~ /\[skip tests\]/
   - name: docker_latest
@@ -54,16 +53,12 @@ stages:
     if: (commit_message =~ /\[downstream\]/ OR (commit_message =~ /\[release\]/ AND commit_message !~ /\[no downstream\]/)) AND (branch = master OR branch =~ /release\/.*/) AND type != pull_request AND fork = false
 
 before_install: travis_retry bash scripts/travis/init.sh
-install: travis_retry travis_wait 40 bash scripts/travis/build.sh
+install:
+  - travis_retry travis_wait 40 bash scripts/travis/build.sh
+  - docker build -t alfresco-repository-databases tests/testcontainers-env/src/main/resources
 
 jobs:
   include:
-    - stage: build
-    - name: "Building Content Repository Image for testcontainers tests."
-      script:
-      - docker build -t alfresco-repository-databases tests/testcontainers-env/src/main/resources
-      - docker images
-
     - stage: test
     - name: "Source Clear Scan (SCA)"
       if: (branch = master OR branch =~ /release\/.*/) AND type != pull_request
