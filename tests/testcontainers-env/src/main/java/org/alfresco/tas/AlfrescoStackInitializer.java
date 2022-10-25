@@ -32,8 +32,6 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     private static Logger LOGGER = LoggerFactory.getLogger(AlfrescoStackInitializer.class);
     private static Slf4jLogConsumer LOG_CONSUMER = new Slf4jLogConsumer(LOGGER);
 
-    String databasePropertyString;
-
     public static Network network;
 
     public static GenericContainer alfresco;
@@ -68,9 +66,9 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         network = Network.newNetwork();
 
-        JdbcDatabaseContainer database = createDatabaseContainer();
-
         alfresco = createAlfrescoContainer();
+
+        JdbcDatabaseContainer database = createDatabaseContainer();
 
         GenericContainer transformRouter = createTransformRouterContainer();
 
@@ -118,16 +116,26 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         switch (getImagesConfig().getDatabaseType())
         {
             case POSTGRESQL_DB:
-                databasePropertyString = "-Ddb.driver=org.postgresql.Driver " +
-                        "-Ddb.url=jdbc:postgresql://postgres:5432/alfresco ";
+                setupDatabaseOptions("org.postgresql.Driver", "jdbc:postgresql://postgres:5432/alfresco");
                 return createPosgresContainer();
             case MYSQL_DB:
-                databasePropertyString = "-Ddb.driver=com.mysql.cj.jdbc.Driver " +
-                        "-Ddb.url=jdbc:mysql://mysql:3306/alfresco ";
+                setupDatabaseOptions("com.mysql.cj.jdbc.Driver ", "jdbc:mysql://mysql:3306/alfresco");
                 return createMySqlContainer();
             default:
                 throw new IllegalArgumentException("Database not set.");
         }
+    }
+
+    private void setupDatabaseOptions(String driver, String url)
+    {
+        String javaOpts = (String) alfresco.getEnvMap().get("JAVA_OPTS");
+        javaOpts =
+                "-Ddb.driver=" + driver + " " +
+                "-Ddb.url=" + url + " " +
+                "-Ddb.username=alfresco " +
+                "-Ddb.password=alfresco " +
+                javaOpts;
+        alfresco.getEnvMap().put("JAVA_OPTS", javaOpts);
     }
 
     public void configureSecuritySettings(GenericContainer searchEngineContainer)
@@ -334,9 +342,6 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 "-Dmetadata-keystore.metadata.password=oKIWzVdEdA -Dmetadata-keystore.metadata.algorithm=DESede")
                        .withEnv("JAVA_OPTS",
                                 "-Delasticsearch.createIndexIfNotExists=true " +
-                                databasePropertyString +
-                                "-Ddb.username=alfresco " +
-                                "-Ddb.password=alfresco " +
                                 "-Dindex.subsystem.name=elasticsearch " +
                                 "-Delasticsearch.host=elasticsearch " +
                                 "-Delasticsearch.indexName=" + CUSTOM_ALFRESCO_INDEX + " " +
