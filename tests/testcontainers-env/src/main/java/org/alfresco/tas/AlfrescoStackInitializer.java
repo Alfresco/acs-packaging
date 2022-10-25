@@ -113,25 +113,25 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     private JdbcDatabaseContainer createDatabaseContainer()
     {
+        setupDatabaseOptions(getImagesConfig().getDatabaseType());
+
         switch (getImagesConfig().getDatabaseType())
         {
             case POSTGRESQL_DB:
-                setupDatabaseOptions("org.postgresql.Driver", "jdbc:postgresql://postgres:5432/alfresco");
                 return createPosgresContainer();
             case MYSQL_DB:
-                setupDatabaseOptions("com.mysql.cj.jdbc.Driver ", "jdbc:mysql://mysql:3306/alfresco");
                 return createMySqlContainer();
             default:
                 throw new IllegalArgumentException("Database not set.");
         }
     }
 
-    private void setupDatabaseOptions(String driver, String url)
+    private void setupDatabaseOptions(DatabaseType type)
     {
         String javaOpts = (String) alfresco.getEnvMap().get("JAVA_OPTS");
         javaOpts =
-                "-Ddb.driver=" + driver + " " +
-                "-Ddb.url=" + url + " " +
+                "-Ddb.driver=" + type.getDriver() + " " +
+                "-Ddb.url=" + type.getUrl() + " " +
                 "-Ddb.username=alfresco " +
                 "-Ddb.password=alfresco " +
                 javaOpts;
@@ -498,7 +498,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         @Override
         public String getRepositoryImage()
         {
-            return "alfresco-repository-databases";
+            return "alfresco-repository-databases:latest";
         }
 
         @Override

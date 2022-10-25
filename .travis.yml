@@ -57,7 +57,6 @@ install: travis_retry travis_wait 40 bash scripts/travis/build.sh
 
 jobs:
   include:
-    - stage: test
     - name: "Source Clear Scan (SCA)"
       if: (branch = master OR branch =~ /release\/.*/) AND type != pull_request
       # Run Veracode
@@ -188,7 +187,7 @@ jobs:
       script:
         - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-atom-with-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
 
-    - name: "CMIS TAS tests - Elastic Search (CMIS API)"
+    - name: "CMIS TAS tests - Elastic Search | postgreSQL (CMIS API)"
       if: commit_message !~ /\[skip search\]/
       before_script:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml
@@ -196,6 +195,15 @@ jobs:
       script:
         - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
       after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
+
+#    - name: "CMIS TAS tests - Elastic Search MySQL (CMIS API)"
+#      if: commit_message !~ /\[skip search\]/
+#      before_script:
+#        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-mysql-tests.yml
+#        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#      script:
+#        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
+#      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
 
     - name: "CMIS TAS tests - Open Search (CMIS API)"
       if: commit_message !~ /\[skip search\]/
@@ -215,35 +223,51 @@ jobs:
         - travis_wait 20 mvn -B install -ntp -f tests/tas-sync-service/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
       after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-sync-service"
 
-    - name: "Elasticsearch TAS tests (Search API)"
+    - name: "Elasticsearch TAS tests | postgreSQL (Search API)"
       if: commit_message !~ /\[skip search\]/
       vm:
         size: large
       before_script:
-        - docker build -t alfresco-repository-databases tests/testcontainers-env/src/main/resources
+        - docker build -t alfresco-repository-databases tests/environment
       script:
        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=postgresql"
+
+#    - name: "Elasticsearch TAS tests | MySQL (Search API)"
+#      if: commit_message !~ /\[skip search\]/
+#      vm:
+#        size: large
+#      before_script:
+#        - docker build -t alfresco-repository-databases tests/environment
+#      script:
+#        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mysql"
 
     - name: "Opensearch TAS tests (Search API)"
       if: commit_message !~ /\[skip search\]/
       vm:
         size: large
       before_script:
-        - docker build -t alfresco-repository-databases tests/testcontainers-env/src/main/resources
+        - docker build -t alfresco-repository-databases tests/environment
       script:
         - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch" "-Ddatabase.type=postgresql"
 
-    - name: "Elasticsearch Basic Auth TAS tests"
+    - name: "Elasticsearch Basic Auth TAS tests | postgreSQL"
       if: commit_message !~ /\[skip search\]/
       before_script:
-        - docker build -t alfresco-repository-databases tests/testcontainers-env/src/main/resources
+        - docker build -t alfresco-repository-databases tests/environment
       script:
        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=postgresql"
+
+#    - name: "Elasticsearch Basic Auth TAS tests | MySQL"
+#      if: commit_message !~ /\[skip search\]/
+#      before_script:
+#        - docker build -t alfresco-repository-databases tests/environment
+#      script:
+#        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mysql"
 
     - name: "Opensearch Basic Auth TAS tests"
       if: commit_message !~ /\[skip search\]/
       before_script:
-        - docker build -t alfresco-repository-databases tests/testcontainers-env/src/main/resources
+        - docker build -t alfresco-repository-databases tests/environment
       script:
         - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch" "-Ddatabase.type=postgresql"
 
@@ -252,7 +276,7 @@ jobs:
       vm:
         size: large
       before_script:
-        - docker build -t alfresco-repository-databases tests/testcontainers-env/src/main/resources
+        - docker build -t alfresco-repository-databases tests/environment
       script:
         - pip install awscli
         - AWS_ACCESS_KEY_ID=${LICENCES_AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${LICENCES_AWS_SECRET_ACCESS_KEY} aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
@@ -263,7 +287,7 @@ jobs:
       vm:
         size: large
       before_script:
-        - docker build -t alfresco-repository-databases tests/testcontainers-env/src/main/resources
+        - docker build -t alfresco-repository-databases tests/environment
       script:
         - pip install awscli
         - AWS_ACCESS_KEY_ID=${LICENCES_AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${LICENCES_AWS_SECRET_ACCESS_KEY} aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
