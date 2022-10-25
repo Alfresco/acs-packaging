@@ -60,7 +60,7 @@ jobs:
   include:
     - stage: build
     - name: "Building Content Repository Image for testcontainers tests."
-      - script: docker build -t alfresco-repository-databases tests/testcontainers-env/src/main/resources
+      script: docker build -t alfresco-repository-databases tests/testcontainers-env/src/main/resources
 
     - stage: test
     - name: "Source Clear Scan (SCA)"
