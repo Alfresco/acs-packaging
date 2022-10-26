@@ -77,13 +77,13 @@
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
                                 <!-- Do not comment out, as this will cause problems in the Single Pipeline. -->
-                                <artifactItem>
+<!--                                <artifactItem>
                                     <groupId>org.alfresco.aos-module</groupId>
                                     <artifactId>alfresco-aos-module</artifactId>
                                     <type>amp</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
-                                </artifactItem>
+                                </artifactItem>-->
                                 <!-- Do not comment out, as this will cause problems in the Single Pipeline. -->
                                 <artifactItem>
                                     <groupId>org.alfresco.integrations</groupId>
