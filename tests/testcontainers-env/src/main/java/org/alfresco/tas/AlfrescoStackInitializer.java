@@ -113,8 +113,6 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     private JdbcDatabaseContainer createDatabaseContainer()
     {
-        setupDatabaseOptions(getImagesConfig().getDatabaseType());
-
         switch (getImagesConfig().getDatabaseType())
         {
             case POSTGRESQL_DB:
@@ -124,18 +122,6 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
             default:
                 throw new IllegalArgumentException("Database not set.");
         }
-    }
-
-    private void setupDatabaseOptions(DatabaseType type)
-    {
-        String javaOpts = (String) alfresco.getEnvMap().get("JAVA_OPTS");
-        javaOpts =
-                "-Ddb.driver=" + type.getDriver() + " " +
-                "-Ddb.url=" + type.getUrl() + " " +
-                "-Ddb.username=alfresco " +
-                "-Ddb.password=alfresco " +
-                javaOpts;
-        alfresco.getEnvMap().put("JAVA_OPTS", javaOpts);
     }
 
     public void configureSecuritySettings(GenericContainer searchEngineContainer)
@@ -331,6 +317,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     protected GenericContainer createAlfrescoContainer()
     {
+        DatabaseType databaseType = getImagesConfig().getDatabaseType();
         return new GenericContainer(getImagesConfig().getRepositoryImage())
                        .withEnv("CATALINA_OPTS", "\"-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n\"")
                        .withEnv("JAVA_TOOL_OPTIONS",
@@ -345,6 +332,10 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 "-Dindex.subsystem.name=elasticsearch " +
                                 "-Delasticsearch.host=elasticsearch " +
                                 "-Delasticsearch.indexName=" + CUSTOM_ALFRESCO_INDEX + " " +
+                                "-Ddb.driver=" + databaseType.getDriver() + " " +
+                                "-Ddb.url=" + databaseType.getUrl() + " " +
+                                "-Ddb.username=alfresco " +
+                                "-Ddb.password=alfresco " +
                                 "-Dshare.host=127.0.0.1 " +
                                 "-Dshare.port=8080 " +
                                 "-Dalfresco.host=localhost " +
