@@ -2,7 +2,8 @@ version: "2"
 
 services:
   alfresco:
-    image: quay.io/alfresco/alfresco-content-repository:${ALFRESCO_TAG}
+    build: .
+    image: alfresco-repository-database
     mem_limit: 3400m
     environment:
       CATALINA_OPTS: "-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n"
@@ -18,10 +19,7 @@ services:
         "
       JAVA_OPTS: '
         -Delasticsearch.createIndexIfNotExists=true
-        -Ddb.driver=org.postgresql.Driver
-        -Ddb.username=alfresco
-        -Ddb.password=alfresco
-        -Ddb.url=jdbc:postgresql://postgres:5432/alfresco
+        ${DATABASE_ENV_PROPERTIES}
         -Dindex.subsystem.name=elasticsearch
         -Delasticsearch.host=elasticsearch
         -Delasticsearch.indexName=${ELASTICSEARCH_INDEX_NAME}
@@ -101,7 +99,7 @@ services:
         -Dalfresco.protocol=http
         "
 
-  postgres:
+  database:
     image: postgres:${POSTGRES_TAG}
     mem_limit: 512m
     environment:
