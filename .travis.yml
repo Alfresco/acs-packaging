@@ -53,7 +53,9 @@ stages:
     if: (commit_message =~ /\[downstream\]/ OR (commit_message =~ /\[release\]/ AND commit_message !~ /\[no downstream\]/)) AND (branch = master OR branch =~ /release\/.*/) AND type != pull_request AND fork = false
 
 before_install: travis_retry bash scripts/travis/init.sh
-install: travis_retry travis_wait 40 bash scripts/travis/build.sh
+install:
+  - travis_retry travis_wait 40 bash scripts/travis/build.sh
+  - travis_retry docker build -t alfresco-repository-databases:latest tests/environment
 
 jobs:
   include:
@@ -190,7 +192,7 @@ jobs:
     - name: "CMIS TAS tests - Elastic Search | postgreSQL (CMIS API)"
       if: commit_message !~ /\[skip search\]/
       before_script:
-        - export DATABASE_ENV_PROPERTIES="-Ddb.driver=org.postgresql.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:postgresql://postgres:5432/alfresco"
+        - export DATABASE_ENV_PROPERTIES="-Ddb.driver=org.postgresql.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:postgresql://postgres:5432/alfresco "
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
