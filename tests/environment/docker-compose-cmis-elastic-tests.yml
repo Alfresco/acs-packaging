@@ -2,8 +2,7 @@ version: "2"
 
 services:
   alfresco:
-    build: .
-    image: alfresco-repository-database
+    image: alfresco-repository-databases:latest
     mem_limit: 3400m
     environment:
       CATALINA_OPTS: "-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n"
@@ -99,7 +98,7 @@ services:
         -Dalfresco.protocol=http
         "
 
-  database:
+  postgres:
     image: postgres:${POSTGRES_TAG}
     mem_limit: 512m
     environment:

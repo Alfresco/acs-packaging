@@ -190,6 +190,7 @@ jobs:
     - name: "CMIS TAS tests - Elastic Search | postgreSQL (CMIS API)"
       if: commit_message !~ /\[skip search\]/
       before_script:
+        - docker build -t alfresco-repository-databases:latest tests/environment
         - export DATABASE_ENV_PROPERTIES="-Ddb.driver=org.postgresql.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:postgresql://postgres:5432/alfresco "
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
@@ -229,7 +230,7 @@ jobs:
       vm:
         size: large
       before_script:
-        - docker build -t alfresco-repository-databases tests/environment
+        - docker build -t alfresco-repository-databases:latest tests/environment
       script:
        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=postgresql"
 
@@ -238,7 +239,7 @@ jobs:
 #      vm:
 #        size: large
 #      before_script:
-#        - docker build -t alfresco-repository-databases tests/environment
+#        - docker build -t alfresco-repository-databases:latest tests/environment
 #      script:
 #        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mysql"
 
@@ -247,28 +248,28 @@ jobs:
       vm:
         size: large
       before_script:
-        - docker build -t alfresco-repository-databases tests/environment
+        - docker build -t alfresco-repository-databases:latest tests/environment
       script:
         - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch" "-Ddatabase.type=postgresql"
 
     - name: "Elasticsearch Basic Auth TAS tests | postgreSQL"
       if: commit_message !~ /\[skip search\]/
       before_script:
-        - docker build -t alfresco-repository-databases tests/environment
+        - docker build -t alfresco-repository-databases:latest tests/environment
       script:
        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=postgresql"
 
 #    - name: "Elasticsearch Basic Auth TAS tests | MySQL"
 #      if: commit_message !~ /\[skip search\]/
 #      before_script:
-#        - docker build -t alfresco-repository-databases tests/environment
+#        - docker build -t alfresco-repository-databases:latest tests/environment
 #      script:
 #        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mysql"
 
     - name: "Opensearch Basic Auth TAS tests"
       if: commit_message !~ /\[skip search\]/
       before_script:
-        - docker build -t alfresco-repository-databases tests/environment
+        - docker build -t alfresco-repository-databases:latest tests/environment
       script:
         - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch" "-Ddatabase.type=postgresql"
 
@@ -277,7 +278,7 @@ jobs:
       vm:
         size: large
       before_script:
-        - docker build -t alfresco-repository-databases tests/environment
+        - docker build -t alfresco-repository-databases:latest tests/environment
       script:
         - pip install awscli
         - AWS_ACCESS_KEY_ID=${LICENCES_AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${LICENCES_AWS_SECRET_ACCESS_KEY} aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
@@ -288,7 +289,7 @@ jobs:
       vm:
         size: large
       before_script:
-        - docker build -t alfresco-repository-databases tests/environment
+        - docker build -t alfresco-repository-databases:latest tests/environment
       script:
         - pip install awscli
         - AWS_ACCESS_KEY_ID=${LICENCES_AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${LICENCES_AWS_SECRET_ACCESS_KEY} aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
