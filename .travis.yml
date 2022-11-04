@@ -190,7 +190,7 @@ jobs:
     - name: "CMIS TAS tests - Elastic Search | postgreSQL (CMIS API)"
       if: commit_message !~ /\[skip search\]/
       before_script:
-        - docker build -t alfresco-repository-databases:latest tests/environment
+        - export CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest
         - export DATABASE_ENV_PROPERTIES="-Ddb.driver=org.postgresql.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:postgresql://postgres:5432/alfresco "
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-postgres.yml ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
@@ -201,7 +201,7 @@ jobs:
 #    - name: "CMIS TAS tests - Elastic Search MySQL (CMIS API)"
 #      if: commit_message !~ /\[skip search\]/
 #      before_script:
-#        - docker build -t alfresco-repository-databases:latest tests/environment
+#        - export CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest
 #        - export DATABASE_ENV_PROPERTIES="-Ddb.driver=org.postgresql.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:postgresql://postgres:5432/alfresco "
 #        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-mysql.yml ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml
 #        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
