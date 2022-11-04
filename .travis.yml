@@ -30,7 +30,7 @@ env:
   global:
     - TAS_SCRIPTS=../alfresco-community-repo/packaging/tests/scripts
     - TAS_ENVIRONMENT=./tests/environment
-    - ALF_LICENCE_S3_PATH=s3://acs-license/acs/alf73-allenabled.lic
+    - ALF_LICENCE_S3_PATH=s3://acs-license/acs/alf74-allenabled.lic
     - ALF_LICENCE_LOCAL_PATH=/tmp/licence.lic
     # Release version has to start with real version (7.4.0-....) for the docker image to build successfully.
     - RELEASE_VERSION=7.4.0-A1
