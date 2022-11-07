@@ -1,11 +1,12 @@
 services:
   postgres:
-    image: postgres:${POSTGRES_TAG}
+    image: mysql:${MYSQL_TAG}
     mem_limit: 512m
     environment:
-      - POSTGRES_PASSWORD=alfresco
-      - POSTGRES_USER=alfresco
-      - POSTGRES_DB=alfresco
-    command: postgres -c max_connections=300 -c log_min_messages=LOG
+      - MYSQL_PASSWORD=alfresco
+      - MYSQL_ROOT_PASSWORD=alfresco
+      - MYSQL_USER=alfresco
+      - MYSQL_DATABASE=alfresco
+    command: mysqld --sql_mode="ALLOW_INVALID_DATES" --max_connections=300 --transaction-isolation='READ-COMMITTED'
     ports:
-      - 5432:5432
+      - 3306:3306
