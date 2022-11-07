@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -ex
+
 TAS_DIRECTORY=$1
 
 cd ${TAS_DIRECTORY}
