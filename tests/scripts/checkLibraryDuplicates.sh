@@ -39,7 +39,7 @@ for current_lib in $(ls "$lib_dir"); do
        done
    fi
 done
-
+find $lib_dir -name "gson*" | xargs echo
 if [[ -n "$multiple_version_lib_list" ]]; then
    >&2 echo "[ERROR] The following libraries have more than one version: $multiple_version_lib_list"
    exit 1
