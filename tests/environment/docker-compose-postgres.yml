@@ -1,5 +1,5 @@
 services:
-  postgres:
+  database:
     image: postgres:${POSTGRES_TAG}
     mem_limit: 512m
     environment:
