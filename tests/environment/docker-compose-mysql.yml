@@ -1,5 +1,5 @@
 services:
-  postgres:
+  database:
     image: mysql:${MYSQL_TAG}
     mem_limit: 512m
     environment:
