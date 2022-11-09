@@ -134,11 +134,12 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
      */
     public static void reindexEverything()
     {
+        DatabaseType databaseType = getImagesConfig().getDatabaseType();
         // Run the reindexing container.
         Map<String, String> env = new HashMap<>(
                 Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true", // Ensure path reindexing is enabled.
                         "SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200",
-                        "SPRING_DATASOURCE_URL", "jdbc:postgresql://postgres:5432/alfresco",
+                        "SPRING_DATASOURCE_URL", databaseType.getUrl(),
                         "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
                         "SPRING_ACTIVEMQ_BROKER-URL", "nio://activemq:61616",
                         "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config",
@@ -511,12 +512,13 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         private String getElasticsearchConnectorImageTag()
         {
-            final String fromEnv = envProperties.apply("ES_CONNECTOR_TAG");
-            if (fromEnv != null && !fromEnv.isBlank())
-            {
-                return fromEnv;
-            }
-            return mavenProperties.apply("dependency.elasticsearch-shared.version");
+            return "feature_ACS-3634-additional-jdbc-driver-loading-2034";
+//            final String fromEnv = envProperties.apply("ES_CONNECTOR_TAG");
+//            if (fromEnv != null && !fromEnv.isBlank())
+//            {
+//                return fromEnv;
+//            }
+//            return mavenProperties.apply("dependency.elasticsearch-shared.version");
         }
     }
 }

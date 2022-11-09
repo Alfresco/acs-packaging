@@ -234,12 +234,12 @@ jobs:
       script:
        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=postgresql"
 
-#    - name: "Elasticsearch TAS tests | MySQL (Search API)"
-#      if: commit_message !~ /\[skip search\]/
-#      vm:
-#        size: large
-#      script:
-#        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mysql"
+    - name: "Elasticsearch TAS tests | MySQL (Search API)"
+      if: commit_message !~ /\[skip search\]/
+      vm:
+        size: large
+      script:
+        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mysql"
 
     - name: "Opensearch TAS tests (Search API)"
       if: commit_message !~ /\[skip search\]/
@@ -253,12 +253,12 @@ jobs:
       script:
        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=postgresql"
 
-#    - name: "Elasticsearch Basic Auth TAS tests | MySQL"
-#      if: commit_message !~ /\[skip search\]/
-#      before_script:
-#        - docker build -t alfresco-repository-databases:latest tests/environment
-#      script:
-#        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mysql"
+    - name: "Elasticsearch Basic Auth TAS tests | MySQL"
+      if: commit_message !~ /\[skip search\]/
+      before_script:
+        - docker build -t alfresco-repository-databases:latest tests/environment
+      script:
+        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mysql"
 
     - name: "Opensearch Basic Auth TAS tests"
       if: commit_message !~ /\[skip search\]/
