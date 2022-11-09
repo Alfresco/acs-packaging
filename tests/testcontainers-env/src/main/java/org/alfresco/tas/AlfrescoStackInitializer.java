@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-import com.github.dockerjava.api.command.CreateContainerCmd;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContextInitializer;
@@ -14,6 +13,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.support.TestPropertySourceUtils;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
@@ -67,13 +68,13 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         alfresco = createAlfrescoContainer();
 
+        JdbcDatabaseContainer database = createDatabaseContainer();
+
         GenericContainer transformRouter = createTransformRouterContainer();
 
         GenericContainer transformCore = createTransformCoreContainer();
 
         GenericContainer sfs = createSfsContainer();
-
-        PostgreSQLContainer postgres = createPosgresContainer();
 
         GenericContainer activemq = createAMQContainer();
 
@@ -83,7 +84,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         configureSecuritySettings(searchEngineContainer);
 
-        startOrFail(postgres);
+        startOrFail(database);
 
         startOrFail(activemq, sfs);
 
@@ -108,6 +109,19 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                                                   "alfresco.server=" + alfresco.getContainerIpAddress(),
                                                                   "alfresco.port=" + alfresco.getFirstMappedPort());
 
+    }
+
+    private JdbcDatabaseContainer createDatabaseContainer()
+    {
+        switch (getImagesConfig().getDatabaseType())
+        {
+            case POSTGRESQL_DB:
+                return createPosgresContainer();
+            case MYSQL_DB:
+                return createMySqlContainer();
+            default:
+                throw new IllegalArgumentException("Database not set.");
+        }
     }
 
     public void configureSecuritySettings(GenericContainer searchEngineContainer)
@@ -248,6 +262,19 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                              .withStartupTimeout(Duration.ofMinutes(2));
     }
 
+
+    private MySQLContainer createMySqlContainer()
+    {
+        return (MySQLContainer) new MySQLContainer(getImagesConfig().getMySQLImage())
+                                            .withPassword("alfresco")
+                                            .withUsername("alfresco")
+                                            .withDatabaseName("alfresco")
+                                            .withNetwork(network)
+                                            .withNetworkAliases("mysql")
+                                            .withStartupTimeout(Duration.ofMinutes(2));
+
+    }
+
     private GenericContainer createSfsContainer()
     {
         return new GenericContainer(getImagesConfig().getSharedFileStoreImage())
@@ -290,6 +317,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     protected GenericContainer createAlfrescoContainer()
     {
+        DatabaseType databaseType = getImagesConfig().getDatabaseType();
         return new GenericContainer(getImagesConfig().getRepositoryImage())
                        .withEnv("CATALINA_OPTS", "\"-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n\"")
                        .withEnv("JAVA_TOOL_OPTIONS",
@@ -301,13 +329,13 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 "-Dmetadata-keystore.metadata.password=oKIWzVdEdA -Dmetadata-keystore.metadata.algorithm=DESede")
                        .withEnv("JAVA_OPTS",
                                 "-Delasticsearch.createIndexIfNotExists=true " +
-                                "-Ddb.driver=org.postgresql.Driver " +
-                                "-Ddb.username=alfresco " +
-                                "-Ddb.password=alfresco " +
-                                "-Ddb.url=jdbc:postgresql://postgres:5432/alfresco " +
                                 "-Dindex.subsystem.name=elasticsearch " +
                                 "-Delasticsearch.host=elasticsearch " +
                                 "-Delasticsearch.indexName=" + CUSTOM_ALFRESCO_INDEX + " " +
+                                "-Ddb.driver=" + databaseType.getDriver() + " " +
+                                "-Ddb.url=" + databaseType.getUrl() + " " +
+                                "-Ddb.username=alfresco " +
+                                "-Ddb.password=alfresco " +
                                 "-Dshare.host=127.0.0.1 " +
                                 "-Dshare.port=8080 " +
                                 "-Dalfresco.host=localhost " +
@@ -329,8 +357,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                        .withStartupTimeout(Duration.ofMinutes(7))
                        .withExposedPorts(8080, 8000)
                        .withClasspathResourceMapping("exactTermSearch.properties",
-                        "/usr/local/tomcat/webapps/alfresco/WEB-INF/classes/alfresco/search/elasticsearch/config/exactTermSearch.properties",
-                        BindMode.READ_ONLY);
+                    "/usr/local/tomcat/webapps/alfresco/WEB-INF/classes/alfresco/search/elasticsearch/config/exactTermSearch.properties",
+                                BindMode.READ_ONLY);
     }
 
     public static ImagesConfig getImagesConfig()
@@ -359,6 +387,10 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         String getSharedFileStoreImage();
 
         String getPostgreSQLImage();
+
+        String getMySQLImage();
+
+        DatabaseType getDatabaseType();
 
         String getRepositoryImage();
 
@@ -438,9 +470,26 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         }
 
         @Override
+        public String getMySQLImage()
+        {
+            return "mysql:" + envProperties.apply("MYSQL_TAG");
+        }
+
+        @Override
+        public DatabaseType getDatabaseType() {
+            String databaseTypeProperty = mavenProperties.apply("database.type");
+            if(Strings.isNullOrEmpty(databaseTypeProperty))
+            {
+                throw new IllegalArgumentException("Property 'database.type' not set.");
+
+            }
+            return DatabaseType.from(databaseTypeProperty);
+        }
+
+        @Override
         public String getRepositoryImage()
         {
-            return "alfresco/alfresco-content-repository:latest";
+            return "alfresco-repository-databases:latest";
         }
 
         @Override

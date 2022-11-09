@@ -98,6 +98,11 @@ fi
 # Build the current project
 mvn -B -ntp -V -q install -DskipTests -Dmaven.javadoc.skip=true -Pbuild-docker-images -Pags ${REPO_IMAGE} ${SHARE_IMAGE}
 
+#Build alfresco image with jdbc drivers
+MYSQL_TAG=$(mvn help:evaluate -Dexpression=dependency.mysql.version -q -DforceStdout)
+mvn dependency:copy -Dartifact=mysql:mysql-connector-java:${MYSQL_TAG}:jar -DoutputDirectory=tests/environment/alfresco-with-jdbc-drivers
+
+docker build -t alfresco-repository-databases:latest tests/environment/alfresco-with-jdbc-drivers
 
 popd
 set +vex
