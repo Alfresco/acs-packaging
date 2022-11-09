@@ -148,7 +148,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         try (GenericContainer reindexingComponent = new GenericContainer(getImagesConfig().getReIndexingImage())
                 .withEnv(env)
                 .withNetwork(AlfrescoStackInitializer.network)
-                .withClasspathResourceMapping( "tests/environment/alfresco-with-jdbc-drivers/*.jar",
+                .withClasspathResourceMapping( "./tests/environment/alfresco-with-jdbc-drivers/*.jar",
                         "/opt/db-drivers:ro",
                         BindMode.READ_ONLY)
                 .withStartupCheckStrategy(
