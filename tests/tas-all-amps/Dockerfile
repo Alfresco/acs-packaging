@@ -28,7 +28,4 @@ RUN sed -i -e "s_appender.rolling.fileName\=alfresco.log_appender.rolling.fileNa
     chmod -R g+r ${TOMCAT_DIR}/webapps && \
     chgrp -R ${ALF_GROUP} ${TOMCAT_DIR}
 
-# temporarily create the share.log file manually until Share is migrated to Log4j2
-RUN touch ${TOMCAT_DIR}/logs/share.log
-
 USER ${ALF_USER}
