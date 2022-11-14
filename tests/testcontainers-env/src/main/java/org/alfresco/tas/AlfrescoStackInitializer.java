@@ -418,13 +418,13 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         @Override
         public String getReIndexingImage()
         {
-            return "quay.io/alfresco/alfresco-elasticsearch-reindexing:" + getElasticsearchConnectorImageTag();
+            return "alfresco-es-reindexing-jdbc:latest";
         }
 
         @Override
         public String getLiveIndexingImage()
         {
-            return "quay.io/alfresco/alfresco-elasticsearch-live-indexing:" + getElasticsearchConnectorImageTag();
+            return "alfresco-es-indexing-jdbc:latest";
         }
 
         @Override
@@ -480,17 +480,6 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         }
 
         @Override
-        public DatabaseType getDatabaseType() {
-            String databaseTypeProperty = mavenProperties.apply("database.type");
-            if(Strings.isNullOrEmpty(databaseTypeProperty))
-            {
-                throw new IllegalArgumentException("Property 'database.type' not set.");
-
-            }
-            return DatabaseType.from(databaseTypeProperty);
-        }
-
-        @Override
         public String getRepositoryImage()
         {
             return "alfresco-repository-databases:latest";
@@ -513,15 +502,15 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
             return SearchEngineType.from(searchEngineTypeProperty);
         }
 
-        private String getElasticsearchConnectorImageTag()
-        {
-            return "feature_ACS-3634-additional-jdbc-driver-loading-2034";
-//            final String fromEnv = envProperties.apply("ES_CONNECTOR_TAG");
-//            if (fromEnv != null && !fromEnv.isBlank())
-//            {
-//                return fromEnv;
-//            }
-//            return mavenProperties.apply("dependency.elasticsearch-shared.version");
+        @Override
+        public DatabaseType getDatabaseType() {
+            String databaseTypeProperty = mavenProperties.apply("database.type");
+            if(Strings.isNullOrEmpty(databaseTypeProperty))
+            {
+                throw new IllegalArgumentException("Property 'database.type' not set.");
+
+            }
+            return DatabaseType.from(databaseTypeProperty);
         }
     }
 }
