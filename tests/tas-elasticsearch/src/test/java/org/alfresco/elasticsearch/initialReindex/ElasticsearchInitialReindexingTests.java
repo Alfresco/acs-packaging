@@ -113,12 +113,7 @@ public class ElasticsearchInitialReindexingTests extends AbstractTestNGSpringCon
     private void reindex(Map<String, String> envParam)
     {
         // Run the reindexing container.
-        Map<String, String> env = new HashMap<>(
-                Map.of("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200",
-                       "SPRING_DATASOURCE_URL", "jdbc:postgresql://postgres:5432/alfresco",
-                       "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
-                       "SPRING_ACTIVEMQ_BROKER-URL", "nio://activemq:61616",
-                       "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config"));
+        Map<String, String> env = AlfrescoStackInitializer.getReindexEnvBasic();
         env.putAll(envParam);
 
         try (GenericContainer reindexingComponent = new GenericContainer(getImagesConfig().getReIndexingImage())

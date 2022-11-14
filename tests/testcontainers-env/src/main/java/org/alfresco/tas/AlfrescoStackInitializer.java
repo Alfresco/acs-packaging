@@ -134,15 +134,9 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
      */
     public static void reindexEverything()
     {
-        DatabaseType databaseType = getImagesConfig().getDatabaseType();
         // Run the reindexing container.
-        Map<String, String> env = new HashMap<>(
-                Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true", // Ensure path reindexing is enabled.
-                        "SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200",
-                        "SPRING_DATASOURCE_URL", databaseType.getUrl(),
-                        "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
-                        "SPRING_ACTIVEMQ_BROKER-URL", "nio://activemq:61616",
-                        "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config",
+        Map<String, String> env = AlfrescoStackInitializer.getReindexEnvBasic();
+        env.putAll(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true", // Ensure path reindexing is enabled.
                         "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
 
         try (GenericContainer reindexingComponent = new GenericContainer(getImagesConfig().getReIndexingImage())
@@ -153,6 +147,19 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         {
             reindexingComponent.start();
         }
+    }
+
+    public static Map<String, String> getReindexEnvBasic()
+    {
+        DatabaseType databaseType = getImagesConfig().getDatabaseType();
+
+        Map<String, String> env = new HashMap<>(
+                Map.of("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200",
+                        "SPRING_DATASOURCE_URL", databaseType.getUrl(),
+                        "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
+                        "SPRING_ACTIVEMQ_BROKER-URL", "nio://activemq:61616",
+                        "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config"));
+        return env;
     }
 
     private void startOrFail(Startable... startables)
