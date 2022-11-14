@@ -108,8 +108,8 @@ if [[ "${ES_CONNECTOR_TAG}" = "" ]] ; then
   export ES_CONNECTOR_TAG=$(mvn help:evaluate -Dexpression=dependency.elasticsearch-shared.version -q -DforceStdout)
 fi
 
-docker build -t alfresco-es-indexing-jdbc:latest -f tests/environment/alfresco-with-jdbc-drivers/es-indexing.Dockerfile
-docker build -t alfresco-es-reindexing-jdbc:latest -f tests/environment/alfresco-with-jdbc-drivers/es-reindexing.Dockerfile
+docker build -t alfresco-es-indexing-jdbc:latest -f tests/environment/alfresco-with-jdbc-drivers/es-indexing.Dockerfile .
+docker build -t alfresco-es-reindexing-jdbc:latest -f tests/environment/alfresco-with-jdbc-drivers/es-reindexing.Dockerfile .
 
 
 popd
