@@ -255,8 +255,6 @@ jobs:
 
     - name: "Elasticsearch Basic Auth TAS tests | MySQL"
       if: commit_message !~ /\[skip search\]/
-      before_script:
-        - docker build -t alfresco-repository-databases:latest tests/environment
       script:
         - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mysql"
 

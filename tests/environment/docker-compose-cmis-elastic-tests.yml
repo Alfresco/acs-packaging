@@ -169,7 +169,7 @@ services:
       - elasticsearch
 
   live-indexing:
-    image: quay.io/alfresco/alfresco-elasticsearch-live-indexing:${LIVE_INDEXING_TAG}
+    image: alfresco-es-indexing-jdbc:latest
     mem_limit: 512m
     depends_on:
       - elasticsearch
