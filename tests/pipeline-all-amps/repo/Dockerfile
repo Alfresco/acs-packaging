@@ -35,8 +35,9 @@ COPY --chown=root:${GROUPANME} --from=SWAGGERBUILDER /build/gs-api-explorer ${TO
 
 # Turn on log4j debug frequently needed in the single pipeline
 RUN echo -e '\n\
-log4j.logger.org.alfresco.repo.content.transform.TransformerDebug=debug\n\
-' >> ${TOMCAT_DIR}/shared/classes/alfresco/extension/custom-log4j.properties
+logger.alfresco-repo-content-transform-TransformerDebug.name=org.alfresco.repo.content.transform.TransformerDebug\n\
+logger.alfresco-repo-content-transform-TransformerDebug.level=debug\n\
+' >> ${TOMCAT_DIR}/shared/classes/alfresco/extension/custom-log4j2.properties
 
 # Grant all security permissions to jolokia and share in order to work properly.
 RUN sed -i -e "\$a\grant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/jolokia\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};\ngrant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/share\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};" ${TOMCAT_DIR}/conf/catalina.policy
