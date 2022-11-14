@@ -102,7 +102,7 @@ mvn -B -ntp -V -q install -DskipTests -Dmaven.javadoc.skip=true -Pbuild-docker-i
 MYSQL_TAG=$(mvn help:evaluate -Dexpression=dependency.mysql.version -q -DforceStdout)
 mvn dependency:copy -Dartifact=mysql:mysql-connector-java:${MYSQL_TAG}:jar -DoutputDirectory=tests/environment/alfresco-with-jdbc-drivers
 
-docker build -t alfresco-repository-databases:latest -f tests/environment/alfresco-with-jdbc-drivers/alfresco.Dockerfile
+docker build -t alfresco-repository-databases:latest -f tests/environment/alfresco-with-jdbc-drivers/alfresco.Dockerfile .
 
 if [[ "${ES_CONNECTOR_TAG}" = "" ]] ; then
   export ES_CONNECTOR_TAG=$(mvn help:evaluate -Dexpression=dependency.elasticsearch-shared.version -q -DforceStdout)
