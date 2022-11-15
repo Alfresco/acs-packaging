@@ -1,4 +1,5 @@
 #BUIDING CONTAINER FOR TAS TESTING WITH DIFFERENT JDBC CONNECTORS
-FROM quay.io/alfresco/alfresco-elasticsearch-live-indexing:$ES_CONNECTOR_TAG
+ARG IMAGE_NAME
+FROM $IMAGE_NAME
 
 COPY tests/environment/alfresco-with-jdbc-drivers/*.jar /opt/db-drivers/
