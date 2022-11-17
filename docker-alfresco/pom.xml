@@ -125,7 +125,7 @@
                             <images>
                                 <!-- Quay image -->
                                 <image>
-                                    <name>${image.name}:4619</name>
+                                    <name>${image.name}:${image.tag}</name>
                                     <registry>${image.registry}</registry>
                                 </image>
                             </images>

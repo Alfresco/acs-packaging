@@ -42,8 +42,7 @@ stages:
   - name: test
     if: commit_message !~ /\[skip tests\]/
   - name: docker_latest
-#    if: commit_message !~ /\[skip docker_latest\]/ AND branch = master AND type != pull_request AND fork = false
-    if: commit_message =~ /\[docker_latest\]
+    if: commit_message !~ /\[skip docker_latest\]/ AND branch = master AND type != pull_request AND fork = false
   - name: docker_release
     if: commit_message !~ /\[skip docker_release\]/ AND branch =~ /release\/.*/ AND type != pull_request AND fork = false
   - name: release
