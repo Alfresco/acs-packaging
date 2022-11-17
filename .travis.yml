@@ -314,10 +314,11 @@ jobs:
         - git clone --depth 1 --branch $DTAS_VERSION https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
         - docker images | grep pipeline
       script:
-        - ./scripts/travis/push_repo_image_to_quay.sh
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/" 180
         - docker ps
+        - docker image tag alfresco/alfresco-pipeline-all-amps-repo:latest alfresco/dev:all-amps-repo
+        - docker push alfresco/dev:all-amps-repo
         # Show what AMPs the repo has installed
         - curl -v --user admin.pipeline@alfresco.com:admin http://localhost:8080/alfresco/api/discovery
         - cd dtas
