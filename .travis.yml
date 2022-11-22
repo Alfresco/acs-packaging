@@ -150,10 +150,8 @@ jobs:
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-with-ldap.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
-        - travis_wait 60 mvn -B install -ntp -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-ldap -Denvironment=default -DrunBugs=false
         - travis_wait 10 mvn -B install -ntp -f tests/tas-integration/pom.xml -Prun-ldap -Denvironment=default -DrunBugs=false
       after_failure:
-        - ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-restapi"
         - ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-integration"
 
     - name: "REST API TAS tests with AIMS"
