@@ -102,7 +102,20 @@ mvn -B -ntp -V -q install -DskipTests -Dmaven.javadoc.skip=true -Pbuild-docker-i
 MYSQL_TAG=$(mvn help:evaluate -Dexpression=dependency.mysql.version -q -DforceStdout)
 mvn dependency:copy -Dartifact=mysql:mysql-connector-java:${MYSQL_TAG}:jar -DoutputDirectory=tests/environment/alfresco-with-jdbc-drivers
 
-docker build -t alfresco-repository-databases:latest tests/environment/alfresco-with-jdbc-drivers
+docker build -t alfresco-repository-databases:latest -f tests/environment/alfresco-with-jdbc-drivers/alfresco.Dockerfile .
+
+source tests/environment/.env
+
+if [[ "${ES_CONNECTOR_TAG}" = [[:cntrl:]] ]]
+then
+  ES_CONNECTOR_TAG=$(mvn help:evaluate -Dexpression=dependency.elasticsearch-shared.version -q -DforceStdout)
+  export ES_CONNECTOR_TAG
+  echo "$ES_CONNECTOR_TAG"
+fi
+
+docker build -t alfresco-es-indexing-jdbc:latest -f tests/environment/alfresco-with-jdbc-drivers/es-connector.Dockerfile . --build-arg IMAGE_NAME="quay.io/alfresco/alfresco-elasticsearch-live-indexing:${ES_CONNECTOR_TAG%%[[:cntrl:]]}"
+docker build -t alfresco-es-reindexing-jdbc:latest -f tests/environment/alfresco-with-jdbc-drivers/es-connector.Dockerfile . --build-arg IMAGE_NAME="quay.io/alfresco/alfresco-elasticsearch-reindexing:${ES_CONNECTOR_TAG%%[[:cntrl:]]}"
+
 
 popd
 set +vex

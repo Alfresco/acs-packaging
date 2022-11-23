@@ -135,13 +135,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     public static void reindexEverything()
     {
         // Run the reindexing container.
-        Map<String, String> env = new HashMap<>(
-                Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true", // Ensure path reindexing is enabled.
-                        "SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200",
-                        "SPRING_DATASOURCE_URL", "jdbc:postgresql://postgres:5432/alfresco",
-                        "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
-                        "SPRING_ACTIVEMQ_BROKER-URL", "nio://activemq:61616",
-                        "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config",
+        Map<String, String> env = AlfrescoStackInitializer.getReindexEnvBasic();
+        env.putAll(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true", // Ensure path reindexing is enabled.
                         "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
 
         try (GenericContainer reindexingComponent = new GenericContainer(getImagesConfig().getReIndexingImage())
@@ -152,6 +147,19 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         {
             reindexingComponent.start();
         }
+    }
+
+    public static Map<String, String> getReindexEnvBasic()
+    {
+        DatabaseType databaseType = getImagesConfig().getDatabaseType();
+
+        Map<String, String> env = new HashMap<>(
+                Map.of("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200",
+                        "SPRING_DATASOURCE_URL", databaseType.getUrl(),
+                        "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
+                        "SPRING_ACTIVEMQ_BROKER-URL", "nio://activemq:61616",
+                        "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config"));
+        return env;
     }
 
     private void startOrFail(Startable... startables)
@@ -414,13 +422,13 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         @Override
         public String getReIndexingImage()
         {
-            return "quay.io/alfresco/alfresco-elasticsearch-reindexing:" + getElasticsearchConnectorImageTag();
+            return "alfresco-es-reindexing-jdbc:latest";
         }
 
         @Override
         public String getLiveIndexingImage()
         {
-            return "quay.io/alfresco/alfresco-elasticsearch-live-indexing:" + getElasticsearchConnectorImageTag();
+            return "alfresco-es-indexing-jdbc:latest";
         }
 
         @Override
@@ -476,17 +484,6 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         }
 
         @Override
-        public DatabaseType getDatabaseType() {
-            String databaseTypeProperty = mavenProperties.apply("database.type");
-            if(Strings.isNullOrEmpty(databaseTypeProperty))
-            {
-                throw new IllegalArgumentException("Property 'database.type' not set.");
-
-            }
-            return DatabaseType.from(databaseTypeProperty);
-        }
-
-        @Override
         public String getRepositoryImage()
         {
             return "alfresco-repository-databases:latest";
@@ -509,14 +506,15 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
             return SearchEngineType.from(searchEngineTypeProperty);
         }
 
-        private String getElasticsearchConnectorImageTag()
-        {
-            final String fromEnv = envProperties.apply("ES_CONNECTOR_TAG");
-            if (fromEnv != null && !fromEnv.isBlank())
+        @Override
+        public DatabaseType getDatabaseType() {
+            String databaseTypeProperty = mavenProperties.apply("database.type");
+            if(Strings.isNullOrEmpty(databaseTypeProperty))
             {
-                return fromEnv;
+                throw new IllegalArgumentException("Property 'database.type' not set.");
+
             }
-            return mavenProperties.apply("dependency.elasticsearch-shared.version");
+            return DatabaseType.from(databaseTypeProperty);
         }
     }
 }
