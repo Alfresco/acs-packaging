@@ -110,6 +110,7 @@ if [[ -z "${ES_CONNECTOR_TAG}" ]]
 then
   ES_CONNECTOR_TAG=$(mvn help:evaluate -Dexpression=dependency.elasticsearch-shared.version -q -DforceStdout)
   export ES_CONNECTOR_TAG
+  echo "$ES_CONNECTOR_TAG"
 fi
 
 docker build -t alfresco-es-indexing-jdbc:latest -f tests/environment/alfresco-with-jdbc-drivers/es-connector.Dockerfile . --build-arg IMAGE_NAME="quay.io/alfresco/alfresco-elasticsearch-live-indexing:${ES_CONNECTOR_TAG%%[[:cntrl:]]}"
