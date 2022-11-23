@@ -1,0 +1,11 @@
+services:
+  database:
+    image: mariadb:${MARIADB_TAG}
+    mem_limit: 512m
+    environment:
+      - MARIADB_PASSWORD=alfresco
+      - MARIADB_ROOT_PASSWORD=alfresco
+      - MARIADB_USER=alfresco
+      - MARIADB_DATABASE=alfresco
+    ports:
+      - 3306:3306

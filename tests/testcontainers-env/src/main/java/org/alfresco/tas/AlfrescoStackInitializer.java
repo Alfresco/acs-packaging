@@ -14,6 +14,7 @@ import org.springframework.test.context.support.TestPropertySourceUtils;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.testcontainers.containers.MariaDBContainer;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -119,6 +120,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                 return createPosgresContainer();
             case MYSQL_DB:
                 return createMySqlContainer();
+            case MARIA_DB:
+                return createMariaDBContainer();
             default:
                 throw new IllegalArgumentException("Database not set.");
         }
@@ -283,6 +286,18 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     }
 
+    private MariaDBContainer createMariaDBContainer()
+    {
+        return new MariaDBContainer<>(getImagesConfig().getMariaDBImage())
+                .withPassword("alfresco")
+                .withUsername("alfresco")
+                .withDatabaseName("alfresco")
+                .withNetwork(network)
+                .withNetworkAliases("mariadb")
+                .withStartupTimeout(Duration.ofMinutes(2));
+
+    }
+
     private GenericContainer createSfsContainer()
     {
         return new GenericContainer(getImagesConfig().getSharedFileStoreImage())
@@ -398,6 +413,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         String getMySQLImage();
 
+        String getMariaDBImage();
+
         DatabaseType getDatabaseType();
 
         String getRepositoryImage();
@@ -481,6 +498,12 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         public String getMySQLImage()
         {
             return "mysql:" + envProperties.apply("MYSQL_TAG");
+        }
+
+        @Override
+        public String getMariaDBImage()
+        {
+            return "mariadb:" + envProperties.apply("MARIADB_TAG");
         }
 
         @Override
