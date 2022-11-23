@@ -106,7 +106,7 @@ docker build -t alfresco-repository-databases:latest -f tests/environment/alfres
 
 source tests/environment/.env
 
-if [[ -z "${ES_CONNECTOR_TAG}" ]]
+if [[ "${ES_CONNECTOR_TAG}" = [[:cntrl:]] ]]
 then
   ES_CONNECTOR_TAG=$(mvn help:evaluate -Dexpression=dependency.elasticsearch-shared.version -q -DforceStdout)
   export ES_CONNECTOR_TAG
