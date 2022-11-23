@@ -1,0 +1,10 @@
+name: Master/Release branch workflow
+
+on:
+  push:
+    branches:
+      - master
+      - release/**
+
+env:
+  JAVA_VERSION: "17"

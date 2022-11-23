@@ -1,0 +1,83 @@
+name: ACS Packaging
+
+on:
+  pull_request:
+  push:
+    branches:
+      - feature/**
+      - fix/**
+  workflow_call:
+
+env:
+  DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  GITHUB_ACTIONS_DEPLOY_TIMEOUT: 60
+  JAVA_VERSION: "17"
+  MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+  MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+  QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+  QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+  TAS_ENVIRONMENT: ./tests/environment
+  TAS_SCRIPTS: ../acs-packaging/tests/scripts
+
+jobs:
+  veracode:
+    name: "Source Clear Scan (SCA)"
+    runs-on: ubuntu-latest
+    if: >
+      (github.ref_name == 'master' || contains(github.ref_name, '[release]') || github.event_name == 'pull_request') &&
+      ! contains(github.event.head_commit.message, '[skip repo]') &&
+      ! contains(github.event.head_commit.message, '[skip tests]') &&
+      ! contains(github.event.head_commit.message, '[force]')
+    steps:
+      - uses: actions/checkout@v3
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - uses: Alfresco/alfresco-build-tools/.github/actions/veracode@master
+        with:
+          srcclr-api-token: ${{ secrets.SRCCLR_API_TOKEN }}
+
+  RestApiTASTestsPart1:
+    name: REST API TAS tests part1
+    runs-on: ubuntu-latest
+    if: >
+      contains(github.event.head_commit.message, '[tas]')
+      ! contains(github.event.head_commit.message, '[skip tests]') &&
+      ! contains(github.event.head_commit.message, '[force]')
+    steps:
+      - uses: actions/checkout@v3
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: "Login to Quay.io"
+        uses: docker/login-action@v1
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
+      - name: "Set up Java"
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: "temurin"
+      - name: "Build"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          bash ./scripts/ci/init.sh
+          bash ./scripts/ci/build.sh
+      - name: "Set up the environment"
+        run: |
+          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-rest-api-tests.yml
+          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+      - name: "Run tests"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: mvn -B install -ntp -f -Pall-tas-tests,run-restapi-part1 -Denvironment=default -DrunBugs=false
