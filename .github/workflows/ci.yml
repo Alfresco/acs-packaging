@@ -19,6 +19,9 @@ env:
   QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
   TAS_ENVIRONMENT: ./tests/environment
   TAS_SCRIPTS: ../acs-packaging/tests/scripts
+  # Release version has to start with real version (7.4.0-....) for the docker image to build successfully.
+  RELEASE_VERSION: 7.4.0-A3
+  DEVELOPMENT_VERSION: 7.4.0-A4-SNAPSHOT
 
 jobs:
   veracode:
