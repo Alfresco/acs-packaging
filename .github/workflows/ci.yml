@@ -17,8 +17,8 @@ env:
   MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
   QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
   QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
-  GIT_USERNAME: ${{ secrets.GITHUB_USERNAME }}
-  GIT_PASSWORD: ${{ secrets.GITHUB_PASSWORD }}
+  GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
+  GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
   TAS_ENVIRONMENT: ./tests/environment
   TAS_SCRIPTS: ../acs-packaging/tests/scripts
   # Release version has to start with real version (7.4.0-....) for the docker image to build successfully.
