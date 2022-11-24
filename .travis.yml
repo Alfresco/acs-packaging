@@ -212,7 +212,6 @@ jobs:
     - name: "CMIS TAS tests - Elastic Search | MariaDB 10.6 (CMIS API)"
       if: commit_message !~ /\[skip search\]/
       before_script:
-        - export MARIADB_TAG=10.6
         - export CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest
         - export DATABASE_ENV_PROPERTIES="-Ddb.driver=org.mariadb.jdbc.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:mariadb://database:3306/alfresco "
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml ${TAS_ENVIRONMENT}/docker-compose-mariadb.yml
@@ -257,8 +256,6 @@ jobs:
       if: commit_message !~ /\[skip search\]/
       vm:
         size: large
-      before_script:
-        - export MARIADB_TAG=10.6
       script:
         - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mariadb"
 
@@ -281,8 +278,6 @@ jobs:
 
     - name: "Elasticsearch Basic Auth TAS tests | MariaDB 10.6"
       if: commit_message !~ /\[skip search\]/
-      before_script:
-        - export MARIADB_TAG=10.6
       script:
         - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mariadb"
 
