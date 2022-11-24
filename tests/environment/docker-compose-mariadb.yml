@@ -7,5 +7,6 @@ services:
       - MARIADB_ROOT_PASSWORD=alfresco
       - MARIADB_USER=alfresco
       - MARIADB_DATABASE=alfresco
+    command: mariadbd --sql_mode="ALLOW_INVALID_DATES" --max_connections=300 --transaction-isolation='READ-COMMITTED'
     ports:
       - 3306:3306
