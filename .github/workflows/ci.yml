@@ -17,6 +17,8 @@ env:
   MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
   QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
   QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+  GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
+  GIT_PASSWORD: ${{ secrets.BOT_GITHUB_PASSWORD }}
   TAS_ENVIRONMENT: ./tests/environment
   TAS_SCRIPTS: ../acs-packaging/tests/scripts
   # Release version has to start with real version (7.4.0-....) for the docker image to build successfully.
@@ -173,4 +175,3 @@ jobs:
         run: |
           mvn -B install -ntp -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-ldap -Denvironment=default -DrunBugs=false
           mvn -B install -ntp -f tests/tas-integration/pom.xml -Prun-ldap -Denvironment=default -DrunBugs=false
-          
