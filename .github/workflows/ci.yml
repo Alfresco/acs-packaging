@@ -169,7 +169,7 @@ jobs:
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-with-ldap.yml
           ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       - name: "Run tests"
-      - timeout-minutes: 60
-      - run: mvn -B install -ntp -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-ldap -Denvironment=default -DrunBugs=false
-      - timeout-minutes: 10
-      - run: mvn -B install -ntp -f tests/tas-integration/pom.xml -Prun-ldap -Denvironment=default -DrunBugs=false
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          mvn -B install -ntp -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-ldap -Denvironment=default -DrunBugs=false
+          mvn -B install -ntp -f tests/tas-integration/pom.xml -Prun-ldap -Denvironment=default -DrunBugs=false
