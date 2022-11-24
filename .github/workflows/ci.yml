@@ -137,7 +137,7 @@ jobs:
     name: "LDAP TAS tests"
     runs-on: ubuntu-latest
     if: >
-      contains(github.event.head_commit.message, '[tas]')
+      contains(github.event.head_commit.message, '[tas]') &&
       ! contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
