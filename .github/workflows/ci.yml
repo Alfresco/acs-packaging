@@ -42,13 +42,52 @@ jobs:
         with:
           srcclr-api-token: ${{ secrets.SRCCLR_API_TOKEN }}
 
-  RestApiTASTestsPart1:
-    name: REST API TAS tests part1
+  TAS-Tests:
+    name: ${{ matrix.testSuite }} TAS tests
     runs-on: ubuntu-latest
     if: >
       contains(github.event.head_commit.message, '[tas]')
-      ! contains(github.event.head_commit.message, '[skip tests]') &&
-      ! contains(github.event.head_commit.message, '[force]')
+      ! contains(github.event.head_commit.message, '[skip tests]')
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - testSuite: REST API part1
+            pom: tests/tas-restapi/pom.xml
+            profiles: all-tas-tests,run-restapi-part1
+            compose-file: docker-compose-rest-api-tests.yml
+          - testSuite: REST API part2
+            pom: tests/tas-restapi/pom.xml
+            profiles: all-tas-tests,run-restapi-part2
+            compose-file: docker-compose-rest-api-tests.yml
+          - testSuite: REST API part3
+            pom: tests/tas-restapi/pom.xml
+            profiles: all-tas-tests,run-restapi-part3
+            compose-file: docker-compose-rest-api-tests.yml
+          - testSuite: CMIS (BROWSER binding)
+            pom: tests/tas-cmis/pom.xml
+            profiles: all-tas-tests,run-cmis-browser
+            compose-file: docker-compose-cmis-tests.yml
+          - testSuite: CMIS (ATOM binding)
+            pom: tests/tas-cmis/pom.xml
+            profiles: all-tas-tests,run-cmis-atom
+            compose-file: docker-compose-cmis-tests.yml
+          - testSuite: CMIS (WEBSERVICES binding)
+            pom: tests/tas-cmis/pom.xml
+            profiles: all-tas-tests,run-cmis-webservices
+            compose-file: docker-compose-cmis-tests.yml
+          - testSuite: Email
+            pom: tests/tas-email/pom.xml
+            profiles: all-tas-tests
+            compose-file: docker-compose-email-tests.yml
+          - testSuite: WebDAV
+            pom: tests/tas-webdav/pom.xml
+            profiles: all-tas-tests
+            compose-file: docker-compose-minimal.yml
+          - testSuite: Integration
+            pom: tests/tas-integration/pom.xml
+            profiles: all-tas-tests
+            compose-file: docker-compose-integration-tests.yml
     steps:
       - uses: actions/checkout@v3
       - name: Cache local Maven repository
@@ -76,8 +115,8 @@ jobs:
           bash ./scripts/ci/build.sh
       - name: "Set up the environment"
         run: |
-          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-rest-api-tests.yml
+          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/${{ matrix.compose-file }}
           ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       - name: "Run tests"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        run: mvn -B install -ntp -f -Pall-tas-tests,run-restapi-part1 -Denvironment=default -DrunBugs=false
+        run: mvn -B install -ntp -f ${{ matrix.pom }} -P${{ matrix.profiles }} -Denvironment=default -DrunBugs=false
