@@ -213,7 +213,7 @@ jobs:
       if: commit_message !~ /\[skip search\]/
       before_script:
         - export CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest
-        - export DATABASE_ENV_PROPERTIES="-Ddb.driver=org.mariadb.jdbc.Alabama -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:mariadb://database:3306/alfresco "
+        - export DATABASE_ENV_PROPERTIES="-Ddb.driver=org.mariadb.jdbc.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:mariadb://database:3306/alfresco "
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml ${TAS_ENVIRONMENT}/docker-compose-mariadb.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
