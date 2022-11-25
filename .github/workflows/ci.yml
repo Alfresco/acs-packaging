@@ -175,3 +175,41 @@ jobs:
         run: |
           mvn -B install -ntp -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-ldap -Denvironment=default -DrunBugs=false
           mvn -B install -ntp -f tests/tas-integration/pom.xml -Prun-ldap -Denvironment=default -DrunBugs=false
+
+  cmis-tas-tests:
+    name: "CMIS TAS tests - Open Search (CMIS API)"
+    runs-on: ubuntu-latest
+    if: >
+      ! contains(github.event.head_commit.message, '[skip tests]')
+    steps:
+      - uses: actions/checkout@v3
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: "Login to Quay.io"
+        uses: docker/login-action@v1
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
+      - name: "Set up Java"
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: "temurin"
+      - name: "Build"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          bash ./scripts/ci/init.sh
+          bash ./scripts/ci/build.sh
+      - name: "Set up the environment"
+        run: |
+          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-cmis-opensearch-tests.yml
+          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+      - name: "Run tests"
+        timeout-minutes: 40
+        run: mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
