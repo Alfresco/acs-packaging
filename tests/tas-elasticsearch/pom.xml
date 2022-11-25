@@ -47,6 +47,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.mariadb.jdbc</groupId>
+      <artifactId>mariadb-java-client</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.alfresco.tas</groupId>
       <artifactId>alfresco-community-repo-restapi-test</artifactId>
       <classifier>tests</classifier>
