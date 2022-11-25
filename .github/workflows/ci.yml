@@ -47,7 +47,7 @@ jobs:
         with:
           srcclr-api-token: ${{ secrets.SRCCLR_API_TOKEN }}
 
-  TAS-Tests:
+  tas-tests:
     name: ${{ matrix.testSuite }} TAS tests
     runs-on: ubuntu-latest
     if: >
@@ -135,7 +135,7 @@ jobs:
         timeout-minutes: ${{ matrix.deploy-timeout }}
         run: mvn -B install -ntp -f ${{ matrix.pom }} -P${{ matrix.profiles }} -Denvironment=default -DrunBugs=false
 
-  LDAP-TAS-tests:
+  ldap-tas-tests:
     name: "LDAP TAS tests"
     runs-on: ubuntu-latest
     if: >
