@@ -1,12 +1,12 @@
 services:
   database:
-    image: alfresco/oracle-database:${ORACLE_TAG}
+    image: quay.io/alfresco/oracle-database:${ORACLE_TAG}
     mem_limit: 2g
     environment:
       - ORACLE_SID=ORCL
       - ORACLE_PDB=PDB1
       - ORACLE_PWD=alfresco
       - ORACLE_CHARACTERSET=UTF8
-    command: exec $ORACLE_BASE/$RUN_FILE
+    command: /bin/sh -c "exec /opt/oracle/runOracle.sh"
     ports:
       - 1521:1521

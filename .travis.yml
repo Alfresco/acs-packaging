@@ -224,7 +224,7 @@ jobs:
       if: commit_message !~ /\[skip search\]/
       before_script:
         - export CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest
-        - export DATABASE_ENV_PROPERTIES="-Ddb.driver=oracle.jdbc.OracleDriver -Ddb.name=alfresco -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:oracle:thin:@repodb:1521/PDB1 "
+        - export DATABASE_ENV_PROPERTIES="-Ddb.driver=oracle.jdbc.OracleDriver -Ddb.name=alfresco -Ddb.url=jdbc:oracle:thin:@database:1521/PDB1 -Ddb.username=alfresco -Ddb.password=alfresco "
         - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml ${TAS_ENVIRONMENT}/docker-compose-oracle.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:

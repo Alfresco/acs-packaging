@@ -7,7 +7,7 @@ public enum DatabaseType
     POSTGRESQL_DB("postgresql", "org.postgresql.Driver", "jdbc:postgresql://postgres:5432/alfresco"),
     MYSQL_DB("mysql", "com.mysql.cj.jdbc.Driver", "jdbc:mysql://mysql:3306/alfresco"),
     MARIA_DB("mariadb", "org.mariadb.jdbc.Driver", "jdbc:mariadb://mariadb:3306/alfresco"),
-    ORACLE_DB("oracle", "oracle.jdbc.OracleDriver", "jdbc:oracle:thin:@repodb:1521/PDB1");
+    ORACLE_DB("oracle", "oracle.jdbc.OracleDriver", "jdbc:oracle:thin:@oracle:1521/PDB1");
 
     private final String type;
     private final String driver;
