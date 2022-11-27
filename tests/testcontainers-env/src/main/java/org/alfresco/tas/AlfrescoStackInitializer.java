@@ -17,6 +17,7 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.MariaDBContainer;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.Network;
+import org.testcontainers.containers.OracleContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.startupcheck.IndefiniteWaitOneShotStartupCheckStrategy;
@@ -122,6 +123,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                 return createMySqlContainer();
             case MARIA_DB:
                 return createMariaDBContainer();
+            case ORACLE_DB:
+                return createOracleDBContainer();
             default:
                 throw new IllegalArgumentException("Database not set.");
         }
@@ -298,6 +301,18 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     }
 
+    private OracleContainer createOracleDBContainer()
+    {
+        return new OracleContainer(getImagesConfig().getOracleImage())
+                .withPassword("alfresco")
+                .withUsername("alfresco")
+                .withDatabaseName("alfresco")
+                .withNetwork(network)
+                .withNetworkAliases("oracle")
+                .withStartupTimeout(Duration.ofMinutes(2));
+
+    }
+
     private GenericContainer createSfsContainer()
     {
         return new GenericContainer(getImagesConfig().getSharedFileStoreImage())
@@ -415,6 +430,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         String getMariaDBImage();
 
+        String getOracleImage();
+
         DatabaseType getDatabaseType();
 
         String getRepositoryImage();
@@ -504,6 +521,11 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         public String getMariaDBImage()
         {
             return "mariadb:" + envProperties.apply("MARIADB_TAG");
+        }
+
+        @Override
+        public String getOracleImage() {
+            return "oracle:" + envProperties.apply("ORACLE_TAG");
         }
 
         @Override
