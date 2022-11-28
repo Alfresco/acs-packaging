@@ -17,7 +17,6 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.containers.MariaDBContainer;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.Network;
-import org.testcontainers.containers.OracleContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
 import org.testcontainers.containers.startupcheck.IndefiniteWaitOneShotStartupCheckStrategy;
@@ -25,6 +24,7 @@ import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.lifecycle.Startable;
 import org.testcontainers.lifecycle.Startables;
+import org.testcontainers.utility.DockerImageName;
 import org.testng.Assert;
 import org.testng.util.Strings;
 
@@ -303,13 +303,13 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     private OracleContainer createOracleDBContainer()
     {
-        return new OracleContainer(getImagesConfig().getOracleImage())
-                .withPassword("alfresco")
-                .withUsername("alfresco")
-                .withDatabaseName("alfresco")
+        DockerImageName oracleImageName = DockerImageName.parse(getImagesConfig().getOracleImage());
+
+        return new OracleContainer(oracleImageName)
                 .withNetwork(network)
                 .withNetworkAliases("oracle")
-                .withStartupTimeout(Duration.ofMinutes(2));
+                .withUsername("alfresco")
+                .withPassword("alfresco");
 
     }
 
@@ -525,7 +525,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         @Override
         public String getOracleImage() {
-            return "oracle:" + envProperties.apply("ORACLE_TAG");
+            return "quay.io/alfresco/oracle-database:" + envProperties.apply("ORACLE_TAG");
         }
 
         @Override
@@ -560,6 +560,102 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
             }
             return DatabaseType.from(databaseTypeProperty);
+        }
+    }
+
+    private static class OracleContainer<SELF extends OracleContainer<SELF>> extends JdbcDatabaseContainer<SELF> {
+
+        private String password;
+        private String username;
+
+        OracleContainer(DockerImageName dockerImageName)
+        {
+            super(dockerImageName);
+            addExposedPort(1521);
+            waitingFor(Wait.forLogMessage(".*DATABASE IS READY TO USE.*", 1)
+                    .withStartupTimeout(Duration.ofMinutes(3)));
+        }
+
+        @Override
+        protected void configure()
+        {
+            addEnv("ORACLE_SID", "ORCL");
+            addEnv("ORACLE_PDB", "PDB1");
+            addEnv("ORACLE_PWD", password);
+            addEnv("ORACLE_CHARACTERSET", "UTF8");
+        }
+
+        @Override
+        public SELF withNetwork(Network network) {
+            return super.withNetwork(network);
+        }
+
+        @Override
+        public SELF withNetworkAliases(String... aliases) {
+            return super.withNetworkAliases(aliases);
+        }
+
+        @Override
+        public SELF withPassword(String password)
+        {
+            this.password = password;
+            return self();
+        }
+
+        @Override
+        public SELF withUsername(String username)
+        {
+            this.username = username;
+            return self();
+        }
+
+        @Override
+        public String getDriverClassName()
+        {
+            return DatabaseType.ORACLE_DB.getDriver();
+        }
+
+        @Override
+        public String getJdbcUrl()
+        {
+            final String additionalUrlParams = constructUrlParameters("?", "&");
+            return DatabaseType.ORACLE_DB.getUrl() + additionalUrlParams;
+        }
+
+        @Override
+        public String getUsername()
+        {
+            return username;
+        }
+
+        @Override
+        public String getPassword()
+        {
+            return password;
+        }
+
+        @Override
+        protected void waitUntilContainerStarted()
+        {
+            try
+            {
+                ExecResult r = execInContainer("/bin/sh", "-c", "echo DISABLE_OOB=ON >> /opt/oracle/product/19c/dbhome_1/network/admin/sqlnet.ora");
+                if (r.getExitCode() != 0)
+                {
+                    throw new IllegalStateException("Failed to disable OOB. " + r);
+                }
+            }
+            catch (Exception e)
+            {
+                throw new IllegalStateException("Failed to disable OOB.", e);
+            }
+            getWaitStrategy().waitUntilReady(this);
+        }
+
+        @Override
+        protected String getTestQueryString()
+        {
+            throw new UnsupportedOperationException("Test query is not supported for Oracle image.");
         }
     }
 }
