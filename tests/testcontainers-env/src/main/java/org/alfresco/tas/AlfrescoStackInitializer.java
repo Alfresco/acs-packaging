@@ -161,7 +161,9 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         Map<String, String> env = new HashMap<>(
                 Map.of("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200",
-                        "SPRING_DATASOURCE_URL", databaseType.getUrl().replace("\\", ""), //replacement needed in case of MS SQL url
+                        "SPRING_DATASOURCE_URL", databaseType.getSpringDatasourceUrl(),
+                        "SPRING_DATASOURCE_USERNAME", databaseType.getUsername(),
+                        "SPRING_DATASOURCE_PASSWORD", databaseType.getPassword(),
                         "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
                         "SPRING_ACTIVEMQ_BROKER-URL", "nio://activemq:61616",
                         "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config"));

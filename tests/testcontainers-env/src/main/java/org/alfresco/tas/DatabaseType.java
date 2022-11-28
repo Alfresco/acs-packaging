@@ -53,6 +53,15 @@ public enum DatabaseType
         return url;
     }
 
+    public String getSpringDatasourceUrl()
+    {
+        if(this.equals(DatabaseType.MSSQL_DB))
+        {
+            return getUrl().replace("\\", "");
+        }
+        return getUrl();
+    }
+
     public String getUsername() {
         return username;
     }
@@ -61,7 +70,8 @@ public enum DatabaseType
         return password;
     }
 
-    public Map<String, String> getAdditionalDbSettings() {
+    public Map<String, String> getAdditionalDbSettings()
+    {
         return additionalDbSettings;
     }
 
