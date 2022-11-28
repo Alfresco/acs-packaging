@@ -306,19 +306,18 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     private OracleContainer createOracleDBContainer()
     {
         DockerImageName oracleImageName = DockerImageName.parse(getImagesConfig().getOracleImage());
-
-        long two_gigabytes = 2 * 1024 * 1024 * 1024;
-        Consumer<CreateContainerCmd> raiseMemoryLimit = cmd -> cmd.getHostConfig()
-                                                                    .withMemory(two_gigabytes)
-                                                                    .withMemorySwap(two_gigabytes);
+        Consumer<CreateContainerCmd> largeMemory = cmd -> {
+            cmd.getHostConfig()
+                    .withMemory((long) 3400*1024*1024)
+                    .withMemorySwap((long) 3400*1024*1024);
+        };
 
         return new OracleContainer(oracleImageName)
                 .withNetwork(network)
                 .withNetworkAliases("oracle")
                 .withUsername("alfresco")
                 .withPassword("alfresco")
-                .withCreateContainerCmdModifier(raiseMemoryLimit);
-
+                .withCreateContainerCmdModifier(largeMemory);
     }
 
     private GenericContainer createSfsContainer()
