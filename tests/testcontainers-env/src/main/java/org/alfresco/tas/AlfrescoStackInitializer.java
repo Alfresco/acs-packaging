@@ -372,7 +372,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 "-Ddb.url=" + databaseType.getUrl() + " " +
                                 "-Ddb.username=" + databaseType.getUsername() + " " +
                                 "-Ddb.password=" + databaseType.getPassword() + " " +
-                                  indent(databaseType.getAdditionalDbSettings()) +
+                                  indentDbSettings(databaseType.getAdditionalDbSettings()) +
                                 "-Dshare.host=127.0.0.1 " +
                                 "-Dshare.port=8080 " +
                                 "-Dalfresco.host=localhost " +
@@ -398,7 +398,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 BindMode.READ_ONLY);
     }
 
-    private String indent(Map<String, String> additionalDbSettings) {
+    private String indentDbSettings(Map<String, String> additionalDbSettings) {
         StringBuilder sb = new StringBuilder();
         for(Map.Entry<String, String> setting : additionalDbSettings.entrySet())
         {
