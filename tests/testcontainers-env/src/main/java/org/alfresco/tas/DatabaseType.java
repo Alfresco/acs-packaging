@@ -35,7 +35,7 @@ public enum DatabaseType
         this.url = url;
         this.username = username;
         this.password = password;
-        this.additionalDbSettings = new HashMap<>();
+        this.additionalDbSettings = new HashMap<>(0);
     }
 
     public String getType()
