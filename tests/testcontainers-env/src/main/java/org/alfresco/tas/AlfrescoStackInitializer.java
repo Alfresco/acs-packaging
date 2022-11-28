@@ -4,8 +4,10 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
+import com.github.dockerjava.api.command.CreateContainerCmd;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContextInitializer;
@@ -305,11 +307,16 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     {
         DockerImageName oracleImageName = DockerImageName.parse(getImagesConfig().getOracleImage());
 
+        long two_gigabytes = 2 * 1024 * 1024 * 1024;
+        Consumer<CreateContainerCmd> raiseMemoryLimit = cmd -> cmd.getHostConfig()
+                                                                    .withMemory(two_gigabytes);
+
         return new OracleContainer(oracleImageName)
                 .withNetwork(network)
                 .withNetworkAliases("oracle")
                 .withUsername("alfresco")
-                .withPassword("alfresco");
+                .withPassword("alfresco")
+                .withCreateContainerCmdModifier(raiseMemoryLimit);
 
     }
 
@@ -607,6 +614,11 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         {
             this.username = username;
             return self();
+        }
+
+        @Override
+        public SELF withCreateContainerCmdModifier(Consumer<CreateContainerCmd> modifier) {
+            return super.withCreateContainerCmdModifier(modifier);
         }
 
         @Override
