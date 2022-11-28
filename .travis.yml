@@ -299,7 +299,7 @@ jobs:
       script:
         - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mariadb"
 
-    - name: "Elasticsearch Basic Auth TAS tests | MariaDB 10.6"
+    - name: "Elasticsearch Basic Auth TAS tests | MS SQL"
       if: commit_message !~ /\[skip search\]/
       script:
         - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mssql"

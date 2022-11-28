@@ -370,8 +370,9 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 "-Delasticsearch.indexName=" + CUSTOM_ALFRESCO_INDEX + " " +
                                 "-Ddb.driver=" + databaseType.getDriver() + " " +
                                 "-Ddb.url=" + databaseType.getUrl() + " " +
-                                "-Ddb.username=alfresco " +
-                                "-Ddb.password=alfresco " +
+                                "-Ddb.username=" + databaseType.getUsername() + " " +
+                                "-Ddb.password=" + databaseType.getPassword() + " " +
+                                  indent(databaseType.getAdditionalDbSettings()) +
                                 "-Dshare.host=127.0.0.1 " +
                                 "-Dshare.port=8080 " +
                                 "-Dalfresco.host=localhost " +
@@ -395,6 +396,15 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                        .withClasspathResourceMapping("exactTermSearch.properties",
                     "/usr/local/tomcat/webapps/alfresco/WEB-INF/classes/alfresco/search/elasticsearch/config/exactTermSearch.properties",
                                 BindMode.READ_ONLY);
+    }
+
+    private String indent(Map<String, String> additionalDbSettings) {
+        StringBuilder sb = new StringBuilder();
+        for(Map.Entry<String, String> setting : additionalDbSettings.entrySet())
+        {
+            sb.append("-Ddb.").append(setting.getKey()).append("=").append(setting.getValue()).append(" ");
+        }
+        return sb.toString();
     }
 
     public static ImagesConfig getImagesConfig()
