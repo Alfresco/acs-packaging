@@ -9,7 +9,7 @@ public enum DatabaseType
     POSTGRESQL_DB("postgresql", "org.postgresql.Driver", "jdbc:postgresql://postgres:5432/alfresco", "alfresco", "alfresco"),
     MYSQL_DB("mysql", "com.mysql.cj.jdbc.Driver", "jdbc:mysql://mysql:3306/alfresco", "alfresco", "alfresco"),
     MARIA_DB("mariadb", "org.mariadb.jdbc.Driver", "jdbc:mariadb://mariadb:3306/alfresco", "alfresco", "alfresco"),
-    MSSQL_DB("mssql", "com.microsoft.sqlserver.jdbc.SQLServerDriver", "jdbc:sqlserver://mssql:1433", "sa", "Alfresco1", Map.of("txn.isolation", "4096", "pool.max", "275"));
+    MSSQL_DB("mssql", "com.microsoft.sqlserver.jdbc.SQLServerDriver", "jdbc:sqlserver://mssql:1433/alfresco", "sa", "Alfresco1", Map.of("txn.isolation", "4096", "pool.max", "275"));
 
     private final String type;
     private final String driver;
