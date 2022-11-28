@@ -309,7 +309,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         long two_gigabytes = 2 * 1024 * 1024 * 1024;
         Consumer<CreateContainerCmd> raiseMemoryLimit = cmd -> cmd.getHostConfig()
-                                                                    .withMemory(two_gigabytes);
+                                                                    .withMemory(two_gigabytes)
+                                                                    .withMemorySwap(two_gigabytes);
 
         return new OracleContainer(oracleImageName)
                 .withNetwork(network)
