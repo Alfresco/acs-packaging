@@ -14,6 +14,7 @@ import org.springframework.test.context.support.TestPropertySourceUtils;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.testcontainers.containers.MSSQLServerContainer;
 import org.testcontainers.containers.MariaDBContainer;
 import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.Network;
@@ -122,6 +123,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                 return createMySqlContainer();
             case MARIA_DB:
                 return createMariaDBContainer();
+            case MSSQL_DB:
+                return createMsSqlContainer();
             default:
                 throw new IllegalArgumentException("Database not set.");
         }
@@ -298,6 +301,16 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     }
 
+    private JdbcDatabaseContainer createMsSqlContainer()
+    {
+        return new MSSQLServerContainer<>(getImagesConfig().getMsSqlImage())
+                .acceptLicense()
+                .withPassword("Alfresco1")
+                .withNetwork(network)
+                .withNetworkAliases("mssql")
+                .withStartupTimeout(Duration.ofMinutes(2));
+    }
+
     private GenericContainer createSfsContainer()
     {
         return new GenericContainer(getImagesConfig().getSharedFileStoreImage())
@@ -415,6 +428,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         String getMariaDBImage();
 
+        String getMsSqlImage();
+
         DatabaseType getDatabaseType();
 
         String getRepositoryImage();
@@ -504,6 +519,12 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         public String getMariaDBImage()
         {
             return "mariadb:" + envProperties.apply("MARIADB_TAG");
+        }
+
+        @Override
+        public String getMsSqlImage()
+        {
+            return "mcr.microsoft.com/mssql/server:" + envProperties.apply("MSSQL_TAG");
         }
 
         @Override

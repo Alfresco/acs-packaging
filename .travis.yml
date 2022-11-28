@@ -220,6 +220,17 @@ jobs:
         - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
       after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
 
+    - name: "CMIS TAS tests - Elastic Search | MS SQL (CMIS API)"
+      if: commit_message !~ /\[skip search\]/
+      before_script:
+        - export CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest
+        - export DATABASE_ENV_PROPERTIES="-Ddb.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver -Ddb.username=sa -Ddb.password=Alfresco1 -Ddb.url=jdbc:sqlserver://database:1433 -Ddb.txn.isolation=4096 -Ddb.pool.max=275 "
+        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml ${TAS_ENVIRONMENT}/docker-compose-mssql.yml
+        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+      script:
+        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
+      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
+
     - name: "CMIS TAS tests - Open Search (CMIS API)"
       if: commit_message !~ /\[skip search\]/
       before_script:
@@ -259,6 +270,13 @@ jobs:
       script:
         - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mariadb"
 
+    - name: "Elasticsearch TAS tests | MS SQL (Search API)"
+      if: commit_message !~ /\[skip search\]/
+      vm:
+        size: large
+      script:
+        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mssql"
+
     - name: "Opensearch TAS tests (Search API)"
       if: commit_message !~ /\[skip search\]/
       vm:
@@ -280,6 +298,11 @@ jobs:
       if: commit_message !~ /\[skip search\]/
       script:
         - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mariadb"
+
+    - name: "Elasticsearch Basic Auth TAS tests | MariaDB 10.6"
+      if: commit_message !~ /\[skip search\]/
+      script:
+        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mssql"
 
     - name: "Opensearch Basic Auth TAS tests"
       if: commit_message !~ /\[skip search\]/
