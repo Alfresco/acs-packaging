@@ -398,7 +398,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 "-Xms1500m -Xmx1500m ")
                        .withNetwork(network)
                        .withNetworkAliases("alfresco")
-                       .withCreateContainerCmdModifier(largeMemory)
+                       .withCreateContainerCmdModifier(mediumMemory)
                        .waitingFor(new LogMessageWaitStrategy().withRegEx(".*Server startup in.*\\n"))
                        .withStartupTimeout(Duration.ofMinutes(7))
                        .withExposedPorts(8080, 8000)
