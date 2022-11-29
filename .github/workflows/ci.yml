@@ -146,7 +146,8 @@ jobs:
   tas-tests-with-aims:
     name: ${{ matrix.testSuite }} TAS tests with AIMS
     runs-on: ubuntu-latest
-    if: ! contains(github.event.head_commit.message, '[skip tas]')
+    if: >
+      ! contains(github.event.head_commit.message, '[skip tas]')
     strategy:
       fail-fast: false
       matrix:
