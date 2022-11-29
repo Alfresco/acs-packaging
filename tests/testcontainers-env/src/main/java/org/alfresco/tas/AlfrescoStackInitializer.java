@@ -161,7 +161,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         Map<String, String> env = new HashMap<>(
                 Map.of("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200",
-                        "SPRING_DATASOURCE_URL", databaseType.getSpringDatasourceUrl(),
+                        "SPRING_DATASOURCE_URL", databaseType.getUrl(),
                         "SPRING_DATASOURCE_USERNAME", databaseType.getUsername(),
                         "SPRING_DATASOURCE_PASSWORD", databaseType.getPassword(),
                         "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
@@ -371,7 +371,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 "-Delasticsearch.host=elasticsearch " +
                                 "-Delasticsearch.indexName=" + CUSTOM_ALFRESCO_INDEX + " " +
                                 "-Ddb.driver=" + databaseType.getDriver() + " " +
-                                "-Ddb.url=" + databaseType.getUrl() + " " +
+                                "-Ddb.url=" + escapeSemicolonInUrlForJavaOptsUsage(databaseType.getUrl()) + " " +
                                 "-Ddb.username=" + databaseType.getUsername() + " " +
                                 "-Ddb.password=" + databaseType.getPassword() + " " +
                                   indentDbSettings(databaseType.getAdditionalDbSettings()) +
@@ -398,6 +398,10 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                        .withClasspathResourceMapping("exactTermSearch.properties",
                     "/usr/local/tomcat/webapps/alfresco/WEB-INF/classes/alfresco/search/elasticsearch/config/exactTermSearch.properties",
                                 BindMode.READ_ONLY);
+    }
+
+    private String escapeSemicolonInUrlForJavaOptsUsage(String url) {
+        return url.replace(";", "\\;");
     }
 
     private String indentDbSettings(Map<String, String> additionalDbSettings) {
