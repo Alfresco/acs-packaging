@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  database:
+    image: mcr.microsoft.com/mssql/server:${MSSQL_TAG}
+    mem_limit: 1512m
+    environment:
+      - SA_PASSWORD=Alfresco1
+      - ACCEPT_EULA=Y
+    command: /opt/mssql/bin/sqlservr
+    ports:
+      - "1433:1433"
