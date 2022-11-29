@@ -51,9 +51,13 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                                                         .withMemory((long) 500*1024*1024)
                                                                         .withMemorySwap((long) 500*1024*1024);
 
-    private static Consumer<CreateContainerCmd> largeMemory = cmd -> cmd.getHostConfig()
+    private static Consumer<CreateContainerCmd> mediumMemory = cmd -> cmd.getHostConfig()
                                                                         .withMemory((long) 3400*1024*1024)
                                                                         .withMemorySwap((long) 3400*1024*1024);
+
+    private static Consumer<CreateContainerCmd> largeMemory = cmd -> cmd.getHostConfig()
+                                                                        .withMemory((long) 5000*1024*1024)
+                                                                        .withMemorySwap((long) 5000*1024*1024);
 
     @Override
     public void initialize(ConfigurableApplicationContext configurableApplicationContext)
@@ -224,7 +228,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                 .withEnv("xpack.security.enabled", "false")
                 .withEnv("discovery.type", "single-node")
                 .withEnv("ES_JAVA_OPTS", "-Xms1g -Xmx1g")
-                .withCreateContainerCmdModifier(largeMemory);
+                .withCreateContainerCmdModifier(mediumMemory);
     }
 
     protected GenericContainer createOpensearchContainer()
@@ -236,7 +240,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                 .withEnv("plugins.security.disabled", "true")
                 .withEnv("discovery.type", "single-node")
                 .withEnv("OPENSEARCH_JAVA_OPTS", "-Xms1g -Xmx1g")
-                .withCreateContainerCmdModifier(largeMemory);
+                .withCreateContainerCmdModifier(mediumMemory);
     }
 
     protected GenericContainer createOpensearchDashboardsContainer()
@@ -399,7 +403,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 "-Xms1500m -Xmx1500m ")
                        .withNetwork(network)
                        .withNetworkAliases("alfresco")
-                       .withCreateContainerCmdModifier(largeMemory)
+                       .withCreateContainerCmdModifier(mediumMemory)
                        .waitingFor(new LogMessageWaitStrategy().withRegEx(".*Server startup in.*\\n"))
                        .withStartupTimeout(Duration.ofMinutes(7))
                        .withExposedPorts(8080, 8000)
