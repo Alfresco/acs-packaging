@@ -270,8 +270,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     private PostgreSQLContainer createPosgresContainer()
     {
         return (PostgreSQLContainer) new PostgreSQLContainer(getImagesConfig().getPostgreSQLImage())
-                                             .withPassword("alfresco")
-                                             .withUsername("alfresco")
+                                             .withPassword(DatabaseType.POSTGRESQL_DB.getPassword())
+                                             .withUsername(DatabaseType.POSTGRESQL_DB.getUsername())
                                              .withDatabaseName("alfresco")
                                              .withNetwork(network)
                                              .withNetworkAliases("postgres")
