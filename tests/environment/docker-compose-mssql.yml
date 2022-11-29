@@ -2,7 +2,7 @@ version: "3"
 
 services:
   database:
-    image: mcr.microsoft.com/mssql/server:2019-CU9-ubuntu-16.04
+    image: mcr.microsoft.com/mssql/server:${MSSQL_TAG}
     mem_limit: 1512m
     environment:
       - SA_PASSWORD=Alfresco1
