@@ -274,6 +274,8 @@ jobs:
       if: commit_message !~ /\[skip search\]/
       vm:
         size: large
+      before_script:
+        - export TRAVIS_WORKER_DOCKER_MEMORY=8G
       script:
         - echo $TRAVIS_WORKER_DOCKER_MEMORY
         - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=oracle"
@@ -302,6 +304,8 @@ jobs:
 
     - name: "Elasticsearch Basic Auth TAS tests | Oracle 19.3.0-ee"
       if: commit_message !~ /\[skip search\]/
+      before_script:
+        - export TRAVIS_WORKER_DOCKER_MEMORY=8G
       script:
         - echo $TRAVIS_WORKER_DOCKER_MEMORY
         - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=oracle"
