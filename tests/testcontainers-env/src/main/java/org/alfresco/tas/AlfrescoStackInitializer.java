@@ -282,8 +282,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     private MySQLContainer createMySqlContainer()
     {
         return (MySQLContainer) new MySQLContainer(getImagesConfig().getMySQLImage())
-                                            .withPassword("alfresco")
-                                            .withUsername("alfresco")
+                                            .withPassword(DatabaseType.MYSQL_DB.getPassword())
+                                            .withUsername(DatabaseType.MYSQL_DB.getUsername())
                                             .withDatabaseName("alfresco")
                                             .withNetwork(network)
                                             .withNetworkAliases("mysql")
@@ -294,8 +294,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     private MariaDBContainer createMariaDBContainer()
     {
         return new MariaDBContainer<>(getImagesConfig().getMariaDBImage())
-                .withPassword("alfresco")
-                .withUsername("alfresco")
+                .withPassword(DatabaseType.MARIA_DB.getPassword())
+                .withUsername(DatabaseType.MARIA_DB.getUsername())
                 .withDatabaseName("alfresco")
                 .withNetwork(network)
                 .withNetworkAliases("mariadb")
@@ -307,7 +307,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     {
         return new MSSQLServerContainer<>(getImagesConfig().getMsSqlImage())
                 .acceptLicense()
-                .withPassword("Alfresco1")
+                .withPassword(DatabaseType.MSSQL_DB.getPassword())
                 .withNetwork(network)
                 .withNetworkAliases("mssql")
                 .withStartupTimeout(Duration.ofMinutes(2));
