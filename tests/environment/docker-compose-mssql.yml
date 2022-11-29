@@ -10,4 +10,3 @@ services:
     command: /opt/mssql/bin/sqlservr
     ports:
       - "1433:1433"
-      -
