@@ -56,8 +56,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                                                         .withMemorySwap((long) 3400*1024*1024);
 
     private static Consumer<CreateContainerCmd> largeMemory = cmd -> cmd.getHostConfig()
-                                                                        .withMemory((long) 5000*1024*1024)
-                                                                        .withMemorySwap((long) 5000*1024*1024);
+                                                                        .withMemory((long) 6000*1024*1024)
+                                                                        .withMemorySwap((long) 6000*1024*1024);
 
     @Override
     public void initialize(ConfigurableApplicationContext configurableApplicationContext)
@@ -319,7 +319,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                 .withNetworkAliases("oracle")
                 .withUsername("alfresco")
                 .withPassword("alfresco")
-                .withCreateContainerCmdModifier(largeMemory);
+                .withCreateContainerCmdModifier(mediumMemory);
     }
 
     private GenericContainer createSfsContainer()
@@ -403,7 +403,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 "-Xms1500m -Xmx1500m ")
                        .withNetwork(network)
                        .withNetworkAliases("alfresco")
-                       .withCreateContainerCmdModifier(mediumMemory)
+                       .withCreateContainerCmdModifier(largeMemory)
                        .waitingFor(new LogMessageWaitStrategy().withRegEx(".*Server startup in.*\\n"))
                        .withStartupTimeout(Duration.ofMinutes(7))
                        .withExposedPorts(8080, 8000)
