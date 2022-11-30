@@ -271,7 +271,7 @@ jobs:
         size: large
       script:
        - bash scripts/travis/logContainers.sh &
-       - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=postgresql"
+       - mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=postgresql"
 
     - name: "Elasticsearch TAS tests | MySQL (Search API)"
       if: commit_message !~ /\[skip search\]/
@@ -279,7 +279,7 @@ jobs:
         size: large
       script:
         - bash scripts/travis/logContainers.sh &
-        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mysql"
+        - mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mysql"
 
     - name: "Elasticsearch TAS tests | Maria DB 10.6 (Search API)"
       if: commit_message !~ /\[skip search\]/
@@ -287,7 +287,7 @@ jobs:
         size: large
       script:
         - bash scripts/travis/logContainers.sh &
-        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mariadb"
+        - mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mariadb"
 
     - name: "Elasticsearch TAS tests | MS SQL (Search API)"
       if: commit_message !~ /\[skip search\]/
@@ -295,7 +295,7 @@ jobs:
         size: large
       script:
         - bash scripts/travis/logContainers.sh &
-        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mssql"
+        - mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mssql"
 
     - name: "Elasticsearch TAS tests | Oracle 19.3.0-ee (Search API)"
       if: commit_message !~ /\[skip search\]/
@@ -303,7 +303,7 @@ jobs:
         size: large
       script:
         - bash scripts/travis/logContainers.sh &
-        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=oracle"
+        - mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=oracle"
 
 #    - name: "Opensearch TAS tests (Search API)"
 #      if: commit_message !~ /\[skip search\]/
@@ -315,29 +315,29 @@ jobs:
     - name: "Elasticsearch Basic Auth TAS tests | postgreSQL"
       if: commit_message !~ /\[skip search\]/
       script:
-       - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=postgresql"
+       - mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=postgresql"
 
     - name: "Elasticsearch Basic Auth TAS tests | MySQL"
       if: commit_message !~ /\[skip search\]/
       script:
-        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mysql"
+        - mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mysql"
 
     - name: "Elasticsearch Basic Auth TAS tests | MariaDB 10.6"
       if: commit_message !~ /\[skip search\]/
       script:
-        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mariadb"
+        - mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mariadb"
 
     - name: "Elasticsearch Basic Auth TAS tests | MS SQL"
       if: commit_message !~ /\[skip search\]/
       script:
-        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mssql"
+        - mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mssql"
 
     - name: "Elasticsearch Basic Auth TAS tests | Oracle 19.3.0-ee"
       if: commit_message !~ /\[skip search\]/
       vm:
         size: large
       script:
-        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=oracle"
+        - mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=oracle"
 
 #    - name: "Opensearch Basic Auth TAS tests"
 #      if: commit_message !~ /\[skip search\]/
