@@ -322,8 +322,6 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         return new OracleContainer(oracleImageName)
                 .withNetwork(network)
                 .withNetworkAliases("oracle")
-                .withUsername(DatabaseType.ORACLE_DB.getUsername())
-                .withPassword(DatabaseType.ORACLE_DB.getPassword())
                 .withCreateContainerCmdModifier(MEDIUM_RAM_LIMIT);
     }
 
@@ -601,9 +599,6 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     private static class OracleContainer<SELF extends OracleContainer<SELF>> extends JdbcDatabaseContainer<SELF> {
 
-        private String password;
-        private String username;
-
         OracleContainer(DockerImageName dockerImageName)
         {
             super(dockerImageName);
@@ -617,7 +612,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         {
             addEnv("ORACLE_SID", "ORCL");
             addEnv("ORACLE_PDB", "PDB1");
-            addEnv("ORACLE_PWD", password);
+            addEnv("ORACLE_PWD", DatabaseType.ORACLE_DB.getPassword());
             addEnv("ORACLE_CHARACTERSET", "UTF8");
         }
 
@@ -629,20 +624,6 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         @Override
         public SELF withNetworkAliases(String... aliases) {
             return super.withNetworkAliases(aliases);
-        }
-
-        @Override
-        public SELF withPassword(String password)
-        {
-            this.password = password;
-            return self();
-        }
-
-        @Override
-        public SELF withUsername(String username)
-        {
-            this.username = username;
-            return self();
         }
 
         @Override
@@ -666,13 +647,13 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         @Override
         public String getUsername()
         {
-            return username;
+            return DatabaseType.ORACLE_DB.getUsername();
         }
 
         @Override
         public String getPassword()
         {
-            return password;
+            return DatabaseType.ORACLE_DB.getPassword();
         }
 
         @Override
