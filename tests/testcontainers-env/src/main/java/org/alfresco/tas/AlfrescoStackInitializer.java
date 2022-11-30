@@ -155,14 +155,11 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         env.putAll(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true", // Ensure path reindexing is enabled.
                         "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
 
-        Consumer<OutputFrame> logging = of -> LOGGER.info("REPO " + of.getUtf8String());
-
         try (GenericContainer reindexingComponent = new GenericContainer(getImagesConfig().getReIndexingImage())
                 .withEnv(env)
                 .withNetwork(AlfrescoStackInitializer.network)
                 .withStartupCheckStrategy(
-                        new IndefiniteWaitOneShotStartupCheckStrategy())
-                .withLogConsumer(logging))
+                        new IndefiniteWaitOneShotStartupCheckStrategy()))
         {
             reindexingComponent.start();
         }
@@ -197,7 +194,6 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     protected GenericContainer createLiveIndexingContainer()
     {
-        Consumer<OutputFrame> logging = of -> LOGGER.info("REPO " + of.getUtf8String());
         return new GenericContainer(getImagesConfig().getLiveIndexingImage())
                        .withNetwork(network)
                        .withNetworkAliases("live-indexing")
@@ -205,8 +201,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                        .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200")
                        .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
                        .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
-                       .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config")
-                       .withLogConsumer(logging);
+                       .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config");
     }
 
     protected GenericContainer createSearchEngineContainer()

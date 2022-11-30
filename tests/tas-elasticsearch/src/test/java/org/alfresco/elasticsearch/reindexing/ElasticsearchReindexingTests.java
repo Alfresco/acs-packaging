@@ -298,14 +298,11 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         Map<String, String> env = AlfrescoStackInitializer.getReindexEnvBasic();
         env.putAll(envParam);
 
-        Consumer<OutputFrame> logging = of -> LOGGER.info("REPO " + of.getUtf8String());
-
         try (GenericContainer reindexingComponent = new GenericContainer(getImagesConfig().getReIndexingImage())
                                                             .withEnv(env)
                                                             .withNetwork(AlfrescoStackInitializer.network)
                                                             .withStartupCheckStrategy(
-                                                                    new IndefiniteWaitOneShotStartupCheckStrategy())
-                                                            .withLogConsumer(logging))
+                                                                    new IndefiniteWaitOneShotStartupCheckStrategy()))
         {
             reindexingComponent.start();
         }
