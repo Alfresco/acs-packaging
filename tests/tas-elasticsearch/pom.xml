@@ -53,6 +53,14 @@
     </dependency>
 
     <dependency>
+      <groupId>com.microsoft.sqlserver</groupId>
+      <artifactId>mssql-jdbc</artifactId>
+      <version>${dependency.mssql-jdbc.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+
+    <dependency>
       <groupId>org.alfresco.tas</groupId>
       <artifactId>alfresco-community-repo-restapi-test</artifactId>
       <classifier>tests</classifier>

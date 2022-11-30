@@ -99,11 +99,14 @@ fi
 mvn -B -ntp -V -q install -DskipTests -Dmaven.javadoc.skip=true -Pbuild-docker-images -Pags ${REPO_IMAGE} ${SHARE_IMAGE}
 
 #Build alfresco image with jdbc drivers
-MYSQL_TAG=$(mvn help:evaluate -Dexpression=dependency.mysql.version -q -DforceStdout)
-mvn dependency:copy -Dartifact=mysql:mysql-connector-java:${MYSQL_TAG}:jar -DoutputDirectory=tests/environment/alfresco-with-jdbc-drivers
+MYSQL_JDBC_TAG=$(mvn help:evaluate -Dexpression=dependency.mysql.version -q -DforceStdout)
+mvn dependency:copy -Dartifact=mysql:mysql-connector-java:${MYSQL_JDBC_TAG}:jar -DoutputDirectory=tests/environment/alfresco-with-jdbc-drivers
 
-MARIADB_TAG=$(mvn help:evaluate -Dexpression=dependency.mariadb.version -q -DforceStdout)
-mvn dependency:copy -Dartifact=org.mariadb.jdbc:mariadb-java-client:${MARIADB_TAG}:jar -DoutputDirectory=tests/environment/alfresco-with-jdbc-drivers
+MARIADB_JDBC_TAG=$(mvn help:evaluate -Dexpression=dependency.mariadb.version -q -DforceStdout)
+mvn dependency:copy -Dartifact=org.mariadb.jdbc:mariadb-java-client:${MARIADB_JDBC_TAG}:jar -DoutputDirectory=tests/environment/alfresco-with-jdbc-drivers
+
+MSSQL_JDBC_TAG=$(mvn help:evaluate -Dexpression=dependency.mssql-jdbc.version -q -DforceStdout)
+mvn dependency:copy -Dartifact=com.microsoft.sqlserver:mssql-jdbc:${MSSQL_JDBC_TAG}:jar -DoutputDirectory=tests/environment/alfresco-with-jdbc-drivers
 
 ORACLE_TAG=$(mvn help:evaluate -Dexpression=dependency.ojdbc8.version -q -DforceStdout)
 mvn dependency:copy -Dartifact=com.oracle.database.jdbc:ojdbc8:${ORACLE_TAG}:jar -DoutputDirectory=tests/environment/alfresco-with-jdbc-drivers
