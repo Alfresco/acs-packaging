@@ -57,214 +57,220 @@ install: travis_retry travis_wait 40 bash scripts/travis/build.sh
 
 jobs:
   include:
-    - name: "Source Clear Scan (SCA)"
-      if: (branch = master OR branch =~ /release\/.*/) AND type != pull_request
-      # Run Veracode
-      install: skip
-      script: travis_wait 30 bash scripts/travis/source_clear.sh
+#    - name: "Source Clear Scan (SCA)"
+#      if: (branch = master OR branch =~ /release\/.*/) AND type != pull_request
+#      # Run Veracode
+#      install: skip
+#      script: travis_wait 30 bash scripts/travis/source_clear.sh
+#
+#    - name: "REST API TAS tests part1"
+#      if: commit_message =~ /\[tas\]/
+#      before_script:
+#        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-rest-api-tests.yml
+#        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#      script:
+#        - travis_wait 60 mvn -B install -ntp -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-part1 -Denvironment=default -DrunBugs=false
+#      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-restapi"
+#
+#    - name: "REST API TAS tests part2"
+#      if: commit_message =~ /\[tas\]/
+#      before_script:
+#        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-rest-api-tests.yml
+#        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#      script:
+#        - travis_wait 60 mvn -B install -ntp -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-part2 -Denvironment=default -DrunBugs=false
+#      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-restapi"
+#
+#    - name: "REST API TAS tests part3"
+#      if: commit_message =~ /\[tas\]/
+#      before_script:
+#        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-rest-api-tests.yml
+#        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#      script:
+#        - travis_wait 60 mvn -B install -ntp -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-part3 -Denvironment=default -DrunBugs=false
+#      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-restapi"
+#
+#    - name: "CMIS TAS tests - BROWSER binding"
+#      if: commit_message =~ /\[tas\]/
+#      before_script:
+#        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-tests.yml
+#        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#      script:
+#        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-browser -Denvironment=default -DrunBugs=false
+#      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
+#
+#    - name: "CMIS TAS tests - ATOM binding"
+#      if: commit_message =~ /\[tas\]/
+#      before_script:
+#        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-tests.yml
+#        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#      script:
+#        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-atom -Denvironment=default -DrunBugs=false
+#      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
+#
+#    - name: "CMIS TAS tests - WEBSERVICES binding"
+#      if: commit_message =~ /\[tas\]/
+#      before_script:
+#        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-tests.yml
+#        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#      script:
+#        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-webservices -Denvironment=default -DrunBugs=false
+#      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
+#
+#    - name: "Email TAS tests"
+#      if: commit_message =~ /\[tas\]/
+#      before_script:
+#        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-email-tests.yml
+#        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#      script:
+#        - travis_wait 30 mvn -B install -ntp -f tests/tas-email/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+#      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-email"
+#
+#    - name: "WebDAV TAS tests"
+#      if: commit_message =~ /\[tas\]/
+#      before_script:
+#        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-minimal.yml
+#        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#      script:
+#        - travis_wait 20 mvn -B install -ntp -f tests/tas-webdav/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+#      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-webdav"
+#
+#    - name: "Integration TAS tests"
+#      if: commit_message =~ /\[tas\]/
+#      before_script:
+#        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-integration-tests.yml
+#        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#      script:
+#        - travis_wait 30 mvn -B install -ntp -f tests/tas-integration/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+#      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-integration"
+#
+#    - name: "LDAP TAS tests"
+#      if: commit_message =~ /\[tas\]/
+#      before_script:
+#        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-with-ldap.yml
+#        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#      script:
+#        - travis_wait 60 mvn -B install -ntp -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-ldap -Denvironment=default -DrunBugs=false
+#        - travis_wait 10 mvn -B install -ntp -f tests/tas-integration/pom.xml -Prun-ldap -Denvironment=default -DrunBugs=false
+#      after_failure:
+#        - ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-restapi"
+#        - ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-integration"
+#
+#    - name: "REST API TAS tests with AIMS"
+#      if: commit_message !~ /\[skip tas\]/ AND fork = false # AIMS docker image requires access to quay.io
+#      before_script:
+#        # AIMS cannot be configured via localhost
+#        - export HOST_IP=$(hostname  -I | cut -f1 -d' ')
+#        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-aims.yml
+#        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco" 180
+#      script:
+#        - travis_wait 60 mvn -B install -ntp -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
+#      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-restapi"
+#
+#    - name: "CMIS TAS tests with AIMS - BROWSER binding"
+#      if: commit_message !~ /\[skip tas\]/ AND fork = false # AIMS docker image requires access to quay.io
+#      before_script:
+#        # AIMS cannot be configured via localhost
+#        - export HOST_IP=$(hostname  -I | cut -f1 -d' ')
+#        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-aims.yml
+#        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco" 180
+#      script:
+#        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-browser-with-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
+#
+#    - name: "CMIS TAS tests with AIMS - ATOM binding"
+#      if: commit_message !~ /\[skip tas\]/ AND fork = false # AIMS docker image requires access to quay.io
+#      before_script:
+#        # AIMS cannot be configured via localhost
+#        - export HOST_IP=$(hostname  -I | cut -f1 -d' ')
+#        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-aims.yml
+#        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco" 180
+#      script:
+#        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-atom-with-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
+#
+#    - name: "CMIS TAS tests - Elastic Search | postgreSQL (CMIS API)"
+#      if: commit_message !~ /\[skip search\]/
+#      before_script:
+#        - export CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest
+#        - export DATABASE_ENV_PROPERTIES="-Ddb.driver=org.postgresql.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:postgresql://database:5432/alfresco "
+#        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml ${TAS_ENVIRONMENT}/docker-compose-postgres.yml
+#        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#      script:
+#        - bash scripts/travis/logContainers.sh &
+#        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
+#      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
+#
+#    - name: "CMIS TAS tests - Elastic Search | MySQL (CMIS API)"
+#      if: commit_message !~ /\[skip search\]/
+#      before_script:
+#        - export CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest
+#        - export DATABASE_ENV_PROPERTIES="-Ddb.driver=com.mysql.cj.jdbc.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:mysql://database:3306/alfresco "
+#        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml ${TAS_ENVIRONMENT}/docker-compose-mysql.yml
+#        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#      script:
+#        - bash scripts/travis/logContainers.sh &
+#        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
+#      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
+#
+#    - name: "CMIS TAS tests - Elastic Search | MariaDB 10.6 (CMIS API)"
+#      if: commit_message !~ /\[skip search\]/
+#      before_script:
+#        - export CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest
+#        - export DATABASE_ENV_PROPERTIES="-Ddb.driver=org.mariadb.jdbc.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:mariadb://database:3306/alfresco "
+#        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml ${TAS_ENVIRONMENT}/docker-compose-mariadb.yml
+#        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#      script:
+#        - bash scripts/travis/logContainers.sh &
+#        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
+#      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
+#
+#    - name: "CMIS TAS tests - Elastic Search | MS SQL (CMIS API)"
+#      if: commit_message !~ /\[skip search\]/
+#      before_script:
+#        - export CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest
+#        - export DATABASE_ENV_PROPERTIES="-Ddb.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver -Ddb.username=sa -Ddb.password=Alfresco1 -Ddb.url=jdbc:sqlserver://database:1433 -Ddb.txn.isolation=4096 -Ddb.pool.max=275 "
+#        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml ${TAS_ENVIRONMENT}/docker-compose-mssql.yml
+#        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#      script:
+#        - bash scripts/travis/logContainers.sh &
+#        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
+#      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
+#
+#    - name: "CMIS TAS tests - Elastic Search | Oracle 19.3.0-ee (CMIS API)"
+#      if: commit_message !~ /\[skip search\]/
+#      before_script:
+#        - export CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest
+#        - export DATABASE_ENV_PROPERTIES="-Ddb.driver=oracle.jdbc.OracleDriver -Ddb.name=alfresco -Ddb.url=jdbc:oracle:thin:@database:1521/PDB1 -Ddb.username=alfresco -Ddb.password=alfresco "
+#        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml ${TAS_ENVIRONMENT}/docker-compose-oracle.yml
+#        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#      script:
+#        - bash scripts/travis/logContainers.sh &
+#        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
+#      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
 
-    - name: "REST API TAS tests part1"
-      if: commit_message =~ /\[tas\]/
-      before_script:
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-rest-api-tests.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 60 mvn -B install -ntp -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-part1 -Denvironment=default -DrunBugs=false
-      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-restapi"
-
-    - name: "REST API TAS tests part2"
-      if: commit_message =~ /\[tas\]/
-      before_script:
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-rest-api-tests.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 60 mvn -B install -ntp -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-part2 -Denvironment=default -DrunBugs=false
-      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-restapi"
-
-    - name: "REST API TAS tests part3"
-      if: commit_message =~ /\[tas\]/
-      before_script:
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-rest-api-tests.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 60 mvn -B install -ntp -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-part3 -Denvironment=default -DrunBugs=false
-      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-restapi"
-
-    - name: "CMIS TAS tests - BROWSER binding"
-      if: commit_message =~ /\[tas\]/
-      before_script:
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-tests.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-browser -Denvironment=default -DrunBugs=false
-      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
-
-    - name: "CMIS TAS tests - ATOM binding"
-      if: commit_message =~ /\[tas\]/
-      before_script:
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-tests.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-atom -Denvironment=default -DrunBugs=false
-      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
-
-    - name: "CMIS TAS tests - WEBSERVICES binding"
-      if: commit_message =~ /\[tas\]/
-      before_script:
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-tests.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-webservices -Denvironment=default -DrunBugs=false
-      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
-
-    - name: "Email TAS tests"
-      if: commit_message =~ /\[tas\]/
-      before_script:
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-email-tests.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 30 mvn -B install -ntp -f tests/tas-email/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
-      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-email"
-
-    - name: "WebDAV TAS tests"
-      if: commit_message =~ /\[tas\]/
-      before_script:
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-minimal.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 20 mvn -B install -ntp -f tests/tas-webdav/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
-      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-webdav"
-
-    - name: "Integration TAS tests"
-      if: commit_message =~ /\[tas\]/
-      before_script:
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-integration-tests.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 30 mvn -B install -ntp -f tests/tas-integration/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
-      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-integration"
-
-    - name: "LDAP TAS tests"
-      if: commit_message =~ /\[tas\]/
-      before_script:
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-with-ldap.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 60 mvn -B install -ntp -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-ldap -Denvironment=default -DrunBugs=false
-        - travis_wait 10 mvn -B install -ntp -f tests/tas-integration/pom.xml -Prun-ldap -Denvironment=default -DrunBugs=false
-      after_failure:
-        - ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-restapi"
-        - ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-integration"
-
-    - name: "REST API TAS tests with AIMS"
-      if: commit_message !~ /\[skip tas\]/ AND fork = false # AIMS docker image requires access to quay.io
-      before_script:
-        # AIMS cannot be configured via localhost
-        - export HOST_IP=$(hostname  -I | cut -f1 -d' ')
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-aims.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco" 180
-      script:
-        - travis_wait 60 mvn -B install -ntp -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
-      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-restapi"
-
-    - name: "CMIS TAS tests with AIMS - BROWSER binding"
-      if: commit_message !~ /\[skip tas\]/ AND fork = false # AIMS docker image requires access to quay.io
-      before_script:
-        # AIMS cannot be configured via localhost
-        - export HOST_IP=$(hostname  -I | cut -f1 -d' ')
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-aims.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco" 180
-      script:
-        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-browser-with-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
-
-    - name: "CMIS TAS tests with AIMS - ATOM binding"
-      if: commit_message !~ /\[skip tas\]/ AND fork = false # AIMS docker image requires access to quay.io
-      before_script:
-        # AIMS cannot be configured via localhost
-        - export HOST_IP=$(hostname  -I | cut -f1 -d' ')
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-aims.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco" 180
-      script:
-        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-atom-with-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
-
-    - name: "CMIS TAS tests - Elastic Search | postgreSQL (CMIS API)"
-      if: commit_message !~ /\[skip search\]/
-      before_script:
-        - export CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest
-        - export DATABASE_ENV_PROPERTIES="-Ddb.driver=org.postgresql.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:postgresql://database:5432/alfresco "
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml ${TAS_ENVIRONMENT}/docker-compose-postgres.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
-      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
-
-    - name: "CMIS TAS tests - Elastic Search | MySQL (CMIS API)"
-      if: commit_message !~ /\[skip search\]/
-      before_script:
-        - export CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest
-        - export DATABASE_ENV_PROPERTIES="-Ddb.driver=com.mysql.cj.jdbc.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:mysql://database:3306/alfresco "
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml ${TAS_ENVIRONMENT}/docker-compose-mysql.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
-      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
-
-    - name: "CMIS TAS tests - Elastic Search | MariaDB 10.6 (CMIS API)"
-      if: commit_message !~ /\[skip search\]/
-      before_script:
-        - export CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest
-        - export DATABASE_ENV_PROPERTIES="-Ddb.driver=org.mariadb.jdbc.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:mariadb://database:3306/alfresco "
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml ${TAS_ENVIRONMENT}/docker-compose-mariadb.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
-      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
-
-    - name: "CMIS TAS tests - Elastic Search | MS SQL (CMIS API)"
-      if: commit_message !~ /\[skip search\]/
-      before_script:
-        - export CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest
-        - export DATABASE_ENV_PROPERTIES="-Ddb.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver -Ddb.username=sa -Ddb.password=Alfresco1 -Ddb.url=jdbc:sqlserver://database:1433 -Ddb.txn.isolation=4096 -Ddb.pool.max=275 "
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml ${TAS_ENVIRONMENT}/docker-compose-mssql.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
-      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
-
-    - name: "CMIS TAS tests - Elastic Search | Oracle 19.3.0-ee (CMIS API)"
-      if: commit_message !~ /\[skip search\]/
-      before_script:
-        - export CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest
-        - export DATABASE_ENV_PROPERTIES="-Ddb.driver=oracle.jdbc.OracleDriver -Ddb.name=alfresco -Ddb.url=jdbc:oracle:thin:@database:1521/PDB1 -Ddb.username=alfresco -Ddb.password=alfresco "
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml ${TAS_ENVIRONMENT}/docker-compose-oracle.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
-      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
-
-    - name: "CMIS TAS tests - Open Search (CMIS API)"
-      if: commit_message !~ /\[skip search\]/
-      before_script:
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-opensearch-tests.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
-      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
-
-    - name: "Sync Service TAS tests"
-      if: commit_message !~ /\[skip tas\]/
-      before_script:
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-sync-service.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      script:
-        - travis_wait 20 mvn -B install -ntp -f tests/tas-sync-service/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
-      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-sync-service"
+#    - name: "CMIS TAS tests - Open Search (CMIS API)"
+#      if: commit_message !~ /\[skip search\]/
+#      before_script:
+#        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-opensearch-tests.yml
+#        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#      script:
+#        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
+#      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
+#
+#    - name: "Sync Service TAS tests"
+#      if: commit_message !~ /\[skip tas\]/
+#      before_script:
+#        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-sync-service.yml
+#        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#      script:
+#        - travis_wait 20 mvn -B install -ntp -f tests/tas-sync-service/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+#      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-sync-service"
 
     - name: "Elasticsearch TAS tests | postgreSQL (Search API)"
       if: commit_message !~ /\[skip search\]/
       vm:
         size: large
       script:
+       - bash scripts/travis/logContainers.sh &
        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=postgresql"
 
     - name: "Elasticsearch TAS tests | MySQL (Search API)"
@@ -272,6 +278,7 @@ jobs:
       vm:
         size: large
       script:
+        - bash scripts/travis/logContainers.sh &
         - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mysql"
 
     - name: "Elasticsearch TAS tests | Maria DB 10.6 (Search API)"
@@ -279,6 +286,7 @@ jobs:
       vm:
         size: large
       script:
+        - bash scripts/travis/logContainers.sh &
         - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mariadb"
 
     - name: "Elasticsearch TAS tests | MS SQL (Search API)"
@@ -286,6 +294,7 @@ jobs:
       vm:
         size: large
       script:
+        - bash scripts/travis/logContainers.sh &
         - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mssql"
 
     - name: "Elasticsearch TAS tests | Oracle 19.3.0-ee (Search API)"
@@ -293,14 +302,15 @@ jobs:
       vm:
         size: large
       script:
+        - bash scripts/travis/logContainers.sh &
         - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=oracle"
 
-    - name: "Opensearch TAS tests (Search API)"
-      if: commit_message !~ /\[skip search\]/
-      vm:
-        size: large
-      script:
-        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch" "-Ddatabase.type=postgresql"
+#    - name: "Opensearch TAS tests (Search API)"
+#      if: commit_message !~ /\[skip search\]/
+#      vm:
+#        size: large
+#      script:
+#        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch" "-Ddatabase.type=postgresql"
 
     - name: "Elasticsearch Basic Auth TAS tests | postgreSQL"
       if: commit_message !~ /\[skip search\]/
@@ -329,45 +339,45 @@ jobs:
       script:
         - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=oracle"
 
-    - name: "Opensearch Basic Auth TAS tests"
-      if: commit_message !~ /\[skip search\]/
-      script:
-        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch" "-Ddatabase.type=postgresql"
-
-    - name: "Elasticsearch Upgrade TAS tests"
-      if: commit_message !~ /\[skip search\]/
-      vm:
-        size: large
-      script:
-        - pip install awscli
-        - AWS_ACCESS_KEY_ID=${LICENCES_AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${LICENCES_AWS_SECRET_ACCESS_KEY} aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
-        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=postgresql"
-
-    - name: "Opensearch Upgrade TAS tests"
-      if: commit_message !~ /\[skip search\]/
-      vm:
-        size: large
-      script:
-        - pip install awscli
-        - AWS_ACCESS_KEY_ID=${LICENCES_AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${LICENCES_AWS_SECRET_ACCESS_KEY} aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
-        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch" "-Ddatabase.type=postgresql"
-
-    - name: "All AMPs tests"
-      before_script:
-        - travis_retry travis_wait 20 mvn -B -q install -ntp -f tests/tas-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
-      script:
-        - ./tests/scripts/checkLibraryDuplicates.sh ./tests/tas-all-amps/target/war/alfresco/WEB-INF/lib
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-all-amps-test.yml
-        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-        - travis_wait 20 mvn -B install -ntp -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
-      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-all-amps"
-
-    - name: "Distribution Zip content tests"
-      before_script:
-        - travis_retry travis_wait 20 mvn -B -V clean install -ntp -Pags -DskipTests -Dmaven.javadoc.skip=true
-      script:
-        - travis_wait 20 mvn -B install -ntp -f tests/tas-distribution-zip/pom.xml -Prun-distribution-zip-contents-check -DrunBugs=false
-      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-distribution-zip"
+#    - name: "Opensearch Basic Auth TAS tests"
+#      if: commit_message !~ /\[skip search\]/
+#      script:
+#        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch" "-Ddatabase.type=postgresql"
+#
+#    - name: "Elasticsearch Upgrade TAS tests"
+#      if: commit_message !~ /\[skip search\]/
+#      vm:
+#        size: large
+#      script:
+#        - pip install awscli
+#        - AWS_ACCESS_KEY_ID=${LICENCES_AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${LICENCES_AWS_SECRET_ACCESS_KEY} aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
+#        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=postgresql"
+#
+#    - name: "Opensearch Upgrade TAS tests"
+#      if: commit_message !~ /\[skip search\]/
+#      vm:
+#        size: large
+#      script:
+#        - pip install awscli
+#        - AWS_ACCESS_KEY_ID=${LICENCES_AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${LICENCES_AWS_SECRET_ACCESS_KEY} aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
+#        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch" "-Ddatabase.type=postgresql"
+#
+#    - name: "All AMPs tests"
+#      before_script:
+#        - travis_retry travis_wait 20 mvn -B -q install -ntp -f tests/tas-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
+#      script:
+#        - ./tests/scripts/checkLibraryDuplicates.sh ./tests/tas-all-amps/target/war/alfresco/WEB-INF/lib
+#        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-all-amps-test.yml
+#        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#        - travis_wait 20 mvn -B install -ntp -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+#      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-all-amps"
+#
+#    - name: "Distribution Zip content tests"
+#      before_script:
+#        - travis_retry travis_wait 20 mvn -B -V clean install -ntp -Pags -DskipTests -Dmaven.javadoc.skip=true
+#      script:
+#        - travis_wait 20 mvn -B install -ntp -f tests/tas-distribution-zip/pom.xml -Prun-distribution-zip-contents-check -DrunBugs=false
+#      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-distribution-zip"
 
     # Test local repo and share docker images that will be used in the single pipeline. Tag:latest
     - name: "Single Pipeline image tests"
