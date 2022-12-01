@@ -6,14 +6,4 @@
       <package name="org.alfresco.elasticsearch" />
     </packages>
   </test>
-  <test name="initial_reindex" verbose="3">
-    <packages>
-      <package name="org.alfresco.elasticsearch.initialReindex" />
-    </packages>
-  </test>
-  <test name="reindexing" verbose="3">
-    <packages>
-      <package name="org.alfresco.elasticsearch.reindexing" />
-    </packages>
-  </test>
 </suite>
