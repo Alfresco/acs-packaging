@@ -64,16 +64,28 @@ public class ElasticsearchProximitySearchTests extends AbstractTestNGSpringConte
         nameB = uniqueString();
         nameC = uniqueString();
         nameD = uniqueString();
+        logger.info("nameA: " + nameA);
+        logger.info("nameB: " + nameB);
+        logger.info("nameC: " + nameC);
+        logger.info("nameD: " + nameD);
 
         contentA = uniqueString();
         contentB = uniqueString();
         contentC = uniqueString();
         contentD = uniqueString();
+        logger.info("contentA: " + contentA);
+        logger.info("contentB: " + contentB);
+        logger.info("contentC: " + contentC);
+        logger.info("contentD: " + contentD);
 
         file_NameA_ContentABCD = createContent(join(nameA), join(contentA, contentB, contentC, contentD));
         file_NameAB_ContentABC = createContent(join(nameA, nameB), join(contentA, contentB, contentC));
         file_NameABC_ContentAB = createContent(join(nameA, nameB, nameC), join(contentA, contentB));
         file_NameABCD_ContentA = createContent(join(nameA, nameB, nameC, nameD), join(contentA));
+        logger.info("file_NameA_ContentABCD: " + file_NameA_ContentABCD);
+        logger.info("file_NameAB_ContentABC: " + file_NameAB_ContentABC);
+        logger.info("file_NameABC_ContentAB: " + file_NameABC_ContentAB);
+        logger.info("file_NameABCD_ContentA: " + file_NameABCD_ContentA);
 
         testUser = dataUser.createRandomTestUser();
     }
