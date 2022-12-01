@@ -195,7 +195,7 @@ jobs:
       matrix:
         include:
           - testSuite: Open Search (CMIS API)
-            compose-file: ${{ env.TAS_ENVIRONMENT }}/docker-compose-cmis-opensearch-tests.yml
+            compose-file: ${{ TAS_ENVIRONMENT }}/docker-compose-cmis-opensearch-tests.yml
           - testSuite: Elastic Search | postgreSQL (CMIS API)
             compose-file: ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml ${TAS_ENVIRONMENT}/docker-compose-postgres.yml
     steps:
