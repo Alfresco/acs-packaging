@@ -186,10 +186,18 @@ jobs:
         run: mvn -B install -ntp -f ${{ matrix.pom }} -P${{ matrix.profiles }} -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
 
   cmis-tas-tests:
-    name: "CMIS TAS tests - Open Search (CMIS API)"
+    name: "CMIS TAS tests - ${{ matrix.testSuite }}"
     runs-on: ubuntu-latest
     if: >
       ! contains(github.event.head_commit.message, '[skip tests]')
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - testSuite: Open Search (CMIS API)
+            compose-file: ${{ env.TAS_ENVIRONMENT }}/docker-compose-cmis-opensearch-tests.yml
+          - testSuite: Elastic Search | postgreSQL (CMIS API)
+            compose-file: ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml ${TAS_ENVIRONMENT}/docker-compose-postgres.yml
     steps:
       - uses: actions/checkout@v3
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
@@ -201,7 +209,12 @@ jobs:
           bash ./scripts/ci/build.sh
       - name: "Set up the environment"
         run: |
-          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-cmis-opensearch-tests.yml
+          if ["${{ matrix.testSuite }}" == 'Elastic Search | postgreSQL (CMIS API)'];
+          then
+            echo "CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest" >> $GITHUB_ENV
+            echo 'DATABASE_ENV_PROPERTIES="-Ddb.driver=org.postgresql.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:postgresql://database:5432/alfresco "' >> $GITHUB_ENV
+          fi
+          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ matrix.compose-file }}
           ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       - name: "Run tests"
         timeout-minutes: 40
