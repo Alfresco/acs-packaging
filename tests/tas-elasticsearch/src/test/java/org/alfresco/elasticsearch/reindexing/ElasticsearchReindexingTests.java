@@ -210,66 +210,10 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     }
 
     @Test(groups = TestGroup.SEARCH)
-    public void testRecreateIndexWithMetadataAndContent1()
+    public void testRecreateIndexWithMetadataAndContent()
     {
         internalTestEnabledFeatures(true, true, false,
             "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content'", true);
-    }
-
-    @Test(groups = TestGroup.SEARCH)
-    public void testRecreateIndexWithMetadataAndContent2()
-    {
-        internalTestEnabledFeatures(true, true, false,
-                "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content'", true);
-    }
-
-    @Test(groups = TestGroup.SEARCH)
-    public void testRecreateIndexWithMetadataAndContent3()
-    {
-        internalTestEnabledFeatures(true, true, false,
-                "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content'", true);
-    }
-
-    @Test(groups = TestGroup.SEARCH)
-    public void testRecreateIndexWithMetadataAndContent4()
-    {
-        internalTestEnabledFeatures(true, true, false,
-                "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content'", true);
-    }
-
-    @Test(groups = TestGroup.SEARCH)
-    public void testRecreateIndexWithMetadataAndContent5()
-    {
-        internalTestEnabledFeatures(true, true, false,
-                "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content'", true);
-    }
-
-    @Test(groups = TestGroup.SEARCH)
-    public void testRecreateIndexWithMetadataAndContent6()
-    {
-        internalTestEnabledFeatures(true, true, false,
-                "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content'", true);
-    }
-
-    @Test(groups = TestGroup.SEARCH)
-    public void testRecreateIndexWithMetadataAndContent7()
-    {
-        internalTestEnabledFeatures(true, true, false,
-                "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content'", true);
-    }
-
-    @Test(groups = TestGroup.SEARCH)
-    public void testRecreateIndexWithMetadataAndContent8()
-    {
-        internalTestEnabledFeatures(true, true, false,
-                "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content'", true);
-    }
-
-    @Test(groups = TestGroup.SEARCH)
-    public void testRecreateIndexWithMetadataAndContent9()
-    {
-        internalTestEnabledFeatures(true, true, false,
-                "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content'", true);
     }
 //
 //    @Test(groups = TestGroup.SEARCH)
@@ -296,75 +240,11 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 //    }
 
     @Test(groups = TestGroup.SEARCH)
-    public void testRecreateIndexWithMetadataAndContentAndPath1()
+    public void testRecreateIndexWithMetadataAndContentAndPath()
     {
         internalTestEnabledFeatures(true, true, true,
             "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content' " +
                 "AND PATH:'/app:company_home/st:sites/cm:" + testSite + "/cm:documentLibrary/cm:<DOCUMENT_NAME>'", true);
-    }
-
-    @Test(groups = TestGroup.SEARCH)
-    public void testRecreateIndexWithMetadataAndContentAndPath2()
-    {
-        internalTestEnabledFeatures(true, true, true,
-                "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content' " +
-                        "AND PATH:'/app:company_home/st:sites/cm:" + testSite + "/cm:documentLibrary/cm:<DOCUMENT_NAME>'", true);
-    }
-
-    @Test(groups = TestGroup.SEARCH)
-    public void testRecreateIndexWithMetadataAndContentAndPath3()
-    {
-        internalTestEnabledFeatures(true, true, true,
-                "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content' " +
-                        "AND PATH:'/app:company_home/st:sites/cm:" + testSite + "/cm:documentLibrary/cm:<DOCUMENT_NAME>'", true);
-    }
-
-    @Test(groups = TestGroup.SEARCH)
-    public void testRecreateIndexWithMetadataAndContentAndPath4()
-    {
-        internalTestEnabledFeatures(true, true, true,
-                "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content' " +
-                        "AND PATH:'/app:company_home/st:sites/cm:" + testSite + "/cm:documentLibrary/cm:<DOCUMENT_NAME>'", true);
-    }
-
-    @Test(groups = TestGroup.SEARCH)
-    public void testRecreateIndexWithMetadataAndContentAndPath5()
-    {
-        internalTestEnabledFeatures(true, true, true,
-                "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content' " +
-                        "AND PATH:'/app:company_home/st:sites/cm:" + testSite + "/cm:documentLibrary/cm:<DOCUMENT_NAME>'", true);
-    }
-
-    @Test(groups = TestGroup.SEARCH)
-    public void testRecreateIndexWithMetadataAndContentAndPath6()
-    {
-        internalTestEnabledFeatures(true, true, true,
-                "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content' " +
-                        "AND PATH:'/app:company_home/st:sites/cm:" + testSite + "/cm:documentLibrary/cm:<DOCUMENT_NAME>'", true);
-    }
-
-    @Test(groups = TestGroup.SEARCH)
-    public void testRecreateIndexWithMetadataAndContentAndPath7()
-    {
-        internalTestEnabledFeatures(true, true, true,
-                "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content' " +
-                        "AND PATH:'/app:company_home/st:sites/cm:" + testSite + "/cm:documentLibrary/cm:<DOCUMENT_NAME>'", true);
-    }
-
-    @Test(groups = TestGroup.SEARCH)
-    public void testRecreateIndexWithMetadataAndContentAndPath8()
-    {
-        internalTestEnabledFeatures(true, true, true,
-                "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content' " +
-                        "AND PATH:'/app:company_home/st:sites/cm:" + testSite + "/cm:documentLibrary/cm:<DOCUMENT_NAME>'", true);
-    }
-
-    @Test(groups = TestGroup.SEARCH)
-    public void testRecreateIndexWithMetadataAndContentAndPath9()
-    {
-        internalTestEnabledFeatures(true, true, true,
-                "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content' " +
-                        "AND PATH:'/app:company_home/st:sites/cm:" + testSite + "/cm:documentLibrary/cm:<DOCUMENT_NAME>'", true);
     }
 //
 //    @Test(groups = TestGroup.SEARCH)
