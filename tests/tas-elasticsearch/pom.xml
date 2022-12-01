@@ -21,22 +21,22 @@
         <database.type />
       </properties>
     </profile>
-<!--    <profile>-->
-<!--      <id>elastic-basic-auth</id>-->
-<!--      <properties>-->
-<!--        <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/elasticsearch-basic-auth-suite.xml</suiteXmlFile>-->
-<!--        <search.engine.type />-->
-<!--        <database.type />-->
-<!--      </properties>-->
-<!--    </profile>-->
-<!--    <profile>-->
-<!--      <id>elastic-upgrade</id>-->
-<!--      <properties>-->
-<!--        <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/elasticsearch-from-solr-upgrade-suite.xml</suiteXmlFile>-->
-<!--        <search.engine.type />-->
-<!--        <database.type />-->
-<!--      </properties>-->
-<!--    </profile>-->
+    <profile>
+      <id>elastic-basic-auth</id>
+      <properties>
+        <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/elasticsearch-basic-auth-suite.xml</suiteXmlFile>
+        <search.engine.type />
+        <database.type />
+      </properties>
+    </profile>
+    <profile>
+      <id>elastic-upgrade</id>
+      <properties>
+        <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/elasticsearch-from-solr-upgrade-suite.xml</suiteXmlFile>
+        <search.engine.type />
+        <database.type />
+      </properties>
+    </profile>
   </profiles>
 
   <dependencies>

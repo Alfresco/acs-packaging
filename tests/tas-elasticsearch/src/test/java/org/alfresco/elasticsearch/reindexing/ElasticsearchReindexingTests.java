@@ -215,29 +215,29 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         internalTestEnabledFeatures(true, true, false,
             "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content'", true);
     }
-//
-//    @Test(groups = TestGroup.SEARCH)
-//    public void testRecreateIndexWithMetadataAndNoContent()
-//    {
-//        internalTestEnabledFeatures(true, false, false,
-//            "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content'", false);
-//    }
-//
-//    @Test(groups = TestGroup.SEARCH)
-//    public void testRecreateIndexWithNoMetadataAndContent()
-//    {
-//        // When not using metadata, document shouldn't be present in Elasticsearch index,
-//        // since metadata reindexing process is indexing also permissions
-//        internalTestEnabledFeatures(false, true, false,
-//            "cm:name:'<DOCUMENT_NAME>' AND cm:name:*", false);
-//    }
-//
-//    @Test(groups = TestGroup.SEARCH)
-//    public void testRecreateIndexWithMetadataAndNoContentAndPath()
-//    {
-//        internalTestEnabledFeatures(true, false, true,
-//            "cm:name:'<DOCUMENT_NAME>' AND PATH:'/app:company_home/st:sites/cm:" + testSite + "/cm:documentLibrary/cm:<DOCUMENT_NAME>'", true);
-//    }
+
+    @Test(groups = TestGroup.SEARCH)
+    public void testRecreateIndexWithMetadataAndNoContent()
+    {
+        internalTestEnabledFeatures(true, false, false,
+            "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content'", false);
+    }
+
+    @Test(groups = TestGroup.SEARCH)
+    public void testRecreateIndexWithNoMetadataAndContent()
+    {
+        // When not using metadata, document shouldn't be present in Elasticsearch index,
+        // since metadata reindexing process is indexing also permissions
+        internalTestEnabledFeatures(false, true, false,
+            "cm:name:'<DOCUMENT_NAME>' AND cm:name:*", false);
+    }
+
+    @Test(groups = TestGroup.SEARCH)
+    public void testRecreateIndexWithMetadataAndNoContentAndPath()
+    {
+        internalTestEnabledFeatures(true, false, true,
+            "cm:name:'<DOCUMENT_NAME>' AND PATH:'/app:company_home/st:sites/cm:" + testSite + "/cm:documentLibrary/cm:<DOCUMENT_NAME>'", true);
+    }
 
     @Test(groups = TestGroup.SEARCH)
     public void testRecreateIndexWithMetadataAndContentAndPath()
@@ -246,46 +246,46 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
             "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content' " +
                 "AND PATH:'/app:company_home/st:sites/cm:" + testSite + "/cm:documentLibrary/cm:<DOCUMENT_NAME>'", true);
     }
-//
-//    @Test(groups = TestGroup.SEARCH)
-//    public void testRecreateIndexWithNoMetadataAndPath()
-//    {
-//        // When not using metadata, document shouldn't be present in Elasticsearch index,
-//        // since metadata reindexing process is indexing also permissions
-//        internalTestEnabledFeatures(false, false, true,
-//            "cm:name:'<DOCUMENT_NAME>' AND cm:name:*", false);
-//    }
-//
-//    @Test (groups = TestGroup.SEARCH)
-//    public void testPathReindex()
-//    {
-//        // GIVEN
-//        // Create document.
-//        String documentName = createDocument();
-//        // Stop ElasticsearchConnector.
-//        AlfrescoStackInitializer.liveIndexer.stop();
-//        // Delete index documents.
-//        cleanUpIndex();
-//
-//        // WHEN
-//        // Run reindexer with path indexing enabled (and with default dates to reindex everything).
-//        reindex(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true",
-//                "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
-//                "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX));
-//
-//        // THEN
-//        // Check path indexed.
-//        // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
-//        SearchRequest query = req("PATH:\"//" + documentName + "\" AND cm:name:*");
-//        searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
-//        // Also check that the document can be obtained by a path query against the site.
-//        query = req("PATH:\"//" + testSite.getTitle() + "/documentLibrary/*\" AND cm:name:" + documentName + " AND cm:name:*");
-//        searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
-//
-//        // TIDY
-//        // Restart ElasticsearchConnector.
-//        AlfrescoStackInitializer.liveIndexer.start();
-//    }
+
+    @Test(groups = TestGroup.SEARCH)
+    public void testRecreateIndexWithNoMetadataAndPath()
+    {
+        // When not using metadata, document shouldn't be present in Elasticsearch index,
+        // since metadata reindexing process is indexing also permissions
+        internalTestEnabledFeatures(false, false, true,
+            "cm:name:'<DOCUMENT_NAME>' AND cm:name:*", false);
+    }
+
+    @Test (groups = TestGroup.SEARCH)
+    public void testPathReindex()
+    {
+        // GIVEN
+        // Create document.
+        String documentName = createDocument();
+        // Stop ElasticsearchConnector.
+        AlfrescoStackInitializer.liveIndexer.stop();
+        // Delete index documents.
+        cleanUpIndex();
+
+        // WHEN
+        // Run reindexer with path indexing enabled (and with default dates to reindex everything).
+        reindex(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true",
+                "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+                "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX));
+
+        // THEN
+        // Check path indexed.
+        // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
+        SearchRequest query = req("PATH:\"//" + documentName + "\" AND cm:name:*");
+        searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
+        // Also check that the document can be obtained by a path query against the site.
+        query = req("PATH:\"//" + testSite.getTitle() + "/documentLibrary/*\" AND cm:name:" + documentName + " AND cm:name:*");
+        searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
+
+        // TIDY
+        // Restart ElasticsearchConnector.
+        AlfrescoStackInitializer.liveIndexer.start();
+    }
 
     /**
      * Run the alfresco-elasticsearch-reindexing container.
