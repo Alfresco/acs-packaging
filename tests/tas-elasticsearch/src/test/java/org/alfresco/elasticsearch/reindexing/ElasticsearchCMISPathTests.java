@@ -19,6 +19,8 @@ import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.report.log.Step;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -32,6 +34,8 @@ import org.testng.annotations.Test;
  */
 public class ElasticsearchCMISPathTests extends AbstractTestNGSpringContextTests
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ElasticsearchCMISPathTests.class);
+
     private static final String PREFIX = getAlphabeticUUID();
     private static final String FOLDER_0_NAME = PREFIX + "_folder0";
     private static final String FOLDER_00_NAME = PREFIX + "_folder00";
@@ -107,6 +111,7 @@ public class ElasticsearchCMISPathTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void inTreeQuery_selectSubfolders()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("cmis", "SELECT * FROM cmis:folder WHERE IN_TREE('" + folder0.getNodeRef() + "')");
         searchQueryService.expectResultsFromQuery(query, user, FOLDER_00_NAME, FOLDER_000_NAME);
     }
@@ -115,6 +120,7 @@ public class ElasticsearchCMISPathTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void inTreeQuery_selectDocuments()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE IN_TREE('" + folder0.getNodeRef() + "')");
         searchQueryService.expectResultsFromQuery(query, user, DOC_0000_NAME, DOC_00_NAME, DOC_01_NAME);
     }

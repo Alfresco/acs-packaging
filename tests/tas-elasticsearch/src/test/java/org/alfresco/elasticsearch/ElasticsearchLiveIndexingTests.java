@@ -10,6 +10,7 @@ import java.util.function.Predicate;
 
 import org.alfresco.dataprep.AlfrescoHttpClient;
 import org.alfresco.dataprep.AlfrescoHttpClientFactory;
+import org.alfresco.elasticsearch.reindexing.ElasticsearchSiteIndexingTests;
 import org.alfresco.rest.search.RestRequestQueryModel;
 import org.alfresco.rest.search.SearchNodeModel;
 import org.alfresco.rest.search.SearchRequest;
@@ -29,6 +30,8 @@ import org.alfresco.utility.testrail.annotation.TestRail;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -43,6 +46,8 @@ import org.testng.annotations.Test;
  */
 public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextTests
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ElasticsearchLiveIndexingTests.class);
+
     private static final String PREFIX = getAlphabeticUUID() + "_";
     private static final String UNIQUE_WORD = getAlphabeticUUID();
     private static final String FILE_0_NAME = PREFIX + "test.txt";
@@ -116,6 +121,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void searchCanFindAFileUsingIncludeParameter()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest queryWithoutIncludes = req(UNIQUE_WORD);
         Predicate<SearchNodeModel> allFieldsNull = searchNodeModel ->
                 searchNodeModel.getProperties() == null
@@ -154,6 +160,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void searchCanFindAFile()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         // this test must found only one documents, while documents in the system are four because
         // only one contains the unique word.
         searchQueryService.expectResultsFromQuery(req(UNIQUE_WORD), userSite1, FILE_0_NAME);
@@ -165,6 +172,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void searchCanFindFilesOnASite()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         searchQueryService.expectResultsFromQuery(req(PREFIX), userSite1, FILE_0_NAME, FILE_1_NAME, FILE_3_NAME);
     }
 
@@ -174,6 +182,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void searchCanFindAFileOnMultipleSitesWithOwner()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         searchQueryService.expectResultsFromQuery(req(PREFIX), userSite2, FILE_3_NAME, FILE_2_NAME);
     }
 
@@ -183,6 +192,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void searchCanFindAFileOnMultipleSites()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         searchQueryService.expectResultsFromQuery(req(PREFIX), userMultiSite, FILE_0_NAME, FILE_1_NAME, FILE_3_NAME, FILE_2_NAME);
     }
 
@@ -192,6 +202,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     @Test (groups = TestGroup.SEARCH)
     public void findFileWithRangeQuery()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         searchQueryService.expectResultsFromQuery(req("cm:created:[NOW-1YEAR TO MAX] AND name:" + FILE_0_NAME), userSite1, FILE_0_NAME);
     }
 
@@ -201,6 +212,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     @Test (groups = TestGroup.SEARCH)
     public void omitFileWithRangeQuery()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         searchQueryService.expectNoResultsFromQuery(req("cm:created:[MIN TO NOW-2YEARS] AND name:" + FILE_0_NAME), userSite1);
     }
 
@@ -210,6 +222,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void indexAndSearchForDateBefore1970()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         //Elasticsearch doesn't accept numbers for dates before 1970, so we create and search for a specific document in order to verify that.
         createNodeWithProperties(siteModel1, new FileModel(BEFORE_1970_TXT, FileType.TEXT_PLAIN), userSite1,
                                  Map.of("cm:from", -2637887000L));

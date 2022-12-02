@@ -18,6 +18,8 @@ import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.report.log.Step;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -32,6 +34,8 @@ import org.testng.annotations.Test;
 
 public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextTests
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ElasticsearchPathIndexingTests.class);
+
     public static final String CUSTOM_ALFRESCO_INDEX = "custom-alfresco-index";
 
     @Autowired
@@ -83,6 +87,7 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void testSimple()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("PATH:\"//cm:" + testFileName + "\"");
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
     }
@@ -90,6 +95,7 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void testRelativePathQuery()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("PATH:\"//cm:" + testFileName + "\" ");
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
     }
@@ -97,6 +103,7 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void testRelativePathQueryWithoutPrefixes()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("PATH:\"//" + testFileName + "\" AND name:*");
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
     }
@@ -104,6 +111,7 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void testWildcardQuery()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         // The test file should be the only descendent of the last folder.
         SearchRequest query = req("PATH:\"//" + testSite.getId() + "//" + testFolders.get(testFolders.size() - 1).getName() + "/*\" AND name:*");
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName, testFileNameWithWhitespace);
@@ -112,6 +120,7 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void testAbsolutePathQuery()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         String folderPath = testFolders.stream().map(folder -> "cm:" + folder.getName()).collect(Collectors.joining("/"));
         SearchRequest query = req("PATH:\"/app:company_home/st:sites/cm:" + testSite.getId() + "/cm:documentLibrary/" + folderPath + "/cm:" + testFileName + "\" AND cm:name:*");
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
@@ -120,6 +129,7 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void testAbsolutePathQueryWithoutPrefixes()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         String folderPath = testFolders.stream().map(folder -> "cm:" + folder.getName()).collect(Collectors.joining("/"));
         SearchRequest query = req("PATH:\"/company_home/sites/" + testSite.getId() + "/documentLibrary/" + folderPath + "/" + testFileName + "\" AND name:*");
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
@@ -128,6 +138,7 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void testRootNodes()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("PATH:\"/*\" AND name:*");
         searchQueryService.expectResultsFromQuery(query, testUser, "categories", "Company Home");
     }
@@ -135,6 +146,7 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void testRootNodesWithoutWildcard()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("PATH:\"/\"");
         searchQueryService.expectNodeTypesFromQuery(query, testUser, "sys:store_root");
     }
@@ -142,6 +154,7 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void testPathNameMismatch()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("PATH:\"/*\" AND name:" + testFileName + " AND name:*");
         searchQueryService.expectNoResultsFromQuery(query, testUser);
     }
@@ -149,6 +162,7 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void testPathNameIntersect()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("PATH:\"//*\" AND name:" + testFileName + " AND name:*");
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
     }
@@ -156,6 +170,7 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void testAllDescendentsOfFolder()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("PATH:\"//" + testFolders.get(0).getName() + "//*\" AND name:*");
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName, testFileNameWithWhitespace, testFolders.get(1).getName(), testFolders.get(2).getName());
     }
@@ -163,6 +178,7 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void testAllFoldersInSite()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("PATH:\"/*/sites/" + testSite.getId() + "/*//*\" AND TYPE:\"cm:folder\" AND name:*");
         String[] folderNames = testFolders.stream().map(ContentModel::getName).toArray(String[]::new);
         searchQueryService.expectResultsFromQuery(query, testUser, folderNames);
@@ -171,6 +187,7 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH, enabled = false)
     public void testUpdatePath()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         //disabled test: find a way to rename or move a folder on repository
         String folderPath = testFolders.stream().map(folder -> "cm:" + folder.getName()).collect(Collectors.joining("/"));
         SearchRequest query = req("PATH:\"/app:company_home/cm:" + testFileName + "\" AND cm:name:*");

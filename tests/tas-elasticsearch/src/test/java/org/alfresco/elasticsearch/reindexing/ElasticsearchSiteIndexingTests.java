@@ -35,6 +35,8 @@ import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.logging.log4j.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -45,6 +47,8 @@ import org.testng.annotations.Test;
         initializers = AlfrescoStackInitializer.class)
 public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextTests
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ElasticsearchSiteIndexingTests.class);
+
     private static final Iterable<String> LANGUAGES_TO_CHECK = List.of("afts", "lucene");
     private static final FileModel DOCUMENT_LIBRARY = new FileModel("documentLibrary");
     private static final String FILENAME_PREFIX = "EsSiteTest";
@@ -100,6 +104,7 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
     @Test (groups = { TestGroup.SEARCH, TestGroup.SITES, TestGroup.REGRESSION })
     public void testSiteUseCasesForCreateModifyDeleteSite()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         // Remove the automatically created Sample Site
         deleteSite(SAMPLE_SITE_ID);
 
@@ -235,6 +240,7 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
     @Test (groups = { TestGroup.SEARCH, TestGroup.SITES, TestGroup.REGRESSION })
     public void manipulatingFilesAndContentBetweenSites()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         Step.STEP("Moving files between sites and modifying content use cases");
 
         SiteModel publicSite1 = createPublicSite(siteCreator);

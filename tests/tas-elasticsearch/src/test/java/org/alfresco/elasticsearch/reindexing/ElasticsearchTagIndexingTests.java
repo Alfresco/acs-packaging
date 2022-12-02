@@ -35,6 +35,8 @@ import org.alfresco.utility.testrail.annotation.TestRail;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpPut;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -45,6 +47,8 @@ import org.testng.annotations.Test;
         initializers = AlfrescoStackInitializer.class)
 public class ElasticsearchTagIndexingTests extends AbstractTestNGSpringContextTests
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ElasticsearchTagIndexingTests.class);
+
     private static final Iterable<String> LANGUAGES_TO_CHECK = List.of("afts", "lucene");
 
     @Autowired
@@ -89,6 +93,7 @@ public class ElasticsearchTagIndexingTests extends AbstractTestNGSpringContextTe
     @Test (groups = { TestGroup.SEARCH, TestGroup.TAGS, TestGroup.REGRESSION })
     public void testTAGUseCases()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         final String tag1 = unique("TAG1");
 
         //No result for not existing tag

@@ -92,6 +92,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     @Test(groups = TestGroup.SEARCH)
     public void testReindexerFixesBrokenIndex()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         // GIVEN
 
         // Delete all documents inside Elasticsearch.
@@ -128,6 +129,8 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     @Test(groups = TestGroup.SEARCH)
     public void testRecreateIndex()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
+
         // GIVEN
         // Create document.
         String documentName = createDocument();
@@ -173,7 +176,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // Initial timestamp for reindexing by date: this will save reindexing time for these tests
         ZonedDateTime now = ZonedDateTime.now(Clock.systemUTC());
-        String testStart = DateTimeFormatter.ofPattern("yyyyMMddHHmm").format(now.minusMinutes(1));
+        String testStart = DateTimeFormatter.ofPattern("yyyyMMddHHmm").format(now.minusMinutes(2));
 
         // GIVEN
         // Stop ElasticsearchConnector
@@ -210,6 +213,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     @Test(groups = TestGroup.SEARCH)
     public void testRecreateIndexWithMetadataAndContent()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         internalTestEnabledFeatures(true, true, false,
             "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content'", true);
     }
@@ -217,6 +221,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     @Test(groups = TestGroup.SEARCH)
     public void testRecreateIndexWithMetadataAndNoContent()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         internalTestEnabledFeatures(true, false, false,
             "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content'", false);
     }
@@ -224,6 +229,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     @Test(groups = TestGroup.SEARCH)
     public void testRecreateIndexWithNoMetadataAndContent()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         // When not using metadata, document shouldn't be present in Elasticsearch index,
         // since metadata reindexing process is indexing also permissions
         internalTestEnabledFeatures(false, true, false,
@@ -233,6 +239,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     @Test(groups = TestGroup.SEARCH)
     public void testRecreateIndexWithMetadataAndNoContentAndPath()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         internalTestEnabledFeatures(true, false, true,
             "cm:name:'<DOCUMENT_NAME>' AND PATH:'/app:company_home/st:sites/cm:" + testSite + "/cm:documentLibrary/cm:<DOCUMENT_NAME>'", true);
     }
@@ -240,6 +247,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     @Test(groups = TestGroup.SEARCH)
     public void testRecreateIndexWithMetadataAndContentAndPath()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         internalTestEnabledFeatures(true, true, true,
             "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content' " +
                 "AND PATH:'/app:company_home/st:sites/cm:" + testSite + "/cm:documentLibrary/cm:<DOCUMENT_NAME>'", true);
@@ -248,6 +256,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     @Test(groups = TestGroup.SEARCH)
     public void testRecreateIndexWithNoMetadataAndPath()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         // When not using metadata, document shouldn't be present in Elasticsearch index,
         // since metadata reindexing process is indexing also permissions
         internalTestEnabledFeatures(false, false, true,
@@ -257,6 +266,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     @Test (groups = TestGroup.SEARCH)
     public void testPathReindex()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         // GIVEN
         // Create document.
         String documentName = createDocument();
