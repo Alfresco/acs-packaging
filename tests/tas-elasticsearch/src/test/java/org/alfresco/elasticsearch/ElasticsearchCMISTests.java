@@ -25,6 +25,8 @@ import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
@@ -41,6 +43,8 @@ import org.testng.annotations.Test;
  */
 public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ElasticsearchCMISTests.class);
+
     private static final String PREFIX = getAlphabeticUUID();
     private static final String SUFFIX = getAlphabeticUUID();
     private static final String UNIQUE_WORD = getAlphabeticUUID();
@@ -127,6 +131,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void basicQuery()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document");
         searchQueryService.expectResultsInclude(query, user1, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME, file3Name);
     }
@@ -135,6 +140,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void objectIdQuery()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:objectId = '" + file0.getNodeRef() + "'");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME);
     }
@@ -143,6 +149,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void objectTypeIdQuery()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query1 = req("cmis", "SELECT * FROM cmis:folder WHERE cmis:objectTypeId = 'cmis:folder'");
         searchQueryService.expectResultsInclude(query1, user1, "documentLibrary", FOLDER_0_NAME, FOLDER_1_NAME, user1.getUsername());
 
@@ -154,6 +161,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void baseTypeIdQuery()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("cmis", "SELECT * FROM cmis:folder WHERE cmis:baseTypeId = 'cmis:folder'");
         searchQueryService.expectResultsInclude(query, user1, "documentLibrary", FOLDER_0_NAME, FOLDER_1_NAME, user1.getUsername(), siteModel1.getId());
     }
@@ -162,6 +170,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void isNullQuery()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("cmis", "SELECT * FROM cmis:folder WHERE cmis:description IS NULL");
         searchQueryService.expectResultsInclude(query, user1, "documentLibrary", FOLDER_0_NAME, FOLDER_1_NAME, user1.getUsername());
     }
@@ -170,6 +179,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void isNotNullQuery()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("cmis", "SELECT * FROM cmis:folder WHERE cmis:description IS NOT NULL");
         searchQueryService.expectResultsInclude(query, user1, siteModel1.getId());
     }
@@ -178,6 +188,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void matchNamesLikePrefix()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name LIKE '" + PREFIX + "%'");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
     }
@@ -186,6 +197,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void matchNamesLikeSuffix()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name LIKE '%" + SUFFIX + "'");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
     }
@@ -194,6 +206,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void matchContentOfFile()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         // Check the query is case insensitive.
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE CONTAINS('" + UNIQUE_WORD + "')");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
@@ -203,6 +216,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void checkPermissionForUser2()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         // Reuse the prefix query to check which documents user2 can access.
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name LIKE '" + PREFIX + "%'");
         searchQueryService.expectResultsFromQuery(query, user2, FILE_2_NAME, USER_2_FILE_NAME);
@@ -212,6 +226,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void matchDocumentName()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name = '" + FILE_0_NAME + "'");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME);
     }
@@ -220,6 +235,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void doesNotMatchDocumentName()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name <> '" + FILE_0_NAME + "'");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_1_NAME, FILE_2_NAME, file3Name);
     }
@@ -228,6 +244,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void checkOrderByAscSyntax()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name IN('" + FILE_0_NAME + "','" + FILE_1_NAME + "','" + FILE_2_NAME + "') ORDER BY cmis:name ASC");
         searchQueryService.expectResultsInOrder(query, user1, true, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
     }
@@ -236,6 +253,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void checkOrderByDescSyntax()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("cmis", "SELECT cmis:name FROM cmis:document WHERE cmis:name IN('" + FILE_0_NAME + "','" + FILE_1_NAME + "','" + FILE_2_NAME + "') ORDER BY cmis:name DESC");
         searchQueryService.expectResultsInOrder(query, user1, false, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
     }
@@ -244,6 +262,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void checkInSyntax()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name IN ('" + FILE_0_NAME + "', '" + FILE_1_NAME + "')");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME);
     }
@@ -252,6 +271,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void checkNotInSyntax()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:name NOT IN ('" + FILE_0_NAME + "', '" + FILE_1_NAME + "')");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_2_NAME, file3Name);
     }
@@ -260,6 +280,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void checkAfterDateSyntax()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         String file0CreationDate = fileCreationDates.get(0);
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:creationDate > TIMESTAMP '" + file0CreationDate + "'");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_1_NAME, FILE_2_NAME, file3Name);
@@ -269,6 +290,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void checkAfterOrSameDateSyntax()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         String file0CreationDate = fileCreationDates.get(0);
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:creationDate >= TIMESTAMP '" + file0CreationDate + "'");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME, file3Name);
@@ -278,6 +300,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void checkBeforeDateSyntax()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         String file2CreationDate = fileCreationDates.get(2);
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:creationDate < TIMESTAMP '" + file2CreationDate + "'");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME);
@@ -287,6 +310,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void checkBeforeOrSameDateSyntax()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         String file2CreationDate = fileCreationDates.get(2);
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:creationDate <= TIMESTAMP '" + file2CreationDate + "'");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME, FILE_1_NAME, FILE_2_NAME);
@@ -296,6 +320,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void checkMatchesDateSyntax()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         String file0CreationDate = fileCreationDates.get(0);
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:creationDate = TIMESTAMP '" + file0CreationDate + "'");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_0_NAME);
@@ -305,6 +330,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void checkDoesNotMatchDateSyntax()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         String file0CreationDate = fileCreationDates.get(0);
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:creationDate <> TIMESTAMP '" + file0CreationDate + "'");
         searchQueryService.expectResultsFromQuery(query, user1, FILE_1_NAME, FILE_2_NAME, file3Name);
@@ -314,6 +340,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void checkInDatesSyntax()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         String file0CreationDate = fileCreationDates.get(0);
         String file1CreationDate = fileCreationDates.get(1);
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:creationDate IN (TIMESTAMP '" + file0CreationDate + "', TIMESTAMP '" + file1CreationDate + "')");
@@ -324,6 +351,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void checkNotInDatesSyntax()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         String file0CreationDate = fileCreationDates.get(0);
         String file1CreationDate = fileCreationDates.get(1);
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE cmis:creationDate NOT IN (TIMESTAMP '" + file0CreationDate + "', TIMESTAMP '" + file1CreationDate + "')");
@@ -334,6 +362,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void checkEqualIntegerSyntax()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document AS D JOIN exif:exif AS E ON D.cmis:objectId = E.cmis:objectId WHERE E.exif:pixelXDimension = " + X_DIMENSION);
         query.setInclude(List.of("properties"));
         searchQueryService.expectResultsFromQuery(query, user1, file3Name);
@@ -343,6 +372,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void checkDifferentThanIntegerSyntax()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document AS D JOIN exif:exif AS E ON D.cmis:objectId = E.cmis:objectId WHERE E.exif:pixelXDimension <> " + X_DIMENSION);
         query.setInclude(List.of("properties"));
         searchQueryService.expectNoResultsFromQuery(query, user1);
@@ -352,6 +382,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void checkGreaterThanIntegerSyntax()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         int lessThanX = X_DIMENSION - 1;
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document AS D JOIN exif:exif AS E ON D.cmis:objectId = E.cmis:objectId WHERE E.exif:pixelXDimension > " + lessThanX);
         query.setInclude(List.of("properties"));
@@ -366,6 +397,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void checkGreaterThanOrEqualIntegerSyntax()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document AS D JOIN exif:exif AS E ON D.cmis:objectId = E.cmis:objectId WHERE E.exif:pixelXDimension >= " + X_DIMENSION);
         query.setInclude(List.of("properties"));
         searchQueryService.expectResultsFromQuery(query, user1, file3Name);
@@ -380,6 +412,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void checkLessThanIntegerSyntax()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         int moreThanX = X_DIMENSION + 1;
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document AS D JOIN exif:exif AS E ON D.cmis:objectId = E.cmis:objectId WHERE E.exif:pixelXDimension < " + moreThanX);
         query.setInclude(List.of("properties"));
@@ -394,6 +427,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void checkLessThanOrEqualIntegerSyntax()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document AS D JOIN exif:exif AS E ON D.cmis:objectId = E.cmis:objectId WHERE E.exif:pixelXDimension <= " + X_DIMENSION);
         query.setInclude(List.of("properties"));
         searchQueryService.expectResultsFromQuery(query, user1, file3Name);
@@ -408,6 +442,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void checkInIntegersSyntax()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document AS D JOIN exif:exif AS E ON D.cmis:objectId = E.cmis:objectId WHERE E.exif:pixelXDimension IN (" + X_DIMENSION + ", " + 0 + ")");
         query.setInclude(List.of("properties"));
         searchQueryService.expectResultsFromQuery(query, user1, file3Name);
@@ -421,6 +456,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void checkNotInIntegersSyntax()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document AS D JOIN exif:exif AS E ON D.cmis:objectId = E.cmis:objectId WHERE E.exif:pixelXDimension NOT IN (" + X_DIMENSION + ", " + 0 + ")");
         query.setInclude(List.of("properties"));
         searchQueryService.expectNoResultsFromQuery(query, user1);
@@ -433,6 +469,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void negative_basicCMISQuery_missingFrom()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         // note: ideally 400 but currently 500 (also for Solr) :-(
 
         SearchRequest query1 = req("cmis", "SELECT *");
@@ -445,6 +482,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void negative_basicCMISQuery_invalidType()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         // note: ideally 400 but currently 500 (also for Solr) :-(
         SearchRequest query = req("SELECT * FROM cmis:unknown");
         searchQueryService.expectErrorFromQuery(query, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown property: {http://www.alfresco.org/model/content/1.0}cmis");
@@ -453,6 +491,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void negative_objectTypeIdQuery_invalidType()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         // note: ideally 400 but currently 500 (also for Solr) :-(
         SearchRequest query = req("SELECT * FROM cmis:folder WHERE cmis:objectTypeId = 'unknown:site'");
         searchQueryService.expectErrorFromQuery(query, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown property: {http://www.alfresco.org/model/content/1.0}cmis");
@@ -461,6 +500,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void negative_isNullQuery_invalidField()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("cmis", "SELECT * FROM cmis:folder WHERE cmis:unknown IS NULL");
         searchQueryService.expectErrorFromQuery(query, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown column/property cmis:unknown");
     }
@@ -468,6 +508,7 @@ public class ElasticsearchCMISTests extends AbstractTestNGSpringContextTests
     @Test (groups = TestGroup.SEARCH)
     public void negative_isNotNullQuery_invalidField()
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         SearchRequest query = req("cmis", "SELECT * FROM cmis:folder WHERE cmis:unknown IS NOT NULL");
         searchQueryService.expectErrorFromQuery(query, user1, HttpStatus.INTERNAL_SERVER_ERROR, "Unknown column/property cmis:unknown");
     }

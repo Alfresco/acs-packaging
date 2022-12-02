@@ -23,6 +23,8 @@ import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
@@ -43,6 +45,8 @@ import static org.testng.Assert.assertFalse;
                       initializers = AlfrescoStackInitializer.class)
 public class ElasticsearchAdminConsoleTests extends AbstractTestNGSpringContextTests
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ElasticsearchAdminConsoleTests.class);
+
     private static final String ADMIN_CONSOLE_URL = "/alfresco/s/enterprise/admin/admin-searchservice";
     private static final String FILE_NAME = "ElasticsearchAdminConsoleTests_" + UUID.randomUUID() + ".txt";
 
@@ -87,6 +91,7 @@ public class ElasticsearchAdminConsoleTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void elasticsearchAdminConsolePage() throws Exception
     {
+        LOGGER.info("Thread id" + Thread.currentThread().getId());
         Step.STEP("Load the Search admin page.");
         Document document = loadSearchAdminPage();
 
