@@ -3,21 +3,21 @@
 <suite name="REST API tests Elasticsearch" preserve-order="true" verbose="1" parallel="false">
   <test name="elasticsearch" verbose="3">
     <classes>
-
       <!-- general elasticsearch -->
       <class name="org.alfresco.elasticsearch.ElasticsearchAdminConsoleTests"/>
+      <class name="org.alfresco.elasticsearch.ElasticsearchCMISTests"/>
       <class name="org.alfresco.elasticsearch.ElasticsearchLiveIndexingTests"/>
       <class name="org.alfresco.elasticsearch.reindexing.ElasticsearchReindexingTests"/>
-      <class name="org.alfresco.elasticsearch.ElasticsearchCMISTests"/>
       <class name="org.alfresco.elasticsearch.ElasticsearchProximitySearchTests"/>
       <class name="org.alfresco.elasticsearch.ElasticsearchTokenisationTests"/>
       <!-- initial reindexing -->
       <class name="org.alfresco.elasticsearch.initialReindex.ElasticsearchInitialReindexingTests"/>
       <!-- reindexing -->
-      <class name="org.alfresco.elasticsearch.reindexing.ElasticsearchCMISPathTests"/>
       <class name="org.alfresco.elasticsearch.reindexing.ElasticsearchPathIndexingTests"/>
       <class name="org.alfresco.elasticsearch.reindexing.ElasticsearchSiteIndexingTests"/>
       <class name="org.alfresco.elasticsearch.reindexing.ElasticsearchTagIndexingTests"/>
+      <class name="org.alfresco.elasticsearch.reindexing.ElasticsearchCMISPathTests"/>
     </classes>
   </test>
+
 </suite>
