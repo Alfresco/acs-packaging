@@ -7,8 +7,6 @@
       <class name="org.alfresco.elasticsearch.ElasticsearchAdminConsoleTests"/>
       <class name="org.alfresco.elasticsearch.ElasticsearchCMISTests"/>
       <class name="org.alfresco.elasticsearch.ElasticsearchProximitySearchTests"/>
-      <class name="org.alfresco.elasticsearch.ElasticsearchLiveIndexingTests"/>
-      <class name="org.alfresco.elasticsearch.reindexing.ElasticsearchReindexingTests"/>
       <class name="org.alfresco.elasticsearch.ElasticsearchTokenisationTests"/>
       <!-- initial reindexing -->
       <class name="org.alfresco.elasticsearch.initialReindex.ElasticsearchInitialReindexingTests"/>
