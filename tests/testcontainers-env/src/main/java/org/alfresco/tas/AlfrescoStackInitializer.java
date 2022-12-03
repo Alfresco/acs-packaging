@@ -145,6 +145,13 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     }
 
     /**
+     * Clear database from test data by restarting the database and reindexing
+     */
+    public static void restartDatabase() {
+
+    }
+
+    /**
      * Run the alfresco-elasticsearch-reindexing container with path reindexing enabled.
      */
     public static void reindexEverything()
