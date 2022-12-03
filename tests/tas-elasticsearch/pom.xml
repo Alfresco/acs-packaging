@@ -22,14 +22,6 @@
       </properties>
     </profile>
     <profile>
-      <id>elastic-index</id>
-      <properties>
-        <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/elasticsearch-index.xml</suiteXmlFile>
-        <search.engine.type />
-        <database.type />
-      </properties>
-    </profile>
-    <profile>
       <id>elastic-basic-auth</id>
       <properties>
         <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/elasticsearch-basic-auth-suite.xml</suiteXmlFile>
