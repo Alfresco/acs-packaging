@@ -224,13 +224,10 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     {
         LOGGER.info("Thread id" + Thread.currentThread().getId());
         //Elasticsearch doesn't accept numbers for dates before 1970, so we create and search for a specific document in order to verify that.
-        LOGGER.info("siteModel1 " + siteModel1.getId() + ", " + siteModel1.getGuid() + ", " + siteModel1.getTitle());
-        LOGGER.info("siteModel2 " + siteModel2.getId() + ", " + siteModel2.getGuid() + ", " + siteModel2.getTitle());
-        LOGGER.info("user site " + userSite1.getUsername());
         createNodeWithProperties(siteModel1, new FileModel(BEFORE_1970_TXT, FileType.TEXT_PLAIN), userSite1,
                                  Map.of("cm:from", -2637887000L));
 
-        searchQueryService.expectResultsFromQuery(req("cm:from:1969-12-01T11:15:13Z"), userSite1, BEFORE_1970_TXT);
+        searchQueryService.expectResultsInclude(req("cm:from:1969-12-01T11:15:13Z"), userSite1, BEFORE_1970_TXT);
     }
 
     private FileModel createContent(String filename, String content, SiteModel site, UserModel user)
