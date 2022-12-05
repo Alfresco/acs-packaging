@@ -170,7 +170,8 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         Boolean contentIndexingEnabled,
         Boolean pathIndexingEnabled,
         String queryString,
-        Boolean expectingDocNameAsResult
+        Boolean expectingDocNameAsResult,
+        Boolean grabLogs
     )
     {
 
@@ -186,6 +187,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // Delete index documents
         cleanUpIndex();
         // Restart ElasticsearchConnector to Index Content
+        AlfrescoStackInitializer.grabLogs = true;
         AlfrescoStackInitializer.liveIndexer.start();
 
         // WHEN
@@ -199,6 +201,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // THEN
         SearchRequest query = req(queryString.replace("<DOCUMENT_NAME>", documentName));
+        AlfrescoStackInitializer.grabLogs = false;
         if (expectingDocNameAsResult)
         {
             searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
@@ -213,9 +216,12 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     @Test(groups = TestGroup.SEARCH)
     public void testRecreateIndexWithMetadataAndContent()
     {
-        LOGGER.info("Thread id" + Thread.currentThread().getId());
+        LOGGER.info("Interesting logs start");
+
         internalTestEnabledFeatures(true, true, false,
-            "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content'", true);
+            "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content'", true, true);
+
+        LOGGER.info("Interesting logs end");
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -223,7 +229,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     {
         LOGGER.info("Thread id" + Thread.currentThread().getId());
         internalTestEnabledFeatures(true, false, false,
-            "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content'", false);
+            "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content'", false, false);
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -233,7 +239,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // When not using metadata, document shouldn't be present in Elasticsearch index,
         // since metadata reindexing process is indexing also permissions
         internalTestEnabledFeatures(false, true, false,
-            "cm:name:'<DOCUMENT_NAME>' AND cm:name:*", false);
+            "cm:name:'<DOCUMENT_NAME>' AND cm:name:*", false, false);
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -241,16 +247,19 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     {
         LOGGER.info("Thread id" + Thread.currentThread().getId());
         internalTestEnabledFeatures(true, false, true,
-            "cm:name:'<DOCUMENT_NAME>' AND PATH:'/app:company_home/st:sites/cm:" + testSite + "/cm:documentLibrary/cm:<DOCUMENT_NAME>'", true);
+            "cm:name:'<DOCUMENT_NAME>' AND PATH:'/app:company_home/st:sites/cm:" + testSite + "/cm:documentLibrary/cm:<DOCUMENT_NAME>'", true, false);
     }
 
     @Test(groups = TestGroup.SEARCH)
     public void testRecreateIndexWithMetadataAndContentAndPath()
     {
-        LOGGER.info("Thread id" + Thread.currentThread().getId());
+        LOGGER.info("Interesting logs start");
+
         internalTestEnabledFeatures(true, true, true,
             "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content' " +
-                "AND PATH:'/app:company_home/st:sites/cm:" + testSite + "/cm:documentLibrary/cm:<DOCUMENT_NAME>'", true);
+                "AND PATH:'/app:company_home/st:sites/cm:" + testSite + "/cm:documentLibrary/cm:<DOCUMENT_NAME>'", true, true);
+
+        LOGGER.info("Interesting logs stop");
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -260,7 +269,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // When not using metadata, document shouldn't be present in Elasticsearch index,
         // since metadata reindexing process is indexing also permissions
         internalTestEnabledFeatures(false, false, true,
-            "cm:name:'<DOCUMENT_NAME>' AND cm:name:*", false);
+            "cm:name:'<DOCUMENT_NAME>' AND cm:name:*", false, false);
     }
 
     @Test (groups = TestGroup.SEARCH)

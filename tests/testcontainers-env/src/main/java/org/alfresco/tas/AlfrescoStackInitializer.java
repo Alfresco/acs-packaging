@@ -53,6 +53,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     public static GenericContainer liveIndexer;
 
+    public static boolean grabLogs;
+
     @Override
     public void initialize(ConfigurableApplicationContext configurableApplicationContext)
     {
@@ -201,7 +203,11 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     protected GenericContainer createLiveIndexingContainer()
     {
-        Consumer<OutputFrame> outputFrameConsumer = of -> LOGGER.info(of.getUtf8String());
+        Consumer<OutputFrame> outputFrameConsumer = of -> {
+            if (grabLogs) {
+                LOGGER.info(of.getUtf8String());
+            }
+        };
 
         return new GenericContainer(getImagesConfig().getLiveIndexingImage())
                        .withNetwork(network)
