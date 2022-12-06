@@ -331,6 +331,12 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
                                                             .withLogConsumer(outputFrameConsumer))
         {
             reindexingComponent.start();
+            //TODO too fast closing of reindexing container?!
+            try {
+                Thread.sleep(30000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
