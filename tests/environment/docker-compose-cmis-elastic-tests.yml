@@ -2,7 +2,7 @@ version: "2"
 
 services:
   alfresco:
-    image: quay.io/alfresco/alfresco-content-repository:${ALFRESCO_TAG}
+    image: ${CMIS_ALFRESCO_IMAGE}
     mem_limit: 3400m
     environment:
       CATALINA_OPTS: "-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n"
@@ -18,10 +18,7 @@ services:
         "
       JAVA_OPTS: '
         -Delasticsearch.createIndexIfNotExists=true
-        -Ddb.driver=org.postgresql.Driver
-        -Ddb.username=alfresco
-        -Ddb.password=alfresco
-        -Ddb.url=jdbc:postgresql://postgres:5432/alfresco
+        ${DATABASE_ENV_PROPERTIES}
         -Dindex.subsystem.name=elasticsearch
         -Delasticsearch.host=elasticsearch
         -Delasticsearch.indexName=${ELASTICSEARCH_INDEX_NAME}
@@ -48,6 +45,17 @@ services:
     ports:
       - 8082:8080
       - 8000:8000
+
+  database:
+    image: postgres:${POSTGRES_TAG}
+    mem_limit: 512m
+    environment:
+      - POSTGRES_PASSWORD=alfresco
+      - POSTGRES_USER=alfresco
+      - POSTGRES_DB=alfresco
+    command: postgres -c max_connections=300 -c log_min_messages=LOG
+    ports:
+      - 5432:5432
 
   transform-router:
     mem_limit: 512m
@@ -100,17 +108,6 @@ services:
         -Dalfresco.context=alfresco
         -Dalfresco.protocol=http
         "
-
-  postgres:
-    image: postgres:${POSTGRES_TAG}
-    mem_limit: 512m
-    environment:
-      - POSTGRES_PASSWORD=alfresco
-      - POSTGRES_USER=alfresco
-      - POSTGRES_DB=alfresco
-    command: postgres -c max_connections=300 -c log_min_messages=LOG
-    ports:
-      - 5432:5432
 
   activemq:
     image: quay.io/alfresco/alfresco-activemq:${ACTIVEMQ_TAG}
@@ -172,7 +169,7 @@ services:
       - elasticsearch
 
   live-indexing:
-    image: quay.io/alfresco/alfresco-elasticsearch-live-indexing:${LIVE_INDEXING_TAG}
+    image: alfresco-es-indexing-jdbc:latest
     mem_limit: 512m
     depends_on:
       - elasticsearch

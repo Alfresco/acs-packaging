@@ -1,0 +1,12 @@
+services:
+  database:
+    image: mysql:${MYSQL_TAG}
+    mem_limit: 512m
+    environment:
+      - MYSQL_PASSWORD=alfresco
+      - MYSQL_ROOT_PASSWORD=alfresco
+      - MYSQL_USER=alfresco
+      - MYSQL_DATABASE=alfresco
+    command: mysqld --sql_mode="ALLOW_INVALID_DATES" --max_connections=300 --transaction-isolation='READ-COMMITTED'
+    ports:
+      - 3306:3306

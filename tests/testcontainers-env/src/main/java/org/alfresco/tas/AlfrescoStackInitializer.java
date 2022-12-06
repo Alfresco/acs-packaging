@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 
-import com.github.dockerjava.api.command.CreateContainerCmd;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContextInitializer;
@@ -14,6 +13,10 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.support.TestPropertySourceUtils;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.JdbcDatabaseContainer;
+import org.testcontainers.containers.MSSQLServerContainer;
+import org.testcontainers.containers.MariaDBContainer;
+import org.testcontainers.containers.MySQLContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
@@ -67,13 +70,13 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         alfresco = createAlfrescoContainer();
 
+        JdbcDatabaseContainer database = createDatabaseContainer();
+
         GenericContainer transformRouter = createTransformRouterContainer();
 
         GenericContainer transformCore = createTransformCoreContainer();
 
         GenericContainer sfs = createSfsContainer();
-
-        PostgreSQLContainer postgres = createPosgresContainer();
 
         GenericContainer activemq = createAMQContainer();
 
@@ -83,7 +86,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         configureSecuritySettings(searchEngineContainer);
 
-        startOrFail(postgres);
+        startOrFail(database);
 
         startOrFail(activemq, sfs);
 
@@ -110,6 +113,23 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     }
 
+    private JdbcDatabaseContainer createDatabaseContainer()
+    {
+        switch (getImagesConfig().getDatabaseType())
+        {
+            case POSTGRESQL_DB:
+                return createPosgresContainer();
+            case MYSQL_DB:
+                return createMySqlContainer();
+            case MARIA_DB:
+                return createMariaDBContainer();
+            case MSSQL_DB:
+                return createMsSqlContainer();
+            default:
+                throw new IllegalArgumentException("Database not set.");
+        }
+    }
+
     public void configureSecuritySettings(GenericContainer searchEngineContainer)
     {
         //empty for default execution
@@ -121,13 +141,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     public static void reindexEverything()
     {
         // Run the reindexing container.
-        Map<String, String> env = new HashMap<>(
-                Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true", // Ensure path reindexing is enabled.
-                        "SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200",
-                        "SPRING_DATASOURCE_URL", "jdbc:postgresql://postgres:5432/alfresco",
-                        "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
-                        "SPRING_ACTIVEMQ_BROKER-URL", "nio://activemq:61616",
-                        "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config",
+        Map<String, String> env = AlfrescoStackInitializer.getReindexEnvBasic();
+        env.putAll(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true", // Ensure path reindexing is enabled.
                         "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
 
         try (GenericContainer reindexingComponent = new GenericContainer(getImagesConfig().getReIndexingImage())
@@ -138,6 +153,21 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         {
             reindexingComponent.start();
         }
+    }
+
+    public static Map<String, String> getReindexEnvBasic()
+    {
+        DatabaseType databaseType = getImagesConfig().getDatabaseType();
+
+        Map<String, String> env = new HashMap<>(
+                Map.of("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200",
+                        "SPRING_DATASOURCE_URL", databaseType.getUrl(),
+                        "SPRING_DATASOURCE_USERNAME", databaseType.getUsername(),
+                        "SPRING_DATASOURCE_PASSWORD", databaseType.getPassword(),
+                        "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
+                        "SPRING_ACTIVEMQ_BROKER-URL", "nio://activemq:61616",
+                        "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config"));
+        return env;
     }
 
     private void startOrFail(Startable... startables)
@@ -240,12 +270,47 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     private PostgreSQLContainer createPosgresContainer()
     {
         return (PostgreSQLContainer) new PostgreSQLContainer(getImagesConfig().getPostgreSQLImage())
-                                             .withPassword("alfresco")
-                                             .withUsername("alfresco")
+                                             .withPassword(DatabaseType.POSTGRESQL_DB.getPassword())
+                                             .withUsername(DatabaseType.POSTGRESQL_DB.getUsername())
                                              .withDatabaseName("alfresco")
                                              .withNetwork(network)
                                              .withNetworkAliases("postgres")
                                              .withStartupTimeout(Duration.ofMinutes(2));
+    }
+
+
+    private MySQLContainer createMySqlContainer()
+    {
+        return (MySQLContainer) new MySQLContainer(getImagesConfig().getMySQLImage())
+                                            .withPassword(DatabaseType.MYSQL_DB.getPassword())
+                                            .withUsername(DatabaseType.MYSQL_DB.getUsername())
+                                            .withDatabaseName("alfresco")
+                                            .withNetwork(network)
+                                            .withNetworkAliases("mysql")
+                                            .withStartupTimeout(Duration.ofMinutes(2));
+
+    }
+
+    private MariaDBContainer createMariaDBContainer()
+    {
+        return new MariaDBContainer<>(getImagesConfig().getMariaDBImage())
+                .withPassword(DatabaseType.MARIA_DB.getPassword())
+                .withUsername(DatabaseType.MARIA_DB.getUsername())
+                .withDatabaseName("alfresco")
+                .withNetwork(network)
+                .withNetworkAliases("mariadb")
+                .withStartupTimeout(Duration.ofMinutes(2));
+
+    }
+
+    private JdbcDatabaseContainer createMsSqlContainer()
+    {
+        return new MSSQLServerContainer<>(getImagesConfig().getMsSqlImage())
+                .acceptLicense()
+                .withPassword(DatabaseType.MSSQL_DB.getPassword())
+                .withNetwork(network)
+                .withNetworkAliases("mssql")
+                .withStartupTimeout(Duration.ofMinutes(2));
     }
 
     private GenericContainer createSfsContainer()
@@ -290,6 +355,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     protected GenericContainer createAlfrescoContainer()
     {
+        DatabaseType databaseType = getImagesConfig().getDatabaseType();
         return new GenericContainer(getImagesConfig().getRepositoryImage())
                        .withEnv("CATALINA_OPTS", "\"-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n\"")
                        .withEnv("JAVA_TOOL_OPTIONS",
@@ -301,13 +367,14 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 "-Dmetadata-keystore.metadata.password=oKIWzVdEdA -Dmetadata-keystore.metadata.algorithm=DESede")
                        .withEnv("JAVA_OPTS",
                                 "-Delasticsearch.createIndexIfNotExists=true " +
-                                "-Ddb.driver=org.postgresql.Driver " +
-                                "-Ddb.username=alfresco " +
-                                "-Ddb.password=alfresco " +
-                                "-Ddb.url=jdbc:postgresql://postgres:5432/alfresco " +
                                 "-Dindex.subsystem.name=elasticsearch " +
                                 "-Delasticsearch.host=elasticsearch " +
                                 "-Delasticsearch.indexName=" + CUSTOM_ALFRESCO_INDEX + " " +
+                                "-Ddb.driver=" + databaseType.getDriver() + " " +
+                                "-Ddb.url=" + escapeSemicolonInUrlForJavaOptsUsage(databaseType.getUrl()) + " " +
+                                "-Ddb.username=" + databaseType.getUsername() + " " +
+                                "-Ddb.password=" + databaseType.getPassword() + " " +
+                                  indentDbSettings(databaseType.getAdditionalDbSettings()) +
                                 "-Dshare.host=127.0.0.1 " +
                                 "-Dshare.port=8080 " +
                                 "-Dalfresco.host=localhost " +
@@ -329,8 +396,21 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                        .withStartupTimeout(Duration.ofMinutes(7))
                        .withExposedPorts(8080, 8000)
                        .withClasspathResourceMapping("exactTermSearch.properties",
-                        "/usr/local/tomcat/webapps/alfresco/WEB-INF/classes/alfresco/search/elasticsearch/config/exactTermSearch.properties",
-                        BindMode.READ_ONLY);
+                    "/usr/local/tomcat/webapps/alfresco/WEB-INF/classes/alfresco/search/elasticsearch/config/exactTermSearch.properties",
+                                BindMode.READ_ONLY);
+    }
+
+    private String escapeSemicolonInUrlForJavaOptsUsage(String url) {
+        return url.replace(";", "\\;");
+    }
+
+    private String indentDbSettings(Map<String, String> additionalDbSettings) {
+        StringBuilder sb = new StringBuilder();
+        for(Map.Entry<String, String> setting : additionalDbSettings.entrySet())
+        {
+            sb.append("-Ddb.").append(setting.getKey()).append("=").append(setting.getValue()).append(" ");
+        }
+        return sb.toString();
     }
 
     public static ImagesConfig getImagesConfig()
@@ -360,6 +440,14 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
         String getPostgreSQLImage();
 
+        String getMySQLImage();
+
+        String getMariaDBImage();
+
+        String getMsSqlImage();
+
+        DatabaseType getDatabaseType();
+
         String getRepositoryImage();
 
         String getKibanaImage();
@@ -382,13 +470,13 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         @Override
         public String getReIndexingImage()
         {
-            return "quay.io/alfresco/alfresco-elasticsearch-reindexing:" + getElasticsearchConnectorImageTag();
+            return "alfresco-es-reindexing-jdbc:latest";
         }
 
         @Override
         public String getLiveIndexingImage()
         {
-            return "quay.io/alfresco/alfresco-elasticsearch-live-indexing:" + getElasticsearchConnectorImageTag();
+            return "alfresco-es-indexing-jdbc:latest";
         }
 
         @Override
@@ -438,9 +526,27 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         }
 
         @Override
+        public String getMySQLImage()
+        {
+            return "mysql:" + envProperties.apply("MYSQL_TAG");
+        }
+
+        @Override
+        public String getMariaDBImage()
+        {
+            return "mariadb:" + envProperties.apply("MARIADB_TAG");
+        }
+
+        @Override
+        public String getMsSqlImage()
+        {
+            return "mcr.microsoft.com/mssql/server:" + envProperties.apply("MSSQL_TAG");
+        }
+
+        @Override
         public String getRepositoryImage()
         {
-            return "alfresco/alfresco-content-repository:latest";
+            return "alfresco-repository-databases:latest";
         }
 
         @Override
@@ -460,14 +566,15 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
             return SearchEngineType.from(searchEngineTypeProperty);
         }
 
-        private String getElasticsearchConnectorImageTag()
-        {
-            final String fromEnv = envProperties.apply("ES_CONNECTOR_TAG");
-            if (fromEnv != null && !fromEnv.isBlank())
+        @Override
+        public DatabaseType getDatabaseType() {
+            String databaseTypeProperty = mavenProperties.apply("database.type");
+            if(Strings.isNullOrEmpty(databaseTypeProperty))
             {
-                return fromEnv;
+                throw new IllegalArgumentException("Property 'database.type' not set.");
+
             }
-            return mavenProperties.apply("dependency.elasticsearch-shared.version");
+            return DatabaseType.from(databaseTypeProperty);
         }
     }
 }

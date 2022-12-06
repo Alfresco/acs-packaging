@@ -33,8 +33,8 @@ env:
     - ALF_LICENCE_S3_PATH=s3://acs-license/acs/alf74-allenabled.lic
     - ALF_LICENCE_LOCAL_PATH=/tmp/licence.lic
     # Release version has to start with real version (7.4.0-....) for the docker image to build successfully.
-    - RELEASE_VERSION=7.4.0-A2
-    - DEVELOPMENT_VERSION=7.4.0-A3-SNAPSHOT
+    - RELEASE_VERSION=7.4.0-M1
+    - DEVELOPMENT_VERSION=7.4.0-A7-SNAPSHOT
     - DTAS_VERSION="${DTAS_VERSION:-v1.1}"
     - PYTHON_VERSION=3.7.12
 
@@ -187,10 +187,45 @@ jobs:
       script:
         - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-atom-with-aims -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
 
-    - name: "CMIS TAS tests - Elastic Search (CMIS API)"
+    - name: "CMIS TAS tests - Elastic Search | postgreSQL (CMIS API)"
       if: commit_message !~ /\[skip search\]/
       before_script:
-        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml
+        - export CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest
+        - export DATABASE_ENV_PROPERTIES="-Ddb.driver=org.postgresql.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:postgresql://database:5432/alfresco "
+        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml ${TAS_ENVIRONMENT}/docker-compose-postgres.yml
+        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+      script:
+        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
+      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
+
+    - name: "CMIS TAS tests - Elastic Search | MySQL (CMIS API)"
+      if: commit_message !~ /\[skip search\]/
+      before_script:
+        - export CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest
+        - export DATABASE_ENV_PROPERTIES="-Ddb.driver=com.mysql.cj.jdbc.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:mysql://database:3306/alfresco "
+        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml ${TAS_ENVIRONMENT}/docker-compose-mysql.yml
+        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+      script:
+        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
+      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
+
+    - name: "CMIS TAS tests - Elastic Search | MariaDB 10.6 (CMIS API)"
+      if: commit_message !~ /\[skip search\]/
+      before_script:
+        - export CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest
+        - export DATABASE_ENV_PROPERTIES="-Ddb.driver=org.mariadb.jdbc.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:mariadb://database:3306/alfresco "
+        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml ${TAS_ENVIRONMENT}/docker-compose-mariadb.yml
+        - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+      script:
+        - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
+      after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
+
+    - name: "CMIS TAS tests - Elastic Search | MS SQL (CMIS API)"
+      if: commit_message !~ /\[skip search\]/
+      before_script:
+        - export CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest
+        - export DATABASE_ENV_PROPERTIES="-Ddb.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver -Ddb.username=sa -Ddb.password=Alfresco1 -Ddb.url=jdbc:sqlserver://database:1433 -Ddb.txn.isolation=4096 -Ddb.pool.max=275 "
+        - ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-cmis-elastic-tests.yml ${TAS_ENVIRONMENT}/docker-compose-mssql.yml
         - ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       script:
         - travis_wait 40 mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
@@ -214,29 +249,65 @@ jobs:
         - travis_wait 20 mvn -B install -ntp -f tests/tas-sync-service/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
       after_failure: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-sync-service"
 
-    - name: "Elasticsearch TAS tests (Search API)"
+    - name: "Elasticsearch TAS tests | postgreSQL (Search API)"
       if: commit_message !~ /\[skip search\]/
       vm:
         size: large
       script:
-       - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch"
+       - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=postgresql"
+
+    - name: "Elasticsearch TAS tests | MySQL (Search API)"
+      if: commit_message !~ /\[skip search\]/
+      vm:
+        size: large
+      script:
+        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mysql"
+
+    - name: "Elasticsearch TAS tests | Maria DB 10.6 (Search API)"
+      if: commit_message !~ /\[skip search\]/
+      vm:
+        size: large
+      script:
+        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mariadb"
+
+    - name: "Elasticsearch TAS tests | MS SQL (Search API)"
+      if: commit_message !~ /\[skip search\]/
+      vm:
+        size: large
+      script:
+        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mssql"
 
     - name: "Opensearch TAS tests (Search API)"
       if: commit_message !~ /\[skip search\]/
       vm:
         size: large
       script:
-        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch"
+        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch" "-Ddatabase.type=postgresql"
 
-    - name: "Elasticsearch Basic Auth TAS tests"
+    - name: "Elasticsearch Basic Auth TAS tests | postgreSQL"
       if: commit_message !~ /\[skip search\]/
       script:
-       - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch"
+       - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=postgresql"
+
+    - name: "Elasticsearch Basic Auth TAS tests | MySQL"
+      if: commit_message !~ /\[skip search\]/
+      script:
+        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mysql"
+
+    - name: "Elasticsearch Basic Auth TAS tests | MariaDB 10.6"
+      if: commit_message !~ /\[skip search\]/
+      script:
+        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mariadb"
+
+    - name: "Elasticsearch Basic Auth TAS tests | MS SQL"
+      if: commit_message !~ /\[skip search\]/
+      script:
+        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=mssql"
 
     - name: "Opensearch Basic Auth TAS tests"
       if: commit_message !~ /\[skip search\]/
       script:
-        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch"
+        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-basic-auth -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch" "-Ddatabase.type=postgresql"
 
     - name: "Elasticsearch Upgrade TAS tests"
       if: commit_message !~ /\[skip search\]/
@@ -245,7 +316,7 @@ jobs:
       script:
         - pip install awscli
         - AWS_ACCESS_KEY_ID=${LICENCES_AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${LICENCES_AWS_SECRET_ACCESS_KEY} aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
-        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch"
+        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=elasticsearch" "-Ddatabase.type=postgresql"
 
     - name: "Opensearch Upgrade TAS tests"
       if: commit_message !~ /\[skip search\]/
@@ -254,7 +325,7 @@ jobs:
       script:
         - pip install awscli
         - AWS_ACCESS_KEY_ID=${LICENCES_AWS_ACCESS_KEY_ID} AWS_SECRET_ACCESS_KEY=${LICENCES_AWS_SECRET_ACCESS_KEY} aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
-        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch"
+        - travis_wait 30 mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=opensearch" "-Ddatabase.type=postgresql"
 
     - name: "All AMPs tests"
       before_script:
