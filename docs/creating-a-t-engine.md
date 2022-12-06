@@ -309,21 +309,37 @@ Log4j `DEBUG` level logging for the transformations code can be enabled
 in ACS log4j properties on the following packages:
 ```properties
 # For normal transform debug
-log4j.logger.org.alfresco.repo.content.transform.TransformerDebug=debug
+logger.alfresco-repo-content-transform-TransformerDebug.name=org.alfresco.repo.content.transform.TransformerDebug
+logger.alfresco-repo-content-transform-TransformerDebug.level=debug
 
 # For loading of custom JSON files
-log4j.logger.org.alfresco.enterprise.repo.rendition2.RemoteTransformServiceRegistry=debug
-log4j.logger.org.alfresco.repo.content.transform.LocalTransformServiceRegistry=debug
-log4j.logger.org.alfresco.repo.rendition2.RenditionDefinitionRegistry2Impl=debug
-log4j.logger.org.alfresco.repo.content.MimetypeMap=debug
+logger.alfresco-enterprise-repo-rendition2-RemoteTransformServiceRegistry.name=org.alfresco.enterprise.repo.rendition2.RemoteTransformServiceRegistry
+logger.alfresco-enterprise-repo-rendition2-RemoteTransformServiceRegistry.level=debug
+
+logger.alfresco-repo-content-transform-LocalTransformServiceRegistry.name=org.alfresco.repo.content.transform.LocalTransformServiceRegistry
+logger.alfresco-repo-content-transform-LocalTransformServiceRegistry.level=debug
+
+logger.alfresco-repo-rendition2-RenditionDefinitionRegistry2Impl.name=org.alfresco.repo.rendition2.RenditionDefinitionRegistry2Impl
+logger.alfresco-repo-rendition2-RenditionDefinitionRegistry2Impl.level=debug
+
+logger.alfresco-repo-content-MimetypeMap.name=org.alfresco.repo.content.MimetypeMap
+logger.alfresco-repo-content-MimetypeMap.level=debug
 
 # For even more detailed debug
-log4j.logger.org.alfresco.enterprise.repo.rendition2.RemoteTransformClient=debug
-log4j.logger.org.alfresco.repo.rendition2.LocalTransformClient=debug
+logger.alfresco-enterprise-repo-rendition2-RemoteTransformClient.name=org.alfresco.enterprise.repo.rendition2.RemoteTransformClient
+logger.alfresco-enterprise-repo-rendition2-RemoteTransformClient.level=debug
 
-log4j.logger.org.alfresco.repo.content.transform.LocalTransform=debug
-log4j.logger.org.alfresco.repo.rendition2=debug
-log4j.logger.org.alfresco.enterprise.repo.rendition2=debug
+logger.alfresco-repo-rendition2-LocalTransformClient.name=org.alfresco.repo.rendition2.LocalTransformClient
+logger.alfresco-repo-rendition2-LocalTransformClient.level=debug
+
+logger.alfresco-repo-content-transform-LocalTransform.name=org.alfresco.repo.content.transform.LocalTransform
+logger.alfresco-repo-content-transform-LocalTransform.level=debug
+
+logger.alfresco-repo-rendition2.name=org.alfresco.repo.rendition2
+logger.alfresco-repo-rendition2.level=debug
+
+logger.alfresco-enterprise-repo-rendition2.name=org.alfresco.enterprise.repo.rendition2
+logger.alfresco-enterprise-repo-rendition2.level=debug
 ```
 
 In addition, the `Alfresco Admin Tool` provides a transformers debugging
