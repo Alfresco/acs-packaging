@@ -18,6 +18,7 @@ import org.alfresco.tas.AlfrescoStackInitializer;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
+import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.report.log.Step;
@@ -341,9 +342,10 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     private String createDocument()
     {
         String documentName = "TestFile" + UUID.randomUUID() + ".txt";
-        dataContent.usingUser(testUser)
+        FileModel fm = dataContent.usingUser(testUser)
                    .usingSite(testSite)
                    .createContent(new org.alfresco.utility.model.FileModel(documentName, org.alfresco.utility.model.FileType.TEXT_PLAIN, "content"));
+        logger.info("Document id: " + fm.getIdentifier());
         return documentName;
     }
 
