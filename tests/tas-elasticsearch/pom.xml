@@ -9,7 +9,7 @@
   <parent>
     <groupId>org.alfresco</groupId>
     <artifactId>content-repository-tests</artifactId>
-    <version>7.4.0-A4-SNAPSHOT</version>
+    <version>7.4.0-A7-SNAPSHOT</version>
   </parent>
 
   <profiles>
@@ -46,6 +46,20 @@
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.mariadb.jdbc</groupId>
+      <artifactId>mariadb-java-client</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.microsoft.sqlserver</groupId>
+      <artifactId>mssql-jdbc</artifactId>
+      <version>${dependency.mssql-jdbc.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+
     <dependency>
       <groupId>org.alfresco.tas</groupId>
       <artifactId>restapi</artifactId>
