@@ -108,6 +108,9 @@ mvn dependency:copy -Dartifact=org.mariadb.jdbc:mariadb-java-client:${MARIADB_JD
 MSSQL_JDBC_TAG=$(mvn help:evaluate -Dexpression=dependency.mssql-jdbc.version -q -DforceStdout)
 mvn dependency:copy -Dartifact=com.microsoft.sqlserver:mssql-jdbc:${MSSQL_JDBC_TAG}:jar -DoutputDirectory=tests/environment/alfresco-with-jdbc-drivers
 
+ORACLE_JDBC_TAG=$(mvn help:evaluate -Dexpression=dependency.ojdbc8.version -q -DforceStdout)
+mvn dependency:copy -Dartifact=com.oracle.database.jdbc:ojdbc8:${ORACLE_JDBC_TAG}:jar -DoutputDirectory=tests/environment/alfresco-with-jdbc-drivers
+
 docker build -t alfresco-repository-databases:latest -f tests/environment/alfresco-with-jdbc-drivers/alfresco.Dockerfile .
 
 source tests/environment/.env

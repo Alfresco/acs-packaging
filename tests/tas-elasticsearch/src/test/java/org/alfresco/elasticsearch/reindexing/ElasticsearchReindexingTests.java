@@ -173,7 +173,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // Initial timestamp for reindexing by date: this will save reindexing time for these tests
         ZonedDateTime now = ZonedDateTime.now(Clock.systemUTC());
-        String testStart = DateTimeFormatter.ofPattern("yyyyMMddHHmm").format(now.minusMinutes(1));
+        String testStart = DateTimeFormatter.ofPattern("yyyyMMddHHmm").format(now.minusMinutes(5));
 
         // GIVEN
         // Stop ElasticsearchConnector
