@@ -10,6 +10,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import org.alfresco.elasticsearch.SearchQueryService;
 import org.alfresco.rest.search.SearchRequest;
@@ -33,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.containers.startupcheck.IndefiniteWaitOneShotStartupCheckStrategy;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -113,7 +115,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // Run reindexer (leaving ALFRESCO_REINDEX_TO_TIME as default).
         reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
                        "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
-                       "ALFRESCO_REINDEX_FROM_TIME", testStart));
+                       "ALFRESCO_REINDEX_FROM_TIME", testStart), false);
 
         // THEN
         // Check document indexed.
@@ -142,7 +144,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // WHEN
         // Run reindexer (with default dates to reindex everything).
         reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
-                       "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX));
+                       "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX), false);
 
         // THEN
         // Check document indexed.
@@ -187,7 +189,6 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // Delete index documents
         cleanUpIndex();
         // Restart ElasticsearchConnector to Index Content
-        AlfrescoStackInitializer.grabLogs = true;
         AlfrescoStackInitializer.liveIndexer.start();
 
         // WHEN
@@ -197,11 +198,11 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
             "ALFRESCO_REINDEX_FROM_TIME", testStart,
             "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", metadataIndexingEnabled.toString(),
             "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", contentIndexingEnabled.toString(),
-            "ALFRESCO_REINDEX_PATHINDEXINGENABLED", pathIndexingEnabled.toString()));
+            "ALFRESCO_REINDEX_PATHINDEXINGENABLED", pathIndexingEnabled.toString()), grabLogs);
 
         // THEN
         SearchRequest query = req(queryString.replace("<DOCUMENT_NAME>", documentName));
-        AlfrescoStackInitializer.grabLogs = false;
+
         if (expectingDocNameAsResult)
         {
             searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
@@ -288,7 +289,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // Run reindexer with path indexing enabled (and with default dates to reindex everything).
         reindex(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true",
                 "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
-                "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX));
+                "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX), false);
 
         // THEN
         // Check path indexed.
@@ -309,17 +310,24 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
      *
      * @param envParam Any environment variables to override from the defaults.
      */
-    private void reindex(Map<String, String> envParam)
+    private void reindex(Map<String, String> envParam, boolean grabLogs)
     {
         // Run the reindexing container.
         Map<String, String> env = AlfrescoStackInitializer.getReindexEnvBasic();
         env.putAll(envParam);
 
+        Consumer<OutputFrame> outputFrameConsumer = of -> {
+            if (grabLogs) {
+                LOGGER.info(of.getUtf8String());
+            }
+        };
+
         try (GenericContainer reindexingComponent = new GenericContainer(getImagesConfig().getReIndexingImage())
                                                             .withEnv(env)
                                                             .withNetwork(AlfrescoStackInitializer.network)
                                                             .withStartupCheckStrategy(
-                                                                    new IndefiniteWaitOneShotStartupCheckStrategy()))
+                                                                    new IndefiniteWaitOneShotStartupCheckStrategy())
+                                                            .withLogConsumer(outputFrameConsumer))
         {
             reindexingComponent.start();
         }
