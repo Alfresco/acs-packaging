@@ -54,6 +54,7 @@
     <dependency>
       <groupId>com.microsoft.sqlserver</groupId>
       <artifactId>mssql-jdbc</artifactId>
+      <version>${dependency.mssql-jdbc.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
