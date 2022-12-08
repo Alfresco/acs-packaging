@@ -317,18 +317,11 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         Map<String, String> env = AlfrescoStackInitializer.getReindexEnvBasic();
         env.putAll(envParam);
 
-        Consumer<OutputFrame> outputFrameConsumer = of -> {
-            if (grabLogs) {
-                LOGGER.info(of.getUtf8String());
-            }
-        };
-
         try (GenericContainer reindexingComponent = new GenericContainer(getImagesConfig().getReIndexingImage())
                                                             .withEnv(env)
                                                             .withNetwork(AlfrescoStackInitializer.network)
                                                             .withStartupCheckStrategy(
-                                                                    new IndefiniteWaitOneShotStartupCheckStrategy())
-                                                            .withLogConsumer(outputFrameConsumer))
+                                                                    new IndefiniteWaitOneShotStartupCheckStrategy()))
         {
             reindexingComponent.start();
             //TODO too fast closing of reindexing container?!
