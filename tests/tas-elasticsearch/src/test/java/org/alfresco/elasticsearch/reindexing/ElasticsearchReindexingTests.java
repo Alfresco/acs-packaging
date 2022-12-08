@@ -324,12 +324,6 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
                                                                     new IndefiniteWaitOneShotStartupCheckStrategy()))
         {
             reindexingComponent.start();
-            //TODO too fast closing of reindexing container?!
-            try {
-                Thread.sleep(30000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
     }
 
