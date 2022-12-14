@@ -184,30 +184,49 @@ jobs:
 #        timeout-minutes: ${{ matrix.deploy-timeout }}
 #        run: mvn -B install -ntp -f ${{ matrix.pom }} -P${{ matrix.profiles }} -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
 #
-#  cmis-tas-tests-elastic-search:
-#    name: "CMIS TAS tests - Elastic Search | postgreSQL (CMIS API)"
-#    runs-on: ubuntu-latest
-#    if: >
-#      ! contains(github.event.head_commit.message, '[skip tests]')
-#    steps:
-#      - uses: actions/checkout@v3
-#      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
-#      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
-#      - name: "Build"
-#        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-#        run: |
-#          bash ./scripts/ci/init.sh
-#          bash ./scripts/ci/build.sh
-#      - name: "Set up the environment"
-#        run: |
-#          echo "CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest" >> $GITHUB_ENV
-#          echo 'DATABASE_ENV_PROPERTIES="-Ddb.driver=org.postgresql.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:postgresql://database:5432/alfresco "' >> $GITHUB_ENV
-#          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-cmis-elastic-tests.yml ${{ env.TAS_ENVIRONMENT }}/docker-compose-postgres.yml
-#          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-#      - name: "Run tests"
-#        timeout-minutes: 40
-#        run: mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
-#
+  cmis-tas-tests-elastic-search:
+    name: CMIS TAS tests - Elastic Search | ${{ matrix.testSuite }} (CMIS API)
+    runs-on: ubuntu-latest
+    if: >
+      ! contains(github.event.head_commit.message, '[skip tests]')
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - testSuite: postgreSQL
+            db-properties: -Ddb.driver=org.postgresql.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:postgresql://database:5432/alfresco
+            compose-file: docker-compose-postgres.yml
+          - testSuite: MySQL
+            db-properties: -Ddb.driver=com.mysql.cj.jdbc.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:mysql://database:3306/alfresco
+            compose-file: docker-compose-mysql.yml
+          - testSuite: MariaDB 10.6
+            db-properties: -Ddb.driver=org.mariadb.jdbc.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:mariadb://database:3306/alfresco
+            compose-file: docker-compose-mariadb.yml
+          - testSuite: MS SQL
+            db-properties: -Ddb.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver -Ddb.username=sa -Ddb.password=Alfresco1 -Ddb.url=jdbc:sqlserver://database:1433 -Ddb.txn.isolation=4096 -Ddb.pool.max=275
+            compose-file: docker-compose-mssql.yml
+          - testSuite: Oracle 19.3.0-ee
+            db-properties: -Ddb.driver=oracle.jdbc.OracleDriver -Ddb.name=alfresco -Ddb.url=jdbc:oracle:thin:@database:1521/PDB1 -Ddb.username=alfresco -Ddb.password=alfresco
+            compose-file: docker-compose-oracle.yml
+    steps:
+      - uses: actions/checkout@v3
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
+      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
+      - name: "Build"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          bash ./scripts/ci/init.sh
+          bash ./scripts/ci/build.sh
+      - name: "Set up the environment"
+        run: |
+          echo "CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest" >> $GITHUB_ENV
+          echo 'DATABASE_ENV_PROPERTIES=" ${{matrix.db-properties}} "' >> $GITHUB_ENV
+          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-cmis-elastic-tests.yml ${{ env.TAS_ENVIRONMENT }}/${{matrix.compose-file}}
+          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+      - name: "Run tests"
+        timeout-minutes: 40
+        run: mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
+
 #  cmis-tas-tests-open-search:
 #    name: "CMIS TAS tests - Open Search (CMIS API)"
 #    runs-on: ubuntu-latest
