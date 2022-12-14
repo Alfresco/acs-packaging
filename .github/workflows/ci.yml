@@ -118,30 +118,29 @@ jobs:
 #        timeout-minutes: ${{ matrix.deploy-timeout }}
 #        run: mvn -B install -ntp -f ${{ matrix.pom }} -P${{ matrix.profiles }} -Denvironment=default -DrunBugs=false
 #
-##  ldap-tas-tests:
-##    name: "LDAP TAS tests"
-##    runs-on: ubuntu-latest
-##    if: >
-##      contains(github.event.head_commit.message, '[tas]') &&
-##      ! contains(github.event.head_commit.message, '[skip tests]')
-##    steps:
-##      - uses: actions/checkout@v3
-##      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
-##      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
-##      - name: "Build"
-##        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-##        run: |
-##          bash ./scripts/ci/init.sh
-##          bash ./scripts/ci/build.sh
-##      - name: "Set up the environment"
-##        run: |
-##          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-with-ldap.yml
-##          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-##      - name: "Run tests"
-##        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-##        run: |
-##          mvn -B install -ntp -f tests/tas-restapi/pom.xml -Pall-tas-tests,run-restapi-ldap -Denvironment=default -DrunBugs=false
-##          mvn -B install -ntp -f tests/tas-integration/pom.xml -Prun-ldap -Denvironment=default -DrunBugs=false
+  ldap-tas-tests:
+    name: "LDAP TAS tests"
+    runs-on: ubuntu-latest
+    if: >
+      contains(github.event.head_commit.message, '[tas]') &&
+      ! contains(github.event.head_commit.message, '[skip tests]')
+    steps:
+      - uses: actions/checkout@v3
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
+      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
+      - name: "Build"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          bash ./scripts/ci/init.sh
+          bash ./scripts/ci/build.sh
+      - name: "Set up the environment"
+        run: |
+          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-with-ldap.yml
+          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+      - name: "Run tests"
+        timeout-minutes: 10
+        run: |
+          mvn -B install -ntp -f tests/tas-integration/pom.xml -Prun-ldap -Denvironment=default -DrunBugs=false
 #
 #  tas-tests-with-aims:
 #    name: ${{ matrix.testSuite }} TAS tests with AIMS
