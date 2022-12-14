@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -111,14 +110,16 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // WHEN
         // Run reindexer (leaving ALFRESCO_REINDEX_TO_TIME as default).
-        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
-                       "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
-                       "ALFRESCO_REINDEX_FROM_TIME", testStart));
+        try(GenericContainer reindexingComponent = createReindexContainer(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+                "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
+                "ALFRESCO_REINDEX_FROM_TIME", testStart))) {
+            //Reindex
+            reindexingComponent.start();
 
-        // THEN
-        // Check document indexed.
-        searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
-
+            // THEN
+            // Check document indexed.
+            searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
+        }
         // TIDY
         // Restart ElasticsearchConnector.
         cleanUpIndex();
@@ -139,14 +140,17 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // WHEN
         // Run reindexer (with default dates to reindex everything).
-        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
-                       "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX));
+        try(GenericContainer reindexingComponent = createReindexContainer(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+                       "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX))) {
+            //Reindex
+            reindexingComponent.start();
 
-        // THEN
-        // Check document indexed.
-        // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
-        SearchRequest query = req("cm:name:" + documentName + " AND cm:name:*");
-        searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
+            // THEN
+            // Check document indexed.
+            // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
+            SearchRequest query = req("cm:name:" + documentName + " AND cm:name:*");
+            searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
+        }
 
         // TIDY
         // Restart ElasticsearchConnector.
@@ -174,7 +178,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // Initial timestamp for reindexing by date: this will save reindexing time for these tests
         ZonedDateTime now = ZonedDateTime.now(Clock.systemUTC());
-        String testStart = DateTimeFormatter.ofPattern("yyyyMMddHHmm").format(now.minusMinutes(1));
+        String testStart = DateTimeFormatter.ofPattern("yyyyMMddHHmm").format(now.minusMinutes(5));
 
         // GIVEN
         // Stop ElasticsearchConnector
@@ -188,22 +192,23 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // WHEN
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
-        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+        try(GenericContainer reindexingComponent = createReindexContainer(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
             "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
             "ALFRESCO_REINDEX_FROM_TIME", testStart,
             "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", metadataIndexingEnabled.toString(),
             "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", contentIndexingEnabled.toString(),
-            "ALFRESCO_REINDEX_PATHINDEXINGENABLED", pathIndexingEnabled.toString()));
+            "ALFRESCO_REINDEX_PATHINDEXINGENABLED", pathIndexingEnabled.toString()))) {
+            //Reindex
+            reindexingComponent.start();
 
-        // THEN
-        SearchRequest query = req(queryString.replace("<DOCUMENT_NAME>", documentName));
-        if (expectingDocNameAsResult)
-        {
-            searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
-        }
-        else
-        {
-            searchQueryService.expectNoResultsFromQuery(query, dataUser.getAdminUser());
+            // THEN
+            SearchRequest query = req(queryString.replace("<DOCUMENT_NAME>", documentName));
+
+            if (expectingDocNameAsResult) {
+                searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
+            } else {
+                searchQueryService.expectNoResultsFromQuery(query, dataUser.getAdminUser());
+            }
         }
 
     }
@@ -268,18 +273,21 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // WHEN
         // Run reindexer with path indexing enabled (and with default dates to reindex everything).
-        reindex(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true",
+        try(GenericContainer reindexingComponent = createReindexContainer(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true",
                 "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
-                "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX));
+                "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX))) {
+            //Reindex
+            reindexingComponent.start();
 
-        // THEN
-        // Check path indexed.
-        // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
-        SearchRequest query = req("PATH:\"//" + documentName + "\" AND cm:name:*");
-        searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
-        // Also check that the document can be obtained by a path query against the site.
-        query = req("PATH:\"//" + testSite.getTitle() + "/documentLibrary/*\" AND cm:name:" + documentName + " AND cm:name:*");
-        searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
+            // THEN
+            // Check path indexed.
+            // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
+            SearchRequest query = req("PATH:\"//" + documentName + "\" AND cm:name:*");
+            searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
+            // Also check that the document can be obtained by a path query against the site.
+            query = req("PATH:\"//" + testSite.getTitle() + "/documentLibrary/*\" AND cm:name:" + documentName + " AND cm:name:*");
+            searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
+        }
 
         // TIDY
         // Restart ElasticsearchConnector.
@@ -290,26 +298,18 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
      * Run the alfresco-elasticsearch-reindexing container.
      *
      * @param envParam Any environment variables to override from the defaults.
+     * @return reindex container
      */
-    private void reindex(Map<String, String> envParam)
+    private GenericContainer createReindexContainer(Map<String, String> envParam)
     {
         // Run the reindexing container.
-        Map<String, String> env = new HashMap<>(
-                Map.of("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200",
-                       "SPRING_DATASOURCE_URL", "jdbc:postgresql://postgres:5432/alfresco",
-                       "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
-                       "SPRING_ACTIVEMQ_BROKER-URL", "nio://activemq:61616",
-                       "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config"));
+        Map<String, String> env = AlfrescoStackInitializer.getReindexEnvBasic();
         env.putAll(envParam);
 
-        try (GenericContainer reindexingComponent = new GenericContainer(getImagesConfig().getReIndexingImage())
-                                                            .withEnv(env)
-                                                            .withNetwork(AlfrescoStackInitializer.network)
-                                                            .withStartupCheckStrategy(
-                                                                    new IndefiniteWaitOneShotStartupCheckStrategy()))
-        {
-            reindexingComponent.start();
-        }
+        return new GenericContainer(getImagesConfig().getReIndexingImage())
+                                    .withEnv(env)
+                                    .withNetwork(AlfrescoStackInitializer.network)
+                                    .withStartupCheckStrategy(new IndefiniteWaitOneShotStartupCheckStrategy());
     }
 
     /**

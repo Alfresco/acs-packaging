@@ -214,7 +214,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
         createNodeWithProperties(siteModel1, new FileModel(BEFORE_1970_TXT, FileType.TEXT_PLAIN), userSite1,
                                  Map.of("cm:from", -2637887000L));
 
-        searchQueryService.expectResultsFromQuery(req("cm:from:1969-12-01T11:15:13Z"), userSite1, BEFORE_1970_TXT);
+        searchQueryService.expectResultsInclude(req("cm:from:1969-12-01T11:15:13Z"), userSite1, BEFORE_1970_TXT);
     }
 
     private FileModel createContent(String filename, String content, SiteModel site, UserModel user)

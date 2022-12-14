@@ -60,16 +60,16 @@ COM_UPSTREAM_REPO="github.com/Alfresco/alfresco-community-repo.git"
 
 # Checkout the upstream alfresco-community-repo project (tag or branch; + build if the latter)
 if [[ "${COM_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] ; then
-  pullAndBuildSameBranchOnUpstream "${COM_UPSTREAM_REPO}" "-Pags -Dlicense.failOnNotUptodateHeader=true"
+  pullAndBuildSameBranchOnUpstream "${COM_UPSTREAM_REPO}" "-Pags -Pall-tas-tests -Dlicense.failOnNotUptodateHeader=true"
 else
   pullUpstreamTag "${COM_UPSTREAM_REPO}" "${COM_DEPENDENCY_VERSION}"
 fi
 
 # Build the upstream alfresco-enterprise-repo project with its docker image
 if [[ "${ENT_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] ; then
-  buildSameBranchOnUpstream "${ENT_UPSTREAM_REPO}" "-Pbuild-docker-images -Pags -Dlicense.failOnNotUptodateHeader=true"
+  buildSameBranchOnUpstream "${ENT_UPSTREAM_REPO}" "-Pbuild-docker-images -Pags -Pall-tas-tests -Dlicense.failOnNotUptodateHeader=true"
 else
-  buildUpstreamTag "${ENT_UPSTREAM_REPO}" "${ENT_DEPENDENCY_VERSION}" "-Pbuild-docker-images -Pags -Dlicense.failOnNotUptodateHeader=true"
+  buildUpstreamTag "${ENT_UPSTREAM_REPO}" "${ENT_DEPENDENCY_VERSION}" "-Pbuild-docker-images -Pags -Pall-tas-tests -Dlicense.failOnNotUptodateHeader=true"
 fi
 
 SHARE_DEPENDENCY_VERSION="$(retrievePomProperty "dependency.alfresco-enterprise-share.version")"
@@ -99,10 +99,32 @@ fi
 mvn -B -ntp -V -q install -DskipTests -Dmaven.javadoc.skip=true -Pbuild-docker-images -Pags ${REPO_IMAGE} ${SHARE_IMAGE}
 
 #Build alfresco image with jdbc drivers
-MYSQL_TAG=$(mvn help:evaluate -Dexpression=dependency.mysql.version -q -DforceStdout)
-mvn dependency:copy -Dartifact=mysql:mysql-connector-java:${MYSQL_TAG}:jar -DoutputDirectory=tests/environment/alfresco-with-jdbc-drivers
+MYSQL_JDBC_TAG=$(mvn help:evaluate -Dexpression=dependency.mysql.version -q -DforceStdout)
+mvn dependency:copy -Dartifact=mysql:mysql-connector-java:${MYSQL_JDBC_TAG}:jar -DoutputDirectory=tests/environment/alfresco-with-jdbc-drivers
 
-docker build -t alfresco-repository-databases:latest tests/environment/alfresco-with-jdbc-drivers
+MARIADB_JDBC_TAG=$(mvn help:evaluate -Dexpression=dependency.mariadb.version -q -DforceStdout)
+mvn dependency:copy -Dartifact=org.mariadb.jdbc:mariadb-java-client:${MARIADB_JDBC_TAG}:jar -DoutputDirectory=tests/environment/alfresco-with-jdbc-drivers
+
+MSSQL_JDBC_TAG=$(mvn help:evaluate -Dexpression=dependency.mssql-jdbc.version -q -DforceStdout)
+mvn dependency:copy -Dartifact=com.microsoft.sqlserver:mssql-jdbc:${MSSQL_JDBC_TAG}:jar -DoutputDirectory=tests/environment/alfresco-with-jdbc-drivers
+
+ORACLE_JDBC_TAG=$(mvn help:evaluate -Dexpression=dependency.ojdbc8.version -q -DforceStdout)
+mvn dependency:copy -Dartifact=com.oracle.database.jdbc:ojdbc8:${ORACLE_JDBC_TAG}:jar -DoutputDirectory=tests/environment/alfresco-with-jdbc-drivers
+
+docker build -t alfresco-repository-databases:latest -f tests/environment/alfresco-with-jdbc-drivers/alfresco.Dockerfile .
+
+source tests/environment/.env
+
+if [[ "${ES_CONNECTOR_TAG}" = [[:cntrl:]] ]]
+then
+  ES_CONNECTOR_TAG=$(mvn help:evaluate -Dexpression=dependency.elasticsearch-shared.version -q -DforceStdout)
+  export ES_CONNECTOR_TAG
+  echo "$ES_CONNECTOR_TAG"
+fi
+
+docker build -t alfresco-es-indexing-jdbc:latest -f tests/environment/alfresco-with-jdbc-drivers/es-connector.Dockerfile . --build-arg IMAGE_NAME="quay.io/alfresco/alfresco-elasticsearch-live-indexing:${ES_CONNECTOR_TAG%%[[:cntrl:]]}"
+docker build -t alfresco-es-reindexing-jdbc:latest -f tests/environment/alfresco-with-jdbc-drivers/es-connector.Dockerfile . --build-arg IMAGE_NAME="quay.io/alfresco/alfresco-elasticsearch-reindexing:${ES_CONNECTOR_TAG%%[[:cntrl:]]}"
+
 
 popd
 set +vex
