@@ -20,6 +20,8 @@ env:
   GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
   TAS_ENVIRONMENT: ./tests/environment
   TAS_SCRIPTS: ../alfresco-community-repo/packaging/tests/scripts
+  ALF_LICENCE_S3_PATH: s3://acs-license/acs/alf74-allenabled.lic
+  ALF_LICENCE_LOCAL_PATH: /tmp/licence.lic
   # Release version has to start with real version (7.4.0-....) for the docker image to build successfully.
   RELEASE_VERSION: 7.4.0-A3
   DEVELOPMENT_VERSION: 7.4.0-A4-SNAPSHOT
