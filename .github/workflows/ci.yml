@@ -45,6 +45,9 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/veracode@master
         with:
           srcclr-api-token: ${{ secrets.SRCCLR_API_TOKEN }}
+      - name: "Clean Maven cache"
+        if: always()
+        run: bash ./scripts/ci/cleanup_cache.sh
 
 #  tas-tests:
 #    name: ${{ matrix.testSuite }} TAS tests
@@ -117,6 +120,9 @@ jobs:
 #      - name: "Run tests"
 #        timeout-minutes: ${{ matrix.deploy-timeout }}
 #        run: mvn -B install -ntp -f ${{ matrix.pom }} -P${{ matrix.profiles }} -Denvironment=default -DrunBugs=false
+#      - name: "Clean Maven cache"
+#        if: always()
+#        run: bash ./scripts/ci/cleanup_cache.sh
 #
 #  ldap-tas-tests:
 #    name: "LDAP TAS tests"
@@ -141,6 +147,9 @@ jobs:
 #        timeout-minutes: 10
 #        run: |
 #          mvn -B install -ntp -f tests/tas-integration/pom.xml -Prun-ldap -Denvironment=default -DrunBugs=false
+#      - name: "Clean Maven cache"
+#        if: always()
+#        run: bash ./scripts/ci/cleanup_cache.sh
 #
   tas-tests-with-aims:
     name: ${{ matrix.testSuite }} TAS tests with AIMS
@@ -172,14 +181,18 @@ jobs:
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
+      - name: "Set HOST_IP"
+        run: echo "HOST_IP=$(hostname  -I | cut -f1 -d' ')" >> $GITHUB_ENV
       - name: "Set up the environment"
         run: |
-          echo "HOST_IP=$(hostname  -I | cut -f1 -d' ')" >> $GITHUB_ENV
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-aims.yml
           ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco" 180
       - name: "Run tests"
         timeout-minutes: ${{ matrix.deploy-timeout }}
         run: mvn -B install -ntp -f ${{ matrix.pom }} -P${{ matrix.profiles }} -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
+      - name: "Clean Maven cache"
+        if: always()
+        run: bash ./scripts/ci/cleanup_cache.sh
 
   cmis-tas-tests-elastic-search:
     name: CMIS TAS tests - Elastic Search | ${{ matrix.testSuite }} (CMIS API)
@@ -223,6 +236,9 @@ jobs:
       - name: "Run tests"
         timeout-minutes: 40
         run: mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
+      - name: "Clean Maven cache"
+        if: always()
+        run: bash ./scripts/ci/cleanup_cache.sh
 
 #  cmis-tas-tests-open-search:
 #    name: "CMIS TAS tests - Open Search (CMIS API)"
@@ -245,6 +261,9 @@ jobs:
 #      - name: "Run tests"
 #        timeout-minutes: 40
 #        run: mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
+#      - name: "Clean Maven cache"
+#        if: always()
+#        run: bash ./scripts/ci/cleanup_cache.sh
 #
 #  sync-service-tas-tests:
 #    name: "Sync Service TAS tests"
@@ -267,6 +286,9 @@ jobs:
 #      - name: "Run tests"
 #        timeout-minutes: 20
 #        run: mvn -B install -ntp -f tests/tas-sync-service/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+#      - name: "Clean Maven cache"
+#        if: always()
+#        run: bash ./scripts/ci/cleanup_cache.sh
 
   tas-tests-search-api:
     name: ${{ matrix.testSuite }} | TAS tests (Search API)
@@ -337,6 +359,9 @@ jobs:
       - name: "Run tests"
         timeout-minutes: 30
         run: mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -P${{ matrix.profiles }} -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}" "-Ddatabase.type=${{ matrix.db-type }}"
+      - name: "Clean Maven cache"
+        if: always()
+        run: bash ./scripts/ci/cleanup_cache.sh
 
   upgrade-tas-tests:
     name: ${{ matrix.testSuite }} Upgrade TAS tests
@@ -374,3 +399,6 @@ jobs:
       - name: "Run tests"
         timeout-minutes: 30
         run: mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}" "-Ddatabase.type=postgresql"
+      - name: "Clean Maven cache"
+        if: always()
+        run: bash ./scripts/ci/cleanup_cache.sh
