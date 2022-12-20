@@ -226,8 +226,8 @@ jobs:
       - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
       - name: "Set up the environment configuration"
         run: |
-          echo "CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest" >> $GITHUB_ENV
-          echo '`DATABASE_ENV_PROPERTIES`=" ${{matrix.db-properties}} "' >> $GITHUB_ENV
+          export CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest
+          export DATABASE_ENV_PROPERTIES=" ${{matrix.db-properties}} "
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
