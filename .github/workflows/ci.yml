@@ -431,3 +431,24 @@ jobs:
       - name: "Clean Maven cache"
         if: always()
         run: bash ./scripts/ci/cleanup_cache.sh
+
+  distribution-zip-content-tests:
+    name: Distribution Zip content tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
+      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
+      - name: "Build"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          bash ./scripts/ci/init.sh
+          bash ./scripts/ci/build.sh
+      - name: "Set up the environment"
+        run: mvn -B -V clean install -ntp -Pags -DskipTests -Dmaven.javadoc.skip=true
+      - name: "Run tests"
+        timeout-minutes: 20
+        run: mvn -B install -ntp -f tests/tas-distribution-zip/pom.xml -Prun-distribution-zip-contents-check -DrunBugs=false
+      - name: "Clean Maven cache"
+        if: always()
+        run: bash ./scripts/ci/cleanup_cache.sh
