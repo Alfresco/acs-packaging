@@ -454,42 +454,40 @@ jobs:
         if: always()
         run: bash ./scripts/ci/cleanup_cache.sh
 
-#  single_pipeline_image_tests:
-#    name: "Single Pipeline image tests"
-#    runs-on: ubuntu-latest
-#    if: >
-#      github.event_name != 'pull_request' &&
-#      ! contains(github.event.head_commit.message, '[skip tests]')
-#    steps:
-#      - uses: actions/checkout@v3
-#      - uses: actions/setup-python@v3
-#      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
-#      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
-#      - name: "Build"
-#        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-#        run: |
-#          bash ./scripts/ci/init.sh
-#          bash ./scripts/ci/build.sh
-#      - name: "Set up the environment"
-#        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-#        run: |
-#          mvn -B clean install -ntp -Ppipeline,build-docker-images $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-repo.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Drepo.image.tag=latest') $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-share.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Dshare.image.tag=latest')
-##         Show what DTAS will be looking for
-#          cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
-#          eval "$(pyenv init --path)" && pyenv install $PYTHON_VERSION
-#          pyenv global $PYTHON_VERSION
-#          python --version
-#          pip install requests pytest==6.2.4 pytest-testinfra==6.3.0 jmespath==0.10.0
-#          git clone --depth 1 --branch $DTAS_VERSION https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
-#          docker images | grep pipeline
-#          ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
-#          ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/" 180
-#          docker ps
-##         Show what AMPs the repo has installed
-#          curl -v --user admin.pipeline@alfresco.com:admin http://localhost:8080/alfresco/api/discovery
-#          cd dtas
-#      - name: "Run tests"
-#        run: pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
-#      - name: "Clean Maven cache"
-#        if: always()
-#        run: bash ./scripts/ci/cleanup_cache.sh
+  single_pipeline_image_tests:
+    name: "Single Pipeline image tests"
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name != 'pull_request' &&
+      ! contains(github.event.head_commit.message, '[skip tests]')
+    steps:
+      - uses: actions/checkout@v3
+      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
+      - uses: actions/setup-python@v3
+      - name: "Build"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          bash ./scripts/ci/init.sh
+          bash ./scripts/ci/build.sh
+      - name: "Set up the environment"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          mvn -B clean install -ntp -Ppipeline,build-docker-images $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-repo.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Drepo.image.tag=latest') $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-share.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Dshare.image.tag=latest')
+          cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
+          eval "$(pyenv init --path)" && pyenv install $PYTHON_VERSION
+          pyenv global $PYTHON_VERSION
+          python --version
+          pip install requests pytest==6.2.4 pytest-testinfra==6.3.0 jmespath==0.10.0
+          git clone --depth 1 --branch $DTAS_VERSION https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
+          docker images | grep pipeline
+          ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
+          ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/" 180
+          docker ps
+          curl -v --user admin.pipeline@alfresco.com:admin http://localhost:8080/alfresco/api/discovery
+          cd dtas
+      - name: "Run tests"
+        run: pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
+      - name: "Clean Maven cache"
+        if: always()
+        run: bash ./scripts/ci/cleanup_cache.sh
