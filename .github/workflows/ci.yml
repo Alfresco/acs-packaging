@@ -462,6 +462,7 @@ jobs:
       ! contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
       - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
       - name: "Build"
@@ -469,7 +470,6 @@ jobs:
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
-      - uses: actions/setup-python@v3
       - name: "Set up the environment"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
