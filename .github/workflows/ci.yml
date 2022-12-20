@@ -224,15 +224,15 @@ jobs:
       - uses: actions/checkout@v3
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
       - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
-      - name: "Set up the environment configuration"
-        run: |
-          export CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest
-          export DATABASE_ENV_PROPERTIES=" ${{matrix.db-properties}} "
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
+      - name: "Set up the environment configuration"
+        run: |
+          echo "CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest" >> $GITHUB_ENV
+          echo "DATABASE_ENV_PROPERTIES=${{matrix.db-properties}}" >> $GITHUB_ENV
       - name: "Run the environment"
         run: |
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-cmis-elastic-tests.yml ${{ env.TAS_ENVIRONMENT }}/${{matrix.compose-file}}
