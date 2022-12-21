@@ -2,11 +2,17 @@ name: ACS Packaging CI
 
 on:
   pull_request:
+    branches:
+      - feature/**
+      - fix/**
+      - master
+      - release/**
   push:
     branches:
       - feature/**
       - fix/**
   workflow_call:
+  workflow_dispatch:
 
 env:
   DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -481,7 +487,7 @@ jobs:
           git clone --depth 1 --branch $DTAS_VERSION https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
           docker images | grep pipeline
           ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
-          ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/" 180
+          ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/" 360
           docker ps
           curl -v --user admin.pipeline@alfresco.com:admin http://localhost:8080/alfresco/api/discovery
           cd dtas
