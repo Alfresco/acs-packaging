@@ -121,7 +121,7 @@ jobs:
             deploy-timeout: 10
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
       - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
@@ -161,7 +161,7 @@ jobs:
             deploy-timeout: 40
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
       - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
@@ -206,7 +206,7 @@ jobs:
             compose-file: docker-compose-oracle.yml
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
       - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
@@ -234,7 +234,7 @@ jobs:
       ! contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
       - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
@@ -258,7 +258,7 @@ jobs:
       ! contains(github.event.head_commit.message, '[skip tas]')
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
       - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
@@ -334,7 +334,7 @@ jobs:
             db-type: postgresql
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
       - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
@@ -362,7 +362,7 @@ jobs:
             search-engine-type: opensearch
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
       - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
@@ -391,7 +391,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
       - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
@@ -415,7 +415,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
       - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
