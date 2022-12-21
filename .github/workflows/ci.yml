@@ -57,364 +57,334 @@ jobs:
         with:
           srcclr-api-token: ${{ secrets.SRCCLR_API_TOKEN }}
       - name: "Clean Maven cache"
-        if: always()
         run: bash ./scripts/ci/cleanup_cache.sh
 
-#  tas-tests:
-#    name: ${{ matrix.testSuite }} TAS tests
-#    runs-on: ubuntu-latest
-#    if: >
-#      contains(github.event.head_commit.message, '[tas]') &&
-#      ! contains(github.event.head_commit.message, '[skip tests]')
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        include:
-#          - testSuite: REST API part1
-#            pom: tests/tas-restapi/pom.xml
-#            profiles: all-tas-tests,run-restapi-part1
-#            compose-file: docker-compose-rest-api-tests.yml
-#            deploy-timeout: 60
-#          - testSuite: REST API part2
-#            pom: tests/tas-restapi/pom.xml
-#            profiles: all-tas-tests,run-restapi-part2
-#            compose-file: docker-compose-rest-api-tests.yml
-#            deploy-timeout: 60
-#          - testSuite: REST API part3
-#            pom: tests/tas-restapi/pom.xml
-#            profiles: all-tas-tests,run-restapi-part3
-#            compose-file: docker-compose-rest-api-tests.yml
-#            deploy-timeout: 60
-#          - testSuite: CMIS (BROWSER binding)
-#            pom: tests/tas-cmis/pom.xml
-#            profiles: all-tas-tests,run-cmis-browser
-#            compose-file: docker-compose-cmis-tests.yml
-#            deploy-timeout: 40
-#          - testSuite: CMIS (ATOM binding)
-#            pom: tests/tas-cmis/pom.xml
-#            profiles: all-tas-tests,run-cmis-atom
-#            compose-file: docker-compose-cmis-tests.yml
-#            deploy-timeout: 40
-#          - testSuite: CMIS (WEBSERVICES binding)
-#            pom: tests/tas-cmis/pom.xml
-#            profiles: all-tas-tests,run-cmis-webservices
-#            compose-file: docker-compose-cmis-tests.yml
-#            deploy-timeout: 40
-#          - testSuite: Email
-#            pom: tests/tas-email/pom.xml
-#            profiles: all-tas-tests
-#            compose-file: docker-compose-email-tests.yml
-#            deploy-timeout: 30
-#          - testSuite: WebDAV
-#            pom: tests/tas-webdav/pom.xml
-#            profiles: all-tas-tests
-#            compose-file: docker-compose-minimal.yml
-#            deploy-timeout: 20
-#          - testSuite: Integration
-#            pom: tests/tas-integration/pom.xml
-#            profiles: all-tas-tests
-#            compose-file: docker-compose-integration-tests.yml
-#            deploy-timeout: 30
-#    steps:
-#      - uses: actions/checkout@v3
-#      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
-#      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
-#      - name: "Build"
-#        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-#        run: |
-#          bash ./scripts/ci/init.sh
-#          bash ./scripts/ci/build.sh
-#      - name: "Set up the environment"
-#        run: |
-#          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/${{ matrix.compose-file }}
-#          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-#      - name: "Run tests"
-#        timeout-minutes: ${{ matrix.deploy-timeout }}
-#        run: mvn -B install -ntp -f ${{ matrix.pom }} -P${{ matrix.profiles }} -Denvironment=default -DrunBugs=false
-#      - name: "Clean Maven cache"
-#        if: always()
-#        run: bash ./scripts/ci/cleanup_cache.sh
-#
-#  ldap-tas-tests:
-#    name: "LDAP TAS tests"
-#    runs-on: ubuntu-latest
-#    if: >
-#      contains(github.event.head_commit.message, '[tas]') &&
-#      ! contains(github.event.head_commit.message, '[skip tests]')
-#    steps:
-#      - uses: actions/checkout@v3
-#      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
-#      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
-#      - name: "Build"
-#        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-#        run: |
-#          bash ./scripts/ci/init.sh
-#          bash ./scripts/ci/build.sh
-#      - name: "Set up the environment"
-#        run: |
-#          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-with-ldap.yml
-#          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-#      - name: "Run tests"
-#        timeout-minutes: 10
-#        run: |
-#          mvn -B install -ntp -f tests/tas-integration/pom.xml -Prun-ldap -Denvironment=default -DrunBugs=false
-#      - name: "Clean Maven cache"
-#        if: always()
-#        run: bash ./scripts/ci/cleanup_cache.sh
-#
-#  tas-tests-with-aims:
-#    name: ${{ matrix.testSuite }} TAS tests with AIMS
-#    runs-on: ubuntu-latest
-#    if: >
-#      ! contains(github.event.head_commit.message, '[skip tas]')
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        include:
-#          - testSuite: REST API
-#            pom: tests/tas-restapi/pom.xml
-#            profiles: all-tas-tests,run-restapi-aims
-#            deploy-timeout: 60
-#          - testSuite: CMIS - BROWSER binding
-#            pom: tests/tas-cmis/pom.xml
-#            profiles: all-tas-tests,run-cmis-browser-with-aims
-#            deploy-timeout: 40
-#          - testSuite: CMIS - ATOM binding
-#            pom: tests/tas-cmis/pom.xml
-#            profiles: all-tas-tests,run-cmis-atom-with-aims
-#            deploy-timeout: 40
-#    steps:
-#      - uses: actions/checkout@v3
-#      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
-#      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
-#      - name: "Build"
-#        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-#        run: |
-#          bash ./scripts/ci/init.sh
-#          bash ./scripts/ci/build.sh
-#      - name: "Set HOST_IP"
-#        run: echo "HOST_IP=$(hostname  -I | cut -f1 -d' ')" >> $GITHUB_ENV
-#      - name: "Set up the environment"
-#        run: |
-#          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-aims.yml
-#          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco" 180
-#      - name: "Run tests"
-#        timeout-minutes: ${{ matrix.deploy-timeout }}
-#        run: mvn -B install -ntp -f ${{ matrix.pom }} -P${{ matrix.profiles }} -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
-#      - name: "Clean Maven cache"
-#        if: always()
-#        run: bash ./scripts/ci/cleanup_cache.sh
+  tas-tests:
+    name: ${{ matrix.testSuite }} TAS tests
+    runs-on: ubuntu-latest
+    if: >
+      contains(github.event.head_commit.message, '[tas]') &&
+      ! contains(github.event.head_commit.message, '[skip tests]')
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - testSuite: REST API part1
+            pom: tests/tas-restapi/pom.xml
+            profiles: all-tas-tests,run-restapi-part1
+            compose-file: docker-compose-rest-api-tests.yml
+            deploy-timeout: 60
+          - testSuite: REST API part2
+            pom: tests/tas-restapi/pom.xml
+            profiles: all-tas-tests,run-restapi-part2
+            compose-file: docker-compose-rest-api-tests.yml
+            deploy-timeout: 60
+          - testSuite: REST API part3
+            pom: tests/tas-restapi/pom.xml
+            profiles: all-tas-tests,run-restapi-part3
+            compose-file: docker-compose-rest-api-tests.yml
+            deploy-timeout: 60
+          - testSuite: CMIS (BROWSER binding)
+            pom: tests/tas-cmis/pom.xml
+            profiles: all-tas-tests,run-cmis-browser
+            compose-file: docker-compose-cmis-tests.yml
+            deploy-timeout: 40
+          - testSuite: CMIS (ATOM binding)
+            pom: tests/tas-cmis/pom.xml
+            profiles: all-tas-tests,run-cmis-atom
+            compose-file: docker-compose-cmis-tests.yml
+            deploy-timeout: 40
+          - testSuite: CMIS (WEBSERVICES binding)
+            pom: tests/tas-cmis/pom.xml
+            profiles: all-tas-tests,run-cmis-webservices
+            compose-file: docker-compose-cmis-tests.yml
+            deploy-timeout: 40
+          - testSuite: Email
+            pom: tests/tas-email/pom.xml
+            profiles: all-tas-tests
+            compose-file: docker-compose-email-tests.yml
+            deploy-timeout: 30
+          - testSuite: WebDAV
+            pom: tests/tas-webdav/pom.xml
+            profiles: all-tas-tests
+            compose-file: docker-compose-minimal.yml
+            deploy-timeout: 20
+          - testSuite: Integration
+            pom: tests/tas-integration/pom.xml
+            profiles: all-tas-tests
+            compose-file: docker-compose-integration-tests.yml
+            deploy-timeout: 30
+          - testSuite: LDAP
+            pom: tests/tas-integration/pom.xml
+            profiles: run-ldap
+            compose-file: docker-compose-with-ldap.yml
+            deploy-timeout: 10
+    steps:
+      - uses: actions/checkout@v3
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
+      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
+      - name: "Build"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          bash ./scripts/ci/init.sh
+          bash ./scripts/ci/build.sh
+      - name: "Set up the environment"
+        run: |
+          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/${{ matrix.compose-file }}
+          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+      - name: "Run tests"
+        timeout-minutes: ${{ matrix.deploy-timeout }}
+        run: mvn -B install -ntp -f ${{ matrix.pom }} -P${{ matrix.profiles }} -Denvironment=default -DrunBugs=false
+      - name: "Clean Maven cache"
+        run: bash ./scripts/ci/cleanup_cache.sh
 
-#  cmis-tas-tests-elastic-search:
-#    name: CMIS TAS tests - Elastic Search | ${{ matrix.testSuite }} (CMIS API)
-#    runs-on: ubuntu-latest
-#    if: >
-#      ! contains(github.event.head_commit.message, '[skip tests]')
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        include:
-#          - testSuite: postgreSQL
-#            db-properties: -Ddb.driver=org.postgresql.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:postgresql://database:5432/alfresco
-#            compose-file: docker-compose-postgres.yml
-#          - testSuite: MySQL
-#            db-properties: -Ddb.driver=com.mysql.cj.jdbc.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:mysql://database:3306/alfresco
-#            compose-file: docker-compose-mysql.yml
-#          - testSuite: MariaDB 10.6
-#            db-properties: -Ddb.driver=org.mariadb.jdbc.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:mariadb://database:3306/alfresco
-#            compose-file: docker-compose-mariadb.yml
-#          - testSuite: MS SQL
-#            db-properties: -Ddb.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver -Ddb.username=sa -Ddb.password=Alfresco1 -Ddb.url=jdbc:sqlserver://database:1433 -Ddb.txn.isolation=4096 -Ddb.pool.max=275
-#            compose-file: docker-compose-mssql.yml
-#          - testSuite: Oracle 19.3.0-ee
-#            db-properties: -Ddb.driver=oracle.jdbc.OracleDriver -Ddb.name=alfresco -Ddb.url=jdbc:oracle:thin:@database:1521/PDB1 -Ddb.username=alfresco -Ddb.password=alfresco
-#            compose-file: docker-compose-oracle.yml
-#    steps:
-#      - uses: actions/checkout@v3
-#      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
-#      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
-#      - name: "Build"
-#        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-#        run: |
-#          bash ./scripts/ci/init.sh
-#          bash ./scripts/ci/build.sh
-#      - name: "Set up the environment configuration"
-#        run: |
-#          echo "CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest" >> $GITHUB_ENV
-#          echo "DATABASE_ENV_PROPERTIES=${{matrix.db-properties}}" >> $GITHUB_ENV
-#      - name: "Run the environment"
-#        run: |
-#          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-cmis-elastic-tests.yml ${{ env.TAS_ENVIRONMENT }}/${{matrix.compose-file}}
-#          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-#      - name: "Run tests"
-#        timeout-minutes: 40
-#        run: mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
-#      - name: "Clean Maven cache"
-#        if: always()
-#        run: bash ./scripts/ci/cleanup_cache.sh
+  tas-tests-with-aims:
+    name: ${{ matrix.testSuite }} TAS tests with AIMS
+    runs-on: ubuntu-latest
+    if: >
+      ! contains(github.event.head_commit.message, '[skip tas]')
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - testSuite: REST API
+            pom: tests/tas-restapi/pom.xml
+            profiles: all-tas-tests,run-restapi-aims
+            deploy-timeout: 60
+          - testSuite: CMIS - BROWSER binding
+            pom: tests/tas-cmis/pom.xml
+            profiles: all-tas-tests,run-cmis-browser-with-aims
+            deploy-timeout: 40
+          - testSuite: CMIS - ATOM binding
+            pom: tests/tas-cmis/pom.xml
+            profiles: all-tas-tests,run-cmis-atom-with-aims
+            deploy-timeout: 40
+    steps:
+      - uses: actions/checkout@v3
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
+      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
+      - name: "Build"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          bash ./scripts/ci/init.sh
+          bash ./scripts/ci/build.sh
+      - name: "Set HOST_IP"
+        run: echo "HOST_IP=$(hostname  -I | cut -f1 -d' ')" >> $GITHUB_ENV
+      - name: "Set up the environment"
+        run: |
+          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-aims.yml
+          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco" 180
+      - name: "Run tests"
+        timeout-minutes: ${{ matrix.deploy-timeout }}
+        run: mvn -B install -ntp -f ${{ matrix.pom }} -P${{ matrix.profiles }} -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
+      - name: "Clean Maven cache"
+        run: bash ./scripts/ci/cleanup_cache.sh
 
-#  cmis-tas-tests-open-search:
-#    name: "CMIS TAS tests - Open Search (CMIS API)"
-#    runs-on: ubuntu-latest
-#    if: >
-#      ! contains(github.event.head_commit.message, '[skip tests]')
-#    steps:
-#      - uses: actions/checkout@v3
-#      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
-#      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
-#      - name: "Build"
-#        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-#        run: |
-#          bash ./scripts/ci/init.sh
-#          bash ./scripts/ci/build.sh
-#      - name: "Set up the environment"
-#        run: |
-#          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-cmis-opensearch-tests.yml
-#          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-#      - name: "Run tests"
-#        timeout-minutes: 40
-#        run: mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
-#      - name: "Clean Maven cache"
-#        if: always()
-#        run: bash ./scripts/ci/cleanup_cache.sh
-#
-#  sync-service-tas-tests:
-#    name: "Sync Service TAS tests"
-#    runs-on: ubuntu-latest
-#    if: >
-#      ! contains(github.event.head_commit.message, '[skip tas]')
-#    steps:
-#      - uses: actions/checkout@v3
-#      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
-#      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
-#      - name: "Build"
-#        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-#        run: |
-#          bash ./scripts/ci/init.sh
-#          bash ./scripts/ci/build.sh
-#      - name: "Set up the environment"
-#        run: |
-#          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-sync-service.yml
-#          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-#      - name: "Run tests"
-#        timeout-minutes: 20
-#        run: mvn -B install -ntp -f tests/tas-sync-service/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
-#      - name: "Clean Maven cache"
-#        if: always()
-#        run: bash ./scripts/ci/cleanup_cache.sh
+  cmis-tas-tests-elastic-search:
+    name: CMIS TAS tests - Elastic Search | ${{ matrix.testSuite }} (CMIS API)
+    runs-on: ubuntu-latest
+    if: >
+      ! contains(github.event.head_commit.message, '[skip tests]')
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - testSuite: postgreSQL
+            db-properties: -Ddb.driver=org.postgresql.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:postgresql://database:5432/alfresco
+            compose-file: docker-compose-postgres.yml
+          - testSuite: MySQL
+            db-properties: -Ddb.driver=com.mysql.cj.jdbc.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:mysql://database:3306/alfresco
+            compose-file: docker-compose-mysql.yml
+          - testSuite: MariaDB 10.6
+            db-properties: -Ddb.driver=org.mariadb.jdbc.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:mariadb://database:3306/alfresco
+            compose-file: docker-compose-mariadb.yml
+          - testSuite: MS SQL
+            db-properties: -Ddb.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver -Ddb.username=sa -Ddb.password=Alfresco1 -Ddb.url=jdbc:sqlserver://database:1433 -Ddb.txn.isolation=4096 -Ddb.pool.max=275
+            compose-file: docker-compose-mssql.yml
+          - testSuite: Oracle 19.3.0-ee
+            db-properties: -Ddb.driver=oracle.jdbc.OracleDriver -Ddb.name=alfresco -Ddb.url=jdbc:oracle:thin:@database:1521/PDB1 -Ddb.username=alfresco -Ddb.password=alfresco
+            compose-file: docker-compose-oracle.yml
+    steps:
+      - uses: actions/checkout@v3
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
+      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
+      - name: "Build"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          bash ./scripts/ci/init.sh
+          bash ./scripts/ci/build.sh
+      - name: "Set up the environment configuration"
+        run: |
+          echo "CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest" >> $GITHUB_ENV
+          echo "DATABASE_ENV_PROPERTIES=${{matrix.db-properties}}" >> $GITHUB_ENV
+      - name: "Run the environment"
+        run: |
+          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-cmis-elastic-tests.yml ${{ env.TAS_ENVIRONMENT }}/${{matrix.compose-file}}
+          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+      - name: "Run tests"
+        timeout-minutes: 40
+        run: mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
+      - name: "Clean Maven cache"
+        run: bash ./scripts/ci/cleanup_cache.sh
 
-#  tas-tests-search-api:
-#    name: ${{ matrix.testSuite }} | TAS tests (Search API)
-#    runs-on: ubuntu-latest
-#    if: >
-#      ! contains(github.event.head_commit.message, '[skip search]')
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        include:
-#          - testSuite: Elasticsearch postgreSQL
-#            profiles: all-tas-tests,elastic
-#            search-engine-type: elasticsearch
-#            db-type: postgresql
-#          - testSuite: Elasticsearch MySQL
-#            profiles: all-tas-tests,elastic
-#            search-engine-type: elasticsearch
-#            db-type: mysql
-#          - testSuite: Elasticsearch Maria DB 10.6
-#            profiles: all-tas-tests,elastic
-#            search-engine-type: elasticsearch
-#            db-type: mariadb
-#          - testSuite: Elasticsearch MS SQL
-#            profiles: all-tas-tests,elastic
-#            search-engine-type: elasticsearch
-#            db-type: mssql
-#          - testSuite: Elasticsearch Oracle 19.3.0-ee
-#            profiles: all-tas-tests,elastic
-#            search-engine-type: elasticsearch
-#            db-type: oracle
-#          - testSuite: Opensearch
-#            profiles: all-tas-tests,elastic
-#            search-engine-type: opensearch
-#            db-type: postgresql
-#          - testSuite: Elasticsearch Basic Auth postgreSQL
-#            profiles: all-tas-tests,elastic-basic-auth
-#            search-engine-type: elasticsearch
-#            db-type: postgresql
-#          - testSuite: Elasticsearch Basic Auth MySQL
-#            profiles: all-tas-tests,elastic-basic-auth
-#            search-engine-type: elasticsearch
-#            db-type: mysql
-#          - testSuite: Elasticsearch Basic Auth MariaDB 10.6
-#            profiles: all-tas-tests,elastic-basic-auth
-#            search-engine-type: elasticsearch
-#            db-type: mariadb
-#          - testSuite: Elasticsearch Basic Auth MS SQL
-#            profiles: all-tas-tests,elastic-basic-auth
-#            search-engine-type: elasticsearch
-#            db-type: mssql
-#          - testSuite: Elasticsearch Basic Auth Oracle 19.3.0-ee
-#            profiles: all-tas-tests,elastic-basic-auth
-#            search-engine-type: elasticsearch
-#            db-type: oracle
-#          - testSuite: Opensearch Basic Auth
-#            profiles: all-tas-tests,elastic-basic-auth
-#            search-engine-type: opensearch
-#            db-type: postgresql
-#    steps:
-#      - uses: actions/checkout@v3
-#      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
-#      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
-#      - name: "Build"
-#        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-#        run: |
-#          bash ./scripts/ci/init.sh
-#          bash ./scripts/ci/build.sh
-#      - name: "Run tests"
-#        timeout-minutes: 30
-#        run: mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -P${{ matrix.profiles }} -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}" "-Ddatabase.type=${{ matrix.db-type }}"
-#      - name: "Clean Maven cache"
-#        if: always()
-#        run: bash ./scripts/ci/cleanup_cache.sh
+  cmis-tas-tests-open-search:
+    name: "CMIS TAS tests - Open Search (CMIS API)"
+    runs-on: ubuntu-latest
+    if: >
+      ! contains(github.event.head_commit.message, '[skip tests]')
+    steps:
+      - uses: actions/checkout@v3
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
+      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
+      - name: "Build"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          bash ./scripts/ci/init.sh
+          bash ./scripts/ci/build.sh
+      - name: "Set up the environment"
+        run: |
+          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-cmis-opensearch-tests.yml
+          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+      - name: "Run tests"
+        timeout-minutes: 40
+        run: mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
+      - name: "Clean Maven cache"
+        run: bash ./scripts/ci/cleanup_cache.sh
 
-#  upgrade-tas-tests:
-#    name: ${{ matrix.testSuite }} Upgrade TAS tests
-#    runs-on: ubuntu-latest
-#    if: >
-#      ! contains(github.event.head_commit.message, '[skip search]')
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        include:
-#          - testSuite: Elasticsearch
-#            search-engine-type: elasticsearch
-#          - testSuite: Opensearch
-#            search-engine-type: opensearch
-#    steps:
-#      - uses: actions/checkout@v3
-#      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
-#      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
-#      - name: "Build"
-#        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-#        run: |
-#          bash ./scripts/ci/init.sh
-#          bash ./scripts/ci/build.sh
-#      - name: "Configure AWS credentials"
-#        if: ${{ always() }}
-#        uses: aws-actions/configure-aws-credentials@v1
-#        with:
-#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#          aws-region: eu-west-1
-#      - name: "Copy Licence"
-#        run: |
-#          pip install awscli
-#          aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
-#      - name: "Run tests"
-#        timeout-minutes: 30
-#        run: mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}" "-Ddatabase.type=postgresql"
-#      - name: "Clean Maven cache"
-#        if: always()
-#        run: bash ./scripts/ci/cleanup_cache.sh
+  sync-service-tas-tests:
+    name: "Sync Service TAS tests"
+    runs-on: ubuntu-latest
+    if: >
+      ! contains(github.event.head_commit.message, '[skip tas]')
+    steps:
+      - uses: actions/checkout@v3
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
+      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
+      - name: "Build"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          bash ./scripts/ci/init.sh
+          bash ./scripts/ci/build.sh
+      - name: "Set up the environment"
+        run: |
+          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-sync-service.yml
+          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+      - name: "Run tests"
+        timeout-minutes: 20
+        run: mvn -B install -ntp -f tests/tas-sync-service/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+      - name: "Clean Maven cache"
+        run: bash ./scripts/ci/cleanup_cache.sh
+
+  tas-tests-search-api:
+    name: ${{ matrix.testSuite }} | TAS tests (Search API)
+    runs-on: ubuntu-latest
+    if: >
+      ! contains(github.event.head_commit.message, '[skip search]')
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - testSuite: Elasticsearch postgreSQL
+            profiles: all-tas-tests,elastic
+            search-engine-type: elasticsearch
+            db-type: postgresql
+          - testSuite: Elasticsearch MySQL
+            profiles: all-tas-tests,elastic
+            search-engine-type: elasticsearch
+            db-type: mysql
+          - testSuite: Elasticsearch Maria DB 10.6
+            profiles: all-tas-tests,elastic
+            search-engine-type: elasticsearch
+            db-type: mariadb
+          - testSuite: Elasticsearch MS SQL
+            profiles: all-tas-tests,elastic
+            search-engine-type: elasticsearch
+            db-type: mssql
+          - testSuite: Elasticsearch Oracle 19.3.0-ee
+            profiles: all-tas-tests,elastic
+            search-engine-type: elasticsearch
+            db-type: oracle
+          - testSuite: Opensearch
+            profiles: all-tas-tests,elastic
+            search-engine-type: opensearch
+            db-type: postgresql
+          - testSuite: Elasticsearch Basic Auth postgreSQL
+            profiles: all-tas-tests,elastic-basic-auth
+            search-engine-type: elasticsearch
+            db-type: postgresql
+          - testSuite: Elasticsearch Basic Auth MySQL
+            profiles: all-tas-tests,elastic-basic-auth
+            search-engine-type: elasticsearch
+            db-type: mysql
+          - testSuite: Elasticsearch Basic Auth MariaDB 10.6
+            profiles: all-tas-tests,elastic-basic-auth
+            search-engine-type: elasticsearch
+            db-type: mariadb
+          - testSuite: Elasticsearch Basic Auth MS SQL
+            profiles: all-tas-tests,elastic-basic-auth
+            search-engine-type: elasticsearch
+            db-type: mssql
+          - testSuite: Elasticsearch Basic Auth Oracle 19.3.0-ee
+            profiles: all-tas-tests,elastic-basic-auth
+            search-engine-type: elasticsearch
+            db-type: oracle
+          - testSuite: Opensearch Basic Auth
+            profiles: all-tas-tests,elastic-basic-auth
+            search-engine-type: opensearch
+            db-type: postgresql
+    steps:
+      - uses: actions/checkout@v3
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
+      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
+      - name: "Build"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          bash ./scripts/ci/init.sh
+          bash ./scripts/ci/build.sh
+      - name: "Run tests"
+        timeout-minutes: 30
+        run: mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -P${{ matrix.profiles }} -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}" "-Ddatabase.type=${{ matrix.db-type }}"
+      - name: "Clean Maven cache"
+        run: bash ./scripts/ci/cleanup_cache.sh
+
+  upgrade-tas-tests:
+    name: ${{ matrix.testSuite }} Upgrade TAS tests
+    runs-on: ubuntu-latest
+    if: >
+      ! contains(github.event.head_commit.message, '[skip search]')
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - testSuite: Elasticsearch
+            search-engine-type: elasticsearch
+          - testSuite: Opensearch
+            search-engine-type: opensearch
+    steps:
+      - uses: actions/checkout@v3
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-branch-name@v1.23.0
+      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
+      - name: "Build"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          bash ./scripts/ci/init.sh
+          bash ./scripts/ci/build.sh
+      - name: "Configure AWS credentials"
+        if: ${{ always() }}
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+      - name: "Copy Licence"
+        run: |
+          pip install awscli
+          aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
+      - name: "Run tests"
+        timeout-minutes: 30
+        run: mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}" "-Ddatabase.type=postgresql"
+      - name: "Clean Maven cache"
+        run: bash ./scripts/ci/cleanup_cache.sh
 
   all-amps-tests:
     name: All AMPs tests
@@ -438,7 +408,6 @@ jobs:
           ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
           mvn -B install -ntp -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
       - name: "Clean Maven cache"
-        if: always()
         run: bash ./scripts/ci/cleanup_cache.sh
 
   distribution-zip-content-tests:
@@ -459,7 +428,6 @@ jobs:
         timeout-minutes: 20
         run: mvn -B install -ntp -f tests/tas-distribution-zip/pom.xml -Prun-distribution-zip-contents-check -DrunBugs=false
       - name: "Clean Maven cache"
-        if: always()
         run: bash ./scripts/ci/cleanup_cache.sh
 
   single_pipeline_image_tests:
@@ -494,5 +462,4 @@ jobs:
       - name: "Run tests"
         run: pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
       - name: "Clean Maven cache"
-        if: always()
         run: bash ./scripts/ci/cleanup_cache.sh
