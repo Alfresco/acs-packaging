@@ -31,7 +31,7 @@ jobs:
     if: >
       always() &&
       (needs.run_ci.result == 'skipped' || needs.run_ci.result == 'success') &&
-      (! contains(github.event.head_commit.message, '[skip docker_latest]')) &&
+      !contains(github.event.head_commit.message, '[skip docker_latest]') &&
       github.ref_name == 'master' && github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v3
@@ -53,7 +53,7 @@ jobs:
     if: >
       always() &&
       (needs.run_ci.result == 'skipped' || needs.run_ci.result == 'success') &&
-      (! contains(github.event.head_commit.message, '[skip docker_release]')) &&
+      !contains(github.event.head_commit.message, '[skip docker_release]') &&
       contains(github.ref_name, 'release/') && github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v3
@@ -67,3 +67,103 @@ jobs:
       - name: "Update images"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: mvn -B -V clean install -ntp -DskipTests -Dmaven.javadoc.skip=true -Dbuild-number=${BUILD_NUMBER} -Ppush-docker-images,pipeline,release-branch
+
+  release:
+    name: "Release and Copy to S3 Staging Bucket"
+    runs-on: ubuntu-latest
+    needs: [docker_latest, docker_release]
+    if: >
+      !failure() &&
+      contains(github.event.head_commit.message, '[release]') &&
+      (github.ref_name == 'master' || contains(github.ref_name, 'release/')) &&
+      github.event_name != 'pull_request'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
+      - name: "Build"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          bash ./scripts/ci/init.sh
+          bash ./scripts/ci/build.sh
+      - uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@v1.25.0
+        with:
+          username: ${GIT_USERNAME}
+          email: ${GIT_EMAIL}
+      - name: "Release"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          bash scripts/ci/verify_release_tag.sh
+          bash scripts/ci/maven_release.sh
+          bash scripts/ci/prepare_staging_deploy.sh
+      - name: "Configure AWS credentials"
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_S3_STAGING_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_S3_STAGING_SECRET_KEY }}
+          aws-region: eu-west-1
+      - name: "Deploy to S3 Staging Bucket"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          aws s3 cp --acl private --recursive ./deploy_dir s3://alfresco-artefacts-staging/alfresco-content-services/release/${BRANCH_NAME}/${BUILD_NUMBER}
+          aws s3 cp --acl private --recursive ./deploy_dir_share s3://alfresco-artefacts-staging/share/${RELEASE_VERSION}
+          aws s3 cp --acl private --recursive ./deploy_dir_ags s3://alfresco-artefacts-staging/enterprise/RM/${RELEASE_VERSION}
+
+          bash scripts/ci/copy_share_image_to_docker_hub.sh
+
+          echo "Finished release and deployed to https://s3.console.aws.amazon.com/s3/buckets/alfresco-artefacts-staging/alfresco-content-services-community/release/${BRANCH_NAME}/${BUILD_NUMBER}"
+
+  publish:
+    name: Copy to S3 Release Bucket
+    runs-on: ubuntu-latest
+    needs: [release]
+    if: >
+      !failure() &&
+      contains(github.event.head_commit.message, '[publish]') &&
+      (github.ref_name == 'master' || contains(github.ref_name, 'release/')) &&
+      github.event_name != 'pull_request'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
+      - uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@v1.25.0
+        with:
+          username: ${GIT_USERNAME}
+          email: ${GIT_EMAIL}
+      - name: "Rebuild the artifacts and publish them to enterprise-releases"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: bash scripts/ci/maven_publish.sh
+      - name: "Configure AWS credentials"
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_S3_RELEASE_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_S3_RELEASE_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+      - name: "Deploy to S3 Release Bucket"
+        run: |
+          bash scripts/ci/copy_to_release_bucket.sh
+          bash scripts/ci/copy_share_to_release_bucket.sh
+          bash scripts/ci/copy_ags_to_release_bucket.sh
+      - name: "Clean Maven cache"
+        run: bash ./scripts/ci/cleanup_cache.sh
+
+  update_downstream:
+    name: "Update acs-community-packaging (after release)"
+    runs-on: ubuntu-latest
+    needs: [publish]
+    if: >
+      !failure() &&
+      contains(github.event.head_commit.message, '[publish]') &&
+      (github.ref_name == 'master' || contains(github.ref_name, 'release/')) &&
+      github.event_name != 'pull_request'
+    steps:
+      - uses: actions/checkout@v3
+      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
+      - name: "Init"
+        run: bash ./scripts/ci/init.sh
+      - name: "Update downstream"
+        run: bash ./scripts/ci/update_downstream.sh
+        env:
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+      - name: "Clean Maven cache"
+        run: bash ./scripts/ci/cleanup_cache.sh
