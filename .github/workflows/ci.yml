@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     if: >
       ((github.ref_name == 'master' || contains(github.ref_name, 'release/')) && github.event_name != 'pull_request') &&
-      ! contains(github.event.head_commit.message, '[skip tests]')
+      !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
       - name: Cache local Maven repository
@@ -62,7 +62,7 @@ jobs:
     runs-on: ubuntu-latest
     if: >
       contains(github.event.head_commit.message, '[tas]') &&
-      ! contains(github.event.head_commit.message, '[skip tests]')
+      !contains(github.event.head_commit.message, '[skip tests]')
     strategy:
       fail-fast: false
       matrix:
@@ -140,8 +140,8 @@ jobs:
     name: ${{ matrix.testSuite }} TAS tests with AIMS
     runs-on: ubuntu-latest
     if: >
-      ! contains(github.event.head_commit.message, '[skip tas]') &&
-      ! contains(github.event.head_commit.message, '[skip tests]')
+      !contains(github.event.head_commit.message, '[skip tas]') &&
+      !contains(github.event.head_commit.message, '[skip tests]')
     strategy:
       fail-fast: false
       matrix:
@@ -183,8 +183,8 @@ jobs:
     name: CMIS TAS tests - Elastic Search | ${{ matrix.testSuite }} (CMIS API)
     runs-on: ubuntu-latest
     if: >
-      ! contains(github.event.head_commit.message, '[skip search]') &&
-      ! contains(github.event.head_commit.message, '[skip tests]')
+      !contains(github.event.head_commit.message, '[skip search]') &&
+      !contains(github.event.head_commit.message, '[skip tests]')
     strategy:
       fail-fast: false
       matrix:
@@ -231,8 +231,8 @@ jobs:
     name: "CMIS TAS tests - Open Search (CMIS API)"
     runs-on: ubuntu-latest
     if: >
-      ! contains(github.event.head_commit.message, '[skip search]') &&
-      ! contains(github.event.head_commit.message, '[skip tests]')
+      !contains(github.event.head_commit.message, '[skip search]') &&
+      !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
@@ -256,8 +256,8 @@ jobs:
     name: "Sync Service TAS tests"
     runs-on: ubuntu-latest
     if: >
-      ! contains(github.event.head_commit.message, '[skip tas]') &&
-      ! contains(github.event.head_commit.message, '[skip tests]')
+      !contains(github.event.head_commit.message, '[skip tas]') &&
+      !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
@@ -281,8 +281,8 @@ jobs:
     name: ${{ matrix.testSuite }} | TAS tests (Search API)
     runs-on: ubuntu-latest
     if: >
-      ! contains(github.event.head_commit.message, '[skip search]') &&
-      ! contains(github.event.head_commit.message, '[skip tests]')
+      !contains(github.event.head_commit.message, '[skip search]') &&
+      !contains(github.event.head_commit.message, '[skip tests]')
     strategy:
       fail-fast: false
       matrix:
@@ -354,8 +354,8 @@ jobs:
     name: ${{ matrix.testSuite }} Upgrade TAS tests
     runs-on: ubuntu-latest
     if: >
-      ! contains(github.event.head_commit.message, '[skip search]') &&
-      ! contains(github.event.head_commit.message, '[skip tests]')
+      !contains(github.event.head_commit.message, '[skip search]') &&
+      !contains(github.event.head_commit.message, '[skip tests]')
     strategy:
       fail-fast: false
       matrix:
@@ -393,7 +393,7 @@ jobs:
   all-amps-tests:
     name: All AMPs tests
     runs-on: ubuntu-latest
-    if: ! contains(github.event.head_commit.message, '[skip tests]')
+    if: !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
@@ -418,7 +418,7 @@ jobs:
   distribution-zip-content-tests:
     name: Distribution Zip content tests
     runs-on: ubuntu-latest
-    if: ! contains(github.event.head_commit.message, '[skip tests]')
+    if: !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
@@ -441,7 +441,7 @@ jobs:
     runs-on: ubuntu-latest
     if: >
       github.event_name != 'pull_request' &&
-      ! contains(github.event.head_commit.message, '[skip tests]')
+      !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
       - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA

@@ -152,7 +152,7 @@ jobs:
     needs: [publish]
     if: >
       !failure() &&
-      (contains(github.event.head_commit.message, '[downstream]') || (contains(github.event.head_commit.message, '[release]') && ! contains(github.event.head_commit.message, '[no downstream]'))) &&
+      (contains(github.event.head_commit.message, '[downstream]') || (contains(github.event.head_commit.message, '[release]') && !contains(github.event.head_commit.message, '[no downstream]'))) &&
       (github.ref_name == 'master' || contains(github.ref_name, 'release/')) &&
       github.event_name != 'pull_request'
     steps:
