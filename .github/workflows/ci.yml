@@ -393,7 +393,8 @@ jobs:
   all-amps-tests:
     name: All AMPs tests
     runs-on: ubuntu-latest
-    if: !contains(github.event.head_commit.message, '[skip tests]')
+    if: >
+      !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
@@ -418,7 +419,8 @@ jobs:
   distribution-zip-content-tests:
     name: Distribution Zip content tests
     runs-on: ubuntu-latest
-    if: !contains(github.event.head_commit.message, '[skip tests]')
+    if: >
+      !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
