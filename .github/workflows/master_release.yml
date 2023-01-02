@@ -111,7 +111,7 @@ jobs:
 
           bash scripts/ci/copy_share_image_to_docker_hub.sh
 
-          echo "Finished release and deployed to https://s3.console.aws.amazon.com/s3/buckets/alfresco-artefacts-staging/alfresco-content-services-community/release/${BRANCH_NAME}/${BUILD_NUMBER}"
+          echo "Finished release and deployed to https://s3.console.aws.amazon.com/s3/buckets/alfresco-artefacts-staging/alfresco-content-services/release/${BRANCH_NAME}/${BUILD_NUMBER}"
 
   publish:
     name: Copy to S3 Release Bucket
@@ -152,7 +152,7 @@ jobs:
     needs: [publish]
     if: >
       !failure() &&
-      contains(github.event.head_commit.message, '[publish]') &&
+      (contains(github.event.head_commit.message, '[downstream]') || (contains(github.event.head_commit.message, '[release]') && ! contains(github.event.head_commit.message, '[no downstream]'))) &&
       (github.ref_name == 'master' || contains(github.ref_name, 'release/')) &&
       github.event_name != 'pull_request'
     steps:
