@@ -15,6 +15,9 @@ on:
   workflow_dispatch:
 
 env:
+  AZURE_AUTHENTICATION_MODE: sharedKey
+  AZURE_STORAGE_ACCOUNT_NAME: acspackagingci
+  AZURE_STORAGE_ACCOUNT_KEY: ${{ secrets.AZURE_PACKAGING_STORAGE_ACCOUNT_KEY }}
   DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   GITHUB_ACTIONS_DEPLOY_TIMEOUT: 60
@@ -24,8 +27,8 @@ env:
   QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
   GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
   GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
-  AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_ACCESS_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_ACCESS_KEY_ID }}
+  AWS_SECRET_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_SECRET_ACCESS_KEY }}
   TAS_ENVIRONMENT: ./tests/environment
   TAS_SCRIPTS: ../alfresco-community-repo/packaging/tests/scripts
   ALF_LICENCE_S3_PATH: s3://acs-license/acs/alf74-allenabled.lic
@@ -463,7 +466,7 @@ jobs:
           git clone --depth 1 --branch $DTAS_VERSION https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
           docker images | grep pipeline
           ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
-          ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/" 360
+          ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/" 180
           docker ps
           curl -v --user admin.pipeline@alfresco.com:admin http://localhost:8080/alfresco/api/discovery
           cd dtas
