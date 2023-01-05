@@ -25,19 +25,15 @@ env:
   MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
   QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
   QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
-  GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
-  GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
   AWS_ACCESS_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_ACCESS_KEY_ID }}
   AWS_SECRET_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_SECRET_ACCESS_KEY }}
   TAS_ENVIRONMENT: ./tests/environment
   TAS_SCRIPTS: ../alfresco-community-repo/packaging/tests/scripts
   ALF_LICENCE_S3_PATH: s3://acs-license/acs/alf74-allenabled.lic
   ALF_LICENCE_LOCAL_PATH: /tmp/licence.lic
-  # Release version has to start with real version (7.4.0-....) for the docker image to build successfully.
-  RELEASE_VERSION: 7.4.0-A3
-  DEVELOPMENT_VERSION: 7.4.0-A4-SNAPSHOT
-  PYTHON_VERSION: 3.7.12
+  PYTHON_VERSION: 3.7.15
   DTAS_VERSION: v1.1
+
 jobs:
   veracode:
     name: "Source Clear Scan (SCA)"
@@ -47,13 +43,10 @@ jobs:
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
-      - name: Cache local Maven repository
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.28.0
+      - name: "Init"
+        run: bash ./scripts/ci/init.sh
       - uses: Alfresco/alfresco-build-tools/.github/actions/veracode@master
         with:
           srcclr-api-token: ${{ secrets.SRCCLR_API_TOKEN }}
@@ -122,8 +115,8 @@ jobs:
             deploy-timeout: 10
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
       - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.28.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -163,8 +156,8 @@ jobs:
             deploy-timeout: 40
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
       - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.28.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -209,8 +202,8 @@ jobs:
             compose-file: docker-compose-oracle.yml
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
       - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.28.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -238,8 +231,8 @@ jobs:
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
       - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.28.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -263,8 +256,8 @@ jobs:
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
       - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.28.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -340,8 +333,8 @@ jobs:
             db-type: postgresql
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
       - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.28.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -369,8 +362,8 @@ jobs:
             search-engine-type: opensearch
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
       - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.28.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -394,14 +387,14 @@ jobs:
         run: bash ./scripts/ci/cleanup_cache.sh
 
   all-amps-tests:
-    name: All AMPs tests
+    name: "All AMPs tests"
     runs-on: ubuntu-latest
     if: >
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
       - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.28.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -420,14 +413,14 @@ jobs:
         run: bash ./scripts/ci/cleanup_cache.sh
 
   distribution-zip-content-tests:
-    name: Distribution Zip content tests
+    name: "Distribution Zip content tests"
     runs-on: ubuntu-latest
     if: >
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
       - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.28.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -450,10 +443,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.25.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.28.0
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.7.15'
+          python-version: ${{ env.PYTHON_VERSION }}
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
