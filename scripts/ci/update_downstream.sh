@@ -7,8 +7,8 @@ pushd "$(dirname "${BASH_SOURCE[0]}")/../../"
 source "$(dirname "${BASH_SOURCE[0]}")/build_functions.sh"
 
 #Fetch the latest changes, as Travis will only checkout the PR commit
-git fetch origin "${BRANCH}"
-git checkout "${BRANCH}"
+git fetch origin "${BRANCH_NAME}"
+git checkout "${BRANCH_NAME}"
 git pull
 
 # Retrieve the latest (just released) latest tag on the current branch
@@ -21,12 +21,12 @@ COM_VERSION="$(evaluatePomProperty "dependency.alfresco-community-repo.version")
 SHA_VERSION="$(evaluatePomProperty "dependency.alfresco-enterprise-share.version")"
 
 # Retrieve the release and development versions as they are normally the same in community packaging
-RELEASE_VERSION=$(grep RELEASE_VERSION= .github/workflows/ci.yml | sed 's/.*RELEASE_VERSION=\(.*\)/\1/')
-DEVELOPMENT_VERSION=$(grep DEVELOPMENT_VERSION= .github/workflows/ci.yml | sed 's/.*DEVELOPMENT_VERSION=\(.*\)/\1/')
+RELEASE_VERSION=$(grep RELEASE_VERSION= .github/workflows/master_release.yml | sed 's/.*RELEASE_VERSION=\(.*\)/\1/')
+DEVELOPMENT_VERSION=$(grep DEVELOPMENT_VERSION= .github/workflows/master_release.yml | sed 's/.*DEVELOPMENT_VERSION=\(.*\)/\1/')
 
 DOWNSTREAM_REPO="github.com/Alfresco/acs-community-packaging.git"
 
-cloneRepo "${DOWNSTREAM_REPO}" "${BRANCH}"
+cloneRepo "${DOWNSTREAM_REPO}" "${BRANCH_NAME}"
 
 cd "$(dirname "${BASH_SOURCE[0]}")/../../../$(basename "${DOWNSTREAM_REPO%.git}")"
 

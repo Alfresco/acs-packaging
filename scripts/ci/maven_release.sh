@@ -12,9 +12,7 @@ if [ -z "${RELEASE_VERSION}" ] || [ -z "${DEVELOPMENT_VERSION}" ]; then
 fi
 
 # Use full history for release
-git checkout -B "${BRANCH}"
-# Add email to link commits to user
-git config user.email "${GIT_EMAIL}"
+git checkout -B "${BRANCH_NAME}"
 
 mvn -B \
   -ntp \
