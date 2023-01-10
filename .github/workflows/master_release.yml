@@ -38,8 +38,8 @@ jobs:
       github.ref_name == 'master' && github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.28.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.30.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.30.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -61,8 +61,8 @@ jobs:
       contains(github.ref_name, 'release/') && github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.28.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.30.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.30.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -84,15 +84,15 @@ jobs:
       github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.28.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.30.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.30.0
       - uses: actions/setup-python@v4
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
-      - uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@v1.28.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@v1.30.0
         with:
           username: ${{ env.GIT_USERNAME }}
           email: ${{ env.GIT_EMAIL }}
@@ -131,11 +131,11 @@ jobs:
       github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.28.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.30.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.30.0
       - name: "Init"
         run: bash ./scripts/ci/init.sh
-      - uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@v1.28.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@v1.30.0
         with:
           username: ${{ env.GIT_USERNAME }}
           email: ${{ env.GIT_EMAIL }}
@@ -168,11 +168,11 @@ jobs:
       github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/acs-community-packaging/.github/actions/get-build-info@feature/ACS-3844_migrate-to-GHA
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.28.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.30.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.30.0
       - name: "Init"
         run: bash ./scripts/ci/init.sh
-      - uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@v1.28.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@v1.30.0
         with:
           username: ${{ env.GIT_USERNAME }}
           email: ${{ env.GIT_EMAIL }}
