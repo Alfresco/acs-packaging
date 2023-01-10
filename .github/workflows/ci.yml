@@ -130,6 +130,7 @@ jobs:
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/${{ matrix.compose-file }}
           ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       - name: "Run tests"
+        id: tests
         timeout-minutes: ${{ matrix.deploy-timeout }}
         run: mvn -B install -ntp -f ${{ matrix.pom-dir }}/pom.xml -P${{ matrix.profiles }} -Denvironment=default -DrunBugs=false
       - name: "Print output after failure"
@@ -176,6 +177,7 @@ jobs:
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-aims.yml
           ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco" 180
       - name: "Run tests"
+        id: tests
         timeout-minutes: ${{ matrix.deploy-timeout }}
         run: mvn -B install -ntp -f ${{ matrix.pom }} -P${{ matrix.profiles }} -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
       - name: "Print output after failure"
@@ -227,6 +229,7 @@ jobs:
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-cmis-elastic-tests.yml ${{ env.TAS_ENVIRONMENT }}/${{matrix.compose-file}}
           ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       - name: "Run tests"
+        id: tests
         timeout-minutes: 40
         run: mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
       - name: "Print output after failure"
@@ -255,6 +258,7 @@ jobs:
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-cmis-opensearch-tests.yml
           ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       - name: "Run tests"
+        id: tests
         timeout-minutes: 40
         run: mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
       - name: "Print output after failure"
@@ -283,6 +287,7 @@ jobs:
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-sync-service.yml
           ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       - name: "Run tests"
+        id: tests
         timeout-minutes: 20
         run: mvn -B install -ntp -f tests/tas-sync-service/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
       - name: "Print output after failure"
@@ -421,6 +426,7 @@ jobs:
       - name: "Set up the environment"
         run: mvn -B -q install -ntp -f tests/tas-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
       - name: "Run tests"
+        id: tests
         timeout-minutes: 20
         run: |
           ./tests/scripts/checkLibraryDuplicates.sh ./tests/tas-all-amps/target/war/alfresco/WEB-INF/lib
@@ -450,6 +456,7 @@ jobs:
       - name: "Set up the environment"
         run: mvn -B -V clean install -ntp -Pags -DskipTests -Dmaven.javadoc.skip=true
       - name: "Run tests"
+        id: tests
         timeout-minutes: 20
         run: mvn -B install -ntp -f tests/tas-distribution-zip/pom.xml -Prun-distribution-zip-contents-check -DrunBugs=false
       - name: "Print output after failure"
