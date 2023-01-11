@@ -181,10 +181,7 @@ jobs:
         timeout-minutes: ${{ matrix.deploy-timeout }}
         run: mvn -B install -ntp -f ${{ matrix.pom }} -P${{ matrix.profiles }} -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
       - name: "Print output after failure"
-        if: >
-          always() && 
-          ${{ matrix.testSuite }} == 'REST API' &&
-          steps.tests.outcome == 'failure' }}
+        if: ${{ always() && matrix.testSuite == 'REST API' && steps.tests.outcome == 'failure' }}
         run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-restapi"
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
