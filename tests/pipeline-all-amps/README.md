@@ -4,7 +4,7 @@ The [pipeline-all-amps](../pipeline-all-amps) module pushes repo and share image
 
 ## GitHub Actions job to test and push docker images
 
-The acs-packaging repo [GitHub Actions](../../.github/workflows/ci.yml) job `"Single Pipeline image tests"` publishes internally the new docker images for repo and share
+The acs-packaging repo [GitHub Actions](../../.github/workflows/master_release.yml) job `"Update latest and Single Pipeline <acs>-<build> images"` publishes internally the new docker images for repo and share
 with GHA build number
 
 Example: alfresco/alfresco-pipeline-all-amps-repo:3102:7.0.0.

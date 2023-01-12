@@ -2,7 +2,7 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="REST API tests Elasticsearch" preserve-order="true" verbose="1" parallel="false">
   <listeners>
-    <listener class-name="org.alfresco.elasticsearch.AlphabeticallyPriorityInterceptor" />
+    <listener class-name="org.alfresco.utility.testng.AlphabeticalPriorityInterceptor" />
   </listeners>
   <test name="elasticsearch" verbose="3" preserve-order="false">
     <packages>
