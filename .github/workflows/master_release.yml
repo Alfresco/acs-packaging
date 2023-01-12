@@ -6,7 +6,7 @@ on:
       - master
       - release/**
   schedule:
-    - cron:  '0 8 * * 3'
+    - cron:  '0 5 * * 3'
 
 env:
   GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
@@ -110,7 +110,6 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_S3_STAGING_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_S3_STAGING_SECRET_KEY }}
-          aws-region: eu-west-1
       - name: "Deploy to S3 Staging Bucket"
         run: |
           aws s3 cp --acl private --recursive ./deploy_dir s3://alfresco-artefacts-staging/alfresco-content-services/release/${BRANCH_NAME}/${BUILD_NUMBER}
@@ -148,7 +147,6 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_S3_RELEASE_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_S3_RELEASE_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-1
       - name: "Deploy to S3 Release Bucket"
         run: |
           bash scripts/ci/copy_to_release_bucket.sh
