@@ -176,6 +176,8 @@ following Alfresco global property. The ATS Router has similar pipeline files.
 ```properties
 local.transform.pipeline.config.dir=shared/classes/alfresco/extension/transform/pipelines
 ```
+For configuration override involving a transform-core-aio docker image, 
+the [newer version of image and approach](#adding-pipelines-and-failover-transforms-to-a-t-Engine) should be used
 
 On startup this location is checked every minute, but then switches
 to once an hour if successful. After a problem, it tries every
@@ -258,6 +260,9 @@ step transforms do not exist.
 
 Generally it is better to add them to T-Engines to avoid having to add an identical entry to both
 the Repository and ATS Router pipeline files.
+
+Additional config files (which may be resources on the classpath or external files) are specified for T-Engine 
+through Spring Boot properties such as transform.config.file.<filename> or environment variables like TRANSFORM_CONFIG_FILE_<filename>.
 
 #### Modifying existing configuration
 
