@@ -9,7 +9,9 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-enterprise-repo</artifactId>
+        
         <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
+
         <version>18.14-SNAPSHOT</version>
     </parent>
 
