@@ -176,7 +176,8 @@ following Alfresco global property. The ATS Router has similar pipeline files.
 ```properties
 local.transform.pipeline.config.dir=shared/classes/alfresco/extension/transform/pipelines
 ```
-Local transform-core-aio docker image might need a [newer version of image and approach](#adding-pipelines-and-failover-transforms-to-a-t-Engine).
+Local transform-core-aio docker image might need a [newer version of image and approach](#adding-pipelines-and-failover-transforms-to-a-t-Engine)
+with providing config directly to the T-Engine.
 
 On startup this location is checked every minute, but then switches
 to once an hour if successful. After a problem, it tries every
