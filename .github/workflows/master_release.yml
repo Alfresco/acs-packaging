@@ -21,7 +21,7 @@ env:
   QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
   GITHUB_ACTIONS_DEPLOY_TIMEOUT: 60
   # Release version has to start with real version (7.4.0-....) for the docker image to build successfully.
-  RELEASE_VERSION: 7.4.0-A11
+  RELEASE_VERSION: 7.4.0-M2
   DEVELOPMENT_VERSION: 7.4.0-A12-SNAPSHOT
 
 jobs:
