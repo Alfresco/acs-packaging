@@ -47,11 +47,12 @@ jobs:
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.30.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.30.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
       - name: "Init"
         run: bash ./scripts/ci/init.sh
-      - uses: Alfresco/alfresco-build-tools/.github/actions/veracode@v1.30.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/veracode@v1.32.0
+        continue-on-error: true
         with:
           srcclr-api-token: ${{ secrets.SRCCLR_API_TOKEN }}
       - name: "Clean Maven cache"
@@ -119,8 +120,8 @@ jobs:
             deploy-timeout: 10
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.30.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.30.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -164,8 +165,8 @@ jobs:
             deploy-timeout: 40
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.30.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.30.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -214,8 +215,8 @@ jobs:
             compose-file: docker-compose-oracle.yml
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.30.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.30.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -247,8 +248,8 @@ jobs:
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.30.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.30.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -276,8 +277,8 @@ jobs:
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.30.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.30.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -357,8 +358,8 @@ jobs:
             db-type: postgresql
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.30.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.30.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -386,8 +387,8 @@ jobs:
             search-engine-type: opensearch
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.30.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.30.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -414,8 +415,8 @@ jobs:
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.30.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.30.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -444,8 +445,8 @@ jobs:
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.30.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.30.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -471,8 +472,8 @@ jobs:
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.30.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.30.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
