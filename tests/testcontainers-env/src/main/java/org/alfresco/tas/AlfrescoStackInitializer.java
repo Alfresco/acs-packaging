@@ -1,5 +1,7 @@
 package org.alfresco.tas;
 
+import static org.alfresco.tas.SystemPropertyHelper.getSystemProperty;
+
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -484,13 +486,13 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         @Override
         public String getReIndexingImage()
         {
-            return "alfresco-es-reindexing-jdbc:latest";
+            return getSystemProperty("reindeximage", "quay.io/alfresco/alfresco-elasticsearch-reindexing:latest");
         }
 
         @Override
         public String getLiveIndexingImage()
         {
-            return "alfresco-es-indexing-jdbc:latest";
+            return getSystemProperty("indeximage", "quay.io/alfresco/alfresco-elasticsearch-live-indexing:latest");
         }
 
         @Override
@@ -500,12 +502,14 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         }
 
         @Override
-        public String getOpensearchImage() {
+        public String getOpensearchImage()
+        {
             return "opensearchproject/opensearch:" + envProperties.apply("OPENSEARCH_TAG");
         }
 
         @Override
-        public String getOpensearchDashboardsImage() {
+        public String getOpensearchDashboardsImage()
+        {
             return "opensearchproject/opensearch-dashboards:" + envProperties.apply("OPENSEARCH_DASHBOARDS_TAG");
         }
 
@@ -558,14 +562,15 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         }
 
         @Override
-        public String getOracleImage() {
+        public String getOracleImage()
+        {
             return "quay.io/alfresco/oracle-database:" + envProperties.apply("ORACLE_TAG");
         }
 
         @Override
         public String getRepositoryImage()
         {
-            return "alfresco-repository-databases:latest";
+            return getSystemProperty("repoimage", "alfresco/alfresco-content-repository:latest");
         }
 
         @Override
