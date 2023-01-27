@@ -32,8 +32,6 @@ import org.testng.annotations.Test;
 
 public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextTests
 {
-    public static final String CUSTOM_ALFRESCO_INDEX = "custom-alfresco-index";
-
     @Autowired
     private ServerHealth serverHealth;
     @Autowired
