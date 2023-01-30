@@ -27,7 +27,7 @@ if [[ "${ENT_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] && [ "${JOB_NAME,,}" = "re
   exit 1
 fi
 
-ENT_UPSTREAM_REPO="git@github.com:Alfresco/alfresco-enterprise-repo.git"
+ENT_UPSTREAM_REPO="github.com/Alfresco/alfresco-enterprise-repo.git"
 
 # Checkout the upstream alfresco-enterprise-repo project (tag or branch)
 if [[ "${ENT_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] ; then
@@ -56,7 +56,7 @@ if [[ "${COM_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] && [ "${JOB_NAME,,}" = "re
   exit 1
 fi
 
-COM_UPSTREAM_REPO="git@github.com:Alfresco/alfresco-community-repo.git"
+COM_UPSTREAM_REPO="github.com/Alfresco/alfresco-community-repo.git"
 
 # Checkout the upstream alfresco-community-repo project (tag or branch; + build if the latter)
 if [[ "${COM_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] ; then
@@ -87,7 +87,7 @@ if [[ "${SHARE_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] && [ "${JOB_NAME,,}" = "
   exit 1
 fi
 
-SHARE_UPSTREAM_REPO="git@github.com:Alfresco/alfresco-enterprise-share.git"
+SHARE_UPSTREAM_REPO="github.com/Alfresco/alfresco-enterprise-share.git"
 # Checkout the upstream alfresco-enterprise-share project (tag or branch; + build if the latter)
 if [[ "${SHARE_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] ; then
   pullAndBuildSameBranchOnUpstream "${SHARE_UPSTREAM_REPO}" "-Pbuild-docker-images -Pags -Dlicense.failOnNotUptodateHeader=true -Ddocker.quay-expires.value=NEVER ${REPO_IMAGE} -Ddependency.alfresco-community-repo.version=${COM_DEPENDENCY_VERSION} -Ddependency.alfresco-enterprise-repo.version=${ENT_DEPENDENCY_VERSION}"

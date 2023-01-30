@@ -76,7 +76,7 @@ function remoteBranchExists() {
   local REMOTE_REPO="${1}"
   local BRANCH="${2}"
 
-  git ls-remote --exit-code --heads "${REMOTE_REPO}" "${BRANCH_NAME}" # temporarily remove dev/null redirection to see output
+  git ls-remote --exit-code --heads "https://${GIT_USERNAME}:${GIT_PASSWORD}@${REMOTE_REPO}" "${BRANCH_NAME}" &>/dev/null
 }
 
 function identifyUpstreamSourceBranch() {
