@@ -47,6 +47,8 @@ jobs:
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
       - name: "Init"
@@ -120,6 +122,8 @@ jobs:
             deploy-timeout: 10
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
       - name: "Build"
@@ -165,6 +169,8 @@ jobs:
             deploy-timeout: 40
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
       - name: "Build"
@@ -215,6 +221,8 @@ jobs:
             compose-file: docker-compose-oracle.yml
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
       - name: "Build"
@@ -248,6 +256,8 @@ jobs:
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
       - name: "Build"
@@ -277,6 +287,8 @@ jobs:
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
       - name: "Build"
@@ -358,6 +370,8 @@ jobs:
             db-type: postgresql
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
       - name: "Build"
@@ -387,6 +401,8 @@ jobs:
             search-engine-type: opensearch
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
       - name: "Build"
@@ -415,6 +431,8 @@ jobs:
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
       - name: "Build"
@@ -445,6 +463,8 @@ jobs:
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
       - name: "Build"
@@ -472,6 +492,8 @@ jobs:
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
       - uses: actions/setup-python@v4

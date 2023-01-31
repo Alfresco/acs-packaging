@@ -39,6 +39,8 @@ jobs:
       github.ref_name == 'master' && github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
       - name: "Build"
@@ -62,6 +64,8 @@ jobs:
       contains(github.ref_name, 'release/') && github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
       - name: "Build"
@@ -85,6 +89,8 @@ jobs:
       github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
       - uses: actions/setup-python@v4
@@ -132,6 +138,8 @@ jobs:
       github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
       - name: "Init"
@@ -169,6 +177,8 @@ jobs:
       github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
       - name: "Init"
