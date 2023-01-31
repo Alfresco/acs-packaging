@@ -49,11 +49,11 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.33.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.33.0
       - name: "Init"
         run: bash ./scripts/ci/init.sh
-      - uses: Alfresco/alfresco-build-tools/.github/actions/veracode@v1.32.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/veracode@v1.33.0
         continue-on-error: true
         with:
           srcclr-api-token: ${{ secrets.SRCCLR_API_TOKEN }}
@@ -124,8 +124,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.33.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.33.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -171,8 +171,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.33.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.33.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -223,8 +223,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.33.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.33.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -258,8 +258,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.33.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.33.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -289,8 +289,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.33.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.33.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -372,8 +372,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.33.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.33.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -403,8 +403,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.33.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.33.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -433,8 +433,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.33.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.33.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -465,8 +465,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.33.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.33.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -494,8 +494,8 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.32.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.32.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.33.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.33.0
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
