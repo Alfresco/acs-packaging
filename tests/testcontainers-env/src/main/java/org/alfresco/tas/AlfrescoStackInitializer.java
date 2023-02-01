@@ -5,11 +5,12 @@ import static org.alfresco.tas.SystemPropertyHelper.getSystemProperty;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.github.dockerjava.api.command.CreateContainerCmd;
+
+import org.alfresco.utility.report.log.Step;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContextInitializer;
@@ -102,7 +103,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         startOrFail(transformCore, transformRouter);
 
         // We don't want Kibana to run on our CI, but it can be useful when investigating issues locally.
-        if (Objects.equals(System.getProperty("kibana"), "true"))
+        if (getSystemProperty("kibana", "false").equals("true"))
         {
             dashboardsContainer = createDashboardsContainer();
             startOrFail(dashboardsContainer);
@@ -584,8 +585,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
             String searchEngineTypeProperty = mavenProperties.apply("search.engine.type");
             if(Strings.isNullOrEmpty(searchEngineTypeProperty))
             {
-                throw new IllegalArgumentException("Property 'search.engine.type' not set.");
-
+                Step.STEP("Defaulting search engine to Elasticsearch.");
+                return SearchEngineType.ELASTICSEARCH_ENGINE;
             }
             return SearchEngineType.from(searchEngineTypeProperty);
         }
@@ -595,8 +596,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
             String databaseTypeProperty = mavenProperties.apply("database.type");
             if(Strings.isNullOrEmpty(databaseTypeProperty))
             {
-                throw new IllegalArgumentException("Property 'database.type' not set.");
-
+                Step.STEP("Defaulting database to postgresql.");
+                return DatabaseType.POSTGRESQL_DB;
             }
             return DatabaseType.from(databaseTypeProperty);
         }
