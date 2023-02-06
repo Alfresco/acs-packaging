@@ -114,7 +114,6 @@ public class CategoryIndexingTests extends AbstractTestNGSpringContextTests
 
     /** Check we can find the document by the pseudo-path created for the category. */
     @Test (groups = TestGroup.SEARCH)
-    @Ignore () // See ACS-4515
     public void testQueryByCategoryPseudoPath() {
         SearchRequest query = req("PATH:\"/cm:categoryRoot/cm:generalclassifiable/cm:" + CATEGORY_A_NAME + "/*\"");
         searchQueryService.expectResultsFromQuery(query, testUser, testFile.getName());
