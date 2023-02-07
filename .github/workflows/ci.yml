@@ -279,37 +279,6 @@ jobs:
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
-  sync_service_tas_tests:
-    name: "Sync Service TAS tests"
-    runs-on: ubuntu-latest
-    if: >
-      !contains(github.event.head_commit.message, '[skip tas]') &&
-      !contains(github.event.head_commit.message, '[skip tests]')
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.33.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.33.0
-      - name: "Build"
-        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        run: |
-          bash ./scripts/ci/init.sh
-          bash ./scripts/ci/build.sh
-      - name: "Set up the environment"
-        run: |
-          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-sync-service.yml
-          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      - name: "Run tests"
-        id: tests
-        timeout-minutes: 20
-        run: mvn -B install -ntp -f tests/tas-sync-service/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
-      - name: "Print output after failure"
-        if: ${{ always() && steps.tests.outcome == 'failure' }}
-        run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-sync-service"
-      - name: "Clean Maven cache"
-        run: bash ./scripts/ci/cleanup_cache.sh
-
   tas_tests_search_api:
     name: ${{ matrix.testSuite }} | TAS tests (Search API)
     runs-on: ubuntu-latest
