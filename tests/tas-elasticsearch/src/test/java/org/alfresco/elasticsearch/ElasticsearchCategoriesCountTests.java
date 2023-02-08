@@ -85,12 +85,12 @@ public class ElasticsearchCategoriesCountTests extends AbstractTestNGSpringConte
         STEP("Wait for indexing to complete");
         Utility.sleep(500, 60000, () -> restClient.authenticateUser(user)
             .withCoreAPI()
-            .usingCategory(categoryLinkedWithFolder)
+            .usingCategory(categoryLinkedWithBoth)
             .include(INCLUDE_COUNT_PARAM)
             .getCategory()
             .assertThat()
             .field(FIELD_COUNT)
-            .isNot(0));
+            .is(2));
     }
 
     /**
