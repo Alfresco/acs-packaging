@@ -1,4 +1,4 @@
-package org.alfresco.elasticsearch.reindexing;
+package org.alfresco.elasticsearch;
 
 import static org.alfresco.utility.data.RandomData.getRandomName;
 import static org.alfresco.utility.report.log.Step.STEP;
