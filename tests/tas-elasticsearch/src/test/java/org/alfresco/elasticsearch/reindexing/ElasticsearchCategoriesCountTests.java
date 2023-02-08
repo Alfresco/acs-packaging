@@ -68,11 +68,11 @@ public class ElasticsearchCategoriesCountTests extends AbstractTestNGSpringConte
 
         STEP("Create user and site");
         user = dataUser.createRandomTestUser();
-        SiteModel site = dataSite.usingUser(user).createPublicRandomSite();
+        final SiteModel site = dataSite.usingUser(user).createPublicRandomSite();
 
         STEP("Create a folder, file in it and few categories");
-        FolderModel folder = dataContent.usingUser(user).usingSite(site).createFolder();
-        FileModel file = dataContent.usingUser(user).usingResource(folder).createContent(CMISUtil.DocumentType.TEXT_PLAIN);
+        final FolderModel folder = dataContent.usingUser(user).usingSite(site).createFolder();
+        final FileModel file = dataContent.usingUser(user).usingResource(folder).createContent(CMISUtil.DocumentType.TEXT_PLAIN);
         categoryLinkedWithFolder = prepareCategoryUnderRoot();
         categoryLinkedWithFile = prepareCategoryUnderRoot();
         categoryLinkedWithBoth = prepareCategoryUnder(prepareCategoryUnderRoot());
