@@ -30,6 +30,7 @@ import org.alfresco.utility.network.ServerHealth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -53,9 +54,10 @@ public class ElasticsearchCategoriesCountTests extends AbstractTestNGSpringConte
     @Autowired
     private DataContent dataContent;
     @Autowired
-    protected RestWrapper restClient;
+    private RestWrapper restClient;
 
     private UserModel user;
+    private SiteModel site;
     private RestCategoryModel categoryLinkedWithFolder;
     private RestCategoryModel categoryLinkedWithFile;
     private RestCategoryModel categoryLinkedWithBoth;
@@ -68,7 +70,7 @@ public class ElasticsearchCategoriesCountTests extends AbstractTestNGSpringConte
 
         STEP("Create user and site");
         user = dataUser.createRandomTestUser();
-        final SiteModel site = dataSite.usingUser(user).createPublicRandomSite();
+        site = dataSite.usingUser(user).createPublicRandomSite();
 
         STEP("Create a folder, file in it and few categories");
         final FolderModel folder = dataContent.usingUser(user).usingSite(site).createFolder();
@@ -91,6 +93,14 @@ public class ElasticsearchCategoriesCountTests extends AbstractTestNGSpringConte
             .assertThat()
             .field(FIELD_COUNT)
             .is(2));
+    }
+
+    @AfterClass
+    public void dataCleanup()
+    {
+        STEP("Remove site and user");
+        dataSite.usingUser(user).deleteSite(site);
+        dataUser.deleteUser(user);
     }
 
     /**
