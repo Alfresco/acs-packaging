@@ -305,10 +305,6 @@ jobs:
             profiles: all-tas-tests,elastic
             search-engine-type: elasticsearch
             db-type: mssql
-          - testSuite: Elasticsearch Oracle 19.3.0-ee
-            profiles: all-tas-tests,elastic
-            search-engine-type: elasticsearch
-            db-type: oracle
           - testSuite: Opensearch
             profiles: all-tas-tests,elastic
             search-engine-type: opensearch
