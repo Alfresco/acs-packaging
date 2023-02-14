@@ -197,7 +197,7 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
 
                 Step.STEP("Update the name of the category.");
                 String newCategoryName = category.getName() + "_updated";
-                restClient.authenticateUser(testUser).withCoreAPI()
+                restClient.authenticateUser(dataUser.getAdminUser()).withCoreAPI()
                           .usingCategory(category)
                           .updateCategory(RestCategoryModel.builder().name(newCategoryName).create());
 
@@ -222,7 +222,7 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
 
                 Step.STEP("Update the parent category name and check the file's paths are updated.");
                 String newCategoryName = parentCategory.getName() + "_updated";
-                restClient.authenticateUser(testUser).withCoreAPI()
+                restClient.authenticateUser(dataUser.getAdminUser()).withCoreAPI()
                           .usingCategory(parentCategory)
                           .updateCategory(RestCategoryModel.builder().name(newCategoryName).create());
 
@@ -271,7 +271,7 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
                                                                                  .get()));
 
         // TODO Remove this once ACS-4594 is fixed.
-        AlfrescoStackInitializer.reindexEverything();
+        //AlfrescoStackInitializer.reindexEverything();
     }
 
     @Test
@@ -391,6 +391,6 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
      */
     private static String categoryPath(String... nodeNames)
     {
-        return "/cm:categoryRoot/cm:general_classifiable/cm:" + Arrays.stream(nodeNames).collect(joining("/cm:"));
+        return "/cm:categoryRoot/cm:generalclassifiable/cm:" + Arrays.stream(nodeNames).collect(joining("/cm:"));
     }
 }
