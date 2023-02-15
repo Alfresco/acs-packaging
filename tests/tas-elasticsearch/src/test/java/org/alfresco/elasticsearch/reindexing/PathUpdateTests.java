@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -42,6 +43,8 @@ import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.report.log.Step;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -60,6 +63,8 @@ import org.testng.annotations.Test;
         initializers = AlfrescoStackInitializer.class)
 public class PathUpdateTests extends AbstractTestNGSpringContextTests
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(PathUpdateTests.class);
+
     @Autowired
     private ServerHealth serverHealth;
     @Autowired
@@ -122,6 +127,9 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
                 FolderModel testFolder = dataContent.usingUser(testUser).usingSite(testSite).createFolder();
                 FileModel fileModel = FileModel.getRandomFileModel(TEXT_PLAIN);
                 FileModel testFile = dataContent.usingUser(testUser).usingResource(testFolder).createContent(fileModel);
+
+                // Wait for a second to ensure the folder update event timestamp is different from the file create timestamp.
+                waitForOneSecond();
 
                 Step.STEP("Update the folder's name.");
                 RestNodeModel updatedFolder = renameNode(restClient, testUser, testFolder);
@@ -195,6 +203,9 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
                 restClient.authenticateUser(testUser).withCoreAPI().usingNode(testFile)
                           .linkToCategory(RestCategoryLinkBodyModel.builder().categoryId(category.getId()).create());
 
+                // Wait for a second to ensure the category update event timestamp is different from the file create timestamp.
+                waitForOneSecond();
+
                 Step.STEP("Update the name of the category.");
                 String newCategoryName = category.getName() + "_updated";
                 restClient.authenticateUser(dataUser.getAdminUser()).withCoreAPI()
@@ -219,6 +230,9 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
                 FileModel testFile = dataContent.usingUser(testUser).usingSite(testSite).createContent(fileModel);
                 restClient.authenticateUser(testUser).withCoreAPI().usingNode(testFile)
                           .linkToCategory(RestCategoryLinkBodyModel.builder().categoryId(childCategory.getId()).create());
+
+                // Wait for a second to ensure the category update event timestamp is different from the file create timestamp.
+                waitForOneSecond();
 
                 Step.STEP("Update the parent category name and check the file's paths are updated.");
                 String newCategoryName = parentCategory.getName() + "_updated";
@@ -392,5 +406,18 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
     private static String categoryPath(String... nodeNames)
     {
         return "/cm:categoryRoot/cm:generalclassifiable/cm:" + Arrays.stream(nodeNames).collect(joining("/cm:"));
+    }
+
+    /** Wait for a second. */
+    private static void waitForOneSecond()
+    {
+        try
+        {
+            TimeUnit.SECONDS.sleep(1);
+        }
+        catch (InterruptedException e)
+        {
+            LOGGER.warn("Failed to wait for full second.");
+        }
     }
 }
