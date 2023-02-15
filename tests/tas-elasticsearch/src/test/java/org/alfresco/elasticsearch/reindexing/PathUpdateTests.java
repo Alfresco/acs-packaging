@@ -232,7 +232,7 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
                           .linkToCategory(RestCategoryLinkBodyModel.builder().categoryId(childCategory.getId()).create());
 
                 // Wait for a second to ensure the category update event timestamp is different from the file create timestamp.
-                waitForOneSecond();
+                //waitForOneSecond();
 
                 Step.STEP("Update the parent category name and check the file's paths are updated.");
                 String newCategoryName = parentCategory.getName() + "_updated";
@@ -283,9 +283,6 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
                                                     entry -> testWhenAndThenSteps.get(entry.getKey())
                                                                                  .getLeft()
                                                                                  .get()));
-
-        // TODO Remove this once ACS-4594 is fixed.
-        //AlfrescoStackInitializer.reindexEverything();
     }
 
     @Test
