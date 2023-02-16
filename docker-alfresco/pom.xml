@@ -160,7 +160,7 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>${basedir}/scripts/prepare_buildx.sh</executable>
+                                    <executable>${project.parent.basedir}/scripts/dev/prepare_buildx.sh</executable>
                                     <arguments>
                                         <argument>${local.registry}</argument>
                                         <argument>${base.image}</argument>
@@ -178,7 +178,7 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>${basedir}/scripts/remove_local_registry.sh</executable>
+                                    <executable>${project.parent.basedir}/scripts/dev/remove_local_registry.sh</executable>
                                 </configuration>
                             </execution>
                         </executions>
@@ -210,7 +210,7 @@
                             <images>
                                 <!-- Quay image -->
                                 <image>
-                                    <name>${image.registry}/${image.name}:${image.tag}</name>
+                                    <name>quay.io/alfresco/dev:alfresco-content-repository-aws</name>
                                     <build>
                                         <buildx>
                                             <builderName>${builder.name}</builderName>
@@ -249,7 +249,7 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>${basedir}/scripts/prepare_buildx.sh</executable>
+                                    <executable>${project.parent.basedir}/scripts/prepare_buildx.sh</executable>
                                     <arguments>
                                         <argument>${local.registry}</argument>
                                         <argument>${base.image}</argument>
@@ -267,7 +267,7 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>${basedir}/scripts/remove_local_registry.sh</executable>
+                                    <executable>${project.parent.basedir}/scripts/remove_local_registry.sh</executable>
                                 </configuration>
                             </execution>
                         </executions>
@@ -327,7 +327,7 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>${basedir}/scripts/prepare_buildx.sh</executable>
+                                    <executable>${project.parent.basedir}/scripts/prepare_buildx.sh</executable>
                                     <arguments>
                                         <argument>${local.registry}</argument>
                                         <argument>${base.image}</argument>
@@ -345,7 +345,7 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>${basedir}/scripts/remove_local_registry.sh</executable>
+                                    <executable>${project.parent.basedir}/scripts/remove_local_registry.sh</executable>
                                 </configuration>
                             </execution>
                         </executions>
