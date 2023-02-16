@@ -12,8 +12,9 @@
     </parent>
 
     <properties>
-        <image.name>alfresco/alfresco-content-repository-aws</image.name>
+        <image.name>alfresco-content-repository-aws</image.name>
         <base.image>alfresco/alfresco-content-repository</base.image>
+        <scripts.directory>${project.parent.parent.basedir}/scripts/dev</scripts.directory>
     </properties>
 
     <build>

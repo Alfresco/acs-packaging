@@ -12,11 +12,12 @@
     </parent>
 
     <properties>
-        <image.name>alfresco/alfresco-content-repository</image.name>
+        <image.name>alfresco-content-repository</image.name>
         <docker.quay-expires.value>NEVER</docker.quay-expires.value>
         <local.registry>127.0.0.1:5000</local.registry>
         <base.image>alfresco/alfresco-enterprise-repo-base</base.image>
         <builder.name>entitled-builder</builder.name>
+        <scripts.directory>${project.parent.basedir}/scripts/dev</scripts.directory>
     </properties>
 
     <build>
@@ -160,7 +161,7 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>${project.parent.basedir}/scripts/dev/prepare_buildx.sh</executable>
+                                    <executable>${scripts.directory}/prepare_buildx.sh</executable>
                                     <arguments>
                                         <argument>${local.registry}</argument>
                                         <argument>${base.image}</argument>
@@ -178,7 +179,7 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>${project.parent.basedir}/scripts/dev/remove_local_registry.sh</executable>
+                                    <executable>${scripts.directory}/remove_local_registry.sh</executable>
                                 </configuration>
                             </execution>
                         </executions>
@@ -210,7 +211,7 @@
                             <images>
                                 <!-- Quay image -->
                                 <image>
-                                    <name>quay.io/alfresco/dev:alfresco-content-repository-aws</name>
+                                    <name>${image.registry}/${image.name}:${image.tag}</name>
                                     <build>
                                         <buildx>
                                             <builderName>${builder.name}</builderName>
@@ -249,7 +250,7 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>${project.parent.basedir}/scripts/prepare_buildx.sh</executable>
+                                    <executable>${scripts.directory}/prepare_buildx.sh</executable>
                                     <arguments>
                                         <argument>${local.registry}</argument>
                                         <argument>${base.image}</argument>
@@ -267,7 +268,7 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>${project.parent.basedir}/scripts/remove_local_registry.sh</executable>
+                                    <executable>${scripts.directory}/remove_local_registry.sh</executable>
                                 </configuration>
                             </execution>
                         </executions>
@@ -327,7 +328,7 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>${project.parent.basedir}/scripts/prepare_buildx.sh</executable>
+                                    <executable>${scripts.directory}/prepare_buildx.sh</executable>
                                     <arguments>
                                         <argument>${local.registry}</argument>
                                         <argument>${base.image}</argument>
@@ -345,7 +346,7 @@
                                     <goal>exec</goal>
                                 </goals>
                                 <configuration>
-                                    <executable>${project.parent.basedir}/scripts/remove_local_registry.sh</executable>
+                                    <executable>${scripts.directory}/remove_local_registry.sh</executable>
                                 </configuration>
                             </execution>
                         </executions>
