@@ -13,6 +13,7 @@
 
     <properties>
         <image.name>alfresco/alfresco-content-repository-aws</image.name>
+        <base.image>alfresco/alfresco-content-repository</base.image>
     </properties>
 
     <build>
