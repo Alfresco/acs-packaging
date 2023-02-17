@@ -41,8 +41,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     public static final String CUSTOM_ALFRESCO_INDEX = "custom-alfresco-index";
     private final static Consumer<CreateContainerCmd> MEDIUM_RAM_LIMIT = cmd -> cmd.getHostConfig()
-            .withMemory((long) 3400*1024*1024)
-            .withMemorySwap((long) 3400*1024*1024);
+            .withMemory((long) 2048*1024*1024)
+            .withMemorySwap((long) 2048*1024*1024);
 
     public static Network network;
 
@@ -226,7 +226,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                 .withExposedPorts(9200)
                 .withEnv("xpack.security.enabled", "false")
                 .withEnv("discovery.type", "single-node")
-                .withEnv("ES_JAVA_OPTS", "-Xms1g -Xmx1g")
+                .withEnv("ES_JAVA_OPTS", "-Xms768m -Xmx768m")
                 .withCreateContainerCmdModifier(MEDIUM_RAM_LIMIT);
     }
 
@@ -404,7 +404,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 "-Dcsrf.filter.enabled=false " +
                                 "-Dalfresco.restApi.basicAuthScheme=true " +
                                 "-Dquery.cmis.queryConsistency=EVENTUAL " +
-                                "-Xms1500m -Xmx1500m ")
+                                "-Xms1024m -Xmx1024m ")
                        .withNetwork(network)
                        .withNetworkAliases("alfresco")
                        .waitingFor(new LogMessageWaitStrategy().withRegEx(".*Server startup in.*\\n"))
