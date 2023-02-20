@@ -1,4 +1,5 @@
-FROM alfresco/alfresco-share:${image.tag}
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
 
 ARG TOMCAT_DIR=/usr/local/tomcat
 
