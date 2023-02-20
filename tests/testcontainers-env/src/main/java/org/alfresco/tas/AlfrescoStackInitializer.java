@@ -238,7 +238,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                 .withExposedPorts(9200)
                 .withEnv("plugins.security.disabled", "true")
                 .withEnv("discovery.type", "single-node")
-                .withEnv("indices.query.bool.max_clause_count", "16384")
+                .withEnv("indices.query.bool.max_clause_count", "32768")
                 .withEnv("OPENSEARCH_JAVA_OPTS", "-Xms1g -Xmx1g")
                 .withCreateContainerCmdModifier(MEDIUM_RAM_LIMIT);
     }
