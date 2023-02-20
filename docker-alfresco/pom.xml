@@ -15,7 +15,7 @@
         <image.name>alfresco/alfresco-content-repository</image.name>
         <docker.quay-expires.value>NEVER</docker.quay-expires.value>
         <local.registry>127.0.0.1:5000</local.registry>
-        <base.image>alfresco/alfresco-enterprise-repo-base</base.image>
+        <base.image>alfresco/alfresco-enterprise-repo-base:${repo.image.tag}</base.image>
         <builder.name>entitled-builder</builder.name>
         <scripts.directory>${project.parent.basedir}/scripts/dev</scripts.directory>
     </properties>
@@ -91,7 +91,7 @@
                                     <name>${image.name}:${image.tag}</name>
                                     <build>
                                         <args>
-                                            <BASE_IMAGE>${base.image}:${image.tag}</BASE_IMAGE>
+                                            <BASE_IMAGE>${base.image}</BASE_IMAGE>
                                         </args>
                                         <contextDir>${project.basedir}</contextDir>
                                     </build>
@@ -134,7 +134,7 @@
                                         </buildx>
                                         <dockerFileDir>${project.basedir}</dockerFileDir>
                                         <args>
-                                            <BASE_IMAGE>${local.registry}/${base.image}:${image.tag}</BASE_IMAGE>
+                                            <BASE_IMAGE>${local.registry}/${base.image}</BASE_IMAGE>
                                         </args>
                                     </build>
                                 </image>
@@ -222,7 +222,7 @@
                                         </buildx>
                                         <dockerFileDir>${project.basedir}</dockerFileDir>
                                         <args>
-                                            <BASE_IMAGE>${local.registry}/${base.image}:${image.tag}</BASE_IMAGE>
+                                            <BASE_IMAGE>${local.registry}/${base.image}</BASE_IMAGE>
                                         </args>
                                     </build>
                                 </image>
@@ -300,7 +300,7 @@
                                         </buildx>
                                         <dockerFileDir>${project.basedir}</dockerFileDir>
                                         <args>
-                                            <BASE_IMAGE>${local.registry}/${base.image}:${image.tag}</BASE_IMAGE>
+                                            <BASE_IMAGE>${local.registry}/${base.image}</BASE_IMAGE>
                                         </args>
                                     </build>
                                 </image>
