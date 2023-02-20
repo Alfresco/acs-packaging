@@ -26,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 /**
@@ -128,7 +127,6 @@ public class CategoryIndexingTests extends AbstractTestNGSpringContextTests
 
     /** Check we can find the document and folder by a partial path match for the second category. */
     @Test (groups = TestGroup.SEARCH)
-    @Ignore // See ACS-4594
     public void testQueryByPartialCategoryPathB() {
         SearchRequest query = req("PATH:\"//cm:" + CATEGORY_B_NAME + "/*\"");
         searchQueryService.expectResultsFromQuery(query, testUser, testFile.getName(), testFolder.getName());
