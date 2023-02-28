@@ -28,8 +28,6 @@ env:
   MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
   QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
   QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
-  AWS_ACCESS_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_ACCESS_KEY_ID }}
-  AWS_SECRET_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_SECRET_ACCESS_KEY }}
   AWS_REGION: eu-west-1
   TAS_ENVIRONMENT: ./tests/environment
   TAS_SCRIPTS: ../alfresco-community-repo/packaging/tests/scripts
@@ -422,6 +420,9 @@ jobs:
       - name: "Run tests"
         id: tests
         timeout-minutes: 20
+        env:
+          AWS_ACCESS_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_ACCESS_KEY_ID }}
+          AWS_SECRET_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_SECRET_ACCESS_KEY }}
         run: |
           ./tests/scripts/checkLibraryDuplicates.sh ./tests/tas-all-amps/target/war/alfresco/WEB-INF/lib
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-all-amps-test.yml
@@ -485,6 +486,9 @@ jobs:
           bash ./scripts/ci/build.sh
       - name: "Set up the environment"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        env:
+          AWS_ACCESS_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_ACCESS_KEY_ID }}
+          AWS_SECRET_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_SECRET_ACCESS_KEY }}
         run: |
           mvn -B clean install -ntp -Ppipeline,build-docker-images $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-repo.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Drepo.image.tag=latest') $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-share.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Dshare.image.tag=latest')
           cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
