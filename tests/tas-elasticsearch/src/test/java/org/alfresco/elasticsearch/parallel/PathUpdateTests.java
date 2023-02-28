@@ -42,7 +42,7 @@ import org.testng.annotations.Test;
  * Tests to check that paths are updated correctly.
  * <p>
  * Tests in this class require waiting for index refresh to happen and so should be run in parallel
- * (see {@link #waitForOneSecond}).
+ * (see {@link #waitForTwoSeconds}).
  */
 @ContextConfiguration (locations = "classpath:alfresco-elasticsearch-context.xml",
         initializers = AlfrescoStackInitializer.class)
@@ -91,12 +91,12 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
         FileModel fileModel = FileModel.getRandomFileModel(TEXT_PLAIN);
         FileModel testFile = dataContent.usingUser(testUser).usingSite(testSite).createContent(fileModel);
 
-        waitForOneSecond();
+        waitForTwoSeconds();
 
         Step.STEP("Update the filename.");
-        RestNodeModel updatedFile = renameNode(restClient, testUser, testFile);
+        RestNodeModel updatedFile = renameNode(testFile);
 
-        waitForOneSecond();
+        waitForTwoSeconds();
 
         Step.STEP("Check the path is updated");
         SearchRequest query = req("PATH:\"" + pathInSite(testSite, updatedFile.getName()) + "\"");
@@ -111,12 +111,12 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
         FileModel testFile = dataContent.usingUser(testUser).usingSite(testSite).createContent(fileModel);
         FolderModel testFolder = dataContent.usingUser(testUser).usingSite(testSite).createFolder();
 
-        waitForOneSecond();
+        waitForTwoSeconds();
 
         Step.STEP("Move the file into the folder and check the path is updated.");
-        moveNode(restClient, testUser, testFile, testFolder);
+        moveNode(testFile, testFolder);
 
-        waitForOneSecond();
+        waitForTwoSeconds();
 
         Step.STEP("Check the path is updated");
         SearchRequest query = req("PATH:\"" + pathInSite(testSite, testFolder.getName(), testFile.getName()) + "\"");
@@ -131,12 +131,12 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
         FileModel fileModel = FileModel.getRandomFileModel(TEXT_PLAIN);
         FileModel testFile = dataContent.usingUser(testUser).usingResource(testFolder).createContent(fileModel);
 
-        waitForOneSecond();
+        waitForTwoSeconds();
 
         Step.STEP("Update the folder's name.");
-        RestNodeModel updatedFolder = renameNode(restClient, testUser, testFolder);
+        RestNodeModel updatedFolder = renameNode(testFolder);
 
-        waitForOneSecond();
+        waitForTwoSeconds();
 
         Step.STEP("Check the path is updated");
         SearchRequest query = req("PATH:\"" + pathInSite(testSite, updatedFolder.getName(), testFile.getName()) + "\"");
@@ -152,12 +152,12 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
         FileModel fileModel = FileModel.getRandomFileModel(TEXT_PLAIN);
         FileModel testFile = dataContent.usingUser(testUser).usingResource(firstFolder).createContent(fileModel);
 
-        waitForOneSecond();
+        waitForTwoSeconds();
 
         Step.STEP("Move the first folder into the second.");
-        moveNode(restClient, testUser, firstFolder, secondFolder);
+        moveNode(firstFolder, secondFolder);
 
-        waitForOneSecond();
+        waitForTwoSeconds();
 
         Step.STEP("Check the path is updated");
         SearchRequest query = req("PATH:\"" + pathInSite(testSite, secondFolder.getName(), firstFolder.getName(), testFile.getName()) + "\"");
@@ -168,14 +168,14 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
     public void testChangeCategoriesUpdatesPath()
     {
         Step.STEP("Create two categories and a file in the first.");
-        RestCategoryModel firstCategory = createCategory(restClient, dataUser.getAdminUser(), "-root-");
-        RestCategoryModel secondCategory = createCategory(restClient, dataUser.getAdminUser(), "-root-");
+        RestCategoryModel firstCategory = createCategory("-root-");
+        RestCategoryModel secondCategory = createCategory("-root-");
         FileModel fileModel = FileModel.getRandomFileModel(TEXT_PLAIN);
         FileModel testFile = dataContent.usingUser(testUser).usingSite(testSite).createContent(fileModel);
         restClient.authenticateUser(testUser).withCoreAPI().usingNode(testFile)
                   .linkToCategory(RestCategoryLinkBodyModel.builder().categoryId(firstCategory.getId()).create());
 
-        waitForOneSecond();
+        waitForTwoSeconds();
 
         Step.STEP("Remove the file from the first category and add it to the second.");
         restClient.authenticateUser(testUser).withCoreAPI().usingNode(testFile)
@@ -183,7 +183,7 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
         restClient.authenticateUser(testUser).withCoreAPI().usingNode(testFile)
                   .linkToCategory(RestCategoryLinkBodyModel.builder().categoryId(secondCategory.getId()).create());
 
-        waitForOneSecond();
+        waitForTwoSeconds();
 
         Step.STEP("Check there is no path for the first category.");
         SearchRequest query = req("PATH:\"" + categoryPath(firstCategory.getName(), testFile.getName()) + "\"");
@@ -198,13 +198,13 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
     public void testChangeCategoryNameUpdatesPath()
     {
         Step.STEP("Create a category and a file in it.");
-        RestCategoryModel category = createCategory(restClient, dataUser.getAdminUser(), "-root-");
+        RestCategoryModel category = createCategory("-root-");
         FileModel fileModel = FileModel.getRandomFileModel(TEXT_PLAIN);
         FileModel testFile = dataContent.usingUser(testUser).usingSite(testSite).createContent(fileModel);
         restClient.authenticateUser(testUser).withCoreAPI().usingNode(testFile)
                   .linkToCategory(RestCategoryLinkBodyModel.builder().categoryId(category.getId()).create());
 
-        waitForOneSecond();
+        waitForTwoSeconds();
 
         Step.STEP("Update the name of the category.");
         String newCategoryName = category.getName() + "_updated";
@@ -212,7 +212,7 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
                   .usingCategory(category)
                   .updateCategory(RestCategoryModel.builder().name(newCategoryName).create());
 
-        waitForOneSecond();
+        waitForTwoSeconds();
 
         Step.STEP("Check there is a path with the updated category name.");
         SearchRequest query = req("PATH:\"" + categoryPath(newCategoryName, testFile.getName()) + "\"");
@@ -223,14 +223,14 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
     public void testChangeCategoryPathUpdatesPath()
     {
         Step.STEP("Create two nested categories and assign a file to the child.");
-        RestCategoryModel parentCategory = createCategory(restClient, dataUser.getAdminUser(), "-root-");
-        RestCategoryModel childCategory = createCategory(restClient, dataUser.getAdminUser(), parentCategory.getId());
+        RestCategoryModel parentCategory = createCategory("-root-");
+        RestCategoryModel childCategory = createCategory(parentCategory.getId());
         FileModel fileModel = FileModel.getRandomFileModel(TEXT_PLAIN);
         FileModel testFile = dataContent.usingUser(testUser).usingSite(testSite).createContent(fileModel);
         restClient.authenticateUser(testUser).withCoreAPI().usingNode(testFile)
                   .linkToCategory(RestCategoryLinkBodyModel.builder().categoryId(childCategory.getId()).create());
 
-        waitForOneSecond();
+        waitForTwoSeconds();
 
         Step.STEP("Update the parent category name and check the file's paths are updated.");
         String newCategoryName = parentCategory.getName() + "_updated";
@@ -238,7 +238,7 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
                   .usingCategory(parentCategory)
                   .updateCategory(RestCategoryModel.builder().name(newCategoryName).create());
 
-        waitForOneSecond();
+        waitForTwoSeconds();
 
         Step.STEP("Check there is a path with the updated category name.");
         SearchRequest query = req("PATH:\"" + categoryPath(newCategoryName, childCategory.getName(), testFile.getName()) + "\"");
@@ -248,46 +248,40 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
     /**
      * Rename the specified node to have "_updated" on the end.
      *
-     * @param restClient The REST client to use to send the request.
-     * @param user The user to use for the update.
      * @param node The node to update.
      * @return The updated node.
      */
-    private RestNodeModel renameNode(RestWrapper restClient, UserModel user, ContentModel node)
+    private RestNodeModel renameNode(ContentModel node)
     {
         String newName = node.getName() + "_updated";
         JsonObject renameJson = Json.createObjectBuilder().add("properties",
                 Json.createObjectBuilder().add("cm:name", newName)).build();
-        return restClient.authenticateUser(user).withCoreAPI().usingNode(node).updateNode(renameJson.toString());
+        return restClient.authenticateUser(testUser).withCoreAPI().usingNode(node).updateNode(renameJson.toString());
     }
 
     /**
      * Move the specified node to a folder.
      *
-     * @param restClient The REST client to use to send the request.
-     * @param user The user to use for the move.
      * @param node The node to move.
      * @param targetFolder The folder to move the node to.
      * @return The updated node.
      */
-    private RestNodeModel moveNode(RestWrapper restClient, UserModel user, ContentModel node, FolderModel targetFolder)
+    private RestNodeModel moveNode(ContentModel node, FolderModel targetFolder)
     {
         RestNodeBodyMoveCopyModel moveBody = new RestNodeBodyMoveCopyModel();
         moveBody.setTargetParentId(targetFolder.getNodeRef());
-        return restClient.authenticateUser(user).withCoreAPI().usingNode(node).move(moveBody);
+        return restClient.authenticateUser(testUser).withCoreAPI().usingNode(node).move(moveBody);
     }
 
     /**
-     * Create a category.
+     * Create a category using admin.
      *
-     * @param restClient The REST client to use.
-     * @param user The user to use to create the category.
      * @param parentId The parent in which to create the category.
      * @return The new category.
      */
-    private RestCategoryModel createCategory(RestWrapper restClient, UserModel user, String parentId)
+    private RestCategoryModel createCategory(String parentId)
     {
-        return restClient.authenticateUser(user)
+        return restClient.authenticateUser(dataUser.getAdminUser())
                          .withCoreAPI()
                          .usingCategory(RestCategoryModel.builder().id(parentId).create())
                          .createSingleCategory(RestCategoryModel.builder().name(RandomData.getRandomAlphanumeric()).create());
@@ -317,13 +311,13 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
     }
 
     /**
-     * Wait for a second. This is needed due to the index refresh interval - see ACS-4637.
+     * Wait for two seconds. This is needed due to the index refresh interval - see ACS-4637.
      */
-    private void waitForOneSecond()
+    private void waitForTwoSeconds()
     {
         try
         {
-            TimeUnit.SECONDS.sleep(1);
+            TimeUnit.SECONDS.sleep(2);
         }
         catch (InterruptedException e)
         {
