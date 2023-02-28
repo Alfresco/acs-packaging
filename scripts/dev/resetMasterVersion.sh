@@ -170,7 +170,7 @@ setNextReleaseVersion() {
   local version="${1}"
 
   echo "${prefix}    set - RELEASE_VERSION=${version}"
-  ed -s .travis.yml &>${loggingOut} << EOF
+  ed -s .github/workflows/master_release.yml &>${loggingOut} << EOF
 /.*- RELEASE_VERSION.*$/s//    - RELEASE_VERSION=${version}/
 wq
 EOF
@@ -180,7 +180,7 @@ setStartWithRealVersion() {
   local version="${1}"
 
   echo "${prefix}    set # ... start with real version ${version}"
-  ed -s .travis.yml &>${loggingOut} << EOF
+  ed -s .github/workflows/master_release.yml &>${loggingOut} << EOF
 /.*start with real version.*$/s//    # Release version has to start with real version (${version}-....) for the docker image to build successfully./
 wq
 EOF
@@ -190,7 +190,7 @@ setNextDevelopmentVersion() {
   local version="${1}"
 
   echo "${prefix}    set - DEVELOPMENT_VERSION=${version}"
-  ed -s .travis.yml &>${loggingOut} << EOF
+  ed -s .github/workflows/master_release.yml &>${loggingOut} << EOF
 /.*- DEVELOPMENT_VERSION.*$/s//    - DEVELOPMENT_VERSION=${version}/
 wq
 EOF

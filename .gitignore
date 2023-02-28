@@ -35,7 +35,7 @@ hs_err_pid*
 helm/alfresco-content-services/charts/*
 helm/alfresco-content-services/requirements.lock
 
-# Travis deployment folders
+# GitHub Actions deployment folders
 deploy_dir
 deploy_dir_share
 deploy_dir_ags

@@ -12,8 +12,8 @@ if [ -z "${RELEASE_VERSION}" ]; then
   exit 1
 fi
 
-SOURCE="s3://alfresco-artefacts-staging/alfresco-content-services/release/${TRAVIS_BRANCH}/${TRAVIS_BUILD_NUMBER}"
-DESTINATION="s3://eu.dl.alfresco.com/release/enterprise/ACS/${RELEASE_VERSION:0:3}/${RELEASE_VERSION}/${TRAVIS_BUILD_NUMBER}"
+SOURCE="s3://alfresco-artefacts-staging/alfresco-content-services/release/${BRANCH_NAME}/${BUILD_NUMBER}"
+DESTINATION="s3://eu.dl.alfresco.com/release/enterprise/ACS/${RELEASE_VERSION:0:3}/${RELEASE_VERSION}/${BUILD_NUMBER}"
 
 printf "\n%s\n%s\n" "${SOURCE}" "${DESTINATION}"
 
