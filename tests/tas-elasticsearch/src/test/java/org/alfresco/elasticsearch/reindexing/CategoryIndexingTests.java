@@ -4,6 +4,7 @@ import static org.alfresco.elasticsearch.SearchQueryService.req;
 import static org.alfresco.utility.model.FileType.TEXT_PLAIN;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.alfresco.elasticsearch.SearchQueryService;
 import org.alfresco.rest.core.RestWrapper;
@@ -23,6 +24,7 @@ import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.report.log.Step;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
@@ -134,5 +136,46 @@ public class CategoryIndexingTests extends AbstractTestNGSpringContextTests
     public void testQueryByPartialCategoryPathB() {
         SearchRequest query = req("PATH:\"//cm:" + CATEGORY_B_NAME + "/*\"");
         searchQueryService.expectResultsFromQuery(query, testUser, testFile.getName(), testFolder.getName());
+    }
+
+    /** Check we cannot find the document by a partial path match for the category that has been applied to it and then deleted. */
+    @Test (groups = TestGroup.SEARCH)
+    public void testQueryByPathOnDeletedCategory() throws InterruptedException
+    {
+        //create 2 categories
+        final String categoryToDeleteName = TEST_PREFIX + "categoryModelToDelete";
+        final String categoryName = TEST_PREFIX + "categoryModel";
+        final RestCategoryModel categoryModelToDelete = RestCategoryModel.builder().name(categoryToDeleteName).create();
+        final RestCategoryModel categoryToDelete = restClient.authenticateUser(dataUser.getAdminUser()).withCoreAPI()
+                                                             .usingCategory(ROOT_CATEGORY).createSingleCategory(categoryModelToDelete);
+        restClient.assertStatusCodeIs(HttpStatus.CREATED);
+        final RestCategoryModel categoryModel = RestCategoryModel.builder().name(categoryName).create();
+        final RestCategoryModel category = restClient.authenticateUser(dataUser.getAdminUser()).withCoreAPI()
+                                                     .usingCategory(ROOT_CATEGORY).createSingleCategory(categoryModel);
+        restClient.assertStatusCodeIs(HttpStatus.CREATED);
+        //assign both categories to a document
+        final RestCategoryLinkBodyModel categoryToDeleteLink = RestCategoryLinkBodyModel.builder().categoryId(categoryToDelete.getId()).create();
+        restClient.authenticateUser(testUser).withCoreAPI().usingNode(testFile).linkToCategory(categoryToDeleteLink);
+        restClient.assertStatusCodeIs(HttpStatus.CREATED);
+        final RestCategoryLinkBodyModel categoryLink = RestCategoryLinkBodyModel.builder().categoryId(category.getId()).create();
+        restClient.authenticateUser(testUser).withCoreAPI().usingNode(testFile).linkToCategory(categoryLink);
+        restClient.assertStatusCodeIs(HttpStatus.CREATED);
+        //we can find the document by partial category paths after it is linked to both categories
+        TimeUnit.SECONDS.sleep(1);
+        SearchRequest query = req("PATH:\"//cm:" + categoryToDeleteName + "/*\"");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFile.getName());
+        query = req("PATH:\"//cm:" + categoryName + "/*\"");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFile.getName());
+        //delete one of linked categories
+        restClient.authenticateUser(dataUser.getAdminUser()).withCoreAPI()
+                  .usingCategory(categoryToDelete).deleteCategory();
+        restClient.assertStatusCodeIs(HttpStatus.NO_CONTENT);
+        TimeUnit.SECONDS.sleep(1);
+        //we cannot find the document by partial category path anymore after the category is deleted
+        query = req("PATH:\"//cm:" + categoryToDeleteName + "/*\"");
+        searchQueryService.expectNoResultsFromQuery(query, testUser);
+        //we can still find the document by partial category path with a different category that has been assigned but not deleted
+        query = req("PATH:\"//cm:" + categoryName + "/*\"");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFile.getName());
     }
 }
