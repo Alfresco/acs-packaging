@@ -61,7 +61,7 @@ jobs:
         run: bash ./scripts/ci/cleanup_cache.sh
 
   tas_tests_arm64:
-    name: ${{ matrix.testSuite }} TAS tests
+    name: ${{ matrix.testSuite }} TAS tests - arm64
     services:
       registry:
         image: registry:2
