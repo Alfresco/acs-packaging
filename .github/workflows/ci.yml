@@ -28,8 +28,6 @@ env:
   MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
   QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
   QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
-  AWS_ACCESS_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_ACCESS_KEY_ID }}
-  AWS_SECRET_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_SECRET_ACCESS_KEY }}
   AWS_REGION: eu-west-1
   TAS_ENVIRONMENT: ./tests/environment
   TAS_SCRIPTS: ../alfresco-community-repo/packaging/tests/scripts
@@ -49,11 +47,12 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.33.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.33.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
       - name: "Init"
         run: bash ./scripts/ci/init.sh
-      - uses: Alfresco/alfresco-build-tools/.github/actions/veracode@v1.33.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/veracode@v1.35.2
         continue-on-error: true
         with:
           srcclr-api-token: ${{ secrets.SRCCLR_API_TOKEN }}
@@ -124,8 +123,9 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.33.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.33.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -171,8 +171,9 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.33.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.33.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -223,8 +224,9 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.33.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.33.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -258,8 +260,9 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.33.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.33.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -305,6 +308,10 @@ jobs:
             profiles: all-tas-tests,elastic
             search-engine-type: elasticsearch
             db-type: mssql
+          - testSuite: Elasticsearch Oracle 19.3.0-ee
+            profiles: all-tas-tests,elastic
+            search-engine-type: elasticsearch
+            db-type: oracle
           - testSuite: Opensearch
             profiles: all-tas-tests,elastic
             search-engine-type: opensearch
@@ -337,8 +344,9 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.33.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.33.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -368,8 +376,9 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.33.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.33.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -378,8 +387,8 @@ jobs:
       - name: "Configure AWS credentials"
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-access-key-id: ${{ secrets.AWS_S3_ACSLICENSE_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_S3_ACSLICENSE_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
       - name: "Copy Licence"
         run: aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
@@ -398,8 +407,9 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.33.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.33.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -410,6 +420,9 @@ jobs:
       - name: "Run tests"
         id: tests
         timeout-minutes: 20
+        env:
+          AWS_ACCESS_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_ACCESS_KEY_ID }}
+          AWS_SECRET_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_SECRET_ACCESS_KEY }}
         run: |
           ./tests/scripts/checkLibraryDuplicates.sh ./tests/tas-all-amps/target/war/alfresco/WEB-INF/lib
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-all-amps-test.yml
@@ -430,8 +443,9 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.33.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.33.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -459,8 +473,9 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.33.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.33.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -471,6 +486,9 @@ jobs:
           bash ./scripts/ci/build.sh
       - name: "Set up the environment"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        env:
+          AWS_ACCESS_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_ACCESS_KEY_ID }}
+          AWS_SECRET_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_SECRET_ACCESS_KEY }}
         run: |
           mvn -B clean install -ntp -Ppipeline,build-docker-images $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-repo.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Drepo.image.tag=latest') $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-share.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Dshare.image.tag=latest')
           cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
