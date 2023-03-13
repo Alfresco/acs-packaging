@@ -13,6 +13,8 @@
     </parent>
     <properties>
         <image.name>alfresco/alfresco-governance-repository-enterprise</image.name>
+        <base.image>alfresco/alfresco-content-repository:${image.tag}</base.image>
+        <scripts.directory>${project.parent.parent.basedir}/scripts/dev</scripts.directory>
     </properties>
 
     <build>

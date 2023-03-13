@@ -1,4 +1,5 @@
-FROM alfresco/alfresco-share-base:${share.image.tag}
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
 
 LABEL quay.expires-after=${docker.quay-expires.value}
 

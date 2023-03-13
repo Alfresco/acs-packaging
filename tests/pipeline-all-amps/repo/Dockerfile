@@ -1,3 +1,4 @@
+ARG BASE_IMAGE
 # BUILD STAGE SWAGGERBUILDER
 FROM debian:11-slim AS SWAGGERBUILDER
 
@@ -17,7 +18,7 @@ RUN unzip -q /build/api-explorer.war -d /build/api-explorer && \
     chmod -R g+r,g-w,o= /build
 
 # ACTUAL IMAGE
-FROM alfresco/alfresco-enterprise-repo-base:${repo.image.tag}
+FROM ${BASE_IMAGE}
 
 USER root
 
