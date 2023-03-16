@@ -12,7 +12,6 @@ lib_dir=$1
 multiple_version_lib_list=""
 
 echo "Scanning libraries from $lib_dir"
-find $lib_dir -name "*.jar" | sort
 if [[ -n "$WHITELIST" ]]; then
     echo "Skipping libraries which match the whitelist, check for false positives:"
 fi
