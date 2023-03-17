@@ -156,6 +156,7 @@
                                             <builderName>${builder.name}</builderName>
                                             <platforms>
                                                 <platform>linux/amd64</platform>
+                                        <!-- Please restore linux/arm64 once the migration to Flux2 in terraform-alfresco-pipeline is done -->
 <!--                                                <platform>linux/arm64</platform>-->
                                             </platforms>
                                         </buildx>
