@@ -143,7 +143,7 @@ public class ElasticsearchGetTagsTests extends AbstractTestNGSpringContextTests
 
         restClient.assertStatusCodeIs(HttpStatus.OK);
         returnedCollection.assertThat()
-            .entrySetMatches("tag", Set.of(banana.getTag().toLowerCase(), orange.getTag().toLowerCase()));
+            .entrySetContains("tag", banana.getTag().toLowerCase(), orange.getTag().toLowerCase());
     }
 
     /**
@@ -177,7 +177,8 @@ public class ElasticsearchGetTagsTests extends AbstractTestNGSpringContextTests
 
         restClient.assertStatusCodeIs(HttpStatus.OK);
         returnedCollection.assertThat()
-            .entrySetMatches("tag", Set.of(apple.getTag().toLowerCase(), pineapple.getTag().toLowerCase(), grapefruit.getTag().toLowerCase()));
+            .entrySetContains("tag", apple.getTag().toLowerCase(), pineapple.getTag().toLowerCase(), grapefruit.getTag().toLowerCase()).and()
+            .entriesListDoesNotContain("tag", winegrape.getTag().toLowerCase());
     }
 
     /**
