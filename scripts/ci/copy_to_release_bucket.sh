@@ -3,6 +3,8 @@ echo "=========================== Starting Copy to Release Bucket Script =======
 PS4="\[\e[35m\]+ \[\e[m\]"
 set -vex
 
+BUILD_NUMBER=$1
+
 #
 # Copy from S3 Release bucket to S3 eu.dl bucket
 #
