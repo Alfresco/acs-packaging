@@ -58,7 +58,8 @@ public class ElasticsearchGetTagsTests extends AbstractTestNGSpringContextTests
         final FileModel document = dataContent.usingAdmin().usingSite(site).createContent(CMISUtil.DocumentType.TEXT_PLAIN);
 
         STEP("Create few tags");
-        apple = restClient.authenticateUser(user).withCoreAPI().usingResource(document).addTag(RandomData.getRandomName("apple"));
+        apple = restClient.authenticateUser(user).withCoreAPI().usingResource(document)
+            .addTag(RandomData.getRandomName("apple"));
         banana = restClient.authenticateUser(dataUser.getAdminUser()).withCoreAPI()
             .createSingleTag(RestTagModel.builder().tag(RandomData.getRandomName("banana")).create());
         pineapple = restClient.authenticateUser(dataUser.getAdminUser()).withCoreAPI()
@@ -72,11 +73,11 @@ public class ElasticsearchGetTagsTests extends AbstractTestNGSpringContextTests
 
         STEP("Wait for indexing to complete");
         Utility.sleep(500, 60000, () -> restClient.authenticateUser(dataUser.getAdminUser())
-            .withParams("where=(tag MATCHES ('ban*'))")
+            .withParams("where=(tag MATCHES ('or*'))")
             .withCoreAPI()
             .getTags()
             .assertThat()
-            .entrySetContains("tag", banana.getTag().toLowerCase()));
+            .entrySetContains("tag", orange.getTag().toLowerCase()));
     }
 
     @AfterClass
