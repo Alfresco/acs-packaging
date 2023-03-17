@@ -2,6 +2,9 @@
 echo "=========================== Starting Release Script ==========================="
 PS4="\[\e[35m\]+ \[\e[m\]"
 set -vex
+
+BUILD_NUMBER=$1
+
 pushd "$(dirname "${BASH_SOURCE[0]}")/../../"
 
 source "$(dirname "${BASH_SOURCE[0]}")/build_functions.sh"
