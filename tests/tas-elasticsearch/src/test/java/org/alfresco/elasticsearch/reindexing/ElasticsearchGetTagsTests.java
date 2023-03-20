@@ -72,8 +72,8 @@ public class ElasticsearchGetTagsTests extends AbstractTestNGSpringContextTests
             .createSingleTag(RestTagModel.builder().tag(RandomData.getRandomName("orange")).create());
 
         STEP("Wait for indexing to complete");
-        Utility.sleep(500, 60000, () -> restClient.authenticateUser(dataUser.getAdminUser())
-            .withParams("where=(tag MATCHES ('or*'))")
+        Utility.sleep(500, 10000, () -> restClient.authenticateUser(dataUser.getAdminUser())
+            .withParams("where=(tag MATCHES ('oran*'))")
             .withCoreAPI()
             .getTags()
             .assertThat()
@@ -155,13 +155,13 @@ public class ElasticsearchGetTagsTests extends AbstractTestNGSpringContextTests
     {
         STEP("Get tags with names filter using EQUALS and MATCHES and expect four items in result");
         final RestTagModelsCollection returnedCollection = restClient.authenticateUser(user)
-            .withParams("where=(tag='" + orange.getTag() + "' OR tag MATCHES ('*grap*'))")
+            .withParams("where=(tag='" + orange.getTag() + "' OR tag MATCHES ('*grape*'))")
             .withCoreAPI()
             .getTags();
 
         restClient.assertStatusCodeIs(HttpStatus.OK);
         returnedCollection.assertThat()
-            .entrySetContains("tag", orange.getTag().toLowerCase(), grapefruit.getTag().toLowerCase(), winegrape.getTag().toLowerCase());
+            .entrySetMatches("tag", Set.of(orange.getTag().toLowerCase(), grapefruit.getTag().toLowerCase(), winegrape.getTag().toLowerCase()));
     }
 
     /**
@@ -172,14 +172,13 @@ public class ElasticsearchGetTagsTests extends AbstractTestNGSpringContextTests
     {
         STEP("Get tags applying names filter using MATCHES twice and expect four items in result");
         final RestTagModelsCollection returnedCollection = restClient.authenticateUser(user)
-            .withParams("where=(tag MATCHES ('*app*') OR tag MATCHES ('grape*'))")
+            .withParams("where=(tag MATCHES ('*apple*') OR tag MATCHES ('grape*'))")
             .withCoreAPI()
             .getTags();
 
         restClient.assertStatusCodeIs(HttpStatus.OK);
         returnedCollection.assertThat()
-            .entrySetContains("tag", apple.getTag().toLowerCase(), pineapple.getTag().toLowerCase(), grapefruit.getTag().toLowerCase()).and()
-            .entriesListDoesNotContain("tag", winegrape.getTag().toLowerCase());
+            .entrySetMatches("tag", Set.of(apple.getTag().toLowerCase(), pineapple.getTag().toLowerCase(), grapefruit.getTag().toLowerCase()));
     }
 
     /**
