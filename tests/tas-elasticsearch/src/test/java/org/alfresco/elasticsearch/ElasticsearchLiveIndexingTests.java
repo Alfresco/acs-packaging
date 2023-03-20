@@ -74,6 +74,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     private UserModel userMultiSite;
     private SiteModel siteModel1;
     private SiteModel siteModel2;
+    private FileModel file0;
 
     /**
      * Data will be prepared using the schema below:
@@ -102,7 +103,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
         dataUser.addUserToSite(userMultiSite, siteModel1, UserRole.SiteContributor);
         dataUser.addUserToSite(userMultiSite, siteModel2, UserRole.SiteContributor);
 
-        createContent(FILE_0_NAME, "This is the first test containing the unique word " + UNIQUE_WORD, siteModel1, userSite1);
+        file0 = createContent(FILE_0_NAME, "This is the first test containing the unique word " + UNIQUE_WORD, siteModel1, userSite1);
         createContent(FILE_1_NAME, "This is another TEST file", siteModel1, userSite1);
         createContent(FILE_2_NAME, "This is another test file", siteModel2, userSite2);
         createContent(FILE_3_NAME, "This is another Test file", siteModel1, userSite2);
@@ -184,6 +185,33 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     public void searchCanFindAFileOnMultipleSites()
     {
         searchQueryService.expectResultsFromQuery(req(PREFIX), userMultiSite, FILE_0_NAME, FILE_1_NAME, FILE_3_NAME, FILE_2_NAME);
+    }
+
+    @TestRail (section = TestGroup.SEARCH,
+            executionType = ExecutionType.REGRESSION,
+            description = "Verify that wildcard field queries work inside quotes with Elasticsearch.")
+    @Test (groups = TestGroup.SEARCH)
+    public void wildcardWorksInsideQuotes()
+    {
+        searchQueryService.expectResultsFromQuery(req("cm:name:\"" + PREFIX + "user1*\""), userMultiSite, FILE_2_NAME, FILE_3_NAME);
+    }
+
+    @TestRail (section = TestGroup.SEARCH,
+            executionType = ExecutionType.REGRESSION,
+            description = "Verify that wildcard field queries work without quotes with Elasticsearch.")
+    @Test (groups = TestGroup.SEARCH)
+    public void wildcardWorksWithoutQuotes()
+    {
+        searchQueryService.expectResultsFromQuery(req("cm:name:" + PREFIX + "user1*"), userMultiSite, FILE_2_NAME, FILE_3_NAME);
+    }
+
+    @TestRail (section = TestGroup.SEARCH,
+            executionType = ExecutionType.REGRESSION,
+            description = "Verify that wildcard queries work against noderefs.")
+    @Test (groups = TestGroup.SEARCH)
+    public void wildcardNodeRefQuery()
+    {
+        searchQueryService.expectResultsFromQuery(req("ANCESTOR:\"" + siteModel2.getGuid().substring(0, 10) + "*\""), userMultiSite, "documentLibrary", FILE_2_NAME);
     }
 
     @TestRail (section = TestGroup.SEARCH,
