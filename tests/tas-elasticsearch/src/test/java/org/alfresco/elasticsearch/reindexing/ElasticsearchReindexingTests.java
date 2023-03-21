@@ -2,6 +2,7 @@ package org.alfresco.elasticsearch.reindexing;
 
 import static org.alfresco.elasticsearch.SearchQueryService.req;
 import static org.alfresco.tas.AlfrescoStackInitializer.getImagesConfig;
+import static org.alfresco.utility.report.log.Step.STEP;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
@@ -19,7 +20,6 @@ import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
 import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.network.ServerHealth;
-import org.alfresco.utility.report.log.Step;
 import org.apache.http.HttpHost;
 import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestClient;
@@ -27,8 +27,6 @@ import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.index.query.QueryBuilders;
 import org.opensearch.index.reindex.BulkByScrollResponse;
 import org.opensearch.index.reindex.DeleteByQueryRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -45,8 +43,6 @@ import org.testng.annotations.Test;
 
 public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTests
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ElasticsearchReindexingTests.class);
-
     public static final String CUSTOM_ALFRESCO_INDEX = "custom-alfresco-index";
 
     @Autowired
@@ -75,13 +71,13 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         serverHealth.isServerReachable();
         serverHealth.assertServerIsOnline();
 
-        Step.STEP("Create a test user and private site containing a document.");
+        STEP("Create a test user and private site containing a document.");
 
         testUser = dataUser.createRandomTestUser();
         testSite = dataSite.usingUser(testUser).createPrivateRandomSite();
         createDocument();
 
-        Step.STEP("create ES client");
+        STEP("create ES client");
         elasticClient = new RestHighLevelClient(
                 RestClient.builder(new HttpHost(AlfrescoStackInitializer.searchEngineContainer.getContainerIpAddress(),
                                                 AlfrescoStackInitializer.searchEngineContainer.getFirstMappedPort(),
@@ -175,6 +171,10 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         Boolean expectingDocNameAsResult
     )
     {
+        // Initial timestamp for reindexing by date: this will save reindexing time for these tests
+        ZonedDateTime now = ZonedDateTime.now(Clock.systemUTC());
+        String testStart = DateTimeFormatter.ofPattern("yyyyMMddHHmm").format(now.minusMinutes(10));
+
         // GIVEN
         // Stop ElasticsearchConnector
         AlfrescoStackInitializer.liveIndexer.stop();
@@ -189,6 +189,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
         try(GenericContainer reindexingComponent = createReindexContainer(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
             "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
+            "ALFRESCO_REINDEX_FROM_TIME", testStart,
             "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", metadataIndexingEnabled.toString(),
             "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", contentIndexingEnabled.toString(),
             "ALFRESCO_REINDEX_PATHINDEXINGENABLED", pathIndexingEnabled.toString()))) {
@@ -327,7 +328,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
             DeleteByQueryRequest request = new DeleteByQueryRequest(CUSTOM_ALFRESCO_INDEX);
             request.setQuery(QueryBuilders.matchAllQuery());
             BulkByScrollResponse response = elasticClient.deleteByQuery(request, RequestOptions.DEFAULT);
-            LOGGER.debug("deleted {} documents from index", response.getDeleted());
+            STEP("Deleted " + response.getDeleted() + " documents from index");
         }
         catch (IOException e)
         {
