@@ -74,7 +74,6 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     private UserModel userMultiSite;
     private SiteModel siteModel1;
     private SiteModel siteModel2;
-    private FileModel file0;
 
     /**
      * Data will be prepared using the schema below:
@@ -103,7 +102,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
         dataUser.addUserToSite(userMultiSite, siteModel1, UserRole.SiteContributor);
         dataUser.addUserToSite(userMultiSite, siteModel2, UserRole.SiteContributor);
 
-        file0 = createContent(FILE_0_NAME, "This is the first test containing the unique word " + UNIQUE_WORD, siteModel1, userSite1);
+        createContent(FILE_0_NAME, "This is the first test containing the unique word " + UNIQUE_WORD, siteModel1, userSite1);
         createContent(FILE_1_NAME, "This is another TEST file", siteModel1, userSite1);
         createContent(FILE_2_NAME, "This is another test file", siteModel2, userSite2);
         createContent(FILE_3_NAME, "This is another Test file", siteModel1, userSite2);
