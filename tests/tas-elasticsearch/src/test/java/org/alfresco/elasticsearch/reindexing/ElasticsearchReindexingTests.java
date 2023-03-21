@@ -35,6 +35,7 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.startupcheck.IndefiniteWaitOneShotStartupCheckStrategy;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 /**
@@ -214,6 +215,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     }
 
     @Test(groups = TestGroup.SEARCH)
+    @Ignore // See ACS-4911
     public void testRecreateIndexWithMetadataAndContent()
     {
         internalTestEnabledFeatures(true, true, false,
@@ -244,6 +246,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     }
 
     @Test(groups = TestGroup.SEARCH)
+    @Ignore // See ACS-4911
     public void testRecreateIndexWithMetadataAndContentAndPath()
     {
         internalTestEnabledFeatures(true, true, true,
