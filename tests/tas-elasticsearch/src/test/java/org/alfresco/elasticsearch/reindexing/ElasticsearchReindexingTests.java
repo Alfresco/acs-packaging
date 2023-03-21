@@ -35,7 +35,6 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.startupcheck.IndefiniteWaitOneShotStartupCheckStrategy;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 /**
@@ -176,11 +175,6 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         Boolean expectingDocNameAsResult
     )
     {
-
-        // Initial timestamp for reindexing by date: this will save reindexing time for these tests
-        ZonedDateTime now = ZonedDateTime.now(Clock.systemUTC());
-        String testStart = DateTimeFormatter.ofPattern("yyyyMMddHHmm").format(now.minusMinutes(5));
-
         // GIVEN
         // Stop ElasticsearchConnector
         AlfrescoStackInitializer.liveIndexer.stop();
@@ -195,7 +189,6 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
         try(GenericContainer reindexingComponent = createReindexContainer(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
             "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
-            "ALFRESCO_REINDEX_FROM_TIME", testStart,
             "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", metadataIndexingEnabled.toString(),
             "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", contentIndexingEnabled.toString(),
             "ALFRESCO_REINDEX_PATHINDEXINGENABLED", pathIndexingEnabled.toString()))) {
@@ -215,7 +208,6 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     }
 
     @Test(groups = TestGroup.SEARCH)
-    @Ignore // See ACS-4911
     public void testRecreateIndexWithMetadataAndContent()
     {
         internalTestEnabledFeatures(true, true, false,
@@ -246,7 +238,6 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     }
 
     @Test(groups = TestGroup.SEARCH)
-    @Ignore // See ACS-4911
     public void testRecreateIndexWithMetadataAndContentAndPath()
     {
         internalTestEnabledFeatures(true, true, true,
