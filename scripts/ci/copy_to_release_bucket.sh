@@ -19,7 +19,7 @@ DESTINATION="s3://eu.dl.alfresco.com/release/enterprise/ACS/${RELEASE_VERSION:0:
 
 printf "\n%s\n%s\n" "${SOURCE}" "${DESTINATION}"
 
-aws s3 cp --acl private --recursive "${SOURCE}" "${DESTINATION}"
+aws s3 cp --acl private --recursive --copy-props none "${SOURCE}" "${DESTINATION}"
 
 set +vex
 echo "=========================== Finishing Copy to Release Bucket Script =========================="
