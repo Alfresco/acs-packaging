@@ -14,11 +14,9 @@ SOURCE_IMAGE=quay.io/alfresco/alfresco-share
 TARGET_IMAGE=docker.io/alfresco/alfresco-share
 
 echo "${QUAY_PASSWORD}" | docker login -u="${QUAY_USERNAME}" --password-stdin quay.io
-docker pull $SOURCE_IMAGE:$TAG_NAME
-docker tag $SOURCE_IMAGE:$TAG_NAME $TARGET_IMAGE:$TAG_NAME
-
 echo "${DOCKERHUB_PASSWORD}" | docker login -u="${DOCKERHUB_USERNAME}" --password-stdin docker.io
-docker push $TARGET_IMAGE:$TAG_NAME
+
+docker buildx imagetools create -t $TARGET_IMAGE:$TAG_NAME $SOURCE_IMAGE:$TAG_NAME
 
 popd
 set +vex

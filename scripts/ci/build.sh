@@ -90,7 +90,7 @@ fi
 # Build the upstream alfresco-enterprise-repo project with its docker image
 if [[ "${ENT_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] ; then
   buildSameBranchOnUpstream "${ENT_UPSTREAM_REPO}" "-P$BUILD_PROFILE -Pags -Pall-tas-tests -Dlicense.failOnNotUptodateHeader=true"
-  buildSameBranchOnUpstream "${ENT_UPSTREAM_REPO}" "-DskipTests -Pbuild-docker-images"
+#  buildSameBranchOnUpstream "${ENT_UPSTREAM_REPO}" "-DskipTests -Pbuild-docker-images"
 else
   buildUpstreamTag "${ENT_UPSTREAM_REPO}" "${ENT_DEPENDENCY_VERSION}" "-P$BUILD_PROFILE -Pags -Pall-tas-tests -Dlicense.failOnNotUptodateHeader=true"
 fi

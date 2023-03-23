@@ -3,6 +3,8 @@ echo "=========================== Starting Copy to Release Bucket Script =======
 PS4="\[\e[35m\]+ \[\e[m\]"
 set -vex
 
+BUILD_NUMBER=$1
+
 #
 # Copy from S3 Release bucket to S3 eu.dl bucket
 #
@@ -17,7 +19,7 @@ DESTINATION="s3://eu.dl.alfresco.com/release/enterprise/ACS/${RELEASE_VERSION:0:
 
 printf "\n%s\n%s\n" "${SOURCE}" "${DESTINATION}"
 
-aws s3 cp --acl private --recursive "${SOURCE}" "${DESTINATION}"
+aws s3 cp --acl private --recursive --copy-props none "${SOURCE}" "${DESTINATION}"
 
 set +vex
 echo "=========================== Finishing Copy to Release Bucket Script =========================="

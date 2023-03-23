@@ -1,4 +1,5 @@
-FROM alfresco/alfresco-share-base:${share.image.tag}
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
 
 ARG TOMCAT_DIR=/usr/local/tomcat
 COPY target/amps_share/*.amp /usr/local/tomcat/amps_share/
