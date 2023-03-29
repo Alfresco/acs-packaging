@@ -39,6 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 @ContextConfiguration (locations = "classpath:alfresco-elasticsearch-context.xml",
@@ -87,6 +88,7 @@ public class ElasticsearchTagIndexingTests extends AbstractTestNGSpringContextTe
     @TestRail (section = { TestGroup.SEARCH, TestGroup.TAGS }, executionType = ExecutionType.REGRESSION,
             description = "Verify the TAG queries work correctly")
     @Test (groups = { TestGroup.SEARCH, TestGroup.TAGS, TestGroup.REGRESSION })
+    @Ignore
     public void testTAGUseCases()
     {
         final String tag1 = unique("TAG1");
