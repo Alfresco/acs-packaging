@@ -59,49 +59,8 @@ jobs:
 #      - name: "Clean Maven cache"
 #        run: bash ./scripts/ci/cleanup_cache.sh
 
-  all_amps_tests_arm64:
-    name: "All AMPs tests - ARM64"
-    services:
-      registry:
-        image: registry:2
-        ports:
-          - 5000:5000
-    runs-on: [self-hosted, linux, arm64]
-    if: >
-      !contains(github.event.head_commit.message, '[skip tests]')
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.36.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.36.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.36.0
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: linux/amd64,linux/arm64
-      - name: "Build"
-        run: |
-          bash ./scripts/ci/init.sh
-          bash ./scripts/ci/build.sh -m
-      - name: "Set up the environment"
-        run: mvn -B -q install -ntp -f tests/tas-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
-      - name: "Run tests"
-        id: tests
-        timeout-minutes: 20
-        run: |
-          ./tests/scripts/checkLibraryDuplicates.sh ./tests/tas-all-amps/target/war/alfresco/WEB-INF/lib
-          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-all-amps-test.yml
-          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-          mvn -B install -ntp -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
-      - name: "Print output after failure"
-        if: ${{ always() && steps.tests.outcome == 'failure' }}
-        run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-all-amps"
-      - name: "Clean Maven cache"
-        run: bash ./scripts/ci/cleanup_cache.sh
-
-#  tas_tests_arm64:
-#    name: ${{ matrix.testSuite }} TAS tests - arm64
+#  all_amps_tests_arm64:
+#    name: "All AMPs tests - ARM64"
 #    services:
 #      registry:
 #        image: registry:2
@@ -109,22 +68,63 @@ jobs:
 #          - 5000:5000
 #    runs-on: [self-hosted, linux, arm64]
 #    if: >
-#      contains(github.event.head_commit.message, '[tas]') &&
 #      !contains(github.event.head_commit.message, '[skip tests]')
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        include:
-#          - testSuite: REST API part1
-#            pom-dir: tests/tas-restapi
-#            profiles: all-tas-tests,run-restapi-part1
-#            compose-file: docker-compose-rest-api-tests.yml
-#            deploy-timeout: 60
-#          - testSuite: REST API part2
-#            pom-dir: tests/tas-restapi
-#            profiles: all-tas-tests,run-restapi-part2
-#            compose-file: docker-compose-rest-api-tests.yml
-#            deploy-timeout: 60
+#    steps:
+#      - uses: actions/checkout@v3
+#        with:
+#          persist-credentials: false
+#      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.36.0
+#      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.36.0
+#      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.36.0
+#      - name: Set up QEMU
+#        uses: docker/setup-qemu-action@v2
+#        with:
+#          platforms: linux/amd64,linux/arm64
+#      - name: "Build"
+#        run: |
+#          bash ./scripts/ci/init.sh
+#          bash ./scripts/ci/build.sh -m
+#      - name: "Set up the environment"
+#        run: mvn -B -q install -ntp -f tests/tas-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
+#      - name: "Run tests"
+#        id: tests
+#        timeout-minutes: 20
+#        run: |
+#          ./tests/scripts/checkLibraryDuplicates.sh ./tests/tas-all-amps/target/war/alfresco/WEB-INF/lib
+#          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-all-amps-test.yml
+#          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#          mvn -B install -ntp -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+#      - name: "Print output after failure"
+#        if: ${{ always() && steps.tests.outcome == 'failure' }}
+#        run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-all-amps"
+#      - name: "Clean Maven cache"
+#        run: bash ./scripts/ci/cleanup_cache.sh
+
+  tas_tests_arm64:
+    name: ${{ matrix.testSuite }} TAS tests - arm64
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
+    runs-on: [self-hosted, linux, arm64]
+    if: >
+      contains(github.event.head_commit.message, '[tas]') &&
+      !contains(github.event.head_commit.message, '[skip tests]')
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - testSuite: REST API part1
+            pom-dir: tests/tas-restapi
+            profiles: all-tas-tests,run-restapi-part1
+            compose-file: docker-compose-rest-api-tests.yml
+            deploy-timeout: 60
+          - testSuite: REST API part2
+            pom-dir: tests/tas-restapi
+            profiles: all-tas-tests,run-restapi-part2
+            compose-file: docker-compose-rest-api-tests.yml
+            deploy-timeout: 60
 #          - testSuite: REST API part3
 #            pom-dir: tests/tas-restapi
 #            profiles: all-tas-tests,run-restapi-part3
@@ -165,34 +165,34 @@ jobs:
 #            profiles: run-ldap
 #            compose-file: docker-compose-with-ldap.yml
 #            deploy-timeout: 10
-#    steps:
-#      - uses: actions/checkout@v3
-#        with:
-#          persist-credentials: false
-#      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.36.0
-#      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.36.0
-#      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.36.0
-#      - name: Set up QEMU
-#        uses: docker/setup-qemu-action@v2
-#        with:
-#          platforms: linux/amd64,linux/arm64
-#      - name: "Build"
-#        run: |
-#          bash ./scripts/ci/init.sh
-#          bash ./scripts/ci/build.sh -m
-#      - name: "Set up the environment"
-#        run: |
-#          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/${{ matrix.compose-file }}
-#          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-#      - name: "Run tests"
-#        id: tests
-#        timeout-minutes: ${{ matrix.deploy-timeout }}
-#        run: mvn -B install -ntp -f ${{ matrix.pom-dir }}/pom.xml -P${{ matrix.profiles }} -Denvironment=default -DrunBugs=false
-#      - name: "Print output after failure"
-#        if: ${{ always() && steps.tests.outcome == 'failure' }}
-#        run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "${{ matrix.pom-dir }}"
-#      - name: "Clean Maven cache"
-#        run: bash ./scripts/ci/cleanup_cache.sh
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.36.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.36.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.36.0
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: linux/amd64,linux/arm64
+      - name: "Build"
+        run: |
+          bash ./scripts/ci/init.sh
+          bash ./scripts/ci/build.sh -m
+      - name: "Set up the environment"
+        run: |
+          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/${{ matrix.compose-file }}
+          bash ./scripts/ci/wait-for-alfresco-start.sh "http://localhost:8082/alfresco" 300
+      - name: "Run tests"
+        id: tests
+        timeout-minutes: ${{ matrix.deploy-timeout }}
+        run: mvn -B install -ntp -f ${{ matrix.pom-dir }}/pom.xml -P${{ matrix.profiles }} -Denvironment=default -DrunBugs=false
+      - name: "Print output after failure"
+        if: ${{ always() && steps.tests.outcome == 'failure' }}
+        run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "${{ matrix.pom-dir }}"
+      - name: "Clean Maven cache"
+        run: bash ./scripts/ci/cleanup_cache.sh
 
 #  tas_tests:
 #    name: ${{ matrix.testSuite }} TAS tests
