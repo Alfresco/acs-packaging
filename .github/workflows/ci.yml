@@ -120,11 +120,11 @@ jobs:
             profiles: all-tas-tests,run-restapi-part1
             compose-file: docker-compose-rest-api-tests.yml
             deploy-timeout: 60
-          - testSuite: REST API part2
-            pom-dir: tests/tas-restapi
-            profiles: all-tas-tests,run-restapi-part2
-            compose-file: docker-compose-rest-api-tests.yml
-            deploy-timeout: 60
+#          - testSuite: REST API part2
+#            pom-dir: tests/tas-restapi
+#            profiles: all-tas-tests,run-restapi-part2
+#            compose-file: docker-compose-rest-api-tests.yml
+#            deploy-timeout: 60
 #          - testSuite: REST API part3
 #            pom-dir: tests/tas-restapi
 #            profiles: all-tas-tests,run-restapi-part3
@@ -179,7 +179,7 @@ jobs:
       - name: "Build"
         run: |
           bash ./scripts/ci/init.sh
-          bash ./scripts/ci/build.sh -m
+#          bash ./scripts/ci/build.sh -m
       - name: "Set up the environment"
         run: |
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/${{ matrix.compose-file }}

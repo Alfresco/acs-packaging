@@ -10,7 +10,7 @@ RUN DEBIAN_FRONTEND=noninteractive; \
     unzip -q /build/jolokia.war -d /build/jolokia && chmod -R g+r,g-w,o= /build
 
 # ACTUAL IMAGE
-FROM 127.0.0.1:5000/alfresco/alfresco-content-repository:latest
+FROM quay.io/alfresco/alfresco-content-repository:latest
 
 ARG TOMCAT_DIR=/usr/local/tomcat
 ARG GROUPNAME=Alfresco
