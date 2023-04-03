@@ -54,10 +54,7 @@ public class TransformServiceWithMTLSIntegrationTest
 
     final Gson gson = new Gson();
 
-    private final URI searchApiUri = URI.create("localhost:8080/alfresco/api/-default-/public/search/versions/1/search");
     private final URI fileUploadApiUri = URI.create("localhost:8080/alfresco/api/-default-/public/alfresco/versions/1/nodes/-my-/children");
-    private final URI searchServiceAdminAppUri = URI.create("localhost:8080/alfresco/s/enterprise/admin/admin-searchservice");
-    private final URI uploadLicenseAdminApiUri = URI.create("localhost:8080/alfresco/s/enterprise/admin/admin-license-upload");
     private final URI serverApiUri = URI.create("localhost:8080/alfresco/service/api/server");
 
     @Test
