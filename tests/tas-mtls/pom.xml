@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.alfresco.tas</groupId>
+   <artifactId>content-repository-mutual-tls-test</artifactId>
+   <name>Mutual TLS test</name>
+
+   <parent>
+      <groupId>org.alfresco</groupId>
+      <artifactId>content-repository-tests</artifactId>
+      <version>7.4.0-A28-SNAPSHOT</version>
+   </parent>
+
+   <properties>
+      <maven.compiler.source>11</maven.compiler.source>
+      <maven.compiler.target>11</maven.compiler.target>
+   </properties>
+
+   <profiles>
+   <profile>
+      <id>run-mtls</id>
+      <properties>
+         <suiteXmlFile>${project.basedir}/src/test/resources/mtls-suite.xml</suiteXmlFile>
+      </properties>
+   </profile>
+   </profiles>
+
+   <dependencies>
+      <dependency>
+         <groupId>org.testcontainers</groupId>
+         <artifactId>testcontainers</artifactId>
+         <version>1.17.3</version>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.httpcomponents</groupId>
+         <artifactId>httpclient</artifactId>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.httpcomponents</groupId>
+         <artifactId>httpmime</artifactId>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>com.google.code.gson</groupId>
+         <artifactId>gson</artifactId>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-beans</artifactId>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.alfresco.tas</groupId>
+         <artifactId>restapi</artifactId>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-test</artifactId>
+         <scope>test</scope>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-test</artifactId>
+         <scope>test</scope>
+      </dependency>
+   </dependencies>
+   <packaging>jar</packaging>
+
+</project>

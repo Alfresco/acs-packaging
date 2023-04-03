@@ -119,6 +119,12 @@ jobs:
             profiles: run-ldap
             compose-file: docker-compose-with-ldap.yml
             deploy-timeout: 10
+          - testSuite: MTLS
+            pom-dir: tests/tas-mtls
+            profiles: run-mtls
+            compose-file: docker-compose-mtls.yml
+            mtls: true
+            deploy-timeout: 10
     steps:
       - uses: actions/checkout@v3
         with:
@@ -131,6 +137,11 @@ jobs:
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
+      - name: "Generate Keystores and Truststores for Mutual TLS configuration"
+        if: ${{ matrix.mtls }}
+        run: |
+        git clone -b "master" --depth=1 "https://${{ secrets.BOT_GITHUB_USERNAME }}:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/Alfresco/alfresco-ssl-generator.git"
+        bash ./scripts/ci/generate_keystores.sh
       - name: "Set up the environment"
         run: |
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/${{ matrix.compose-file }}
