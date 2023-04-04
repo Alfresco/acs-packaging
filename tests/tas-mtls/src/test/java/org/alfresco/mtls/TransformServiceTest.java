@@ -3,9 +3,8 @@ package org.alfresco.mtls;
 import static org.alfresco.utility.model.FileType.TEXT_PLAIN;
 
 import org.alfresco.rest.core.JsonBodyGenerator;
-import org.alfresco.rest.core.RestRequest;
-import org.alfresco.rest.core.RestResponse;
 import org.alfresco.rest.core.RestWrapper;
+import org.alfresco.rest.model.RestRenditionInfoModel;
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
@@ -15,10 +14,9 @@ import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
-import org.json.HTTP;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
@@ -73,10 +71,14 @@ public class TransformServiceTest extends AbstractTestNGSpringContextTests
         FileModel fileModel = FileModel.getRandomFileModel(TEXT_PLAIN);
         FileModel testFile = dataContent.usingUser(adminUserModel).usingResource(testFolder).createContent(fileModel);
 
-        String postBody = JsonBodyGenerator.keyValueJson("id", "pdf");
-        RestRequest request = RestRequest.requestWithBody(HttpMethod.POST, postBody, "nodes/{nodeId}/renditions", testFile.getNodeRef());
-        RestResponse response = restClientAlfresco.authenticateUser(adminUserModel).process(request);
+        RestRenditionInfoModel pdf = restClientAlfresco.authenticateUser(adminUserModel)
+                                                       .withCoreAPI()
+                                                       .usingNode(testFile)
+                                                       .getNodeRenditionUntilIsCreated("pdf");
 
-        Assert.assertEquals(response.getStatusCode(), "200");
+        restClientAlfresco.assertStatusCodeIs(HttpStatus.ACCEPTED);
+
+        Assert.assertEquals(pdf.getStatus(), "CREATED");
+//        Assert.assertEquals(response.getStatusCode(), "200");
     }
 }

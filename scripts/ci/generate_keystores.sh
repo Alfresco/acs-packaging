@@ -4,6 +4,7 @@
 # SETTINGS
 # Alfresco Format: "classic" / "current" is supported only from 7.0
 ALFRESCO_FORMAT=current
+GITHUB_WORKSPACE=/Users/Kacper.Magdziarz@hyland.com/IdeaProjects
 
 #Contains directory settings
 source ${GITHUB_WORKSPACE}/alfresco-ssl-generator/ssl-tool/utils.sh
