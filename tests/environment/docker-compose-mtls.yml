@@ -51,7 +51,7 @@ services:
         -Dshare.host=127.0.0.1
         -Dshare.port=8082
         -Dalfresco.host=localhost
-        -Dalfresco.port=8081
+        -Dalfresco.port=8082
         -Dalfresco.restApi.basicAuthScheme=true
         -Dtransform.service.enabled=false
         -Dlocal.transform.service.enabled=true
@@ -76,7 +76,7 @@ services:
       - ${GITHUB_WORKSPACE}/keystores/alfresco/alfresco.truststore:/usr/local/tomcat/shared/classes/alfresco/extension/keystore/alfresco.truststore
       - ${GITHUB_WORKSPACE}/keystores/alfresco/alfresco.keystore:/usr/local/tomcat/shared/classes/alfresco/extension/keystore/alfresco.keystore
     ports:
-      - "8081:8080"
+      - "8082:8080"
       - "8000:8000"
       - "143:1143"
       - "21:1221"
