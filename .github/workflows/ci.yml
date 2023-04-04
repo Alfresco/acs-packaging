@@ -101,7 +101,7 @@ jobs:
 #        run: bash ./scripts/ci/cleanup_cache.sh
 
   tas_tests_arm64:
-    name: ${{ matrix.testSuite }} TAS tests - arm64
+    name: Integration TAS tests - arm64
     services:
       registry:
         image: registry:2
@@ -111,60 +111,6 @@ jobs:
     if: >
       contains(github.event.head_commit.message, '[tas]') &&
       !contains(github.event.head_commit.message, '[skip tests]')
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-#          - testSuite: REST API part1
-#            pom-dir: tests/tas-restapi
-#            profiles: all-tas-tests,run-restapi-part1
-#            compose-file: docker-compose-rest-api-tests.yml
-#            deploy-timeout: 60
-#          - testSuite: REST API part2
-#            pom-dir: tests/tas-restapi
-#            profiles: all-tas-tests,run-restapi-part2
-#            compose-file: docker-compose-rest-api-tests.yml
-#            deploy-timeout: 60
-#          - testSuite: REST API part3
-#            pom-dir: tests/tas-restapi
-#            profiles: all-tas-tests,run-restapi-part3
-#            compose-file: docker-compose-rest-api-tests.yml
-#            deploy-timeout: 60
-#          - testSuite: CMIS (BROWSER binding)
-#            pom-dir: tests/tas-cmis
-#            profiles: all-tas-tests,run-cmis-browser
-#            compose-file: docker-compose-cmis-tests.yml
-#            deploy-timeout: 40
-#          - testSuite: CMIS (ATOM binding)
-#            pom-dir: tests/tas-cmis
-#            profiles: all-tas-tests,run-cmis-atom
-#            compose-file: docker-compose-cmis-tests.yml
-#            deploy-timeout: 40
-#          - testSuite: CMIS (WEBSERVICES binding)
-#            pom-dir: tests/tas-cmis
-#            profiles: all-tas-tests,run-cmis-webservices
-#            compose-file: docker-compose-cmis-tests.yml
-#            deploy-timeout: 40
-#          - testSuite: Email
-#            pom-dir: tests/tas-email
-#            profiles: all-tas-tests
-#            compose-file: docker-compose-email-tests.yml
-#            deploy-timeout: 30
-#          - testSuite: WebDAV
-#            pom-dir: tests/tas-webdav
-#            profiles: all-tas-tests
-#            compose-file: docker-compose-minimal.yml
-#            deploy-timeout: 20
-          - testSuite: Integration
-            pom-dir: tests/tas-integration
-            profiles: all-tas-tests
-            compose-file: docker-compose-integration-tests.yml
-            deploy-timeout: 30
-#          - testSuite: LDAP
-#            pom-dir: tests/tas-integration
-#            profiles: run-ldap
-#            compose-file: docker-compose-with-ldap.yml
-#            deploy-timeout: 10
     steps:
       - uses: actions/checkout@v3
         with:
@@ -182,15 +128,15 @@ jobs:
 #          bash ./scripts/ci/build.sh -m
       - name: "Set up the environment"
         run: |
-          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/${{ matrix.compose-file }}
+          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-integration-tests.yml
           ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco" 300
       - name: "Run tests"
         id: tests
-        timeout-minutes: ${{ matrix.deploy-timeout }}
-        run: mvn -B install -ntp -f ${{ matrix.pom-dir }}/pom.xml -P${{ matrix.profiles }} -Denvironment=default -DrunBugs=false
+        timeout-minutes: 30
+        run: mvn -B install -ntp -f tests/tas-integration/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
       - name: "Print output after failure"
         if: ${{ always() && steps.tests.outcome == 'failure' }}
-        run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "${{ matrix.pom-dir }}"
+        run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-integration"
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
