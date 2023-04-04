@@ -100,7 +100,7 @@ jobs:
 #      - name: "Clean Maven cache"
 #        run: bash ./scripts/ci/cleanup_cache.sh
 
-  tas_tests_arm64:
+  integration_tas_tests_arm64:
     name: Integration TAS tests - arm64
     services:
       registry:
@@ -108,7 +108,7 @@ jobs:
         ports:
           - 5000:5000
     runs-on: [self-hosted, linux, arm64]
-    if: !contains(github.event.head_commit.message, '[skip tests]')
+    if: "!contains(github.event.head_commit.message, '[skip tests]')"
     steps:
       - uses: actions/checkout@v3
         with:
