@@ -139,6 +139,7 @@ jobs:
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
       - name: "Clean up environment"
+        if: always()
         run: |
           docker container stop $(docker container ls -aq)
          
