@@ -100,7 +100,7 @@ jobs:
 #      - name: "Clean Maven cache"
 #        run: bash ./scripts/ci/cleanup_cache.sh
 
-  integration_tas_tests_arm64:
+  tas_tests_arm64:
     name: Integration TAS tests - arm64
     services:
       registry:
