@@ -125,8 +125,6 @@ jobs:
             compose-file: docker-compose-mtls.yml
             mtls: true
             deploy-timeout: 10
-
-            mvn -B install -ntp -f tests/tas-mtls/pom.xml -Prun-mtls -Denvironment=default -DrunBugs=false
     steps:
       - uses: actions/checkout@v3
         with:
