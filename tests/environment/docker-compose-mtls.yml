@@ -20,10 +20,10 @@ version: "2"
 services:
   alfresco:
     image: alfresco/alfresco-content-repository:latest
-    mem_limit: 3400m
+    mem_limit: 1900m
     environment:
-      CATALINA_OPTS: "-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n"
-      JAVA_TOOL_OPTIONS: "
+      CATALINA_OPTS : "-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n"
+      JAVA_TOOL_OPTIONS: >-
         -Dencryption.keystore.type=JCEKS
         -Dencryption.cipherAlgorithm=DESede/CBC/PKCS5Padding
         -Dencryption.keyAlgorithm=DESede
@@ -38,40 +38,38 @@ services:
         -Dencryption.ssl.truststore.location=/usr/local/tomcat/shared/classes/alfresco/extension/keystore/alfresco.truststore
         -Dssl-keystore.password=password
         -Dssl-truststore.password=password
-        "
-      JAVA_OPTS: '
-        -Delasticsearch.createIndexIfNotExists=true
+      JAVA_OPTS: >-
+        -Dalfresco.port=8082
+        -Dalfresco.host=localhost
+        -Daos.baseUrlOverwrite=http://localhost:8082/alfresco/aos
         -Ddb.driver=org.postgresql.Driver
         -Ddb.username=alfresco
         -Ddb.password=alfresco
         -Ddb.url=jdbc:postgresql://postgres:5432/alfresco
-        -Dindex.subsystem.name=elasticsearch
-        -Delasticsearch.host=elasticsearch
-        -Delasticsearch.indexName=${ELASTICSEARCH_INDEX_NAME}
-        -Dshare.host=127.0.0.1
-        -Dshare.port=8082
-        -Dalfresco.host=localhost
-        -Dalfresco.port=8082
+        -Dsolr.host=solr6
+        -Dsolr.port=8983
+        -Dsolr.secureComms=secret
+        -Dsolr.sharedSecret=secret
+        -Dsolr.base.url=/solr
+        -Dindex.subsystem.name=solr6
         -Dalfresco.restApi.basicAuthScheme=true
         -Dtransform.service.enabled=false
         -Dlocal.transform.service.enabled=true
         -Dtransformer.strict.mimetype.check=true
         -Dcontent.transformer.retryOn.different.mimetype=true
-        -Daos.baseUrlOverwrite=http://localhost:8080/alfresco/aos
+        -Dshare.host=127.0.0.1
+        -Dshare.port=8082
+        -Dalfresco.host=localhost
         -Dmessaging.broker.url="failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true"
         -Ddeployment.method=DOCKER_COMPOSE
+        -Dtransform.service.enabled=false
         -Dtransform.service.url=https://transform-router:8095
         -Dsfs.url=https://shared-file-store:8099/
         -DlocalTransform.core-aio.url=https://transform-core-aio:8090/
-        -Dalfresco-pdf-renderer.url=https://transform-core-aio:8090/
-        -Djodconverter.url=https://transform-core-aio:8090/
-        -Dimg.url=https://transform-core-aio:8090/
-        -Dtika.url=https://transform-core-aio:8090/
-        -Dtransform.misc.url=https://transform-core-aio:8090/
         -Dcsrf.filter.enabled=false
-        -Dalfresco.restApi.basicAuthScheme=true
-        -Xms1500m -Xmx1500m
-        '
+        -Ddsync.service.uris=http://localhost:9090/alfresco
+        -XX:MinRAMPercentage=50
+        -XX:MaxRAMPercentage=80
     volumes:
       - ${GITHUB_WORKSPACE}/keystores/alfresco/alfresco.truststore:/usr/local/tomcat/shared/classes/alfresco/extension/keystore/alfresco.truststore
       - ${GITHUB_WORKSPACE}/keystores/alfresco/alfresco.keystore:/usr/local/tomcat/shared/classes/alfresco/extension/keystore/alfresco.keystore
@@ -86,10 +84,13 @@ services:
     mem_limit: 512m
     image: quay.io/alfresco/alfresco-transform-router:${TRANSFORM_ROUTER_TAG}
     environment:
-      JAVA_OPTS: " -Xms256m -Xmx512m"
-      ACTIVEMQ_URL: "nio://activemq:61616"
-      CORE_AIO_URL: "https://transform-core-aio:8090"
-      FILE_STORE_URL: "https://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file"
+      JAVA_OPTS: >-
+        -XX:MinRAMPercentage=50
+        -XX:MaxRAMPercentage=80
+      ACTIVEMQ_URL: nio://activemq:61616
+      CORE_AIO_URL: https://transform-core-aio:8090
+      FILE_STORE_URL: >-
+        https://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file
 
       SERVER_SSL_ENABLED: "true"
       SERVER_SSL_KEY_PASSWORD: "password"
@@ -121,9 +122,12 @@ services:
     image: quay.io/alfresco/alfresco-transform-core-aio:${TRANSFORMERS_TAG}
     mem_limit: 1536m
     environment:
-      JAVA_OPTS: " -Xms256m -Xmx1536m"
-      ACTIVEMQ_URL: "nio://activemq:61616"
-      FILE_STORE_URL: "https://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file"
+      JAVA_OPTS: >-
+        -XX:MinRAMPercentage=50
+        -XX:MaxRAMPercentage=80
+      ACTIVEMQ_URL: nio://activemq:61616
+      FILE_STORE_URL: >-
+        https://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file
 
       SERVER_SSL_ENABLED: "true"
       SERVER_SSL_KEY_PASSWORD: "password"
@@ -155,7 +159,9 @@ services:
     image: quay.io/alfresco/alfresco-shared-file-store:${TRANSFORM_ROUTER_TAG}
     mem_limit: 512m
     environment:
-      JAVA_OPTS: " -Xms256m -Xmx512m"
+      JAVA_OPTS: >-
+        -XX:MinRAMPercentage=50
+        -XX:MaxRAMPercentage=80
       scheduler.content.age.millis: 86400000
       scheduler.cleanup.interval: 86400000
 
@@ -189,15 +195,14 @@ services:
     mem_limit: 1g
     environment:
       REPO_HOST: "alfresco"
-      REPO_PORT: "8080"
-      JAVA_OPTS: "
+      REPO_PORT: "8082"
+      JAVA_OPTS: >-
         -XX:MinRAMPercentage=50
         -XX:MaxRAMPercentage=80
         -Dalfresco.host=localhost
-        -Dalfresco.port=8080
+        -Dalfresco.port=8082
         -Dalfresco.context=alfresco
         -Dalfresco.protocol=http
-        "
 
   postgres:
     image: postgres:${POSTGRES_TAG}
@@ -208,7 +213,27 @@ services:
       - POSTGRES_DB=alfresco
     command: postgres -c max_connections=300 -c log_min_messages=LOG
     ports:
-      - 5432:5432
+      - "5432:5432"
+
+  solr6:
+    image: quay.io/alfresco/insight-engine:${SOLR6_TAG}
+    mem_limit: 2g
+    environment:
+      # Solr needs to know how to register itself with Alfresco
+      SOLR_ALFRESCO_HOST: "alfresco"
+      SOLR_ALFRESCO_PORT: "8082"
+      # Alfresco needs to know how to call solr
+      SOLR_SOLR_HOST: "solr6"
+      SOLR_SOLR_PORT: "8983"
+      # Create the default alfresco and archive cores
+      SOLR_CREATE_ALFRESCO_DEFAULTS: "alfresco,archive"
+      # HTTPS or SECRET
+      ALFRESCO_SECURE_COMMS: "secret"
+      # SHARED SECRET VALUE
+      JAVA_TOOL_OPTIONS: >-
+        -Dalfresco.secureComms.secret=secret
+    ports:
+      - "8083:8983"  # Browser port
 
   activemq:
     image: quay.io/alfresco/alfresco-activemq:${ACTIVEMQ_TAG}
@@ -267,49 +292,6 @@ services:
         -XX:MaxRAMPercentage=80
     ports:
       - "9090:9090"
-
-  elasticsearch:
-    image: opensearchproject/opensearch:${OPENSEARCH_TAG}
-    mem_limit: 1700m
-    environment:
-      - plugins.security.disabled=true
-      - discovery.type=single-node
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile:
-        soft: 65536
-        hard: 65536
-    cap_add:
-      - IPC_LOCK
-    ports:
-      - "9200:9200"
-      - "9300:9300"
-
-  kibana:
-    image: opensearchproject/opensearch-dashboards:${OPENSEARCH_DASHBOARDS_TAG}
-    mem_limit: 256m
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-    ports:
-      - "5601:5601"
-    depends_on:
-      - elasticsearch
-
-  live-indexing:
-    image: quay.io/alfresco/alfresco-elasticsearch-live-indexing:${LIVE_INDEXING_TAG}
-    mem_limit: 512m
-    depends_on:
-      - elasticsearch
-      - alfresco
-    environment:
-      ELASTICSEARCH_INDEXNAME: alfresco
-      SPRING_ELASTICSEARCH_REST_URIS: http://elasticsearch:9200
-      SPRING_ACTIVEMQ_BROKERURL: nio://activemq:61616
-      ALFRESCO_SHAREDFILESTORE_BASEURL: http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/
-      ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL: http://transform-core-aio:8090/transform/config
-
 volumes:
   shared-file-store-volume:
     driver_opts:
