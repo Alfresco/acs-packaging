@@ -69,11 +69,11 @@ services:
       - ${GITHUB_WORKSPACE}/keystores/alfresco/alfresco.truststore:/usr/local/tomcat/shared/classes/alfresco/extension/keystore/alfresco.truststore
       - ${GITHUB_WORKSPACE}/keystores/alfresco/alfresco.keystore:/usr/local/tomcat/shared/classes/alfresco/extension/keystore/alfresco.keystore
     ports:
-      - 8082:8080
-      - 8000:8000
-      - 143:1143
-      - 21:1221
-      - 30000-30099:30000-30099
+      - "8082:8080"
+      - "8000:8000"
+      - "143:1143"
+      - "21:1221"
+      - "30000-30099:30000-30099"
 
   transform-router:
     mem_limit: 512m
