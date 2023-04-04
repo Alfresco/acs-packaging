@@ -3,7 +3,6 @@ package org.alfresco.mtls;
 import static org.alfresco.utility.model.FileType.TEXT_PLAIN;
 
 import org.alfresco.rest.core.RestWrapper;
-import org.alfresco.rest.model.RestRenditionInfoModel;
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
@@ -51,12 +50,13 @@ public class TransformServiceTest extends AbstractTestNGSpringContextTests
     public void checkServerHealth() throws Exception
     {
         super.springTestContextPrepareTestInstance();
+        serverHealth.isServerReachable();
         serverHealth.assertServerIsOnline();
         testSiteModel = dataSite.createPublicRandomSite();
     }
 
     @BeforeClass (alwaysRun = true)
-    public void dataPreparation() throws Exception
+    public void dataPreparation()
     {
         adminUser = dataUser.getAdminUser();
     }
