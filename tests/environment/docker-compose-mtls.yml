@@ -50,7 +50,7 @@ services:
         -Dsolr.base.url=/solr
         -Dindex.subsystem.name=solr6
         -Dshare.host=127.0.0.1
-        -Dshare.port=8080
+        -Dshare.port=8082
         -Dalfresco.host=localhost
         -Dalfresco.port=8082
         -Daos.baseUrlOverwrite=http://localhost:8082/alfresco/aos
