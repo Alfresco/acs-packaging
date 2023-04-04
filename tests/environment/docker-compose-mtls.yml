@@ -190,7 +190,7 @@ services:
     mem_limit: 1g
     environment:
       REPO_HOST: "alfresco"
-      REPO_PORT: "8080"
+      REPO_PORT: "8082"
       JAVA_OPTS: >-
         -XX:MinRAMPercentage=50
         -XX:MaxRAMPercentage=80
