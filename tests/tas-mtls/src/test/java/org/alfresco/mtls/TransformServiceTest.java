@@ -2,7 +2,6 @@ package org.alfresco.mtls;
 
 import static org.alfresco.utility.model.FileType.TEXT_PLAIN;
 
-import org.alfresco.rest.core.JsonBodyGenerator;
 import org.alfresco.rest.core.RestWrapper;
 import org.alfresco.rest.model.RestRenditionInfoModel;
 import org.alfresco.utility.LogFactory;
@@ -33,7 +32,7 @@ public class TransformServiceTest extends AbstractTestNGSpringContextTests
     protected ServerHealth serverHealth;
 
     @Autowired
-    protected RestWrapper restClientAlfresco;
+    protected RestWrapper restClient;
 
     @Autowired
     protected DataUserAIS dataUser;
@@ -46,7 +45,7 @@ public class TransformServiceTest extends AbstractTestNGSpringContextTests
 
     protected SiteModel testSiteModel;
 
-    private UserModel adminUserModel;
+    private UserModel adminUser;
 
     @BeforeSuite (alwaysRun = true)
     public void checkServerHealth() throws Exception
@@ -59,26 +58,21 @@ public class TransformServiceTest extends AbstractTestNGSpringContextTests
     @BeforeClass (alwaysRun = true)
     public void dataPreparation() throws Exception
     {
-        adminUserModel = dataUser.getAdminUser();
+        adminUser = dataUser.getAdminUser();
     }
 
     @Test
     public void testRenditionWithMTLSEnabledTest()
     {
         FolderModel folderModel = FolderModel.getRandomFolderModel();
-        FolderModel testFolder = dataContent.usingUser(adminUserModel).usingSite(testSiteModel).createFolder(folderModel);
+        FolderModel testFolder = dataContent.usingUser(adminUser).usingSite(testSiteModel).createFolder(folderModel);
 
         FileModel fileModel = FileModel.getRandomFileModel(TEXT_PLAIN);
-        FileModel testFile = dataContent.usingUser(adminUserModel).usingResource(testFolder).createContent(fileModel);
+        FileModel testFile = dataContent.usingUser(adminUser).usingResource(testFolder).createContent(fileModel);
 
-        RestRenditionInfoModel pdf = restClientAlfresco.authenticateUser(adminUserModel)
-                                                       .withCoreAPI()
-                                                       .usingNode(testFile)
-                                                       .getNodeRenditionUntilIsCreated("pdf");
+        restClient.authenticateUser(adminUser).withCoreAPI().usingNode(testFile).createNodeRendition("pdf");
+        restClient.assertStatusCodeIs(HttpStatus.ACCEPTED);
 
-        restClientAlfresco.assertStatusCodeIs(HttpStatus.ACCEPTED);
-
-        Assert.assertEquals(pdf.getStatus(), "CREATED");
-//        Assert.assertEquals(response.getStatusCode(), "200");
+        Assert.assertEquals(restClient.withCoreAPI().usingNode(testFile).getNodeRenditionUntilIsCreated("pdf").getStatus(), "CREATED");
     }
 }
