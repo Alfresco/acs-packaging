@@ -36,8 +36,8 @@ services:
         -Dhttpclient.config.sharedFileStoreConnector.mTLSEnabled=true
         -Dencryption.ssl.keystore.location=/usr/local/tomcat/shared/classes/alfresco/extension/keystore/alfresco.keystore
         -Dencryption.ssl.truststore.location=/usr/local/tomcat/shared/classes/alfresco/extension/keystore/alfresco.truststore
-        -Dssl-keystore.password=kT9X6oe68t
-        -Dssl-truststore.password=kT9X6oe68t
+        -Dssl-keystore.password=password
+        -Dssl-truststore.password=password
       JAVA_OPTS: >-
         -Dalfresco.port=8082
         -Daos.baseUrlOverwrite=http://localhost:8082/alfresco/aos
@@ -88,22 +88,22 @@ services:
         https://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file
 
       SERVER_SSL_ENABLED: "true"
-      SERVER_SSL_KEY_PASSWORD: "kT9X6oe68t"
+      SERVER_SSL_KEY_PASSWORD: "password"
       SERVER_SSL_KEY_STORE: "file:/transformRouter.keystore"
-      SERVER_SSL_KEY_STORE_PASSWORD: "kT9X6oe68t"
+      SERVER_SSL_KEY_STORE_PASSWORD: "password"
       SERVER_SSL_KEY_STORE_TYPE: "JCEKS"
 
       SERVER_SSL_CLIENT_AUTH: "need"
       SERVER_SSL_TRUST_STORE: "file:/transformRouter.truststore"
-      SERVER_SSL_TRUST_STORE_PASSWORD: "kT9X6oe68t"
+      SERVER_SSL_TRUST_STORE_PASSWORD: "password"
       SERVER_SSL_TRUST_STORE_TYPE: "JCEKS"
 
       CLIENT_SSL_KEY_STORE: "file:/transformRouter.keystore"
-      CLIENT_SSL_KEY_STORE_PASSWORD: "kT9X6oe68t"
+      CLIENT_SSL_KEY_STORE_PASSWORD: "password"
       CLIENT_SSL_KEY_STORE_TYPE: "JCEKS"
 
       CLIENT_SSL_TRUST_STORE: "file:/transformRouter.truststore"
-      CLIENT_SSL_TRUST_STORE_PASSWORD: "kT9X6oe68t"
+      CLIENT_SSL_TRUST_STORE_PASSWORD: "password"
       CLIENT_SSL_TRUST_STORE_TYPE: "JCEKS"
     ports:
       - "8095:8095"
@@ -125,22 +125,22 @@ services:
         https://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file
 
       SERVER_SSL_ENABLED: "true"
-      SERVER_SSL_KEY_PASSWORD: "kT9X6oe68t"
+      SERVER_SSL_KEY_PASSWORD: "password"
       SERVER_SSL_KEY_STORE: "file:/tengineAIO.keystore"
-      SERVER_SSL_KEY_STORE_PASSWORD: "kT9X6oe68t"
+      SERVER_SSL_KEY_STORE_PASSWORD: "password"
       SERVER_SSL_KEY_STORE_TYPE: "JCEKS"
 
       SERVER_SSL_CLIENT_AUTH: "need"
       SERVER_SSL_TRUST_STORE: "file:/tengineAIO.truststore"
-      SERVER_SSL_TRUST_STORE_PASSWORD: "kT9X6oe68t"
+      SERVER_SSL_TRUST_STORE_PASSWORD: "password"
       SERVER_SSL_TRUST_STORE_TYPE: "JCEKS"
 
       CLIENT_SSL_KEY_STORE: "file:/tengineAIO.keystore"
-      CLIENT_SSL_KEY_STORE_PASSWORD: "kT9X6oe68t"
+      CLIENT_SSL_KEY_STORE_PASSWORD: "password"
       CLIENT_SSL_KEY_STORE_TYPE: "JCEKS"
 
       CLIENT_SSL_TRUST_STORE: "file:/tengineAIO.truststore"
-      CLIENT_SSL_TRUST_STORE_PASSWORD: "kT9X6oe68t"
+      CLIENT_SSL_TRUST_STORE_PASSWORD: "password"
       CLIENT_SSL_TRUST_STORE_TYPE: "JCEKS"
     ports:
       - "8090:8090"
@@ -161,22 +161,22 @@ services:
       scheduler.cleanup.interval: 86400000
 
       SERVER_SSL_ENABLED: "true"
-      SERVER_SSL_KEY_PASSWORD: "kT9X6oe68t"
+      SERVER_SSL_KEY_PASSWORD: "password"
       SERVER_SSL_KEY_STORE: "file:/sharedFileStore.keystore"
-      SERVER_SSL_KEY_STORE_PASSWORD: "kT9X6oe68t"
+      SERVER_SSL_KEY_STORE_PASSWORD: "password"
       SERVER_SSL_KEY_STORE_TYPE: "JCEKS"
 
       SERVER_SSL_CLIENT_AUTH: "need"
       SERVER_SSL_TRUST_STORE: "file:/sharedFileStore.truststore"
-      SERVER_SSL_TRUST_STORE_PASSWORD: "kT9X6oe68t"
+      SERVER_SSL_TRUST_STORE_PASSWORD: "password"
       SERVER_SSL_TRUST_STORE_TYPE: "JCEKS"
 
       CLIENT_SSL_KEY_STORE: "file:/sharedFileStore.keystore"
-      CLIENT_SSL_KEY_STORE_PASSWORD: "kT9X6oe68t"
+      CLIENT_SSL_KEY_STORE_PASSWORD: "password"
       CLIENT_SSL_KEY_STORE_TYPE: "JCEKS"
 
       CLIENT_SSL_TRUST_STORE: "file:/sharedFileStore.truststore"
-      CLIENT_SSL_TRUST_STORE_PASSWORD: "kT9X6oe68t"
+      CLIENT_SSL_TRUST_STORE_PASSWORD: "password"
       CLIENT_SSL_TRUST_STORE_TYPE: "JCEKS"
     ports:
       - "8099:8099"
@@ -216,7 +216,7 @@ services:
     environment:
       # Solr needs to know how to register itself with Alfresco
       SOLR_ALFRESCO_HOST: "alfresco"
-      SOLR_ALFRESCO_PORT: "8080"
+      SOLR_ALFRESCO_PORT: "8082"
       # Alfresco needs to know how to call solr
       SOLR_SOLR_HOST: "solr6"
       SOLR_SOLR_PORT: "8983"
