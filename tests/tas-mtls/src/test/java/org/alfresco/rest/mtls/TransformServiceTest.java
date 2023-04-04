@@ -1,59 +1,21 @@
-package org.alfresco.mtls;
+package org.alfresco.rest.mtls;
 
 import static org.alfresco.utility.model.FileType.TEXT_PLAIN;
 
-import org.alfresco.rest.core.RestWrapper;
-import org.alfresco.utility.LogFactory;
-import org.alfresco.utility.data.DataContent;
-import org.alfresco.utility.data.DataSite;
-import org.alfresco.utility.data.DataUserAIS;
+import org.alfresco.rest.MtlsRestTest;
 import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.FolderModel;
-import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
-import org.alfresco.utility.network.ServerHealth;
-import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 @ContextConfiguration ("classpath:alfresco-mtls-context.xml")
-public class TransformServiceTest extends AbstractTestNGSpringContextTests
+public class TransformServiceTest extends MtlsRestTest
 {
-    private static Logger LOGGER = LogFactory.getLogger();
-
-    @Autowired
-    protected ServerHealth serverHealth;
-
-    @Autowired
-    protected RestWrapper restClient;
-
-    @Autowired
-    protected DataUserAIS dataUser;
-
-    @Autowired
-    protected DataSite dataSite;
-
-    @Autowired
-    private DataContent dataContent;
-
-    protected SiteModel testSiteModel;
-
     private UserModel adminUser;
-
-    @BeforeSuite (alwaysRun = true)
-    public void checkServerHealth() throws Exception
-    {
-        super.springTestContextPrepareTestInstance();
-        serverHealth.isServerReachable();
-        serverHealth.assertServerIsOnline();
-        testSiteModel = dataSite.createPublicRandomSite();
-    }
 
     @BeforeClass (alwaysRun = true)
     public void dataPreparation()
