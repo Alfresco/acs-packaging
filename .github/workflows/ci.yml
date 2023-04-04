@@ -115,11 +115,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - testSuite: REST API part1
-            pom-dir: tests/tas-restapi
-            profiles: all-tas-tests,run-restapi-part1
-            compose-file: docker-compose-rest-api-tests.yml
-            deploy-timeout: 60
+#          - testSuite: REST API part1
+#            pom-dir: tests/tas-restapi
+#            profiles: all-tas-tests,run-restapi-part1
+#            compose-file: docker-compose-rest-api-tests.yml
+#            deploy-timeout: 60
 #          - testSuite: REST API part2
 #            pom-dir: tests/tas-restapi
 #            profiles: all-tas-tests,run-restapi-part2
@@ -155,11 +155,11 @@ jobs:
 #            profiles: all-tas-tests
 #            compose-file: docker-compose-minimal.yml
 #            deploy-timeout: 20
-#          - testSuite: Integration
-#            pom-dir: tests/tas-integration
-#            profiles: all-tas-tests
-#            compose-file: docker-compose-integration-tests.yml
-#            deploy-timeout: 30
+          - testSuite: Integration
+            pom-dir: tests/tas-integration
+            profiles: all-tas-tests
+            compose-file: docker-compose-integration-tests.yml
+            deploy-timeout: 30
 #          - testSuite: LDAP
 #            pom-dir: tests/tas-integration
 #            profiles: run-ldap
