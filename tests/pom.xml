@@ -21,6 +21,7 @@
         <module>tas-all-amps</module>
         <module>tas-elasticsearch</module>
         <module>tas-distribution-zip</module>
+        <module>tas-mtls</module>
     </modules>
 
     <properties>
