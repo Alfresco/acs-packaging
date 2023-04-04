@@ -35,6 +35,7 @@ env:
   ALF_LICENCE_LOCAL_PATH: /tmp/licence.lic
   PYTHON_VERSION: 3.7.15
   DTAS_VERSION: v1.1
+  ALFRESCO_ARM_64_VERSION: latest
 
 jobs:
 #  veracode:
@@ -137,7 +138,11 @@ jobs:
         run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-integration"
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
-
+      - name: "Clean up environment"
+        run: |
+          docker container stop $(docker container ls -aq)
+         
+      
 #  tas_tests:
 #    name: ${{ matrix.testSuite }} TAS tests
 #    runs-on: ubuntu-latest
