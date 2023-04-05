@@ -33,8 +33,8 @@ services:
         -Dmetadata-keystore.metadata.password=oKIWzVdEdA
         -Dmetadata-keystore.metadata.algorithm=DESede
       JAVA_OPTS: >-
-        -Dalfresco.port=8082
-        -Dalfresco.host=localhost
+        -Dshare.host=127.0.0.1
+        -Dshare.port=8082
         -Daos.baseUrlOverwrite=http://localhost:8082/alfresco/aos
         -Ddb.driver=org.postgresql.Driver
         -Ddb.username=alfresco
@@ -51,15 +51,11 @@ services:
         -Dlocal.transform.service.enabled=true
         -Dtransformer.strict.mimetype.check=true
         -Dcontent.transformer.retryOn.different.mimetype=true
-        -Dshare.host=127.0.0.1
-        -Dshare.port=8082
-        -Dalfresco.host=localhost
+        -Dtransform.service.url=https://transform-router:8095
+        -DlocalTransform.core-aio.url=https://transform-core-aio:8090/
         -Dmessaging.broker.url="failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true"
         -Ddeployment.method=DOCKER_COMPOSE
-        -Dtransform.service.enabled=false
-        -Dtransform.service.url=https://transform-router:8095
         -Dsfs.url=https://shared-file-store:8099/
-        -DlocalTransform.core-aio.url=https://transform-core-aio:8090/
         -Dcsrf.filter.enabled=false
         -Ddsync.service.uris=http://localhost:9090/alfresco
         -Dhttpclient.config.transform.mTLSEnabled=true
