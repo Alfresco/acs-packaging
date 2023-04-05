@@ -32,12 +32,6 @@ services:
         -Dmetadata-keystore.aliases=metadata
         -Dmetadata-keystore.metadata.password=oKIWzVdEdA
         -Dmetadata-keystore.metadata.algorithm=DESede
-        -Dhttpclient.config.transform.mTLSEnabled=true
-        -Dhttpclient.config.sharedFileStoreConnector.mTLSEnabled=true
-        -Dencryption.ssl.keystore.location=/usr/local/tomcat/shared/classes/alfresco/extension/keystore/alfresco.keystore
-        -Dencryption.ssl.truststore.location=/usr/local/tomcat/shared/classes/alfresco/extension/keystore/alfresco.truststore
-        -Dssl-keystore.password=password
-        -Dssl-truststore.password=password
       JAVA_OPTS: >-
         -Dalfresco.port=8082
         -Dalfresco.host=localhost
@@ -68,6 +62,12 @@ services:
         -DlocalTransform.core-aio.url=https://transform-core-aio:8090/
         -Dcsrf.filter.enabled=false
         -Ddsync.service.uris=http://localhost:9090/alfresco
+        -Dhttpclient.config.transform.mTLSEnabled=true
+        -Dhttpclient.config.sharedFileStoreConnector.mTLSEnabled=true
+        -Dencryption.ssl.keystore.location=/usr/local/tomcat/shared/classes/alfresco/extension/keystore/alfresco.keystore
+        -Dencryption.ssl.truststore.location=/usr/local/tomcat/shared/classes/alfresco/extension/keystore/alfresco.truststore
+        -Dssl-keystore.password=password
+        -Dssl-truststore.password=password
         -XX:MinRAMPercentage=50
         -XX:MaxRAMPercentage=80
     volumes:
