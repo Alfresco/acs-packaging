@@ -144,7 +144,7 @@ jobs:
           docker container stop $(docker container ls -aq)
           docker container rm $(docker container ls -aq)
           docker volume rm -f $(docker volume ls -q)
-          docker image rm $(docker images)
+#          docker image rm $(docker images)
 
 #  tas_tests:
 #    name: ${{ matrix.testSuite }} TAS tests
