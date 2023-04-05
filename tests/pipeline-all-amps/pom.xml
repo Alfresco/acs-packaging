@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>content-repository-tests</artifactId>
-        <version>7.4.0-A17-SNAPSHOT</version>
+        <version>7.4.0-A28-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -16,6 +16,10 @@
         <module>share</module>
     </modules>
 
+    <properties>
+        <skipDockerImage>true</skipDockerImage>
+    </properties>
+
     <build>
         <pluginManagement>
             <plugins>
@@ -23,10 +27,16 @@
                     <groupId>io.fabric8</groupId>
                     <artifactId>docker-maven-plugin</artifactId>
                     <configuration combine.self="override">
+                        <skip>${skipDockerImage}</skip>
                         <images>
                             <image>
                                 <name>alfresco/${project.artifactId}:${image.tag}</name>
-                                <registry>${image.registry}</registry>
+                                <build>
+                                    <args>
+                                        <BASE_IMAGE>${base.image}</BASE_IMAGE>
+                                    </args>
+                                    <contextDir>${project.basedir}</contextDir>
+                                </build>
                             </image>
                         </images>
                     </configuration>
@@ -37,6 +47,29 @@
                             <goals>
                                 <goal>build</goal>
                             </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <executions>
+                        <execution>
+                            <id>prepare-buildx</id>
+                            <phase>generate-sources</phase>
+                            <goals>
+                                <goal>exec</goal>
+                            </goals>
+                            <configuration>
+                                <skip>${skipDockerImage}</skip>
+                                <executable>${scripts.directory}/prepare_buildx.sh</executable>
+                                <arguments>
+                                    <argument>${builder.name}</argument>
+                                    <argument>${image.registry}</argument>
+                                    <argument>${image.name}</argument>
+                                    <argument>${image.tag}</argument>
+                                </arguments>
+                            </configuration>
                         </execution>
                     </executions>
                 </plugin>
@@ -57,6 +90,52 @@
                 </plugins>
             </build>
         </profile>
+
+        <profile>
+            <id>build-multiarch-docker-images</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>io.fabric8</groupId>
+                        <artifactId>docker-maven-plugin</artifactId>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>${local.registry}/alfresco/${project.artifactId}:${image.tag}</name>
+                                    <build>
+                                        <buildx>
+                                            <builderName>${builder.name}</builderName>
+                                            <platforms>
+                                                <platform>linux/amd64</platform>
+                                                <platform>linux/arm64</platform>
+                                            </platforms>
+                                        </buildx>
+                                        <dockerFileDir>${project.basedir}</dockerFileDir>
+                                        <args>
+                                            <BASE_IMAGE>${local.registry}/${base.image}</BASE_IMAGE>
+                                        </args>
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>build-push-image</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>build</goal>
+                                    <goal>push</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <groupId>org.codehaus.mojo</groupId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <profile>
             <id>push-docker-images</id>
             <!-- publishes "image:<acs.version>-<build-number>" on Quay -->
@@ -68,15 +147,40 @@
                     <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>${image.registry}/alfresco/${project.artifactId}:${image.tag}</name>
+                                    <build>
+                                        <buildx>
+                                            <builderName>${builder.name}</builderName>
+                                            <platforms>
+                                                <platform>linux/amd64</platform>
+                                                <platform>linux/arm64</platform>
+                                            </platforms>
+                                        </buildx>
+                                        <dockerFileDir>${project.basedir}</dockerFileDir>
+                                        <args>
+                                            <BASE_IMAGE>${local.registry}/${base.image}</BASE_IMAGE>
+                                        </args>
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
                         <executions>
                             <execution>
-                                <id>push-image</id>
+                                <id>build-push-image</id>
                                 <phase>install</phase>
                                 <goals>
+                                    <goal>build</goal>
                                     <goal>push</goal>
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <groupId>org.codehaus.mojo</groupId>
                     </plugin>
                 </plugins>
             </build>
@@ -92,15 +196,40 @@
                     <plugin>
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>${image.registry}/alfresco/${project.artifactId}:${image.tag}</name>
+                                    <build>
+                                        <buildx>
+                                            <builderName>${builder.name}</builderName>
+                                            <platforms>
+                                                <platform>linux/amd64</platform>
+                                                <platform>linux/arm64</platform>
+                                            </platforms>
+                                        </buildx>
+                                        <dockerFileDir>${project.basedir}</dockerFileDir>
+                                        <args>
+                                            <BASE_IMAGE>${local.registry}/${base.image}</BASE_IMAGE>
+                                        </args>
+                                    </build>
+                                </image>
+                            </images>
+                        </configuration>
                         <executions>
                             <execution>
-                                <id>push-image</id>
-                                <phase>deploy</phase>
+                                <id>build-push-image</id>
+                                <phase>install</phase>
                                 <goals>
+                                    <goal>build</goal>
                                     <goal>push</goal>
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <groupId>org.codehaus.mojo</groupId>
                     </plugin>
                 </plugins>
             </build>

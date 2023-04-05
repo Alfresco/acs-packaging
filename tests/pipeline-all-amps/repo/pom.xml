@@ -5,11 +5,17 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>pipeline-all-amps</artifactId>
-        <version>7.4.0-A17-SNAPSHOT</version>
+        <version>7.4.0-A28-SNAPSHOT</version>
     </parent>
 
     <artifactId>alfresco-pipeline-all-amps-repo</artifactId>
     <packaging>pom</packaging>
+
+    <properties>
+        <skipDockerImage>false</skipDockerImage>
+        <base.image>alfresco/alfresco-enterprise-repo-base:${repo.image.tag}</base.image>
+        <scripts.directory>${project.parent.parent.parent.basedir}/scripts/dev</scripts.directory>
+    </properties>
 
     <build>
         <plugins>

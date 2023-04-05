@@ -188,6 +188,33 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
 
     @TestRail (section = TestGroup.SEARCH,
             executionType = ExecutionType.REGRESSION,
+            description = "Verify that wildcard field queries work inside quotes with Elasticsearch.")
+    @Test (groups = TestGroup.SEARCH)
+    public void wildcardWorksInsideQuotes()
+    {
+        searchQueryService.expectResultsFromQuery(req("cm:name:\"" + PREFIX + "user1*\""), userMultiSite, FILE_2_NAME, FILE_3_NAME);
+    }
+
+    @TestRail (section = TestGroup.SEARCH,
+            executionType = ExecutionType.REGRESSION,
+            description = "Verify that wildcard field queries work without quotes with Elasticsearch.")
+    @Test (groups = TestGroup.SEARCH)
+    public void wildcardWorksWithoutQuotes()
+    {
+        searchQueryService.expectResultsFromQuery(req("cm:name:" + PREFIX + "user1*"), userMultiSite, FILE_2_NAME, FILE_3_NAME);
+    }
+
+    @TestRail (section = TestGroup.SEARCH,
+            executionType = ExecutionType.REGRESSION,
+            description = "Verify that wildcard queries work against noderefs.")
+    @Test (groups = TestGroup.SEARCH)
+    public void wildcardNodeRefQuery()
+    {
+        searchQueryService.expectResultsFromQuery(req("ANCESTOR:\"" + siteModel2.getGuid().substring(0, 10) + "*\""), userMultiSite, "documentLibrary", FILE_2_NAME);
+    }
+
+    @TestRail (section = TestGroup.SEARCH,
+            executionType = ExecutionType.REGRESSION,
             description = "Verify that a range query can return a document from Elasticsearch.")
     @Test (groups = TestGroup.SEARCH)
     public void findFileWithRangeQuery()

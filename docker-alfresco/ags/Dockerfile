@@ -1,3 +1,4 @@
+ARG BASE_IMAGE
 # BUILD STAGE AGS
 FROM debian:11-slim AS AGSBUILDER
 
@@ -11,8 +12,8 @@ COPY target/gs-api-explorer-*.war /build
 RUN unzip -q /build/gs-api-explorer-*.war -d /build/gs-api-explorer && \
     chmod -R g-w,o= /build
 
-# AcTUAL IMAGE
-FROM alfresco/alfresco-content-repository:${image.tag}
+# ACTUAL IMAGE
+FROM ${BASE_IMAGE}
 
 # Set docker variables
 ARG GROUPNAME=Alfresco
