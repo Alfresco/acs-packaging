@@ -5,9 +5,9 @@ import static java.util.stream.Collectors.joining;
 
 import static org.alfresco.elasticsearch.SearchQueryService.req;
 
+import java.util.Arrays;
 import javax.json.Json;
 import javax.json.JsonObject;
-import java.util.Arrays;
 
 import org.alfresco.elasticsearch.SearchQueryService;
 import org.alfresco.elasticsearch.utility.ElasticsearchRESTHelper;
@@ -34,8 +34,7 @@ import org.testng.annotations.Test;
 /**
  * Tests to check that paths are updated correctly.
  * <p>
- * Tests in this class require waiting for index refresh to happen and so should be run in parallel
- * (see {@link ElasticsearchRESTHelper}).
+ * Path updates require waiting for an index refresh to happen and so have been designed to be run in parallel.
  */
 @ContextConfiguration (locations = "classpath:alfresco-elasticsearch-context.xml",
         initializers = AlfrescoStackInitializer.class)
