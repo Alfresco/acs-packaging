@@ -35,6 +35,7 @@ public class TransformServiceTest extends MtlsRestTest
         restClient.authenticateUser(adminUser).withCoreAPI().usingNode(testFile).createNodeRendition("pdf");
         restClient.assertStatusCodeIs(HttpStatus.ACCEPTED);
 
-        Assert.assertEquals(restClient.withCoreAPI().usingNode(testFile).getNodeRenditionUntilIsCreated("pdf").getStatus(), "CREATED");
+        String status = restClient.withCoreAPI().usingNode(testFile).getNodeRenditionUntilIsCreated("pdf").getStatus();
+        Assert.assertEquals(status, "CREATED");
     }
 }
