@@ -1,7 +1,6 @@
 package org.alfresco.rest;
 
 import javax.net.ssl.SSLHandshakeException;
-import java.io.IOException;
 import java.lang.reflect.Method;
 
 import org.alfresco.rest.core.RestWrapper;
@@ -11,8 +10,6 @@ import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUserAIS;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.network.ServerHealth;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -72,19 +69,19 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
     }
 
     @Test
-    public void checkIfMtlsIsEnabledForTransformService() throws IOException
+    public void checkIfMtlsIsEnabledForTransformService()
     {
         Assert.assertThrows(SSLHandshakeException.class, () ->client.execute(new HttpGet("https://localhost:8090")));
     }
 
     @Test
-    public void checkIfMtlsIsEnabledForTransformRouter() throws IOException
+    public void checkIfMtlsIsEnabledForTransformRouter()
     {
         Assert.assertThrows(SSLHandshakeException.class, () ->client.execute(new HttpGet("https://localhost:8095")));
     }
 
     @Test
-    public void checkIfMtlsIsEnabledForSharedFileStorage() throws IOException
+    public void checkIfMtlsIsEnabledForSharedFileStorage()
     {
         Assert.assertThrows(SSLHandshakeException.class, () -> client.execute(new HttpGet("https://localhost:8099")));
     }
