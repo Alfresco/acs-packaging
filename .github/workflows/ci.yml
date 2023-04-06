@@ -436,21 +436,21 @@ jobs:
 
   tas_test_with_mtls:
     name: ${{ matrix.testSuite }} TAS tests with mutal TLS
-      runs-on: ubuntu-latest
-      if: >
-        github.event_name == 'pull_request' &&
-        !contains(github.event.head_commit.message, '[skip mtls]') &&
-        !contains(github.event.head_commit.message, '[skip tests]')
-      strategy:
-        fail-fast: false
-        matrix:
-          include:
-            - testSuite: Transform Service Mutal TLS
-              pom-dir: tests/tas-mtls
-              profiles: run-mtls
-              compose-file: docker-compose-mtls.yml
-              mtls: true
-              deploy-timeout: 10
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'pull_request' &&
+      !contains(github.event.head_commit.message, '[skip mtls]') &&
+      !contains(github.event.head_commit.message, '[skip tests]')
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - testSuite: Transform Service Mutal TLS
+            pom-dir: tests/tas-mtls
+            profiles: run-mtls
+            compose-file: docker-compose-mtls.yml
+            mtls: true
+            deploy-timeout: 10
     steps:
       - uses: actions/checkout@v3
         with:
