@@ -14,6 +14,7 @@ import org.alfresco.utility.network.ServerHealth;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,8 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
 
     protected SiteModel testSiteModel;
 
+    CloseableHttpClient client = HttpClients.createMinimal();
+
     @BeforeSuite (alwaysRun = true)
     public void checkServerHealth() throws Exception
     {
@@ -72,29 +75,29 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
     public void checkIfMtlsIsEnabledForTransformService() throws IOException
     {
         CloseableHttpResponse transformServiceResponse;
-        transformServiceResponse = HttpClients.createMinimal().execute(new HttpGet("http://localhost:8090"));
+        transformServiceResponse = client.execute(new HttpGet("http://localhost:8090"));
         Assert.assertEquals(transformServiceResponse.getStatusLine().getStatusCode(), HttpStatus.SC_BAD_REQUEST);
 
-        Assert.assertThrows(SSLHandshakeException.class, () ->HttpClients.createMinimal().execute(new HttpGet("https://localhost:8090")));
+        Assert.assertThrows(SSLHandshakeException.class, () ->client.execute(new HttpGet("https://localhost:8090")));
     }
 
     @Test
     public void checkIfMtlsIsEnabledForTransformRouter() throws IOException
     {
         CloseableHttpResponse transformServiceResponse;
-        transformServiceResponse = HttpClients.createMinimal().execute(new HttpGet("http://localhost:8095"));
+        transformServiceResponse = client.execute(new HttpGet("http://localhost:8095"));
         Assert.assertEquals(transformServiceResponse.getStatusLine().getStatusCode(), HttpStatus.SC_BAD_REQUEST);
 
-        Assert.assertThrows(SSLHandshakeException.class, () ->HttpClients.createMinimal().execute(new HttpGet("https://localhost:8095")));
+        Assert.assertThrows(SSLHandshakeException.class, () ->client.execute(new HttpGet("https://localhost:8095")));
     }
 
     @Test
     public void checkIfMtlsIsEnabledForSharedFileStorage() throws IOException
     {
         CloseableHttpResponse transformServiceResponse;
-        transformServiceResponse = HttpClients.createMinimal().execute(new HttpGet("http://localhost:8099"));
+        transformServiceResponse = client.execute(new HttpGet("http://localhost:8099"));
         Assert.assertEquals(transformServiceResponse.getStatusLine().getStatusCode(), HttpStatus.SC_BAD_REQUEST);
 
-        Assert.assertThrows(SSLHandshakeException.class, () ->HttpClients.createMinimal().execute(new HttpGet("https://localhost:8099")));
+        Assert.assertThrows(SSLHandshakeException.class, () -> client.execute(new HttpGet("https://localhost:8099")));
     }
 }
