@@ -71,13 +71,13 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
     @Test
     public void checkIfMtlsIsEnabledForTransformService()
     {
-        Assert.assertThrows(SSLHandshakeException.class, () ->client.execute(new HttpGet("https://localhost:8090")));
+        Assert.assertThrows(SSLHandshakeException.class, () -> client.execute(new HttpGet("https://localhost:8090")));
     }
 
     @Test
     public void checkIfMtlsIsEnabledForTransformRouter()
     {
-        Assert.assertThrows(SSLHandshakeException.class, () ->client.execute(new HttpGet("https://localhost:8095")));
+        Assert.assertThrows(SSLHandshakeException.class, () -> client.execute(new HttpGet("https://localhost:8095")));
     }
 
     @Test
