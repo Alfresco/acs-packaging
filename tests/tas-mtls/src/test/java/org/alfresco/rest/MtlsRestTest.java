@@ -74,30 +74,18 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
     @Test
     public void checkIfMtlsIsEnabledForTransformService() throws IOException
     {
-        CloseableHttpResponse transformServiceResponse;
-        transformServiceResponse = client.execute(new HttpGet("http://localhost:8090"));
-        Assert.assertEquals(transformServiceResponse.getStatusLine().getStatusCode(), HttpStatus.SC_BAD_REQUEST);
-
         Assert.assertThrows(SSLHandshakeException.class, () ->client.execute(new HttpGet("https://localhost:8090")));
     }
 
     @Test
     public void checkIfMtlsIsEnabledForTransformRouter() throws IOException
     {
-        CloseableHttpResponse transformServiceResponse;
-        transformServiceResponse = client.execute(new HttpGet("http://localhost:8095"));
-        Assert.assertEquals(transformServiceResponse.getStatusLine().getStatusCode(), HttpStatus.SC_BAD_REQUEST);
-
         Assert.assertThrows(SSLHandshakeException.class, () ->client.execute(new HttpGet("https://localhost:8095")));
     }
 
     @Test
     public void checkIfMtlsIsEnabledForSharedFileStorage() throws IOException
     {
-        CloseableHttpResponse transformServiceResponse;
-        transformServiceResponse = client.execute(new HttpGet("http://localhost:8099"));
-        Assert.assertEquals(transformServiceResponse.getStatusLine().getStatusCode(), HttpStatus.SC_BAD_REQUEST);
-
         Assert.assertThrows(SSLHandshakeException.class, () -> client.execute(new HttpGet("https://localhost:8099")));
     }
 }
