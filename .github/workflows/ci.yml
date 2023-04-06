@@ -438,7 +438,6 @@ jobs:
     name: ${{ matrix.testSuite }} TAS tests with mutal TLS
     runs-on: ubuntu-latest
     if: >
-      github.event_name == 'pull_request' &&
       !contains(github.event.head_commit.message, '[skip mtls]') &&
       !contains(github.event.head_commit.message, '[skip tests]')
     strategy:
