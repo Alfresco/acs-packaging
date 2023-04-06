@@ -196,30 +196,11 @@ jobs:
         run: bash ./scripts/ci/cleanup_cache.sh
 
   cmis_tas_tests_elasticsearch:
-    name: CMIS TAS tests - Elastic Search | ${{ matrix.testSuite }} (CMIS API)
+    name: CMIS TAS tests - Elastic Search (CMIS API)
     runs-on: ubuntu-latest
     if: >
       !contains(github.event.head_commit.message, '[skip search]') &&
       !contains(github.event.head_commit.message, '[skip tests]')
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - testSuite: postgreSQL
-            db-properties: -Ddb.driver=org.postgresql.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:postgresql://database:5432/alfresco
-            compose-file: docker-compose-postgres.yml
-          - testSuite: MySQL
-            db-properties: -Ddb.driver=com.mysql.cj.jdbc.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:mysql://database:3306/alfresco
-            compose-file: docker-compose-mysql.yml
-          - testSuite: MariaDB 10.6
-            db-properties: -Ddb.driver=org.mariadb.jdbc.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:mariadb://database:3306/alfresco
-            compose-file: docker-compose-mariadb.yml
-          - testSuite: MS SQL
-            db-properties: -Ddb.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver -Ddb.username=sa -Ddb.password=Alfresco1 -Ddb.url=jdbc:sqlserver://database:1433 -Ddb.txn.isolation=4096 -Ddb.pool.max=275
-            compose-file: docker-compose-mssql.yml
-          - testSuite: Oracle 19.3.0-ee
-            db-properties: -Ddb.driver=oracle.jdbc.OracleDriver -Ddb.name=alfresco -Ddb.url=jdbc:oracle:thin:@database:1521/PDB1 -Ddb.username=alfresco -Ddb.password=alfresco
-            compose-file: docker-compose-oracle.yml
     steps:
       - uses: actions/checkout@v3
         with:
@@ -232,13 +213,9 @@ jobs:
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
-      - name: "Set up the environment configuration"
-        run: |
-          echo "CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest" >> $GITHUB_ENV
-          echo "DATABASE_ENV_PROPERTIES=${{matrix.db-properties}}" >> $GITHUB_ENV
       - name: "Run the environment"
         run: |
-          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-cmis-elastic-tests.yml ${{ env.TAS_ENVIRONMENT }}/${{matrix.compose-file}}
+          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-cmis-elastic-tests.yml
           ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       - name: "Run tests"
         id: tests
@@ -324,54 +301,18 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - testSuite: Elasticsearch postgreSQL
+          - testSuite: Elasticsearch
             profiles: all-tas-tests,elastic
             search-engine-type: elasticsearch
-            db-type: postgresql
-          - testSuite: Elasticsearch MySQL
-            profiles: all-tas-tests,elastic
-            search-engine-type: elasticsearch
-            db-type: mysql
-          - testSuite: Elasticsearch Maria DB 10.6
-            profiles: all-tas-tests,elastic
-            search-engine-type: elasticsearch
-            db-type: mariadb
-          - testSuite: Elasticsearch MS SQL
-            profiles: all-tas-tests,elastic
-            search-engine-type: elasticsearch
-            db-type: mssql
-          - testSuite: Elasticsearch Oracle 19.3.0-ee
-            profiles: all-tas-tests,elastic
-            search-engine-type: elasticsearch
-            db-type: oracle
           - testSuite: Opensearch
             profiles: all-tas-tests,elastic
             search-engine-type: opensearch
-            db-type: postgresql
-          - testSuite: Elasticsearch Basic Auth postgreSQL
+          - testSuite: Elasticsearch Basic Auth
             profiles: all-tas-tests,elastic-basic-auth
             search-engine-type: elasticsearch
-            db-type: postgresql
-          - testSuite: Elasticsearch Basic Auth MySQL
-            profiles: all-tas-tests,elastic-basic-auth
-            search-engine-type: elasticsearch
-            db-type: mysql
-          - testSuite: Elasticsearch Basic Auth MariaDB 10.6
-            profiles: all-tas-tests,elastic-basic-auth
-            search-engine-type: elasticsearch
-            db-type: mariadb
-          - testSuite: Elasticsearch Basic Auth MS SQL
-            profiles: all-tas-tests,elastic-basic-auth
-            search-engine-type: elasticsearch
-            db-type: mssql
-          - testSuite: Elasticsearch Basic Auth Oracle 19.3.0-ee
-            profiles: all-tas-tests,elastic-basic-auth
-            search-engine-type: elasticsearch
-            db-type: oracle
           - testSuite: Opensearch Basic Auth
             profiles: all-tas-tests,elastic-basic-auth
             search-engine-type: opensearch
-            db-type: postgresql
     steps:
       - uses: actions/checkout@v3
         with:
@@ -386,7 +327,7 @@ jobs:
           bash ./scripts/ci/build.sh
       - name: "Run tests"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        run: mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -P${{ matrix.profiles }} -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}" "-Ddatabase.type=${{ matrix.db-type }}" -Dindeximage="alfresco-es-indexing-jdbc:latest" -Dreindeximage="alfresco-es-reindexing-jdbc:latest" -Drepoimage="alfresco-repository-databases:latest"
+        run: mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -P${{ matrix.profiles }} -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}"
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
@@ -426,7 +367,7 @@ jobs:
         run: aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
       - name: "Run tests"
         timeout-minutes: 30
-        run: mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}" "-Ddatabase.type=postgresql" "-Dindeximage=alfresco-es-indexing-jdbc:latest" "-Dreindeximage=alfresco-es-reindexing-jdbc:latest" "-Drepoimage=alfresco-repository-databases:latest"
+        run: mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}"
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
