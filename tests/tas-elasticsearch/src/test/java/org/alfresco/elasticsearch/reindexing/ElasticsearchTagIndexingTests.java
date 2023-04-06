@@ -1,7 +1,7 @@
 package org.alfresco.elasticsearch.reindexing;
 
 import static org.alfresco.elasticsearch.SearchQueryService.req;
-import static org.testng.Assert.assertEquals;
+import static org.springframework.http.HttpStatus.OK;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
@@ -9,14 +9,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.alfresco.dataprep.AlfrescoHttpClient;
 import org.alfresco.dataprep.AlfrescoHttpClientFactory;
 import org.alfresco.elasticsearch.SearchQueryService;
 import org.alfresco.rest.core.RestWrapper;
+import org.alfresco.rest.model.RestTagModel;
 import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.tas.AlfrescoStackInitializer;
 import org.alfresco.utility.data.DataContent;
@@ -32,14 +31,10 @@ import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.report.log.Step;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPut;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 @ContextConfiguration (locations = "classpath:alfresco-elasticsearch-context.xml",
@@ -88,7 +83,6 @@ public class ElasticsearchTagIndexingTests extends AbstractTestNGSpringContextTe
     @TestRail (section = { TestGroup.SEARCH, TestGroup.TAGS }, executionType = ExecutionType.REGRESSION,
             description = "Verify the TAG queries work correctly")
     @Test (groups = { TestGroup.SEARCH, TestGroup.TAGS, TestGroup.REGRESSION })
-    @Ignore
     public void testTAGUseCases()
     {
         final String tag1 = unique("TAG1");
@@ -257,11 +251,9 @@ public class ElasticsearchTagIndexingTests extends AbstractTestNGSpringContextTe
 
     private void renameTag(String tagId, String newName)
     {
-        final AlfrescoHttpClient client = alfrescoHttpClientFactory.getObject();
-        final HttpPut put = new HttpPut(client.getApiVersionUrl() + "tags/" + tagId);
-        final UserModel adminUser = dataContent.usingAdmin().getCurrentUser();
-        HttpResponse response = client.executeAndRelease(adminUser.getUsername(), adminUser.getPassword(), new JSONObject(Map.of("tag", newName)), put);
-        assertEquals(response.getStatusLine().getStatusCode(), 200, "Expecting tag modification to succeed.");
+        RestTagModel tag = RestTagModel.builder().id(tagId).create();
+        RestTagModel update = restClient.authenticateUser(dataContent.getAdminUser()).withCoreAPI().usingTag(tag).update(newName);
+        restClient.assertStatusCodeIs(OK);
     }
 
     private static ContentModel contentRoot()

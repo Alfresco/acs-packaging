@@ -65,6 +65,13 @@ alias  entR='(cd alfresco-enterprise-repo  && mvn clean install $AMPS -DskipTest
 alias  entS='(cd alfresco-enterprise-share && mvn clean install $AMPS                  -DskipTests -Dmaven.javadoc.skip=true)'
 alias  entP='(cd acs-packaging             && mvn clean install $AMPS)'
 
+alias comRd='(cd alfresco-community-repo   && mvn clean install $AMPS -DskipTests=true                                       -Dversion.edition=Community                 -Pbuild-docker-images -Dimage.tag=latest)'
+alias comSd='(cd alfresco-enterprise-share && mvn clean install $AMPS -DskipTests=true -DskipTests -Dmaven.javadoc.skip=true                                             -Pbuild-docker-images -Dimage.tag=latest -Drepo.image.tag=latest)'
+alias comPd='(cd acs-community-packaging   && mvn clean install $AMPS -DskipTests=true             -Dmaven.javadoc.skip=true                                             -Pbuild-docker-images -Dimage.tag=latest -Drepo.image.tag=latest -Dshare.image.tag=latest)'
+alias entRd='(cd alfresco-enterprise-repo  && mvn clean install $AMPS -DskipTests=true             -Dmaven.javadoc.skip=true                                             -Pbuild-docker-images -Dimage.tag=latest                       )'
+alias entSd='(cd alfresco-enterprise-share && mvn clean install $AMPS -DskipTests=true -DskipTests -Dmaven.javadoc.skip=true                                             -Pbuild-docker-images -Dimage.tag=latest -Drepo.image.tag=latest)'
+alias entPd='(cd acs-packaging             && mvn clean install $AMPS -DskipTests=true                                                                                   -Pbuild-docker-images -Dimage.tag=latest -Drepo.image.tag=latest -Dshare.image.tag=latest)'
+
 alias comRD='(cd alfresco-community-repo   && mvn clean install $AMPS -DskipTests=true                                       -Dversion.edition=Community -Pall-tas-tests -Pbuild-docker-images -Dimage.tag=latest)'
 alias comSD='(cd alfresco-enterprise-share && mvn clean install $AMPS -DskipTests=true -DskipTests -Dmaven.javadoc.skip=true                             -Pall-tas-tests -Pbuild-docker-images -Dimage.tag=latest -Drepo.image.tag=latest)'
 alias comPD='(cd acs-community-packaging   && mvn clean install $AMPS -DskipTests=true             -Dmaven.javadoc.skip=true                             -Pall-tas-tests -Pbuild-docker-images -Dimage.tag=latest -Drepo.image.tag=latest -Dshare.image.tag=latest)'
