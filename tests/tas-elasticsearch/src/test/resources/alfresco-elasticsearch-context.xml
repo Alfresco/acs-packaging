@@ -11,5 +11,6 @@
 	
 	<import resource="classpath:dataprep-context.xml" />
 
+	<bean id="elasticsearchRESTHelper" class="org.alfresco.elasticsearch.utility.ElasticsearchRESTHelper" />
 	<bean id="searchQueryService" class="org.alfresco.elasticsearch.SearchQueryService" />
 </beans>

@@ -16,7 +16,7 @@
     <profile>
       <id>elastic</id>
       <properties>
-        <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/elasticsearch-suite.xml</suiteXmlFile>
+        <suiteXmlFile>${project.basedir}/src/test/resources/test-suites/standard-elasticsearch-suites.xml</suiteXmlFile>
         <search.engine.type />
         <database.type />
       </properties>
