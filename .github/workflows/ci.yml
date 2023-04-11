@@ -53,6 +53,14 @@ jobs:
             profiles: run-mtls
             compose-file: docker-compose-mtls.yml
             mtls: true
+            script: generate_keystores.sh
+            deploy-timeout: 10
+          - testSuite: Transform Service Mutal TLS
+            pom-dir: tests/tas-mtls
+            profiles: run-mtls
+            compose-file: docker-compose-mtls.yml
+            mtls: true
+            script: generate_keystores_wrong_hostnames.sh
             deploy-timeout: 10
     steps:
       - uses: actions/checkout@v3
@@ -70,7 +78,7 @@ jobs:
         if: ${{ matrix.mtls }}
         run: |
           git clone -b "master" --depth=1 "https://${{ secrets.BOT_GITHUB_USERNAME }}:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/Alfresco/alfresco-ssl-generator.git"
-          bash ./scripts/ci/generate_keystores_wrong_hostnames.sh
+          bash ./scripts/ci/${{ matrix.script }}
       - name: "Set up the environment"
         run: |
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/${{ matrix.compose-file }}
