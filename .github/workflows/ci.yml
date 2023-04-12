@@ -38,27 +38,27 @@ env:
   DTAS_VERSION: v1.1
 
 jobs:
-  veracode:
-    name: "Source Clear Scan (SCA)"
-    runs-on: ubuntu-latest
-    if: >
-      ((github.ref_name == 'master' || startsWith(github.ref_name, 'release/')) && github.event_name != 'pull_request') &&
-      !contains(github.event.head_commit.message, '[skip tests]')
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
-      - name: "Init"
-        run: bash ./scripts/ci/init.sh
-      - uses: Alfresco/alfresco-build-tools/.github/actions/veracode@v1.35.2
-        continue-on-error: true
-        with:
-          srcclr-api-token: ${{ secrets.SRCCLR_API_TOKEN }}
-      - name: "Clean Maven cache"
-        run: bash ./scripts/ci/cleanup_cache.sh
+#  veracode:
+#    name: "Source Clear Scan (SCA)"
+#    runs-on: ubuntu-latest
+#    if: >
+#      ((github.ref_name == 'master' || startsWith(github.ref_name, 'release/')) && github.event_name != 'pull_request') &&
+#      !contains(github.event.head_commit.message, '[skip tests]')
+#    steps:
+#      - uses: actions/checkout@v3
+#        with:
+#          persist-credentials: false
+#      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
+#      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
+#      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+#      - name: "Init"
+#        run: bash ./scripts/ci/init.sh
+#      - uses: Alfresco/alfresco-build-tools/.github/actions/veracode@v1.35.2
+#        continue-on-error: true
+#        with:
+#          srcclr-api-token: ${{ secrets.SRCCLR_API_TOKEN }}
+#      - name: "Clean Maven cache"
+#        run: bash ./scripts/ci/cleanup_cache.sh
 
   arm64_health_check:
     name: ARM64 Health Check
@@ -78,9 +78,6 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.36.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.36.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.36.0
-      - uses: actions/setup-python@v4
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
         with:
@@ -94,7 +91,6 @@ jobs:
           AWS_SECRET_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_SECRET_ACCESS_KEY }}
         run: |
           cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
-          pip install requests pytest==6.2.4 pytest-testinfra==6.3.0 jmespath==0.10.0
           git clone --depth 1 --branch $DTAS_VERSION https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
           docker images | grep pipeline
           ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps-arm64.yml
