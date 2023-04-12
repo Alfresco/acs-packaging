@@ -76,7 +76,7 @@ jobs:
         if: ${{ always() && steps.tests.outcome == 'failure' }}
         run: pip install -r ./scripts/ci/requirements.txt
         shell: bash
-      - name: Jira hook on test-env
+      - name: Create jira issue
         if: ${{ always() && steps.tests.outcome == 'failure' }}
         run: ./scripts/ci/create_jira_issue.py
       - name: "Clean Maven cache"
