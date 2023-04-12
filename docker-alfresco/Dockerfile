@@ -1,4 +1,5 @@
-FROM alfresco/alfresco-enterprise-repo-base:latest
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
 
 # Set default docker_context.
 ARG resource_path=target
@@ -10,7 +11,7 @@ ARG IMAGEUSERNAME=alfresco
 # Set default environment args
 ARG TOMCAT_DIR=/usr/local/tomcat
 
-# LABEL quay.expires-after=${docker.quay-expires.value}
+LABEL quay.expires-after=${docker.quay-expires.value}
 
 USER root
 
