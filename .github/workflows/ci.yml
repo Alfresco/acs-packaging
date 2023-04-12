@@ -39,14 +39,11 @@ env:
 jobs:
   tas_tests:
     env:
-      JOB_NAME: ${{ matrix.tests.job_name }}
+      JOB_NAME: ${{ matrix.testSuite }}
       JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
       BUILD_WEB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     name: ${{ matrix.testSuite }} TAS tests
     runs-on: ubuntu-latest
-    if: >
-      contains(github.event.head_commit.message, '[tas]') &&
-      !contains(github.event.head_commit.message, '[skip tests]')
     strategy:
       fail-fast: false
       matrix:
