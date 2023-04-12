@@ -28,7 +28,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 /**
@@ -118,7 +117,6 @@ public class CategoryIndexingTests extends AbstractTestNGSpringContextTests
 
     /** Check we can find the document by the pseudo-path created for the category. */
     @Test (groups = TestGroup.SEARCH)
-    @Ignore // ACS-4715
     public void testQueryByCategoryPseudoPath() {
         SearchRequest query = req("PATH:\"/cm:categoryRoot/cm:generalclassifiable/cm:" + CATEGORY_A_NAME + "/*\"");
         searchQueryService.expectResultsFromQuery(query, testUser, testFile.getName());
@@ -126,7 +124,6 @@ public class CategoryIndexingTests extends AbstractTestNGSpringContextTests
 
     /** Check we can find the document by a partial path match for the category. */
     @Test (groups = TestGroup.SEARCH)
-    @Ignore // ACS-4715
     public void testQueryByPartialCategoryPathA() {
         SearchRequest query = req("PATH:\"//cm:" + CATEGORY_A_NAME + "/*\"");
         searchQueryService.expectResultsFromQuery(query, testUser, testFile.getName());
@@ -134,7 +131,6 @@ public class CategoryIndexingTests extends AbstractTestNGSpringContextTests
 
     /** Check we can find the document and folder by a partial path match for the second category. */
     @Test (groups = TestGroup.SEARCH)
-    @Ignore // ACS-4715
     public void testQueryByPartialCategoryPathB() {
         SearchRequest query = req("PATH:\"//cm:" + CATEGORY_B_NAME + "/*\"");
         searchQueryService.expectResultsFromQuery(query, testUser, testFile.getName(), testFolder.getName());
@@ -142,7 +138,6 @@ public class CategoryIndexingTests extends AbstractTestNGSpringContextTests
 
     /** Check we cannot find the document by a partial path match for the category that has been applied to it and then deleted. */
     @Test (groups = TestGroup.SEARCH)
-    @Ignore // ACS-4715
     public void testQueryByPathOnDeletedCategory()
     {
         //create 2 categories
