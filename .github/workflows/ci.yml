@@ -102,14 +102,14 @@ jobs:
           pytest --configuration ../tests/pipeline-all-amps/repo/dtas/dtas-config.json tests/ -s
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
-      - name: "Clean up environment"
-        if: always()
-        run: |
-          rm -rf dtas
-          docker container stop $(docker container ls -aq)
-          docker container rm $(docker container ls -aq)
-          docker volume rm -f $(docker volume ls -q)
-          docker rmi -f $(docker images -aq)
+#      - name: "Clean up environment"
+#        if: always()
+#        run: |
+#          rm -rf dtas
+#          docker container stop $(docker container ls -aq)
+#          docker container rm $(docker container ls -aq)
+#          docker volume rm -f $(docker volume ls -q)
+#          docker rmi -f $(docker images -aq)
 
   tas_tests:
     name: ${{ matrix.testSuite }} TAS tests
