@@ -103,7 +103,7 @@ def create_issue():
         # customfield_11423
         get_custom_field_id('Epic Link'): get_epic_id_to_assign(project_id),
         # customfield_15014
-        get_custom_field_id('Bug Priority'): {'value': 'Category 1'},
+        get_custom_field_id('Bug Priority'): {'value': 'Category 4'},
     }
     if get_project_components(JOB_NAME):
         acs_fields = get_acs_component_field()
@@ -125,7 +125,7 @@ def get_epic_id_to_assign(project_id):
         sql_query = f"""project = {project_id} AND
         'Release Train' = {CURRENT_RELEASE} AND
         issuetype = 'Epic' AND
-        Summary ~ '{CURRENT_RELEASE} % ARM64 failures'
+        Summary ~ '{CURRENT_RELEASE} % Content Services Maintenance'
         ORDER BY issuekey"""
         result = jira.jql(sql_query)
         return result['issues'][0]['key']
