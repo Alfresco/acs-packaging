@@ -90,8 +90,8 @@ jobs:
           AWS_ACCESS_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_ACCESS_KEY_ID }}
           AWS_SECRET_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_SECRET_ACCESS_KEY }}
         run: |
-          cat tests/pipeline-all-amps/repo/dtas/dtas-config.json
-          pip install requests pytest==6.2.4 pytest-testinfra==6.3.0 jmespath==0.10.0
+          mvn clean install -B -ntp -DskipTests -f tests/pipeline-all-amps/repo/pom.xml
+          cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
           git clone --depth 1 --branch $DTAS_VERSION https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
           ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps-arm64.yml
           ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/" 180
@@ -100,17 +100,17 @@ jobs:
       - name: "Run tests"
         run: |
           cd dtas
-          pytest --configuration ../tests/pipeline-all-amps/repo/dtas/dtas-config.json tests/ -s
+          pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
-#      - name: "Clean up environment"
-#        if: always()
-#        run: |
-#          rm -rf dtas
-#          docker container stop $(docker container ls -aq)
-#          docker container rm $(docker container ls -aq)
-#          docker volume rm -f $(docker volume ls -q)
-#          docker rmi -f $(docker images -aq)
+      - name: "Clean up environment"
+        if: always()
+        run: |
+          rm -rf dtas
+          docker container stop $(docker container ls -aq)
+          docker container rm $(docker container ls -aq)
+          docker volume rm -f $(docker volume ls -q)
+          docker rmi -f $(docker images -aq)
 
   tas_tests:
     name: ${{ matrix.testSuite }} TAS tests
