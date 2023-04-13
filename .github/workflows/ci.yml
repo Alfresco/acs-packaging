@@ -39,7 +39,7 @@ env:
 jobs:
   tas_tests:
     env:
-      JOB_NAME: ${{ matrix.testSuite }}
+      JOB_NAME: "REST API part1"
       JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
       BUILD_WEB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     name: ${{ matrix.testSuite }} TAS tests
