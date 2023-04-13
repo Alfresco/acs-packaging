@@ -84,16 +84,25 @@ jobs:
           platforms: linux/amd64,linux/arm64
       - name: "Build"
         run: bash ./scripts/ci/init.sh
-      - name: "Run tests"
-        id: tests
-        timeout-minutes: 20
+      - name: "Set up the environment"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         env:
           AWS_ACCESS_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_ACCESS_KEY_ID }}
           AWS_SECRET_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_SECRET_ACCESS_KEY }}
         run: |
-          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-all-amps-test-arm64.yml
-          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-          mvn -B install -ntp -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false- name: "Clean Maven cache"
+          cat ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
+          git clone --depth 1 --branch $DTAS_VERSION https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
+          docker images | grep pipeline
+          ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps-arm64.yml
+          ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/" 180
+          docker ps
+          curl -v --user admin.pipeline@alfresco.com:admin http://localhost:8080/alfresco/api/discovery
+      - name: "Run tests"
+        run: |
+          cd dtas
+          pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
+      - name: "Clean Maven cache"
+        run: bash ./scripts/ci/cleanup_cache.sh
       - name: "Clean up environment"
         if: always()
         run: |
