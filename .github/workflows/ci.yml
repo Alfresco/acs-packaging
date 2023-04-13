@@ -79,5 +79,6 @@ jobs:
       - name: Create jira issue
         if: ${{ always() && steps.tests.outcome == 'failure' }}
         run: ./scripts/ci/create_jira_issue.py
+        shell: bash
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
