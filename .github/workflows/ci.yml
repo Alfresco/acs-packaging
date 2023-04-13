@@ -60,21 +60,21 @@ jobs:
       - name: "Run tests"
         id: tests
         timeout-minutes: ${{ matrix.deploy-timeout }}
-        run: exit 1
+        run: exit 0
       - name: "Print output after failure"
         if: ${{ always() && steps.tests.outcome == 'failure' }}
         run: echo "TEST_FAILURE=true" >> $GITHUB_ENV
       - uses: actions/setup-python@v4
-        if: ${{ always() && steps.tests.outcome == 'failure' }}
+        if: always()
         with:
           python-version: "3.9"
           cache: "pip"
       - name: Install python dependencies
-        if: ${{ always() && steps.tests.outcome == 'failure' }}
+        if: always()
         run: pip install -r ./scripts/ci/requirements.txt
         shell: bash
       - name: Create jira issue
-        if: ${{ always() && steps.tests.outcome == 'failure' }}
+        if: always()
         run: ./scripts/ci/create_jira_issue.py
         shell: bash
       - name: "Clean Maven cache"

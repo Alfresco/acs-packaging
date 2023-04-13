@@ -32,7 +32,7 @@ def get_summary_name():
 def get_description():
     """Generate issue description. """
     return (
-        f'ARM64 ACS failure\n'
+        f'ACS ARM64 images health check failure\n'
         f'Build_url: {BUILD_WEB_URL}\n'
     )
 
@@ -40,7 +40,7 @@ def get_description():
 def get_comment():
     """Generate comment. """
     return (
-        f'In new ARM64 ACS build test passed\n'
+        f'In new ACS ARM64 images test passed\n'
         f'Build_url: {BUILD_WEB_URL}\n'
     )
 
@@ -200,7 +200,7 @@ if __name__ == "__main__":
         # Checks before trying creating jira issue
         # 1. Is test declared in python dict
         # 2. Is build-user have access to project
-        # 3. Is epic with ARM64 failures created in project
+        # 3. Is epic for Content Services maintenance created in project
         if whether_create_issue():
             if not get_issue_key():
                 create_issue()
