@@ -184,7 +184,7 @@ def set_current_release():
 
 
 if __name__ == "__main__":
-    CURRENT_RELEASE = set_current_release()
+    CURRENT_RELEASE = "Oxford"
 
     if not TEST_FAILURE:
         logging.info("Test passed, close issue if there is one")
