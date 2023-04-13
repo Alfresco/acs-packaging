@@ -57,7 +57,9 @@ services:
         -Dcsrf.filter.enabled=false
         -Ddsync.service.uris=http://localhost:9090/alfresco
         -Dhttpclient.config.transform.mTLSEnabled=true
+        -Dhttpclient.config.transform.hostnameVerificationDisabled=${HOSTNAME_VERIFICATION_DISABLED}
         -Dhttpclient.config.sharedFileStoreConnector.mTLSEnabled=true
+        -Dhttpclient.config.sharedFileStoreConnector.hostnameVerificationDisabled=${HOSTNAME_VERIFICATION_DISABLED}
         -Dencryption.ssl.keystore.location=/usr/local/tomcat/shared/classes/alfresco/extension/keystore/alfresco.keystore
         -Dencryption.ssl.truststore.location=/usr/local/tomcat/shared/classes/alfresco/extension/keystore/alfresco.truststore
         -Dssl-keystore.password=password
@@ -104,6 +106,9 @@ services:
       CLIENT_SSL_TRUST_STORE: "file:/transformRouter.truststore"
       CLIENT_SSL_TRUST_STORE_PASSWORD: "password"
       CLIENT_SSL_TRUST_STORE_TYPE: "JCEKS"
+
+      CLIENT_SSL_HOSTNAME_VERIFICATION_DISABLED: ${HOSTNAME_VERIFICATION_DISABLED}
+
     ports:
       - "8095:8095"
     links:
@@ -141,6 +146,9 @@ services:
       CLIENT_SSL_TRUST_STORE: "file:/tengineAIO.truststore"
       CLIENT_SSL_TRUST_STORE_PASSWORD: "password"
       CLIENT_SSL_TRUST_STORE_TYPE: "JCEKS"
+
+      CLIENT_SSL_HOSTNAME_VERIFICATION_DISABLED: ${HOSTNAME_VERIFICATION_DISABLED}
+
     ports:
       - "8090:8090"
     links:
@@ -177,6 +185,9 @@ services:
       CLIENT_SSL_TRUST_STORE: "file:/sharedFileStore.truststore"
       CLIENT_SSL_TRUST_STORE_PASSWORD: "password"
       CLIENT_SSL_TRUST_STORE_TYPE: "JCEKS"
+
+      CLIENT_SSL_HOSTNAME_VERIFICATION_DISABLED: ${HOSTNAME_VERIFICATION_DISABLED}
+
     ports:
       - "8099:8099"
     volumes:
