@@ -39,7 +39,7 @@ env:
 jobs:
   tas_tests:
     env:
-      JOB_NAME: "REST API part1"
+      JOB_NAME: ${{ matrix.testSuite }}
       JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
       BUILD_WEB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     name: ${{ matrix.testSuite }} TAS tests
@@ -57,9 +57,6 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
       - name: "Run tests"
         id: tests
         timeout-minutes: ${{ matrix.deploy-timeout }}
