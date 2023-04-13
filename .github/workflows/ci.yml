@@ -462,14 +462,14 @@ jobs:
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
+          echo $GITHUB_WORKSPACE
+          echo ${{ github.GITHUB_WORKSPACE }}
+          echo ${{ env.CI_WORKSPACE }}
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
       - name: "Generate Keystores and Truststores for Mutual TLS configuration"
         if: ${{ matrix.mtls }}
         run: |
-          echo $GITHUB_WORKSPACE
-          echo ${{ github.GITHUB_WORKSPACE }}
-          echo ${{ env.CI_WORKSPACE }}
           git clone -b "feature/ACS-5005-improve-certs-for-GHA" --depth=1 "https://${{ secrets.BOT_GITHUB_USERNAME }}:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/Alfresco/alfresco-ssl-generator.git"
           bash ./${{ env.CI_WORKSPACE }}/alfresco-ssl-generator/scripts/ci/generate_keystores.sh
       - name: "Set up the environment"
