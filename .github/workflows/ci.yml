@@ -90,7 +90,8 @@ jobs:
           AWS_ACCESS_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_ACCESS_KEY_ID }}
           AWS_SECRET_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_SECRET_ACCESS_KEY }}
         run: |
-          cat ../tests/pipeline-all-amps/repo/dtas/dtas-config.json
+          pwd
+          cat tests/pipeline-all-amps/repo/dtas/dtas-config.json
           git clone --depth 1 --branch $DTAS_VERSION https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
           docker images | grep pipeline
           ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps-arm64.yml
