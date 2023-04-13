@@ -24,6 +24,7 @@ env:
   GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
   GIT_EMAIL: ${{ secrets.BOT_GITHUB_EMAIL }}
   GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+  JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
   MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
   MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
   QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
@@ -40,7 +41,6 @@ jobs:
   tas_tests:
     env:
       JOB_NAME: ${{ matrix.testSuite }}
-      JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
       BUILD_WEB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     name: ${{ matrix.testSuite }} TAS tests
     runs-on: ubuntu-latest
