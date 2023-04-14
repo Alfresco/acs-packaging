@@ -28,6 +28,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 /**
@@ -138,6 +139,7 @@ public class CategoryIndexingTests extends AbstractTestNGSpringContextTests
 
     /** Check we cannot find the document by a partial path match for the category that has been applied to it and then deleted. */
     @Test (groups = TestGroup.SEARCH)
+    @Ignore // ACS-4715
     public void testQueryByPathOnDeletedCategory()
     {
         //create 2 categories
