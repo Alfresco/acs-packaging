@@ -105,8 +105,8 @@ jobs:
           python3 -V
           python3.7 -V
           pip -V 
-          python3 -m pytest -V
-#          pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
+#          python3 -m pytest -V
+          python3 -m pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
       - name: "Clean up environment"
