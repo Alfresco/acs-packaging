@@ -100,6 +100,12 @@ jobs:
       - name: "Run tests"
         run: |
           cd dtas
+          pwd
+          whoami
+          python3 -V
+          python 3.7 -V
+          pip -V 
+          pytest -V
           pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
