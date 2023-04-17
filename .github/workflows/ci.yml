@@ -84,6 +84,7 @@ jobs:
           mvn clean install -B -ntp -DskipTests -f tests/pipeline-all-amps/repo/pom.xml
           cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
           git clone --depth 1 --branch $DTAS_VERSION https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
+          git clone --depth=1 --branch master https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-community-repo.git ../alfresco-community-repo
           export PIPELINE_ALL_AMPS_REGISTRY=quay.io/
           export PIPELINE_ALL_AMPS_TAG=7.4.0-A29
           ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
@@ -103,6 +104,7 @@ jobs:
       - name: "Clean up environment"
         if: always()
         run: |
+          rm -rf ../alfresco-community-repo
           rm -rf dtas
           docker container stop $(docker container ls -aq)
           docker container rm $(docker container ls -aq)
