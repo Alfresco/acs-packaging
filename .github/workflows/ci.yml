@@ -70,6 +70,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
+          fetch-depth: 0
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.36.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.36.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.36.0
@@ -81,12 +82,18 @@ jobs:
           AWS_ACCESS_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_ACCESS_KEY_ID }}
           AWS_SECRET_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_SECRET_ACCESS_KEY }}
         run: |
+          # NOTE: temporary workaround until a tag with the new pipeline-all-amps.yml structure is available
+          cp ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml .
+          export VERSION_NUMBER=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | sed -E 's/([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
+          export TEST_GIT_TAG=$(git tag --list --sort=-taggerdate "$VERSION_NUMBER*" | head -n 1)
+          git checkout $TEST_GIT_TAG
+          mv docker-compose-pipeline-all-amps.yml ${TAS_ENVIRONMENT}/
           mvn clean install -B -ntp -DskipTests -f tests/pipeline-all-amps/repo/pom.xml
           cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
           git clone --depth 1 --branch $DTAS_VERSION https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
           git clone --depth=1 --branch master https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-community-repo.git ../alfresco-community-repo
           export PIPELINE_ALL_AMPS_REGISTRY=quay.io/
-          export PIPELINE_ALL_AMPS_TAG=7.4.0-A29
+          export PIPELINE_ALL_AMPS_TAG=$TEST_GIT_TAG
           ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
           ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/" 180
           docker ps
