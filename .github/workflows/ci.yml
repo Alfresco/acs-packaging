@@ -103,6 +103,7 @@ jobs:
       - name: "Clean up environment"
         if: always()
         run: |
+          echo $PWD
           echo $GITHUB_WORKSPACE
           #rm -rf $GITHUB_WORKSPACE
           docker container stop $(docker container ls -aq)
