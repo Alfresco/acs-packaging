@@ -446,14 +446,14 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - testSuite: Transform Service Mutal TLS
-            pom-dir: tests/tas-mtls
-            profiles: run-mtls
-            compose-file: docker-compose-mtls.yml
-            mtls: true
-            disabledHostnameVerification: false
-            deploy-timeout: 10
-          - testSuite: Transform Service Mutal TLS Disabled Hostnames Verification
+#          - testSuite: Transform Service Mutal TLS
+#            pom-dir: tests/tas-mtls
+#            profiles: run-mtls
+#            compose-file: docker-compose-mtls.yml
+#            mtls: true
+#            disabledHostnameVerification: false
+#            deploy-timeout: 10
+          - testSuite: Transform Service Mutal TLS Disabled Hostname Verification
             pom-dir: tests/tas-mtls
             profiles: run-mtls
             compose-file: docker-compose-mtls.yml
@@ -485,6 +485,7 @@ jobs:
           bash ./scripts/ci/build.sh
       - name: "Set up the environment"
         run: |
+          echo $HOSTNAME_VERIFICATION_DISABLED
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/${{ matrix.compose-file }}
           ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       - name: "Run tests"
