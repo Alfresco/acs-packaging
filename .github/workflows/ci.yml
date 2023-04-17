@@ -103,9 +103,9 @@ jobs:
       - name: "Clean up environment"
         if: always()
         run: |
-          echo $PWD
-          echo $GITHUB_WORKSPACE
-          #rm -rf $GITHUB_WORKSPACE
+          export WORKSPACE=$HOME/actions-runner/_work
+          cd $WORKSPACE
+          rm -rf $WORKSPACE/acs-packaging
           docker container stop $(docker container ls -aq)
           docker container rm $(docker container ls -aq)
           docker volume rm -f $(docker volume ls -q)
