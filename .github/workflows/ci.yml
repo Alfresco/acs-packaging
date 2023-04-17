@@ -113,10 +113,10 @@ jobs:
         run: |
           rm -rf ../alfresco-community-repo
           rm -rf dtas
-          #docker container stop $(docker container ls -aq)
-          #docker container rm $(docker container ls -aq)
-          #docker volume rm -f $(docker volume ls -q)
-          #docker rmi -f $(docker images -aq)
+          docker container stop $(docker container ls -aq)
+          docker container rm $(docker container ls -aq)
+          docker volume rm -f $(docker volume ls -q)
+          docker rmi -f $(docker images -aq)
 
   tas_tests:
     name: ${{ matrix.testSuite }} TAS tests
