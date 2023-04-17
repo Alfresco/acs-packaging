@@ -62,11 +62,6 @@ jobs:
 
   arm64_health_check:
     name: ARM64 Health Check
-    services:
-      registry:
-        image: registry:2
-        ports:
-          - 5000:5000
     runs-on: [ self-hosted, linux, arm64 ]
     if: >
       github.event_name != 'pull_request' &&
@@ -78,11 +73,7 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.36.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.36.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.36.0
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
-        with:
-          platforms: linux/amd64,linux/arm64
-      - name: "Build"
+      - name: "Init"
         run: bash ./scripts/ci/init.sh
       - name: "Set up the environment"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
@@ -102,6 +93,7 @@ jobs:
           cd dtas
           python3 -m pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
       - name: "Clean Maven cache"
+        if: always()
         run: bash ./scripts/ci/cleanup_cache.sh
       - name: "Clean up environment"
         if: always()
