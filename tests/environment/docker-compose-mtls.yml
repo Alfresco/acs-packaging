@@ -43,6 +43,8 @@ services:
         -Dsolr.sharedSecret=secret
         -Dsolr.base.url=/solr
         -Dindex.subsystem.name=solr6
+        -Dalfresco.host=localhost
+        -Dalfresco.port=8080
         -Dalfresco.restApi.basicAuthScheme=true
         -Dtransform.service.enabled=true
         -Dlocal.transform.service.enabled=false
