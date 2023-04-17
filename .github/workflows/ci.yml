@@ -453,7 +453,7 @@ jobs:
             mtls: true
             disabledHostnameVerification: false
             deploy-timeout: 10
-          - testSuite: Transform Service Mutal TLS
+          - testSuite: Transform Service Mutal TLS Disabled Hostnames Verification
             pom-dir: tests/tas-mtls
             profiles: run-mtls
             compose-file: docker-compose-mtls.yml
