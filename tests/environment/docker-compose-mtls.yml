@@ -58,8 +58,6 @@ services:
         -Ddsync.service.uris=http://localhost:9090/alfresco
         -Dhttpclient.config.transform.mTLSEnabled=true
         -Dhttpclient.config.transform.hostnameVerificationDisabled=${HOSTNAME_VERIFICATION_DISABLED}
-        -Dhttpclient.config.sharedFileStoreConnector.mTLSEnabled=true
-        -Dhttpclient.config.sharedFileStoreConnector.hostnameVerificationDisabled=${HOSTNAME_VERIFICATION_DISABLED}
         -Dencryption.ssl.keystore.location=/usr/local/tomcat/shared/classes/alfresco/extension/keystore/alfresco.keystore
         -Dencryption.ssl.truststore.location=/usr/local/tomcat/shared/classes/alfresco/extension/keystore/alfresco.truststore
         -Dssl-keystore.password=password
