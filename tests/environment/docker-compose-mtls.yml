@@ -22,7 +22,6 @@ services:
     image: alfresco/alfresco-content-repository:latest
     mem_limit: 1900m
     environment:
-      CATALINA_OPTS : "-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n"
       JAVA_TOOL_OPTIONS: >-
         -Dencryption.keystore.type=JCEKS
         -Dencryption.cipherAlgorithm=DESede/CBC/PKCS5Padding
@@ -44,6 +43,8 @@ services:
         -Dsolr.sharedSecret=secret
         -Dsolr.base.url=/solr
         -Dindex.subsystem.name=solr6
+        -Dalfresco.host=localhost
+        -Dalfresco.port=8080
         -Dalfresco.restApi.basicAuthScheme=true
         -Dtransform.service.enabled=true
         -Dlocal.transform.service.enabled=false
@@ -57,7 +58,7 @@ services:
         -Dcsrf.filter.enabled=false
         -Ddsync.service.uris=http://localhost:9090/alfresco
         -Dhttpclient.config.transform.mTLSEnabled=true
-        -Dhttpclient.config.sharedFileStoreConnector.mTLSEnabled=true
+        -Dhttpclient.config.transform.hostnameVerificationDisabled=${HOSTNAME_VERIFICATION_DISABLED}
         -Dencryption.ssl.keystore.location=/usr/local/tomcat/shared/classes/alfresco/extension/keystore/alfresco.keystore
         -Dencryption.ssl.truststore.location=/usr/local/tomcat/shared/classes/alfresco/extension/keystore/alfresco.truststore
         -Dssl-keystore.password=password
@@ -69,7 +70,6 @@ services:
       - ${CI_WORKSPACE}/keystores/alfresco/alfresco.keystore:/usr/local/tomcat/shared/classes/alfresco/extension/keystore/alfresco.keystore
     ports:
       - "8082:8080"
-      - "8000:8000"
       - "143:1143"
       - "21:1221"
       - "30000-30099:30000-30099"
@@ -104,6 +104,9 @@ services:
       CLIENT_SSL_TRUST_STORE: "file:/transformRouter.truststore"
       CLIENT_SSL_TRUST_STORE_PASSWORD: "password"
       CLIENT_SSL_TRUST_STORE_TYPE: "JCEKS"
+
+      CLIENT_SSL_HOSTNAME_VERIFICATION_DISABLED: ${HOSTNAME_VERIFICATION_DISABLED}
+
     ports:
       - "8095:8095"
     links:
@@ -141,6 +144,9 @@ services:
       CLIENT_SSL_TRUST_STORE: "file:/tengineAIO.truststore"
       CLIENT_SSL_TRUST_STORE_PASSWORD: "password"
       CLIENT_SSL_TRUST_STORE_TYPE: "JCEKS"
+
+      CLIENT_SSL_HOSTNAME_VERIFICATION_DISABLED: ${HOSTNAME_VERIFICATION_DISABLED}
+
     ports:
       - "8090:8090"
     links:
@@ -177,6 +183,9 @@ services:
       CLIENT_SSL_TRUST_STORE: "file:/sharedFileStore.truststore"
       CLIENT_SSL_TRUST_STORE_PASSWORD: "password"
       CLIENT_SSL_TRUST_STORE_TYPE: "JCEKS"
+
+      CLIENT_SSL_HOSTNAME_VERIFICATION_DISABLED: ${HOSTNAME_VERIFICATION_DISABLED}
+
     ports:
       - "8099:8099"
     volumes:
@@ -196,12 +205,12 @@ services:
       - "5432:5432"
 
   solr6:
-    image: quay.io/alfresco/insight-engine:${SOLR6_TAG}
+    image: alfresco/alfresco-search-services:${SOLR6_TAG}
     mem_limit: 2g
     environment:
       # Solr needs to know how to register itself with Alfresco
       SOLR_ALFRESCO_HOST: "alfresco"
-      SOLR_ALFRESCO_PORT: "8082"
+      SOLR_ALFRESCO_PORT: "8080"
       # Alfresco needs to know how to call solr
       SOLR_SOLR_HOST: "solr6"
       SOLR_SOLR_PORT: "8983"
