@@ -2,7 +2,7 @@ name: (ARM64) ACS Packaging CI
 
 on:
   schedule:
-    - 0 3 * * 1-5
+    - cron: "0 3 * * 1-5"
   workflow_dispatch:
 
 env:
