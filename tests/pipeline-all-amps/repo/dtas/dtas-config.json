@@ -3,7 +3,7 @@
         "host": "http://localhost:8080",
         "username": "admin.pipeline@alfresco.com",
         "password": "admin",
-        "reqs_timeout": "60"
+        "reqs_timeout": "30"
     },
     "assertions": {
         "acs": {

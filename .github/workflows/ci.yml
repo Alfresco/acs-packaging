@@ -88,8 +88,10 @@ jobs:
         run: |
           # NOTE: temporary workaround until a tag with the new pipeline-all-amps.yml structure is available
           cp ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml .
+          cp tests/pipeline-all-amps/repo/dtas/dtas-config.json .
           git checkout $TEST_GIT_TAG
           mv docker-compose-pipeline-all-amps.yml ${TAS_ENVIRONMENT}/
+          mv dtas-config.json tests/pipeline-all-amps/repo/dtas/
           # Prepare test configuration
           mvn clean install -B -ntp -DskipTests -f tests/pipeline-all-amps/repo/pom.xml
           cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
