@@ -451,6 +451,14 @@ jobs:
             profiles: run-mtls
             compose-file: docker-compose-mtls.yml
             mtls: true
+            disabledHostnameVerification: false
+            deploy-timeout: 10
+          - testSuite: Transform Service Mutal TLS Disabled Hostname Verification
+            pom-dir: tests/tas-mtls
+            profiles: run-mtls
+            compose-file: docker-compose-mtls.yml
+            mtls: true
+            disabledHostnameVerification: true
             deploy-timeout: 10
     steps:
       - uses: actions/checkout@v3
@@ -463,7 +471,13 @@ jobs:
         if: ${{ matrix.mtls }}
         run: |
           git clone -b "master" --depth=1 "https://${{ secrets.BOT_GITHUB_USERNAME }}:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/Alfresco/alfresco-ssl-generator.git"
-          bash ${{ env.CI_WORKSPACE }}/alfresco-ssl-generator/scripts/ci/generate_keystores.sh
+          if ${{ matrix.disabledHostnameVerification }} ; then
+            bash ${{ env.CI_WORKSPACE }}/alfresco-ssl-generator/scripts/ci/generate_keystores_wrong_hostnames.sh
+            echo "HOSTNAME_VERIFICATION_DISABLED=true" >> "$GITHUB_ENV"
+          else 
+            bash ${{ env.CI_WORKSPACE }}/alfresco-ssl-generator/scripts/ci/generate_keystores.sh
+            echo "HOSTNAME_VERIFICATION_DISABLED=false" >> "$GITHUB_ENV"
+          fi
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
