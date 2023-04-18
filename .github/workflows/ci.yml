@@ -35,7 +35,7 @@ env:
   ALF_LICENCE_S3_PATH: s3://acs-license/acs/alf74-allenabled.lic
   ALF_LICENCE_LOCAL_PATH: /tmp/licence.lic
   PYTHON_VERSION: 3.7.15
-  DTAS_VERSION: v1.1
+  DTAS_VERSION: fix/ACS-5025_investigate-arm64-failure
 
 jobs:
 #  veracode:
@@ -63,6 +63,7 @@ jobs:
   arm64_health_check:
     name: ARM64 Health Check
     runs-on: [ self-hosted, linux, arm64 ]
+    timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
     if: >
       github.event_name != 'pull_request' &&
       !contains(github.event.head_commit.message, '[skip tests]')
@@ -76,22 +77,31 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.36.0
       - name: "Init"
         run: bash ./scripts/ci/init.sh
+      - name: "Get latest matching tag"
+        run: |
+          VERSION_NUMBER=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | sed -E 's/([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
+          TEST_GIT_TAG=$(git tag --list --sort=-taggerdate "$VERSION_NUMBER*" | head -n 1)
+          if [ -z $TEST_GIT_TAG ]; then
+            TEST_GIT_TAG=$(git tag --list --sort=-taggerdate | head -n 1)
+          fi
+          echo "TEST_GIT_TAG=$TEST_GIT_TAG" >> $GITHUB_ENV
+      - name: "Prepare test config"
+        run: |
+          # NOTE: temporary workaround until a tag with the new pipeline-all-amps.yml structure is available
+          cp ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml .
+          git checkout $TEST_GIT_TAG
+          mv docker-compose-pipeline-all-amps.yml ${TAS_ENVIRONMENT}/
+          # Prepare test configuration
+          mvn clean install -B -ntp -DskipTests -f tests/pipeline-all-amps/repo/pom.xml
+          cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
       - name: "Set up the environment"
-        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         env:
           AWS_ACCESS_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_ACCESS_KEY_ID }}
           AWS_SECRET_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_SECRET_ACCESS_KEY }}
         run: |
-          # NOTE: temporary workaround until a tag with the new pipeline-all-amps.yml structure is available
-          cp ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml .
-          export VERSION_NUMBER=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | sed -E 's/([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
-          export TEST_GIT_TAG=$(git tag --list --sort=-taggerdate "$VERSION_NUMBER*" | head -n 1)
-          git checkout $TEST_GIT_TAG
-          mv docker-compose-pipeline-all-amps.yml ${TAS_ENVIRONMENT}/
-          mvn clean install -B -ntp -DskipTests -f tests/pipeline-all-amps/repo/pom.xml
-          cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
-          git clone --depth 1 --branch $DTAS_VERSION https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
+          # Make necessary env files available
           git clone --depth=1 --branch master https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-community-repo.git ../alfresco-community-repo
+          # Start the environment
           export PIPELINE_ALL_AMPS_REGISTRY=quay.io/
           export PIPELINE_ALL_AMPS_TAG=$TEST_GIT_TAG
           ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
@@ -100,15 +110,17 @@ jobs:
           curl -v --user admin.pipeline@alfresco.com:admin http://localhost:8080/alfresco/api/discovery
       - name: "Run tests"
         run: |
+          # Make necessary test files available
+          git clone --depth 1 --branch $DTAS_VERSION https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
           cd dtas
-          # NOTE: some tests are disabled since the related components don't provide native ARM64 images yet
+          # NOTE: some tests are temporarily disabled since the related components don't provide native ARM64 images yet
           python3 -m pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s \
             --ignore=tests/scenarios/test_sync.py \
             -k "not test_search and not test_create_rendition"
       - name: "Clean Maven cache"
         if: always()
         run: bash ./scripts/ci/cleanup_cache.sh
-      - name: "Clean up environment"
+      - name: "Clean up the environment"
         if: always()
         run: |
           rm -rf ../alfresco-community-repo
