@@ -15,7 +15,7 @@ env:
   AWS_REGION: eu-west-1
   TAS_ENVIRONMENT: ./tests/environment
   TAS_SCRIPTS: ../alfresco-community-repo/packaging/tests/scripts
-  DTAS_VERSION: fix/ACS-5025_investigate-arm64-failure
+  DTAS_VERSION: v1.1.3
   GITHUB_ACTIONS_DEPLOY_TIMEOUT: 60
 
 jobs:
@@ -42,7 +42,8 @@ jobs:
           echo "TEST_GIT_TAG=$TEST_GIT_TAG" >> $GITHUB_ENV
       - name: "Prepare test config"
         run: |
-          # NOTE: temporary workaround until a tag with the new pipeline-all-amps.yml structure is available
+          # NOTE: copy files from master branch as temporary workaround until a tag 
+          #       with the new pipeline-all-amps.yml and dtas-config.json structure is available
           cp ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml .
           cp tests/pipeline-all-amps/repo/dtas/dtas-config.json .
           git checkout $TEST_GIT_TAG
