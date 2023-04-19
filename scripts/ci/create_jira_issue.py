@@ -33,15 +33,15 @@ def get_description():
     """Generate issue description. """
     return (
         f'ARM64 ACS Packaging CI failure\n'
-        f'Build_url: {BUILD_WEB_URL}\n'
+        f'Build URL: {BUILD_WEB_URL}\n'
     )
 
 
 def get_comment():
     """Generate comment. """
     return (
-        f'The latest ARM64 Health Check passed\n'
-        f'Build_url: {BUILD_WEB_URL}\n'
+        f'The latest ARM64 ACS Packaging CI passed\n'
+        f'Build URL: {BUILD_WEB_URL}\n'
     )
 
 
@@ -103,7 +103,7 @@ def create_issue():
         # customfield_11423
         get_custom_field_id('Epic Link'): get_epic_id_to_assign(project_id),
         # customfield_15014
-        get_custom_field_id('Bug Priority'): {'value': 'Category 4'},
+        get_custom_field_id('Bug Priority'): {'value': 'Category 2'},
     }
     if get_project_components(JOB_NAME):
         acs_fields = get_acs_component_field()
