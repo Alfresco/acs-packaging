@@ -20,19 +20,19 @@ jira = Jira(
 )
 
 tests = {
-        'REST API part1'                  : {'project_key': 'ACS', 'components': ['Repository']}
+        'arm64_health_check'                  : {'project_key': 'ACS', 'components': ['Repository']}
 }
 
 
 def get_summary_name():
     """Generate name of issue. """
-    return f"{CURRENT_RELEASE} - ARM64 ACS test failures - '{JOB_NAME}'"
+    return f"{CURRENT_RELEASE} - ARM64 ACS Packaging CI failure"
 
 
 def get_description():
     """Generate issue description. """
     return (
-        f'ACS ARM64 images health check failure\n'
+        f'ARM64 ACS Packaging CI failure\n'
         f'Build_url: {BUILD_WEB_URL}\n'
     )
 
@@ -40,7 +40,7 @@ def get_description():
 def get_comment():
     """Generate comment. """
     return (
-        f'In new ACS ARM64 images test passed\n'
+        f'The latest ARM64 Health Check passed\n'
         f'Build_url: {BUILD_WEB_URL}\n'
     )
 
