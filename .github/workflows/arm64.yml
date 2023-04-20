@@ -1,0 +1,98 @@
+name: (ARM64) ACS Packaging CI
+
+on:
+  schedule:
+    - cron: "0 3 * * 1-5"
+  workflow_dispatch:
+
+env:
+  GITHUB_ACTIONS_DEPLOY_TIMEOUT: 60
+  MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+  MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+  TAS_ENVIRONMENT: ./tests/environment
+  TAS_SCRIPTS: ../alfresco-community-repo/packaging/tests/scripts
+  AWS_REGION: eu-west-1
+  DTAS_VERSION: v1.1.3
+
+jobs:
+  arm64_health_check:
+    name: ARM64 Health Check
+    runs-on: [self-hosted, linux, arm64]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.36.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.36.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.36.0
+      - name: "Login to Docker Hub"
+        uses: docker/login-action@v2.1.0
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: "Login to Quay.io"
+        uses: docker/login-action@v2.1.0
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_PASSWORD }}
+      - name: "Get latest matching tag"
+        run: |
+          VERSION_NUMBER=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | sed -E 's/([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
+          TEST_GIT_TAG=$(git tag --list --sort=-taggerdate "$VERSION_NUMBER*" | head -n 1)
+          if [ -z $TEST_GIT_TAG ]; then
+            TEST_GIT_TAG=$(git tag --list --sort=-taggerdate | head -n 1)
+          fi
+          echo "TEST_GIT_TAG=$TEST_GIT_TAG" >> $GITHUB_ENV
+      - name: "Prepare test config"
+        run: |
+          # NOTE: copy files from master branch as temporary workaround until a tag 
+          #       with the new pipeline-all-amps.yml and dtas-config.json structure is available
+          cp ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml .
+          cp tests/pipeline-all-amps/repo/dtas/dtas-config.json .
+          git checkout $TEST_GIT_TAG
+          mv docker-compose-pipeline-all-amps.yml ${TAS_ENVIRONMENT}/
+          mv dtas-config.json tests/pipeline-all-amps/repo/dtas/
+          # Prepare test configuration
+          mvn clean install -B -ntp -DskipTests -f tests/pipeline-all-amps/repo/pom.xml
+          cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
+      - name: "Set up the environment"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        env:
+          AWS_ACCESS_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_ACCESS_KEY_ID }}
+          AWS_SECRET_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_SECRET_ACCESS_KEY }}
+        run: |
+          # Make necessary env files available
+          git clone --depth=1 --branch master https://${{ secrets.BOT_GITHUB_USERNAME }}:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/Alfresco/alfresco-community-repo.git ../alfresco-community-repo
+          # Start the environment
+          export PIPELINE_ALL_AMPS_REGISTRY=quay.io/
+          export PIPELINE_ALL_AMPS_TAG=$TEST_GIT_TAG
+          ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
+          ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/" 180
+          docker ps
+          curl -v --user admin.pipeline@alfresco.com:admin http://localhost:8080/alfresco/api/discovery
+      - name: "Run tests"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          # Make necessary test files available
+          git clone --depth 1 --branch $DTAS_VERSION https://${{ secrets.BOT_GITHUB_USERNAME }}:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
+          cd dtas
+          # NOTE: some tests are temporarily disabled since the related components don't provide native ARM64 images yet
+          python3 -m pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s \
+            --ignore=tests/scenarios/test_sync.py \
+            --ignore=tests/scenarios/test_transformation.py \
+            -k "not test_search"
+      - name: "Clean Maven cache"
+        if: always()
+        run: rm -rf $HOME/.m2/repository/*
+      - name: "Clean up the environment"
+        if: always()
+        run: |
+          rm -rf ../alfresco-community-repo
+          rm -rf dtas
+          docker container stop $(docker container ls -aq) || true
+          docker container rm $(docker container ls -aq) || true
+          docker volume rm -f $(docker volume ls -q) || true
+          docker rmi -f $(docker images -aq) || true
+          docker system prune -a -f
