@@ -87,6 +87,7 @@ jobs:
         run: echo "TEST_FAILURE=true" >> $GITHUB_ENV
         if: failure()
       - uses: actions/checkout@v3
+        if: always()
         with:
           persist-credentials: false
       - name: "Create JIRA issue"
