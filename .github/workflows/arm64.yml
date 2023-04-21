@@ -83,6 +83,19 @@ jobs:
             --ignore=tests/scenarios/test_sync.py \
             --ignore=tests/scenarios/test_transformation.py \
             -k "not test_search"
+      - run: echo "TEST_FAILURE=true" >> $GITHUB_ENV
+        if: failure()
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+      - name: Create JIRA issue
+        if: always()
+        run: |
+          pip install -r ./scripts/ci/jira/requirements.txt
+          ./scripts/ci/jira/create_jira_issue.py
+        env:
+          BUILD_WEB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
       - name: "Clean Maven cache"
         if: always()
         run: rm -rf $HOME/.m2/repository/*
