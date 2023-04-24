@@ -2,10 +2,10 @@
 
 The [pipeline-all-amps](../pipeline-all-amps) module pushes repo and share images with extra amps applied on top for use by the CI/CD single pipeline process.
 
-## Travis job to test and push docker images
+## Github Actions job to test and push docker images
 
-The acs-packaging repo [travis](../../.travis.yml) job `"Pipeline All AMPs tests and push docker images"` publishes internally the new docker images for repo and share
-with travis build number
+The acs-packaging repo [Github Actions](../../.github/workflows/ci.yml) job `"Pipeline All AMPs tests and push docker images"` publishes internally the new docker images for repo and share
+with build number
 
 Example: alfresco/alfresco-pipeline-all-amps-repo:3102:7.0.0.
 
