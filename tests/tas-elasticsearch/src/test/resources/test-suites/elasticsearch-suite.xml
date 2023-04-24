@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 <suite name="REST API tests Elasticsearch" preserve-order="true" verbose="1">
-  <test name="elasticsearch" verbose="3" preserve-order="true">
+  <listeners>
+    <listener class-name="org.alfresco.elasticsearch.utils.AlphabeticalPriorityInterceptor" />
+  </listeners>
+  <test name="elasticsearch" verbose="3" preserve-order="false">
     <packages>
       <package name="org.alfresco.elasticsearch"/>
     </packages>

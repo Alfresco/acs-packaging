@@ -6,9 +6,9 @@ pushd "$(dirname "${BASH_SOURCE[0]}")/../../"
 
 source "$(dirname "${BASH_SOURCE[0]}")/build_functions.sh"
 
-#Fetch the latest changes, as Travis will only checkout the PR commit
-git fetch origin "${TRAVIS_BRANCH}"
-git checkout "${TRAVIS_BRANCH}"
+#Fetch the latest changes, as GHA will only checkout the PR commit
+git fetch origin "${BRANCH_NAME}"
+git checkout "${BRANCH_NAME}"
 git pull
 
 # Retrieve the latest (just released) latest tag on the current branch
@@ -21,12 +21,12 @@ COM_VERSION="$(evaluatePomProperty "dependency.alfresco-community-repo.version")
 SHA_VERSION="$(evaluatePomProperty "dependency.alfresco-enterprise-share.version")"
 
 # Retrieve the release and development versions as they are normally the same in community packaging
-RELEASE_VERSION=$(grep RELEASE_VERSION= .travis.yml | sed 's/.*RELEASE_VERSION=\(.*\)/\1/')
-DEVELOPMENT_VERSION=$(grep DEVELOPMENT_VERSION= .travis.yml | sed 's/.*DEVELOPMENT_VERSION=\(.*\)/\1/')
+RELEASE_VERSION=$(grep RELEASE_VERSION: .github/workflows/master_release.yml | sed 's/.*RELEASE_VERSION: \(.*\)/\1/')
+DEVELOPMENT_VERSION=$(grep DEVELOPMENT_VERSION: .github/workflows/master_release.yml | sed 's/.*DEVELOPMENT_VERSION: \(.*\)/\1/')
 
 DOWNSTREAM_REPO="github.com/Alfresco/acs-community-packaging.git"
 
-cloneRepo "${DOWNSTREAM_REPO}" "${TRAVIS_BRANCH}"
+cloneRepo "${DOWNSTREAM_REPO}" "${BRANCH_NAME}"
 
 cd "$(dirname "${BASH_SOURCE[0]}")/../../../$(basename "${DOWNSTREAM_REPO%.git}")"
 
@@ -46,11 +46,11 @@ mvn -B versions:set-property versions:commit \
   -Dproperty=dependency.acs-packaging.version \
   "-DnewVersion=${VERSION}"
 
-sed -i "s/.*RELEASE_VERSION=.*/    - RELEASE_VERSION=$RELEASE_VERSION/" .travis.yml
-sed -i "s/.*DEVELOPMENT_VERSION=.*/    - DEVELOPMENT_VERSION=$DEVELOPMENT_VERSION/" .travis.yml
+sed -i "s/.*RELEASE_VERSION: .*/  RELEASE_VERSION: $RELEASE_VERSION/" .github/workflows/ci.yml
+sed -i "s/.*DEVELOPMENT_VERSION: .*/  DEVELOPMENT_VERSION: $DEVELOPMENT_VERSION/" .github/workflows/ci.yml
 
 set +e
-echo "${TRAVIS_COMMIT_MESSAGE}" | grep '\[publish\]'
+echo "${COMMIT_MESSAGE}" | grep '\[publish\]'
 if [ "$?" -eq 0 ]
 then
   COMMIT_DIRECTIVES="[release][publish]"
@@ -58,13 +58,12 @@ else
   COMMIT_DIRECTIVES="[release]"
 fi
 set -e
-
 # Commit changes
 git status
 git --no-pager diff pom.xml
 git add pom.xml
 git --no-pager diff pom.xml
-git add .travis.yml
+git add .github/workflows/ci.yml
 
 if git status --untracked-files=no --porcelain | grep -q '^' ; then
   git commit -m "${COMMIT_DIRECTIVES} ${VERSION}
