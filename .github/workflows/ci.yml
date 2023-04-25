@@ -306,10 +306,10 @@ jobs:
             search-engine-type: elasticsearch
             db-type: mariadb
           # Disabled as build takes 50 minutes and testRecreateIndexWithMetadataAndContentAndPath usually fails - see ACS-5044
-          #- testSuite: Elasticsearch MS SQL
-          #  profiles: all-tas-tests,elastic
-          #  search-engine-type: elasticsearch
-          #  db-type: mssql
+          - testSuite: Elasticsearch MS SQL
+            profiles: all-tas-tests,elastic
+            search-engine-type: elasticsearch
+            db-type: mssql
           - testSuite: Elasticsearch Oracle 19.3.0-ee
             profiles: all-tas-tests,elastic
             search-engine-type: elasticsearch
