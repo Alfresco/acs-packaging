@@ -102,18 +102,18 @@ jobs:
           docker volume rm -f $(docker volume ls -q) || true
           docker rmi -f $(docker images -aq) || true
           docker system prune -a -f
-  create_jira_issue:
-    name: "Create JIRA issue"
+  jira_integration:
+    name: "JIRA integration"
     runs-on: ubuntu-latest
     needs: [arm64_health_check]
     if: always()
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v4
-      - name: "Run the script to create JIRA issue"
+      - name: "Run the JIRA Integration script"
         run: |
           pip install -r ./scripts/ci/jira/requirements.txt
-          ./scripts/ci/jira/create_jira_issue.py
+          ./scripts/ci/jira/jira_integration.py
         env:
           BUILD_WEB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
