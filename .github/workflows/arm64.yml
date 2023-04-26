@@ -119,3 +119,4 @@ jobs:
           JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
           JOB_NAME: arm64_health_check
           TEST_FAILURE: ${{ needs.arm64_health_check.outputs.test_failure }}
+

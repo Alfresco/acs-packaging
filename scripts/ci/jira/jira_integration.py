@@ -204,3 +204,4 @@ if __name__ == "__main__":
         if whether_create_issue():
             if not get_issue_key():
                 create_issue()
+
