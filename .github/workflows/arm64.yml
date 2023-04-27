@@ -18,6 +18,8 @@ jobs:
   arm64_health_check:
     name: ARM64 Health Check
     runs-on: [self-hosted, linux, arm64]
+    outputs:
+      test_failure: ${{ steps.persist_test_failure_flag.outputs.test_failure }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -83,6 +85,10 @@ jobs:
             --ignore=tests/scenarios/test_sync.py \
             --ignore=tests/scenarios/test_transformation.py \
             -k "not test_search"
+      - name: "Persist test failure flag"
+        id: persist_test_failure_flag
+        run: echo "test_failure=true" >> "$GITHUB_OUTPUT"
+        if: failure()
       - name: "Clean Maven cache"
         if: always()
         run: rm -rf $HOME/.m2/repository/*
@@ -96,3 +102,21 @@ jobs:
           docker volume rm -f $(docker volume ls -q) || true
           docker rmi -f $(docker images -aq) || true
           docker system prune -a -f
+  jira_integration:
+    name: "JIRA integration"
+    runs-on: ubuntu-latest
+    needs: [arm64_health_check]
+    if: always()
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+      - name: "Run the JIRA Integration script"
+        run: |
+          pip install -r ./scripts/ci/jira/requirements.txt
+          ./scripts/ci/jira/jira_integration.py
+        env:
+          BUILD_WEB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
+          JOB_NAME: arm64_health_check
+          TEST_FAILURE: ${{ needs.arm64_health_check.outputs.test_failure }}
+
