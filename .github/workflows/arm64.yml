@@ -49,14 +49,7 @@ jobs:
           echo "TEST_GIT_TAG=$TEST_GIT_TAG" >> $GITHUB_ENV
       - name: "Prepare test config"
         run: |
-          # NOTE: copy files from master branch as temporary workaround until a tag 
-          #       with the new pipeline-all-amps.yml and dtas-config.json structure is available
-          cp ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml .
-          cp tests/pipeline-all-amps/repo/dtas/dtas-config.json .
           git checkout $TEST_GIT_TAG
-          mv docker-compose-pipeline-all-amps.yml ${TAS_ENVIRONMENT}/
-          mv dtas-config.json tests/pipeline-all-amps/repo/dtas/
-          # Prepare test configuration
           mvn clean install -B -ntp -DskipTests -f tests/pipeline-all-amps/repo/pom.xml
           cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
       - name: "Set up the environment"
@@ -119,4 +112,3 @@ jobs:
           JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
           JOB_NAME: arm64_health_check
           TEST_FAILURE: ${{ needs.arm64_health_check.outputs.test_failure }}
-
