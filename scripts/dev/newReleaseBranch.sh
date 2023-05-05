@@ -283,11 +283,19 @@ EOF
 setNextReleaseVersion() {
   local version="${1}"
 
-  echo "${prefix}    set - RELEASE_VERSION=${version}"
-  ed -s .github/workflows/master_release.yml &>${loggingOut} << EOF
-/.*- RELEASE_VERSION.*$/s//    - RELEASE_VERSION=${version}/
+  echo "${prefix}    set RELEASE_VERSION: ${version}"
+  if [[ `getCurrentProject` == "acs-community-packaging" ]]
+    then
+    ed -s .github/workflows/ci.yml &>${loggingOut} << EOF
+/.*RELEASE_VERSION.*$/s//  RELEASE_VERSION: ${version}/
 wq
 EOF
+    else
+    ed -s .github/workflows/master_release.yml &>${loggingOut} << EOF
+/.*RELEASE_VERSION.*$/s//  RELEASE_VERSION: ${version}/
+wq
+EOF
+  fi
 }
 
 setStartWithRealVersion() {
@@ -303,11 +311,19 @@ EOF
 setNextDevelopmentVersion() {
   local version="${1}"
 
-  echo "${prefix}    set - DEVELOPMENT_VERSION=${version}"
-  ed -s .github/workflows/master_release.yml &>${loggingOut} << EOF
-/.*- DEVELOPMENT_VERSION.*$/s//    - DEVELOPMENT_VERSION=${version}/
+  echo "${prefix}    set DEVELOPMENT_VERSION: ${version}"
+   if [[ `getCurrentProject` == "acs-community-packaging" ]]
+      then
+        ed -s .github/workflows/ci.yml &>${loggingOut} << EOF
+/.*DEVELOPMENT_VERSION.*$/s//  DEVELOPMENT_VERSION: ${version}/
 wq
 EOF
+    else
+      ed -s .github/workflows/master_release.yml &>${loggingOut} << EOF
+/.*DEVELOPMENT_VERSION.*$/s//  DEVELOPMENT_VERSION: ${version}/
+wq
+EOF
+  fi
 }
 
 setVersionInPackaging() {
