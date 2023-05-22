@@ -67,6 +67,16 @@ jobs:
           ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/" 180
           docker ps
           curl -v --user admin.pipeline@alfresco.com:admin http://localhost:8080/alfresco/api/discovery
+      - name: "Persist environment failure logs"
+        id: persist_environment_failure_logs
+        run: |
+          # Get containers state
+          docker ps -a
+          export PIPELINE_ALL_AMPS_REGISTRY=quay.io/
+          export PIPELINE_ALL_AMPS_TAG=23.1.0-A11
+          # Get Alfresco repo logs
+          docker ps -aqf "ancestor=${PIPELINE_ALL_AMPS_REGISTRY}alfresco/alfresco-pipeline-all-amps-repo:${PIPELINE_ALL_AMPS_TAG:-latest}" | xargs -L 1 docker logs --tail 200
+        if: failure()
       - name: "Run tests"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
