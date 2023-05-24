@@ -74,6 +74,8 @@ jobs:
           docker ps -a
           # Get Alfresco repo logs
           docker ps -aqf "ancestor=quay.io/alfresco/alfresco-pipeline-all-amps-repo:${TEST_GIT_TAG:-latest}" | xargs -L 1 docker logs --tail 3000
+          # Get Postgres logs
+          docker ps -aqf "ancestor=postgres:14.4" | xargs -L 1 docker logs --tail 500
         if: failure()
       - name: "Run tests"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
