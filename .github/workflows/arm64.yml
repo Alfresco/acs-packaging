@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 env:
-  GITHUB_ACTIONS_DEPLOY_TIMEOUT: 60
+  GITHUB_ACTIONS_DEPLOY_TIMEOUT: 30
   MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
   MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
   TAS_ENVIRONMENT: ./tests/environment
