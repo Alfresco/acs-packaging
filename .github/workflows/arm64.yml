@@ -4,6 +4,7 @@ on:
   schedule:
     - cron: "0 3 * * 1-5"
   workflow_dispatch:
+  push: # revert me
 
 env:
   GITHUB_ACTIONS_DEPLOY_TIMEOUT: 30
@@ -52,6 +53,12 @@ jobs:
           git checkout $TEST_GIT_TAG
           mvn clean install -B -ntp -DskipTests -f tests/pipeline-all-amps/repo/pom.xml
           cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        with:
+          # provide access to SSH user that triggered the build
+          limit-access-to-actor: true
+          detached: true
       - name: "Set up the environment"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         env:
