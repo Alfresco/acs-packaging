@@ -68,22 +68,8 @@ jobs:
           ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/" 180
           docker ps
           curl -v --user admin.pipeline@alfresco.com:admin http://localhost:8080/alfresco/api/discovery
-      - name: "Print environment setup failure logs"
-        run: |
-          # Get containers state
-          docker ps -a
-          # Print Alfresco repo logs
-          docker ps -aqf "ancestor=quay.io/alfresco/alfresco-pipeline-all-amps-repo:$TEST_GIT_TAG" | xargs -L 1 docker logs --tail 5000
-          # Dump all containers logs to files
-          docker ps -a --format '{{.ID}} {{.Names}}' | while read -r id name ; do
-            docker logs "${id}" --tail 5000 > "${name}.log"
-          done
-          tar -zcf logs.tar.gz *.log
-        if: failure() && steps.setup-env.outcome == 'failure'
-      - name: "Persist environment setup failure logs"
-        uses: actions/upload-artifact@v3
-        with:
-          path: logs.tar.gz
+      - name: "Dump all Docker containers logs"
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@feature/ACS-5201-ARM64_ACS_Packaging_CI_failure
         if: failure() && steps.setup-env.outcome == 'failure'
       - name: "Run tests"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
