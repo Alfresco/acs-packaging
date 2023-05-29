@@ -29,7 +29,7 @@ services:
                 -Ddb.driver=org.postgresql.Driver
                 -Ddb.username=alfresco
                 -Ddb.password=alfrescooo
-                -Ddb.url=jdbc:postgresql://postgress:5432/alfresco
+                -Ddb.url=jdbc:postgresql://postgress:5431/alfresco
                 -Dalfresco_user_store.adminusername=admin.pipeline@alfresco.com
                 -Dsolr.host=solr6
                 -Dsolr.port=8983
