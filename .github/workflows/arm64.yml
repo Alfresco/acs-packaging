@@ -72,8 +72,18 @@ jobs:
         run: |
           # Get containers state
           docker ps -a
-          # Get Alfresco repo logs
-          docker ps -aqf "ancestor=quay.io/alfresco/alfresco-pipeline-all-amps-repo" | xargs -L 1 docker logs --tail 3000
+          # Print Alfresco repo logs
+          docker ps -aqf "ancestor=quay.io/alfresco/alfresco-pipeline-all-amps-repo" | xargs -L 1 docker logs --tail 5000
+          # Dump all containers logs to files
+          docker ps -a --format '{{.ID}} {{.Names}}' | while read -r id name ; do
+            docker logs "${id}" --tail 5000 > "${name}.log"
+          done
+          tar -zcf logs.tar.gz *.log
+        if: failure() && steps.setup-env.outcome == 'failure'
+      - name: "Persist environment setup failure logs"
+        uses: actions/upload-artifact@v3
+        with:
+          path: logs.tar.gz
         if: failure() && steps.setup-env.outcome == 'failure'
       - name: "Run tests"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
