@@ -73,7 +73,7 @@ jobs:
           # Get containers state
           docker ps -a
           # Print Alfresco repo logs
-          docker ps -aqf "ancestor=quay.io/alfresco/alfresco-pipeline-all-amps-repo" | xargs -L 1 docker logs --tail 5000
+          docker ps -aqf "ancestor=quay.io/alfresco/alfresco-pipeline-all-amps-repo:$TEST_GIT_TAG" | xargs -L 1 docker logs --tail 5000
           # Dump all containers logs to files
           docker ps -a --format '{{.ID}} {{.Names}}' | while read -r id name ; do
             docker logs "${id}" --tail 5000 > "${name}.log"
