@@ -28,7 +28,7 @@ services:
             JAVA_OPTS: "
                 -Ddb.driver=org.postgresql.Driver
                 -Ddb.username=alfresco
-                -Ddb.password=alfresco
+                -Ddb.password=alfrescooo
                 -Ddb.url=jdbc:postgresql://postgress:5432/alfresco
                 -Dalfresco_user_store.adminusername=admin.pipeline@alfresco.com
                 -Dsolr.host=solr6
