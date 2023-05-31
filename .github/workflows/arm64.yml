@@ -70,6 +70,8 @@ jobs:
           curl -v --user admin.pipeline@alfresco.com:admin http://localhost:8080/alfresco/api/discovery
       - name: "Dump all Docker containers logs"
         uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@feature/ACS-5201-ARM64_ACS_Packaging_CI_failure
+        with:
+          output-archive-name: some-fancy-name.tar.gz
         if: failure() && steps.setup-env.outcome == 'failure'
       - name: "Run tests"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
