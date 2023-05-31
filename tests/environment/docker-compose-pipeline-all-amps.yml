@@ -119,12 +119,12 @@ services:
         image: postgres:14.4
         mem_limit: 512m
         environment:
-            - POSTGRES_PASSWORD=alfresco
+            - POSTGRES_PASSWORD=alfrescoo
             - POSTGRES_USER=alfresco
             - POSTGRES_DB=alfresco
         command: postgres -c max_connections=300 -c log_min_messages=LOG
         ports:
-            - 5432:5432
+            - 15432:5432
 
     solr6:
         image: alfresco/alfresco-search-services:2.0.3
