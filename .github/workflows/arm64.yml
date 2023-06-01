@@ -69,9 +69,7 @@ jobs:
           docker ps
           curl -v --user admin.pipeline@alfresco.com:admin http://localhost:8080/alfresco/api/discovery
       - name: "Dump all Docker containers logs"
-        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@feature/ACS-5201-ARM64_ACS_Packaging_CI_failure
-        with:
-          output-archive-name: some-fancy-name.tar.gz
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v1.41.0
         if: failure() && steps.setup-env.outcome == 'failure'
       - name: "Run tests"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
@@ -91,9 +89,6 @@ jobs:
       - name: "Clean Maven cache"
         if: always()
         run: rm -rf $HOME/.m2/repository/*
-      - name: "Dump all Docker containers logs"
-        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@feature/ACS-5201-ARM64_ACS_Packaging_CI_failure
-        if: always()
       - name: "Clean up the environment"
         if: always()
         run: |
