@@ -21,6 +21,24 @@
     <dependencies>
         <dependency>
             <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-server-root</artifactId>
+            <version>${dependency.alfresco-server-root.version}</version>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>api-explorer</artifactId>
+            <version>${alfresco.api-explorer.version}</version>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>dev-share-amps-overlay</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco</groupId>
             <artifactId>dev-repo-amps-overlay</artifactId>
             <version>${project.version}</version>
             <type>war</type>
@@ -60,85 +78,126 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <version>2.2</version>
+                <groupId>org.codehaus.cargo</groupId>
+                <artifactId>cargo-maven3-plugin</artifactId>
+                <version>1.10.7</version>
                 <configuration>
-                    <systemProperties>
-                        <index.subsystem.name>solr6</index.subsystem.name>
-                        <solr.port>${tomcat.default.solr6.port}</solr.port>
-                        <dir.root>${runtime.data.folder}/alf_data</dir.root>
-                        <solr.host>localhost</solr.host>
-                        <solr.base.url>/solr</solr.base.url>
-                        <solr.secureComms>secret</solr.secureComms>
-                        <solr.sharedSecret>secret</solr.sharedSecret>
-                        <encryption.keystore.type>pkcs12</encryption.keystore.type>
-                        <encryption.cipherAlgorithm>AES/CBC/PKCS5Padding</encryption.cipherAlgorithm>
-                        <encryption.keyAlgorithm>AES</encryption.keyAlgorithm>
-                        <metadata-keystore.password>mp6yc0UD9e</metadata-keystore.password>
-                        <metadata-keystore.aliases>metadata</metadata-keystore.aliases>
-                        <metadata-keystore.metadata.password>mp6yc0UD9e</metadata-keystore.metadata.password>
-                        <metadata-keystore.metadata.algorithm>AES</metadata-keystore.metadata.algorithm>
-                        
-                        <system.directAccessUrl.enabled>true</system.directAccessUrl.enabled>
-                        <restApi.directAccessUrl.enabled>true</restApi.directAccessUrl.enabled>
+                    <container>
+                        <containerId>tomcat9x</containerId>
+                        <type>embedded</type>
+                        <log>target/cargo.log</log>
+                        <systemProperties>
+                            <cargo.tomcat.ajp.port>-1</cargo.tomcat.ajp.port>
 
-                        <!-- override if using "s3" profile -->
-                        <connector.s3.directAccessUrl>true</connector.s3.directAccessUrl>
-                        <connector.s3.accessKey>changeMe</connector.s3.accessKey>
-                        <connector.s3.secretKey>changeMe</connector.s3.secretKey>
-                        <connector.s3.bucketName>changeMe</connector.s3.bucketName>
-                        <connector.s3.bucketRegion>changeMe</connector.s3.bucketRegion>
-                        <connector.s3.storeProtocol>changeMe</connector.s3.storeProtocol>
+                            <index.subsystem.name>solr6</index.subsystem.name>
+                            <solr.port>${tomcat.default.solr6.port}</solr.port>
+                            <dir.root>${runtime.data.folder}/alf_data</dir.root>
+                            <solr.host>localhost</solr.host>
+                            <solr.base.url>/solr</solr.base.url>
+                            <solr.secureComms>secret</solr.secureComms>
+                            <solr.sharedSecret>secret</solr.sharedSecret>
+                            <encryption.keystore.type>pkcs12</encryption.keystore.type>
+                            <encryption.cipherAlgorithm>AES/CBC/PKCS5Padding</encryption.cipherAlgorithm>
+                            <encryption.keyAlgorithm>AES</encryption.keyAlgorithm>
+                            <metadata-keystore.password>mp6yc0UD9e</metadata-keystore.password>
+                            <metadata-keystore.aliases>metadata</metadata-keystore.aliases>
+                            <metadata-keystore.metadata.password>mp6yc0UD9e</metadata-keystore.metadata.password>
+                            <metadata-keystore.metadata.algorithm>AES</metadata-keystore.metadata.algorithm>
 
-                        <!-- override if using "az" profile -->
-                        <connector.az.directAccessUrl>true</connector.az.directAccessUrl>
-                        <connector.az.authentication.mode>changeMe</connector.az.authentication.mode><!-- sharedKey is the most likely value-->
-                        <connector.az.account.name>changeMe</connector.az.account.name>
-                        <connector.az.account.key>changeMe</connector.az.account.key>
-<!--                    <connector.az.containerName>changeMe</connector.az.containerName>--><!-- optional override -->
-<!--                    <connector.az.deleted.containerName>changeMe</connector.az.deleted.containerName>--><!-- optional override -->
+                            <system.directAccessUrl.enabled>true</system.directAccessUrl.enabled>
+                            <restApi.directAccessUrl.enabled>true</restApi.directAccessUrl.enabled>
 
-<!--                    <cache.cachingContentStoreCache.timeToLiveSeconds>1</cache.cachingContentStoreCache.timeToLiveSeconds>--><!-- if you wish to turn off caching content store-->
+                            <!-- override if using "s3" profile -->
+                            <connector.s3.directAccessUrl>true</connector.s3.directAccessUrl>
+                            <connector.s3.accessKey>changeMe</connector.s3.accessKey>
+                            <connector.s3.secretKey>changeMe</connector.s3.secretKey>
+                            <connector.s3.bucketName>changeMe</connector.s3.bucketName>
+                            <connector.s3.bucketRegion>changeMe</connector.s3.bucketRegion>
+                            <connector.s3.storeProtocol>changeMe</connector.s3.storeProtocol>
 
-                    </systemProperties>
-                    <delegate>false</delegate>
-                    <useSeparateTomcatClassLoader>true</useSeparateTomcatClassLoader>
-                    <contextFile>${runtime.tomcat.conf.folder}/alfresco-context.xml</contextFile>
-                    <tomcatUsers>${runtime.tomcat.conf.folder}/tomcat-users.xml</tomcatUsers>
-                    <webapps>
-                        <webapp>
+                            <!-- override if using "az" profile -->
+                            <connector.az.directAccessUrl>true</connector.az.directAccessUrl>
+                            <connector.az.authentication.mode>changeMe</connector.az.authentication.mode><!-- sharedKey is the most likely value-->
+                            <connector.az.account.name>changeMe</connector.az.account.name>
+                            <connector.az.account.key>changeMe</connector.az.account.key>
+                            <!--                    <connector.az.containerName>changeMe</connector.az.containerName>--><!-- optional override -->
+                            <!--                    <connector.az.deleted.containerName>changeMe</connector.az.deleted.containerName>--><!-- optional override -->
+
+                            <!--                    <cache.cachingContentStoreCache.timeToLiveSeconds>1</cache.cachingContentStoreCache.timeToLiveSeconds>--><!-- if you wish to turn off caching content store-->
+
+                        </systemProperties>
+                    </container>
+                    <configuration>
+                        <configfiles>
+                            <configfile>
+                                <file>${runtime.tomcat.conf.folder}/alfresco-context.xml</file>
+                                <todir>conf/Catalina/localhost/</todir>
+                                <tofile>context.xml.default</tofile>
+                            </configfile>
+                            <configfile>
+                                <file>${runtime.tomcat.conf.folder}/tomcat-users.xml</file>
+                                <todir>conf</todir>
+                                <tofile>conf/tomcat-users.xml</tofile>
+                            </configfile>
+                        </configfiles>
+                    </configuration>
+                    <deployables>
+                        <deployable>
                             <groupId>org.alfresco</groupId>
                             <artifactId>alfresco-server-root</artifactId>
-                            <version>${dependency.alfresco-server-root.version}</version>
-                            <contextPath>/</contextPath>
                             <type>war</type>
-                            <asWebapp>true</asWebapp>
-                            <!-- Workaround for https://issues.apache.org/jira/browse/MTOMCAT-269 -->
-                            <!-- tomcat7-maven-plugin does not pick up the context.xml file from META-INF -->
-                            <contextFile>
-                                ${project.build.directory}/tomcat/webapps/alfresco-server-root/META-INF/context.xml
-                            </contextFile>
-                        </webapp>
-                        <webapp>
+                            <properties>
+                                <context>/</context>
+                            </properties>
+<!--                            <configurationFiles>-->
+<!--                                &lt;!&ndash; Workaround for https://issues.apache.org/jira/browse/MTOMCAT-269 &ndash;&gt;-->
+<!--                                &lt;!&ndash; tomcat7-maven-plugin does not pick up the context.xml file from META-INF &ndash;&gt;-->
+<!--                                <configurationFile>-->
+<!--                                    <file>${project.build.directory}/tomcat/webapps/alfresco-server-root/META-INF/context.xml</file>-->
+<!--                                    <todir>conf/Catalina/localhost</todir>-->
+<!--                                    <tofile>alfresco-server-root.xml</tofile>-->
+<!--                                </configurationFile>-->
+<!--                            </configurationFiles>-->
+                        </deployable>
+                        <deployable>
                             <groupId>org.alfresco</groupId>
                             <artifactId>api-explorer</artifactId>
-                            <version>${alfresco.api-explorer.version}</version>
-                            <contextPath>/api-explorer</contextPath>
                             <type>war</type>
-                            <asWebapp>true</asWebapp>
-                        </webapp>
-                        <webapp>
+                            <properties>
+                                <context>/api-explorer</context>
+                            </properties>
+                        </deployable>
+                        <deployable>
                             <groupId>org.alfresco</groupId>
                             <artifactId>dev-share-amps-overlay</artifactId>
-                            <contextPath>/share</contextPath>
-                            <version>${project.version}</version>
                             <type>war</type>
-                            <asWebapp>true</asWebapp>
-                        </webapp>
-                    </webapps>
+                            <properties>
+                                <context>/share</context>
+                            </properties>
+                        </deployable>
+                    </deployables>
                 </configuration>
                 <dependencies>
+                    <!-- Deployable versions -->
+                    <dependency>
+                        <groupId>org.alfresco</groupId>
+                        <artifactId>alfresco-server-root</artifactId>
+                        <version>${dependency.alfresco-server-root.version}</version>
+                        <type>war</type>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.alfresco</groupId>
+                        <artifactId>api-explorer</artifactId>
+                        <version>${alfresco.api-explorer.version}</version>
+                        <type>war</type>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.alfresco</groupId>
+                        <artifactId>dev-share-amps-overlay</artifactId>
+                        <version>${project.version}</version>
+                        <type>war</type>
+                    </dependency>
+                    <!-- Dependencies -->
                     <dependency>
                         <groupId>org.apache.tomcat.embed</groupId>
                         <artifactId>tomcat-embed-core</artifactId>
@@ -247,6 +306,7 @@
                     </dependency>
                 </dependencies>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -341,8 +401,9 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.apache.tomcat.maven</groupId>
-                        <artifactId>tomcat7-maven-plugin</artifactId>
+                        <groupId>org.codehaus.cargo</groupId>
+                        <artifactId>cargo-maven3-plugin</artifactId>
+                        <version>1.10.7</version>
                         <executions>
                             <execution>
                                 <id>run-exploded-webapp</id>
