@@ -83,7 +83,7 @@
                 <version>1.10.7</version>
                 <configuration>
                     <container>
-                        <containerId>tomcat9x</containerId>
+                        <containerId>tomcat7x</containerId>
                         <type>embedded</type>
                         <log>target/cargo.log</log>
                         <systemProperties>
@@ -131,13 +131,13 @@
                         <configfiles>
                             <configfile>
                                 <file>${runtime.tomcat.conf.folder}/alfresco-context.xml</file>
-                                <todir>conf/Catalina/localhost/</todir>
-                                <tofile>context.xml.default</tofile>
+                                <todir>conf</todir>
+                                <tofile>context.xml</tofile>
                             </configfile>
                             <configfile>
                                 <file>${runtime.tomcat.conf.folder}/tomcat-users.xml</file>
                                 <todir>conf</todir>
-                                <tofile>conf/tomcat-users.xml</tofile>
+                                <tofile>tomcat-users.xml</tofile>
                             </configfile>
                         </configfiles>
                     </configuration>
