@@ -1,6 +1,8 @@
 package org.alfresco.tas;
 
-import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.Properties;
 
 import org.testng.Assert;
@@ -8,8 +10,8 @@ import org.testng.Assert;
 /** A helper class with methods to access properties from Maven pom files. */
 public class MavenPropertyHelper
 {
-    /** The location of the .env file (relative to the root of this maven submodule). */
-    private static final String MAVEN_PROPERTIES_FILE = "target/classes/maven.properties";
+    /** The relative path to the maven property file resource. */
+    private static final String MAVEN_PROPERTIES_FILE = "maven.properties";
 
     /** Private constructor for helper class. */
     private MavenPropertyHelper()
@@ -35,7 +37,8 @@ public class MavenPropertyHelper
     public static Properties loadMavenProperties()
     {
         Properties properties = new Properties();
-        try (FileReader reader = new FileReader(MAVEN_PROPERTIES_FILE))
+        InputStream inputStream = MavenPropertyHelper.class.getClassLoader().getResourceAsStream(MAVEN_PROPERTIES_FILE);
+        try (Reader reader = new InputStreamReader(inputStream))
         {
             properties.load(reader);
         }
