@@ -51,7 +51,6 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
 
     private String testFileName;
     private String filenameWhichIncludesWhitespace = "TestFile " + UUID.randomUUID() + ".txt";
-    private String escapedFilenameWhichIncludesWhitespace = filenameWhichIncludesWhitespace.replace(" ", "_x0020_");
     private String testFileNameWithWhitespace;
 
     /**
@@ -155,6 +154,18 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     public void testAllDescendentsOfFolder()
     {
         SearchRequest query = req("PATH:\"//" + testFolders.get(0).getName() + "//*\" AND name:*");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFileName, testFileNameWithWhitespace, testFolders.get(1).getName(), testFolders.get(2).getName());
+    }
+
+    @Test (groups = TestGroup.SEARCH)
+    public void testWhereFolderIsAncestor() {
+        SearchRequest query = req("ANCESTOR:\"" + testFolders.get(2).getNodeRef() + "\" AND name:*");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFileName, testFileNameWithWhitespace);
+    }
+
+    @Test (groups = TestGroup.SEARCH)
+    public void testAncestorWithWorkspaceReference() {
+        SearchRequest query = req("ANCESTOR:\"workspace://SpacesStore/" + testFolders.get(0).getNodeRef() + "\" AND name:*");
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName, testFileNameWithWhitespace, testFolders.get(1).getName(), testFolders.get(2).getName());
     }
 
