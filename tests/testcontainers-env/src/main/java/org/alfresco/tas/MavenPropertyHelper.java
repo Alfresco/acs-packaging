@@ -37,12 +37,9 @@ public class MavenPropertyHelper
     public static Properties loadMavenProperties()
     {
         Properties properties = new Properties();
-        try (
-        InputStream inputStream = MavenPropertyHelper.class.getClassLoader().getResourceAsStream(MAVEN_PROPERTIES_FILE);
-        Reader reader = new InputStreamReader(inputStream)
-        )
-        try (Reader reader = new InputStreamReader(inputStream))
+        try (InputStream inputStream = MavenPropertyHelper.class.getClassLoader().getResourceAsStream(MAVEN_PROPERTIES_FILE))
         {
+            Reader reader = new InputStreamReader(inputStream);
             properties.load(reader);
         }
         catch (Exception e)
