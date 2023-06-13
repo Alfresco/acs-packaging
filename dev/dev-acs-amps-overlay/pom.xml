@@ -128,12 +128,10 @@
                         </systemProperties>
                     </container>
                     <configuration>
-<!--                        <type>existing</type>-->
-<!--                        <home>${runtime.tomcat.conf.folder}</home>-->
                         <configfiles>
                             <configfile>
                                 <file>${runtime.tomcat.conf.folder}/alfresco-context.xml</file>
-                                <todir>conf</todir>
+                                <todir>webapps/alfresco/META-INF</todir>
                                 <tofile>context.xml</tofile>
                             </configfile>
                             <configfile>
@@ -181,6 +179,14 @@
                             <type>war</type>
                             <properties>
                                 <context>/share</context>
+                            </properties>
+                        </deployable>
+                        <deployable>
+                            <groupId>org.alfresco</groupId>
+                            <artifactId>dev-acs-amps-overlay</artifactId>
+                            <type>war</type>
+                            <properties>
+                                <context>/alfresco</context>
                             </properties>
                         </deployable>
                     </deployables>
