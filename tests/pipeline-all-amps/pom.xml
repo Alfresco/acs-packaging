@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>content-repository-tests</artifactId>
-        <version>23.1.0-A15-SNAPSHOT</version>
+        <version>23.1.0-A16-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -109,6 +109,9 @@
                                                 <platform>linux/amd64</platform>
                                                 <platform>linux/arm64</platform>
                                             </platforms>
+                                            <attestations>
+                                                <provenance>false</provenance>
+                                            </attestations>
                                         </buildx>
                                         <dockerFileDir>${project.basedir}</dockerFileDir>
                                         <args>
@@ -158,6 +161,9 @@
                                                 <platform>linux/amd64</platform>
                                                 <platform>linux/arm64</platform>
                                             </platforms>
+                                            <attestations>
+                                                <provenance>false</provenance>
+                                            </attestations>
                                         </buildx>
                                         <dockerFileDir>${project.basedir}</dockerFileDir>
                                         <args>
@@ -207,6 +213,9 @@
                                                 <platform>linux/amd64</platform>
                                                 <platform>linux/arm64</platform>
                                             </platforms>
+                                            <attestations>
+                                                <provenance>false</provenance>
+                                            </attestations>
                                         </buildx>
                                         <dockerFileDir>${project.basedir}</dockerFileDir>
                                         <args>
