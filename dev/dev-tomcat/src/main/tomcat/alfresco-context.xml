@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context docBase="${project.build.directory}/${project.build.finalName}" path="/alfresco">
-  <Resources className="org.apache.naming.resources.VirtualDirContext"
-    extraResourcePaths="/=${project.build.directory}/${project.build.finalName}" />
-  <Loader searchVirtualFirst="true"
-    className="org.apache.catalina.loader.VirtualWebappLoader"
-    virtualClasspath="${project.build.outputDirectory};${runtime.tomcat.conf.folder}/shared/classes" />
+<Context docBase="/Users/Marcin.Strankowski/Projects/acs-packaging/dev/dev-acs-amps-overlay/target/alfresco">
+  <Resources cachingAllowed="true" cacheMaxSize="300000">
+    <PreResources className="org.apache.catalina.webresources.DirResourceSet"
+                  base="/Users/Marcin.Strankowski/Projects/acs-packaging/dev/dev-acs-amps-overlay/target/alfresco"
+                  internalPath="/"
+                  webAppMount="/WEB-INF/classes"/>
+    <PostResources className="org.apache.catalina.webresources.DirResourceSet"
+                   base="/Users/Marcin.Strankowski/Projects/acs-packaging/dev/dev-acs-amps-overlay/target/cargo/configurations/tomcat9x/shared/classes"
+                   webAppMount="/WEB-INF/classes"/>
+  </Resources>
 </Context>

@@ -83,7 +83,7 @@
                 <version>1.10.7</version>
                 <configuration>
                     <container>
-                        <containerId>tomcat7x</containerId>
+                        <containerId>tomcat9x</containerId>
                         <type>embedded</type>
                         <log>target/cargo.log</log>
                         <systemProperties>
@@ -120,10 +120,10 @@
                             <connector.az.authentication.mode>changeMe</connector.az.authentication.mode><!-- sharedKey is the most likely value-->
                             <connector.az.account.name>changeMe</connector.az.account.name>
                             <connector.az.account.key>changeMe</connector.az.account.key>
-                            <!--                    <connector.az.containerName>changeMe</connector.az.containerName>--><!-- optional override -->
-                            <!--                    <connector.az.deleted.containerName>changeMe</connector.az.deleted.containerName>--><!-- optional override -->
+<!--                            <connector.az.containerName>changeMe</connector.az.containerName> optional override -->
+<!--                            <connector.az.deleted.containerName>changeMe</connector.az.deleted.containerName> optional override -->
 
-                            <!--                    <cache.cachingContentStoreCache.timeToLiveSeconds>1</cache.cachingContentStoreCache.timeToLiveSeconds>--><!-- if you wish to turn off caching content store-->
+<!--                            <cache.cachingContentStoreCache.timeToLiveSeconds>1</cache.cachingContentStoreCache.timeToLiveSeconds> if you wish to turn off caching content store-->
 
                         </systemProperties>
                     </container>
@@ -131,7 +131,7 @@
                         <configfiles>
                             <configfile>
                                 <file>${runtime.tomcat.conf.folder}/alfresco-context.xml</file>
-                                <todir>webapps/alfresco/META-INF</todir>
+                                <todir>conf</todir>
                                 <tofile>context.xml</tofile>
                             </configfile>
                             <configfile>
@@ -155,15 +155,6 @@
                             <properties>
                                 <context>/</context>
                             </properties>
-<!--                            <configurationFiles>-->
-<!--                                &lt;!&ndash; Workaround for https://issues.apache.org/jira/browse/MTOMCAT-269 &ndash;&gt;-->
-<!--                                &lt;!&ndash; tomcat7-maven-plugin does not pick up the context.xml file from META-INF &ndash;&gt;-->
-<!--                                <configurationFile>-->
-<!--                                    <file>${project.build.directory}/tomcat/webapps/alfresco-server-root/META-INF/context.xml</file>-->
-<!--                                    <todir>conf/Catalina/localhost</todir>-->
-<!--                                    <tofile>alfresco-server-root.xml</tofile>-->
-<!--                                </configurationFile>-->
-<!--                            </configurationFiles>-->
                         </deployable>
                         <deployable>
                             <groupId>org.alfresco</groupId>
