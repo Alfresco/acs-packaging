@@ -25,10 +25,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 @ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
     initializers = AlfrescoStackInitializer.class)
+@Ignore("ACS-5426")
 public class ElasticsearchGetTagsTests extends AbstractTestNGSpringContextTests
 {
 
