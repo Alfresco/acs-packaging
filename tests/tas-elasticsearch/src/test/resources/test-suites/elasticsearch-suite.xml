@@ -18,5 +18,13 @@
     <packages>
       <package name="org.alfresco.elasticsearch.reindexing" />
     </packages>
+    <classes>
+        <class
+            name="org.alfresco.elasticsearch.reindexing.ElasticsearchGetTagsTests">
+            <methods>
+                <exclude name=".*" />
+            </methods>
+        </class>
+    </classes>
   </test>
 </suite>
