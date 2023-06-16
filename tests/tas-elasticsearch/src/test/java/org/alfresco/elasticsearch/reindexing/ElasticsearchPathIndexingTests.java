@@ -169,6 +169,20 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName, testFileNameWithWhitespace, testFolders.get(1).getName(), testFolders.get(2).getName());
     }
 
+    @Test (groups = TestGroup.SEARCH)
+    public void testPrimaryParent()
+    {
+        SearchRequest query = req("PRIMARYPARENT:\"" + testFolders.get(1).getNodeRef() + "\" AND name:*");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFolders.get(2).getName());
+    }
+
+    @Test (groups = TestGroup.SEARCH)
+    public void testParent()
+    {
+        SearchRequest query = req("PARENT:\"" + testFolders.get(1).getNodeRef() + "\" AND name:*");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFolders.get(2).getName());
+    }
+
     @Test(groups = TestGroup.SEARCH)
     public void testAllFoldersInSite()
     {
