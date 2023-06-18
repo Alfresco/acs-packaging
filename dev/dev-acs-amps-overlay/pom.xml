@@ -236,7 +236,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
-                    <!-- Download and unpack the tomcat config zip file -->
+                    <!-- Download and unpack the tomcat config zip file to a temporary folder -->
                     <execution>
                         <id>unpack-tomcat-config</id>
                         <phase>generate-resources</phase>
@@ -244,7 +244,7 @@
                             <goal>unpack</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/tomcat-conf</outputDirectory>
+                            <outputDirectory>${project.build.directory}/tomcat-temp</outputDirectory>
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
@@ -255,6 +255,42 @@
                                     <type>zip</type>
                                 </artifactItem>
                             </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <!-- Apply maven filtering to tomcat config from a temporary folder to build directory -->
+                        <id>filter-resources</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/tomcat-conf</outputDirectory>
+                            <encoding>UTF-8</encoding>
+                            <resources>
+                                <resource>
+                                    <directory>${project.build.directory}/tomcat-temp</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>alfresco-context.xml</include>
+                                        <include>solr-context.xml</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.directory}/tomcat-temp</directory>
+                                    <filtering>false</filtering>
+                                    <excludes>
+                                        <exclude>alfresco-context.xml</exclude>
+                                        <exclude>solr-context.xml</exclude>
+                                    </excludes>
+                                </resource>
+                            </resources>
                         </configuration>
                     </execution>
                 </executions>
@@ -292,16 +328,6 @@
                                         <echo message="Creating tomcat runtime configuration: ${runtime.tomcat.conf.folder}" />
                                         <copy todir="${runtime.tomcat.conf.folder}">
                                             <fileset dir="${project.build.directory}/tomcat-conf" />
-                                        </copy>
-                                        <!-- filtering workaround to avoid adding another maven-resources plugin execution,
-                                        since cargo doesn't support maven tokens -->
-                                        <copy file="${project.build.directory}/tomcat-conf/alfresco-context.xml"
-                                              todir="${runtime.tomcat.conf.folder}"
-                                              overwrite="true">
-                                            <filterset begintoken="${" endtoken="}">
-                                                <filter token="project.build.directory" value="${project.build.directory}"/>
-                                                <filter token="cargo.embedded.container" value="${cargo.embedded.container}"/>
-                                            </filterset>
                                         </copy>
                                     </else>
                                 </if>
