@@ -8,6 +8,7 @@ import static org.testng.Assert.fail;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -19,6 +20,7 @@ import com.google.common.collect.Sets;
 
 import org.alfresco.rest.core.RestWrapper;
 import org.alfresco.rest.search.RestRequestQueryModel;
+import org.alfresco.rest.search.RestRequestTemplatesModel;
 import org.alfresco.rest.search.SearchNodeModel;
 import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.rest.search.SearchResponse;
@@ -90,7 +92,7 @@ public class SearchQueryService
         expectResultsFromQuery(searchRequest, user, searchResponse -> assertAllSearchResults(searchResponse, assertionMethod, failureMessageFunction));
     }
 
-    private void expectResultsFromQuery(SearchRequest searchRequest, org.alfresco.utility.model.UserModel user, Consumer<SearchResponse> assertionMethod)
+    private void expectResultsFromQuery(SearchRequest searchRequest, UserModel user, Consumer<SearchResponse> assertionMethod)
     {
         try
         {
@@ -199,5 +201,19 @@ public class SearchQueryService
         restRequestQueryModel.setQuery(query);
         Optional.ofNullable(language).ifPresent(restRequestQueryModel::setLanguage);
         return new SearchRequest(restRequestQueryModel);
+    }
+
+    public static SearchRequest req(String language, String query, Map<String, String> templates)
+    {
+        RestRequestQueryModel restRequestQueryModel = new RestRequestQueryModel();
+        restRequestQueryModel.setQuery(query);
+        Optional.ofNullable(language).ifPresent(restRequestQueryModel::setLanguage);
+        SearchRequest request = new SearchRequest(restRequestQueryModel);
+        List<RestRequestTemplatesModel> templatesModels = templates.entrySet().stream()
+            .map(entry -> RestRequestTemplatesModel.builder().name(entry.getKey()).template(entry.getValue()).create())
+            .toList();
+        request.setTemplates(templatesModels);
+
+        return request;
     }
 }
