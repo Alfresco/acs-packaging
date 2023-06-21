@@ -23,24 +23,6 @@
     <dependencies>
         <dependency>
             <groupId>org.alfresco</groupId>
-            <artifactId>alfresco-server-root</artifactId>
-            <version>${dependency.alfresco-server-root.version}</version>
-            <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco</groupId>
-            <artifactId>api-explorer</artifactId>
-            <version>${alfresco.api-explorer.version}</version>
-            <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco</groupId>
-            <artifactId>dev-share-amps-overlay</artifactId>
-            <version>${project.version}</version>
-            <type>war</type>
-        </dependency>
-        <dependency>
-            <groupId>org.alfresco</groupId>
             <artifactId>dev-repo-amps-overlay</artifactId>
             <version>${project.version}</version>
             <type>war</type>
@@ -53,32 +35,33 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
+        <!-- Provided dependencies to satisfy Cargo requirement, but not include in built WAR -->
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-server-root</artifactId>
+            <version>${dependency.alfresco-server-root.version}</version>
+            <type>war</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>api-explorer</artifactId>
+            <version>${alfresco.api-explorer.version}</version>
+            <type>war</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>dev-share-amps-overlay</artifactId>
+            <version>${project.version}</version>
+            <type>war</type>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <finalName>alfresco</finalName>
         <plugins>
-            <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <overlays>
-                        <overlay>
-                            <groupId>org.alfresco</groupId>
-                            <artifactId>dev-repo-amps-overlay</artifactId>
-                            <type>war</type>
-                        </overlay>
-                    </overlays>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>prepare-exploded-war</id>
-                        <goals>
-                            <goal>exploded</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.codehaus.cargo</groupId>
                 <artifactId>cargo-maven3-plugin</artifactId>
@@ -178,7 +161,7 @@
                             <groupId>org.codehaus.cargo</groupId>
                             <artifactId>simple-war</artifactId>
                             <type>war</type>
-                            <location>${project.build.directory}/alfresco</location>
+                            <location>${project.build.directory}/alfresco.war</location>
                             <properties>
                                 <context>/alfresco</context>
                             </properties>
@@ -186,33 +169,6 @@
                     </deployables>
                 </configuration>
                 <dependencies>
-                    <!-- Deployable versions -->
-                    <dependency>
-                        <groupId>org.alfresco</groupId>
-                        <artifactId>alfresco-server-root</artifactId>
-                        <version>${dependency.alfresco-server-root.version}</version>
-                        <type>war</type>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.alfresco</groupId>
-                        <artifactId>api-explorer</artifactId>
-                        <version>${alfresco.api-explorer.version}</version>
-                        <type>war</type>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.alfresco</groupId>
-                        <artifactId>dev-share-amps-overlay</artifactId>
-                        <version>${project.version}</version>
-                        <type>war</type>
-                    </dependency>
-                    <!-- Dependencies -->
-                    <!-- Needed for deploying exploded WAR -->
-                    <dependency>
-                        <groupId>org.codehaus.cargo</groupId>
-                        <artifactId>simple-war</artifactId>
-                        <version>${dependency.cargo.version}</version>
-                        <type>war</type>
-                    </dependency>
                     <!-- Workaround required to make Share work after Tika upgrade -->
                     <dependency>
                         <groupId>org.apache.sis.core</groupId>
@@ -231,7 +187,6 @@
                     </dependency>
                 </dependencies>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -364,7 +319,7 @@
                     <plugin>
                         <groupId>org.codehaus.cargo</groupId>
                         <artifactId>cargo-maven3-plugin</artifactId>
-                        <version>1.10.7</version>
+                        <version>${dependency.cargo.version}</version>
                         <executions>
                             <execution>
                                 <id>run-exploded-webapp</id>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context docBase="${project.build.directory}/alfresco">
+<Context>
   <Resources cachingAllowed="true" cacheMaxSize="300000">
     <PostResources className="org.apache.catalina.webresources.DirResourceSet"
                    base="${project.build.directory}/cargo/configurations/${cargo.embedded.container}/shared/classes"
