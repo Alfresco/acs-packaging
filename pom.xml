@@ -24,7 +24,7 @@
         <alfresco.salesforce-connector.version>2.4.1-A1</alfresco.salesforce-connector.version>
         <alfresco.outlook.version>2.9.0</alfresco.outlook.version>
         <alfresco.transformation-engine.version>3.2.0-A1</alfresco.transformation-engine.version>
-        <alfresco.desktop-sync.version>3.10.0-A2</alfresco.desktop-sync.version>
+        <alfresco.desktop-sync.version>3.10.0-A4</alfresco.desktop-sync.version>
         <alfresco.ais.version>1.6.0-A1</alfresco.ais.version>
 
         <acs.version>${acs.version.major}.${acs.version.minor}.${acs.version.revision}${acs.version.label}</acs.version>
