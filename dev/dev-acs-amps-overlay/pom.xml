@@ -158,10 +158,9 @@
                             </properties>
                         </deployable>
                         <deployable>
-                            <groupId>org.codehaus.cargo</groupId>
-                            <artifactId>simple-war</artifactId>
+                            <groupId>org.alfresco</groupId>
+                            <artifactId>dev-acs-amps-overlay</artifactId>
                             <type>war</type>
-                            <location>${project.build.directory}/alfresco.war</location>
                             <properties>
                                 <context>/alfresco</context>
                             </properties>
