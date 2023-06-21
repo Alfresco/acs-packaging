@@ -34,16 +34,16 @@ public class ElasticsearchTemplateSearchTests extends AbstractTestNGSpringContex
     private static final String SEARCH_TERM = "sample";
 
     @Autowired
-    ServerHealth serverHealth;
+    private ServerHealth serverHealth;
 
     @Autowired
-    DataUser dataUser;
+    private DataUser dataUser;
 
     @Autowired
-    DataContent dataContent;
+    private DataContent dataContent;
 
     @Autowired
-    SearchQueryService searchQueryService;
+    private SearchQueryService searchQueryService;
 
     private UserModel testUser;
     private ContentModel fileWithTermInName;
