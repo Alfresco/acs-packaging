@@ -176,9 +176,6 @@ public class ElasticsearchTemplateSearchTests extends AbstractTestNGSpringContex
 
         searchQueryService.expectNodeRefsFromQuery(request, testUser, fileWithTermInName.getNodeRef());
     }
-
-    /* ********************* Helper methods ********************* */
-
     private ContentModel createRandomFileWithTitle(String title)
     {
         return createRandomFile(title, null, null);
