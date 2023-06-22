@@ -2,7 +2,7 @@
 <Context>
   <Resources cachingAllowed="true" cacheMaxSize="300000">
     <PostResources className="org.apache.catalina.webresources.DirResourceSet"
-                   base="${project.build.directory}/cargo/configurations/${cargo.embedded.container}/shared/classes"
+                   base="${catalina.home}/shared/classes"
                    webAppMount="/WEB-INF/classes"/>
   </Resources>
 </Context>
