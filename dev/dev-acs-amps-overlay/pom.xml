@@ -12,9 +12,6 @@
     </parent>
 
     <properties>
-        <dependency.cargo.version>1.10.7</dependency.cargo.version>
-        <cargo.embedded.container>tomcat9x</cargo.embedded.container>
-
         <dependency.sis.version>1.3</dependency.sis.version>
 
         <tomcat.default.solr6.port>8983</tomcat.default.solr6.port>
@@ -65,10 +62,9 @@
             <plugin>
                 <groupId>org.codehaus.cargo</groupId>
                 <artifactId>cargo-maven3-plugin</artifactId>
-                <version>${dependency.cargo.version}</version>
                 <configuration>
                     <container>
-                        <containerId>${cargo.embedded.container}</containerId>
+                        <containerId>tomcat9x</containerId>
                         <type>embedded</type>
                         <log>target/cargo.log</log>
                         <systemProperties>
@@ -282,7 +278,6 @@
                     <plugin>
                         <groupId>org.codehaus.cargo</groupId>
                         <artifactId>cargo-maven3-plugin</artifactId>
-                        <version>${dependency.cargo.version}</version>
                         <executions>
                             <execution>
                                 <id>run-exploded-webapp</id>
