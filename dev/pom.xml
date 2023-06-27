@@ -35,11 +35,6 @@
                     <artifactId>maven-war-plugin</artifactId>
                     <version>3.2.2</version>
                 </plugin>
-                <plugin>
-                    <groupId>org.codehaus.cargo</groupId>
-                    <artifactId>cargo-maven3-plugin</artifactId>
-                    <version>1.10.7</version>
-                </plugin>
             </plugins>
         </pluginManagement>
     </build>
