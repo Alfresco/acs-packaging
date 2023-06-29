@@ -239,7 +239,7 @@ jobs:
           echo "DATABASE_ENV_PROPERTIES=${{matrix.db-properties}}" >> $GITHUB_ENV
       - name: "Run the environment"
         run: |
-          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-cmis-elastic-tests.yml ${{ env.TAS_ENVIRONMENT }}/${{matrix.compose-file}}
+          ${{ env.TAS_ENVIRONMENT }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-cmis-elastic-tests.yml ${{ env.TAS_ENVIRONMENT }}/${{matrix.compose-file}}
           ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       - name: "Run tests"
         id: tests
