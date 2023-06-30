@@ -47,12 +47,14 @@ function cleanup() {
 }
 
 echo "=========================== Starting Tomcat deployment test ==========================="
-set -vx
+PS4="\[\e[35m\]+ \[\e[m\]"
+set -vex
+
 pushd "$(dirname "${BASH_SOURCE[0]}")/../../../"
 
 #Start environment
 
-envUp
+#envUp
 #envUp_pid=$!
 perform_curl "http://localhost:8983/solr/" 120 10
 exit_code=$?
@@ -73,7 +75,7 @@ exit_code=$?
 cleanup envUp_pid entT_pid
 
 popd
-set +vx
+set +vex
 echo "=========================== Ending api-explorer deployment test =========================="
 
 exit $exit_code
