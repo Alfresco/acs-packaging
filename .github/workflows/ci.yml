@@ -584,6 +584,7 @@ jobs:
         run: |
           shopt -s expand_aliases
           source ./dev/aliases
+          cd ../
           envUp
       - name: "Run tests"
         id: tests
