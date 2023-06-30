@@ -56,13 +56,13 @@ pushd "$(dirname "${BASH_SOURCE[0]}")/../../../"
 
 #envUp
 #envUp_pid=$!
-perform_curl "http://localhost:8983/solr/" 120 10
-exit_code=$?
-
-if [[ ("$exit_code" -ne 0) ]]; then
-  cleanup envUp_pid
-  exit 7
-fi
+#perform_curl "http://localhost:8983/solr/" 120 10
+#exit_code=$?
+#
+#if [[ ("$exit_code" -ne 0) ]]; then
+#  cleanup envUp_pid
+#  exit 7
+#fi
 
 #Start Tomcat with Repository + Share + api-explorer
 (entT &)
@@ -72,7 +72,8 @@ entT_pid=$!
 perform_curl "http://localhost:8080/alfresco/" 120 10 200
 exit_code=$?
 
-cleanup envUp_pid entT_pid
+cleanup entT_pid
+#cleanup envUp_pid entT_pid
 
 popd
 set +vex

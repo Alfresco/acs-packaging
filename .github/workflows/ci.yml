@@ -586,10 +586,8 @@ jobs:
           bash ./scripts/ci/init.sh
       - name: "Set up the environment"
         run: |
-          shopt -s expand_aliases
-          source ./dev/aliases
-          cd ../
-          (envUp &)
+          ${{ env.TAS_SCRIPTS }}/start-compose.sh ./dev/docker-compose.yml
+          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8983/solr/"
       - name: "Run tests"
         id: tests
         timeout-minutes: 20
