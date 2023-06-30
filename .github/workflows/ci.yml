@@ -592,4 +592,6 @@ jobs:
       - name: "Run tests"
         id: tests
         timeout-minutes: 20
-        run: bash ./scripts/dev/test-tomcat-deployment.sh
+        run: |
+          (mvn clean install -Prun -rf dev &)
+          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/"
