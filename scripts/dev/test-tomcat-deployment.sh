@@ -34,19 +34,20 @@ function perform_curl() {
 function cleanup() {
     echo "When testing locally, uncomment cleanup method code"
     #Uncomment when testing locally, will cleanup script leftovers (due to starting background processes)
-    # Stop the environment and Tomcat server by sending termination signal
-    kill -SIGINT $1 &
-    kill -SIGINT $2 &
-    #Kill java processes - Tomcat if is up
-    kill $(ps aux | grep '[j]ava' | awk '{print $2}')
-    #Kill docker compose processes, can be needed in case of long image downloads
-    kill $(ps aux | grep '[d]ocker-compose' | awk '{print $2}')
-
-    envKill
-    echo yes | envRm
+#    # Stop the environment and Tomcat server by sending termination signal
+#    kill -SIGINT $1 &
+#    kill -SIGINT $2 &
+#    #Kill java processes - Tomcat if is up
+#    kill $(ps aux | grep '[j]ava' | awk '{print $2}')
+#    #Kill docker compose processes, can be needed in case of long image downloads
+#    kill $(ps aux | grep '[d]ocker-compose' | awk '{print $2}')
+#
+#    envKill
+#    echo yes | envRm
 }
 
 echo "=========================== Starting Tomcat deployment test ==========================="
+set -vx
 pushd "$(dirname "${BASH_SOURCE[0]}")/../../../"
 
 #Start environment
@@ -71,6 +72,7 @@ exit_code=$?
 cleanup envUp_pid entT_pid
 
 popd
+set +vx
 echo "=========================== Ending api-explorer deployment test =========================="
 
 exit $exit_code
