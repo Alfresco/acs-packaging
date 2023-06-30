@@ -164,7 +164,7 @@ function pullAndBuildSameBranchOnUpstream() {
   cd "$(basename "${UPSTREAM_REPO%.git}")"
 
   if [ -d "./jakarta-dependencies" ]; then
-    ./jakarta-dependencies/build-dependencies.sh
+    ./jakarta-dependencies/build-dependencies.sh "${GIT_USERNAME}:${GIT_PASSWORD}"
   fi
 
   mvn -B -ntp -V -q clean install -DskipTests -Dmaven.javadoc.skip=true ${EXTRA_BUILD_ARGUMENTS}
