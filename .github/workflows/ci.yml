@@ -588,10 +588,10 @@ jobs:
       - name: "Set up the environment"
         run: |
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ./dev/docker-compose.yml
-          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8983/solr/"
+          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8983/solr"
       - name: "Run tomcat, verify it starts"
         id: tests
         timeout-minutes: 5
         run: |
           (mvn clean install -Prun -rf dev &)
-          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/"
+          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco"
