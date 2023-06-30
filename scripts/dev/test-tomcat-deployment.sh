@@ -52,7 +52,7 @@ pushd "$(dirname "${BASH_SOURCE[0]}")/../../../"
 #Start environment
 (envUp &)
 envUp_pid=$!
-perform_curl "http://localhost:8983/solr/" 120 5
+perform_curl "http://localhost:8983/solr/" 120 10
 exit_code=$?
 
 if [[ ("$exit_code" -ne 0) ]]; then
@@ -65,7 +65,7 @@ fi
 entT_pid=$!
 
 # Call the function with desired parameters
-perform_curl "http://localhost:8080/alfresco/" 120 5 200
+perform_curl "http://localhost:8080/alfresco/" 120 10 200
 exit_code=$?
 
 cleanup envUp_pid entT_pid
