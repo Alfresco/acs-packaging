@@ -473,7 +473,7 @@ jobs:
           if ${{ matrix.disabledHostnameVerification }} ; then
             bash ${{ env.CI_WORKSPACE }}/alfresco-ssl-generator/scripts/ci/generate_keystores_wrong_hostnames.sh
             echo "HOSTNAME_VERIFICATION_DISABLED=true" >> "$GITHUB_ENV"
-          else 
+          else
             bash ${{ env.CI_WORKSPACE }}/alfresco-ssl-generator/scripts/ci/generate_keystores.sh
             echo "HOSTNAME_VERIFICATION_DISABLED=false" >> "$GITHUB_ENV"
           fi
@@ -567,3 +567,31 @@ jobs:
           pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
+
+  test_tomcat_deployment:
+    name: "Test Tomcat deployment"
+    runs-on: ubuntu-latest
+    if: >
+      !contains(github.event.head_commit.message, '[skip tests]')
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+      - name: "Build"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          bash ./scripts/ci/init.sh
+          bash ./scripts/ci/build.sh
+      - name: "Set up the environment"
+        run: |
+          ${{ env.TAS_SCRIPTS }}/start-compose.sh ./dev/docker-compose.yml
+          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8983/solr"
+      - name: "Run tomcat, verify it starts"
+        id: tests
+        timeout-minutes: 5
+        run: |
+          (mvn clean install -Prun -rf dev &)
+          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco"
