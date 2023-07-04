@@ -92,93 +92,93 @@ public class ElasticsearchBoostedSearchTests extends AbstractTestNGSpringContext
     @Test(groups = { TestGroup.SEARCH })
     public void testAftsQuery_simpleTermBoost()
     {
-        String query = "TYPE:('cm:content'^2 OR 'cm:folder'^0.5) AND cm:name:" + SEARCH_TERM;
-        SearchRequest request = req("afts", query);
-        searchQueryService.expectResultsInOrder(request, testUser, fileWithTermInName.getName(), folderWithTermInName.getName());
+        String boostedQuery = "TYPE:('cm:content'^2 OR 'cm:folder'^0.5) AND cm:name:" + SEARCH_TERM;
+        SearchRequest searchRequest = req("afts", boostedQuery);
+        searchQueryService.expectResultsInOrder(searchRequest, testUser, fileWithTermInName.getName(), folderWithTermInName.getName());
 
-        String queryInvertedBoost = "TYPE:('cm:content'^0.5 OR 'cm:folder'^2) AND cm:name:" + SEARCH_TERM;
-        SearchRequest requestInvertedBoost = req("afts", queryInvertedBoost);
-        searchQueryService.expectResultsInOrder(requestInvertedBoost, testUser, folderWithTermInName.getName(), fileWithTermInName.getName());
+        String invertedBoost = "TYPE:('cm:content'^0.5 OR 'cm:folder'^2) AND cm:name:" + SEARCH_TERM;
+        searchRequest = req("afts", invertedBoost);
+        searchQueryService.expectResultsInOrder(searchRequest, testUser, folderWithTermInName.getName(), fileWithTermInName.getName());
     }
 
     @Test(groups = { TestGroup.SEARCH })
     public void testAftsQuery_complexTermBoost()
     {
-        String boostedQuery1 = "TYPE:('cm:content'^5 OR 'cm:folder'^0.5) AND (cm:name:" + SEARCH_TERM + "^3 OR cm:title:" + SEARCH_TERM + "^0.1)^0.5";
-        SearchRequest boostedQueryRequest1 = req("afts", boostedQuery1);
-        searchQueryService.expectResultsInOrder(boostedQueryRequest1, testUser, fileWithTermInName.getName(), fileWithTermInTitle.getName(), folderWithTermInName.getName(), folderWithTermInTitle.getName());
+        String boostedQuery1 = "TYPE:('cm:content'^4 OR 'cm:folder'^0.5)^3 AND (cm:name:" + SEARCH_TERM + "^3 OR cm:title:" + SEARCH_TERM + "^0.1)^0.5";
+        SearchRequest searchRequest = req("afts", boostedQuery1);
+        searchQueryService.expectResultsInOrder(searchRequest, testUser, fileWithTermInName.getName(), fileWithTermInTitle.getName(), folderWithTermInName.getName(), folderWithTermInTitle.getName());
 
-        String boostedQuery2 = "TYPE:('cm:content'^0.5 OR 'cm:folder'^5)^2 AND (cm:name:" + SEARCH_TERM + "^3 OR cm:title:" + SEARCH_TERM + "^0.1)";
-        SearchRequest boostedQueryRequest2 = req("afts", boostedQuery2);
-        searchQueryService.expectResultsInOrder(boostedQueryRequest2, testUser, folderWithTermInName.getName(), folderWithTermInTitle.getName(), fileWithTermInName.getName(), fileWithTermInTitle.getName());
+        String boostedQuery2 = "TYPE:('cm:content'^0.5 OR 'cm:folder'^4)^3 AND (cm:name:" + SEARCH_TERM + "^3 OR cm:title:" + SEARCH_TERM + "^0.1)";
+        searchRequest = req("afts", boostedQuery2);
+        searchQueryService.expectResultsInOrder(searchRequest, testUser, folderWithTermInName.getName(), folderWithTermInTitle.getName(), fileWithTermInName.getName(), fileWithTermInTitle.getName());
 
-        String boostedQuery3 = "TYPE:('cm:content'^5 OR 'cm:folder'^0.5)^2 AND (cm:name:" + SEARCH_TERM + "^0.1 OR cm:title:" + SEARCH_TERM + "^3)";
-        SearchRequest boostedQueryRequest3 = req("afts", boostedQuery3);
-        searchQueryService.expectResultsInOrder(boostedQueryRequest3, testUser, fileWithTermInName.getName(), fileWithTermInTitle.getName(), folderWithTermInName.getName(), folderWithTermInTitle.getName());
+        String boostedQuery3 = "TYPE:('cm:content'^4 OR 'cm:folder'^0.5)^3 AND (cm:name:" + SEARCH_TERM + "^0.1 OR cm:title:" + SEARCH_TERM + "^3)";
+        searchRequest = req("afts", boostedQuery3);
+        searchQueryService.expectResultsInOrder(searchRequest, testUser, fileWithTermInName.getName(), fileWithTermInTitle.getName(), folderWithTermInName.getName(), folderWithTermInTitle.getName());
 
-        String boostedQuery4 = "TYPE:('cm:content'^0.5 OR 'cm:folder'^5) AND (cm:name:" + SEARCH_TERM + "^0.1 OR cm:title:" + SEARCH_TERM + "^3)^0.5";
-        SearchRequest boostedQueryRequest4 = req("afts", boostedQuery4);
-        searchQueryService.expectResultsInOrder(boostedQueryRequest4, testUser, folderWithTermInName.getName(), folderWithTermInTitle.getName(), fileWithTermInName.getName(), fileWithTermInTitle.getName());
+        String boostedQuery4 = "TYPE:('cm:content'^0.5 OR 'cm:folder'^4)^3 AND (cm:name:" + SEARCH_TERM + "^0.1 OR cm:title:" + SEARCH_TERM + "^3)^0.5";
+        searchRequest = req("afts", boostedQuery4);
+        searchQueryService.expectResultsInOrder(searchRequest, testUser, folderWithTermInName.getName(), folderWithTermInTitle.getName(), fileWithTermInName.getName(), fileWithTermInTitle.getName());
     }
 
     @Test(groups = { TestGroup.SEARCH })
     public void testAftsQuery_phraseBoost()
     {
-        String query = "TYPE:'cm:content' AND (cm:name:" + SEARCH_TERM + "^2 OR TEXT:'" + SEARCH_TERM + " searched'^0.1)";
-        SearchRequest request = req("afts", query);
-        searchQueryService.expectResultsInOrder(request, testUser, fileWithTermInName.getName(), fileWithPhraseInContent.getName());
+        String boostedQuery = "TYPE:'cm:content' AND (cm:name:" + SEARCH_TERM + "^2 OR TEXT:'" + SEARCH_TERM + " searched'^0.1)";
+        SearchRequest searchRequest = req("afts", boostedQuery);
+        searchQueryService.expectResultsInOrder(searchRequest, testUser, fileWithTermInName.getName(), fileWithPhraseInContent.getName());
 
-        String queryInvertedBoost = "TYPE:'cm:content' AND (cm:name:" + SEARCH_TERM + "^0.1 OR TEXT:'" + SEARCH_TERM + " searched'^2)";
-        SearchRequest requestInvertedBoost = req("afts", queryInvertedBoost);
-        searchQueryService.expectResultsInOrder(requestInvertedBoost, testUser, fileWithPhraseInContent.getName(), fileWithTermInName.getName());
+        String invertedBoost = "TYPE:'cm:content' AND (cm:name:" + SEARCH_TERM + "^0.1 OR TEXT:'" + SEARCH_TERM + " searched'^2)";
+        searchRequest = req("afts", invertedBoost);
+        searchQueryService.expectResultsInOrder(searchRequest, testUser, fileWithPhraseInContent.getName(), fileWithTermInName.getName());
     }
 
     @Test(groups = { TestGroup.SEARCH })
     public void testAftsQuery_exactTermBoost()
     {
-        String query = "TYPE:'cm:content' AND (=cm:name:" + SEARCH_TERM + ".txt^2 OR =cm:content:" + SEARCH_TERM + "^0.5)";
-        SearchRequest request = req("afts", query);
-        searchQueryService.expectResultsInOrder(request, testUser, fileWithTermInName.getName(), fileWithPhraseInContent.getName());
+        String boostedQuery = "TYPE:'cm:content' AND (=cm:name:" + SEARCH_TERM + ".txt^2 OR =cm:content:" + SEARCH_TERM + "^0.5)";
+        SearchRequest searchRequest = req("afts", boostedQuery);
+        searchQueryService.expectResultsInOrder(searchRequest, testUser, fileWithTermInName.getName(), fileWithPhraseInContent.getName());
 
-        String queryInvertedBoost = "TYPE:'cm:content' AND (=cm:name:" + SEARCH_TERM + ".txt^0.1 OR =cm:content:" + SEARCH_TERM + "^3)";
-        SearchRequest requestInvertedBoost = req("afts", queryInvertedBoost);
-        searchQueryService.expectResultsInOrder(requestInvertedBoost, testUser, fileWithPhraseInContent.getName(), fileWithTermInName.getName());
+        String invertedBoost = "TYPE:'cm:content' AND (=cm:name:" + SEARCH_TERM + ".txt^0.1 OR =cm:content:" + SEARCH_TERM + "^3)";
+        searchRequest = req("afts", invertedBoost);
+        searchQueryService.expectResultsInOrder(searchRequest, testUser, fileWithPhraseInContent.getName(), fileWithTermInName.getName());
     }
 
     @Test(groups = { TestGroup.SEARCH })
     public void testAftsQuery_expandedTermBoost()
     {
-        String query = "TYPE:'cm:content' AND (~cm:name:" + SEARCH_TERM + "^3 OR ~cm:name:" + DIFFERENT_SEARCH_TERM + "^0.1)";
-        SearchRequest request = req("afts", query);
-        searchQueryService.expectResultsInOrder(request, testUser, fileWithTermInName.getName(), fileWithDifferentTermInName.getName());
+        String boostedQuery = "TYPE:'cm:content' AND (~cm:name:" + SEARCH_TERM + "^3 OR ~cm:name:" + DIFFERENT_SEARCH_TERM + "^0.1)";
+        SearchRequest searchRequest = req("afts", boostedQuery);
+        searchQueryService.expectResultsInOrder(searchRequest, testUser, fileWithTermInName.getName(), fileWithDifferentTermInName.getName());
 
-        String queryInvertedBoost = "TYPE:'cm:content' AND (~cm:name:" + SEARCH_TERM + "^0.1 OR ~cm:name:" + DIFFERENT_SEARCH_TERM + "^3)";
-        SearchRequest requestInvertedBoost = req("afts", queryInvertedBoost);
-        searchQueryService.expectResultsInOrder(requestInvertedBoost, testUser, fileWithDifferentTermInName.getName(), fileWithTermInName.getName());
+        String invertedBoost = "TYPE:'cm:content' AND (~cm:name:" + SEARCH_TERM + "^0.1 OR ~cm:name:" + DIFFERENT_SEARCH_TERM + "^3)";
+        searchRequest = req("afts", invertedBoost);
+        searchQueryService.expectResultsInOrder(searchRequest, testUser, fileWithDifferentTermInName.getName(), fileWithTermInName.getName());
     }
 
     @Test(groups = { TestGroup.SEARCH })
     public void testAftsQuery_fuzzyMatchingBoost()
     {
-        String query = "TYPE:'cm:content' AND (cm:name:" + SEARCH_TERM + "~0.7^3 OR cm:title:" + SEARCH_TERM + "^0.01)";
-        SearchRequest request = req("afts", query);
-        searchQueryService.expectResultsInOrder(request, testUser, fileWithTermInName.getName(), fileWithDifferentTermInName.getName(), fileWithTermInTitle.getName());
+        String boostedQuery = "TYPE:'cm:content' AND (cm:name:" + SEARCH_TERM + "~0.7^3 OR cm:title:" + SEARCH_TERM + "^0.01)";
+        SearchRequest searchRequest = req("afts", boostedQuery);
+        searchQueryService.expectResultsInOrder(searchRequest, testUser, fileWithTermInName.getName(), fileWithDifferentTermInName.getName(), fileWithTermInTitle.getName());
 
-        String queryInvertedBoost = "TYPE:'cm:content' AND (cm:name:" + SEARCH_TERM + "~0.7^0.01 OR cm:title:" + SEARCH_TERM + "^3)";
-        SearchRequest requestInvertedBoost = req("afts", queryInvertedBoost);
-        searchQueryService.expectResultsInOrder(requestInvertedBoost, testUser, fileWithTermInTitle.getName(), fileWithTermInName.getName(), fileWithDifferentTermInName.getName());
+        String invertedBoost = "TYPE:'cm:content' AND (cm:name:" + SEARCH_TERM + "~0.7^0.01 OR cm:title:" + SEARCH_TERM + "^3)";
+        searchRequest = req("afts", invertedBoost);
+        searchQueryService.expectResultsInOrder(searchRequest, testUser, fileWithTermInTitle.getName(), fileWithTermInName.getName(), fileWithDifferentTermInName.getName());
     }
 
     @Test(groups = { TestGroup.SEARCH })
     public void testAftsQuery_proximitySearchBoost()
     {
-        String query = "TYPE:'cm:content' AND (cm:name:" + SEARCH_TERM + "^5 OR TEXT:(" + SEARCH_TERM + " * phrase)^0.1)";
-        SearchRequest request = req("afts", query);
-        searchQueryService.expectResultsInOrder(request, testUser, fileWithTermInName.getName(), fileWithPhraseInContent.getName());
+        String boostedQuery = "TYPE:'cm:content' AND (cm:name:" + SEARCH_TERM + "^5 OR TEXT:(" + SEARCH_TERM + " * phrase)^0.1)";
+        SearchRequest searchRequest = req("afts", boostedQuery);
+        searchQueryService.expectResultsInOrder(searchRequest, testUser, fileWithTermInName.getName(), fileWithPhraseInContent.getName());
 
-        String queryInvertedBoost = "TYPE:'cm:content' AND (cm:name:" + SEARCH_TERM + "^0.1 OR TEXT:(" + SEARCH_TERM + " * phrase)^5)";
-        SearchRequest requestInvertedBoost = req("afts", queryInvertedBoost);
-        searchQueryService.expectResultsInOrder(requestInvertedBoost, testUser, fileWithPhraseInContent.getName(), fileWithTermInName.getName());
+        String invertedBoost = "TYPE:'cm:content' AND (cm:name:" + SEARCH_TERM + "^0.1 OR TEXT:(" + SEARCH_TERM + " * phrase)^5)";
+        searchRequest = req("afts", invertedBoost);
+        searchQueryService.expectResultsInOrder(searchRequest, testUser, fileWithPhraseInContent.getName(), fileWithTermInName.getName());
     }
 
     @Test(groups = { TestGroup.SEARCH })
@@ -186,51 +186,54 @@ public class ElasticsearchBoostedSearchTests extends AbstractTestNGSpringContext
     {
         String timeFrom = creationTime.format(DateTimeFormatter.ISO_DATE_TIME);
         String timeTo = afterCreationTime.format(DateTimeFormatter.ISO_DATE_TIME);
-        String query = "TYPE:('cm:content'^3 OR 'cm:folder') AND (cm:name:" + SEARCH_TERM + "^4 OR cm:created:['" + timeFrom + "' TO '" + timeTo + "']^0.1)";
-        SearchRequest request = req("afts", query);
-        searchQueryService.expectResultsInOrder(request, testUser, fileWithTermInName.getName(), folderWithTermInName.getName(), fileWithTermInTitle.getName(), folderWithTermInTitle.getName());
+        String boostedQuery = "TYPE:('cm:content'^3 OR 'cm:folder') AND (cm:name:" + SEARCH_TERM + "^4 OR cm:created:['" + timeFrom + "' TO '" + timeTo + "']^0.1)";
+        SearchRequest searchRequest = req("afts", boostedQuery);
+        searchQueryService.expectResultsInOrder(searchRequest, testUser, fileWithTermInName.getName(), folderWithTermInName.getName(), fileWithTermInTitle.getName(), folderWithTermInTitle.getName());
 
-        String queryInvertedBoost = "TYPE:('cm:content'^3 OR 'cm:folder') AND (cm:name:" + SEARCH_TERM + "^0.1 OR cm:created:['" + timeFrom + "' TO '" + timeTo + "']^4)";
-        SearchRequest requestInvertedBoost = req("afts", queryInvertedBoost);
-        searchQueryService.expectResultsInOrder(requestInvertedBoost, testUser, fileWithTermInTitle.getName(), folderWithTermInTitle.getName(), fileWithTermInName.getName(), folderWithTermInName.getName());
+        String invertedBoost = "TYPE:('cm:content'^3 OR 'cm:folder') AND (cm:name:" + SEARCH_TERM + "^0.1 OR cm:created:['" + timeFrom + "' TO '" + timeTo + "']^4)";
+        searchRequest = req("afts", invertedBoost);
+        searchQueryService.expectResultsInOrder(searchRequest, testUser, fileWithTermInTitle.getName(), folderWithTermInTitle.getName(), fileWithTermInName.getName(), folderWithTermInName.getName());
     }
 
+    /**
+     * Verify if boosts work with words range search. Files containing words 'mountain', 'other' and 'phrase' should be picked up.
+     */
     @Test(groups = { TestGroup.SEARCH })
     public void testAftsQuery_wordsRangeSearchBoost()
     {
-        String query = "TYPE:'cm:content' AND (cm:name:" + SEARCH_TERM + "^3 OR cm:content:" + SEARCH_TERM + "..phrase^0.1)";
-        SearchRequest request = req("afts", query);
-        searchQueryService.expectResultsStartingWithOneOf(request, testUser, fileWithTermInName.getName());
-        searchQueryService.expectResultsFromQuery(request, testUser, fileWithTermInName.getName(), fileWithPhraseInContent.getName(), fileWithDifferentTermInName.getName());
+        String boostedQuery = "TYPE:'cm:content' AND (cm:name:" + SEARCH_TERM + "^3 OR cm:content:" + SEARCH_TERM + "..phrase^0.1)";
+        SearchRequest searchRequest = req("afts", boostedQuery);
+        searchQueryService.expectResultsStartingWithOneOf(searchRequest, testUser, fileWithTermInName.getName());
+        searchQueryService.expectResultsFromQuery(searchRequest, testUser, fileWithTermInName.getName(), fileWithPhraseInContent.getName(), fileWithDifferentTermInName.getName());
 
-        String queryInvertedBoost = "TYPE:'cm:content' AND (cm:name:" + SEARCH_TERM + "^0.1 OR cm:content:" + SEARCH_TERM + "..phrase^3)";
-        SearchRequest requestInvertedBoost = req("afts", queryInvertedBoost);
-        searchQueryService.expectResultsStartingWithOneOf(request, testUser, fileWithPhraseInContent.getName(), fileWithDifferentTermInName.getName());
-        searchQueryService.expectResultsFromQuery(requestInvertedBoost, testUser, fileWithTermInName.getName(), fileWithPhraseInContent.getName(), fileWithDifferentTermInName.getName());
+        String invertedBoost = "TYPE:'cm:content' AND (cm:name:" + SEARCH_TERM + "^0.1 OR cm:content:" + SEARCH_TERM + "..phrase^3)";
+        searchRequest = req("afts", invertedBoost);
+        searchQueryService.expectResultsStartingWithOneOf(searchRequest, testUser, fileWithPhraseInContent.getName(), fileWithDifferentTermInName.getName());
+        searchQueryService.expectResultsFromQuery(searchRequest, testUser, fileWithTermInName.getName(), fileWithPhraseInContent.getName(), fileWithDifferentTermInName.getName());
     }
 
     @Test(groups = { TestGroup.SEARCH })
     public void testAftsQuery_wildcardSearchBoost()
     {
         String wildcardTerm = SEARCH_TERM.replaceFirst("^.", "?");
-        String query = "TYPE:'cm:content' AND (cm:name:" + wildcardTerm + "^3 OR cm:title:" + SEARCH_TERM + "^0.1)";
-        SearchRequest request = req("afts", query);
-        searchQueryService.expectResultsStartingWithOneOf(request, testUser, fileWithTermInName.getName(), fileWithDifferentTermInName.getName());
-        searchQueryService.expectResultsFromQuery(request, testUser, fileWithTermInName.getName(), fileWithDifferentTermInName.getName(), fileWithTermInTitle.getName());
+        String boostedQuery = "TYPE:'cm:content' AND (cm:name:" + wildcardTerm + "^3 OR cm:title:" + SEARCH_TERM + "^0.1)";
+        SearchRequest searchRequest = req("afts", boostedQuery);
+        searchQueryService.expectResultsStartingWithOneOf(searchRequest, testUser, fileWithTermInName.getName(), fileWithDifferentTermInName.getName());
+        searchQueryService.expectResultsFromQuery(searchRequest, testUser, fileWithTermInName.getName(), fileWithDifferentTermInName.getName(), fileWithTermInTitle.getName());
 
         wildcardTerm = SEARCH_TERM.replaceFirst("^.", "*");
-        String queryInvertedBoost = "TYPE:'cm:content' AND (cm:name:" + wildcardTerm + "^0.1 OR cm:title:" + SEARCH_TERM + "^3)";
-        SearchRequest requestInvertedBoost = req("afts", queryInvertedBoost);
-        searchQueryService.expectResultsStartingWithOneOf(requestInvertedBoost, testUser, fileWithTermInTitle.getName());
-        searchQueryService.expectResultsFromQuery(request, testUser, fileWithTermInName.getName(), fileWithDifferentTermInName.getName(), fileWithTermInTitle.getName());
+        String invertedBoost = "TYPE:'cm:content' AND (cm:name:" + wildcardTerm + "^0.1 OR cm:title:" + SEARCH_TERM + "^3)";
+        searchRequest = req("afts", invertedBoost);
+        searchQueryService.expectResultsStartingWithOneOf(searchRequest, testUser, fileWithTermInTitle.getName());
+        searchQueryService.expectResultsFromQuery(searchRequest, testUser, fileWithTermInName.getName(), fileWithDifferentTermInName.getName(), fileWithTermInTitle.getName());
     }
 
     @Test(groups = { TestGroup.SEARCH })
     public void testAftsQuery_invalidNegativeBoost()
     {
-        String query = "TYPE:'cm:content'^-2 AND cm:name:" + SEARCH_TERM;
-        SearchRequest request = req("afts", query);
-        searchQueryService.expectErrorFromQuery(request, testUser, HttpStatus.INTERNAL_SERVER_ERROR, EMPTY);
+        String boostedQuery = "TYPE:'cm:content'^-2 AND cm:name:" + SEARCH_TERM;
+        SearchRequest searchRequest = req("afts", boostedQuery);
+        searchQueryService.expectErrorFromQuery(searchRequest, testUser, HttpStatus.INTERNAL_SERVER_ERROR, EMPTY);
     }
 
     private ContentModel createRandomFileWithTitle(String title)
@@ -240,7 +243,7 @@ public class ElasticsearchBoostedSearchTests extends AbstractTestNGSpringContext
 
     private ContentModel createRandomFile(String title, String description, String tag)
     {
-        return createFile(getRandomFile(FileType.TEXT_PLAIN), getRandomName("dummy content"), title, description, tag);
+        return createFile(getRandomFile(FileType.TEXT_PLAIN), "dummy content", title, description, tag);
     }
 
     private ContentModel createFile(String filename, String content)
