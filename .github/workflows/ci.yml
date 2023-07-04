@@ -186,6 +186,9 @@ jobs:
         run: |
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-aims.yml
           ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco" 180
+          docker images
+          docker ps -a
+          docker logs -f environment-alfresco-1 &
       - name: "Run tests"
         id: tests
         timeout-minutes: ${{ matrix.deploy-timeout }}
