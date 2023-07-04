@@ -104,7 +104,7 @@ public class ElasticsearchBoostedSearchTests extends AbstractTestNGSpringContext
     @Test(groups = { TestGroup.SEARCH })
     public void testAftsQuery_complexTermBoost()
     {
-        String boostedQuery1 = "TYPE:('cm:content'^4 OR 'cm:folder'^0.5)^3 AND (cm:name:" + SEARCH_TERM + "^3 OR cm:title:" + SEARCH_TERM + "^0.1)^0.5";
+        String boostedQuery1 = "TYPE:('cm:content'^4 OR 'cm:folder'^0.5)^3 AND (cm:name:" + SEARCH_TERM + "^3 OR cm:title:" + SEARCH_TERM + "^0.1)";
         SearchRequest searchRequest = req("afts", boostedQuery1);
         searchQueryService.expectResultsInOrder(searchRequest, testUser, fileWithTermInName.getName(), fileWithTermInTitle.getName(), folderWithTermInName.getName(), folderWithTermInTitle.getName());
 
@@ -114,11 +114,11 @@ public class ElasticsearchBoostedSearchTests extends AbstractTestNGSpringContext
 
         String boostedQuery3 = "TYPE:('cm:content'^4 OR 'cm:folder'^0.5)^3 AND (cm:name:" + SEARCH_TERM + "^0.1 OR cm:title:" + SEARCH_TERM + "^3)";
         searchRequest = req("afts", boostedQuery3);
-        searchQueryService.expectResultsInOrder(searchRequest, testUser, fileWithTermInName.getName(), fileWithTermInTitle.getName(), folderWithTermInName.getName(), folderWithTermInTitle.getName());
+        searchQueryService.expectResultsInOrder(searchRequest, testUser, fileWithTermInTitle.getName(), fileWithTermInName.getName(), folderWithTermInTitle.getName(), folderWithTermInName.getName());
 
-        String boostedQuery4 = "TYPE:('cm:content'^0.5 OR 'cm:folder'^4)^3 AND (cm:name:" + SEARCH_TERM + "^0.1 OR cm:title:" + SEARCH_TERM + "^3)^0.5";
+        String boostedQuery4 = "TYPE:('cm:content'^0.5 OR 'cm:folder'^4)^3 AND (cm:name:" + SEARCH_TERM + "^0.1 OR cm:title:" + SEARCH_TERM + "^3)";
         searchRequest = req("afts", boostedQuery4);
-        searchQueryService.expectResultsInOrder(searchRequest, testUser, folderWithTermInName.getName(), folderWithTermInTitle.getName(), fileWithTermInName.getName(), fileWithTermInTitle.getName());
+        searchQueryService.expectResultsInOrder(searchRequest, testUser, folderWithTermInTitle.getName(), folderWithTermInName.getName(), fileWithTermInTitle.getName(), fileWithTermInName.getName());
     }
 
     @Test(groups = { TestGroup.SEARCH })
