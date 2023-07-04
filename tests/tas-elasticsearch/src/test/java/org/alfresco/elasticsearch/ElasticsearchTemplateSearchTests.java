@@ -160,11 +160,11 @@ public class ElasticsearchTemplateSearchTests extends AbstractTestNGSpringContex
         Map<String, String> templates = Map.of("_NODE", "%cm:name");
         String query = "TYPE:'cm:content' AND _NODE:" + SEARCH_TERM + "^0.5 OR _NODE:dummy^2";
         SearchRequest request = req("afts", query, templates);
-        searchQueryService.expectResultsInOrder(request, testUser, true, fileWithDifferentTermInName.getName(), fileWithTermInName.getName());
+        searchQueryService.expectResultsInOrder(request, testUser, fileWithDifferentTermInName.getName(), fileWithTermInName.getName());
 
         String queryInvertedBoost = "TYPE:'cm:content' AND _NODE:" + SEARCH_TERM + "^2 OR _NODE:dummy^0.5";
         SearchRequest requestInvertedBoost = req("afts", queryInvertedBoost, templates);
-        searchQueryService.expectResultsInOrder(requestInvertedBoost, testUser, false, fileWithTermInName.getName(), fileWithDifferentTermInName.getName());
+        searchQueryService.expectResultsInOrder(requestInvertedBoost, testUser, fileWithTermInName.getName(), fileWithDifferentTermInName.getName());
     }
 
     @Test(groups = { TestGroup.SEARCH })
