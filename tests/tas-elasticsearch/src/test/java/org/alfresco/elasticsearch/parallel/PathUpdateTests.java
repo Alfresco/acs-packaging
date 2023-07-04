@@ -6,8 +6,8 @@ import static java.util.stream.Collectors.joining;
 import static org.alfresco.elasticsearch.SearchQueryService.req;
 
 import java.util.Arrays;
-import javax.json.Json;
-import javax.json.JsonObject;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
 
 import org.alfresco.elasticsearch.SearchQueryService;
 import org.alfresco.elasticsearch.utility.ElasticsearchRESTHelper;
