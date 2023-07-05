@@ -104,19 +104,19 @@ public class ElasticsearchBoostedSearchTests extends AbstractTestNGSpringContext
     @Test(groups = { TestGroup.SEARCH })
     public void testAftsQuery_complexTermBoost()
     {
-        String boostedQuery1 = "TYPE:('cm:content'^3.5 OR 'cm:folder'^0.5)^4 AND (cm:name:" + SEARCH_TERM + "^4 OR cm:title:" + SEARCH_TERM + "^0.05)";
+        String boostedQuery1 = "TYPE:('cm:content'^4 OR 'cm:folder'^0.5)^3 AND (cm:name:" + SEARCH_TERM + "^3.5 OR cm:title:" + SEARCH_TERM + "^0.05)";
         SearchRequest searchRequest = req("afts", boostedQuery1);
         searchQueryService.expectResultsInOrder(searchRequest, testUser, fileWithTermInName.getName(), fileWithTermInTitle.getName(), folderWithTermInName.getName(), folderWithTermInTitle.getName());
 
-        String boostedQuery2 = "TYPE:('cm:content'^0.5 OR 'cm:folder'^3.5)^4 AND (cm:name:" + SEARCH_TERM + "^4 OR cm:title:" + SEARCH_TERM + "^0.05)";
+        String boostedQuery2 = "TYPE:('cm:content'^0.5 OR 'cm:folder'^4)^3 AND (cm:name:" + SEARCH_TERM + "^3.5 OR cm:title:" + SEARCH_TERM + "^0.05)";
         searchRequest = req("afts", boostedQuery2);
         searchQueryService.expectResultsInOrder(searchRequest, testUser, folderWithTermInName.getName(), folderWithTermInTitle.getName(), fileWithTermInName.getName(), fileWithTermInTitle.getName());
 
-        String boostedQuery3 = "TYPE:('cm:content'^3.5 OR 'cm:folder'^0.5)^0.25 AND (cm:name:" + SEARCH_TERM + "^0.05 OR cm:title:" + SEARCH_TERM + "^4)";
+        String boostedQuery3 = "TYPE:('cm:content'^4 OR 'cm:folder'^0.5)^0.33 AND (cm:name:" + SEARCH_TERM + "^0.05 OR cm:title:" + SEARCH_TERM + "^3.5)";
         searchRequest = req("afts", boostedQuery3);
         searchQueryService.expectResultsInOrder(searchRequest, testUser, fileWithTermInTitle.getName(), fileWithTermInName.getName(), folderWithTermInTitle.getName(), folderWithTermInName.getName());
 
-        String boostedQuery4 = "TYPE:('cm:content'^0.5 OR 'cm:folder'^3.5)^0.25 AND (cm:name:" + SEARCH_TERM + "^0.05 OR cm:title:" + SEARCH_TERM + "^4)";
+        String boostedQuery4 = "TYPE:('cm:content'^0.5 OR 'cm:folder'^4)^0.33 AND (cm:name:" + SEARCH_TERM + "^0.05 OR cm:title:" + SEARCH_TERM + "^3.5)";
         searchRequest = req("afts", boostedQuery4);
         searchQueryService.expectResultsInOrder(searchRequest, testUser, folderWithTermInTitle.getName(), folderWithTermInName.getName(), fileWithTermInTitle.getName(), fileWithTermInName.getName());
     }
