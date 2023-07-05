@@ -56,6 +56,7 @@ services:
                 -Ds3.autoLowerCaseBucketName=true
                 -Ds3.bucketLocation=us-east-1
                 -Ds3.abortIncompleteMultipartUploadDays=1
+                -Ddsync.messaging.events.repo.node.target.endpoint=jms:topic:VirtualTopic.alfresco.repo.events.nodes?jmsMessageType=Text
                 -Xms1500m -Xmx1500m
                 "
         ports:
