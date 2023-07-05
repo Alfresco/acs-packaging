@@ -595,4 +595,4 @@ jobs:
           (mvn clean install -Prun -rf dev &)
           ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/"
           curl -Ls -o /dev/null --fail "http://localhost:8080/alfresco"
-          curl -Ls -o /dev/null --fail "http://localhost:8080/share"
+          curl -Ls -o /dev/null --fail "http://localhost:8080/test"
