@@ -196,7 +196,7 @@ public class ElasticsearchBoostedSearchTests extends AbstractTestNGSpringContext
     }
 
     /**
-     * Verify if boosts work with words range search. Files containing words 'mountain', 'other' and 'phrase' should be picked up.
+     * Verify if boosts work with words range search. Files containing words from alphabetical range (from 'mountain' to 'phrase') should be returned..
      */
     @Test(groups = { TestGroup.SEARCH })
     public void testAftsQuery_wordsRangeSearchBoost()
