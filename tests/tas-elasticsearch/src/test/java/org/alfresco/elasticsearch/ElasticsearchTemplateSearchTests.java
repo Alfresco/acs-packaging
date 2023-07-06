@@ -3,6 +3,7 @@ package org.alfresco.elasticsearch;
 import static org.alfresco.elasticsearch.SearchQueryService.req;
 import static org.alfresco.utility.data.RandomData.getRandomFile;
 import static org.alfresco.utility.data.RandomData.getRandomName;
+import static org.alfresco.utility.report.log.Step.STEP;
 
 import java.util.Map;
 
@@ -59,6 +60,7 @@ public class ElasticsearchTemplateSearchTests extends AbstractTestNGSpringContex
     {
         serverHealth.assertServerIsOnline();
 
+        STEP("Create a test user and few files and folders containing searched term in name, title, description, content and tag");
         fileWithTermInName = createFile(SEARCH_TERM + ".txt", "some text");
         fileWithPhraseInContent = createFile(getRandomFile(FileType.TEXT_PLAIN), "Dummy " + SEARCH_TERM + " irrelevant text");
         fileWithTermInTitle = createRandomFileWithTitle(SEARCH_TERM);
@@ -71,8 +73,9 @@ public class ElasticsearchTemplateSearchTests extends AbstractTestNGSpringContex
     }
 
     @AfterClass
-    public void afterClass()
+    public void dataCleanup()
     {
+        STEP("Clean up created files, folders and user");
         dataContent.usingAdmin().usingResource(fileWithTermInName).deleteContent();
         dataContent.usingAdmin().usingResource(fileWithPhraseInContent).deleteContent();
         dataContent.usingAdmin().usingResource(fileWithTermInTitle).deleteContent();
@@ -86,6 +89,7 @@ public class ElasticsearchTemplateSearchTests extends AbstractTestNGSpringContex
     @Test(groups = { TestGroup.SEARCH })
     public void testAftsQuery_simpleTemplate()
     {
+        STEP("Search for files by name using simple template with one property");
         Map<String, String> templates = Map.of("_NODE", "%cm:name");
         String query = "TYPE:'cm:content' AND _NODE:" + SEARCH_TERM;
         SearchRequest request = req("afts", query, templates);
@@ -96,6 +100,7 @@ public class ElasticsearchTemplateSearchTests extends AbstractTestNGSpringContex
     @Test(groups = { TestGroup.SEARCH })
     public void testAftsQuery_simpleTemplateWithPhrase()
     {
+        STEP("Search for files containing specific phrase using simple template with one property");
         Map<String, String> templates = Map.of("_NODE", "%TEXT");
         String query = "TYPE:'cm:content' AND _NODE:\"" + SEARCH_TERM + " irrelevant\"";
         SearchRequest request = req("afts", query, templates);
@@ -106,6 +111,7 @@ public class ElasticsearchTemplateSearchTests extends AbstractTestNGSpringContex
     @Test(groups = { TestGroup.SEARCH })
     public void testAftsQuery_templateWithTwoParameters()
     {
+        STEP("Search for files using template containing multiple properties");
         Map<String, String> templates = Map.of("_NODE", "%(cm:name cm:title)");
         String query = "TYPE:'cm:content' AND _NODE:" + SEARCH_TERM;
         SearchRequest request = req("afts", query, templates);
@@ -122,11 +128,13 @@ public class ElasticsearchTemplateSearchTests extends AbstractTestNGSpringContex
             "_NODEX", "%(_NODE cm:description)"
 
         );
+        STEP("Search for files using more complex two-level nested template containing multiple properties");
         String query = "TYPE:'cm:content' AND _NODEX:" + SEARCH_TERM;
         SearchRequest request = req("afts", query, templates);
         searchQueryService.expectNodeRefsFromQuery(request, testUser,
             fileWithTermInName.getNodeRef(), fileWithTermInDescription.getNodeRef(), fileWithTermInTitle.getNodeRef());
 
+        STEP("Search for files using three-level nested template containing multiple properties");
         String queryIncludingTag = "TYPE:'cm:content' AND _NODET:" + SEARCH_TERM;
         SearchRequest requestIncludingTag = req("afts", queryIncludingTag, templates);
         searchQueryService.expectNodeRefsFromQuery(requestIncludingTag, testUser,
@@ -136,6 +144,7 @@ public class ElasticsearchTemplateSearchTests extends AbstractTestNGSpringContex
     @Test(groups = { TestGroup.SEARCH })
     public void testAftsQuery_templateNameAsQueryDefaultFieldName()
     {
+        STEP("Search for files using template containing multiple properties, as a default search field");
         Map<String, String> templates = Map.of("_NODE", "%(cm:name cm:title)");
         String query = "TYPE:'cm:content' AND " + SEARCH_TERM;
         SearchRequest request = req("afts", query, templates);
@@ -147,6 +156,7 @@ public class ElasticsearchTemplateSearchTests extends AbstractTestNGSpringContex
     @Test(groups = { TestGroup.SEARCH })
     public void testAftsQuery_templateWithFixedValue()
     {
+        STEP("Search for files and folders using template containing multiple properties, including a fixed one");
         Map<String, String> templates = Map.of("_NODE", "%cm:name AND TYPE:'cm:folder'");
         String query = "_NODE:" + SEARCH_TERM;
         SearchRequest request = req("afts", query, templates);
@@ -157,11 +167,13 @@ public class ElasticsearchTemplateSearchTests extends AbstractTestNGSpringContex
     @Test(groups = { TestGroup.SEARCH })
     public void testAftsQuery_boostedTemplate()
     {
+        STEP("Search for files using templates and boosts, where second term has higher priority ");
         Map<String, String> templates = Map.of("_NODE", "%cm:name");
         String query = "TYPE:'cm:content' AND _NODE:" + SEARCH_TERM + "^0.5 OR _NODE:dummy^2";
         SearchRequest request = req("afts", query, templates);
         searchQueryService.expectResultsInOrder(request, testUser, fileWithDifferentTermInName.getName(), fileWithTermInName.getName());
 
+        STEP("Search for files using templates and boosts, where first term has higher priority ");
         String queryInvertedBoost = "TYPE:'cm:content' AND _NODE:" + SEARCH_TERM + "^2 OR _NODE:dummy^0.5";
         SearchRequest requestInvertedBoost = req("afts", queryInvertedBoost, templates);
         searchQueryService.expectResultsInOrder(requestInvertedBoost, testUser, fileWithTermInName.getName(), fileWithDifferentTermInName.getName());
