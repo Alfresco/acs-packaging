@@ -3,7 +3,6 @@ package org.alfresco.elasticsearch;
 import static org.alfresco.elasticsearch.SearchQueryService.req;
 import static org.alfresco.tas.TestDataUtility.getAlphabeticUUID;
 
-import org.alfresco.dataprep.AlfrescoHttpClientFactory;
 import org.alfresco.rest.search.RestRequestLimitsModel;
 import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.tas.AlfrescoStackInitializer;
@@ -25,14 +24,14 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-@ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
-                      initializers = AlfrescoStackInitializer.class)
+@ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml", initializers = AlfrescoStackInitializer.class)
 /**
  * In this test we are verifying the Track Total Hits feature
  */
 public class ElasticsearchLimitTests extends AbstractTestNGSpringContextTests
 {
     private static final String PREFIX = getAlphabeticUUID() + "_";
+    private static final int TOTAL_DOCUMENT_COUNT = 20;
 
     @Autowired
     private DataUser dataUser;
@@ -51,8 +50,6 @@ public class ElasticsearchLimitTests extends AbstractTestNGSpringContextTests
 
     private UserModel userSite1;
     private SiteModel siteModel1;
-    
-    private int numberOfDocs = 20;
 
     @BeforeClass(alwaysRun = true)
     public void dataPreparation()
@@ -64,41 +61,59 @@ public class ElasticsearchLimitTests extends AbstractTestNGSpringContextTests
         siteModel1 = dataSite.usingUser(userSite1).createPrivateRandomSite();
 
         dataUser.addUserToSite(userSite1, siteModel1, UserRole.SiteContributor);
-        
-        for (int i = 0; i < numberOfDocs; i++)
+
+        for (int i = 0; i < TOTAL_DOCUMENT_COUNT; i++)
         {
             createContent(PREFIX + i + ".txt", "Document " + i, siteModel1, userSite1);
         }
     }
 
-    @TestRail(section = TestGroup.SEARCH,
-              executionType = ExecutionType.REGRESSION,
-              description = "Verify that the include parameter work with Elasticsearch search as expected.")
+    @TestRail(section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION, description = "Total hit tracking unset should use default behaviour")
+    @Test(groups = TestGroup.SEARCH)
+    public void searchUsingTotalHitsLimitDefaultValue()
+    {
+        SearchRequest request = req("cm:name:" + PREFIX + "*.txt");
+
+        // Without setting limits, we should get all up to 10k
+        searchQueryService.expectTotalHitsFromQuery(request, userSite1, TOTAL_DOCUMENT_COUNT);
+    }
+
+    @TestRail(section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION, description = "Total hit tracking with 0 should use default behaviour")
+    @Test(groups = TestGroup.SEARCH)
+    public void searchUsingTotalHitsLimitZeroShouldDefault()
+    {
+        SearchRequest request = req("cm:name:" + PREFIX + "*.txt");
+
+        // Setting trackTotalHitsLimit to 0 should behave as not setting it, counting all up to 10k
+        request.setLimits(new RestRequestLimitsModel(null, null, 0));
+        searchQueryService.expectTotalHitsFromQuery(request, userSite1, TOTAL_DOCUMENT_COUNT);
+    }
+
+    @TestRail(section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION, description = "Total hit tracking set should use the defined limit")
     @Test(groups = TestGroup.SEARCH)
     public void searchUsingTotalHitsLimit()
     {
         SearchRequest request = req("cm:name:" + PREFIX + "*.txt");
-        
-        // Without setting limits, we should get all up to 10k
-        searchQueryService.expectTotalHitsFromQuery(request, userSite1, numberOfDocs);
-        
-        // Setting trackTotalHitsLimit to 0 should behave as not setting it, counting all up to 10k
-        request.setLimits(new RestRequestLimitsModel(null, null, 0));
-        searchQueryService.expectTotalHitsFromQuery(request, userSite1, numberOfDocs);
-        
+
         // Setting trackTotalHitsLimit to 10 should only count up to 10
         request.setLimits(new RestRequestLimitsModel(null, null, 10));
         searchQueryService.expectTotalHitsFromQuery(request, userSite1, 10);
-        
+    }
+
+    @TestRail(section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION, description = "Total hit tracking with -1 should count all docs")
+    @Test(groups = TestGroup.SEARCH)
+    public void searchUsingTotalHitsUnlimited()
+    {
+        SearchRequest request = req("cm:name:" + PREFIX + "*.txt");
+
         // Setting trackTotalHitsLimit to -1 should only count up to max int
         request.setLimits(new RestRequestLimitsModel(null, null, -1));
-        searchQueryService.expectTotalHitsFromQuery(request, userSite1, numberOfDocs);
+        searchQueryService.expectTotalHitsFromQuery(request, userSite1, TOTAL_DOCUMENT_COUNT);
     }
 
     private FileModel createContent(String filename, String content, SiteModel site, UserModel user)
     {
         FileModel fileModel = new FileModel(filename, FileType.TEXT_PLAIN, content);
-        return dataContent.usingUser(user).usingSite(site)
-                          .createContent(fileModel);
+        return dataContent.usingUser(user).usingSite(site).createContent(fileModel);
     }
 }
