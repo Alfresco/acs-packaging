@@ -63,7 +63,6 @@ services:
         -Dencryption.ssl.truststore.location=/usr/local/tomcat/shared/classes/alfresco/extension/keystore/alfresco.truststore
         -Dssl-keystore.password=password
         -Dssl-truststore.password=password
-        -Ddsync.messaging.events.repo.node.target.endpoint=jms:topic:VirtualTopic.alfresco.repo.events.nodes?jmsMessageType=Text
         -XX:MinRAMPercentage=50
         -XX:MaxRAMPercentage=80
     volumes:
