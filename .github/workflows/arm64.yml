@@ -3,6 +3,9 @@ name: (ARM64) ACS Packaging CI
 on:
   schedule:
     - cron: "0 3 * * 1-5"
+  push:
+    branches:
+      - feature/ACS-5039_Transformers_multi-arch
   workflow_dispatch:
 
 env:

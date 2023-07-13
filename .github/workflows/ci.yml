@@ -9,7 +9,7 @@ on:
       - release/**
   push:
     branches:
-      - feature/**
+      #- feature/**
       - fix/**
   workflow_call:
   workflow_dispatch:
