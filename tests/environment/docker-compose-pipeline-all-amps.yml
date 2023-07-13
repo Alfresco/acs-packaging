@@ -63,7 +63,7 @@ services:
 
     transform-router:
         mem_limit: 512m
-        image: quay.io/alfresco/dev:alfresco-transform-router
+        image: quay.io/alfresco/dev:alfresco-transform-router-somenotexistingimage
         #image: quay.io/alfresco/alfresco-transform-router:${TRANSFORM_ROUTER_TAG}
         environment:
           JAVA_OPTS: " -Xms256m -Xmx512m"
