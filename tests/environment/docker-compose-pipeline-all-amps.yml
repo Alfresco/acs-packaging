@@ -12,7 +12,8 @@ version: "2"
 
 services:
     alfresco:
-        image: ${PIPELINE_ALL_AMPS_REGISTRY}alfresco/alfresco-pipeline-all-amps-repo:${PIPELINE_ALL_AMPS_TAG:-latest}
+        #image: ${PIPELINE_ALL_AMPS_REGISTRY}alfresco/alfresco-pipeline-all-amps-repo:${PIPELINE_ALL_AMPS_TAG:-latest}
+        image: ${PIPELINE_ALL_AMPS_REGISTRY}alfresco/alfresco-pipeline-all-amps-repo:23.1.0-A19
         mem_limit: 1700m
         environment:
             JAVA_TOOL_OPTIONS: "
@@ -103,7 +104,8 @@ services:
             - shared-file-store-volume:/tmp/Alfresco/sfs
 
     share:
-        image: ${PIPELINE_ALL_AMPS_REGISTRY}alfresco/alfresco-pipeline-all-amps-share:${PIPELINE_ALL_AMPS_TAG:-latest}
+        #image: ${PIPELINE_ALL_AMPS_REGISTRY}alfresco/alfresco-pipeline-all-amps-share:${PIPELINE_ALL_AMPS_TAG:-latest}
+        image: ${PIPELINE_ALL_AMPS_REGISTRY}alfresco/alfresco-pipeline-all-amps-share:23.1.0-A19
         mem_limit: 1g
         environment:
             REPO_HOST: "alfresco"
