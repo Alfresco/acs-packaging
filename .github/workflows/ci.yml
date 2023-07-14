@@ -3,14 +3,7 @@ name: ACS Packaging CI
 on:
   pull_request:
     branches:
-      - feature/**
-      - fix/**
-      - master
-      - release/**
-  push:
-    branches:
-      - feature/**
-      - fix/**
+      - none
   workflow_call:
   workflow_dispatch:
 
