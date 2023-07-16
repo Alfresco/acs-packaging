@@ -13,7 +13,7 @@
 
     <properties>
         <image.name>alfresco/alfresco-content-repository</image.name>
-        <docker.quay-expires.value>1w</docker.quay-expires.value>
+        <docker.quay-expires.value>NEVER</docker.quay-expires.value>
         <base.image>alfresco/alfresco-enterprise-repo-base:${repo.image.tag}</base.image>
         <scripts.directory>${project.parent.basedir}/scripts/dev</scripts.directory>
     </properties>
@@ -86,7 +86,7 @@
                         <configuration>
                             <images>
                                 <image>
-                                    <name>${image.name}:GPT-POC-${image.tag}</name>
+                                    <name>${image.name}:${image.tag}</name>
                                     <build>
                                         <args>
                                             <BASE_IMAGE>${base.image}</BASE_IMAGE>
