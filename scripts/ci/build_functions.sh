@@ -123,14 +123,19 @@ function buildUpstreamTag() {
 
 function buildSameBranchOnUpstream() {
   local UPSTREAM_REPO="${1}"
-  local TAG=${2}
-  local EXTRA_BUILD_ARGUMENTS="${3}"
+  local EXTRA_BUILD_ARGUMENTS="${2}"
+  local TAG=${3}
 
   pushd "$(dirname "${BASH_SOURCE[0]}")/../../../"
 
   cd "$(basename "${UPSTREAM_REPO%.git}")"
 
-  mvn -B -ntp -V -q clean install -DskipTests -Dmaven.javadoc.skip=true "-Dimage.tag=${TAG}" ${EXTRA_BUILD_ARGUMENTS}
+  if [[ -z "$TAG" ]]; then
+    mvn -B -ntp -V -q clean install -DskipTests -Dmaven.javadoc.skip=true ${EXTRA_BUILD_ARGUMENTS}
+  else
+    mvn -B -ntp -V -q clean install -DskipTests -Dmaven.javadoc.skip=true "-Dimage.tag=${TAG}" ${EXTRA_BUILD_ARGUMENTS}
+  fi
+
   mvn -B -ntp -V -q install -DskipTests -f packaging/tests/pom.xml
 
   popd

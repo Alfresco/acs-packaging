@@ -23,6 +23,9 @@ while getopts "mh" option; do
       h)
         usage
         ;;
+      r)
+        RELEASE=release-version
+        ;;
    esac
 done
 
@@ -89,7 +92,11 @@ fi
 
 # Build the upstream alfresco-enterprise-repo project with its docker image
 if [[ "${ENT_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] ; then
-  buildSameBranchOnUpstream "${ENT_UPSTREAM_REPO}" "${ENT_DEPENDENCY_VERSION}" "-P$BUILD_PROFILE -Pags -Pall-tas-tests -Dlicense.failOnNotUptodateHeader=true"
+  if [[ -z "$RELEASE" ]]; then
+    buildSameBranchOnUpstream "${ENT_UPSTREAM_REPO}" "-P$BUILD_PROFILE -Pags -Pall-tas-tests -Dlicense.failOnNotUptodateHeader=true"
+  else
+    buildSameBranchOnUpstream "${ENT_UPSTREAM_REPO}" "-P$BUILD_PROFILE -Pags -Pall-tas-tests -Dlicense.failOnNotUptodateHeader=true" "${ENT_DEPENDENCY_VERSION}"
+  fi
 else
   buildUpstreamTag "${ENT_UPSTREAM_REPO}" "${ENT_DEPENDENCY_VERSION}" "-P$BUILD_PROFILE -Pags -Pall-tas-tests -Dlicense.failOnNotUptodateHeader=true"
 fi

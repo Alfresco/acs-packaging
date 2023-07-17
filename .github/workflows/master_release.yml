@@ -93,7 +93,7 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
           bash ./scripts/ci/init.sh
-          bash ./scripts/ci/build.sh -m
+          bash ./scripts/ci/build.sh -m -r
       - name: Compute final build number
         run: |
           echo "COMPUTED_BUILD_NUMBER=$(( $BASE_BUILD_NUMBER + $BUILD_NUMBER ))" >> $GITHUB_ENV
