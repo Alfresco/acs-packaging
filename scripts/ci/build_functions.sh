@@ -123,7 +123,7 @@ function buildUpstreamTag() {
 
 function buildSameBranchOnUpstream() {
   local UPSTREAM_REPO="${1}"
-  local IMAGE_TAG=${2}
+  local TAG=${2}
   local EXTRA_BUILD_ARGUMENTS="${3}"
 
   pushd "$(dirname "${BASH_SOURCE[0]}")/../../../"
