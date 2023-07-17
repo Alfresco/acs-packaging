@@ -14,7 +14,7 @@
     <properties>
         <image.name>alfresco/alfresco-content-repository</image.name>
         <docker.quay-expires.value>1w</docker.quay-expires.value>
-        <base.image>alfresco/alfresco-enterprise-repo-base:${repo.image.tag}</base.image>
+        <base.image>alfresco/alfresco-enterprise-repo-base:latest</base.image>
         <scripts.directory>${project.parent.basedir}/scripts/dev</scripts.directory>
     </properties>
 

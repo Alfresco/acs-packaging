@@ -13,7 +13,7 @@
     <properties>
         <image.name>alfresco/alfresco-share</image.name>
         <docker.quay-expires.value>1w</docker.quay-expires.value>
-        <base.image>alfresco/alfresco-share-base:${share.image.tag}</base.image>
+        <base.image>alfresco/alfresco-share-base:latest</base.image>
         <scripts.directory>${project.parent.basedir}/scripts/dev</scripts.directory>
     </properties>
 
