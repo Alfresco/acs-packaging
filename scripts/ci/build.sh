@@ -15,7 +15,7 @@ usage() {
     exit 1;
 }
 
-while getopts "mh" option; do
+while getopts "mhr" option; do
    case $option in
       m)
         DOCKER_BUILD_PROFILE=build-multiarch-docker-images
