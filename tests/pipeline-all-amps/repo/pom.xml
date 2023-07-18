@@ -12,7 +12,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <skipDockerImage>false</skipDockerImage>
+        <skipDockerImage>true</skipDockerImage>
         <base.image>alfresco/alfresco-enterprise-repo-base:latest</base.image>
         <scripts.directory>${project.parent.parent.parent.basedir}/scripts/dev</scripts.directory>
     </properties>
