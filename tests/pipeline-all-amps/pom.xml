@@ -99,7 +99,6 @@
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
                         <configuration>
-                            <skip>${skipDockerImage}</skip>
                             <images>
                                 <image>
                                     <name>${local.registry}/alfresco/${project.artifactId}:${image.tag}</name>
@@ -116,7 +115,7 @@
                                         </buildx>
                                         <dockerFileDir>${project.basedir}</dockerFileDir>
                                         <args>
-                                            <BASE_IMAGE>${image.registry}/${base.image}</BASE_IMAGE>
+                                            <BASE_IMAGE>${local.registry}/${base.image}</BASE_IMAGE>
                                         </args>
                                     </build>
                                 </image>
@@ -152,7 +151,6 @@
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
                         <configuration>
-                            <skip>${skipDockerImage}</skip>
                             <images>
                                 <image>
                                     <name>${image.registry}/alfresco/${project.artifactId}:${image.tag}</name>
@@ -169,7 +167,7 @@
                                         </buildx>
                                         <dockerFileDir>${project.basedir}</dockerFileDir>
                                         <args>
-                                            <BASE_IMAGE>${image.registry}/${base.image}</BASE_IMAGE>
+                                            <BASE_IMAGE>${local.registry}/${base.image}</BASE_IMAGE>
                                         </args>
                                     </build>
                                 </image>
@@ -205,7 +203,6 @@
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
                         <configuration>
-                            <skip>${skipDockerImage}</skip>
                             <images>
                                 <image>
                                     <name>${image.registry}/alfresco/${project.artifactId}:${image.tag}</name>
@@ -222,7 +219,7 @@
                                         </buildx>
                                         <dockerFileDir>${project.basedir}</dockerFileDir>
                                         <args>
-                                            <BASE_IMAGE>${image.registry}/${base.image}</BASE_IMAGE>
+                                            <BASE_IMAGE>${local.registry}/${base.image}</BASE_IMAGE>
                                         </args>
                                     </build>
                                 </image>
