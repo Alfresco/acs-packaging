@@ -13,7 +13,7 @@
 
     <properties>
         <skipDockerImage>false</skipDockerImage>
-        <base.image>alfresco/alfresco-enterprise-repo-base:${repo.image.tag}</base.image>
+        <base.image>alfresco/alfresco-enterprise-repo-base:latest</base.image>
         <scripts.directory>${project.parent.parent.parent.basedir}/scripts/dev</scripts.directory>
     </properties>
 

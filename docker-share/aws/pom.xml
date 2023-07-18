@@ -12,7 +12,7 @@
 
     <properties>
         <image.name>alfresco/alfresco-enterprise-share-aws</image.name>
-        <base.image>alfresco/alfresco-share:${image.tag}</base.image>
+        <base.image>alfresco/alfresco-share:latest</base.image>
         <scripts.directory>${project.parent.parent.basedir}/scripts/dev</scripts.directory>
     </properties>
 
