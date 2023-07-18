@@ -99,6 +99,6 @@ jobs:
           echo "COMPUTED_BUILD_NUMBER=$(( $BASE_BUILD_NUMBER + $BUILD_NUMBER ))" >> $GITHUB_ENV
       - name: "Update images"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        run: mvn -B -V clean install -ntp -DskipTests -Dmaven.javadoc.skip=true -Dbuild-number=${COMPUTED_BUILD_NUMBER} -Ppush-docker-images,pipeline,release-branch
+        run: mvn -B -V clean install -ntp -DskipTests -Dmaven.javadoc.skip=true -DskipDockerImage=true -Dbuild-number=${COMPUTED_BUILD_NUMBER} -Ppush-docker-images,pipeline,release-branch
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
