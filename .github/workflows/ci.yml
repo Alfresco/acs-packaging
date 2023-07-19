@@ -621,8 +621,9 @@ jobs:
       - name: Compute final build number
         run: |
           echo "COMPUTED_BUILD_NUMBER=$(( $BASE_BUILD_NUMBER + $BUILD_NUMBER ))" >> $GITHUB_ENV
-          TODO calculate acs.version, add new variable for text insert?
-          echo "IMAGE_TAG=23.1.0-GPT-POC-$COMPUTED_BUILD_NUMBER" >> $GITHUB_ENV
+      - name: Determine ACS Image Tag
+        run: |
+          echo "IMAGE_TAG=23.1.0-TEST-${COMPUTED_BUILD_NUMBER}" >> $GITHUB_ENV
       - name: "Build (uses IMAGE_TAG variable)"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -630,6 +631,6 @@ jobs:
           bash ./scripts/ci/build.sh -m
       - name: "Update images"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        run: mvn -B -V clean install -ntp -DskipTests -Dmaven.javadoc.skip=true -Ppush-docker-images,pipeline,release-branch -Drepo.image.tag=latest -Dshare.image.tag=latest -Dimage.tag=$IMAGE_TAG -Ddocker.quay-expires.value=1w
+        run: mvn -B -V clean install -ntp -DskipTests -Dmaven.javadoc.skip=true -Ppush-docker-images,pipeline,release-branch -Drepo.image.tag=latest -Dshare.image.tag=latest -Dimage.tag=${IMAGE_TAG} -Ddocker.quay-expires.value=1w
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
