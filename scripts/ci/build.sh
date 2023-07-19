@@ -15,16 +15,13 @@ usage() {
     exit 1;
 }
 
-while getopts "mhr" option; do
+while getopts "mh" option; do
    case $option in
       m)
         DOCKER_BUILD_PROFILE=build-multiarch-docker-images
         ;;
       h)
         usage
-        ;;
-      r)
-        RELEASE=release-version
         ;;
    esac
 done
