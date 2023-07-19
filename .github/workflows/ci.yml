@@ -60,6 +60,18 @@ jobs:
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
+  pmd_scan:
+    name: "PMD Scan"
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'pull_request' &&
+      !contains(github.event.head_commit.message, '[skip pmd]') &&
+      !contains(github.event.head_commit.message, '[skip tests]')
+    steps:
+      - uses: Alfresco/ya-pmd-scan@v1.0.0
+        with:
+          fail-on-new-issues: "false"
+
   tas_tests:
     name: ${{ matrix.testSuite }} TAS tests
     runs-on: ubuntu-latest
@@ -591,7 +603,8 @@ jobs:
           ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8983/solr"
       - name: "Run tomcat, verify it starts"
         id: tests
-        timeout-minutes: 5
         run: |
           (mvn clean install -Prun -rf dev &)
-          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco"
+          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/"
+          curl -Ls -o /dev/null --fail "http://localhost:8080/alfresco"
+          curl -Ls -o /dev/null --fail "http://localhost:8080/share"
