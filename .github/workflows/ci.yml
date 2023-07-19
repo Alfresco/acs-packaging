@@ -102,16 +102,17 @@ jobs:
         uses: docker/setup-qemu-action@v2
         with:
           platforms: linux/amd64,linux/arm64
-      - name: "Build"
+      - name: Compute final build number
+        run: |
+          echo "COMPUTED_BUILD_NUMBER=$(( $BASE_BUILD_NUMBER + $BUILD_NUMBER ))" >> $GITHUB_ENV
+          echo "IMAGE_TAG=23.1.0-GPT-POC-$COMPUTED_BUILD_NUMBER" >> $GITHUB_ENV
+      - name: "Build (uses IMAGE_TAG variable)"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh -m
-      - name: Compute final build number
-        run: |
-          echo "COMPUTED_BUILD_NUMBER=$(( $BASE_BUILD_NUMBER + $BUILD_NUMBER ))" >> $GITHUB_ENV
       - name: "Update images"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        run: mvn -B -V clean install -ntp -DskipTests -Dmaven.javadoc.skip=true -Ppush-docker-images,pipeline,release-branch -Drepo.image.tag=latest -Dshare.image.tag=latest -Dimage.tag=23.1.0-GPT-POC-${COMPUTED_BUILD_NUMBER}
+        run: mvn -B -V clean install -ntp -DskipTests -Dmaven.javadoc.skip=true -Ppush-docker-images,pipeline,release-branch -Drepo.image.tag=latest -Dshare.image.tag=latest -Dimage.tag=$IMAGE_TAG
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
