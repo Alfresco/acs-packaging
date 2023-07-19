@@ -63,7 +63,7 @@ public class ElasticsearchBoostedSearchTests extends AbstractTestNGSpringContext
     private LocalDateTime afterCreationTime;
 
     @BeforeClass(alwaysRun = true)
-    public void dataPreparation() throws Exception
+    public void dataPreparation()
     {
         serverHealth.assertServerIsOnline();
 
