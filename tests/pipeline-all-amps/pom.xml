@@ -143,7 +143,7 @@
             <id>push-docker-images</id>
             <!-- publishes "image:<acs.version>-<build-number>" on Quay -->
             <properties>
-                <image.tag>${acs.version}-GPT-POC-${build-number}</image.tag>
+                <image.tag>${acs.version}-${build-number}</image.tag>
             </properties>
             <build>
                 <plugins>

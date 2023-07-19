@@ -13,7 +13,7 @@
 
     <properties>
         <skipDockerImage>true</skipDockerImage>
-        <base.image>alfresco/alfresco-share-base:latest</base.image>
+        <base.image>alfresco/alfresco-share-base:${image.tag}</base.image>
         <scripts.directory>${project.parent.parent.parent.basedir}/scripts/dev</scripts.directory>
     </properties>
 
