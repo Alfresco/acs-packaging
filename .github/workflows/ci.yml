@@ -626,7 +626,7 @@ jobs:
           echo "COMPUTED_BUILD_NUMBER=$(( $BASE_BUILD_NUMBER + $BUILD_NUMBER ))" >> $GITHUB_ENV
       - name: Determine ACS Image Tag
         run: |
-          ACS_VERSION=$(mvn -f acs-packaging/pom.xml help:evaluate -Dexpression=acs.version -q -DforceStdout)
+          ACS_VERSION=$(mvn -f pom.xml help:evaluate -Dexpression=acs.version -q -DforceStdout)
           echo "IMAGE_TAG=${ACS_VERSION}-${PIPELINE_TAG_TEXT_INSERT}-${COMPUTED_BUILD_NUMBER}" >> $GITHUB_ENV
       - name: "Build (uses IMAGE_TAG variable)"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
