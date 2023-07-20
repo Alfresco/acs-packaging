@@ -598,7 +598,7 @@ jobs:
           curl -Ls -o /dev/null --fail "http://localhost:8080/share"
 
   pipeline_test_docker_release:
-    name: "Update release and Single Pipeline <acs>-<build> images"
+    name: "Upload docker images needed for pipeline tests: <acs.version>-<PIPELINE_TAG_TEXT_INSERT>-<build>"
     runs-on: ubuntu-latest
     if: >
       contains(github.event.head_commit.message, '[pipeline_docker]')
@@ -618,12 +618,16 @@ jobs:
         uses: docker/setup-qemu-action@v2
         with:
           platforms: linux/amd64,linux/arm64
+      - name: Pipeline Tag text insert
+        run: |
+          echo "PIPELINE_TAG_TEXT_INSERT=GPT-POC" >> $GITHUB_ENV
       - name: Compute final build number
         run: |
           echo "COMPUTED_BUILD_NUMBER=$(( $BASE_BUILD_NUMBER + $BUILD_NUMBER ))" >> $GITHUB_ENV
       - name: Determine ACS Image Tag
         run: |
-          echo "IMAGE_TAG=23.1.0-TEST-${COMPUTED_BUILD_NUMBER}" >> $GITHUB_ENV
+          ACS_VERSION=$(mvn -f acs-packaging/pom.xml help:evaluate -Dexpression=acs.version -q -DforceStdout)
+          echo "IMAGE_TAG=${ACS_VERSION}-${PIPELINE_TAG_TEXT_INSERT}-${COMPUTED_BUILD_NUMBER}" >> $GITHUB_ENV
       - name: "Build (uses IMAGE_TAG variable)"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
