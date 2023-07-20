@@ -620,7 +620,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
       - name: Pipeline Tag text insert
         run: |
-          echo "PIPELINE_TAG_TEXT_INSERT=REPO-ONLY-TEST" >> $GITHUB_ENV
+          echo "PIPELINE_TAG_TEXT_INSERT=SHARE-ONLY-TEST" >> $GITHUB_ENV
       - name: Compute final build number
         run: |
           echo "COMPUTED_BUILD_NUMBER=$(( $BASE_BUILD_NUMBER + $BUILD_NUMBER ))" >> $GITHUB_ENV
@@ -635,6 +635,6 @@ jobs:
           bash ./scripts/ci/build.sh -m
       - name: "Update images"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        run: mvn -B -V clean install -ntp -DskipTests -Dmaven.javadoc.skip=true -Ppush-docker-images,pipeline,release-branch -Drepo.image.tag=latest -Dshare.image.tag=latest -Dimage.tag=${IMAGE_TAG} -Ddocker.quay-expires.value=1w -Dshare.skipDockerImage=true
+        run: mvn -B -V clean install -ntp -DskipTests -Dmaven.javadoc.skip=true -Ppush-docker-images,pipeline,release-branch -Drepo.image.tag=latest -Dshare.image.tag=latest -Dimage.tag=${IMAGE_TAG} -Ddocker.quay-expires.value=1d -Drepo.skipDockerImage=true
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
