@@ -635,6 +635,6 @@ jobs:
           bash ./scripts/ci/build.sh -m
       - name: "Update images"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        run: mvn -B -V clean install -ntp -DskipTests -Dmaven.javadoc.skip=true -Ppush-docker-images,pipeline,release-branch -Drepo.image.tag=latest -Dshare.image.tag=latest -Dimage.tag=${IMAGE_TAG} -Ddocker.quay-expires.value=1w
+        run: mvn -B -V clean install -ntp -DskipTests -Dmaven.javadoc.skip=true -Ppush-docker-images,pipeline,release-branch -Drepo.image.tag=latest -Dshare.image.tag=latest -Dimage.tag=${IMAGE_TAG} -Ddocker.quay-expires.value=1w -Dshare.skipDockerImage=true
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
