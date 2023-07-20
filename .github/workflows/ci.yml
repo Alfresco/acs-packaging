@@ -640,7 +640,7 @@ jobs:
         run: |
           ACS_VERSION=$(mvn -f pom.xml help:evaluate -Dexpression=acs.version -q -DforceStdout)
           echo "IMAGE_TAG=${ACS_VERSION}-${PIPELINE_TAG_TEXT_INSERT}-${COMPUTED_BUILD_NUMBER}" >> $GITHUB_ENV
-      - name: "Build (uses IMAGE_TAG variable)"
+      - name: "Build: uses IMAGE_TAG variable, requires Repo and Share snapshot versions in main pom.xml"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
           bash ./scripts/ci/init.sh
