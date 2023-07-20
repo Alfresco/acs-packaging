@@ -620,7 +620,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
       - name: Pipeline Tag text insert
         run: |
-          echo "PIPELINE_TAG_TEXT_INSERT=GPT-POC" >> $GITHUB_ENV
+          echo "PIPELINE_TAG_TEXT_INSERT=REPO-ONLY-TEST" >> $GITHUB_ENV
       - name: Compute final build number
         run: |
           echo "COMPUTED_BUILD_NUMBER=$(( $BASE_BUILD_NUMBER + $BUILD_NUMBER ))" >> $GITHUB_ENV
