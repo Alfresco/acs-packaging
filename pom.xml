@@ -4,7 +4,7 @@
     <artifactId>acs-packaging</artifactId>
     <packaging>pom</packaging>
     <name>Alfresco Content Services Packaging</name>
-    <version>23.1.0-A20-SNAPSHOT</version>
+    <version>23.1.0-A21-SNAPSHOT</version>
 
     <parent>
         <groupId>org.alfresco</groupId>

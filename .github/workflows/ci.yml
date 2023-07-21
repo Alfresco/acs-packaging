@@ -60,6 +60,18 @@ jobs:
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
+  pmd_scan:
+    name: "PMD Scan"
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'pull_request' &&
+      !contains(github.event.head_commit.message, '[skip pmd]') &&
+      !contains(github.event.head_commit.message, '[skip tests]')
+    steps:
+      - uses: Alfresco/ya-pmd-scan@v1.0.0
+        with:
+          fail-on-new-issues: "false"
+
   tas_tests:
     name: ${{ matrix.testSuite }} TAS tests
     runs-on: ubuntu-latest
@@ -618,9 +630,9 @@ jobs:
         uses: docker/setup-qemu-action@v2
         with:
           platforms: linux/amd64,linux/arm64
-      - name: Pipeline Tag text insert
+      - name: Pipeline Tag text insert (modify for your needs)
         run: |
-          echo "PIPELINE_TAG_TEXT_INSERT=SHARE-ONLY-TEST" >> $GITHUB_ENV
+          echo "PIPELINE_TAG_TEXT_INSERT=INSERT-TEXT" >> $GITHUB_ENV
       - name: Compute final build number
         run: |
           echo "COMPUTED_BUILD_NUMBER=$(( $BASE_BUILD_NUMBER + $BUILD_NUMBER ))" >> $GITHUB_ENV
@@ -628,13 +640,13 @@ jobs:
         run: |
           ACS_VERSION=$(mvn -f pom.xml help:evaluate -Dexpression=acs.version -q -DforceStdout)
           echo "IMAGE_TAG=${ACS_VERSION}-${PIPELINE_TAG_TEXT_INSERT}-${COMPUTED_BUILD_NUMBER}" >> $GITHUB_ENV
-      - name: "Build (uses IMAGE_TAG variable)"
+      - name: "Build: uses IMAGE_TAG variable, requires Repo and Share snapshot versions in main pom.xml"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh -m
       - name: "Update images"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        run: mvn -B -V clean install -ntp -DskipTests -Dmaven.javadoc.skip=true -Ppush-docker-images,pipeline,release-branch -Drepo.image.tag=latest -Dshare.image.tag=latest -Dimage.tag=${IMAGE_TAG} -Ddocker.quay-expires.value=1d -Drepo.skipDockerImage=true
+        run: mvn -B -V clean install -ntp -DskipTests -Dmaven.javadoc.skip=true -Ppush-docker-images,pipeline,release-branch -Drepo.image.tag=latest -Dshare.image.tag=latest -Dimage.tag=${IMAGE_TAG} -Ddocker.quay-expires.value=1w -Drepo.skipDockerImage=false -Dshare.skipDockerImage=false
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
