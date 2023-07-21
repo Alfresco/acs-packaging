@@ -1,6 +1,8 @@
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
+LABEL quay.expires-after=${docker.quay-expires.value}
+
 ARG TOMCAT_DIR=/usr/local/tomcat
 COPY target/amps_share/*.amp /usr/local/tomcat/amps_share/
 
