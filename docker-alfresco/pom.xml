@@ -273,7 +273,6 @@
                         <configuration combine.self="override">
                             <skip>${repo.skipDockerImage}</skip>
                             <images>
-                                <skip>${repo.skipDockerImage}</skip>
                                 <!-- Quay image -->
                                 <image>
                                     <name>${image.registry}/${image.name}:${project.version}</name>
