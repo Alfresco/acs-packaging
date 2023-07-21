@@ -12,7 +12,7 @@
     <packaging>pom</packaging>
 
     <properties>
-        <skipDockerImage>false</skipDockerImage>
+        <skipDockerImage>${share.skipDockerImage}</skipDockerImage>
         <base.image>alfresco/alfresco-share-base:${share.image.tag}</base.image>
         <scripts.directory>${project.parent.parent.parent.basedir}/scripts/dev</scripts.directory>
     </properties>
