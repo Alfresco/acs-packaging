@@ -2,8 +2,6 @@ ARG BASE_IMAGE
 # BUILD STAGE SWAGGERBUILDER
 FROM debian:11-slim AS SWAGGERBUILDER
 
-LABEL quay.expires-after=${docker.quay-expires.value}
-
 ARG JOLOKIA_VER=1.6.2
 
 RUN DEBIAN_FRONTEND=noninteractive; \
@@ -57,3 +55,5 @@ ENV ALFRESCO_AMPS_DIR=$TOMCAT_DIR/amps
 COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["catalina.sh", "run", "-security"]
+
+LABEL quay.expires-after=${docker.quay-expires.value}
