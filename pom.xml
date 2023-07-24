@@ -10,7 +10,7 @@
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-enterprise-repo</artifactId>
         <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
-        <version>23.1.0.155</version>
+        <version>3.1.0.156-ES1</version>
     </parent>
 
     <properties>
