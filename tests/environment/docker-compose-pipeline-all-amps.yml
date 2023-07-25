@@ -12,7 +12,7 @@ version: "2"
 
 services:
     alfresco:
-        image: ${PIPELINE_ALL_AMPS_REGISTRY}alfresco/alfresco-pipeline-all-amps-repo:23.1.0-A19
+        image: quay.io/alfresco/alfresco-pipeline-all-amps-repo:23.1.0-A21
         mem_limit: 1700m
         environment:
             JAVA_TOOL_OPTIONS: "
@@ -101,7 +101,7 @@ services:
             - shared-file-store-volume:/tmp/Alfresco/sfs
 
     share:
-        image: ${PIPELINE_ALL_AMPS_REGISTRY}alfresco/alfresco-pipeline-all-amps-share:23.1.0-A19
+        image: quay.io/alfresco/alfresco-pipeline-all-amps-share:23.1.0-A21
         mem_limit: 1g
         environment:
             REPO_HOST: "alfresco"
@@ -127,7 +127,7 @@ services:
             - 5432:5432
 
     solr6:
-        image: quay.io/alfresco/dev:search-servicesDEVTESTMB11
+        image: quay.io/alfresco/dev:insight-engineDEVTESTMB11
         mem_limit: 2g
         environment:
             #Solr needs to know how to register itself with Alfresco
