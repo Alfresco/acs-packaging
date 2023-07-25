@@ -58,6 +58,8 @@ services:
                 -Ds3.abortIncompleteMultipartUploadDays=1
                 -Xms1500m -Xmx1500m
                 "
+        ports:
+            - 10001:10001
 
     transform-router:
         mem_limit: 512m
