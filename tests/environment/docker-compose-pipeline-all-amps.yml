@@ -126,7 +126,7 @@ services:
 
     solr6:
         image: quay.io/alfresco/dev:search-servicesDEVTESTMB11
-        mem_limit: 2g
+        mem_limit: 3g
         environment:
             #Solr needs to know how to register itself with Alfresco
             SOLR_ALFRESCO_HOST: "alfresco"
