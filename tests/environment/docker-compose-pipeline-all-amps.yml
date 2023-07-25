@@ -127,7 +127,7 @@ services:
             - 5432:5432
 
     solr6:
-        image: quay.io/alfresco/dev:insight-engineDEVTESTMB11
+        image: quay.io/alfresco/dev:search-servicesDEVTESTMB11
         mem_limit: 2g
         environment:
             #Solr needs to know how to register itself with Alfresco
@@ -140,10 +140,8 @@ services:
             SOLR_CREATE_ALFRESCO_DEFAULTS: "alfresco,archive"
             #HTTP by default
             ALFRESCO_SECURE_COMMS: "secret"
-            JAVA_TOOL_OPTIONS:
-              "
-              -Dalfresco.secureComms.secret=secret
-              "
+            JAVA_TOOL_OPTIONS: >-
+                -Dalfresco.secureComms.secret=secret
             SOLR_JAVA_MEM: "-Xms2g -Xmx2g"
         ports:
             - 8083:8983 #Browser port
