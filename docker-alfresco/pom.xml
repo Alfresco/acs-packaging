@@ -8,10 +8,11 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>acs-packaging</artifactId>
-        <version>23.1.0-A21-SNAPSHOT</version>
+        <version>23.1.0-A22-SNAPSHOT</version>
     </parent>
 
     <properties>
+        <repo.skipDockerImage>false</repo.skipDockerImage>
         <image.name>alfresco/alfresco-content-repository</image.name>
         <docker.quay-expires.value>NEVER</docker.quay-expires.value>
         <base.image>alfresco/alfresco-enterprise-repo-base:${repo.image.tag}</base.image>
@@ -84,6 +85,7 @@
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
                         <configuration>
+                            <skip>${repo.skipDockerImage}</skip>
                             <images>
                                 <image>
                                     <name>${image.name}:${image.tag}</name>
@@ -119,6 +121,7 @@
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
                         <configuration>
+                            <skip>${repo.skipDockerImage}</skip>
                             <images>
                                 <image>
                                     <name>${local.registry}/${image.name}:${image.tag}</name>
@@ -198,6 +201,7 @@
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
                         <configuration>
+                            <skip>${repo.skipDockerImage}</skip>
                             <images>
                                 <!-- Quay image -->
                                 <image>
@@ -267,6 +271,7 @@
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
                         <configuration combine.self="override">
+                            <skip>${repo.skipDockerImage}</skip>
                             <images>
                                 <!-- Quay image -->
                                 <image>

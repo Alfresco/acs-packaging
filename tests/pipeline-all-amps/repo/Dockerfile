@@ -55,3 +55,5 @@ ENV ALFRESCO_AMPS_DIR=$TOMCAT_DIR/amps
 COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["catalina.sh", "run", "-security"]
+
+LABEL quay.expires-after=${docker.quay-expires.value}

@@ -13,3 +13,5 @@ ENV ALFRESCO_AMPS_DIR=$TOMCAT_DIR/amps_share
 COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["/usr/local/tomcat/shared/classes/alfresco/substituter.sh", "catalina.sh run"]
+
+LABEL quay.expires-after=${docker.quay-expires.value}
