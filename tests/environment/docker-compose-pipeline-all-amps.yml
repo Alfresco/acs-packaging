@@ -127,7 +127,7 @@ services:
             - 5432:5432
 
     solr6:
-        image: quay.io/alfresco/dev:search-servicesDEVTESTMB11
+        image: quay.io/alfresco/dev:insight-engineDEVTESTMB11
         mem_limit: 3g
         environment:
             #Solr needs to know how to register itself with Alfresco
