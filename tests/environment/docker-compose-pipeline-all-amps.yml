@@ -84,7 +84,6 @@ services:
         mem_limit: 1536m
         environment:
             JAVA_OPTS: " -Xms256m -Xmx1536m"
-            LIBREOFFICE_HOME: /usr/lib64/libreoffice
             ACTIVEMQ_URL: "nio://activemq:61616"
             FILE_STORE_URL: "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file"
         ports:
