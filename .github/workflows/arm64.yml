@@ -15,7 +15,7 @@ env:
   TAS_ENVIRONMENT: ./tests/environment
   TAS_SCRIPTS: ../alfresco-community-repo/packaging/tests/scripts
   AWS_REGION: eu-west-1
-  DTAS_VERSION: v1.1
+  DTAS_VERSION: test/ACS-5039_dtas-transform-fix
 
 jobs:
   arm64_health_check:
