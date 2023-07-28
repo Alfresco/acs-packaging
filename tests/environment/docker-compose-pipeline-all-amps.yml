@@ -127,8 +127,8 @@ services:
             - 5432:5432
 
     solr6:
-        image: alfresco/alfresco-search-services:2.0.3
-        mem_limit: 2g
+        image: alfresco/alfresco-search-services:2.0.8-A3
+        mem_limit: 3g
         environment:
             #Solr needs to know how to register itself with Alfresco
             SOLR_ALFRESCO_HOST: "alfresco"

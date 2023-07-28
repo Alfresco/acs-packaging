@@ -3,6 +3,9 @@ name: (ARM64) ACS Packaging CI
 on:
   schedule:
     - cron: "0 3 * * 1-5"
+  push:
+    branches:
+      - feature/ACS-5221_add_arm64_search_tests
   workflow_dispatch:
 
 env:
@@ -70,7 +73,6 @@ jobs:
           curl -v --user admin.pipeline@alfresco.com:admin http://localhost:8080/alfresco/api/discovery
       - name: "Dump all Docker containers logs"
         uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v1.41.0
-        if: failure() && steps.setup-env.outcome == 'failure'
       - name: "Run tests"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -80,8 +82,7 @@ jobs:
           # NOTE: some tests are temporarily disabled since the related components don't provide native ARM64 images yet
           python3 -m pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s \
             --ignore=tests/scenarios/test_sync.py \
-            --ignore=tests/scenarios/test_transformation.py \
-            -k "not test_search"
+            --ignore=tests/scenarios/test_transformation.py
       - name: "Persist test failure flag"
         id: persist_test_failure_flag
         run: echo "test_failure=true" >> "$GITHUB_OUTPUT"
