@@ -99,11 +99,7 @@ jobs:
           bash ./scripts/ci/build.sh -m
       - name: Compute final build number
         run: |
-          COMPUTED_BUILD_NUMBER=$(( $BASE_BUILD_NUMBER + $BUILD_NUMBER ))
-          echo "COMPUTED_BUILD_NUMBER=${COMPUTED_BUILD_NUMBER}" >> $GITHUB_ENV
-          source ./scripts/ci/build_functions.sh
-          acs_version=$(evaluatePomProperty "acs.version")
-          docker tag alfresco/alfresco-content-repository:latest alfresco/alfresco-content-repository:${acs_version}-${COMPUTED_BUILD_NUMBER}
+          echo "COMPUTED_BUILD_NUMBER=$(( $BASE_BUILD_NUMBER + $BUILD_NUMBER ))" >> $GITHUB_ENV
       - name: "Update images"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: mvn -B -V clean install -ntp -DskipTests -Dmaven.javadoc.skip=true -Dbuild-number=${COMPUTED_BUILD_NUMBER} -Ppush-docker-images,pipeline,release-branch
