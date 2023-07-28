@@ -92,8 +92,8 @@ services:
             - activemq
 
     shared-file-store:
-        image: quay.io/alfresco/dev:alfresco-shared-file-store
         #image: quay.io/alfresco/alfresco-shared-file-store:${TRANSFORM_ROUTER_TAG}
+        image: quay.io/alfresco/dev:alfresco-shared-file-store
         mem_limit: 512m
         environment:
             JAVA_OPTS: " -Xms256m -Xmx512m"
