@@ -42,14 +42,14 @@ jobs:
           registry: quay.io
           username: ${{ secrets.QUAY_USERNAME }}
           password: ${{ secrets.QUAY_PASSWORD }}
-      - name: "Get latest matching tag"
-        run: |
-          VERSION_NUMBER=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | sed -E 's/([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
-          TEST_GIT_TAG=$(git tag --list --sort=-taggerdate "$VERSION_NUMBER*" | head -n 1)
-          if [ -z $TEST_GIT_TAG ]; then
-            TEST_GIT_TAG=$(git tag --list --sort=-taggerdate | head -n 1)
-          fi
-          echo "TEST_GIT_TAG=$TEST_GIT_TAG" >> $GITHUB_ENV
+#      - name: "Get latest matching tag"
+#        run: |
+#          VERSION_NUMBER=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | sed -E 's/([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
+#          TEST_GIT_TAG=$(git tag --list --sort=-taggerdate "$VERSION_NUMBER*" | head -n 1)
+#          if [ -z $TEST_GIT_TAG ]; then
+#            TEST_GIT_TAG=$(git tag --list --sort=-taggerdate | head -n 1)
+#          fi
+#          echo "TEST_GIT_TAG=$TEST_GIT_TAG" >> $GITHUB_ENV
       - name: "Prepare test config"
         run: |
           git checkout $TEST_GIT_TAG
