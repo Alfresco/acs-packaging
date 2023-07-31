@@ -261,6 +261,9 @@ jobs:
       - name: "Print output after failure"
         if: ${{ always() && steps.tests.outcome == 'failure' }}
         run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
+      - name: "Dump all Docker containers logs"
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v1.41.0
+        if: failure() && steps.tests.outcome == 'failure'
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
@@ -367,8 +370,12 @@ jobs:
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
       - name: "Run tests"
+        id: tests
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -P${{ matrix.profiles }} -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}" "-Ddatabase.type=${{ matrix.db-type }}" -Dindeximage="alfresco-es-indexing-jdbc:latest" -Dreindeximage="alfresco-es-reindexing-jdbc:latest" -Drepoimage="alfresco-repository-databases:latest"
+      - name: "Dump all Docker containers logs"
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v1.41.0
+        if: failure() && steps.tests.outcome == 'failure'
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
@@ -407,8 +414,12 @@ jobs:
       - name: "Copy Licence"
         run: aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
       - name: "Run tests"
+        id: tests
         timeout-minutes: 30
         run: mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}" "-Ddatabase.type=postgresql" "-Dindeximage=alfresco-es-indexing-jdbc:latest" "-Dreindeximage=alfresco-es-reindexing-jdbc:latest" "-Drepoimage=alfresco-repository-databases:latest"
+      - name: "Dump all Docker containers logs"
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v1.41.0
+        if: failure() && steps.tests.outcome == 'failure'
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
