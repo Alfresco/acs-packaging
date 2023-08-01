@@ -72,7 +72,6 @@ jobs:
         uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v1.41.0
         if: failure() && steps.setup-env.outcome == 'failure'
       - name: "Run tests"
-        id: run-tests
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
           # Make necessary test files available
