@@ -3,9 +3,6 @@ name: (ARM64) ACS Packaging CI
 on:
   schedule:
     - cron: "0 3 * * 1-5"
-  push:
-    branches:
-      - feature/ACS-5039_Transformers_multi-arch
   workflow_dispatch:
 
 env:
@@ -42,14 +39,14 @@ jobs:
           registry: quay.io
           username: ${{ secrets.QUAY_USERNAME }}
           password: ${{ secrets.QUAY_PASSWORD }}
-      #- name: "Get latest matching tag"
-      #  run: |
-      #    VERSION_NUMBER=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | sed -E 's/([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
-      #    TEST_GIT_TAG=$(git tag --list --sort=-taggerdate "$VERSION_NUMBER*" | head -n 1)
-      #    if [ -z $TEST_GIT_TAG ]; then
-      #      TEST_GIT_TAG=$(git tag --list --sort=-taggerdate | head -n 1)
-      #    fi
-      #    echo "TEST_GIT_TAG=$TEST_GIT_TAG" >> $GITHUB_ENV
+      - name: "Get latest matching tag"
+        run: |
+          VERSION_NUMBER=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | sed -E 's/([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
+          TEST_GIT_TAG=$(git tag --list --sort=-taggerdate "$VERSION_NUMBER*" | head -n 1)
+          if [ -z $TEST_GIT_TAG ]; then
+            TEST_GIT_TAG=$(git tag --list --sort=-taggerdate | head -n 1)
+          fi
+          echo "TEST_GIT_TAG=$TEST_GIT_TAG" >> $GITHUB_ENV
       - name: "Prepare test config"
         run: |
           git checkout $TEST_GIT_TAG
@@ -102,18 +99,18 @@ jobs:
           docker volume rm -f $(docker volume ls -q) || true
           docker rmi -f $(docker images -aq) || true
           docker system prune -a -f
-  #jira_integration:
-    #name: "JIRA integration"
-    #runs-on: ubuntu-latest
-    #needs: [arm64_health_check]
-    #if: always()
-    #steps:
-    #  - uses: actions/checkout@v3
-    #  - uses: actions/setup-python@v4
-    #  - name: "Run the JIRA Integration script"
-    #    run: |
-    #      pip install -r ./scripts/ci/jira/requirements.txt
-    #      ./scripts/ci/jira/jira_integration.py
+  jira_integration:
+    name: "JIRA integration"
+    runs-on: ubuntu-latest
+    needs: [arm64_health_check]
+    if: always()
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+      - name: "Run the JIRA Integration script"
+        run: |
+          pip install -r ./scripts/ci/jira/requirements.txt
+          ./scripts/ci/jira/jira_integration.py
         env:
           BUILD_WEB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           JIRA_TOKEN: ${{ secrets.JIRA_TOKEN }}
