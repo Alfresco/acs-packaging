@@ -35,7 +35,7 @@ env:
   ALF_LICENCE_S3_PATH: s3://acs-license/acs/alf231-allenabled.lic
   ALF_LICENCE_LOCAL_PATH: /tmp/licence.lic
   PYTHON_VERSION: 3.7.15
-  DTAS_VERSION: v1.1
+  DTAS_VERSION: v1.2.2
 
 jobs:
   veracode:
@@ -59,6 +59,18 @@ jobs:
           srcclr-api-token: ${{ secrets.SRCCLR_API_TOKEN }}
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
+
+  pmd_scan:
+    name: "PMD Scan"
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'pull_request' &&
+      !contains(github.event.head_commit.message, '[skip pmd]') &&
+      !contains(github.event.head_commit.message, '[skip tests]')
+    steps:
+      - uses: Alfresco/ya-pmd-scan@v1.0.0
+        with:
+          fail-on-new-issues: "false"
 
   tas_tests:
     name: ${{ matrix.testSuite }} TAS tests
@@ -248,6 +260,9 @@ jobs:
       - name: "Print output after failure"
         if: ${{ always() && steps.tests.outcome == 'failure' }}
         run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
+      - name: "Dump all Docker containers logs"
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v1.41.0
+        if: failure() && steps.tests.outcome == 'failure'
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
@@ -354,8 +369,12 @@ jobs:
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
       - name: "Run tests"
+        id: tests
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -P${{ matrix.profiles }} -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}" "-Ddatabase.type=${{ matrix.db-type }}" -Dindeximage="alfresco-es-indexing-jdbc:latest" -Dreindeximage="alfresco-es-reindexing-jdbc:latest" -Drepoimage="alfresco-repository-databases:latest"
+      - name: "Dump all Docker containers logs"
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v1.41.0
+        if: failure() && steps.tests.outcome == 'failure'
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
@@ -394,8 +413,12 @@ jobs:
       - name: "Copy Licence"
         run: aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
       - name: "Run tests"
+        id: tests
         timeout-minutes: 30
         run: mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}" "-Ddatabase.type=postgresql" "-Dindeximage=alfresco-es-indexing-jdbc:latest" "-Dreindeximage=alfresco-es-reindexing-jdbc:latest" "-Drepoimage=alfresco-repository-databases:latest"
+      - name: "Dump all Docker containers logs"
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v1.41.0
+        if: failure() && steps.tests.outcome == 'failure'
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
@@ -596,3 +619,45 @@ jobs:
           ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/"
           curl -Ls -o /dev/null --fail "http://localhost:8080/alfresco"
           curl -Ls -o /dev/null --fail "http://localhost:8080/share"
+
+  pipeline_test_docker_release:
+    name: "Upload docker images needed for pipeline tests: <acs.version>-<PIPELINE_TAG_TEXT_INSERT>-<build>"
+    runs-on: ubuntu-latest
+    if: >
+      contains(github.event.head_commit.message, '[pipeline_docker]')
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: linux/amd64,linux/arm64
+      - name: Pipeline Tag text insert (modify for your needs)
+        run: |
+          echo "PIPELINE_TAG_TEXT_INSERT=INSERT-TEXT" >> $GITHUB_ENV
+      - name: Compute final build number
+        run: |
+          echo "COMPUTED_BUILD_NUMBER=$(( $BASE_BUILD_NUMBER + $BUILD_NUMBER ))" >> $GITHUB_ENV
+      - name: Determine ACS Image Tag
+        run: |
+          ACS_VERSION=23.1.0
+          echo "IMAGE_TAG=${ACS_VERSION}-${PIPELINE_TAG_TEXT_INSERT}-${COMPUTED_BUILD_NUMBER}" >> $GITHUB_ENV
+      - name: "Build: uses IMAGE_TAG variable, requires Repo and Share snapshot versions in main pom.xml"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          bash ./scripts/ci/init.sh
+          bash ./scripts/ci/build.sh -m
+      - name: "Update images"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: mvn -B -V clean install -ntp -DskipTests -Dmaven.javadoc.skip=true -Ppush-docker-images,pipeline,release-branch -Drepo.image.tag=latest -Dshare.image.tag=latest -Dimage.tag=${IMAGE_TAG} -Ddocker.quay-expires.value=1w -Drepo.skipDockerImage=false -Dshare.skipDockerImage=false
+      - name: "Clean Maven cache"
+        run: bash ./scripts/ci/cleanup_cache.sh

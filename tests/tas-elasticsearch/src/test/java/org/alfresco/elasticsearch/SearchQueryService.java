@@ -56,6 +56,26 @@ public class SearchQueryService
         expectResultsFromQuery(searchRequest,user,response);
     }
 
+    public void expectResultsInOrder(SearchRequest searchRequest, UserModel user, String... expectedOrder)
+    {
+        Consumer<SearchResponse> response = searchResponse -> assertNamesInOrder(searchResponse, expectedOrder);
+        expectResultsFromQuery(searchRequest,user,response);
+    }
+
+    public void expectResultsStartingWithOneOf(SearchRequest searchRequest, UserModel user, String... expected)
+    {
+        Consumer<SearchResponse> response = searchResponse -> {
+            List<String> expectedFirstElements = List.of(expected);
+            String actualFirstElement = searchResponse.getEntries().stream()
+                .map(SearchNodeModel::getModel)
+                .map(SearchNodeModel::getName)
+                .findFirst()
+                .orElse(null);
+            assertTrue(expectedFirstElements.contains(actualFirstElement), "Unexpected search results - actual first element: " + actualFirstElement + ", expected one of: " + expectedFirstElements + " |");
+        };
+        expectResultsFromQuery(searchRequest,user,response);
+    }
+
     public void expectResultsFromQuery(SearchRequest searchRequest, UserModel user, String... expected)
     {
         Consumer<SearchResponse> assertNames = searchResponse -> assertNames(searchResponse, expected);
@@ -172,6 +192,16 @@ public class SearchQueryService
                 .map(SearchNodeModel::getModel)
                 .map(SearchNodeModel::getName)
                 .collect(Collectors.toList());
+        assertEquals(result, expectedInOrder, "Unexpected search results - got " + result + " expected " + expectedInOrder);
+    }
+
+    private void assertNamesInOrder(SearchResponse actual, String... expectedOrder)
+    {
+        List<String> expectedInOrder = List.of(expectedOrder);
+        List<String> result = actual.getEntries().stream()
+            .map(SearchNodeModel::getModel)
+            .map(SearchNodeModel::getName)
+            .toList();
         assertEquals(result, expectedInOrder, "Unexpected search results - got " + result + " expected " + expectedInOrder);
     }
 

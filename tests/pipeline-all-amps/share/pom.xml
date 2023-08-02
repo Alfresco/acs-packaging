@@ -5,14 +5,15 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>pipeline-all-amps</artifactId>
-        <version>23.1.0-A20-SNAPSHOT</version>
+        <version>23.1.0-A26-SNAPSHOT</version>
     </parent>
 
     <artifactId>alfresco-pipeline-all-amps-share</artifactId>
     <packaging>pom</packaging>
 
     <properties>
-        <skipDockerImage>false</skipDockerImage>
+        <skipDockerImage>${share.skipDockerImage}</skipDockerImage>
+        <docker.quay-expires.value>NEVER</docker.quay-expires.value>
         <base.image>alfresco/alfresco-share-base:${share.image.tag}</base.image>
         <scripts.directory>${project.parent.parent.parent.basedir}/scripts/dev</scripts.directory>
     </properties>
