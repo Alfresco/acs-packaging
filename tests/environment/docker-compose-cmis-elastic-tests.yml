@@ -94,20 +94,7 @@ services:
     volumes:
       - shared-file-store-volume:/tmp/Alfresco/sfs
 
-  share:
-    image: quay.io/alfresco/alfresco-share:${SHARE_TAG}
-    mem_limit: 512m
-    environment:
-      REPO_HOST: "alfresco"
-      REPO_PORT: "8082"
-      JAVA_OPTS: "
-        -Xms500m
-        -Xmx500m
-        -Dalfresco.host=localhost
-        -Dalfresco.port=8082
-        -Dalfresco.context=alfresco
-        -Dalfresco.protocol=http
-        "
+
 
   activemq:
     image: quay.io/alfresco/alfresco-activemq:${ACTIVEMQ_TAG}
@@ -118,11 +105,6 @@ services:
       - 61616:61616 # OpenWire
       - 61613:61613 # STOMP
 
-  digital-workspace:
-    image: quay.io/alfresco/alfresco-digital-workspace:${DIGITAL_WORKSPACE_TAG}
-    mem_limit: 128m
-    environment:
-      BASEPATH: ./
 
   # HTTP proxy to provide HTTP Default port access to services
   proxy:
@@ -158,15 +140,7 @@ services:
       - 9200:9200
       - 9300:9300
 
-  kibana:
-    image: kibana:${KIBANA_TAG}
-    mem_limit: 256m
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-    ports:
-      - 5601:5601
-    depends_on:
-      - elasticsearch
+
 
   live-indexing:
     image: alfresco-es-indexing-jdbc:latest
