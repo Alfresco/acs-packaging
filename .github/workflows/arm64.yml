@@ -78,7 +78,7 @@ jobs:
           # NOTE: some tests are temporarily disabled since the related components don't provide native ARM64 images yet
           python3 -m pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s \
             --ignore=tests/scenarios/test_sync.py \
-            -k "not test_search and not test_rendition_doc_to_png and not test_rendition_doc_to_jpeg and not test_rendition_docx_to_png and not test_rendition_docx_to_jpeg and not test_rendition_pdf_to_png and not test_rendition_pdf_to_jpeg and not test_rendition_odt_to_png and not test_rendition_odt_to_jpeg and not test_rendition_xlsx_to_png and not test_rendition_xlsx_to_jpeg and not test_rendition_xls_to_png and not test_rendition_xls_to_jpeg"
+            -k "not test_rendition_doc_to_png and not test_rendition_doc_to_jpeg and not test_rendition_docx_to_png and not test_rendition_docx_to_jpeg and not test_rendition_pdf_to_png and not test_rendition_pdf_to_jpeg and not test_rendition_odt_to_png and not test_rendition_odt_to_jpeg and not test_rendition_xlsx_to_png and not test_rendition_xlsx_to_jpeg and not test_rendition_xls_to_png and not test_rendition_xls_to_jpeg"
       - name: "Dump all Docker containers logs"
         uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v1.41.0
         if: failure() && (steps.setup-env.outcome == 'failure' || steps.run-tests.outcome == 'failure')
