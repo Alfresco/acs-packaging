@@ -78,7 +78,7 @@ def get_issue_key():
     result = jira.jql(sql_query)
     for issue in result['issues']:
         if issue['fields']['summary'] == get_summary_name():
-            if issue['fields']['status']['name'].upper() in ['TO DO', 'IN PROGRESS', 'BACKLOG', 'OPEN']:
+            if issue['fields']['status']['name'].upper() in ['TO DO', 'IN PROGRESS', 'BACKLOG', 'OPEN', 'REVIEW', 'VERIFY']:
                 logging.info("Issue already created")
                 return issue['key']
     return False
@@ -188,7 +188,7 @@ if __name__ == "__main__":
 
     if not TEST_FAILURE:
         logging.info("Test passed, close issue if there is one")
-        # If tests passed and jira issue in 'TO DO', 'IN PROGRESS', 'BACKLOG', 'OPEN' state, close it
+        # If tests passed and jira issue in 'TO DO', 'IN PROGRESS', 'BACKLOG', 'OPEN', 'REVIEW', 'VERIFY' state, close it
         key = get_issue_key()
         if key:
             logging.info(f"Closing issue {key}")
