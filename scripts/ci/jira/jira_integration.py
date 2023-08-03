@@ -78,7 +78,7 @@ def get_issue_key():
     result = jira.jql(sql_query)
     for issue in result['issues']:
         if issue['fields']['summary'] == get_summary_name():
-            if issue['fields']['status']['name'].upper() in ['TO DO', 'IN PROGRESS', 'BACKLOG', 'OPEN']:
+            if issue['fields']['status']['name'].upper() in ['TO DO', 'IN PROGRESS', 'BACKLOG', 'OPEN', 'REVIEW', 'VERIFY']:
                 logging.info("Issue already created")
                 return issue['key']
     return False
