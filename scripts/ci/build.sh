@@ -136,7 +136,7 @@ mvn dependency:copy -Dartifact=com.microsoft.sqlserver:mssql-jdbc:${MSSQL_JDBC_T
 ORACLE_JDBC_TAG=$(mvn help:evaluate -Dexpression=dependency.ojdbc8.version -q -DforceStdout)
 mvn dependency:copy -Dartifact=com.oracle.database.jdbc:ojdbc8:${ORACLE_JDBC_TAG}:jar -DoutputDirectory=tests/environment/alfresco-with-jdbc-drivers
 
-docker build -t alfresco-repository-databases:latest -f tests/environment/alfresco-with-jdbc-drivers/alfresco.Dockerfile .
+docker build -t alfresco-repository-databases:latest JAVA_OPTS="-Xmx2g" -f tests/environment/alfresco-with-jdbc-drivers/alfresco.Dockerfile .
 
 source tests/environment/.env
 
@@ -147,7 +147,7 @@ then
   echo "$ES_CONNECTOR_TAG"
 fi
 
-docker build -t alfresco-es-indexing-jdbc:latest -f tests/environment/alfresco-with-jdbc-drivers/es-connector.Dockerfile . --build-arg IMAGE_NAME="quay.io/alfresco/alfresco-elasticsearch-live-indexing:${ES_CONNECTOR_TAG%%[[:cntrl:]]}"
+docker build -t alfresco-es-indexing-jdbc:latest JAVA_OPTS="-Xmx512m" -f tests/environment/alfresco-with-jdbc-drivers/es-connector.Dockerfile . --build-arg IMAGE_NAME="quay.io/alfresco/alfresco-elasticsearch-live-indexing:${ES_CONNECTOR_TAG%%[[:cntrl:]]}"
 docker build -t alfresco-es-reindexing-jdbc:latest -f tests/environment/alfresco-with-jdbc-drivers/es-connector.Dockerfile . --build-arg IMAGE_NAME="quay.io/alfresco/alfresco-elasticsearch-reindexing:${ES_CONNECTOR_TAG%%[[:cntrl:]]}"
 
 
