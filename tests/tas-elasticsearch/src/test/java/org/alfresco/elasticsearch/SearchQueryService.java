@@ -88,6 +88,11 @@ public class SearchQueryService
         expectResultsFromQuery(searchRequest, user, searchResponse -> assertAllSearchResults(searchResponse, assertionMethod, failureMessageFunction));
     }
 
+    public void expectTotalHitsFromQuery(SearchRequest searchRequest, UserModel user, int expected)
+    {
+        expectResultsFromQuery(searchRequest, user, searchResponse -> assertTotalHitsResults(searchResponse, expected));
+    }
+
     private void expectResultsFromQuery(SearchRequest searchRequest, org.alfresco.utility.model.UserModel user, Consumer<SearchResponse> assertionMethod)
     {
         try
@@ -184,6 +189,12 @@ public class SearchQueryService
                               .map(failureMessageFunction)
                               .collect(Collectors.joining("\n"));
         assertTrue(result.isEmpty(), "assertAllSearchResults failed with these issues:\n" + result);
+    }
+
+    private void assertTotalHitsResults(SearchResponse actual, int expected)
+    {
+        int totalItems = actual.getPagination().getTotalItems();
+        assertEquals(totalItems, expected, "Unexpected totalItems results - got " + totalItems + " expected " + expected);
     }
 
     public static SearchRequest req(String query)
