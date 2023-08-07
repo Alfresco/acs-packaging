@@ -32,8 +32,8 @@ public class RetryAnalyzer implements IRetryAnalyzer
         {
             Throwable throwable = testResult.getThrowable();
             boolean shouldRetry = true;
-            LOGGER.info("Retry: {}, shouldRetry: {}", retryNumber, shouldRetry, throwable);
             retryNumber++;
+            LOGGER.info("Retry: {}, shouldRetry: {}", retryNumber, shouldRetry, throwable);
             return shouldRetry;
         }
     }
