@@ -41,7 +41,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     public static final String CUSTOM_ALFRESCO_INDEX = "custom-alfresco-index";
     private final static Consumer<CreateContainerCmd> MEDIUM_RAM_LIMIT = cmd -> cmd.getHostConfig()
-            .withMemory((long) 3400*1024*1024)
+            .withMemory((long) 1536*1024*1024)
             .withMemorySwap((long) 3400*1024*1024);
 
     public static Network network;
@@ -346,7 +346,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         return new GenericContainer(getImagesConfig().getTransformCoreAIOImage())
                        .withNetwork(network)
                        .withNetworkAliases("transform-core-aio")
-                       .withEnv("JAVA_OPTS", "-Xms512m -Xmx512m")
+                       .withEnv("JAVA_OPTS", "-Xms1536m -Xmx2048m")
                        .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
                        .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
                        .withExposedPorts(8090)
@@ -359,7 +359,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         return new GenericContainer(getImagesConfig().getTransformRouterImage())
                        .withNetwork(network)
                        .withNetworkAliases("transform-router")
-                       .withEnv("JAVA_OPTS", "-Xms256m -Xmx256m")
+                       .withEnv("JAVA_OPTS", "-Xms256m -Xmx512m")
                        .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
                        .withEnv("CORE_AIO_URL", "http://transform-core-aio:8090")
                        .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
