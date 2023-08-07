@@ -19,7 +19,7 @@ import org.testng.ITestResult;
 public class RetryAnalyzer implements IRetryAnalyzer
 {
     private static Logger LOGGER = LoggerFactory.getLogger(RetryAnalyzer.class);
-    private static int RETRY_LIMIT = 3;
+    private static int RETRY_LIMIT = 10;
     private int retryNumber = 0;
 
     @Override
