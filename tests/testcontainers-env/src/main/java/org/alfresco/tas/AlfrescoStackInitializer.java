@@ -45,7 +45,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
             .withMemorySwap((long) 3400*1024*1024);
 
     private final static Consumer<CreateContainerCmd> LARGE_RAM_LIMIT = cmd -> cmd.getHostConfig()
-            .withMemory((long) 3600*1024*1024)
+            .withMemory((long) 2600*1024*1024)
             .withMemorySwap((long) 3600*1024*1024);
 
     public static Network network;
