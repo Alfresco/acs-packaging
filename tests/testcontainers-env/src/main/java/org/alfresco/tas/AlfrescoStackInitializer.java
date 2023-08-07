@@ -353,7 +353,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                        .withEnv("JAVA_OPTS", "-Xms1536m -Xmx2048m")
                        .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
                        .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
-                       .withCreateContainerCmdModifier(LARGE_RAM_LIMIT)
+                       .withCreateContainerCmdModifier(MEDIUM_RAM_LIMIT)
                        .withExposedPorts(8090)
                        .waitingFor(Wait.forListeningPort())
                        .withStartupTimeout(Duration.ofMinutes(2));
