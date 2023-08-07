@@ -27,13 +27,13 @@ public class RetryAnalyzer implements IRetryAnalyzer
         retryNumber++;
         if (retryNumber == RETRY_LIMIT)
         {
-            LOGGER.info("Retry: {}, shouldRetry: {}", retryNumber, shouldRetry, throwable);
             return false;
         }
-        else
-        {
+        else {
+            Throwable throwable = testResult.getThrowable();
+            boolean shouldRetry = true;
             LOGGER.info("Retry: {}, shouldRetry: {}", retryNumber, shouldRetry, throwable);
-            return true;
+            return shouldRetry;
         }
     }
 }
