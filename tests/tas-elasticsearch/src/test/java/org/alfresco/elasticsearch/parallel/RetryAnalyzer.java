@@ -27,14 +27,13 @@ public class RetryAnalyzer implements IRetryAnalyzer
         retryNumber++;
         if (retryNumber == RETRY_LIMIT)
         {
+            LOGGER.info("Retry: {}, shouldRetry: {}", retryNumber, shouldRetry, throwable);
             return false;
         }
-        Throwable throwable = testResult.getThrowable();
-        boolean shouldRetry = throwable != null
-                                && (throwable instanceof IllegalStateException
-                                    && throwable.getMessage().contains("connection still allocated"))
-                                || (throwable instanceof ConcurrentModificationException);
-        LOGGER.info("Retry: {}, shouldRetry: {}", retryNumber, shouldRetry, throwable);
-        return shouldRetry;
+        else
+        {
+            LOGGER.info("Retry: {}, shouldRetry: {}", retryNumber, shouldRetry, throwable);
+            return true;
+        }
     }
 }
