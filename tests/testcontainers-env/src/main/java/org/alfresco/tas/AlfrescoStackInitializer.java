@@ -103,11 +103,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         startOrFail(transformCore, transformRouter);
 
         // We don't want Kibana to run on our CI, but it can be useful when investigating issues locally.
-        if (getSystemProperty("kibana", "false").equals("true"))
-        {
-            dashboardsContainer = createDashboardsContainer();
-            startOrFail(dashboardsContainer);
-        }
+
 
         liveIndexer = createLiveIndexingContainer();
 
