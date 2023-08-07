@@ -24,7 +24,6 @@ public class RetryAnalyzer implements IRetryAnalyzer
 
     @Override
     public boolean retry(ITestResult testResult) {
-        retryNumber++;
         if (retryNumber == RETRY_LIMIT)
         {
             return false;
@@ -34,6 +33,7 @@ public class RetryAnalyzer implements IRetryAnalyzer
             Throwable throwable = testResult.getThrowable();
             boolean shouldRetry = true;
             LOGGER.info("Retry: {}, shouldRetry: {}", retryNumber, shouldRetry, throwable);
+            retryNumber++;
             return shouldRetry;
         }
     }
