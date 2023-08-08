@@ -2,6 +2,7 @@ package org.alfresco.elasticsearch.reindexing;
 
 import static org.alfresco.elasticsearch.SearchQueryService.req;
 
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -38,7 +39,9 @@ import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 @ContextConfiguration (locations = "classpath:alfresco-elasticsearch-context.xml",
@@ -77,6 +80,20 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
     private UserModel testUser;
     private UserModel siteCreator;
     private FolderModel testFolder;
+
+    @AfterMethod(alwaysRun = true)
+    @Override
+    protected void springTestContextAfterTestMethod(Method testMethod) throws Exception {
+        super.springTestContextAfterTestMethod(testMethod);
+        super.springTestContextAfterTestClass();
+    }
+
+    @BeforeMethod(alwaysRun = true)
+    @Override
+    protected void springTestContextBeforeTestMethod(Method testMethod) throws Exception {
+        super.springTestContextBeforeTestClass();
+        super.springTestContextBeforeTestMethod(testMethod);
+    }
 
     @BeforeClass (alwaysRun = true)
     public void dataPreparation()
