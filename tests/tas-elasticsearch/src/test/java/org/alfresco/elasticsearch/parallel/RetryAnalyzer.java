@@ -18,12 +18,13 @@ import org.testng.ITestResult;
  */
 public class RetryAnalyzer implements IRetryAnalyzer
 {
-    private static Logger LOGGER = LoggerFactory.getLogger(RetryAnalyzer.class);
-    private static int RETRY_LIMIT = 10;
+    private static final Logger LOGGER = LoggerFactory.getLogger(RetryAnalyzer.class);
+    private static final int RETRY_LIMIT = 3;
     private int retryNumber = 0;
 
     @Override
     public boolean retry(ITestResult testResult) {
+        retryNumber++;
         if (retryNumber == RETRY_LIMIT)
         {
             return false;
@@ -31,8 +32,7 @@ public class RetryAnalyzer implements IRetryAnalyzer
         else
         {
             Throwable throwable = testResult.getThrowable();
-            boolean shouldRetry = true;
-            retryNumber++;
+            boolean shouldRetry = throwable instanceof AssertionError;
             LOGGER.info("Retry: {}, shouldRetry: {}", retryNumber, shouldRetry, throwable);
             return shouldRetry;
         }
