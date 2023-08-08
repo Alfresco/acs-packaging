@@ -31,14 +31,6 @@ public class RetryAnalyzer implements IRetryAnalyzer
         }
         else
         {
-            try
-            {
-                Thread.sleep(1000);
-            }
-            catch (InterruptedException ex)
-            {
-                LOGGER.info(ex.getMessage());
-            }
             Throwable throwable = testResult.getThrowable();
             boolean shouldRetry = throwable != null
                     && (throwable instanceof IllegalStateException
