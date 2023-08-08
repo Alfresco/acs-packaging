@@ -44,7 +44,8 @@ public class RetryAnalyzer implements IRetryAnalyzer
                     && (throwable instanceof IllegalStateException
                     && throwable.getMessage().contains("connection still allocated"))
                     || (throwable instanceof ConcurrentModificationException)
-                    || (throwable instanceof AssertionError);
+                    || (throwable instanceof AssertionError
+                    && throwable.getMessage().contains("Maximum retry period reached"));
             LOGGER.info("Retry: {}, shouldRetry: {}", retryNumber, shouldRetry, throwable);
             return shouldRetry;
         }
