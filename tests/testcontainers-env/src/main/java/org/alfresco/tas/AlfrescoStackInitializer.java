@@ -359,7 +359,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         return new GenericContainer(getImagesConfig().getTransformRouterImage())
                        .withNetwork(network)
                        .withNetworkAliases("transform-router")
-                       .withEnv("JAVA_OPTS", "-Xms256m -Xmx256m")
+                       .withEnv("JAVA_OPTS", "-Xms256m -Xmx512m")
                        .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
                        .withEnv("CORE_AIO_URL", "http://transform-core-aio:8090")
                        .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
