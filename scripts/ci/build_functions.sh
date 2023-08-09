@@ -145,6 +145,9 @@ function pullUpstreamTagAndBuildDockerImage() {
   pushd "$(dirname "${BASH_SOURCE[0]}")/../../../"
 
   cd "$(basename "${UPSTREAM_REPO%.git}")"
+  
+  local SHARE_ENT_DEPENDENCY_VERSION="$(retrievePomProperty "dependency.alfresco-enterprise-repo.version")"
+  pullUpstreamTag "github.com/Alfresco/alfresco-enterprise-repo.git" "${SHARE_ENT_DEPENDENCY_VERSION}"
 
   mvn -B -ntp -V clean package -DskipTests -Dmaven.javadoc.skip=true "-Dimage.tag=${TAG}" ${EXTRA_BUILD_ARGUMENTS}
 
