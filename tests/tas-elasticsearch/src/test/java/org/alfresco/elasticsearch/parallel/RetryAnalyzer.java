@@ -28,7 +28,7 @@ public class RetryAnalyzer implements IRetryAnalyzer
         Throwable throwable = testResult.getThrowable();
         if (retryNumber == RETRY_LIMIT)
         {
-            LOGGER.info("Retry: {}, shouldRetry: {}", retryNumber, false, throwable);
+            LOGGER.info("Retry limit reached: {}, shouldRetry: {}", retryNumber, false, throwable);
             return false;
         }
         else
