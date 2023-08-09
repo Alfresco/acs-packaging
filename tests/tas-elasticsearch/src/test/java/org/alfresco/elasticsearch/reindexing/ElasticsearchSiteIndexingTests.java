@@ -79,6 +79,11 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
     private FolderModel testFolder;
     private SiteModel testSite1;
     private SiteModel testSite2;
+    private FileModel fileNotInSite;
+    private FileModel file1;
+    private FileModel file2;
+    private FileModel file3;
+    private FileModel file4;
 
     @BeforeClass (alwaysRun = true)
     public void dataPreparation()
@@ -116,6 +121,31 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
             Step.STEP("Delete site2 with id of:" + testSite2.getId());
             deleteSite(testSite2.getId());
         }
+        if (fileNotInSite != null)
+        {
+            Step.STEP("Delete file:" + fileNotInSite);
+            deleteFile(fileNotInSite);
+        }
+        if (file1 != null)
+        {
+            Step.STEP("Delete file:" + file1);
+            deleteFile(file1);
+        }
+        if (file2 != null)
+        {
+            Step.STEP("Delete file:" + file2);
+            deleteFile(file2);
+        }
+        if (file3 != null)
+        {
+            Step.STEP("Delete file:" + file3);
+            deleteFile(file3);
+        }
+        if (file4 != null)
+        {
+            Step.STEP("Delete file:" + file4);
+            deleteFile(file4);
+        }
 
         Step.STEP("Site creation use cases");
 
@@ -124,7 +154,7 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
         assertSiteQueryResult(EVERYTHING, "AND", FILE_CONTENT_CONDITION, List.of());
 
         // Create a file with the given filename prefix, outside any site
-        FileModel fileNotInSite = new FileModel(unique(FILENAME_PREFIX) + ".txt", FileType.TEXT_PLAIN, "Content for fileNotInSite");
+        fileNotInSite = new FileModel(unique(FILENAME_PREFIX) + ".txt", FileType.TEXT_PLAIN, "Content for fileNotInSite");
         fileNotInSite = dataContent
                 .usingAdmin()
                 .usingResource(testFolder)
@@ -145,13 +175,13 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
         assertSiteQueryResult(EVERYTHING, "AND", FILE_CONTENT_CONDITION, List.of(fileNotInSite));
 
         // Create a file in public site - expect one file plus the document library.
-        FileModel file1 = createContentInSite(testSite1, FILENAME_PREFIX + "test1");
+        file1 = createContentInSite(testSite1, FILENAME_PREFIX + "test1");
         assertSiteQueryResult(testSite1.getId(), List.of(DOCUMENT_LIBRARY, file1));
         assertSiteQueryResult(ALL_SITES, List.of(DOCUMENT_LIBRARY, file1));
         assertSiteQueryResult(EVERYTHING, "AND", FILE_CONTENT_CONDITION, List.of(fileNotInSite, file1));
 
         // Create another file in public site - expect two files plus the document library.
-        FileModel file2 = createContentInSite(testSite1, FILENAME_PREFIX + "test2");
+        file2 = createContentInSite(testSite1, FILENAME_PREFIX + "test2");
         assertSiteQueryResult(testSite1.getId(), List.of(DOCUMENT_LIBRARY, file1, file2));
         assertSiteQueryResult(ALL_SITES, List.of(DOCUMENT_LIBRARY, file1, file2));
         assertSiteQueryResult(EVERYTHING, "AND", FILE_CONTENT_CONDITION, List.of(fileNotInSite, file1, file2));
@@ -164,14 +194,14 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
         assertSiteQueryResult(EVERYTHING, "AND", FILE_CONTENT_CONDITION, List.of(fileNotInSite, file1, file2));
 
         // Create a file in second public site - expect one file plus the document library.
-        FileModel file3 = createContentInSite(testSite2, FILENAME_PREFIX + "test3");
+        file3 = createContentInSite(testSite2, FILENAME_PREFIX + "test3");
         assertSiteQueryResult(testSite2.getId(), List.of(DOCUMENT_LIBRARY, file3));
         assertSiteQueryResult(testSite1.getId(), List.of(DOCUMENT_LIBRARY, file1, file2));
         assertSiteQueryResult(ALL_SITES, List.of(DOCUMENT_LIBRARY, file1, file2, file3));
         assertSiteQueryResult(EVERYTHING, "AND", FILE_CONTENT_CONDITION, List.of(fileNotInSite, file1, file2, file3));
 
         // Create another file in second public site - expect two files plus the document library.
-        FileModel file4 = createContentInSite(testSite2, FILENAME_PREFIX + "test4");
+        file4 = createContentInSite(testSite2, FILENAME_PREFIX + "test4");
         assertSiteQueryResult(testSite2.getId(), List.of(DOCUMENT_LIBRARY, file3, file4));
         assertSiteQueryResult(testSite1.getId(), List.of(DOCUMENT_LIBRARY, file1, file2));
         assertSiteQueryResult(ALL_SITES, List.of(DOCUMENT_LIBRARY, file1, file2, file3, file4));
