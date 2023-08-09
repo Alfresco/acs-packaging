@@ -77,6 +77,8 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
     private UserModel testUser;
     private UserModel siteCreator;
     private FolderModel testFolder;
+    private SiteModel testSite1;
+    private SiteModel testSite2;
 
     @BeforeClass (alwaysRun = true)
     public void dataPreparation()
@@ -103,6 +105,18 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
         // Remove the automatically created Sample Site
         deleteSite(SAMPLE_SITE_ID);
 
+        //Check if sites exist when previous run failed
+        if (testSite1 != null)
+        {
+            Step.STEP("Delete site1 with id of:" + testSite1.getId());
+            deleteSite(testSite1.getId());
+        }
+        if (testSite2 != null)
+        {
+            Step.STEP("Delete site2 with id of:" + testSite2.getId());
+            deleteSite(testSite2.getId());
+        }
+
         Step.STEP("Site creation use cases");
 
         // Check there are no files within or without a site, that have the given filename prefix
@@ -125,7 +139,7 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
         assertSiteQueryResult(unique("NoSuchSite"), List.of());
 
         // Create one empty public site - expect no results other than document library
-        SiteModel testSite1 = createPublicSite();
+        testSite1 = createPublicSite();
         assertSiteQueryResult(testSite1.getId(), List.of(DOCUMENT_LIBRARY));
         assertSiteQueryResult(ALL_SITES, List.of(DOCUMENT_LIBRARY));
         assertSiteQueryResult(EVERYTHING, "AND", FILE_CONTENT_CONDITION, List.of(fileNotInSite));
@@ -143,7 +157,7 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
         assertSiteQueryResult(EVERYTHING, "AND", FILE_CONTENT_CONDITION, List.of(fileNotInSite, file1, file2));
 
         // Create a second public site, empty - expect no results other than document library
-        SiteModel testSite2 = createPublicSite();
+        testSite2 = createPublicSite();
         assertSiteQueryResult(testSite2.getId(), List.of(DOCUMENT_LIBRARY));
         assertSiteQueryResult(testSite1.getId(), List.of(DOCUMENT_LIBRARY, file1, file2));
         assertSiteQueryResult(ALL_SITES, List.of(DOCUMENT_LIBRARY, file1, file2));
