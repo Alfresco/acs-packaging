@@ -86,6 +86,7 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
     protected void springTestContextAfterTestMethod(Method testMethod) throws Exception {
         super.springTestContextAfterTestMethod(testMethod);
         super.springTestContextAfterTestClass();
+        Step.STEP("Site creation use cases");
     }
 
     @BeforeMethod(alwaysRun = true)

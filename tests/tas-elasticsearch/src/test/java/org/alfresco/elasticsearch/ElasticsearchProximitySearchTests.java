@@ -18,6 +18,7 @@ import org.alfresco.utility.model.FileType;
 import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
+import org.alfresco.utility.report.log.Step;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,15 +62,20 @@ public class ElasticsearchProximitySearchTests extends AbstractTestNGSpringConte
     @AfterMethod(alwaysRun = true)
     @Override
     protected void springTestContextAfterTestMethod(Method testMethod) throws Exception {
-        super.springTestContextAfterTestMethod(testMethod);
+        logger.info("Override after method");
+        Step.STEP("Override after method");
+//        super.springTestContextAfterTestMethod(testMethod);
         super.springTestContextAfterTestClass();
     }
 
     @BeforeMethod(alwaysRun = true)
     @Override
     protected void springTestContextBeforeTestMethod(Method testMethod) throws Exception {
+        logger.info("Override before method");
+        Step.STEP("Override before method");
+        dataPreparation();
         super.springTestContextBeforeTestClass();
-        super.springTestContextBeforeTestMethod(testMethod);
+//        super.springTestContextBeforeTestMethod(testMethod);
     }
 
     @BeforeClass (alwaysRun = true)
