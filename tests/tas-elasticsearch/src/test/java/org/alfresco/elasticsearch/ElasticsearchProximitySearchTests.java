@@ -4,7 +4,6 @@ import static java.lang.String.format;
 
 import static org.alfresco.elasticsearch.SearchQueryService.req;
 
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,15 +17,12 @@ import org.alfresco.utility.model.FileType;
 import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
-import org.alfresco.utility.report.log.Step;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 @ContextConfiguration (locations = "classpath:alfresco-elasticsearch-context.xml",
@@ -58,25 +54,6 @@ public class ElasticsearchProximitySearchTests extends AbstractTestNGSpringConte
     private String file_NameAB_ContentABC;
     private String file_NameABC_ContentAB;
     private String file_NameABCD_ContentA;
-
-    @AfterMethod(alwaysRun = true)
-    @Override
-    protected void springTestContextAfterTestMethod(Method testMethod) throws Exception {
-        logger.info("Override after method");
-        Step.STEP("Override after method");
-//        super.springTestContextAfterTestMethod(testMethod);
-        super.springTestContextAfterTestClass();
-    }
-
-    @BeforeMethod(alwaysRun = true)
-    @Override
-    protected void springTestContextBeforeTestMethod(Method testMethod) throws Exception {
-        logger.info("Override before method");
-        Step.STEP("Override before method");
-        dataPreparation();
-        super.springTestContextBeforeTestClass();
-//        super.springTestContextBeforeTestMethod(testMethod);
-    }
 
     @BeforeClass (alwaysRun = true)
     public void dataPreparation()
