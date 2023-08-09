@@ -25,13 +25,14 @@ public class RetryAnalyzer implements IRetryAnalyzer
     @Override
     public boolean retry(ITestResult testResult) {
         retryNumber++;
+        Throwable throwable = testResult.getThrowable();
         if (retryNumber == RETRY_LIMIT)
         {
+            LOGGER.info("Retry: {}, shouldRetry: {}", retryNumber, false, throwable);
             return false;
         }
         else
         {
-            Throwable throwable = testResult.getThrowable();
             boolean shouldRetry = throwable != null
                     && (throwable instanceof IllegalStateException
                     && throwable.getMessage().contains("connection still allocated"))
