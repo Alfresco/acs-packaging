@@ -115,9 +115,16 @@ if [[ "${SHARE_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] ; then
   pullAndBuildSameBranchOnUpstream "${SHARE_UPSTREAM_REPO}" "-P$BUILD_PROFILE -Pags -Dlicense.failOnNotUptodateHeader=true -Ddocker.quay-expires.value=NEVER ${REPO_IMAGE} -Ddependency.alfresco-community-repo.version=${COM_DEPENDENCY_VERSION} -Ddependency.alfresco-enterprise-repo.version=${ENT_DEPENDENCY_VERSION}"
 else
   pullUpstreamTag "${SHARE_UPSTREAM_REPO}" "${SHARE_DEPENDENCY_VERSION}"
-  local SHARE_ENT_DEPENDENCY_VERSION="$(retrievePomProperty "dependency.alfresco-enterprise-repo.version" "${SHARE_UPSTREAM_REPO}")"
-  pullUpstreamTag "${ENT_UPSTREAM_REPO}" "${SHARE_ENT_DEPENDENCY_VERSION}"
-  buildUpstreamTag "${ENT_UPSTREAM_REPO}" "${SHARE_ENT_DEPENDENCY_VERSION}" "-P$BUILD_PROFILE -Pags -Pall-tas-tests -Dlicense.failOnNotUptodateHeader=true"
+
+  docker images
+
+  SHARE_ENT_DEPENDENCY_VERSION="$(retrievePomProperty "dependency.alfresco-enterprise-repo.version" "${SHARE_UPSTREAM_REPO}")"
+  git clone -b "${SHARE_ENT_DEPENDENCY_VERSION}" --depth=1 "https://${GIT_USERNAME}:${GIT_PASSWORD}@${ENT_UPSTREAM_REPO}" /tmp/entrepo
+  mvn -f /tmp/entrepo/pom.xml -B -ntp -V clean package -DskipTests -Dmaven.javadoc.skip=true "-Dimage.tag=${SHARE_ENT_DEPENDENCY_VERSION}" "-P$BUILD_PROFILE" -Pags -Pall-tas-tests -Dlicense.failOnNotUptodateHeader=true
+
+  docker images
+
+  buildUpstreamTag "${SHARE_UPSTREAM_REPO}" "${SHARE_DEPENDENCY_VERSION}" "-P$BUILD_PROFILE -Pags -Dlicense.failOnNotUptodateHeader=true -Ddocker.quay-expires.value=NEVER"
 
 #  pullUpstreamTagAndBuildDockerImage "${SHARE_UPSTREAM_REPO}" "${SHARE_DEPENDENCY_VERSION}" "-P$BUILD_PROFILE -Pags -Dlicense.failOnNotUptodateHeader=true -Ddocker.quay-expires.value=NEVER -Ddependency.alfresco-community-repo.version=${COM_DEPENDENCY_VERSION} -Ddependency.alfresco-enterprise-repo.version=${ENT_DEPENDENCY_VERSION}"
 fi
