@@ -4,17 +4,17 @@
     <artifactId>acs-packaging</artifactId>
     <packaging>pom</packaging>
     <name>Alfresco Content Services Packaging</name>
-    <version>23.1.0-A24-SNAPSHOT</version>
+    <version>23.1.0-A28-SNAPSHOT</version>
 
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-enterprise-repo</artifactId>
         <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
-        <version>23.1.0.163-SNAPSHOT</version>
+        <version>23.1.0.170-SNAPSHOT</version>
     </parent>
 
     <properties>
-        <dependency.alfresco-enterprise-repo.version>23.1.0.163-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
+        <dependency.alfresco-enterprise-repo.version>23.1.0.170-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
         <dependency.alfresco-enterprise-share.version>23.1.0.144-SNAPSHOT</dependency.alfresco-enterprise-share.version>
 
         <alfresco.rm-enterprise-rest-api-explorer.version>3.0.2</alfresco.rm-enterprise-rest-api-explorer.version>
@@ -23,9 +23,9 @@
         <alfresco.azure-connector.version>3.3.0-A4</alfresco.azure-connector.version>
         <alfresco.salesforce-connector.version>2.4.1</alfresco.salesforce-connector.version>
         <alfresco.outlook.version>2.9.0</alfresco.outlook.version>
-        <alfresco.transformation-engine.version>4.0.0</alfresco.transformation-engine.version>
-        <alfresco.desktop-sync.version>3.10.0</alfresco.desktop-sync.version>
-        <alfresco.ais.version>2.0.0</alfresco.ais.version>
+        <alfresco.transformation-engine.version>4.0.1-A2</alfresco.transformation-engine.version>
+        <alfresco.desktop-sync.version>4.0.0-M10</alfresco.desktop-sync.version>
+        <alfresco.ais.version>2.0.1-A3</alfresco.ais.version>
 
         <acs.version>${acs.version.major}.${acs.version.minor}.${acs.version.revision}${acs.version.label}</acs.version>
         <repo.image.tag>${dependency.alfresco-enterprise-repo.version}</repo.image.tag>

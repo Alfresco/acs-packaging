@@ -35,7 +35,7 @@ env:
   ALF_LICENCE_S3_PATH: s3://acs-license/acs/alf231-allenabled.lic
   ALF_LICENCE_LOCAL_PATH: /tmp/licence.lic
   PYTHON_VERSION: 3.7.15
-  DTAS_VERSION: v1.1
+  DTAS_VERSION: v1.2.2
 
 jobs:
   veracode:
@@ -68,7 +68,7 @@ jobs:
       !contains(github.event.head_commit.message, '[skip pmd]') &&
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
-      - uses: Alfresco/ya-pmd-scan@v1.0.0
+      - uses: Alfresco/ya-pmd-scan@v2.0.0
         with:
           fail-on-new-issues: "false"
 

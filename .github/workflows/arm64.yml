@@ -12,7 +12,7 @@ env:
   TAS_ENVIRONMENT: ./tests/environment
   TAS_SCRIPTS: ../alfresco-community-repo/packaging/tests/scripts
   AWS_REGION: eu-west-1
-  DTAS_VERSION: v1.1.3
+  DTAS_VERSION: v1.2.2
 
 jobs:
   arm64_health_check:
@@ -68,10 +68,8 @@ jobs:
           ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/" 180
           docker ps
           curl -v --user admin.pipeline@alfresco.com:admin http://localhost:8080/alfresco/api/discovery
-      - name: "Dump all Docker containers logs"
-        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v1.41.0
-        if: failure() && steps.setup-env.outcome == 'failure'
       - name: "Run tests"
+        id: run-tests
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
           # Make necessary test files available
@@ -80,8 +78,10 @@ jobs:
           # NOTE: some tests are temporarily disabled since the related components don't provide native ARM64 images yet
           python3 -m pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s \
             --ignore=tests/scenarios/test_sync.py \
-            --ignore=tests/scenarios/test_transformation.py \
-            -k "not test_search"
+            -k "not test_rendition_doc_to_png and not test_rendition_doc_to_jpeg and not test_rendition_docx_to_png and not test_rendition_docx_to_jpeg and not test_rendition_pdf_to_png and not test_rendition_pdf_to_jpeg and not test_rendition_odt_to_png and not test_rendition_odt_to_jpeg and not test_rendition_xlsx_to_png and not test_rendition_xlsx_to_jpeg and not test_rendition_xls_to_png and not test_rendition_xls_to_jpeg"
+      - name: "Dump all Docker containers logs"
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v1.41.0
+        if: failure() && (steps.setup-env.outcome == 'failure' || steps.run-tests.outcome == 'failure')
       - name: "Persist test failure flag"
         id: persist_test_failure_flag
         run: echo "test_failure=true" >> "$GITHUB_OUTPUT"
