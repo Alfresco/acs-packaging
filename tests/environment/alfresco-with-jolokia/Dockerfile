@@ -1,12 +1,14 @@
 # BUILD STAGE
-FROM debian:11-slim AS JOLOKIABUILDER
+FROM alfresco/alfresco-content-repository:latest AS JOLOKIABUILDER
 
 ARG JOLOKIA_VER=1.6.2
+ARG TOMCAT_DIR=/usr/local/tomcat
 
-RUN DEBIAN_FRONTEND=noninteractive; \
-    apt-get update -qqy && apt-get -yqq install curl unzip && \
+USER root
+RUN yum install -y curl unzip && \
     mkdir -p /build/jolokia && \
-    curl -o /build/jolokia.war https://repo1.maven.org/maven2/org/jolokia/jolokia-war-unsecured/${JOLOKIA_VER}/jolokia-war-unsecured-${JOLOKIA_VER}.war && \
+    curl -o /build/jolokia-jee.war https://repo1.maven.org/maven2/org/jolokia/jolokia-war-unsecured/${JOLOKIA_VER}/jolokia-war-unsecured-${JOLOKIA_VER}.war && \
+    ${TOMCAT_DIR}/bin/migrate.sh /build/jolokia-jee.war /build/jolokia.war && \
     unzip -q /build/jolokia.war -d /build/jolokia && chmod -R g+r,g-w,o= /build
 
 # ACTUAL IMAGE

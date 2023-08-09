@@ -59,6 +59,7 @@ services:
         -Dconnector.az.store2.objectNameSuffix=
         -Dconnector.az.store2.storeProtocol=azb
         -Dcentera.url=168.159.214.26
+        -Ddsync.messaging.events.repo.node.target.endpoint=jms:topic:VirtualTopic.alfresco.repo.events.nodes?jmsMessageType=Text
         "
     ports:
       - 8082:8080
