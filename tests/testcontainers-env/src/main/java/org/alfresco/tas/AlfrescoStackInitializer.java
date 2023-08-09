@@ -41,7 +41,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     public static final String CUSTOM_ALFRESCO_INDEX = "custom-alfresco-index";
     private final static Consumer<CreateContainerCmd> MEDIUM_RAM_LIMIT = cmd -> cmd.getHostConfig()
-            .withMemory((long) 1536*1024*1024)
+            .withMemory((long) 3400*1024*1024)
             .withMemorySwap((long) 3400*1024*1024);
 
     public static Network network;
