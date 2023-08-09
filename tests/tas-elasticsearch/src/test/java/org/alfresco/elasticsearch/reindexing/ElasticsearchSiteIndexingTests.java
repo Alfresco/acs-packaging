@@ -84,16 +84,20 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
     @AfterMethod(alwaysRun = true)
     @Override
     protected void springTestContextAfterTestMethod(Method testMethod) throws Exception {
-        super.springTestContextAfterTestMethod(testMethod);
+        logger.info("Override after method");
+        Step.STEP("Override after method");
+//        super.springTestContextAfterTestMethod(testMethod);
         super.springTestContextAfterTestClass();
-        Step.STEP("Site creation use cases");
     }
 
     @BeforeMethod(alwaysRun = true)
     @Override
     protected void springTestContextBeforeTestMethod(Method testMethod) throws Exception {
+        logger.info("Override before method");
+        Step.STEP("Override before method");
+        dataPreparation();
         super.springTestContextBeforeTestClass();
-        super.springTestContextBeforeTestMethod(testMethod);
+//        super.springTestContextBeforeTestMethod(testMethod);
     }
 
     @BeforeClass (alwaysRun = true)
