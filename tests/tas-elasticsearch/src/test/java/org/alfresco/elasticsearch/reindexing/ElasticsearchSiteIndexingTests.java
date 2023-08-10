@@ -110,7 +110,7 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
         // Remove the automatically created Sample Site
         deleteSite(SAMPLE_SITE_ID);
 
-        //Check if sites exist when previous run failed
+        //Check if files and sites exist when previous run failed
         if (fileNotInSite != null)
         {
             Step.STEP("Delete file:" + fileNotInSite);
@@ -138,12 +138,10 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
         }
         if (testSite1 != null)
         {
-            Step.STEP("Delete site1 with id of:" + testSite1.getId());
             deleteSite(testSite1.getId());
         }
         if (testSite2 != null)
         {
-            Step.STEP("Delete site2 with id of:" + testSite2.getId());
             deleteSite(testSite2.getId());
         }
 

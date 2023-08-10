@@ -36,9 +36,9 @@ public class RetryAnalyzer implements IRetryAnalyzer
             boolean shouldRetry = throwable != null
                     && (throwable instanceof IllegalStateException
                     && throwable.getMessage().contains("connection still allocated"))
-                    || (throwable instanceof ConcurrentModificationException)
-                    || (throwable instanceof AssertionError
-                    && throwable.getMessage().contains("Maximum retry period reached"));
+                    || (throwable instanceof ConcurrentModificationException);
+//                    || (throwable instanceof AssertionError
+//                    && throwable.getMessage().contains("Maximum retry period reached"));
             LOGGER.info("Retry: {}, shouldRetry: {}", retryNumber, shouldRetry, throwable);
             return shouldRetry;
         }
