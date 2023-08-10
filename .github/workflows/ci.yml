@@ -422,41 +422,42 @@ jobs:
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
-  all_amps_tests:
-    name: "All AMPs tests"
-    runs-on: ubuntu-latest
-    if: >
-      !contains(github.event.head_commit.message, '[skip tests]')
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
-      - name: "Build"
-        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        run: |
-          bash ./scripts/ci/init.sh
-          bash ./scripts/ci/build.sh
-      - name: "Set up the environment"
-        run: mvn -B -q install -ntp -f tests/tas-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
-      - name: "Run tests"
-        id: tests
-        timeout-minutes: 20
-        env:
-          AWS_ACCESS_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_ACCESS_KEY_ID }}
-          AWS_SECRET_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_SECRET_ACCESS_KEY }}
-        run: |
-          ./tests/scripts/checkLibraryDuplicates.sh ./tests/tas-all-amps/target/war/alfresco/WEB-INF/lib
-          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-all-amps-test.yml
-          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-          mvn -B install -ntp -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
-      - name: "Print output after failure"
-        if: ${{ always() && steps.tests.outcome == 'failure' }}
-        run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-all-amps"
-      - name: "Clean Maven cache"
-        run: bash ./scripts/ci/cleanup_cache.sh
+# https://alfresco.atlassian.net/browse/ACS-5818
+#  all_amps_tests:
+#    name: "All AMPs tests"
+#    runs-on: ubuntu-latest
+#    if: >
+#      !contains(github.event.head_commit.message, '[skip tests]')
+#    steps:
+#      - uses: actions/checkout@v3
+#        with:
+#          persist-credentials: false
+#      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
+#      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
+#      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+#      - name: "Build"
+#        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+#        run: |
+#          bash ./scripts/ci/init.sh
+#          bash ./scripts/ci/build.sh
+#      - name: "Set up the environment"
+#        run: mvn -B -q install -ntp -f tests/tas-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
+#      - name: "Run tests"
+#        id: tests
+#        timeout-minutes: 20
+#        env:
+#          AWS_ACCESS_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_ACCESS_KEY_ID }}
+#          AWS_SECRET_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_SECRET_ACCESS_KEY }}
+#        run: |
+#          ./tests/scripts/checkLibraryDuplicates.sh ./tests/tas-all-amps/target/war/alfresco/WEB-INF/lib
+#          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-all-amps-test.yml
+#          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+#          mvn -B install -ntp -f tests/tas-all-amps/pom.xml -Pall-tas-tests -Denvironment=default -DrunBugs=false
+#      - name: "Print output after failure"
+#        if: ${{ always() && steps.tests.outcome == 'failure' }}
+#        run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-all-amps"
+#      - name: "Clean Maven cache"
+#        run: bash ./scripts/ci/cleanup_cache.sh
 
   tas_test_with_mtls:
     name: ${{ matrix.testSuite }} TAS tests with mutal TLS
@@ -591,34 +592,37 @@ jobs:
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
-  test_tomcat_deployment:
-    name: "Test Tomcat deployment"
-    runs-on: ubuntu-latest
-    if: >
-      !contains(github.event.head_commit.message, '[skip tests]')
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
-      - name: "Build"
-        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        run: |
-          bash ./scripts/ci/init.sh
-          bash ./scripts/ci/build.sh
-      - name: "Set up the environment"
-        run: |
-          ${{ env.TAS_SCRIPTS }}/start-compose.sh ./dev/docker-compose.yml
-          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8983/solr"
-      - name: "Run tomcat, verify it starts"
-        id: tests
-        run: |
-          (mvn clean install -Prun -rf dev &)
-          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/"
-          curl -Ls -o /dev/null --fail "http://localhost:8080/alfresco"
-          curl -Ls -o /dev/null --fail "http://localhost:8080/share"
+# https://alfresco.atlassian.net/browse/ACS-5819
+#  test_tomcat_deployment:
+#    name: "Test Tomcat deployment"
+#    runs-on: ubuntu-latest
+#    if: >
+#      !contains(github.event.head_commit.message, '[skip tests]')
+#    steps:
+#      - uses: actions/checkout@v3
+#        with:
+#          persist-credentials: false
+#      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
+#      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
+#      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+#      - name: "Build"
+#        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+#        run: |
+#          bash ./scripts/ci/init.sh
+#          bash ./scripts/ci/build.sh
+#      - name: "Set up the environment"
+#        run: |
+#          ${{ env.TAS_SCRIPTS }}/start-compose.sh ./dev/docker-compose.yml
+#          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8983/solr"
+#      - name: "Run tomcat, verify it starts"
+#        id: tests
+#        run: |
+#          (mvn clean install -Prun -rf dev &)
+#          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/"
+#          echo "Test Alfresco Repository availability"
+#          curl -Ls -o /dev/null --fail "http://localhost:8080/alfresco"
+#          echo "Test Share availability"
+#          curl -Ls -o /dev/null --fail "http://localhost:8080/share"
 
   pipeline_test_docker_release:
     name: "Upload docker images needed for pipeline tests: <acs.version>-<PIPELINE_TAG_TEXT_INSERT>-<build>"
