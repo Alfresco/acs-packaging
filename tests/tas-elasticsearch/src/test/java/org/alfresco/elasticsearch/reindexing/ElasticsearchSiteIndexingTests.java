@@ -5,8 +5,10 @@ import static org.alfresco.elasticsearch.SearchQueryService.req;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.alfresco.dataprep.AlfrescoHttpClientFactory;
 import org.alfresco.dataprep.CMISUtil;
@@ -110,40 +112,14 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
         // Remove the automatically created Sample Site
         deleteSite(SAMPLE_SITE_ID);
 
-        //Check if files and sites exist when previous run failed
-        if (fileNotInSite != null)
-        {
-            Step.STEP("Delete file:" + fileNotInSite);
-            deleteFile(fileNotInSite);
-        }
-        if (file1 != null)
-        {
-            Step.STEP("Delete file:" + file1);
-            deleteFile(file1);
-        }
-        if (file2 != null)
-        {
-            Step.STEP("Delete file:" + file2);
-            deleteFile(file2);
-        }
-        if (file3 != null)
-        {
-            Step.STEP("Delete file:" + file3);
-            deleteFile(file3);
-        }
-        if (file4 != null)
-        {
-            Step.STEP("Delete file:" + file4);
-            deleteFile(file4);
-        }
-        if (testSite1 != null)
-        {
-            deleteSite(testSite1.getId());
-        }
-        if (testSite2 != null)
-        {
-            deleteSite(testSite2.getId());
-        }
+        //Sometimes this test may fail, so if previous data exists it must be deleted before the next run
+        Stream.of(fileNotInSite, file1, file2, file3, file4)
+            .filter(Objects::nonNull)
+            .forEach(this::deleteFile);
+        Stream.of(testSite1, testSite2)
+           .filter(Objects::nonNull)
+           .map(SiteModel::getId)
+           .forEach(this::deleteSite);
 
         Step.STEP("Site creation use cases");
 
