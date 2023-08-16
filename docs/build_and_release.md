@@ -1,6 +1,6 @@
 # Build
-The `acs-packaging` project uses _Travis CI_. \
-The `.travis.yml` config file can be found in the root of the repository.
+The `acs-packaging` project uses _GitHub Actions_. \
+The workflow files can be found under path `.github/workflows`.
 
 
 ## Stages
@@ -8,7 +8,7 @@ Although a little unusual, builds branches other than `master` and `release/...`
 cloning and building branches with the same name in upstream projects: `alfresco-community-repo` and
 `alfresco-enterprise-repo`. This is done so that development can take place in parallel between projects
 without having to do development releases to link them together. In fact, you don't even have to wait for
-the upstream Travis build to complete. You just need to make sure the parent poms reference
+tthe upstream GitHub Actions build to complete. You just need to make sure the parent poms reference
 each other and the `dependency.alfresco-community-repo.version` and
 `dependency.alfresco-enterprise-repo.version` in the pom.xml files use the same SNAPSHOT values.
 
