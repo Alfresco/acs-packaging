@@ -57,7 +57,8 @@ services:
         -Dsfs.url=https://shared-file-store:8099/
         -Dcsrf.filter.enabled=false
         -Ddsync.service.uris=http://localhost:9090/alfresco
-        -Dhttpclient.config.transformServices.mTLSEnabled=true
+        -Dhttpclient.config.transform.mTLSEnabled=true
+        -Dhttpclient.config.sharedfilestore.mTLSEnabled=true
         -Dhttpclient.config.transform.hostnameVerificationDisabled=${HOSTNAME_VERIFICATION_DISABLED}
         -Dencryption.ssl.keystore.location=/usr/local/tomcat/shared/classes/alfresco/extension/keystore/alfresco.keystore
         -Dencryption.ssl.truststore.location=/usr/local/tomcat/shared/classes/alfresco/extension/keystore/alfresco.truststore
