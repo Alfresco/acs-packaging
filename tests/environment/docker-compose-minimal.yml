@@ -40,7 +40,6 @@ services:
         -Dlegacy.transform.service.enabled=false
         -Dcors.enabled=true
         -Dcors.allowed.origins=http://localhost:4200
-        -Ddsync.messaging.events.repo.node.target.endpoint=jms:topic:VirtualTopic.alfresco.repo.events.nodes?jmsMessageType=Text
         "
     ports:
       - 8082:8080
