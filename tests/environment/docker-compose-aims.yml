@@ -60,7 +60,6 @@ services:
         -Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth
         -Didentity-service.realm=alfresco
         -Didentity-service.resource=alfresco
-        -Ddsync.messaging.events.repo.node.target.endpoint=jms:topic:VirtualTopic.alfresco.repo.events.nodes?jmsMessageType=Text
         "
     ports:
       - 8082:8080
