@@ -102,7 +102,6 @@ class ACSEnv extends BaseACSEnv
                                 "-Dtransform.service.url=http://transform-router:8095 " +
                                 "-Dsfs.url=http://shared-file-store:8099/ " +
                                 "-DlocalTransform.core-aio.url=http://transform-core-aio:8090/ " +
-                                "-Ddsync.messaging.events.repo.node.target.endpoint=jms:topic:VirtualTopic.alfresco.repo.events.nodes?jmsMessageType=Text " +
                                 "-Xmx768m -XshowSettings:vm")
                 .withNetwork(network)
                 .withNetworkAliases("alfresco")
