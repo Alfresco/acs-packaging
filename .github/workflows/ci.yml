@@ -615,7 +615,7 @@ jobs:
       - name: "Run tomcat, verify it starts"
         id: tests
         run: |
-          (mvn clean install -Prun -rf dev &)
+          (mvn -B clean install -Prun -rf dev &)
           curl --retry 60 --retry-max-time 300 --retry-delay 5 --retry-all-errors --fail "http://localhost:8080/alfresco/api/-default-/public/alfresco/versions/1/probes/-ready-"
           echo "Test Alfresco Repository availability"
           curl -Ls -o /dev/null --fail "http://localhost:8080/alfresco"
