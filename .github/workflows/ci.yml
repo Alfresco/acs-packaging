@@ -499,7 +499,7 @@ jobs:
         run: bash ./scripts/ci/cleanup_cache.sh
 
   distribution_zip_content_tests:
-    name: "Distribution Zip content tests"
+    name: "Distribution Zip content tests (Java ${{ matrix.version }})"
     runs-on: ubuntu-latest
     if: >
       !contains(github.event.head_commit.message, '[skip tests]')
