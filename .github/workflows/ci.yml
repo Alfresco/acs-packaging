@@ -51,6 +51,8 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+        with:
+          java-version: 11
       - name: "Init"
         run: bash ./scripts/ci/init.sh
       - uses: Alfresco/alfresco-build-tools/.github/actions/veracode@v1.35.2
@@ -127,6 +129,8 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+        with:
+          java-version: 11
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -175,6 +179,8 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+        with:
+          java-version: 11
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -228,6 +234,8 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+        with:
+          java-version: 11
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -264,6 +272,8 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+        with:
+          java-version: 11
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -348,6 +358,8 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+        with:
+          java-version: 11
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -380,6 +392,8 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+        with:
+          java-version: 11
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -411,6 +425,8 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+        with:
+          java-version: 11
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -466,6 +482,8 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+        with:
+          java-version: 11
       - name: "Generate Keystores and Truststores for Mutual TLS configuration"
         if: ${{ matrix.mtls }}
         run: |
@@ -508,6 +526,8 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+        with:
+          java-version: 11
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -538,6 +558,8 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+        with:
+          java-version: 11
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
