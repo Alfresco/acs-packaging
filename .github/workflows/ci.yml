@@ -579,7 +579,5 @@ jobs:
         run: |
           cd dtas
           pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
-          # Temporarily add Docker logs
-          docker exec $(docker ps | grep pipeline-all-amps-repo | cut -d " " -f 1) ps -aux
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
