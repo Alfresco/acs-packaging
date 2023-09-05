@@ -534,7 +534,7 @@ jobs:
         run: bash ./scripts/ci/cleanup_cache.sh
 
   single_pipeline_image_tests:
-    name: "Single Pipeline image tests (Java ${{ matrix.java-version}})"
+    name: "Single Pipeline image tests (Java ${{ matrix.java-version }})"
     runs-on: ubuntu-latest
     if: >
       github.event_name != 'pull_request' &&
