@@ -411,8 +411,6 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
-        with:
-          java-version: 11
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -499,7 +497,7 @@ jobs:
         run: bash ./scripts/ci/cleanup_cache.sh
 
   distribution_zip_content_tests:
-    name: Distribution Zip content tests (Java ${{ matrix.java-version }})
+    name: "Distribution Zip content tests (Java ${{ matrix.java-version }})"
     runs-on: ubuntu-latest
     if: >
       !contains(github.event.head_commit.message, '[skip tests]')
