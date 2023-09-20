@@ -69,8 +69,6 @@ jobs:
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: Alfresco/ya-pmd-scan@v2.0.0
-        with:
-          fail-on-new-issues: "false"
 
   tas_tests:
     name: ${{ matrix.testSuite }} TAS tests
