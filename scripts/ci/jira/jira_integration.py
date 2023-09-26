@@ -74,7 +74,7 @@ def get_issue_key():
     epic_id = get_epic_id_to_assign(project_id)
     if not epic_id:
         return
-    sql_query = f'project = {project_id} AND "Release Train" = {CURRENT_RELEASE} AND issuetype = "bug"  AND  "parentEpic" = {epic_id}'
+    sql_query = f'project = {project_id} AND "Release Train" = "{CURRENT_RELEASE}" AND issuetype = "bug"  AND  "parentEpic" = {epic_id}'
     result = jira.jql(sql_query)
     for issue in result['issues']:
         if issue['fields']['summary'] == get_summary_name():
@@ -123,7 +123,7 @@ def get_epic_id_to_assign(project_id):
 
     try:
         sql_query = f"""project = {project_id} AND
-        'Release Train' = {CURRENT_RELEASE} AND
+        'Release Train' = '{CURRENT_RELEASE}' AND
         issuetype = 'Epic' AND
         Summary ~ '{CURRENT_RELEASE} % Content Services Maintenance'
         ORDER BY issuekey"""
