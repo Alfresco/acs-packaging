@@ -36,6 +36,8 @@ import org.testng.annotations.Test;
 
 @ContextConfiguration (locations = "classpath:alfresco-elasticsearch-context.xml",
         initializers = AlfrescoStackInitializer.class)
+// These are TestNG tests and the assertions are hidden in searchQueryService.
+@SuppressWarnings({"PMD.JUnit4TestShouldUseTestAnnotation", "PMD.JUnitTestsShouldIncludeAssert"})
 public class ElasticsearchHighlightingTests extends AbstractTestNGSpringContextTests
 {
     static final Logger LOGGER = LoggerFactory.getLogger(ElasticsearchHighlightingTests.class);
