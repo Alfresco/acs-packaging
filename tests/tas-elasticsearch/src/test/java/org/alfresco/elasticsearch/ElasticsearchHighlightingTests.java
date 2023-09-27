@@ -34,10 +34,10 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-@ContextConfiguration (locations = "classpath:alfresco-elasticsearch-context.xml",
+@ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
         initializers = AlfrescoStackInitializer.class)
 // These are TestNG tests and the assertions are hidden in searchQueryService.
-@SuppressWarnings({"PMD.JUnit4TestShouldUseTestAnnotation", "PMD.JUnitTestsShouldIncludeAssert"})
+@SuppressWarnings({ "PMD.JUnit4TestShouldUseTestAnnotation", "PMD.JUnitTestsShouldIncludeAssert" })
 public class ElasticsearchHighlightingTests extends AbstractTestNGSpringContextTests
 {
     static final Logger LOGGER = LoggerFactory.getLogger(ElasticsearchHighlightingTests.class);
@@ -68,7 +68,7 @@ public class ElasticsearchHighlightingTests extends AbstractTestNGSpringContextT
     FileModel fileA;
     FileModel fileB;
 
-    @BeforeClass (alwaysRun = true)
+    @BeforeClass(alwaysRun = true)
     public void dataPreparation()
     {
         serverHealth.assertServerIsOnline();
@@ -92,7 +92,7 @@ public class ElasticsearchHighlightingTests extends AbstractTestNGSpringContextT
         dataUser.usingAdmin().deleteUser(user);
     }
 
-    @Test (groups = { TestGroup.SEARCH })
+    @Test(groups = { TestGroup.SEARCH })
     public void testHighlightsInContent()
     {
         STEP("Search for files mentioning 'dog'");
@@ -104,11 +104,11 @@ public class ElasticsearchHighlightingTests extends AbstractTestNGSpringContextT
         Predicate<SearchNodeModel> assertionMethod = highlightAssert(
                 Map.of(FILE_A, Map.of("cm:content", List.of("The quick brown fox jumps over the lazy <em>dog</em>.")),
                        FILE_B, Map.of("cm:content", List.of("The lazy <em>dog</em> sleeps under the quick brown fox.",
-                                                                "The end of the document mentions the <em>dog</em> again!"))));
+                                                            "The end of the document mentions the <em>dog</em> again!"))));
         searchQueryService.expectAllResultsFromQuery(searchRequest, user, assertionMethod);
     }
 
-    @Test (groups = { TestGroup.SEARCH })
+    @Test(groups = { TestGroup.SEARCH })
     public void testHighlightsInTwoFields()
     {
         STEP("Search for files with 'file' in the name that mention 'middle'");
@@ -119,12 +119,13 @@ public class ElasticsearchHighlightingTests extends AbstractTestNGSpringContextT
         // Configure the expected highlights for each document.
         Predicate<SearchNodeModel> assertionMethod = highlightAssert(
                 Map.of(FILE_B, Map.of("cm:name", List.of("<em>file</em>B.txt"),
-                                   "cm:content", List.of("The <em>middle</em> of the document is quite long:\nLorem ipsum dolor sit amet."))));
+                                      "cm:content", List.of("The <em>middle</em> of the document is quite long:\nLorem ipsum dolor sit amet."))));
         searchQueryService.expectAllResultsFromQuery(searchRequest, user, assertionMethod);
     }
 
     /**
      * Create a predicate that returns true if the highlights for a received document match the given expectation.
+     *
      * @param allExpectedHighlights The expected highlights for all documents keyed by document name and then field name.
      * @return The predicate.
      */
