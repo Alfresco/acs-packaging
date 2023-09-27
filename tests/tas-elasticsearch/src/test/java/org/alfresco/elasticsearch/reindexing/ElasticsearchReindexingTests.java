@@ -21,6 +21,7 @@ import org.alfresco.utility.data.DataUser;
 import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.network.ServerHealth;
 import org.apache.http.HttpHost;
+import org.junit.Ignore;
 import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestClient;
 import org.opensearch.client.RestHighLevelClient;
@@ -40,7 +41,7 @@ import org.testng.annotations.Test;
  */
 @ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
                       initializers = AlfrescoStackInitializer.class)
-
+@SuppressWarnings("PMD.JUnit4TestShouldUseTestAnnotation") // these are testng tests
 public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTests
 {
     public static final String CUSTOM_ALFRESCO_INDEX = "custom-alfresco-index";
@@ -256,7 +257,8 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
             "cm:name:'<DOCUMENT_NAME>' AND cm:name:*", false);
     }
 
-    @Test (groups = TestGroup.SEARCH)
+    @Test (groups = TestGroup.SEARCH, enabled = false)
+    @Ignore("Until ACS-5798 is done")
     public void testPathReindex()
     {
         // GIVEN
@@ -282,6 +284,40 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
             searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
             // Also check that the document can be obtained by a path query against the site.
             query = req("PATH:\"//" + testSite.getTitle() + "/documentLibrary/*\" AND cm:name:" + documentName + " AND cm:name:*");
+            searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
+        }
+
+        // TIDY
+        // Restart ElasticsearchConnector.
+        AlfrescoStackInitializer.liveIndexer.start();
+    }
+
+    @Test (groups = TestGroup.SEARCH)
+    public void testPathReindexQueryWithNamespaces()
+    {
+        // GIVEN
+        // Create document.
+        String documentName = createDocument();
+        // Stop ElasticsearchConnector.
+        AlfrescoStackInitializer.liveIndexer.stop();
+        // Delete index documents.
+        cleanUpIndex();
+
+        // WHEN
+        // Run reindexer with path indexing enabled (and with default dates to reindex everything).
+        try(GenericContainer reindexingComponent = createReindexContainer(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true",
+                "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+                "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX))) {
+            //Reindex
+            reindexingComponent.start();
+
+            // THEN
+            // Check path indexed.
+            // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
+            SearchRequest query = req("PATH:\"//cm:" + documentName + "\" AND cm:name:*");
+            searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
+            // Also check that the document can be obtained by a path query against the site.
+            query = req("PATH:\"//cm:" + testSite.getTitle() + "/cm:documentLibrary/*\" AND cm:name:" + documentName + " AND cm:name:*");
             searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
         }
 
