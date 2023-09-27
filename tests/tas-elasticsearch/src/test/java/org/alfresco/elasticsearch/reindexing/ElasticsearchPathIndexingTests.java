@@ -30,7 +30,7 @@ import org.testng.annotations.Test;
  */
 @ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
                       initializers = AlfrescoStackInitializer.class)
-
+@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert", "PMD.JUnit4TestShouldUseTestAnnotation"}) // these are testng tests and use searchQueryService.expectResultsFromQuery for assertion
 public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextTests
 {
     @Autowired

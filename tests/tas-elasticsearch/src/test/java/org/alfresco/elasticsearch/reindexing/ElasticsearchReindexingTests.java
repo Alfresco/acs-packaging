@@ -41,7 +41,7 @@ import org.testng.annotations.Test;
  */
 @ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
                       initializers = AlfrescoStackInitializer.class)
-
+@SuppressWarnings("PMD.JUnit4TestShouldUseTestAnnotation") // these are testng tests
 public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTests
 {
     public static final String CUSTOM_ALFRESCO_INDEX = "custom-alfresco-index";
