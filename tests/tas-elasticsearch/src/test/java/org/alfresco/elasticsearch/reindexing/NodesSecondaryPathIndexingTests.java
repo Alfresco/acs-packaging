@@ -198,7 +198,7 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
             folderD.getName(),
             folderE.getName(),
             folders(R).getName());
-        STEP("Verify that searching by PATH and folderD will find it's primary and secondary children: folderE and folderR.");
+        STEP("Verify that searching by PATH and folderD will find its primary and secondary children: folderE and folderR.");
         SearchRequest queryPathD = req("PATH:\"//cm:" + folderD.getName() + "//*\"");
         searchQueryService.expectResultsFromQuery(queryPathD, testUser,
             // primary path
@@ -331,7 +331,7 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
             fileInP.getName());
 
         // when
-        STEP("Copy folderG with it's content to folderT.");
+        STEP("Copy folderG with its content to folderT.");
         Folder folderGCopy = folderG.copyTo(folderT);
 
         // then

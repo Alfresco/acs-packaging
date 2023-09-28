@@ -168,12 +168,12 @@ public class NodesSecondaryParentIndexingTests extends NodesSecondaryChildrenRel
         folders(Q).addSecondaryChild(folderD);
         folderD.addSecondaryChild(folders(R));
 
-        STEP("Verify that searching by PARENT and folderQ will find it's secondary child: folderD.");
+        STEP("Verify that searching by PARENT and folderQ will find its secondary child: folderD.");
         SearchRequest queryParentQ = req("PARENT:" + folders(Q).getNodeRef());
         searchQueryService.expectResultsFromQuery(queryParentQ, testUser,
             // secondary child
             folderD.getName());
-        STEP("Verify that searching by PARENT and folderD will find it's primary and secondary children: folderE and folderR.");
+        STEP("Verify that searching by PARENT and folderD will find its primary and secondary children: folderE and folderR.");
         SearchRequest queryParentD = req("PARENT:" + folderD.getNodeRef());
         searchQueryService.expectResultsFromQuery(queryParentD, testUser,
             // primary child
@@ -297,7 +297,7 @@ public class NodesSecondaryParentIndexingTests extends NodesSecondaryChildrenRel
             fileInP.getName());
 
         // when
-        STEP("Copy folderG with it's content to folderT.");
+        STEP("Copy folderG with its content to folderT.");
         Folder folderGCopy = folderG.copyTo(folderT);
 
         // then

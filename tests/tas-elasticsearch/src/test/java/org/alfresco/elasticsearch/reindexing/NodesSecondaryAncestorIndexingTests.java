@@ -191,7 +191,7 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
         folders(Q).addSecondaryChild(folderD);
         folderD.addSecondaryChild(folders(R));
 
-        STEP("Verify that searching by ANCESTOR and folderQ will find it's secondary descendant: folderD, folderE and folderR.");
+        STEP("Verify that searching by ANCESTOR and folderQ will find its secondary descendant: folderD, folderE and folderR.");
         SearchRequest queryAncestorQ = req("ANCESTOR:" + folders(Q).getNodeRef());
         searchQueryService.expectResultsFromQuery(queryAncestorQ, testUser,
             // secondary descendants
@@ -200,7 +200,7 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
             folders(R).getName());
 
         // when
-        STEP("Delete folderD with it's content.");
+        STEP("Delete folderD with its content.");
         folders().delete(folderD);
 
         // then
@@ -231,7 +231,7 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
         Folder folderD = folders(Q).createNestedFolder( "D");
         folderD.addSecondaryChild(folders(P));
 
-        STEP("Verify that searching by ANCESTOR and folderQ will find it's primary and secondary descendant nodes: folderD, folderP and file.");
+        STEP("Verify that searching by ANCESTOR and folderQ will find its primary and secondary descendant nodes: folderD, folderP and file.");
         SearchRequest queryAncestorQ = req("ANCESTOR:" + folders(Q).getNodeRef());
         searchQueryService.expectResultsFromQuery(queryAncestorQ, testUser,
             // primary descendant
@@ -250,7 +250,7 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
         // then
         STEP("Verify that search result for ANCESTOR and folderQ will not find any descendant anymore.");
         searchQueryService.expectNoResultsFromQuery(queryAncestorQ, testUser);
-        STEP("Verify that searching by ANCESTOR and folderR will find it's primary and secondary descendant nodes: folderD, folderP and file.");
+        STEP("Verify that searching by ANCESTOR and folderR will find its primary and secondary descendant nodes: folderD, folderP and file.");
         searchQueryService.expectResultsFromQuery(queryAncestorR, testUser,
             // primary descendant
             folderD.getName(),
@@ -295,7 +295,7 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
         Folder folderT = folders().createFolder("T");
         folderG.addSecondaryChild(folders(P));
 
-        STEP("Verify that searching by ANCESTOR and folderS will find it's descendant nodes: folderG, folderH, folderP and file in P.");
+        STEP("Verify that searching by ANCESTOR and folderS will find its descendant nodes: folderG, folderH, folderP and file in P.");
         SearchRequest queryAncestorS = req("ANCESTOR:" + folders(S).getNodeRef());
         searchQueryService.expectResultsFromQuery(queryAncestorS, testUser,
             // primary descendants
@@ -309,11 +309,11 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
         searchQueryService.expectNoResultsFromQuery(queryAncestorT, testUser);
 
         // when
-        STEP("Copy folderG with it's content to folderT.");
+        STEP("Copy folderG with its content to folderT.");
         Folder folderGCopy = folderG.copyTo(folderT);
 
         // then
-        STEP("Verify that searching by ANCESTOR and folderS will find it's descendant nodes: folderG, folderH, folderP and file in P.");
+        STEP("Verify that searching by ANCESTOR and folderS will find its descendant nodes: folderG, folderH, folderP and file in P.");
         searchQueryService.expectResultsFromQuery(queryAncestorS, testUser,
             // primary descendants
             folderG.getName(),
@@ -321,7 +321,7 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
             // secondary descendants
             folders(P).getName(),
             fileInP.getName());
-        STEP("Verify that searching by ANCESTOR and folderT will find it's descendant nodes: folderG-copy, folderH-copy, folderP, file.");
+        STEP("Verify that searching by ANCESTOR and folderT will find its descendant nodes: folderG-copy, folderH-copy, folderP, file.");
         searchQueryService.expectResultsFromQuery(queryAncestorT, testUser,
             // primary descendants
             folderGCopy.getName(),
