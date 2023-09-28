@@ -52,7 +52,7 @@ public abstract class NodesSecondaryChildrenRelatedTests extends AbstractTestNGS
 
     protected UserModel testUser;
     private SiteModel testSite;
-    private final Folders folders = new Folders();
+    private final Folders folders = new TestFolders();
 
     @BeforeClass(alwaysRun = true)
     public void dataPreparation()
@@ -152,7 +152,7 @@ public abstract class NodesSecondaryChildrenRelatedTests extends AbstractTestNGS
 
         private Map<String, Folder> createNestedFolders(Folder node, String... folderSuffixes)
         {
-            Map<String, Folder> createdFolders = new Folders();
+            Map<String, Folder> createdFolders = new TestFolders();
             Stream.of(folderSuffixes).findFirst().ifPresent(folderSuffix -> {
                 Folder createdFolder = new Folder(testSite, node, generateRandomFolderNameWith(folderSuffix));
                 createdFolders.put(folderSuffix, createdFolder);
@@ -245,10 +245,10 @@ public abstract class NodesSecondaryChildrenRelatedTests extends AbstractTestNGS
     }
 
     /** Helper {@link Map} containing all created folders and allowing basic operations like creating and deleting a folder. */
-    public class Folders extends HashMap<String, Folder>
+    public class TestFolders extends HashMap<String, Folder> implements Folders
     {
         /** Creates a folder in site's Document Library. */
-        protected Folder createFolder(String folderSuffix)
+        public Folder createFolder(String folderSuffix)
         {
             Folder createdFolder = new Folder().createNestedFolders((Folder) null, folderSuffix).get(folderSuffix);
             this.put(folderSuffix, createdFolder);
@@ -256,17 +256,26 @@ public abstract class NodesSecondaryChildrenRelatedTests extends AbstractTestNGS
         }
 
         /** Creates multiple nested folders in site's Document Library. */
-        protected Map<String, Folder> createNestedFolders(String... folderSuffixes)
+        public Map<String, Folder> createNestedFolders(String... folderSuffixes)
         {
             Map<String, Folder> createdFolders = new Folder().createNestedFolders(null, folderSuffixes);
             this.putAll(createdFolders);
             return createdFolders;
         }
 
-        protected void delete(Folder folder)
+        public void delete(Folder folder)
         {
             folder.delete();
             this.remove(folder);
         }
+    }
+
+    public interface Folders extends Map<String, Folder>
+    {
+        Folder createFolder(String folderSuffix);
+
+        Map<String, Folder> createNestedFolders(String... folderSuffixes);
+
+        void delete(Folder folder);
     }
 }
