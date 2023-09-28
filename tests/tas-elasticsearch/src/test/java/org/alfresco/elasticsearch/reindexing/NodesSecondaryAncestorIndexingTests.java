@@ -92,7 +92,7 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
     public void testSecondaryAncestorWithDocumentAsSecondaryChild()
     {
         // then
-        STEP("Verify that searching by ANCESTOR and folderA will find nodes: .");
+        STEP("Verify that searching by ANCESTOR and folderA will find nodes: folderB, folderC and fileInP.");
         SearchRequest query = req("ANCESTOR:" + folders(A).getNodeRef());
         searchQueryService.expectResultsFromQuery(query, testUser,
             // primary descendants
