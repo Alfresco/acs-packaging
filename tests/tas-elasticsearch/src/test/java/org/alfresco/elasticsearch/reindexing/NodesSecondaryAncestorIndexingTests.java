@@ -79,7 +79,7 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
         // then
         STEP("Verify that searching by ANCESTOR and folderL will find nodes: folderM, folderC, folderY and folderZ.");
         SearchRequest queryAncestorL = req("ANCESTOR:" + folders(L).getNodeRef());
-        searchQueryService.expectResultsFromQuery(queryAncestorC, testUser,
+        searchQueryService.expectResultsFromQuery(queryAncestorL, testUser,
             // primary descendant
             folders(M).getName(),
             // secondary descendants
