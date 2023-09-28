@@ -64,7 +64,7 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
     }
 
     @Test(groups = TestGroup.SEARCH)
-    public void testSecondaryPath_withNodeHavingOneSecondaryChild()
+    public void testSecondaryPathWithNodeHavingOneSecondaryChild()
     {
         // then
         STEP("Verify that folderC can be found by secondary PATH using secondary parent folderM.");
@@ -75,7 +75,7 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
     }
 
     @Test(groups = TestGroup.SEARCH)
-    public void testSecondaryPath_withNodeHavingOnePrimaryAndTwoSecondaryChildren()
+    public void testSecondaryPathWithNodeHavingOnePrimaryAndTwoSecondaryChildren()
     {
         // then
         STEP("Verify that primary and secondary children of folderL can be found using PATH index.");
@@ -91,7 +91,7 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
     }
 
     @Test(groups = TestGroup.SEARCH)
-    public void testSecondaryPath_withNodeHavingDocumentAsSecondaryChild()
+    public void testSecondaryPathWithNodeHavingDocumentAsSecondaryChild()
     {
         // then
         STEP("Verify that a file being a secondary child of folderA can be found using PATH index.");
@@ -105,7 +105,7 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
     }
 
     @Test(groups = TestGroup.SEARCH)
-    public void testSecondaryPath_withNodeHavingComplexSecondaryRelationship()
+    public void testSecondaryPathWithNodeHavingComplexSecondaryRelationship()
     {
         // then
         STEP("Verify that all secondary children of folderX can be found.");
@@ -141,7 +141,7 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
      * </pre>
      */
     @Test(groups = TestGroup.SEARCH)
-    public void testSecondaryPath_withDeletedSecondaryRelationship()
+    public void testSecondaryPathWithDeletedSecondaryRelationship()
     {
         // given
         STEP("Add to folderQ a secondary child folderR and verify if it can be found using PATH index and secondary parent name.");
@@ -181,7 +181,7 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
      * </pre>
      */
     @Test(groups = TestGroup.SEARCH)
-    public void testSecondaryPath_withDeletedSecondaryParentNode()
+    public void testSecondaryPathWithDeletedSecondaryParentNode()
     {
         // given
         STEP("Create two nested folders (D and E) in Document Library.");
@@ -231,7 +231,7 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
      * will update PATH index in ES.
      */
     @Test(groups = TestGroup.SEARCH)
-    public void testSecondaryPath_withMovedSecondaryParentNode()
+    public void testSecondaryPathWithMovedSecondaryParentNode()
     {
         // given
         STEP("Create folderD inside folderQ, and add folderP as a secondary child.");
@@ -303,7 +303,7 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
      *  </pre>
      */
     @Test(groups = TestGroup.SEARCH)
-    public void testSecondaryParent_withCopiedSecondaryParentNode()
+    public void testSecondaryParentWithCopiedSecondaryParentNode()
     {
         // given
         STEP("Create nested folders (G and H) inside folderS and folderT in Document Library. Make folderP a secondary child of folderG.");

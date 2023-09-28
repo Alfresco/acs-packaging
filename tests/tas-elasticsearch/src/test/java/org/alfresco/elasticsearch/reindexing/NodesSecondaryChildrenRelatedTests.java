@@ -248,6 +248,7 @@ public abstract class NodesSecondaryChildrenRelatedTests extends AbstractTestNGS
     public class TestFolders extends HashMap<String, Folder> implements Folders
     {
         /** Creates a folder in site's Document Library. */
+        @Override
         public Folder createFolder(String folderSuffix)
         {
             Folder createdFolder = new Folder().createNestedFolders((Folder) null, folderSuffix).get(folderSuffix);
@@ -256,6 +257,7 @@ public abstract class NodesSecondaryChildrenRelatedTests extends AbstractTestNGS
         }
 
         /** Creates multiple nested folders in site's Document Library. */
+        @Override
         public Map<String, Folder> createNestedFolders(String... folderSuffixes)
         {
             Map<String, Folder> createdFolders = new Folder().createNestedFolders(null, folderSuffixes);
@@ -263,6 +265,7 @@ public abstract class NodesSecondaryChildrenRelatedTests extends AbstractTestNGS
             return createdFolders;
         }
 
+        @Override
         public void delete(Folder folder)
         {
             folder.delete();

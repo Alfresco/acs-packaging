@@ -64,7 +64,7 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
     }
 
     @Test(groups = TestGroup.SEARCH)
-    public void testSecondaryAncestor_withNodeHavingOneSecondaryChild()
+    public void testSecondaryAncestorWithNodeHavingOneSecondaryChild()
     {
         // then
         STEP("Verify that searching by ANCESTOR and folderM will find one descendant node: folderC.");
@@ -74,7 +74,7 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
     }
 
     @Test(groups = TestGroup.SEARCH)
-    public void testSecondaryAncestor_withNodeHavingTwoSecondaryChildren()
+    public void testSecondaryAncestorWithNodeHavingTwoSecondaryChildren()
     {
         // then
         STEP("Verify that searching by ANCESTOR and folderC will find nodes: .");
@@ -89,7 +89,7 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
     }
 
     @Test(groups = TestGroup.SEARCH)
-    public void testSecondaryAncestor_withDocumentAsSecondaryChild()
+    public void testSecondaryAncestorWithDocumentAsSecondaryChild()
     {
         // then
         STEP("Verify that searching by ANCESTOR and folderA will find nodes: .");
@@ -103,7 +103,7 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
     }
 
     @Test(groups = TestGroup.SEARCH)
-    public void testSecondaryAncestor_withNodeHavingComplexSecondaryRelationship()
+    public void testSecondaryAncestorWithNodeHavingComplexSecondaryRelationship()
     {
         // then
         STEP("Verify that all descendant of folderX can be found.");
@@ -139,7 +139,7 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
      * </pre>
      */
     @Test(groups = TestGroup.SEARCH)
-    public void testSecondaryAncestor_withDeletedSecondaryRelationship()
+    public void testSecondaryAncestorWithDeletedSecondaryRelationship()
     {
         // given
         STEP("Add to folderQ a secondary child folderR and verify if it can be found using ANCESTOR index and secondary child node reference.");
@@ -181,7 +181,7 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
      * </pre>
      */
     @Test(groups = TestGroup.SEARCH)
-    public void testSecondaryAncestor_withDeletedSecondaryParentNode()
+    public void testSecondaryAncestorWithDeletedSecondaryParentNode()
     {
         // given
         STEP("Create two nested folders (D and E) in Document Library.");
@@ -224,7 +224,7 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
      * will update ANCESTOR index in ES.
      */
     @Test(groups = TestGroup.SEARCH)
-    public void testSecondaryAncestor_withMovedSecondaryParentNode()
+    public void testSecondaryAncestorWithMovedSecondaryParentNode()
     {
         // given
         STEP("Create folderD inside folderQ, and add folderP to D as a secondary child.");
@@ -286,7 +286,7 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
      *  </pre>
      */
     @Test(groups = TestGroup.SEARCH)
-    public void testSecondaryAncestor_withCopiedSecondaryParentNode()
+    public void testSecondaryAncestorWithCopiedSecondaryParentNode()
     {
         // given
         STEP("Create nested folders (G and H) inside folderS and folderT in Document Library. Make folderP a secondary child of folderG.");
