@@ -19,7 +19,7 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
     private FileModel fileInP;
 
     /**
-     * Creates a user and a private site containing bellow hierarchy of folders.
+     * Creates a user and a private site containing below hierarchy of folders.
      * <pre>
      * Site
      * DL (Document Library)
@@ -123,7 +123,7 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
 
     /**
      * Verify that removing secondary parent-child relationship will result in updating ES index: ANCESTOR.
-     * Test changes bellow folders hierarchy:
+     * Test changes below folders hierarchy:
      * <pre>
      * DL
      *  += fQ
@@ -162,7 +162,7 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
 
     /**
      * Verify that removing a node D (fD) having a secondary children relationship will remove the relationships and update ANCESTOR index in ES.
-     * Test changes bellow folders hierarchy from:
+     * Test changes below folders hierarchy from:
      * <pre>
      * DL
      *  += fQ
@@ -264,7 +264,7 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
 
     /**
      * Verify that copying folder will also result in copying folder's secondary children and update ANCESTOR index in ES.
-     * Test change bellow folders hierarchy:
+     * Test changes below folders hierarchy:
      * <pre>
      * DL
      *  += fS += fG += fH
