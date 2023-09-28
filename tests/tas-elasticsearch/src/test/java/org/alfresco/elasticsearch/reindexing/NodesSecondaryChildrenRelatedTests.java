@@ -245,6 +245,7 @@ public abstract class NodesSecondaryChildrenRelatedTests extends AbstractTestNGS
     }
 
     /** Helper {@link Map} containing all created folders and allowing basic operations like creating and deleting a folder. */
+    @SuppressWarnings("PMD.TestClassWithoutTestCases")
     public class TestFolders extends HashMap<String, Folder> implements Folders
     {
         /** Creates a folder in site's Document Library. */
