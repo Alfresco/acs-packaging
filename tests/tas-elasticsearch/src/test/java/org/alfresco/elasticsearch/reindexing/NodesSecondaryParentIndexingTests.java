@@ -125,6 +125,7 @@ public class NodesSecondaryParentIndexingTests extends NodesSecondaryChildrenRel
 
         SearchRequest query = req("PARENT:" + folders(Q).getNodeRef());
         searchQueryService.expectResultsFromQuery(query, testUser,
+            // secondary child
             folders(R).getName());
 
         // when
@@ -169,11 +170,14 @@ public class NodesSecondaryParentIndexingTests extends NodesSecondaryChildrenRel
         STEP("Verify that searching by PARENT and folderQ will find it's secondary child: folderD.");
         SearchRequest queryParentQ = req("PARENT:" + folders(Q).getNodeRef());
         searchQueryService.expectResultsFromQuery(queryParentQ, testUser,
+            // secondary child
             folderD.getName());
         STEP("Verify that searching by PARENT and folderD will find it's primary and secondary children: folderE and folderR.");
         SearchRequest queryParentD = req("PARENT:" + folderD.getNodeRef());
         searchQueryService.expectResultsFromQuery(queryParentD, testUser,
+            // primary child
             folderE.getName(),
+            // secondary child
             folders(R).getName());
 
         // when
@@ -211,10 +215,12 @@ public class NodesSecondaryParentIndexingTests extends NodesSecondaryChildrenRel
         STEP("Verify that searching by PARENT and folderD will find node folderP.");
         SearchRequest queryParentD = req("PARENT:" + folderD.getNodeRef());
         searchQueryService.expectResultsFromQuery(queryParentD, testUser,
+            // secondary child
             folders(P).getName());
         STEP("Verify that searching by PARENT and folderQ will find node folderD.");
         SearchRequest queryParentQ = req("PARENT:" + folders(Q).getNodeRef());
         searchQueryService.expectResultsFromQuery(queryParentQ, testUser,
+            // primary child
             folderD.getName());
 
         // when
@@ -224,12 +230,14 @@ public class NodesSecondaryParentIndexingTests extends NodesSecondaryChildrenRel
         // then
         STEP("Verify that search result for PARENT and folderD didn't change.");
         searchQueryService.expectResultsFromQuery(queryParentD, testUser,
+            // secondary child
             folders(P).getName());
         STEP("Verify that searching by PARENT and folderQ doesn't return any node anymore.");
         searchQueryService.expectNoResultsFromQuery(queryParentQ, testUser);
         STEP("Verify that searching by PARENT and folderR will find node folderD.");
         SearchRequest queryParentR = req("PARENT:" + folders(R).getNodeRef());
         searchQueryService.expectResultsFromQuery(queryParentR, testUser,
+            // primary child
             folderD.getName());
 
         STEP("Clean-up - delete folderD.");
@@ -272,15 +280,19 @@ public class NodesSecondaryParentIndexingTests extends NodesSecondaryChildrenRel
         STEP("Verify that searching by PARENT and folderG will find nodes: folderH, folderP and file.");
         SearchRequest queryParentG = req("PARENT:" + folderG.getNodeRef());
         searchQueryService.expectResultsFromQuery(queryParentG, testUser,
+            // primary child
             folderH.getName(),
+            // secondary child
             folders(P).getName());
         STEP("Verify that searching by PARENT and folderS will find nodes: folderG, folderH, folderP and file.");
         SearchRequest queryParentS = req("PARENT:" + folders(S).getNodeRef());
         searchQueryService.expectResultsFromQuery(queryParentS, testUser,
+            // primary child
             folderG.getName());
         STEP("Verify that searching by PARENT and folderP will find node: file.");
         SearchRequest queryParentP = req("PARENT:" + folders(P).getNodeRef());
         searchQueryService.expectResultsFromQuery(queryParentP, testUser,
+            // primary child
             fileInP.getName());
 
         // when
@@ -290,18 +302,24 @@ public class NodesSecondaryParentIndexingTests extends NodesSecondaryChildrenRel
         // then
         STEP("Verify that search result for PARENT and folderS didn't change.");
         searchQueryService.expectResultsFromQuery(queryParentS, testUser,
+            // primary child
             folderG.getName());
         STEP("Verify that searching by PARENT and folderS/folderG will find nodes: folderH, folderP and file in P.");
         searchQueryService.expectResultsFromQuery(queryParentG, testUser,
+            // primary child
             folderH.getName(),
+            // secondary child
             folders(P).getName());
         STEP("Verify that folderG was copied with secondary parent-child relationship and PARENT reflects that - search by folderT/folderGCopy should find nodes: folderH, folderP and file in P.");
         SearchRequest queryParentGCopy = req("PARENT:" + folderGCopy.getNodeRef());
         searchQueryService.expectResultsFromQuery(queryParentGCopy, testUser,
+            // primary child
             folderH.getName(), // name is the same as folderH-copy
+            // secondary child
             folders(P).getName());
         STEP("Verify that this time searching by PARENT and folderP will find node: file.");
         searchQueryService.expectResultsFromQuery(queryParentP, testUser,
+            // primary child
             fileInP.getName());
 
         STEP("Clean-up - delete folderG and folderT (with G's copy).");

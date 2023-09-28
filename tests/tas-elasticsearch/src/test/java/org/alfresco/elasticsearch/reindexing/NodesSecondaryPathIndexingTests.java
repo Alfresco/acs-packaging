@@ -69,7 +69,7 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
         STEP("Verify that folderC can be found by secondary PATH using secondary parent folderM.");
         SearchRequest query = req("PATH:\"//cm:" + folders(M).getName() + "//*\"");
         searchQueryService.expectResultsFromQuery(query, testUser,
-            // from secondary path
+            // secondary path
             folders(C).getName());
     }
 
@@ -80,9 +80,9 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
         STEP("Verify that primary and secondary children of folderL can be found using PATH index.");
         SearchRequest query = req("PATH:\"//cm:" + folders(L).getName() + "//*\"");
         searchQueryService.expectResultsFromQuery(query, testUser,
-            // from primary path
+            // primary path
             folders(M).getName(),
-            // from secondary path
+            // secondary path
             folders(C).getName(),
             folders(Y).getName(),
             folders(Z).getName()
@@ -96,10 +96,10 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
         STEP("Verify that a file being a secondary child of folderA can be found using PATH index.");
         SearchRequest query = req("PATH:\"//cm:" + folders(A).getName() + "//*\"");
         searchQueryService.expectResultsFromQuery(query, testUser,
-            // from primary path
+            // primary path
             folders(B).getName(),
             folders(C).getName(),
-            // from secondary path
+            // secondary path
             fileInP.getName());
     }
 
@@ -110,10 +110,10 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
         STEP("Verify that all secondary children of folderX can be found.");
         SearchRequest query = req("PATH:\"//cm:" + folders(X).getName() + "//*\"");
         searchQueryService.expectResultsFromQuery(query, testUser,
-            // found by primary path
+            // primary path
             folders(Y).getName(),
             folders(Z).getName(),
-            // found by secondary path
+            // secondary path
             folders(B).getName(),
             folders(C).getName(),
             folders(K).getName(),
@@ -148,6 +148,7 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
 
         SearchRequest query = req("PATH:\"//cm:" + folders(Q).getName() + "//*\"");
         searchQueryService.expectResultsFromQuery(query, testUser,
+            // secondary path
             folders(R).getName());
 
         // when
@@ -192,13 +193,16 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
         STEP("Verify that searching by PATH and folderQ will find nodes: folderD, folderE and folderR.");
         SearchRequest queryPathQ = req("PATH:\"//cm:" + folders(Q).getName() + "//*\"");
         searchQueryService.expectResultsFromQuery(queryPathQ, testUser,
+            // secondary path
             folderD.getName(),
             folderE.getName(),
             folders(R).getName());
         STEP("Verify that searching by PATH and folderD will find it's primary and secondary children: folderE and folderR.");
         SearchRequest queryPathD = req("PATH:\"//cm:" + folderD.getName() + "//*\"");
         searchQueryService.expectResultsFromQuery(queryPathD, testUser,
+            // primary path
             folderE.getName(),
+            // secondary path
             folders(R).getName());
 
         // when
@@ -237,12 +241,15 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
         STEP("Verify that searching by PATH and folderD will find nodes: folderP and file.");
         SearchRequest queryPathD = req("PATH:\"//cm:" + folderD.getName() + "//*\"");
         searchQueryService.expectResultsFromQuery(queryPathD, testUser,
+            // secondary path
             folders(P).getName(),
             fileInP.getName());
         STEP("Verify that searching by PATH and folderQ will find nodes: folderD, folderP and file.");
         SearchRequest queryPathQ = req("PATH:\"//cm:" + folders(Q).getName() + "//*\"");
         searchQueryService.expectResultsFromQuery(queryPathQ, testUser,
+            // primary path
             folderD.getName(),
+            // secondary path
             folders(P).getName(),
             fileInP.getName());
 
@@ -253,6 +260,7 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
         // then
         STEP("Verify that search result for PATH and folderD didn't change.");
         searchQueryService.expectResultsFromQuery(queryPathD, testUser,
+            // secondary path
             folders(P).getName(),
             fileInP.getName());
         STEP("Verify that searching by PATH and folderQ doesn't return any node anymore.");
@@ -260,7 +268,9 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
         STEP("Verify that searching by PATH and folderR will find nodes: folderD, folderP and file.");
         SearchRequest queryPathR = req("PATH:\"//cm:" + folders(R).getName() + "//*\"");
         searchQueryService.expectResultsFromQuery(queryPathR, testUser,
+            // primary path
             folderD.getName(),
+            // secondary path
             folders(P).getName(),
             fileInP.getName());
 
