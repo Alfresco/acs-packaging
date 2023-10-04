@@ -1,5 +1,17 @@
 package org.alfresco.elasticsearch;
 
+import static org.alfresco.elasticsearch.SearchQueryService.req;
+import static org.alfresco.utility.data.RandomData.getRandomFile;
+import static org.alfresco.utility.data.RandomData.getRandomName;
+import static org.alfresco.utility.report.log.Step.STEP;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 import org.alfresco.rest.model.RestTagModel;
 import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.tas.AlfrescoStackInitializer;
@@ -20,18 +32,6 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-
-import static org.alfresco.elasticsearch.SearchQueryService.req;
-import static org.alfresco.utility.data.RandomData.getRandomFile;
-import static org.alfresco.utility.data.RandomData.getRandomName;
-import static org.alfresco.utility.report.log.Step.STEP;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 @ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
     initializers = AlfrescoStackInitializer.class)
