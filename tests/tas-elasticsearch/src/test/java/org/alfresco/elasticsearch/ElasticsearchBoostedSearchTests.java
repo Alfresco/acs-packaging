@@ -120,12 +120,12 @@ public class ElasticsearchBoostedSearchTests extends AbstractTestNGSpringContext
         searchQueryService.expectResultsInOrder(searchRequest, testUser, folderWithTermInName.getName(), folderWithTermInTitle.getName(), fileWithTermInName.getName(), fileWithTermInTitle.getName());
 
         STEP("Search for files and folders by name or title with higher priority for files by title");
-        String boostedQuery3 = "TYPE:('cm:content'^4 OR 'cm:folder'^0.5)^0.25 AND (cm:name:" + SEARCH_TERM + "^0.05 OR cm:title:" + SEARCH_TERM + "^3.5)";
+        String boostedQuery3 = "TYPE:('cm:content'^4 OR 'cm:folder'^0.5)^6 AND (cm:name:" + SEARCH_TERM + "^0.05 OR cm:title:" + SEARCH_TERM + "^3.5)";
         searchRequest = req("afts", boostedQuery3);
         searchQueryService.expectResultsInOrder(searchRequest, testUser, fileWithTermInTitle.getName(), fileWithTermInName.getName(), folderWithTermInTitle.getName(), folderWithTermInName.getName());
 
         STEP("Search for files and folders by name or title with higher priority for folders by title");
-        String boostedQuery4 = "TYPE:('cm:content'^0.5 OR 'cm:folder'^4)^0.25 AND (cm:name:" + SEARCH_TERM + "^0.05 OR cm:title:" + SEARCH_TERM + "^3.5)";
+        String boostedQuery4 = "TYPE:('cm:content'^0.5 OR 'cm:folder'^4)^6 AND (cm:name:" + SEARCH_TERM + "^0.05 OR cm:title:" + SEARCH_TERM + "^3.5)";
         searchRequest = req("afts", boostedQuery4);
         searchQueryService.expectResultsInOrder(searchRequest, testUser, folderWithTermInTitle.getName(), folderWithTermInName.getName(), fileWithTermInTitle.getName(), fileWithTermInName.getName());
     }
