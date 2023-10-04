@@ -3,9 +3,6 @@ name: (ARM64) ACS Packaging CI
 on:
   schedule:
     - cron: "0 3 * * 1-5"
-  push:
-    branches:
-      - feature/ACS-5830_Transformation_Service_ARM64_Enable_alfresco-pdf-renderer_renditions
   workflow_dispatch:
 
 env:
