@@ -35,7 +35,7 @@ import org.testng.annotations.BeforeClass;
     initializers = AlfrescoStackInitializer.class)
 public abstract class NodesSecondaryChildrenRelatedTests extends AbstractTestNGSpringContextTests
 {
-    @SuppressWarnings("PMD.whatever")
+    @SuppressWarnings("PMD.OneDeclarationPerLine")
     protected static final String A = "A", B = "B", C = "C", K = "K", L = "L", M = "M", P = "P", Q = "Q", R = "R", S = "S", X = "X", Y = "Y", Z = "Z";
 
     @Autowired
