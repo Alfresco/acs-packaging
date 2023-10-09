@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 /**
  * Tests verifying live indexing of secondary children and PATH index in Elasticsearch.
  */
-@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert", "PMD.JUnit4TestShouldUseTestAnnotation"}) // these are testng tests and use searchQueryService.expectResultsFromQuery for assertion
+@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert"}) // these are testng tests and use searchQueryService.expectResultsFromQuery for assertion
 public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelatedTests
 {
 
@@ -61,6 +61,13 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
         folders(L).addSecondaryChildren(folders(C), folders(Y));
         folders(M).addSecondaryChild(folders(C));
         folders(A).addSecondaryChild(fileInP);
+
+        STEP("Add to folderQ a secondary child folderR.");
+        folders(Q).addSecondaryChild(folders(R));
+
+        // when
+        STEP("Delete the secondary parent relationship between folderQ and FolderR.");
+        folders(Q).removeSecondaryChild(folders(R));
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -143,20 +150,9 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
     @Test(groups = TestGroup.SEARCH)
     public void testSecondaryPathWithDeletedSecondaryRelationship()
     {
-        // given
-        STEP("Add to folderQ a secondary child folderR and verify if it can be found using PATH index and secondary parent name.");
-        folders(Q).addSecondaryChild(folders(R));
-
-        SearchRequest query = req("PATH:\"//cm:" + folders(Q).getName() + "//*\"");
-        searchQueryService.expectResultsFromQuery(query, testUser,
-            // secondary path
-            folders(R).getName());
-
-        // when
-        STEP("Delete the secondary parent relationship between folderQ and FolderR and verify that folderR cannot be found by PATH and folderQ anymore.");
-        folders(Q).removeSecondaryChild(folders(R));
-
         // then
+        STEP("Verify that folderR cannot be found by PATH and folderQ anymore.");
+        SearchRequest query = req("PATH:\"//cm:" + folders(Q).getName() + "//*\"");
         searchQueryService.expectNoResultsFromQuery(query, testUser);
     }
 

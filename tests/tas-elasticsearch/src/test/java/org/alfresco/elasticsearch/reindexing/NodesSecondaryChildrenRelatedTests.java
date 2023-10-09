@@ -174,7 +174,7 @@ public abstract class NodesSecondaryChildrenRelatedTests extends AbstractTestNGS
             moveModel.setTargetParentId(target.getNodeRef());
             moveModel.setName(this.getName());
 
-            RestNodeModel movedNode = restClient.authenticateUser(testUser).withCoreAPI().usingNode(this).include("path").move(moveModel);
+            RestNodeModel movedNode = restClient.authenticateUser(user).withCoreAPI().usingNode(this).include("path").move(moveModel);
             this.setCmisLocation(getCmisLocation(movedNode.getPath(), movedNode.getName()));
         }
 
@@ -185,7 +185,7 @@ public abstract class NodesSecondaryChildrenRelatedTests extends AbstractTestNGS
             copyModel.setTargetParentId(target.getNodeRef());
             copyModel.setName(this.getName());
 
-            RestNodeModel nodeCopy = restClient.authenticateUser(testUser).withCoreAPI().usingNode(this).include("path").copy(copyModel);
+            RestNodeModel nodeCopy = restClient.authenticateUser(user).withCoreAPI().usingNode(this).include("path").copy(copyModel);
             Folder folderCopy = new Folder();
             folderCopy.setName(nodeCopy.getName());
             folderCopy.setNodeRef(nodeCopy.getId());
