@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 /**
  * Tests verifying live indexing of secondary children and ANCESTOR index in Elasticsearch.
  */
-@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert"}) // these are testng tests and use searchQueryService.expectResultsFromQuery for assertion
+@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert"}) // these are TAS tests and use searchQueryService.expectResultsFromQuery for assertion
 public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenRelatedTests
 {
 
@@ -168,7 +168,7 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
      *  += fQ
      *     +
      *     |
-     *  += fD += fE
+     *  += fE += fF
      *     +
      *     |
      *  += fR
@@ -184,24 +184,24 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
     public void testSecondaryAncestorWithDeletedSecondaryParentNode()
     {
         // given
-        STEP("Create two nested folders (D and E) in Document Library.");
-        Folder folderD = folders().createFolder( "D");
-        Folder folderE = folderD.createNestedFolder( "E");
-        STEP("Make folderD a secondary children of folderQ and folderR a secondary children of folderD.");
-        folders(Q).addSecondaryChild(folderD);
-        folderD.addSecondaryChild(folders(R));
+        STEP("Create two nested folders (E and F) in Document Library.");
+        Folder folderE = folders().createFolder( "E");
+        Folder folderF = folderE.createNestedFolder( "F");
+        STEP("Make folderE a secondary children of folderQ and folderR a secondary children of folderE.");
+        folders(Q).addSecondaryChild(folderE);
+        folderE.addSecondaryChild(folders(R));
 
-        STEP("Verify that searching by ANCESTOR and folderQ will find its secondary descendant: folderD, folderE and folderR.");
+        STEP("Verify that searching by ANCESTOR and folderQ will find its secondary descendant: folderE, folderF and folderR.");
         SearchRequest queryAncestorQ = req("ANCESTOR:" + folders(Q).getNodeRef());
         searchQueryService.expectResultsFromQuery(queryAncestorQ, testUser,
             // secondary descendants
-            folderD.getName(),
             folderE.getName(),
+            folderF.getName(),
             folders(R).getName());
 
         // when
-        STEP("Delete folderD with its content.");
-        folders().delete(folderD);
+        STEP("Delete folderE with its content.");
+        folders().delete(folderE);
 
         // then
         STEP("Verify that searching by ANCESTOR and folderQ will not find any nodes.");

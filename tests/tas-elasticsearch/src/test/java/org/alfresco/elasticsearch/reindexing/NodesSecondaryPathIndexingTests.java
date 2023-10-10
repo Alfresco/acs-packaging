@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 /**
  * Tests verifying live indexing of secondary children and PATH index in Elasticsearch.
  */
-@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert"}) // these are testng tests and use searchQueryService.expectResultsFromQuery for assertion
+@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert"}) // these are TAS tests and use searchQueryService.expectResultsFromQuery for assertion
 public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelatedTests
 {
 
@@ -164,7 +164,7 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
      *  += fQ
      *     +
      *     |
-     *  += fD += fE
+     *  += fE += fF
      *     +
      *     |
      *  += fR
@@ -180,31 +180,31 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
     public void testSecondaryPathWithDeletedSecondaryParentNode()
     {
         // given
-        STEP("Create two nested folders (D and E) in Document Library.");
-        Folder folderD = folders().createFolder( "D");
-        Folder folderE = folderD.createNestedFolder( "E");
-        STEP("Make folderD a secondary children of folderQ and folderR a secondary children of folderD.");
-        folders(Q).addSecondaryChild(folderD);
-        folderD.addSecondaryChild(folders(R));
+        STEP("Create two nested folders (E and F) in Document Library.");
+        Folder folderE = folders().createFolder( "D");
+        Folder folderF = folderE.createNestedFolder( "E");
+        STEP("Make folderE a secondary children of folderQ and folderR a secondary children of folderE.");
+        folders(Q).addSecondaryChild(folderE);
+        folderE.addSecondaryChild(folders(R));
 
-        STEP("Verify that searching by PATH and folderQ will find nodes: folderD, folderE and folderR.");
+        STEP("Verify that searching by PATH and folderQ will find nodes: folderE, folderF and folderR.");
         SearchRequest queryPathQ = req("PATH:\"//cm:" + folders(Q).getName() + "//*\"");
         searchQueryService.expectResultsFromQuery(queryPathQ, testUser,
             // secondary path
-            folderD.getName(),
             folderE.getName(),
+            folderF.getName(),
             folders(R).getName());
-        STEP("Verify that searching by PATH and folderD will find its primary and secondary children: folderE and folderR.");
-        SearchRequest queryPathD = req("PATH:\"//cm:" + folderD.getName() + "//*\"");
+        STEP("Verify that searching by PATH and folderE will find its primary and secondary children: folderF and folderR.");
+        SearchRequest queryPathD = req("PATH:\"//cm:" + folderE.getName() + "//*\"");
         searchQueryService.expectResultsFromQuery(queryPathD, testUser,
             // primary path
-            folderE.getName(),
+            folderF.getName(),
             // secondary path
             folders(R).getName());
 
         // when
-        STEP("Delete folderD and verify that PATH was updated for nodes folderQ and folderR.");
-        folders().delete(folderD);
+        STEP("Delete folderE and verify that PATH was updated for nodes folderQ and folderR.");
+        folders().delete(folderE);
 
         // then
         searchQueryService.expectNoResultsFromQuery(queryPathQ, testUser);
