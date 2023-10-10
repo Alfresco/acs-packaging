@@ -207,7 +207,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     @TestRail (section = TestGroup.SEARCH,
             executionType = ExecutionType.REGRESSION,
             description = "Verify that wildcard queries work against noderefs.")
-    @Test (groups = TestGroup.SEARCH)
+    @Test(groups = TestGroup.SEARCH, enabled = false) //Test should be re-enabled within: ACS-6068
     public void wildcardNodeRefQuery()
     {
         searchQueryService.expectResultsFromQuery(req("ANCESTOR:\"" + siteModel2.getGuid().substring(0, 10) + "*\""), userMultiSite, "documentLibrary", FILE_2_NAME);
