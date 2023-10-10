@@ -8,7 +8,7 @@ set -vex
 #
 
 if [ -z "${RELEASE_VERSION}" ]; then
-  echo "Please provide a RELEASE_VERSION in the format <acs-version>-<additional-info> (7.1.0-EA or 7.1.0-SNAPSHOT)"
+  echo "Please provide a RELEASE_VERSION in the format <acs-version>-<additional-info> (e.g. 7.1.0-A2)"
   exit 1
 fi
 
@@ -17,11 +17,7 @@ DESTINATION="s3://eu.dl.alfresco.com/release/enterprise/RM/${RELEASE_VERSION}"
 
 printf "\n%s\n%s\n" "${SOURCE}" "${DESTINATION}"
 
-aws s3 cp --acl private \
-  "${SOURCE}/alfresco-governance-services-enterprise-${RELEASE_VERSION}.zip" \
-  "${DESTINATION}/alfresco-governance-services-enterprise-${RELEASE_VERSION}.zip"
-
+aws s3 cp --acl private --recursive --copy-props none "${SOURCE}" "${DESTINATION}"
 
 set +vex
 echo "=========================== Finishing Copy to Release Bucket Script =========================="
-

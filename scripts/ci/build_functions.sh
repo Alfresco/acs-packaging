@@ -2,18 +2,18 @@
 set +vx
 
 function isPullRequestBuild() {
-  test "${TRAVIS_PULL_REQUEST}" != "false"
+  test "${PULL_REQUEST}" != "false"
 }
 
 function isBranchBuild() {
-  test "${TRAVIS_PULL_REQUEST}" = "false"
+  test "${PULL_REQUEST}" = "false"
 }
 
 function cloneRepo() {
   local REPO="${1}"
   local TAG_OR_BRANCH="${2}"
 
-  printf "Clonning \"%s\" on %s\n" "${TAG_OR_BRANCH}" "${REPO}"
+  printf "Cloning \"%s\" on %s\n" "${TAG_OR_BRANCH}" "${REPO}"
 
   # clone the repository branch/tag
   pushd "$(dirname "${BASH_SOURCE[0]}")/../../../" >/dev/null
@@ -67,7 +67,7 @@ function evaluatePomProperty() {
 
   pushd "$(dirname "${BASH_SOURCE[0]}")/../../" >/dev/null
 
-  mvn -B -q help:evaluate -Dexpression="${KEY}" -DforceStdout
+  mvn -B -ntp -q help:evaluate -Dexpression="${KEY}" -DforceStdout
 
   popd >/dev/null
 }
@@ -76,21 +76,15 @@ function remoteBranchExists() {
   local REMOTE_REPO="${1}"
   local BRANCH="${2}"
 
-  git ls-remote --exit-code --heads "https://${GIT_USERNAME}:${GIT_PASSWORD}@${REMOTE_REPO}" "${BRANCH}" &>/dev/null
+  git ls-remote --exit-code --heads "https://${GIT_USERNAME}:${GIT_PASSWORD}@${REMOTE_REPO}" "${BRANCH_NAME}" &>/dev/null
 }
 
 function identifyUpstreamSourceBranch() {
   local UPSTREAM_REPO="${1}"
 
-  # if it's a pull request, use the source branch name (if it exists)
-  if isPullRequestBuild && remoteBranchExists "${UPSTREAM_REPO}" "${TRAVIS_PULL_REQUEST_BRANCH}" ; then
-    echo "${TRAVIS_PULL_REQUEST_BRANCH}"
-    exit 0
-  fi
-
   # otherwise use the current branch name (or in case of PRs, the target branch name)
-  if remoteBranchExists "${UPSTREAM_REPO}" "${TRAVIS_BRANCH}" ; then
-    echo "${TRAVIS_BRANCH}"
+  if remoteBranchExists "${UPSTREAM_REPO}" "${BRANCH_NAME}" ; then
+    echo "${BRANCH_NAME}"
     exit 0
   fi
 
@@ -122,7 +116,7 @@ function buildUpstreamTag() {
 
   cd "$(basename "${UPSTREAM_REPO%.git}")"
 
-  mvn -B -V clean package -DskipTests -Dmaven.javadoc.skip=true "-Dimage.tag=${TAG}" ${EXTRA_BUILD_ARGUMENTS}
+  mvn -B -ntp -V clean package -DskipTests -Dmaven.javadoc.skip=true "-Dimage.tag=${TAG}" ${EXTRA_BUILD_ARGUMENTS}
 
   popd
 }
@@ -135,8 +129,8 @@ function buildSameBranchOnUpstream() {
 
   cd "$(basename "${UPSTREAM_REPO%.git}")"
 
-  mvn -B -V -q clean install -DskipTests -Dmaven.javadoc.skip=true ${EXTRA_BUILD_ARGUMENTS}
-  mvn -B -V -q install -DskipTests -f packaging/tests/pom.xml
+  mvn -B -ntp -V -q clean install -DskipTests -Dmaven.javadoc.skip=true ${EXTRA_BUILD_ARGUMENTS}
+  mvn -B -ntp -V -q install -DskipTests -f packaging/tests/pom.xml
 
   popd
 }
@@ -152,7 +146,7 @@ function pullUpstreamTagAndBuildDockerImage() {
 
   cd "$(basename "${UPSTREAM_REPO%.git}")"
 
-  mvn -B -V clean package -DskipTests -Dmaven.javadoc.skip=true "-Dimage.tag=${TAG}" ${EXTRA_BUILD_ARGUMENTS}
+  mvn -B -ntp -V clean package -DskipTests -Dmaven.javadoc.skip=true "-Dimage.tag=${TAG}" ${EXTRA_BUILD_ARGUMENTS}
 
   popd
 }
@@ -169,8 +163,8 @@ function pullAndBuildSameBranchOnUpstream() {
 
   cd "$(basename "${UPSTREAM_REPO%.git}")"
 
-  mvn -B -V -q clean install -DskipTests -Dmaven.javadoc.skip=true ${EXTRA_BUILD_ARGUMENTS}
-  mvn -B -V -q install -DskipTests -f packaging/tests/pom.xml
+  mvn -B -ntp -V -q clean install -DskipTests -Dmaven.javadoc.skip=true ${EXTRA_BUILD_ARGUMENTS}
+  mvn -B -ntp -V -q install -DskipTests -f packaging/tests/pom.xml
 
   popd
 }
@@ -181,7 +175,7 @@ function retieveLatestTag() {
 
   local LOCAL_PATH="/tmp/$(basename "${REPO%.git}")"
 
-  git clone -q -b "${BRANCH}" "https://${GIT_USERNAME}:${GIT_PASSWORD}@${REPO}" "${LOCAL_PATH}"
+  git clone -q -b "${BRANCH_NAME}" "https://${GIT_USERNAME}:${GIT_PASSWORD}@${REPO}" "${LOCAL_PATH}"
 
   pushd "${LOCAL_PATH}" >/dev/null
   git describe --abbrev=0 --tags
@@ -190,11 +184,13 @@ function retieveLatestTag() {
   rm -rf "${LOCAL_PATH}"
 }
 
-function publishDistributionZip() {
+function copyArtifactToAnotherRepo() {
   local GROUP_ID="${1}"
   local ARTIFACT_ID="${2}"
   local VERSION="${3}"
-  local NEXUS_REPO="${4}"
+  local PACKAGING="${4}"
+  local SETTINGS_SERVER_ID="${5}"
+  local NEXUS_REPO="${6}"
 
   local ARTIFACT_PATH="$(echo ${GROUP_ID}/${ARTIFACT_ID} | sed 's/\./\//g')"
   local LOCAL_PATH="${HOME}/.m2/repository/${ARTIFACT_PATH}"
@@ -203,7 +199,7 @@ function publishDistributionZip() {
   # Download the artifact. Make sure we are not using a cached version
   rm -rf "${LOCAL_PATH}"
   mvn org.apache.maven.plugins:maven-dependency-plugin:get  \
-    -Dartifact=${GROUP_ID}:${ARTIFACT_ID}:${VERSION}:zip \
+    -Dartifact=${GROUP_ID}:${ARTIFACT_ID}:${VERSION}:${PACKAGING} \
     -Dtransitive=false
   ls -l "${LOCAL_PATH}/${VERSION}"
 
@@ -213,11 +209,14 @@ function publishDistributionZip() {
 
   # Upload the artifact
   mvn deploy:deploy-file \
-    -Dfile="${TMP_PATH}/${ARTIFACT_ID}-${VERSION}.zip" \
-    -DrepositoryId=alfresco-enterprise-releases \
+    -Dfile="${TMP_PATH}/${ARTIFACT_ID}-${VERSION}.${PACKAGING}" \
+    -DrepositoryId=${SETTINGS_SERVER_ID} \
     -Durl="${NEXUS_REPO}" \
-    -DgroupId="${GROUP_ID}" -DartifactId="${ARTIFACT_ID}" -Dversion="${VERSION}" \
-    -Dpackaging=zip
+    -DgroupId="${GROUP_ID}" \
+    -DartifactId="${ARTIFACT_ID}" \
+    -Dversion="${VERSION}" \
+    -Dpackaging=${PACKAGING}
 }
+
 
 set -vx
