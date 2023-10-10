@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 /**
  * Tests verifying live indexing of secondary children and PARENT index in Elasticsearch.
  */
-@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert"}) // these are TAS tests and use searchQueryService.expectResultsFromQuery for assertion
+@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert"}) // these are TAS E2E tests and use searchQueryService.expectResultsFromQuery for assertion
 public class NodesSecondaryParentIndexingTests extends NodesSecondaryChildrenRelatedTests
 {
 

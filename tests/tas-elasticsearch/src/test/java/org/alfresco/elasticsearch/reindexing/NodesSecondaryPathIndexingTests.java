@@ -12,7 +12,7 @@ import org.testng.annotations.Test;
 /**
  * Tests verifying live indexing of secondary children and PATH index in Elasticsearch.
  */
-@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert"}) // these are TAS tests and use searchQueryService.expectResultsFromQuery for assertion
+@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert"}) // these are TAS E2E tests and use searchQueryService.expectResultsFromQuery for assertion
 public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelatedTests
 {
 
@@ -181,8 +181,8 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
     {
         // given
         STEP("Create two nested folders (E and F) in Document Library.");
-        Folder folderE = folders().createFolder( "D");
-        Folder folderF = folderE.createNestedFolder( "E");
+        Folder folderE = folders().createFolder( "E");
+        Folder folderF = folderE.createNestedFolder( "F");
         STEP("Make folderE a secondary children of folderQ and folderR a secondary children of folderE.");
         folders(Q).addSecondaryChild(folderE);
         folderE.addSecondaryChild(folders(R));
