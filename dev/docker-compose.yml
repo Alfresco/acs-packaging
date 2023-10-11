@@ -43,7 +43,7 @@ services:
             - shared-file-store-volume:/tmp/Alfresco/sfs
 
     postgres:
-        image: postgres:14.4
+        image: postgres:15.4
         mem_limit: 512m
         environment:
             - POSTGRES_PASSWORD=alfresco
