@@ -12,6 +12,8 @@ import java.util.stream.Stream;
 
 import org.alfresco.elasticsearch.SearchQueryService;
 import org.alfresco.rest.core.RestWrapper;
+import org.alfresco.rest.model.RestCategoryLinkBodyModel;
+import org.alfresco.rest.model.RestCategoryModel;
 import org.alfresco.rest.model.RestNodeBodyMoveCopyModel;
 import org.alfresco.rest.model.RestNodeModel;
 import org.alfresco.tas.AlfrescoStackInitializer;
@@ -193,6 +195,12 @@ public abstract class NodesSecondaryChildrenRelatedTests extends AbstractTestNGS
             return folderCopy;
         }
 
+        protected void linkToCategory(RestCategoryModel category) {
+            restClient.authenticateUser(testUser).withCoreAPI()
+                    .usingNode(this)
+                    .linkToCategory(RestCategoryLinkBodyModel.builder().categoryId(category.getId()).create());
+        }
+
         private void delete()
         {
             dataContent.usingUser(user).usingResource(this).deleteContent();
@@ -210,6 +218,8 @@ public abstract class NodesSecondaryChildrenRelatedTests extends AbstractTestNGS
                 .usingResource(this)
                 .createContent(new FileModel(filename, FileType.TEXT_PLAIN, "content"));
         }
+
+
 
         private static String generateRandomFolderNameWith(String folderSuffix)
         {

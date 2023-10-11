@@ -404,6 +404,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 "-Dcsrf.filter.enabled=false " +
                                 "-Dalfresco.restApi.basicAuthScheme=true " +
                                 "-Dquery.cmis.queryConsistency=EVENTUAL " +
+                                "-Dquery.fts.queryConsistency=EVENTUAL " +
                                 "-Xms1500m -Xmx1500m ")
                        .withNetwork(network)
                        .withNetworkAliases("alfresco")
