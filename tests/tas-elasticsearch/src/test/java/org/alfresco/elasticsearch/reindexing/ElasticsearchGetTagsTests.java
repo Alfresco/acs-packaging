@@ -50,7 +50,11 @@ public class ElasticsearchGetTagsTests extends AbstractTestNGSpringContextTests
     @BeforeClass(alwaysRun = true)
     public void dataPreparation() throws InterruptedException
     {
+        serverHealth.isServerReachable();
         serverHealth.assertServerIsOnline();
+
+        STEP("Index system nodes");
+        AlfrescoStackInitializer.reindexEverything();
 
         STEP("Create user and site");
         user = dataUser.createRandomTestUser();
