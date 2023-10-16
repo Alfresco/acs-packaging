@@ -201,7 +201,7 @@ public class ElasticsearchHighlightingTests extends AbstractTestNGSpringContextT
         // Configure the expected highlights for each document.
         Predicate<SearchNodeModel> assertionMethod = highlightAssert(
             Map.of(FILE_A, Map.of("cm:name", List.of("<em>file</em>A.txt"), "cm:content", List.of("The quick brown fox jumps over the lazy (dog).")),
-                FILE_B, Map.of("cm:name", List.of("<em>file<em/>B.txt"), "cm:content", List.of("The lazy (dog) sleeps under the quick brown fox.",
+                FILE_B, Map.of("cm:name", List.of("<em>file</em>B.txt"), "cm:content", List.of("The lazy (dog) sleeps under the quick brown fox.",
                     "The end of the document mentions the (dog) again!"))));
         searchQueryService.expectAllResultsFromQuery(searchRequest, user, assertionMethod);
     }
