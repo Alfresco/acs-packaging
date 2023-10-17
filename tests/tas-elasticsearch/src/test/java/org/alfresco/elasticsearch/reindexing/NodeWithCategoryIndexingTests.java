@@ -1,5 +1,7 @@
 package org.alfresco.elasticsearch.reindexing;
 
+import static java.lang.String.format;
+
 import static org.alfresco.elasticsearch.SearchQueryService.req;
 import static org.alfresco.utility.report.log.Step.STEP;
 
