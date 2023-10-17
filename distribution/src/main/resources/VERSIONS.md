@@ -73,7 +73,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Application Servers
 | Component | Recommended | Also Available |
 |---|---|---|
-| Tomcat | 10.X |
+| Tomcat | 10.1.X |
 
 ##### Client Operating Systems
 | Component | Recommended | Also Available |
