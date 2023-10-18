@@ -89,6 +89,115 @@ public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelated
         searchQueryService.expectResultsFromQuery(query, testUser);
     }
 
+
+    @Test(groups = TestGroup.SEARCH)
+    public void testAncestorQuery()
+    {
+        // then
+        STEP("Verify that searching by ANCESTOR and category will find one descendant node: folderA.");
+        SearchRequest query = req("ANCESTOR:" + categories.get(L).getId());
+        searchQueryService.expectResultsFromQuery(query, testUser, folders(A).getName());
+    }
+
+
+    @Test(groups = TestGroup.SEARCH)
+    public void testAncestorQuery_byParentCategory()
+    {
+        // then
+        STEP("Verify that searching by ANCESTOR and category will find one descendant node: folderA.");
+        SearchRequest query = req("ANCESTOR:" + categories.get(K).getId());
+        searchQueryService.expectResultsFromQuery(query, testUser, categories.get(L).getName(), folders(A).getName());
+    }
+
+
+    @Test(groups = TestGroup.SEARCH)
+    public void testAncestorQueryAgainstFolderAfterCategoryDeletion()
+    {
+        // given
+        STEP("Create nested folders in site's Document Library.");
+        folders().createNestedFolders(C);
+
+        STEP("Create nested categories.");
+        categories.createNestedCategories(M);
+
+        STEP("Link folders to category.");
+        folders(C).linkToCategory(categories.get(M));
+
+        // when
+        STEP("Verify that searching by PARENT and category will find one descendant node: folderC.");
+        SearchRequest query = req("ANCESTOR:" + categories.get(M).getId());
+        searchQueryService.expectResultsFromQuery(query, testUser, folders(C).getName());
+
+        // then
+        STEP("Delete categoryM.");
+        categories.delete(M);
+
+        STEP("Verify that searching by PARENT and deleted category will find no descendant nodes.");
+        searchQueryService.expectResultsFromQuery(query, testUser);
+    }
+
+
+    @Test(groups = TestGroup.SEARCH)
+    public void testAncestorQueryAgainstFolderAfterChildCategoryDeletion()
+    {
+        // given
+        STEP("Create nested folders in site's Document Library.");
+        folders().createNestedFolders(C);
+
+        STEP("Create nested categories.");
+        categories.createNestedCategories(P, Q);
+
+        STEP("Link folders to category.");
+        folders(C).linkToCategory(categories.get(P));
+        folders(C).linkToCategory(categories.get(Q));
+
+        // when
+        STEP("Verify that searching by ANCESTOR and category will find one descendant node: folderC.");
+        SearchRequest queryBy_P = req("ANCESTOR:" + categories.get(P).getId());
+        SearchRequest queryBy_Q = req("ANCESTOR:" + categories.get(Q).getId());
+
+        searchQueryService.expectResultsFromQuery(queryBy_P, testUser, categories.get(Q).getName(), folders(C).getName());
+        searchQueryService.expectResultsFromQuery(queryBy_Q, testUser, folders(C).getName());
+
+        // then
+        STEP("Delete categoryQ.");
+        categories.delete(Q);
+
+        STEP("Verify that searching by ANCESTOR and parent category will find folderC.");
+        searchQueryService.expectResultsFromQuery(queryBy_Q, testUser, folders(C).getName());
+
+        STEP("Verify that searching by ANCESTOR and deleted category will find no descendant nodes.");
+        searchQueryService.expectResultsFromQuery(queryBy_P, testUser);
+    }
+
+
+    @Test(groups = TestGroup.SEARCH)
+    public void testAncestorQueryAgainstFolderAfterParentCategoryDeletion()
+    {
+        // given
+        STEP("Create nested folders in site's Document Library.");
+        folders().createNestedFolders(C);
+
+        STEP("Create nested categories.");
+        categories.createNestedCategories(P, Q);
+
+        STEP("Link folders to category.");
+        folders(C).linkToCategory(categories.get(Q));
+
+        // when
+        STEP("Verify that searching by ANCESTOR and category will find one descendant node: folderC.");
+        SearchRequest query = req("ANCESTOR:" + categories.get(Q).getId());
+        searchQueryService.expectResultsFromQuery(query, testUser, folders(C).getName());
+
+        // then
+        STEP("Delete categoryM.");
+        categories.delete(P);
+
+        STEP("Verify that searching by ANCESTOR and deleted category will find no descendant nodes.");
+        searchQueryService.expectResultsFromQuery(query, testUser);
+    }
+
+
     @Test(groups = TestGroup.SEARCH)
     public void testParentQueryAgainstFolderAfterParentCategoryDeletion()
     {
