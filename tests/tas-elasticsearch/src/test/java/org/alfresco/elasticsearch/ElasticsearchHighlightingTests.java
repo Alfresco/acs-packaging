@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import org.alfresco.rest.search.ResponseHighlightModel;
+import org.alfresco.rest.search.RestRequestFieldsModel;
 import org.alfresco.rest.search.RestRequestHighlightModel;
 import org.alfresco.rest.search.SearchNodeModel;
 import org.alfresco.rest.search.SearchRequest;
@@ -37,7 +38,7 @@ import org.testng.annotations.Test;
 @ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
         initializers = AlfrescoStackInitializer.class)
 // These are TestNG tests and the assertions are hidden in searchQueryService.
-@SuppressWarnings({ "PMD.JUnit4TestShouldUseTestAnnotation", "PMD.JUnitTestsShouldIncludeAssert" })
+@SuppressWarnings({ "PMD.JUnitTestsShouldIncludeAssert" })
 public class ElasticsearchHighlightingTests extends AbstractTestNGSpringContextTests
 {
     static final Logger LOGGER = LoggerFactory.getLogger(ElasticsearchHighlightingTests.class);
@@ -123,6 +124,124 @@ public class ElasticsearchHighlightingTests extends AbstractTestNGSpringContextT
         searchQueryService.expectAllResultsFromQuery(searchRequest, user, assertionMethod);
     }
 
+    @Test(groups = { TestGroup.SEARCH })
+    public void testHighlightsWithCustomPrefixAndPostfix()
+    {
+        STEP("Search for files mentioning 'dog' with custom prefix and postfix");
+        String query = "cm:content:dog AND SITE:" + site.getId();
+        SearchRequest searchRequest = req("afts", query);
+        RestRequestHighlightModel highlightModel = RestRequestHighlightModel.builder()
+            .prefix("<b>")
+            .postfix("</b>")
+            .fields(List.of("cm:content"))
+            .build();
+        searchRequest.setHighlight(highlightModel);
+        // Configure the expected highlights for each document.
+        Predicate<SearchNodeModel> assertionMethod = highlightAssert(
+            Map.of(FILE_A, Map.of("cm:content", List.of("The quick brown fox jumps over the lazy <b>dog</b>.")),
+                FILE_B, Map.of("cm:content", List.of("The lazy <b>dog</b> sleeps under the quick brown fox.",
+                    "The end of the document mentions the <b>dog</b> again!"))));
+        searchQueryService.expectAllResultsFromQuery(searchRequest, user, assertionMethod);
+    }
+
+    @Test(groups = { TestGroup.SEARCH })
+    public void testHighlightsWithBlankPrefixAndPostfix()
+    {
+        STEP("Search for files mentioning 'middle' with blank mark as custom prefix and postfix");
+        String query = "cm:content:middle AND SITE:" + site.getId();
+        SearchRequest searchRequest = req("afts", query);
+        RestRequestHighlightModel highlightModel = RestRequestHighlightModel.builder()
+            .prefix(" ")
+            .postfix(" ")
+            .fields(List.of("cm:content"))
+            .build();
+        searchRequest.setHighlight(highlightModel);
+        // Configure the expected highlights for each document.
+        Predicate<SearchNodeModel> assertionMethod = highlightAssert(
+            Map.of(FILE_B, Map.of("cm:content", List.of("The  middle  of the document is quite long:\nLorem ipsum dolor sit amet."))));
+        searchQueryService.expectAllResultsFromQuery(searchRequest, user, assertionMethod);
+    }
+
+    @Test(groups = { TestGroup.SEARCH })
+    public void testHighlightsWithGlobalAndFieldSpecificPrefixesAndPostfixes()
+    {
+        STEP("Search for files with 'file' in the name that mention 'dog' with global and field specific prefixes or postfixes");
+        String query = "cm:content:dog AND cm:name:file AND SITE:" + site.getId();
+        SearchRequest searchRequest = req("afts", query);
+        RestRequestHighlightModel highlightModel = RestRequestHighlightModel.builder()
+            .prefix("¿")
+            .postfix("?")
+            .fields(
+                RestRequestFieldsModel.of("cm:name"),
+                RestRequestFieldsModel.of("cm:content", "(", ")")
+            )
+            .build();
+        searchRequest.setHighlight(highlightModel);
+        // Configure the expected highlights for each document.
+        Predicate<SearchNodeModel> assertionMethod = highlightAssert(
+            Map.of(FILE_A, Map.of("cm:name", List.of("¿file?A.txt"), "cm:content", List.of("The quick brown fox jumps over the lazy (dog).")),
+                FILE_B, Map.of("cm:name", List.of("¿file?B.txt"), "cm:content", List.of("The lazy (dog) sleeps under the quick brown fox.",
+                    "The end of the document mentions the (dog) again!"))));
+        searchQueryService.expectAllResultsFromQuery(searchRequest, user, assertionMethod);
+    }
+
+    @Test(groups = { TestGroup.SEARCH })
+    public void testHighlightsWithOneFieldSpecificPrefixAndPostfix()
+    {
+        STEP("Search for files with 'file' in the name that mention 'dog' with one field specific prefix or postfix");
+        String query = "cm:content:dog AND cm:name:file AND SITE:" + site.getId();
+        SearchRequest searchRequest = req("afts", query);
+        RestRequestHighlightModel highlightModel = RestRequestHighlightModel.builder()
+            .fields(
+                RestRequestFieldsModel.of("cm:name"),
+                RestRequestFieldsModel.of("cm:content", "(", ")")
+            )
+            .build();
+        searchRequest.setHighlight(highlightModel);
+        // Configure the expected highlights for each document.
+        Predicate<SearchNodeModel> assertionMethod = highlightAssert(
+            Map.of(FILE_A, Map.of("cm:name", List.of("<em>file</em>A.txt"), "cm:content", List.of("The quick brown fox jumps over the lazy (dog).")),
+                FILE_B, Map.of("cm:name", List.of("<em>file</em>B.txt"), "cm:content", List.of("The lazy (dog) sleeps under the quick brown fox.",
+                    "The end of the document mentions the (dog) again!"))));
+        searchQueryService.expectAllResultsFromQuery(searchRequest, user, assertionMethod);
+    }
+
+    @Test(groups = { TestGroup.SEARCH })
+    public void testHighlightsInTwoFieldsWithPrefixAndWithoutPostfix()
+    {
+        STEP("Search for files with 'file' in the name that mention 'middle' with custom prefix");
+        String query = "cm:content:middle AND cm:name:file AND SITE:" + site.getId();
+        SearchRequest searchRequest = req("afts", query);
+        RestRequestHighlightModel highlightModel = RestRequestHighlightModel.builder()
+            .fields(List.of("cm:name", "cm:content"))
+            .prefix("(")
+            .build();
+        searchRequest.setHighlight(highlightModel);
+        // Configure the expected highlights for each document.
+        Predicate<SearchNodeModel> assertionMethod = highlightAssert(
+            Map.of(FILE_B, Map.of("cm:name", List.of("(file</em>B.txt"),
+                "cm:content", List.of("The (middle</em> of the document is quite long:\nLorem ipsum dolor sit amet."))));
+        searchQueryService.expectAllResultsFromQuery(searchRequest, user, assertionMethod);
+    }
+
+    @Test(groups = { TestGroup.SEARCH })
+    public void testHighlightsInTwoFieldsWithoutPrefixAndWithPostfix()
+    {
+        STEP("Search for files with 'file' in the name that mention 'middle' with custom postfix");
+        String query = "cm:content:middle AND cm:name:file AND SITE:" + site.getId();
+        SearchRequest searchRequest = req("afts", query);
+        RestRequestHighlightModel highlightModel = RestRequestHighlightModel.builder()
+            .fields(List.of("cm:name", "cm:content"))
+            .postfix(")")
+            .build();
+        searchRequest.setHighlight(highlightModel);
+        // Configure the expected highlights for each document.
+        Predicate<SearchNodeModel> assertionMethod = highlightAssert(
+            Map.of(FILE_B, Map.of("cm:name", List.of("<em>file)B.txt"),
+                "cm:content", List.of("The <em>middle) of the document is quite long:\nLorem ipsum dolor sit amet."))));
+        searchQueryService.expectAllResultsFromQuery(searchRequest, user, assertionMethod);
+    }
+
     /**
      * Create a predicate that returns true if the highlights for a received document match the given expectation.
      *
@@ -140,7 +259,7 @@ public class ElasticsearchHighlightingTests extends AbstractTestNGSpringContextT
             Map<String, List<String>> expectedHighlights = allExpectedHighlights.get(document.getName());
             List<ResponseHighlightModel> actualHighlights = document.getSearch().getHighlight();
             Set<String> actualFields = actualHighlights.stream()
-                                                       .map(highlight -> highlight.getField())
+                                                       .map(ResponseHighlightModel::getField)
                                                        .collect(toSet());
             if (!actualFields.equals(expectedHighlights.keySet()))
             {
