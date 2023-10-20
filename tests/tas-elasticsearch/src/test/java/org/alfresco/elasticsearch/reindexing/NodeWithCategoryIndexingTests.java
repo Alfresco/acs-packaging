@@ -181,7 +181,7 @@ public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelated
         STEP("Create nested categories.");
         categories.createNestedCategories(P, Q);
 
-        STEP("Link folders to category.");
+        STEP("Link folder to category.");
         folders(C).linkToCategory(categories.get(Q));
 
         // when
@@ -190,11 +190,11 @@ public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelated
         searchQueryService.expectResultsFromQuery(query, testUser, folders(C).getName());
 
         // then
-        STEP("Delete categoryM.");
+        STEP("Delete categoryP.");
         categories.delete(P);
 
         STEP("Verify that searching by ANCESTOR and deleted category will find no descendant nodes.");
-        searchQueryService.expectResultsFromQuery(query, testUser);
+        searchQueryService.expectNoResultsFromQuery(query, testUser);
     }
 
 
@@ -217,11 +217,11 @@ public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelated
         searchQueryService.expectResultsFromQuery(query, testUser, folders(C).getName());
 
         // then
-        STEP("Delete categoryM.");
+        STEP("Delete categoryP.");
         categories.delete(P);
 
         STEP("Verify that searching by PARENT and deleted category will find no descendant nodes.");
-        searchQueryService.expectResultsFromQuery(query, testUser);
+        searchQueryService.expectNoResultsFromQuery(query, testUser);
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -250,7 +250,7 @@ public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelated
         // then
         STEP("Verify that searching by PATH for nested folder will return no results (Dependency to category is not transitive)");
         SearchRequest query = req(format("PATH:'/cm:categoryRoot/cm:generalclassifiable/cm:%s/cm:%s/cm:%s/cm:%s'", Kname, Lname, Aname, Bname));
-        searchQueryService.expectResultsFromQuery(query, testUser);
+        searchQueryService.expectNoResultsFromQuery(query, testUser);
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -261,7 +261,7 @@ public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelated
         String Lname = categories.get(L).getName();
 
         // then
-        STEP("Verify that searching by PATH and category will find: folderA");
+        STEP("Verify that searching recursively by PATH and category will find: folderA");
         SearchRequest query = req(format("PATH:'/cm:categoryRoot/cm:generalclassifiable/cm:%s/cm:%s//*'", Kname, Lname));
         searchQueryService.expectResultsFromQuery(query, testUser, folders(A).getName());
     }
@@ -273,7 +273,7 @@ public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelated
         String Kname = categories.get(K).getName();
 
         // then
-        STEP("Verify that searching by PATH and category will find: folderA");
+        STEP("Verify that searching recursively by PATH and category will find: categoryL, folderA");
         SearchRequest query = req(format("PATH:'/cm:categoryRoot/cm:generalclassifiable/cm:%s//*'", Kname));
         searchQueryService.expectResultsFromQuery(query, testUser, categories.get(L).getName(), folders(A).getName());
     }

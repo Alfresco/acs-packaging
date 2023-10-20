@@ -1,5 +1,7 @@
 package org.alfresco.elasticsearch.reindexing.utils;
 
+import java.util.UUID;
+
 import org.alfresco.rest.core.RestWrapper;
 import org.alfresco.rest.model.RestCategoryModel;
 import org.alfresco.utility.model.UserModel;
@@ -14,6 +16,7 @@ public class Category extends RestCategoryModel
     {
         this.restClient = restClient;
         this.user = user;
+        newCategoryName = generateRandomName(newCategoryName);
 
         RestCategoryModel category = restClient.authenticateUser(user)
                 .withCoreAPI()
@@ -31,5 +34,10 @@ public class Category extends RestCategoryModel
     public Category createSubcategory(String subcategoryName)
     {
         return new Category(restClient, user, this, subcategoryName);
+    }
+
+    private static String generateRandomName(String categorySuffixx)
+    {
+        return "category" + categorySuffixx + "_" + UUID.randomUUID();
     }
 }

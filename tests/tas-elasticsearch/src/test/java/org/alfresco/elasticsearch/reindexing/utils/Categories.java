@@ -37,13 +37,13 @@ public class Categories
 
         List<Category> categories = new ArrayList<>();
         categories.add(new Category(restClient, dataUser.getAdminUser(), ROOT_CATEGORY, nestedCategoriesNames[0]));
+        this.categories.put(nestedCategoriesNames[0], categories.get(0));
 
         for (int i = 1; i < nestedCategoriesNames.length; i++)
         {
             categories.add(categories.get(i - 1).createSubcategory(nestedCategoriesNames[i]));
+            this.categories.put(nestedCategoriesNames[i], categories.get(i));
         }
-
-        categories.forEach(category -> this.categories.put(category.getName(), category));
 
         return categories;
     }
@@ -52,12 +52,17 @@ public class Categories
         return categories.get(categoryName);
     }
 
-    public void delete(String categoryName) {
+    public void delete(String categoryName)
+    {
         Category categoryToDelete = categories.remove(categoryName);
+        delete(categoryToDelete);
+    }
 
+    private void delete(Category category)
+    {
         restClient.authenticateUser(dataUser.getAdminUser())
                 .withCoreAPI()
-                .usingCategory(categoryToDelete)
+                .usingCategory(category)
                 .deleteCategory();
     }
 }
