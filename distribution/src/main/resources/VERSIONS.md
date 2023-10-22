@@ -16,7 +16,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Alfresco Transform Service | @dependency.alfresco-transform-service.version@ |
 | Alfresco Transform Core | @dependency.alfresco-transform-core.version@ |
 | Alfresco Shared File Store | @dependency.alfresco-transform-service.version@ |
-| Document Transformation Engine | @alfresco.transformation-engine.version@ |
+| Document Transformation Engine | @dependency.alfresco-transform-core.version@ |
 | Alfresco File Transfer Receiver | 7.0.0 |
 | Alfresco Module Management Tool | @dependency.alfresco-community-repo.version@ |
 | Alfresco Spring Encryptor | @dependency.alfresco-spring-encryptor.version@ |
