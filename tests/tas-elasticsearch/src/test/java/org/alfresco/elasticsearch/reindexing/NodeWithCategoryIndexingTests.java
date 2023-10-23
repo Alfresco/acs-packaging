@@ -120,7 +120,7 @@ public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelated
     }
 
     @Test(groups = TestGroup.SEARCH)
-    public void ensureCategoriesAreNotTransitive_lookingForAllChildren()
+    public void ensureCategoriesAreNotTransitive_lookingForAllDescendants()
     {
         // given
         String Kname = categories.get(K).getName();
