@@ -37,7 +37,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 @ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
-        initializers = AlfrescoStackInitializer.class)
+    initializers = AlfrescoStackInitializer.class)
 // These are TestNG tests and the assertions are hidden in searchQueryService.
 @SuppressWarnings({ "PMD.JUnitTestsShouldIncludeAssert" })
 public class ElasticsearchPlainHighlightingTests extends AbstractTestNGSpringContextTests
@@ -118,9 +118,9 @@ public class ElasticsearchPlainHighlightingTests extends AbstractTestNGSpringCon
         searchRequest.setHighlight(highlightModel);
         // Configure the expected highlights for each document.
         Predicate<SearchNodeModel> assertionMethod = highlightAssert(
-                Map.of(FILE_A, Map.of("cm:content", List.of("The quick brown fox jumps over the lazy <em>dog</em>.")),
-                       FILE_B, Map.of("cm:content", List.of("The lazy <em>dog</em> sleeps under the quick brown fox. The middle of the document is quite long:\nLorem",
-                        "\nea consequuntur impedit aut eaque enim aut atque rerum.\nThe end of the document mentions the <em>dog</em> again!\n"))));
+            Map.of(FILE_A, Map.of("cm:content", List.of("The quick brown fox jumps over the lazy <em>dog</em>.")),
+                FILE_B, Map.of("cm:content", List.of("The lazy <em>dog</em> sleeps under the quick brown fox. The middle of the document is quite long:\nLorem",
+                    "\nea consequuntur impedit aut eaque enim aut atque rerum.\nThe end of the document mentions the <em>dog</em> again!\n"))));
         searchQueryService.expectAllResultsFromQuery(searchRequest, user, assertionMethod);
     }
 
@@ -134,8 +134,8 @@ public class ElasticsearchPlainHighlightingTests extends AbstractTestNGSpringCon
         searchRequest.setHighlight(highlightModel);
         // Configure the expected highlights for each document.
         Predicate<SearchNodeModel> assertionMethod = highlightAssert(
-                Map.of(FILE_B, Map.of("cm:name", List.of("<em>file</em>B.txt"),
-                    "cm:content", List.of("The lazy dog sleeps under the quick brown fox. The <em>middle</em> of the document is quite long:\nLorem"))));
+            Map.of(FILE_B, Map.of("cm:name", List.of("<em>file</em>B.txt"),
+                "cm:content", List.of("The lazy dog sleeps under the quick brown fox. The <em>middle</em> of the document is quite long:\nLorem"))));
         searchQueryService.expectAllResultsFromQuery(searchRequest, user, assertionMethod);
     }
 
@@ -429,8 +429,8 @@ public class ElasticsearchPlainHighlightingTests extends AbstractTestNGSpringCon
             Map<String, List<String>> expectedHighlights = allExpectedHighlights.get(document.getName());
             List<ResponseHighlightModel> actualHighlights = document.getSearch().getHighlight();
             Set<String> actualFields = actualHighlights.stream()
-                                                       .map(ResponseHighlightModel::getField)
-                                                       .collect(toSet());
+                .map(ResponseHighlightModel::getField)
+                .collect(toSet());
             if (!actualFields.equals(expectedHighlights.keySet()))
             {
                 LOGGER.error("Unexpected field set for {}: {}", document.getName(), actualFields);
@@ -440,13 +440,12 @@ public class ElasticsearchPlainHighlightingTests extends AbstractTestNGSpringCon
             for (String expectedField : expectedHighlights.keySet())
             {
                 ResponseHighlightModel expectedHighlight = new ResponseHighlightModel();
-                List<String> expectedSnippets = new ArrayList<>(expectedHighlights.get(expectedField));
+                List<String> expectedSnippets = expectedHighlights.get(expectedField);
                 expectedHighlight.setField(expectedField);
                 expectedHighlight.setSnippets(expectedSnippets);
                 expectedHighlightResponse.add(expectedHighlight);
             }
-            Set<ResponseHighlightModel> actualHighlightsResponse = new HashSet<>(actualHighlights);
-            if (!actualHighlightsResponse.equals(expectedHighlightResponse))
+            if (!new HashSet<>(actualHighlights).equals(expectedHighlightResponse))
             {
                 LOGGER.error("Unexpected highlights for {}, {}", document.getName(), actualHighlights);
                 return false;
