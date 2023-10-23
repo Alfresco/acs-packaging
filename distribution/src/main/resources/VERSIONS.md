@@ -16,7 +16,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Alfresco Transform Service | @dependency.alfresco-transform-service.version@ |
 | Alfresco Transform Core | @dependency.alfresco-transform-core.version@ |
 | Alfresco Shared File Store | @dependency.alfresco-transform-service.version@ |
-| Document Transformation Engine | @alfresco.transformation-engine.version@ |
+| Document Transformation Engine | @dependency.alfresco-transform-core.version@ |
 | Alfresco File Transfer Receiver | 7.0.0 |
 | Alfresco Module Management Tool | @dependency.alfresco-community-repo.version@ |
 | Alfresco Spring Encryptor | @dependency.alfresco-spring-encryptor.version@ |
@@ -73,7 +73,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Application Servers
 | Component | Recommended | Also Available |
 |---|---|---|
-| Tomcat | 9.0.41 |
+| Tomcat | 10.1.X |
 
 ##### Client Operating Systems
 | Component | Recommended | Also Available |
@@ -93,10 +93,10 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Java
 | Component | Recommended | Also Available |
 |---|---|---|
-| OpenJDK | 17.0.4 | 11.0.7 |
-| Amazon Corretto | 17 | 11 |
+| OpenJDK | 17.0.4 |  |
+| Amazon Corretto | 17 |  |
 
 ##### Message Broker
 | Component | Recommended | Also Available |
 |---|---|---|
-| ActiveMQ | 5.17.4 | 5.16.1 |
+| ActiveMQ | 5.18.2| 5.17.4 |

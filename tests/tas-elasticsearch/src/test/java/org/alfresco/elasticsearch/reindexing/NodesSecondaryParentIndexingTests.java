@@ -67,7 +67,7 @@ public class NodesSecondaryParentIndexingTests extends NodesSecondaryChildrenRel
     public void testSecondaryParentWithNodeHavingOneSecondaryChild()
     {
         // then
-        STEP("Verify that searching rby PARENT and folderM will find node folderC.");
+        STEP("Verify that searching by PARENT and folderM will find node folderC.");
         SearchRequest query = req("PARENT:" + folders(M).getNodeRef());
         searchQueryService.expectResultsFromQuery(query, testUser,
             folders(C).getName());
