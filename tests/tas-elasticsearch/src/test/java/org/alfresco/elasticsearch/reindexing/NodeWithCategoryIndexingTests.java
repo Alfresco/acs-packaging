@@ -133,7 +133,7 @@ public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelated
     }
 
     @Test(groups = TestGroup.SEARCH)
-    public void ensureCategoriesAreNotTransitive_lookingForAllChildren_byParentCategory()
+    public void ensureCategoriesAreNotTransitive_lookingForAllDescendants_byParentCategory()
     {
         // given
         String Kname = categories.get(K).getName();
