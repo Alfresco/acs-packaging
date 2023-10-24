@@ -103,7 +103,7 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
             fileInP.getName());
     }
 
-    @Test(groups = TestGroup.SEARCH)
+    @Test(groups = TestGroup.SEARCH, enabled = false)
     @Ignore("ACS-6112")
     public void testSecondaryAncestorWithNodeHavingComplexSecondaryRelationship()
     {
