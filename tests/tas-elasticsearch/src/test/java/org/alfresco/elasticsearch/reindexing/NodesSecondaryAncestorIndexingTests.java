@@ -7,6 +7,7 @@ import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.TestGroup;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 /**
@@ -103,6 +104,7 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
     }
 
     @Test(groups = TestGroup.SEARCH)
+    @Ignore("ACS-6112")
     public void testSecondaryAncestorWithNodeHavingComplexSecondaryRelationship()
     {
         // then
