@@ -321,6 +321,8 @@ jobs:
             profiles: all-tas-tests,elastic
             search-engine-type: elasticsearch
             db-type: mariadb
+#          Temporarily commented out due to frequent GHA timeouts,
+#          pending further investigation as part of ACS-6177.
 #          - testSuite: Elasticsearch MS SQL
 #            profiles: all-tas-tests,elastic
 #            search-engine-type: elasticsearch
