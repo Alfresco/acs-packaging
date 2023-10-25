@@ -125,7 +125,7 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void testAbsolutePathQueryWithoutPrefixes()
     {
-        String folderPath = testFolders.stream().map(folder -> "cm:" + folder.getName()).collect(Collectors.joining("/"));
+        String folderPath = testFolders.stream().map(folder -> folder.getName()).collect(Collectors.joining("/"));
         SearchRequest query = req("PATH:\"/company_home/sites/" + testSite.getId() + "/documentLibrary/" + folderPath + "/" + testFileName + "\" AND name:*");
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
     }
