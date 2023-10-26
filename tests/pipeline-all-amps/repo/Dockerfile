@@ -2,7 +2,7 @@ ARG BASE_IMAGE
 # BUILD STAGE SWAGGERBUILDER
 FROM debian:11-slim AS SWAGGERBUILDER
 
-ARG JOLOKIA_VER=1.6.2
+ARG JOLOKIA_VER=2.0.0-M4
 
 RUN DEBIAN_FRONTEND=noninteractive; \
     apt-get update -yqq && apt-get -yqq install curl unzip && \
