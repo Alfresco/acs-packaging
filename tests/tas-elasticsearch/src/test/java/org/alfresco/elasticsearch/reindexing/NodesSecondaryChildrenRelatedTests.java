@@ -12,6 +12,8 @@ import java.util.stream.Stream;
 
 import org.alfresco.elasticsearch.SearchQueryService;
 import org.alfresco.rest.core.RestWrapper;
+import org.alfresco.rest.model.RestCategoryLinkBodyModel;
+import org.alfresco.rest.model.RestCategoryModel;
 import org.alfresco.rest.model.RestNodeBodyMoveCopyModel;
 import org.alfresco.rest.model.RestNodeModel;
 import org.alfresco.tas.AlfrescoStackInitializer;
@@ -191,6 +193,12 @@ public abstract class NodesSecondaryChildrenRelatedTests extends AbstractTestNGS
             folderCopy.setNodeRef(nodeCopy.getId());
             folderCopy.setCmisLocation(getCmisLocation(nodeCopy.getPath(), nodeCopy.getName()));
             return folderCopy;
+        }
+
+        protected void linkToCategory(RestCategoryModel category) {
+            restClient.authenticateUser(testUser).withCoreAPI()
+                    .usingNode(this)
+                    .linkToCategory(RestCategoryLinkBodyModel.builder().categoryId(category.getId()).create());
         }
 
         private void delete()
