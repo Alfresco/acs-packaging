@@ -321,12 +321,10 @@ jobs:
             profiles: all-tas-tests,elastic
             search-engine-type: elasticsearch
             db-type: mariadb
-#          Temporarily commented out due to frequent GHA timeouts,
-#          pending further investigation as part of ACS-6177.
-#          - testSuite: Elasticsearch MS SQL
-#            profiles: all-tas-tests,elastic
-#            search-engine-type: elasticsearch
-#            db-type: mssql
+         - testSuite: Elasticsearch MS SQL
+           profiles: all-tas-tests,elastic
+           search-engine-type: elasticsearch
+           db-type: mssql
           - testSuite: Elasticsearch Oracle 19.3.0-ee
             profiles: all-tas-tests,elastic
             search-engine-type: elasticsearch
@@ -360,6 +358,8 @@ jobs:
             search-engine-type: opensearch
             db-type: postgresql
     steps:
+      - name: Collect Workflow Telemetry
+        uses: runforesight/workflow-telemetry-action@v1
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
