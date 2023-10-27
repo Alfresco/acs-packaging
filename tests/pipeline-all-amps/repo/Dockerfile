@@ -4,11 +4,11 @@ FROM debian:11-slim AS SWAGGERBUILDER
 
 ARG JOLOKIA_VER=2.0.0-M4
 
-RUN DEBIAN_FRONTEND=noninteractive; \
-    apt-get update -yqq && apt-get -yqq install curl unzip && \
-    mkdir -p /build/{api-explorer,gs-api-explorer,jolokia} && \
-    curl -o /build/jolokia.war https://repo1.maven.org/maven2/org/jolokia/jolokia-war-unsecured/${JOLOKIA_VER}/jolokia-war-unsecured-${JOLOKIA_VER}.war && \
-    unzip -q /build/jolokia.war -d /build/jolokia
+USER root
+RUN yum install -y curl unzip && \
+    mkdir -p /build/jolokia && \
+    curl -o /build/jolokia-jee.war https://repo1.maven.org/maven2/org/jolokia/jolokia-war-unsecured/${JOLOKIA_VER}/jolokia-war-unsecured-${JOLOKIA_VER}.war && \
+    unzip -q /build/jolokia.war -d /build/jolokia && chmod -R g+r,g-w,o= /build
 
 COPY target/wars/api-explorer.war /build
 COPY target/wars/gs-api-explorer.war /build
