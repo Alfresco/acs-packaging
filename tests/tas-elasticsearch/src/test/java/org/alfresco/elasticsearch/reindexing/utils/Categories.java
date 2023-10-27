@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@SuppressWarnings("PMD.AvoidFieldNameMatchingTypeName")
 public class Categories
 {
     private static final String ROOT_CATEGORY_ID = "-root-";
