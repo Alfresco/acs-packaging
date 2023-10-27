@@ -86,7 +86,7 @@ public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelated
         categories.delete(M);
 
         STEP("Verify that searching by PARENT and deleted category will find no descendant nodes.");
-        searchQueryService.expectResultsFromQuery(query, testUser);
+        searchQueryService.expectNoResultsFromQuery(query, testUser);
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -112,7 +112,7 @@ public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelated
         categories.delete(P);
 
         STEP("Verify that searching by PARENT and deleted category will find no descendant nodes.");
-        searchQueryService.expectResultsFromQuery(query, testUser);
+        searchQueryService.expectNoResultsFromQuery(query, testUser);
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -141,7 +141,7 @@ public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelated
         // then
         STEP("Verify that searching by PATH for nested folder will return no results (Dependency to category is not transitive)");
         SearchRequest query = req(format("PATH:'/cm:categoryRoot/cm:generalclassifiable/cm:%s/cm:%s/cm:%s/cm:%s'", Kname, Lname, Aname, Bname));
-        searchQueryService.expectResultsFromQuery(query, testUser);
+        searchQueryService.expectNoResultsFromQuery(query, testUser);
     }
 
     @Test(groups = TestGroup.SEARCH)
