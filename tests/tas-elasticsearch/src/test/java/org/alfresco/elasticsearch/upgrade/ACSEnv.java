@@ -20,6 +20,7 @@ class ACSEnv extends BaseACSEnv
         postgres = createPostgresContainer(network);
 
         createActiveMqContainer(network);
+        createToxiproxyContainer(network);
         createSharedFileStoreContainer(network);
         createTransformCoreAIOContainer(network);
         createTransformRouterContainer(network);
@@ -36,6 +37,7 @@ class ACSEnv extends BaseACSEnv
         registerCreatedContainer(postgres);
 
         createActiveMqContainer(network);
+        createToxiproxyContainer(network);
         createSharedFileStoreContainer(network);
         createTransformCoreAIOContainer(network);
         createTransformRouterContainer(network);
@@ -70,6 +72,14 @@ class ACSEnv extends BaseACSEnv
         liveIndexing.start();
     }
 
+    private void createToxiproxyContainer(Network network)
+    {
+         newContainer(GenericContainer.class,  "ghcr.io/shopify/toxiproxy:2.7.0")
+                .withCommand("-config", "/opt/toxiproxy/config.json", "-host=0.0.0.0")
+                .withCopyToContainer("./toxiproxy-config.json","/opt/toxiproxy/config.json")
+                .withNetwork(network)
+    }
+
     private GenericContainer<?> createRepositoryContainer(Network network, String indexSubsystemName)
     {
         return newContainer(GenericContainer.class, cfg.getRepositoryImage())
@@ -96,7 +106,7 @@ class ACSEnv extends BaseACSEnv
                                 "-Dindex.subsystem.name=" + indexSubsystemName + " " +
                                 "-Dalfresco.host=localhost " +
                                 "-Dalfresco.port=8080 " +
-                                "-Dmessaging.broker.url=\"failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true\" " +
+                                "-Dmessaging.broker.url=\"failover:(nio://toxiproxy:30000)?timeout=3000&jms.useCompression=true\" " +
                                 "-Ddeployment.method=DOCKER_COMPOSE " +
                                 "-Dtransform.service.enabled=true " +
                                 "-Dtransform.service.url=http://transform-router:8095 " +
