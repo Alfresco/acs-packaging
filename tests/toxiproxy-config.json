@@ -1,0 +1,20 @@
+[
+  {
+    "name": "alfresco-activemq",
+    "listen": "[::]:30000",
+    "upstream": "activemq:61616",
+    "enabled": true
+  },
+  {
+    "name": "indexing-activemq",
+    "listen": "[::]:30001",
+    "upstream": "activemq:61616",
+    "enabled": true
+  },
+  {
+    "name": "reindexing-activemq",
+    "listen": "[::]:30002",
+    "upstream": "activemq:61616",
+    "enabled": true
+  }
+]
