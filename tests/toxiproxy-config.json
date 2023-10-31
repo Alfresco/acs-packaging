@@ -9,7 +9,8 @@
     "name": "indexing-activemq",
     "listen": "[::]:30001",
     "upstream": "activemq:61616",
-    "enabled": true
+    "enabled": true,
+    "latency": 1000
   },
   {
     "name": "reindexing-activemq",
