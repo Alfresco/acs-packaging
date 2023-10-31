@@ -7,6 +7,7 @@ import static org.alfresco.elasticsearch.upgrade.Utils.waitFor;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.images.builder.Transferable;
 
 class ACSEnv extends BaseACSEnv
 {
@@ -76,8 +77,8 @@ class ACSEnv extends BaseACSEnv
     {
          newContainer(GenericContainer.class,  "ghcr.io/shopify/toxiproxy:2.7.0")
                 .withCommand("-config", "/opt/toxiproxy/config.json", "-host=0.0.0.0")
-                .withCopyToContainer("./toxiproxy-config.json","/opt/toxiproxy/config.json")
-                .withNetwork(network)
+                .withCopyToContainer(Transferable.of("tests/toxiproxy-config.json"),"./toxiproxy-config.json")
+                .withNetwork(network);
     }
 
     private GenericContainer<?> createRepositoryContainer(Network network, String indexSubsystemName)

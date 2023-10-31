@@ -62,7 +62,7 @@ services:
       - activemq
     image: ghcr.io/shopify/toxiproxy:2.7.0
     volumes:
-      - ./toxiproxy-config.json:/opt/toxiproxy/config.json
+      - ./tests/toxiproxy-config.json:/opt/toxiproxy/config.json
     command: ["-config", "/opt/toxiproxy/config.json", "-host=0.0.0.0"]
     ports:
       - "8474:8474"
