@@ -172,7 +172,7 @@ class ACSEnv extends BaseACSEnv
         return newContainer(GenericContainer.class, cfg.getReIndexingImage())
                 .withEnv("ELASTICSEARCH_INDEXNAME", cfg.getIndexName())
                 .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://" + cfg.getElasticsearchHostname() + ":9200")
-                .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
+                .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://toxiproxy:30002")
                 .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
                 .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config")
                 .withEnv("SPRING_DATASOURCE_URL", "jdbc:postgresql://postgres:5432/alfresco")
@@ -188,7 +188,7 @@ class ACSEnv extends BaseACSEnv
         return newContainer(GenericContainer.class, cfg.getLiveIndexingImage())
                 .withEnv("ELASTICSEARCH_INDEXNAME", cfg.getIndexName())
                 .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://" + cfg.getElasticsearchHostname() + ":9200")
-                .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
+                .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nnio://toxiproxy:30001")
                 .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
                 .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config")
                 .withNetwork(alfresco.getNetwork());
