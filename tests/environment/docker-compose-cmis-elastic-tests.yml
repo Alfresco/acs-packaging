@@ -27,7 +27,7 @@ services:
         -Dalfresco.host=localhost
         -Dalfresco.port=8082
         -Daos.baseUrlOverwrite=http://localhost:8080/alfresco/aos
-        -Dmessaging.broker.url="failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true"
+        -Dmessaging.broker.url="failover:(nio://toxiproxy:30000)?timeout=3000&jms.useCompression=true"
         -Ddeployment.method=DOCKER_COMPOSE
         -Dtransform.service.enabled=true
         -Dtransform.service.url=http://transform-router:8095
@@ -56,6 +56,16 @@ services:
     command: postgres -c max_connections=300 -c log_min_messages=LOG
     ports:
       - 5432:5432
+
+  toxiproxy:
+    depends_on:
+      - activemq
+    image: ghcr.io/shopify/toxiproxy:2.7.0
+    volumes:
+      - ./toxiproxy-config.json:/opt/toxiproxy/config.json
+    command: ["-config", "/opt/toxiproxy/config.json", "-host=0.0.0.0"]
+    ports:
+      - "8474:8474"
 
   transform-router:
     mem_limit: 512m
