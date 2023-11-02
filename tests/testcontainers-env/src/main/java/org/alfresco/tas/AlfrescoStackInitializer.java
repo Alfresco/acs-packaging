@@ -194,16 +194,18 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     }
 
-    protected GenericContainer createLiveIndexingContainer()
+    protected GenericContainer<?> createLiveIndexingContainer()
     {
-        return new GenericContainer(getImagesConfig().getLiveIndexingImage())
-                       .withNetwork(network)
-                       .withNetworkAliases("live-indexing")
-                       .withEnv("ELASTICSEARCH_INDEXNAME", CUSTOM_ALFRESCO_INDEX)
-                       .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200")
-                       .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
-                       .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
-                       .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config");
+        return new GenericContainer<>(getImagesConfig().getLiveIndexingImage())
+            .withNetwork(network)
+            .withNetworkAliases("live-indexing")
+            .withEnv("ELASTICSEARCH_INDEXNAME", CUSTOM_ALFRESCO_INDEX)
+            .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200")
+            .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
+            .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
+            .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config")
+            .withEnv("JAVA_TOOL_OPTIONS", "-agentlib:jdwp=transport=dt_socket,address=*:5005,server=y,suspend=n")
+            .withExposedPorts(5005);
     }
 
     protected GenericContainer createSearchEngineContainer()
