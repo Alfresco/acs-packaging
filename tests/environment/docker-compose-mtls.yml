@@ -19,7 +19,17 @@
 version: "2"
 services:
   alfresco:
-    image: alfresco/alfresco-content-repository:latest
+    build:
+      context: ./alfresco-mtls
+      args:
+        SOLR_COMMS: https
+        ALIAS: alfresco
+        TRUSTSTORE_NAME: alfresco.truststore
+        TRUSTSTORE_TYPE: JCEKS
+        TRUSTSTORE_PASS: password
+        KEYSTORE_NAME: alfresco.keystore
+        KEYSTORE_TYPE: JCEKS
+        KEYSTORE_PASS: password
     mem_limit: 1900m
     environment:
       JAVA_TOOL_OPTIONS: >-
@@ -38,9 +48,8 @@ services:
         -Ddb.password=alfresco
         -Ddb.url=jdbc:postgresql://postgres:5432/alfresco
         -Dsolr.host=solr6
-        -Dsolr.port=8983
-        -Dsolr.secureComms=secret
-        -Dsolr.sharedSecret=secret
+        -Dsolr.port.ssl=8983
+        -Dsolr.secureComms=https
         -Dsolr.base.url=/solr
         -Dindex.subsystem.name=solr6
         -Dalfresco.host=localhost
@@ -61,15 +70,14 @@ services:
         -Dhttpclient.config.sharedfilestore.hostnameVerificationDisabled=${HOSTNAME_VERIFICATION_DISABLED}
         -Dhttpclient.config.transform.mTLSEnabled=true
         -Dhttpclient.config.transform.hostnameVerificationDisabled=${HOSTNAME_VERIFICATION_DISABLED}
-        -Dencryption.ssl.keystore.location=/usr/local/tomcat/shared/classes/alfresco/extension/keystore/alfresco.keystore
-        -Dencryption.ssl.truststore.location=/usr/local/tomcat/shared/classes/alfresco/extension/keystore/alfresco.truststore
+        -Dencryption.ssl.keystore.location=/usr/local/tomcat/alf_data/keystore/alfresco.keystore
+        -Dencryption.ssl.truststore.location=/usr/local/tomcat/alf_data/keystore/alfresco.truststore
         -Dssl-keystore.password=password
         -Dssl-truststore.password=password
         -XX:MinRAMPercentage=50
         -XX:MaxRAMPercentage=80
     volumes:
-      - ${CI_WORKSPACE}/keystores/alfresco/alfresco.truststore:/usr/local/tomcat/shared/classes/alfresco/extension/keystore/alfresco.truststore
-      - ${CI_WORKSPACE}/keystores/alfresco/alfresco.keystore:/usr/local/tomcat/shared/classes/alfresco/extension/keystore/alfresco.keystore
+      - ${CI_WORKSPACE}/keystores/alfresco:/usr/local/tomcat/alf_data/keystore
     ports:
       - "8082:8080"
       - "143:1143"
@@ -207,7 +215,8 @@ services:
       - "5432:5432"
 
   solr6:
-    image: alfresco/alfresco-search-services:${SOLR6_TAG}
+    build:
+      context: ./solr-mtls
     mem_limit: 2g
     environment:
       # Solr needs to know how to register itself with Alfresco
@@ -218,13 +227,24 @@ services:
       SOLR_SOLR_PORT: "8983"
       # Create the default alfresco and archive cores
       SOLR_CREATE_ALFRESCO_DEFAULTS: "alfresco,archive"
+
       # HTTPS or SECRET
-      ALFRESCO_SECURE_COMMS: "secret"
-      # SHARED SECRET VALUE
-      JAVA_TOOL_OPTIONS: >-
-        -Dalfresco.secureComms.secret=secret
+      ALFRESCO_SECURE_COMMS: "https"
+
+      SOLR_OPTS: -Dsolr.ssl.checkPeerName=false -Dsolr.allow.unsafe.resourceloading=true
+      SOLR_SSL_KEY_STORE: /opt/alfresco-search-services/keystore/searchengine.keystore
+      SOLR_SSL_KEY_STORE_TYPE: JCEKS
+      SOLR_SSL_TRUST_STORE: /opt/alfresco-search-services/keystore/searchengine.truststore
+      SOLR_SSL_TRUST_STORE_TYPE: JCEKS
+      SOLR_SSL_NEED_CLIENT_AUTH: 'true'
+
+      JAVA_TOOL_OPTIONS:
+        -Dsolr.jetty.truststore.password=password  -Dsolr.jetty.keystore.password=password  
+        -Dssl-keystore.password=password -Dssl-truststore.password=password
     ports:
-      - "8083:8983"  # Browser port
+      - "8083:8983" # Browser port
+    volumes:
+      - ${CI_WORKSPACE}/keystores/searchEngine:/opt/alfresco-search-services/keystore
 
   activemq:
     image: quay.io/alfresco/alfresco-activemq:${ACTIVEMQ_TAG}
