@@ -43,6 +43,19 @@ jobs:
               {"Key": "Name", "Value": "arm64-acs-packaging-gh-runner"},
               {"Key": "GitHubRepository", "Value": "${{ github.repository }}"}
             ]
+          pre-runner-script: |
+            set -e
+            sudo apt-get update
+            sudo apt-get install ca-certificates curl gnupg
+            sudo install -m 0755 -d /etc/apt/keyrings
+            curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+            sudo chmod a+r /etc/apt/keyrings/docker.gpg
+            echo \
+              "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+              "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+              sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+            sudo apt-get update
+            sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin git
 
   arm64_health_check:
     name: "ARM64 Health Check"
@@ -58,6 +71,14 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.36.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.36.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.36.0
+      - name: Install Maven
+        uses: sdkman/sdkman-action@b1f9b696c79148b66d3d3a06f7ea801820318d0f
+        with:
+          candidate: maven
+          version: "3.8.8"
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
       - name: "Login to Docker Hub"
         uses: docker/login-action@v2.1.0
         with:
@@ -69,17 +90,6 @@ jobs:
           registry: quay.io
           username: ${{ secrets.QUAY_USERNAME }}
           password: ${{ secrets.QUAY_PASSWORD }}
-      - name: "Clean Maven cache"
-        run: rm -rf $HOME/.m2/repository/*
-      - name: "Clean up the environment"
-        run: |
-          rm -rf ../alfresco-community-repo
-          rm -rf dtas
-          docker container stop $(docker container ls -aq) || true
-          docker container rm $(docker container ls -aq) || true
-          docker volume rm -f $(docker volume ls -q) || true
-          docker rmi -f $(docker images -aq) || true
-          docker system prune -a -f
       - name: "Get latest matching tag"
         run: |
           VERSION_NUMBER=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | sed -E 's/([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
