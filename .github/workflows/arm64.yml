@@ -30,7 +30,7 @@ jobs:
           aws-region: eu-west-2
       - name: "Start EC2 runner"
         id: start-ec2-runner
-        uses: machulav/ec2-github-runner@2c4d1dcf2c54673ed3bfd194c4b6919ed396a209
+        uses: machulav/ec2-github-runner@4e0303de215db88e1c489e07a15ca4d867f488ea
         with:
           mode: start
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
@@ -43,18 +43,6 @@ jobs:
               {"Key": "Name", "Value": "arm64-acs-packaging-gh-runner"},
               {"Key": "GitHubRepository", "Value": "${{ github.repository }}"}
             ]
-          #pre-runner-script: |
-          #  sudo apt-get update
-          #  sudo apt-get install ca-certificates curl gnupg -y
-          #  sudo install -m 0755 -d /etc/apt/keyrings
-          #  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-          #  sudo chmod a+r /etc/apt/keyrings/docker.gpg
-          #  echo \
-          #    "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-          #    "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
-          #    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-          #  sudo apt-get update
-          #  sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin git unzip -y
 
   arm64_health_check:
     name: "ARM64 Health Check"
@@ -70,6 +58,20 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.36.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.36.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.36.0
+      - name: "Install prerequisite software"
+        run: |
+          set -ex
+          sudo apt-get update
+          sudo apt-get install ca-certificates curl gnupg -y
+          sudo install -m 0755 -d /etc/apt/keyrings
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+          sudo chmod a+r /etc/apt/keyrings/docker.gpg
+          echo \
+            "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+            "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+            sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+          sudo apt-get update
+          sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin git unzip -y
       - name: "Install Maven"
         uses: sdkman/sdkman-action@b1f9b696c79148b66d3d3a06f7ea801820318d0f
         with:
@@ -151,7 +153,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_EC2_GITHUB_RUNNER_SECRET_ACCESS_KEY }}
           aws-region: eu-west-2
       - name: "Stop EC2 runner"
-        uses: machulav/ec2-github-runner@2c4d1dcf2c54673ed3bfd194c4b6919ed396a209
+        uses: machulav/ec2-github-runner@4e0303de215db88e1c489e07a15ca4d867f488ea
         with:
           mode: stop
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
