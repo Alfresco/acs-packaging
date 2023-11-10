@@ -34,7 +34,7 @@ jobs:
         with:
           mode: start
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
-          ec2-image-id: ami-025db40ba9581d621 #ami-0bed444050ff5fab3
+          ec2-image-id: ami-0ec31c3e3b729bb6d
           ec2-instance-type: c6g.2xlarge
           subnet-id: subnet-0777c70a4cd9ce944
           security-group-id: sg-0f89a325d9eb147cb
@@ -57,12 +57,6 @@ jobs:
           fetch-depth: 0
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.36.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.36.0
-      - name: "Install Maven"
-        uses: sdkman/sdkman-action@b1f9b696c79148b66d3d3a06f7ea801820318d0f
-        with:
-          candidate: maven
-          version: "3.8.8"
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.36.0
       - name: "Install required software"
         run: |
           sudo apt-get update
@@ -76,6 +70,12 @@ jobs:
             sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
           sudo apt-get update
           sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin git zip unzip python3 -y
+      - name: "Install Maven"
+        uses: sdkman/sdkman-action@b1f9b696c79148b66d3d3a06f7ea801820318d0f
+        with:
+          candidate: maven
+          version: "3.8.8"
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.36.0
       - name: "Login to Docker Hub"
         uses: docker/login-action@v2.1.0
         with:
