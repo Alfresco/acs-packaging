@@ -138,7 +138,8 @@ jobs:
           pip install -r requirements.txt
           # NOTE: some tests are temporarily disabled since the related components don't provide native ARM64 images yet
           python3 -m pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s \
-            --ignore=tests/scenarios/test_sync.py
+            --ignore=tests/scenarios/test_sync.py \
+            -k "not test_adw_reachability"
       - name: "Dump all Docker containers logs"
         uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v3.6.0
         if: failure() && (steps.setup-env.outcome == 'failure' || steps.run-tests.outcome == 'failure')
