@@ -59,6 +59,7 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v3.6.0
       - name: "Install required software"
         run: |
+          # Install Docker as per https://docs.docker.com/engine/install/ubuntu/
           sudo apt-get update
           sudo apt-get install ca-certificates curl gnupg -y
           sudo install -m 0755 -d /etc/apt/keyrings
@@ -69,7 +70,9 @@ jobs:
             "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
             sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
           sudo apt-get update
+          # Additionally install git, zip and unzip (required by SDKMAN to install Maven), python3
           sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin git zip unzip python3 -y
+          # Workaround due to $HOME not being set causing issues with settings.xml installation in setup-build-java
           mkdir -p /root/.m2
           cp .ci.settings.xml /root/.m2/settings.xml
       - name: "Install Maven"
@@ -91,7 +94,6 @@ jobs:
           password: ${{ secrets.QUAY_PASSWORD }}
       - name: "Get latest matching tag"
         run: |
-          echo Home is: $HOME
           VERSION_NUMBER=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | sed -E 's/([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
           TEST_GIT_TAG=$(git tag --list --sort=-taggerdate "$VERSION_NUMBER*" | head -n 1)
           if [ -z $TEST_GIT_TAG ]; then
@@ -101,7 +103,7 @@ jobs:
       - name: "Prepare test config"
         run: |
           git checkout $TEST_GIT_TAG
-          mvn -X clean install -B -ntp -DskipTests -f tests/pipeline-all-amps/repo/pom.xml
+          mvn clean install -B -ntp -DskipTests -f tests/pipeline-all-amps/repo/pom.xml
           cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
       - name: "Set up the environment"
         id: setup-env
@@ -110,6 +112,8 @@ jobs:
           AWS_ACCESS_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_ACCESS_KEY_ID }}
           AWS_SECRET_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_SECRET_ACCESS_KEY }}
         run: |
+          # Adapt scripts to docker compose as a plugin rather than standalone executable
+          alias docker-compose="docker compose"
           # Make necessary env files available
           git clone --depth=1 --branch master https://${{ secrets.BOT_GITHUB_USERNAME }}:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/Alfresco/alfresco-community-repo.git ../alfresco-community-repo
           # Start the environment
@@ -130,7 +134,7 @@ jobs:
           python3 -m pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s \
             --ignore=tests/scenarios/test_sync.py
       - name: "Dump all Docker containers logs"
-        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v1.41.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v3.6.0
         if: failure() && (steps.setup-env.outcome == 'failure' || steps.run-tests.outcome == 'failure')
       - name: "Persist test failure flag"
         id: persist_test_failure_flag
