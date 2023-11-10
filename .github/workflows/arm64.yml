@@ -70,6 +70,8 @@ jobs:
             sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
           sudo apt-get update
           sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin git zip unzip python3 -y
+          mkdir -p /root/.m2
+          cp .ci.settings.xml /root/.m2/settings.xml
       - name: "Install Maven"
         uses: sdkman/sdkman-action@b1f9b696c79148b66d3d3a06f7ea801820318d0f
         with:
