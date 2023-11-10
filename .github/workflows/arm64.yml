@@ -89,6 +89,7 @@ jobs:
           password: ${{ secrets.QUAY_PASSWORD }}
       - name: "Get latest matching tag"
         run: |
+          mvn help:effective-settings
           VERSION_NUMBER=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout | sed -E 's/([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
           TEST_GIT_TAG=$(git tag --list --sort=-taggerdate "$VERSION_NUMBER*" | head -n 1)
           if [ -z $TEST_GIT_TAG ]; then
@@ -98,7 +99,7 @@ jobs:
       - name: "Prepare test config"
         run: |
           git checkout $TEST_GIT_TAG
-          mvn clean install -B -ntp -DskipTests -f tests/pipeline-all-amps/repo/pom.xml
+          mvn -X clean install -B -ntp -DskipTests -f tests/pipeline-all-amps/repo/pom.xml
           cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
       - name: "Set up the environment"
         id: setup-env
