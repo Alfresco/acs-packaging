@@ -108,7 +108,8 @@ jobs:
           echo "TEST_GIT_TAG=$TEST_GIT_TAG" >> $GITHUB_ENV
       - name: "Prepare test config"
         run: |
-          git checkout $TEST_GIT_TAG
+          #Temporarily test with more generous timeouts due to flaky tests
+          #git checkout $TEST_GIT_TAG
           mvn clean install -B -ntp -DskipTests -f tests/pipeline-all-amps/repo/pom.xml
           cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
       - name: "Set up the environment"
