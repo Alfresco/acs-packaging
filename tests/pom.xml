@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>acs-packaging</artifactId>
-        <version>7.4.0-A20-SNAPSHOT</version>
+        <version>23.2.0-A3-SNAPSHOT</version>
     </parent>
 
     <modules>
@@ -21,6 +21,7 @@
         <module>tas-all-amps</module>
         <module>tas-elasticsearch</module>
         <module>tas-distribution-zip</module>
+        <module>tas-mtls</module>
     </modules>
 
     <properties>

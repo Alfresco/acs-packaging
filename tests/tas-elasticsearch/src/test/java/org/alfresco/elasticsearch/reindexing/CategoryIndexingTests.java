@@ -6,6 +6,7 @@ import static org.alfresco.utility.model.FileType.TEXT_PLAIN;
 import java.util.List;
 
 import org.alfresco.elasticsearch.SearchQueryService;
+import org.alfresco.elasticsearch.utility.ElasticsearchRESTHelper;
 import org.alfresco.rest.core.RestWrapper;
 import org.alfresco.rest.model.RestCategoryLinkBodyModel;
 import org.alfresco.rest.model.RestCategoryModel;
@@ -23,10 +24,10 @@ import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.report.log.Step;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 /**
@@ -42,6 +43,8 @@ public class CategoryIndexingTests extends AbstractTestNGSpringContextTests
     private static final String ROOT_CATEGORY_ID = "-root-";
     private static final RestCategoryModel ROOT_CATEGORY = RestCategoryModel.builder().id(ROOT_CATEGORY_ID).create();
 
+    @Autowired
+    private ElasticsearchRESTHelper helper;
     @Autowired
     private ServerHealth serverHealth;
     @Autowired
@@ -114,7 +117,6 @@ public class CategoryIndexingTests extends AbstractTestNGSpringContextTests
 
     /** Check we can find the document by the pseudo-path created for the category. */
     @Test (groups = TestGroup.SEARCH)
-    @Ignore // ACS-4715
     public void testQueryByCategoryPseudoPath() {
         SearchRequest query = req("PATH:\"/cm:categoryRoot/cm:generalclassifiable/cm:" + CATEGORY_A_NAME + "/*\"");
         searchQueryService.expectResultsFromQuery(query, testUser, testFile.getName());
@@ -122,7 +124,6 @@ public class CategoryIndexingTests extends AbstractTestNGSpringContextTests
 
     /** Check we can find the document by a partial path match for the category. */
     @Test (groups = TestGroup.SEARCH)
-    @Ignore // ACS-4715
     public void testQueryByPartialCategoryPathA() {
         SearchRequest query = req("PATH:\"//cm:" + CATEGORY_A_NAME + "/*\"");
         searchQueryService.expectResultsFromQuery(query, testUser, testFile.getName());
@@ -130,9 +131,36 @@ public class CategoryIndexingTests extends AbstractTestNGSpringContextTests
 
     /** Check we can find the document and folder by a partial path match for the second category. */
     @Test (groups = TestGroup.SEARCH)
-    @Ignore // ACS-4715
     public void testQueryByPartialCategoryPathB() {
         SearchRequest query = req("PATH:\"//cm:" + CATEGORY_B_NAME + "/*\"");
         searchQueryService.expectResultsFromQuery(query, testUser, testFile.getName(), testFolder.getName());
+    }
+
+    /** Check we cannot find the document by a partial path match for the category that has been applied to it and then deleted. */
+    @Test (groups = TestGroup.SEARCH)
+    public void testQueryByPathOnDeletedCategory() throws InterruptedException {
+        //create 2 categories
+        final RestCategoryModel categoryToDelete = helper.createCategory();
+        final RestCategoryModel otherCategory = helper.createCategory();
+
+        //assign both categories to a document
+        helper.linkToCategory(testUser, testFile, categoryToDelete);
+        helper.linkToCategory(testUser, testFile, otherCategory);
+
+        //we can find the document by partial category paths after it is linked to both categories
+        SearchRequest categoryToDeleteQuery = req("PATH:\"//cm:" + categoryToDelete.getName() + "/*\"");
+        searchQueryService.expectResultsFromQuery(categoryToDeleteQuery, testUser, testFile.getName());
+        SearchRequest otherCategoryQuery = req("PATH:\"//cm:" + otherCategory.getName() + "/*\"");
+        searchQueryService.expectResultsFromQuery(otherCategoryQuery, testUser, testFile.getName());
+
+        //delete one of linked categories
+        restClient.authenticateUser(dataUser.getAdminUser()).withCoreAPI()
+                  .usingCategory(categoryToDelete).deleteCategory();
+        restClient.assertStatusCodeIs(HttpStatus.NO_CONTENT);
+
+        //we cannot find the document by partial category path anymore after the category is deleted
+        searchQueryService.expectNoResultsFromQuery(categoryToDeleteQuery, testUser);
+        //we can still find the document by partial category path with a different category that has been assigned but not deleted
+        searchQueryService.expectResultsFromQuery(otherCategoryQuery, testUser, testFile.getName());
     }
 }

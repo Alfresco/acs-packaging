@@ -118,7 +118,10 @@ else
 fi
 
 # Build the current project
-mvn -B -ntp -V -q install -DskipTests -Dmaven.javadoc.skip=true -P${BUILD_PROFILE} -Pags ${REPO_IMAGE} ${SHARE_IMAGE}
+if [[ -n "$IMAGE_TAG" ]]; then
+  ACS_IMAGE="-Dimage.tag=$IMAGE_TAG"
+fi
+mvn -B -ntp -V -q install -DskipTests -Dmaven.javadoc.skip=true -P${BUILD_PROFILE} -Pags ${REPO_IMAGE} ${SHARE_IMAGE} ${ACS_IMAGE}
 
 #Build alfresco image with jdbc drivers
 MYSQL_JDBC_TAG=$(mvn help:evaluate -Dexpression=dependency.mysql.version -q -DforceStdout)
@@ -130,8 +133,8 @@ mvn dependency:copy -Dartifact=org.mariadb.jdbc:mariadb-java-client:${MARIADB_JD
 MSSQL_JDBC_TAG=$(mvn help:evaluate -Dexpression=dependency.mssql-jdbc.version -q -DforceStdout)
 mvn dependency:copy -Dartifact=com.microsoft.sqlserver:mssql-jdbc:${MSSQL_JDBC_TAG}:jar -DoutputDirectory=tests/environment/alfresco-with-jdbc-drivers
 
-ORACLE_JDBC_TAG=$(mvn help:evaluate -Dexpression=dependency.ojdbc8.version -q -DforceStdout)
-mvn dependency:copy -Dartifact=com.oracle.database.jdbc:ojdbc8:${ORACLE_JDBC_TAG}:jar -DoutputDirectory=tests/environment/alfresco-with-jdbc-drivers
+ORACLE_JDBC_TAG=$(mvn help:evaluate -Dexpression=dependency.ojdbc.version -q -DforceStdout)
+mvn dependency:copy -Dartifact=com.oracle.database.jdbc:ojdbc11:${ORACLE_JDBC_TAG}:jar -DoutputDirectory=tests/environment/alfresco-with-jdbc-drivers
 
 docker build -t alfresco-repository-databases:latest -f tests/environment/alfresco-with-jdbc-drivers/alfresco.Dockerfile .
 

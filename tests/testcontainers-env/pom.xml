@@ -9,11 +9,11 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>content-repository-tests</artifactId>
-        <version>7.4.0-A20-SNAPSHOT</version>
+        <version>23.2.0-A3-SNAPSHOT</version>
     </parent>
 
     <properties>
-        <dependency.testcontainers.version>1.17.3</dependency.testcontainers.version>
+        <dependency.testcontainers.version>1.18.3</dependency.testcontainers.version>
     </properties>
 
     <dependencies>

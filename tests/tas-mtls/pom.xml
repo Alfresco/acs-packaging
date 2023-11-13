@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.alfresco.tas</groupId>
+   <artifactId>content-repository-mutual-tls-test</artifactId>
+   <name>Mutual TLS test</name>
+
+   <parent>
+      <groupId>org.alfresco</groupId>
+      <artifactId>content-repository-tests</artifactId>
+      <version>23.2.0-A3-SNAPSHOT</version>
+   </parent>
+
+   <properties>
+      <maven.compiler.source>17</maven.compiler.source>
+      <maven.compiler.target>17</maven.compiler.target>
+   </properties>
+
+   <profiles>
+   <profile>
+      <id>run-mtls</id>
+      <properties>
+         <suiteXmlFile>${project.basedir}/src/test/resources/mtls-suite.xml</suiteXmlFile>
+      </properties>
+   </profile>
+   </profiles>
+
+   <dependencies>
+      <dependency>
+         <groupId>org.alfresco.tas</groupId>
+         <artifactId>restapi</artifactId>
+         <scope>test</scope>
+      </dependency>
+   </dependencies>
+   <packaging>jar</packaging>
+
+   <build>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+               <suiteXmlFiles>
+                  <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
+               </suiteXmlFiles>
+               <argLine>
+                  --illegal-access=warn
+               </argLine>
+            </configuration>
+         </plugin>
+         <!-- Build only test jar -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <executions>
+               <execution>
+                  <goals>
+                     <goal>test-jar</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+      </plugins>
+   </build>
+
+</project>

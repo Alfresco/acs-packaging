@@ -29,7 +29,7 @@ import org.testng.annotations.Test;
  */
 @ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
                       initializers = AlfrescoStackInitializer.class)
-
+@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert", "PMD.JUnit4TestShouldUseTestAnnotation"}) // these are testng tests and use searchQueryService.expectResultsFromQuery for assertion
 public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextTests
 {
     @Autowired
@@ -51,7 +51,6 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
 
     private String testFileName;
     private String filenameWhichIncludesWhitespace = "TestFile " + UUID.randomUUID() + ".txt";
-    private String escapedFilenameWhichIncludesWhitespace = filenameWhichIncludesWhitespace.replace(" ", "_x0020_");
     private String testFileNameWithWhitespace;
 
     /**
@@ -108,6 +107,14 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     }
 
     @Test(groups = TestGroup.SEARCH)
+    public void testWildcardQueryWithNamespaces()
+    {
+        // The test file should be the only descendent of the last folder.
+        SearchRequest query = req("PATH:\"//cm:" + testSite.getId() + "//cm:" + testFolders.get(testFolders.size() - 1).getName() + "/*\" AND name:*");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFileName, testFileNameWithWhitespace);
+    }
+
+    @Test(groups = TestGroup.SEARCH)
     public void testAbsolutePathQuery()
     {
         String folderPath = testFolders.stream().map(folder -> "cm:" + folder.getName()).collect(Collectors.joining("/"));
@@ -118,7 +125,7 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void testAbsolutePathQueryWithoutPrefixes()
     {
-        String folderPath = testFolders.stream().map(folder -> "cm:" + folder.getName()).collect(Collectors.joining("/"));
+        String folderPath = testFolders.stream().map(folder -> folder.getName()).collect(Collectors.joining("/"));
         SearchRequest query = req("PATH:\"/company_home/sites/" + testSite.getId() + "/documentLibrary/" + folderPath + "/" + testFileName + "\" AND name:*");
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
     }
@@ -159,9 +166,50 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     }
 
     @Test(groups = TestGroup.SEARCH)
+    public void testSearchAllDescendentsOfFolderQueryWithNamespaces()
+    {
+        SearchRequest query = req("PATH:\"//cm:" + testFolders.get(0).getName() + "//*\" AND name:*");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFileName, testFileNameWithWhitespace, testFolders.get(1).getName(), testFolders.get(2).getName());
+    }
+
+    @Test (groups = TestGroup.SEARCH)
+    public void testWhereFolderIsAncestor() {
+        SearchRequest query = req("ANCESTOR:\"" + testFolders.get(2).getNodeRef() + "\" AND name:*");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFileName, testFileNameWithWhitespace);
+    }
+
+    @Test (groups = TestGroup.SEARCH)
+    public void testAncestorWithWorkspaceReference() {
+        SearchRequest query = req("ANCESTOR:\"workspace://SpacesStore/" + testFolders.get(0).getNodeRef() + "\" AND name:*");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFileName, testFileNameWithWhitespace, testFolders.get(1).getName(), testFolders.get(2).getName());
+    }
+
+    @Test (groups = TestGroup.SEARCH)
+    public void testPrimaryParent()
+    {
+        SearchRequest query = req("PRIMARYPARENT:\"" + testFolders.get(1).getNodeRef() + "\" AND name:*");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFolders.get(2).getName());
+    }
+
+    @Test (groups = TestGroup.SEARCH)
+    public void testParent()
+    {
+        SearchRequest query = req("PARENT:\"" + testFolders.get(1).getNodeRef() + "\" AND name:*");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFolders.get(2).getName());
+    }
+
+    @Test(groups = TestGroup.SEARCH)
     public void testAllFoldersInSite()
     {
         SearchRequest query = req("PATH:\"/*/sites/" + testSite.getId() + "/*//*\" AND TYPE:\"cm:folder\" AND name:*");
+        String[] folderNames = testFolders.stream().map(ContentModel::getName).toArray(String[]::new);
+        searchQueryService.expectResultsFromQuery(query, testUser, folderNames);
+    }
+
+    @Test(groups = TestGroup.SEARCH)
+    public void testSearchAllFoldersInSiteQueryWithNamespaces()
+    {
+        SearchRequest query = req("PATH:\"/*/st:sites/cm:" + testSite.getId() + "/*//*\" AND TYPE:\"cm:folder\" AND name:*");
         String[] folderNames = testFolders.stream().map(ContentModel::getName).toArray(String[]::new);
         searchQueryService.expectResultsFromQuery(query, testUser, folderNames);
     }

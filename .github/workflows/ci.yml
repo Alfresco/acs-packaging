@@ -28,13 +28,14 @@ env:
   MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
   QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
   QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+  CI_WORKSPACE: ${{ github.workspace }}
   AWS_REGION: eu-west-1
   TAS_ENVIRONMENT: ./tests/environment
   TAS_SCRIPTS: ../alfresco-community-repo/packaging/tests/scripts
-  ALF_LICENCE_S3_PATH: s3://acs-license/acs/alf74-allenabled.lic
+  ALF_LICENCE_S3_PATH: s3://acs-license/acs/alf231-allenabled.lic
   ALF_LICENCE_LOCAL_PATH: /tmp/licence.lic
   PYTHON_VERSION: 3.7.15
-  DTAS_VERSION: v1.1
+  DTAS_VERSION: v1.2.2
 
 jobs:
   veracode:
@@ -58,6 +59,19 @@ jobs:
           srcclr-api-token: ${{ secrets.SRCCLR_API_TOKEN }}
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
+
+  pmd_scan:
+    name: "PMD Scan"
+    runs-on: ubuntu-latest
+    if: >
+      github.event_name == 'pull_request' &&
+      !contains(github.event.head_commit.message, '[skip pmd]') &&
+      !contains(github.event.head_commit.message, '[skip tests]')
+    steps:
+      - uses: Alfresco/ya-pmd-scan@v2.0.5
+        with:
+          pmd-version: "7.0.0-rc4"
+          pmd-sha256-digest: "81c15cb9e875f0c788e4246e5f0041b1df1b33983b9f65550ee4e8c4b285570b"
 
   tas_tests:
     name: ${{ matrix.testSuite }} TAS tests
@@ -247,6 +261,9 @@ jobs:
       - name: "Print output after failure"
         if: ${{ always() && steps.tests.outcome == 'failure' }}
         run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
+      - name: "Dump all Docker containers logs"
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v1.41.0
+        if: failure() && steps.tests.outcome == 'failure'
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
@@ -304,10 +321,12 @@ jobs:
             profiles: all-tas-tests,elastic
             search-engine-type: elasticsearch
             db-type: mariadb
-          - testSuite: Elasticsearch MS SQL
-            profiles: all-tas-tests,elastic
-            search-engine-type: elasticsearch
-            db-type: mssql
+#          Temporarily commented out due to frequent GHA timeouts,
+#          pending further investigation as part of ACS-6177.
+#          - testSuite: Elasticsearch MS SQL
+#            profiles: all-tas-tests,elastic
+#            search-engine-type: elasticsearch
+#            db-type: mssql
           - testSuite: Elasticsearch Oracle 19.3.0-ee
             profiles: all-tas-tests,elastic
             search-engine-type: elasticsearch
@@ -353,50 +372,58 @@ jobs:
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
       - name: "Run tests"
+        id: tests
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -P${{ matrix.profiles }} -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}" "-Ddatabase.type=${{ matrix.db-type }}" -Dindeximage="alfresco-es-indexing-jdbc:latest" -Dreindeximage="alfresco-es-reindexing-jdbc:latest" -Drepoimage="alfresco-repository-databases:latest"
+      - name: "Dump all Docker containers logs"
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v1.41.0
+        if: failure() && steps.tests.outcome == 'failure'
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
-  upgrade_tas_tests:
-    name: ${{ matrix.testSuite }} Upgrade TAS tests
-    runs-on: ubuntu-latest
-    if: >
-      !contains(github.event.head_commit.message, '[skip search]') &&
-      !contains(github.event.head_commit.message, '[skip tests]')
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - testSuite: Elasticsearch
-            search-engine-type: elasticsearch
-          - testSuite: Opensearch
-            search-engine-type: opensearch
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
-      - name: "Build"
-        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        run: |
-          bash ./scripts/ci/init.sh
-          bash ./scripts/ci/build.sh
-      - name: "Configure AWS credentials"
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_S3_ACSLICENSE_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_S3_ACSLICENSE_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
-      - name: "Copy Licence"
-        run: aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
-      - name: "Run tests"
-        timeout-minutes: 30
-        run: mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}" "-Ddatabase.type=postgresql"
-      - name: "Clean Maven cache"
-        run: bash ./scripts/ci/cleanup_cache.sh
+#  upgrade_tas_tests:
+#    name: ${{ matrix.testSuite }} Upgrade TAS tests
+#    runs-on: ubuntu-latest
+#    if: >
+#      !contains(github.event.head_commit.message, '[skip search]') &&
+#      !contains(github.event.head_commit.message, '[skip tests]')
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        include:
+#          - testSuite: Elasticsearch
+#            search-engine-type: elasticsearch
+#          - testSuite: Opensearch
+#            search-engine-type: opensearch
+#    steps:
+#      - uses: actions/checkout@v3
+#        with:
+#          persist-credentials: false
+#      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
+#      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
+#      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+#      - name: "Build"
+#        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+#        run: |
+#          bash ./scripts/ci/init.sh
+#          bash ./scripts/ci/build.sh
+#      - name: "Configure AWS credentials"
+#        uses: aws-actions/configure-aws-credentials@v1
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_S3_ACSLICENSE_ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.AWS_S3_ACSLICENSE_SECRET_ACCESS_KEY }}
+#          aws-region: ${{ env.AWS_REGION }}
+#      - name: "Copy Licence"
+#        run: aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
+#      - name: "Run tests"
+#        id: tests
+#        timeout-minutes: 30
+#        run: mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}" "-Ddatabase.type=postgresql" "-Dindeximage=alfresco-es-indexing-jdbc:latest" "-Dreindeximage=alfresco-es-reindexing-jdbc:latest" "-Drepoimage=alfresco-repository-databases:latest"
+#      - name: "Dump all Docker containers logs"
+#        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v1.41.0
+#        if: failure() && steps.tests.outcome == 'failure'
+#      - name: "Clean Maven cache"
+#        run: bash ./scripts/ci/cleanup_cache.sh
 
   all_amps_tests:
     name: "All AMPs tests"
@@ -431,6 +458,67 @@ jobs:
       - name: "Print output after failure"
         if: ${{ always() && steps.tests.outcome == 'failure' }}
         run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-all-amps"
+      - name: "Clean Maven cache"
+        run: bash ./scripts/ci/cleanup_cache.sh
+
+  tas_test_with_mtls:
+    name: ${{ matrix.testSuite }} TAS tests with mutal TLS
+    runs-on: ubuntu-latest
+    if: >
+      !contains(github.event.head_commit.message, '[skip mtls]') &&
+      !contains(github.event.head_commit.message, '[skip tests]')
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - testSuite: Transform Service Mutal TLS
+            pom-dir: tests/tas-mtls
+            profiles: run-mtls
+            compose-file: docker-compose-mtls.yml
+            mtls: true
+            disabledHostnameVerification: false
+            deploy-timeout: 10
+          - testSuite: Transform Service Mutal TLS Disabled Hostname Verification
+            pom-dir: tests/tas-mtls
+            profiles: run-mtls
+            compose-file: docker-compose-mtls.yml
+            mtls: true
+            disabledHostnameVerification: true
+            deploy-timeout: 10
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+      - name: "Generate Keystores and Truststores for Mutual TLS configuration"
+        if: ${{ matrix.mtls }}
+        run: |
+          git clone -b "master" --depth=1 "https://${{ secrets.BOT_GITHUB_USERNAME }}:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/Alfresco/alfresco-ssl-generator.git"
+          if ${{ matrix.disabledHostnameVerification }} ; then
+            bash ${{ env.CI_WORKSPACE }}/alfresco-ssl-generator/scripts/ci/generate_keystores_wrong_hostnames.sh
+            echo "HOSTNAME_VERIFICATION_DISABLED=true" >> "$GITHUB_ENV"
+          else
+            bash ${{ env.CI_WORKSPACE }}/alfresco-ssl-generator/scripts/ci/generate_keystores.sh
+            echo "HOSTNAME_VERIFICATION_DISABLED=false" >> "$GITHUB_ENV"
+          fi
+      - name: "Build"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          bash ./scripts/ci/init.sh
+          bash ./scripts/ci/build.sh
+      - name: "Set up the environment"
+        run: |
+          ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/${{ matrix.compose-file }}
+          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
+      - name: "Run tests"
+        id: tests
+        timeout-minutes: ${{ matrix.deploy-timeout }}
+        run: mvn -B install -ntp -f ${{ matrix.pom-dir }}/pom.xml -P${{ matrix.profiles }} -Denvironment=default -DrunBugs=false
+      - name: "Print output after failure"
+        if: ${{ always() && steps.tests.outcome == 'failure' }}
+        run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "${{ matrix.pom-dir }}"
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
@@ -503,5 +591,78 @@ jobs:
         run: |
           cd dtas
           pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
+      - name: "Clean Maven cache"
+        run: bash ./scripts/ci/cleanup_cache.sh
+
+  test_tomcat_deployment:
+    name: "Test Tomcat deployment"
+    runs-on: ubuntu-latest
+    if: >
+      !contains(github.event.head_commit.message, '[skip tests]')
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+      - name: "Build"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          bash ./scripts/ci/init.sh
+          bash ./scripts/ci/build.sh
+      - name: "Set up the environment"
+        run: |
+          ${{ env.TAS_SCRIPTS }}/start-compose.sh ./dev/docker-compose.yml
+          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8983/solr"
+      - name: "Run tomcat, verify it starts"
+        id: tests
+        run: |
+          (mvn -B clean install -Prun -rf dev &)
+          curl --retry 60 --retry-max-time 300 --retry-delay 5 --retry-all-errors --fail "http://localhost:8080/alfresco/api/-default-/public/alfresco/versions/1/probes/-ready-"
+          echo "Test Alfresco Repository availability"
+          curl -Ls -o /dev/null --fail "http://localhost:8080/alfresco"
+          echo "Test Share availability"
+          curl -Ls -o /dev/null --fail "http://localhost:8080/share"
+
+  pipeline_test_docker_release:
+    name: "Upload docker images needed for pipeline tests: <acs.version>-<PIPELINE_TAG_TEXT_INSERT>-<build>"
+    runs-on: ubuntu-latest
+    if: >
+      contains(github.event.head_commit.message, '[pipeline_docker]')
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+        with:
+          platforms: linux/amd64,linux/arm64
+      - name: Pipeline Tag text insert (modify for your needs)
+        run: |
+          echo "PIPELINE_TAG_TEXT_INSERT=INSERT-TEXT" >> $GITHUB_ENV
+      - name: Compute final build number
+        run: |
+          echo "COMPUTED_BUILD_NUMBER=$(( $BASE_BUILD_NUMBER + $BUILD_NUMBER ))" >> $GITHUB_ENV
+      - name: Determine ACS Image Tag
+        run: |
+          ACS_VERSION=23.1.0
+          echo "IMAGE_TAG=${ACS_VERSION}-${PIPELINE_TAG_TEXT_INSERT}-${COMPUTED_BUILD_NUMBER}" >> $GITHUB_ENV
+      - name: "Build: uses IMAGE_TAG variable, requires Repo and Share snapshot versions in main pom.xml"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          bash ./scripts/ci/init.sh
+          bash ./scripts/ci/build.sh -m
+      - name: "Update images"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: mvn -B -V clean install -ntp -DskipTests -Dmaven.javadoc.skip=true -Ppush-docker-images,pipeline,release-branch -Drepo.image.tag=latest -Dshare.image.tag=latest -Dimage.tag=${IMAGE_TAG} -Ddocker.quay-expires.value=1w -Drepo.skipDockerImage=false -Dshare.skipDockerImage=false
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh

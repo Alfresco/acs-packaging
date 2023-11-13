@@ -33,31 +33,10 @@ updates:
   - dependency-name: org.alfresco:alfresco-enterprise-share
   - dependency-name: org.alfresco:share
   - dependency-name: org.alfresco:alfresco-share-services
-# Used in dev env - Currently using 7.0.86 but have tried higher versions
-  - dependency-name: org.apache.tomcat.embed
-    versions:
-    - "> 7.0.109"
-  - dependency-name: org.apache.tomcat
-    versions:
-    - "> 7.0.109"
 # Others
-  - dependency-name: io.fabric8:fabric8-maven-plugin
-    versions:
-    - "> 4.4.1"
   - dependency-name: org.apache.maven.plugins:maven-war-plugin
     versions:
     - ">= 3.a, < 4"
-  - dependency-name: org.alfresco.integrations:alfresco-content-connector-for-salesforce-share
-    versions:
-    - 2.2.1
-    - 2.2.1-M1
-  - dependency-name: org.alfresco.integrations:alfresco-content-connector-for-salesforce-repo
-    versions:
-    - 2.2.1
-    - 2.2.1-M1
-  - dependency-name: org.alfresco.services.sync:alfresco-device-sync-repo
-    versions:
-    - 3.4.0-T2
   - dependency-name: org.alfresco.maven.plugin:alfresco-maven-plugin
     versions:
     - 4.1.0

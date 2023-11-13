@@ -7,15 +7,15 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>acs-packaging</artifactId>
-        <version>7.4.0-A20-SNAPSHOT</version>
+        <version>23.2.0-A3-SNAPSHOT</version>
     </parent>
 
     <properties>
+        <share.skipDockerImage>false</share.skipDockerImage>
         <image.name>alfresco/alfresco-share</image.name>
         <docker.quay-expires.value>NEVER</docker.quay-expires.value>
         <base.image>alfresco/alfresco-share-base:${share.image.tag}</base.image>
         <scripts.directory>${project.parent.basedir}/scripts/dev</scripts.directory>
-        <image.tag>${share.image.tag}</image.tag>
     </properties>
 
     <profiles>
@@ -28,6 +28,7 @@
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
                         <configuration>
+                            <skip>${share.skipDockerImage}</skip>
                             <images>
                                 <image>
                                     <name>${image.name}:${image.tag}</name>
@@ -63,6 +64,7 @@
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
                         <configuration>
+                            <skip>${share.skipDockerImage}</skip>
                             <images>
                                 <image>
                                     <name>${local.registry}/${image.name}:${image.tag}</name>
@@ -73,6 +75,9 @@
                                                 <platform>linux/amd64</platform>
                                                 <platform>linux/arm64</platform>
                                             </platforms>
+                                            <attestations>
+                                                <provenance>false</provenance>
+                                            </attestations>
                                         </buildx>
                                         <dockerFileDir>${project.basedir}</dockerFileDir>
                                         <args>
@@ -139,6 +144,7 @@
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
                         <configuration>
+                            <skip>${share.skipDockerImage}</skip>
                             <images>
                                 <!-- Quay image -->
                                 <image>
@@ -150,6 +156,9 @@
                                                 <platform>linux/amd64</platform>
                                                 <platform>linux/arm64</platform>
                                             </platforms>
+                                            <attestations>
+                                                <provenance>false</provenance>
+                                            </attestations>
                                         </buildx>
                                         <dockerFileDir>${project.basedir}</dockerFileDir>
                                         <args>
@@ -209,6 +218,7 @@
                         <groupId>io.fabric8</groupId>
                         <artifactId>docker-maven-plugin</artifactId>
                         <configuration combine.self="override">
+                            <skip>${share.skipDockerImage}</skip>
                             <images>
                                 <!-- Quay image -->
                                 <image>
@@ -220,6 +230,9 @@
                                                 <platform>linux/amd64</platform>
                                                 <platform>linux/arm64</platform>
                                             </platforms>
+                                            <attestations>
+                                                <provenance>false</provenance>
+                                            </attestations>
                                         </buildx>
                                         <dockerFileDir>${project.basedir}</dockerFileDir>
                                         <args>

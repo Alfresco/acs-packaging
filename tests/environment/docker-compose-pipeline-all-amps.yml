@@ -12,7 +12,7 @@ version: "2"
 
 services:
     alfresco:
-        image: alfresco/alfresco-pipeline-all-amps-repo:latest
+        image: ${PIPELINE_ALL_AMPS_REGISTRY}alfresco/alfresco-pipeline-all-amps-repo:${PIPELINE_ALL_AMPS_TAG:-latest}
         mem_limit: 1700m
         environment:
             JAVA_TOOL_OPTIONS: "
@@ -101,7 +101,7 @@ services:
             - shared-file-store-volume:/tmp/Alfresco/sfs
 
     share:
-        image: alfresco/alfresco-pipeline-all-amps-share:latest
+        image: ${PIPELINE_ALL_AMPS_REGISTRY}alfresco/alfresco-pipeline-all-amps-share:${PIPELINE_ALL_AMPS_TAG:-latest}
         mem_limit: 1g
         environment:
             REPO_HOST: "alfresco"
@@ -116,7 +116,7 @@ services:
                 "
 
     postgres:
-        image: postgres:14.4
+        image: postgres:15.4
         mem_limit: 512m
         environment:
             - POSTGRES_PASSWORD=alfresco
@@ -127,8 +127,8 @@ services:
             - 5432:5432
 
     solr6:
-        image: alfresco/alfresco-search-services:2.0.3
-        mem_limit: 2g
+        image: alfresco/alfresco-search-services:2.0.8-A3
+        mem_limit: 3g
         environment:
             #Solr needs to know how to register itself with Alfresco
             SOLR_ALFRESCO_HOST: "alfresco"
@@ -149,7 +149,7 @@ services:
             - 8083:8983 #Browser port
 
     activemq:
-        image: alfresco/alfresco-activemq:5.17.1-jre11-rockylinux8
+        image: alfresco/alfresco-activemq:5.18.2-jre17-rockylinux8
         mem_limit: 1g
         ports:
             - 8161:8161 # Web Console
@@ -177,7 +177,7 @@ services:
             - share
 
     sync-service:
-        image: quay.io/alfresco/service-sync:4.0.0-M7
+        image: quay.io/alfresco/service-sync:4.0.0
         mem_limit: 1g
         environment:
             JAVA_OPTS : "

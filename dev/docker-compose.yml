@@ -43,7 +43,7 @@ services:
             - shared-file-store-volume:/tmp/Alfresco/sfs
 
     postgres:
-        image: postgres:14.4
+        image: postgres:15.4
         mem_limit: 512m
         environment:
             - POSTGRES_PASSWORD=alfresco
@@ -54,7 +54,7 @@ services:
             - 5432:5432
 
     solr6:
-        image: quay.io/alfresco/insight-engine:2.0.6-A4
+        image: quay.io/alfresco/insight-engine:2.0.8.1
         environment:
             #Solr needs to know how to register itself with Alfresco
             SOLR_ALFRESCO_HOST: "host.docker.internal"
@@ -74,7 +74,7 @@ services:
             - 8983:8983 #Browser port
 
     activemq:
-        image: alfresco/alfresco-activemq:5.17.1-jre11-rockylinux8
+        image: alfresco/alfresco-activemq:5.18.2-jre17-rockylinux8
         mem_limit: 1g
         ports:
             - 8161:8161 # Web Console
