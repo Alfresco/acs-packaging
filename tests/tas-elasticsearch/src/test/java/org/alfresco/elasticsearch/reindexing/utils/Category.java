@@ -12,6 +12,7 @@ public class Category extends RestCategoryModel
 
     public Category(RestWrapper restClient, UserModel user, RestCategoryModel parent, String newCategoryName)
     {
+        super();
         this.restClient = restClient;
         this.user = user;
 

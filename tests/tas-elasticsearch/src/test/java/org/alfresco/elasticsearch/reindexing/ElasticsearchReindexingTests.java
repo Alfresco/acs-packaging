@@ -21,7 +21,6 @@ import org.alfresco.utility.data.DataUser;
 import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.network.ServerHealth;
 import org.apache.http.HttpHost;
-import org.junit.Ignore;
 import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestClient;
 import org.opensearch.client.RestHighLevelClient;
@@ -257,8 +256,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
             "cm:name:'<DOCUMENT_NAME>' AND cm:name:*", false);
     }
 
-    @Test (groups = TestGroup.SEARCH, enabled = false)
-    @Ignore("Until ACS-5798 is done")
+    @Test (groups = TestGroup.SEARCH)
     public void testPathReindex()
     {
         // GIVEN

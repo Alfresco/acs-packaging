@@ -18,7 +18,6 @@ import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.report.log.Step;
-import org.junit.Ignore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -92,16 +91,14 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
     }
 
-    @Test(groups = TestGroup.SEARCH, enabled = false)
-    @Ignore("Until ACS-5798 is done")
+    @Test(groups = TestGroup.SEARCH)
     public void testRelativePathQueryWithoutPrefixes()
     {
         SearchRequest query = req("PATH:\"//" + testFileName + "\" AND name:*");
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
     }
 
-    @Test(groups = TestGroup.SEARCH, enabled = false)
-    @Ignore("Until ACS-5798 is done")
+    @Test(groups = TestGroup.SEARCH)
     public void testWildcardQuery()
     {
         // The test file should be the only descendent of the last folder.
@@ -125,11 +122,10 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
     }
 
-    @Test(groups = TestGroup.SEARCH, enabled = false)
-    @Ignore("Until ACS-5798 is done")
+    @Test(groups = TestGroup.SEARCH)
     public void testAbsolutePathQueryWithoutPrefixes()
     {
-        String folderPath = testFolders.stream().map(folder -> "cm:" + folder.getName()).collect(Collectors.joining("/"));
+        String folderPath = testFolders.stream().map(folder -> folder.getName()).collect(Collectors.joining("/"));
         SearchRequest query = req("PATH:\"/company_home/sites/" + testSite.getId() + "/documentLibrary/" + folderPath + "/" + testFileName + "\" AND name:*");
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
     }
@@ -162,8 +158,7 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
     }
 
-    @Test(groups = TestGroup.SEARCH, enabled = false)
-    @Ignore("Until ACS-5798 is done")
+    @Test(groups = TestGroup.SEARCH)
     public void testAllDescendentsOfFolder()
     {
         SearchRequest query = req("PATH:\"//" + testFolders.get(0).getName() + "//*\" AND name:*");
@@ -203,8 +198,7 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
         searchQueryService.expectResultsFromQuery(query, testUser, testFolders.get(2).getName());
     }
 
-    @Test(groups = TestGroup.SEARCH, enabled = false)
-    @Ignore("Until ACS-5798 is done")
+    @Test(groups = TestGroup.SEARCH)
     public void testAllFoldersInSite()
     {
         SearchRequest query = req("PATH:\"/*/sites/" + testSite.getId() + "/*//*\" AND TYPE:\"cm:folder\" AND name:*");

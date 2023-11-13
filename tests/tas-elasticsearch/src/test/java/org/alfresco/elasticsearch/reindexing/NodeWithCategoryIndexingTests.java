@@ -89,6 +89,31 @@ public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelated
         searchQueryService.expectResultsFromQuery(query, testUser);
     }
 
+    @Test(groups = TestGroup.SEARCH)
+    public void testParentQueryAgainstFolderAfterParentCategoryDeletion()
+    {
+        // given
+        STEP("Create nested folders in site's Document Library.");
+        folders().createNestedFolders(C);
+
+        STEP("Create nested categories.");
+        categories.createNestedCategories(P, Q);
+
+        STEP("Link folders to category.");
+        folders(C).linkToCategory(categories.get(Q));
+
+        // when
+        STEP("Verify that searching by PARENT and category will find one descendant node: folderC.");
+        SearchRequest query = req("PARENT:" + categories.get(Q).getId());
+        searchQueryService.expectResultsFromQuery(query, testUser, folders(C).getName());
+
+        // then
+        STEP("Delete categoryM.");
+        categories.delete(P);
+
+        STEP("Verify that searching by PARENT and deleted category will find no descendant nodes.");
+        searchQueryService.expectResultsFromQuery(query, testUser);
+    }
 
     @Test(groups = TestGroup.SEARCH)
     public void testSearchByPath()
