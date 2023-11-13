@@ -219,8 +219,6 @@ public abstract class NodesSecondaryChildrenRelatedTests extends AbstractTestNGS
                 .createContent(new FileModel(filename, FileType.TEXT_PLAIN, "content"));
         }
 
-
-
         private static String generateRandomFolderNameWith(String folderSuffix)
         {
             return "folder" + folderSuffix + "_" + UUID.randomUUID();
