@@ -34,14 +34,18 @@ jobs:
         with:
           mode: start
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
-          ec2-image-id: ami-0ec31c3e3b729bb6d
+          ec2-image-id: ami-0ec31c3e3b729bb6d # Ubuntu 22.04 ARM64 w/ 125GB drive
           ec2-instance-type: c6g.2xlarge
           subnet-id: subnet-0777c70a4cd9ce944
           security-group-id: sg-0f89a325d9eb147cb
           aws-resource-tags: >
             [
               {"Key": "Name", "Value": "arm64-acs-packaging-gh-runner"},
-              {"Key": "GitHubRepository", "Value": "${{ github.repository }}"}
+              {"Key": "Creator", "Value": "${{ github.repository }}"},
+              {"Key": "Owner", "Value": "ACS Feature Teams"},
+              {"Key": "Department", "Value": "Alfresco Engineering"},
+              {"Key": "Purpose", "Value": "GH runner for ARM64 acs-packaging tests"},
+              {"Key": "Production", "Value": "false"}
             ]
 
   arm64_health_check:
@@ -60,18 +64,18 @@ jobs:
       - name: "Install required software"
         run: |
           # Install Docker as per https://docs.docker.com/engine/install/ubuntu/
-          sudo apt-get update
-          sudo apt-get install ca-certificates curl gnupg -y
-          sudo install -m 0755 -d /etc/apt/keyrings
-          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-          sudo chmod a+r /etc/apt/keyrings/docker.gpg
+          apt-get update
+          apt-get install ca-certificates curl gnupg -y
+          install -m 0755 -d /etc/apt/keyrings
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+          chmod a+r /etc/apt/keyrings/docker.gpg
           echo \
             "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
             "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
-            sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-          sudo apt-get update
+            tee /etc/apt/sources.list.d/docker.list > /dev/null
+          apt-get update
           # Additionally install git, zip and unzip (required by SDKMAN to install Maven), python3
-          sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin git zip unzip python3 python3-pip -y
+          apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin git zip unzip python3 python3-pip -y
           # Allow usage of "docker-compose" rather than "docker compose" in bash scripts
           ln -f -s /usr/libexec/docker/cli-plugins/docker-compose /usr/local/bin/docker-compose
           # Workaround due to $HOME not being set causing issues with settings.xml installation in setup-build-java
