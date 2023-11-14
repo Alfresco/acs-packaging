@@ -3,6 +3,8 @@ package org.alfresco.rest.mtls;
 import static org.alfresco.utility.model.FileType.TEXT_PLAIN;
 
 import org.alfresco.rest.MtlsRestTest;
+import org.alfresco.rest.model.RestNodeModel;
+import org.alfresco.utility.Utility;
 import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.UserModel;
@@ -26,11 +28,13 @@ public class TransformServiceTest extends MtlsRestTest
     @Test
     public void testRenditionWithMTLSEnabledTest()
     {
-        FolderModel folderModel = FolderModel.getRandomFolderModel();
-        FolderModel testFolder = dataContent.usingUser(adminUser).usingSite(testSiteModel).createFolder(folderModel);
+        FolderModel testFolder = selectSharedFolder(adminUser);
 
-        FileModel fileModel = FileModel.getRandomFileModel(TEXT_PLAIN);
-        FileModel testFile = dataContent.usingUser(adminUser).usingResource(testFolder).createContent(fileModel);
+        restClient.authenticateUser(adminUser).configureRequestSpec().addMultiPart("filedata", Utility.getTestResourceFile(TEXT_FILE));
+        RestNodeModel rnm = restClient.authenticateUser(adminUser).withCoreAPI().usingNode(testFolder).createNode();
+
+        FileModel testFile = new FileModel(TEXT_FILE);
+        testFile.setNodeRef(rnm.getId());
 
         restClient.authenticateUser(adminUser).withCoreAPI().usingNode(testFile).createNodeRendition("pdf");
         restClient.assertStatusCodeIs(HttpStatus.ACCEPTED);
