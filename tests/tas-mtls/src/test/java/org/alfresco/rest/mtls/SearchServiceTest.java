@@ -36,14 +36,14 @@ public class SearchServiceTest extends MtlsRestTest
     {
         FolderModel folderModel = selectSharedFolder(adminUser);
 
-        restClient.authenticateUser(adminUser).configureRequestSpec().addMultiPart("filedata", Utility.getTestResourceFile("testing.txt"));
+        restClient.authenticateUser(adminUser).configureRequestSpec().addMultiPart("filedata", Utility.getTestResourceFile("testing-search-mtls.txt"));
         restClient.authenticateUser(adminUser).withCoreAPI().usingNode(folderModel).createNode();
 
-        Thread.sleep(20000);
+        Thread.sleep(240000);
 
         RestRequestQueryModel queryModel = new RestRequestQueryModel();
         queryModel.setLanguage("afts");
-        queryModel.setQuery("TEXT:\"incomprehensible\""); // AND TEXT:
+        queryModel.setQuery("incomprehensible"); // AND TEXT:
 
         SearchRequest searchRequest = new SearchRequest(queryModel);
         SearchResponse searchResponse = restClient.authenticateUser(adminUser).withSearchAPI().search(searchRequest);

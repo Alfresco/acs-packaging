@@ -1,4 +1,4 @@
-FROM quay.io/alfresco/insight-engine:2.0.8.1
+FROM quay.io/alfresco/insight-engine:2.0.8.2
 
 # Create search_config_setup.sh if it does not exist (e.g. on SearchServices 1.2.x or earlier).
 USER root

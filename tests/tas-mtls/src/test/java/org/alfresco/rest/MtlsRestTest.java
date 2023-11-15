@@ -34,7 +34,7 @@ import org.testng.annotations.Test;
 @ContextConfiguration ("classpath:alfresco-mtls-context.xml")
 public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
 {
-    protected static final String TEXT_FILE = "testing.txt";
+    protected static final String TEXT_FILE = "testing-search-mtls.txt";
     private static Logger LOGGER = LogFactory.getLogger();
 
     @Autowired
