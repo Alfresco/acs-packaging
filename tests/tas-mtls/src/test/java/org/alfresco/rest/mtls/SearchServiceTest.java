@@ -25,22 +25,18 @@ public class SearchServiceTest extends MtlsRestTest
         adminUser = dataUser.getAdminUser();
     }
 
-    @Test public void testRenditionWithMTLSEnabledTest() throws InterruptedException
+    @Test public void testIndexingWithMTLSEnabledTest() throws InterruptedException
     {
         FolderModel folderModel = selectSharedFolder(adminUser);
         RestNodeModel fileNode = null;
         try
         {
-            int initialSearchWordCount = searchWordCount();
+            int initialSearchResultsCount = countSearchResults();
 
             restClient.authenticateUser(adminUser).configureRequestSpec().addMultiPart("filedata", Utility.getTestResourceFile(TEXT_FILE));
             fileNode = restClient.authenticateUser(adminUser).withCoreAPI().usingNode(folderModel).createNode();
 
-            Thread.sleep(10000);
-
-            int postUploadSearchWordCount = searchWordCount();
-
-            Assert.assertEquals(postUploadSearchWordCount, initialSearchWordCount + 1);
+            verifyResultsIncreaseWithRetry(initialSearchResultsCount);
         }
         finally
         {
@@ -52,7 +48,7 @@ public class SearchServiceTest extends MtlsRestTest
         }
     }
 
-    private int searchWordCount() {
+    private int countSearchResults() {
         RestRequestQueryModel queryModel = new RestRequestQueryModel();
         queryModel.setLanguage("afts");
         queryModel.setQuery("incomprehensible");
@@ -61,5 +57,18 @@ public class SearchServiceTest extends MtlsRestTest
         SearchResponse searchResponse = restClient.authenticateUser(adminUser).withSearchAPI().search(searchRequest);
 
         return searchResponse.getEntries().size();
+    }
+
+    private void verifyResultsIncreaseWithRetry(int initialSearchWordCount) throws InterruptedException {
+        int retryDelay = 5000;
+        int retryLimit = 10;
+        for (int i = 0; i < retryLimit; i++) {
+            LOGGER.info("Attempt: " + (i+1));
+            if (countSearchResults() == initialSearchWordCount + 1) {
+                return;
+            }
+            Thread.sleep(retryDelay);
+        }
+        Assert.fail("Number of search results didn't increase after uploading a file with keyword");
     }
 }

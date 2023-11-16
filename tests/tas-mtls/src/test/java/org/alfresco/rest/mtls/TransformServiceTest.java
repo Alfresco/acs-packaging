@@ -29,23 +29,32 @@ public class TransformServiceTest extends MtlsRestTest
     public void testRenditionWithMTLSEnabledTest()
     {
         FolderModel testFolder = selectSharedFolder(adminUser);
-
-        restClient.authenticateUser(adminUser).configureRequestSpec().addMultiPart("filedata", Utility.getTestResourceFile(TEXT_FILE));
-        RestNodeModel rnm = restClient.authenticateUser(adminUser).withCoreAPI().usingNode(testFolder).createNode();
-
         FileModel testFile = new FileModel(TEXT_FILE);
-        testFile.setNodeRef(rnm.getId());
 
-        restClient.authenticateUser(adminUser).withCoreAPI().usingNode(testFile).createNodeRendition("pdf");
-        restClient.assertStatusCodeIs(HttpStatus.ACCEPTED);
+        try {
+            restClient.authenticateUser(adminUser).configureRequestSpec().addMultiPart("filedata", Utility.getTestResourceFile(TEXT_FILE));
+            RestNodeModel rnm = restClient.authenticateUser(adminUser).withCoreAPI().usingNode(testFolder).createNode();
+            testFile.setNodeRef(rnm.getId());
 
-        String status = restClient.withCoreAPI().usingNode(testFile).getNodeRenditionUntilIsCreated("pdf").getStatus();
-        Assert.assertEquals(status, "CREATED");
+            restClient.authenticateUser(adminUser).withCoreAPI().usingNode(testFile).createNodeRendition("pdf");
+            restClient.assertStatusCodeIs(HttpStatus.ACCEPTED);
 
-        restClient.authenticateUser(adminUser).withCoreAPI().usingNode(testFile).createNodeRendition("doclib");
-        restClient.assertStatusCodeIs(HttpStatus.ACCEPTED);
+            String status = restClient.withCoreAPI().usingNode(testFile).getNodeRenditionUntilIsCreated("pdf").getStatus();
+            Assert.assertEquals(status, "CREATED");
 
-        status = restClient.withCoreAPI().usingNode(testFile).getNodeRenditionUntilIsCreated("doclib").getStatus();
-        Assert.assertEquals(status, "CREATED");
+            restClient.authenticateUser(adminUser).withCoreAPI().usingNode(testFile).createNodeRendition("doclib");
+            restClient.assertStatusCodeIs(HttpStatus.ACCEPTED);
+
+            status = restClient.withCoreAPI().usingNode(testFile).getNodeRenditionUntilIsCreated("doclib").getStatus();
+            Assert.assertEquals(status, "CREATED");
+        }
+        finally
+        {
+            //Clean up file for easier local retries of test
+            if (testFile.getNodeRef() != null)
+            {
+                restClient.authenticateUser(adminUser).withCoreAPI().usingNode(testFolder).deleteNode(testFile.getNodeRef());
+            }
+        }
     }
 }

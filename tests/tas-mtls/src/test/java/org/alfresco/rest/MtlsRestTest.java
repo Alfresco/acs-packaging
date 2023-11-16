@@ -34,7 +34,7 @@ import org.testng.annotations.Test;
 @ContextConfiguration ("classpath:alfresco-mtls-context.xml")
 public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
 {
-    private static Logger LOGGER = LogFactory.getLogger();
+    protected static Logger LOGGER = LogFactory.getLogger();
 
     @Autowired
     protected TestMtlsProperties testMtlsProperties;
@@ -46,7 +46,7 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
     private CloseableHttpClient client = HttpClients.createMinimal();
 
     @BeforeSuite (alwaysRun = true)
-    public void checkServerHealth() throws Exception
+    public void setupSSLConfig() throws Exception
     {
         super.springTestContextPrepareTestInstance();
 
