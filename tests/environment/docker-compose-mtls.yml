@@ -229,9 +229,9 @@ services:
       ALFRESCO_SECURE_COMMS: "https"
 
       SOLR_OPTS: -Dsolr.ssl.checkPeerName=false -Dsolr.allow.unsafe.resourceloading=true
-      SOLR_SSL_KEY_STORE: /opt/alfresco-search-services/keystore/searchengine.keystore
+      SOLR_SSL_KEY_STORE: /opt/alfresco-search-services/keystore/searchEngine.keystore
       SOLR_SSL_KEY_STORE_TYPE: JCEKS
-      SOLR_SSL_TRUST_STORE: /opt/alfresco-search-services/keystore/searchengine.truststore
+      SOLR_SSL_TRUST_STORE: /opt/alfresco-search-services/keystore/searchEngine.truststore
       SOLR_SSL_TRUST_STORE_TYPE: JCEKS
       SOLR_SSL_NEED_CLIENT_AUTH: 'true'
 
