@@ -99,4 +99,4 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Message Broker
 | Component | Recommended | Also Available |
 |---|---|---|
-| ActiveMQ | 5.17.1 | 5.16.1 |
+| ActiveMQ | 5.17.6 | 5.16.7 |
