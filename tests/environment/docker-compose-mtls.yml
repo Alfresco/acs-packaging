@@ -213,6 +213,8 @@ services:
   solr6:
     build:
       context: ./solr-mtls
+      args:
+        SOLR_TAG: ${SOLR6_TAG}
     mem_limit: 2g
     environment:
       # Solr needs to know how to register itself with Alfresco
