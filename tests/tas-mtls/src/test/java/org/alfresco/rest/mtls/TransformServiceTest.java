@@ -30,7 +30,7 @@ public class TransformServiceTest extends MtlsRestTest
     {
         FolderModel testFolder = selectSharedFolder(adminUser);
 
-        restClient.authenticateUser(adminUser).configureRequestSpec().addMultiPart("filedata", Utility.getTestResourceFile(TEXT_FILE));
+        restClient.authenticateUser(adminUser).configureRequestSpec().addMultiPart("filedata", Utility.getTestResourceFile("testing-transform-mtls.txt"));
         RestNodeModel rnm = restClient.authenticateUser(adminUser).withCoreAPI().usingNode(testFolder).createNode();
 
         FileModel testFile = new FileModel(TEXT_FILE);
