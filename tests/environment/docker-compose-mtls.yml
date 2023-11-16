@@ -236,8 +236,9 @@ services:
       SOLR_SSL_NEED_CLIENT_AUTH: 'true'
 
       JAVA_TOOL_OPTIONS:
-        -Dsolr.jetty.truststore.password=password  -Dsolr.jetty.keystore.password=password 
-        -Dssl-keystore.password=password -Dssl-truststore.password=password
+        -Dsolr.jetty.truststore.password=password  -Dsolr.jetty.keystore.password=password
+        -Dssl-keystore.password=password -Dssl-keystore.aliases=ssl-alfresco-ca,searchengine -Dssl-keystore.ssl-alfresco-ca.password=password -Dssl-keystore.searchengine.password=password
+        -Dssl-truststore.password=password -Dssl-truststore.aliases=alfresco-ca -Dssl-truststore.alfresco-ca.password=password
     ports:
       - "8083:8983" # Browser port
     volumes:
