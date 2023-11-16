@@ -34,34 +34,16 @@ import org.testng.annotations.Test;
 @ContextConfiguration ("classpath:alfresco-mtls-context.xml")
 public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
 {
-    protected static final String TEXT_FILE = "testing-search-mtls.txt";
     private static Logger LOGGER = LogFactory.getLogger();
 
     @Autowired
-    protected ServerHealth serverHealth;
-
+    protected TestMtlsProperties testMtlsProperties;
+    @Autowired
+    protected DataUserAIS dataUser;
     @Autowired
     protected RestWrapper restClient;
 
-    @Autowired
-    protected DataUserAIS dataUser;
-
-    @Autowired
-    protected DataSite dataSite;
-
-    @Autowired
-    protected DataContent dataContent;
-
-    protected SiteModel testSiteModel;
-
-    String keystoreLocation = "/Users/Marcin.Strankowski/Projects/acs-packaging/keystores/testClient/testClient.keystore";
-    String keystorePassword = "password";
-    String keystoreType = "JCEKS";
-    String truststoreLocation = "/Users/Marcin.Strankowski/Projects/acs-packaging/keystores/testClient/testClient.truststore";
-    String truststorePassword = "password";
-    String truststoreType = "JCEKS";
-
-    CloseableHttpClient client = HttpClients.createMinimal();
+    private CloseableHttpClient client = HttpClients.createMinimal();
 
     @BeforeSuite (alwaysRun = true)
     public void checkServerHealth() throws Exception
@@ -70,10 +52,10 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
 
         //Needed to communicate with mTLS Repository
         SSLConfig sslConfig = SSLConfig.sslConfig()
-                .keyStore(keystoreLocation, keystorePassword)
-                .keystoreType(keystoreType)
-                .trustStore(truststoreLocation, truststorePassword)
-                .trustStoreType(truststoreType);
+                .keyStore(testMtlsProperties.getKeystoreLocation(), testMtlsProperties.getKeystorePassword())
+                .keystoreType(testMtlsProperties.getKeystoreType())
+                .trustStore(testMtlsProperties.getTruststoreLocation(), testMtlsProperties.getTruststorePassword())
+                .trustStoreType(testMtlsProperties.getTruststoreType());
         RestAssured.config = RestAssured.config().sslConfig(sslConfig);
     }
 

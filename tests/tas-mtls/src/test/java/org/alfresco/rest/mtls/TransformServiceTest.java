@@ -1,7 +1,5 @@
 package org.alfresco.rest.mtls;
 
-import static org.alfresco.utility.model.FileType.TEXT_PLAIN;
-
 import org.alfresco.rest.MtlsRestTest;
 import org.alfresco.rest.model.RestNodeModel;
 import org.alfresco.utility.Utility;
@@ -17,6 +15,8 @@ import org.testng.annotations.Test;
 @ContextConfiguration ("classpath:alfresco-mtls-context.xml")
 public class TransformServiceTest extends MtlsRestTest
 {
+    public static final String TEXT_FILE = "testing-transform-mtls.txt";
+
     private UserModel adminUser;
 
     @BeforeClass (alwaysRun = true)
@@ -30,7 +30,7 @@ public class TransformServiceTest extends MtlsRestTest
     {
         FolderModel testFolder = selectSharedFolder(adminUser);
 
-        restClient.authenticateUser(adminUser).configureRequestSpec().addMultiPart("filedata", Utility.getTestResourceFile("testing-transform-mtls.txt"));
+        restClient.authenticateUser(adminUser).configureRequestSpec().addMultiPart("filedata", Utility.getTestResourceFile(TEXT_FILE));
         RestNodeModel rnm = restClient.authenticateUser(adminUser).withCoreAPI().usingNode(testFolder).createNode();
 
         FileModel testFile = new FileModel(TEXT_FILE);
