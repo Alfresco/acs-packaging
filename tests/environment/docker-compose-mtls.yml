@@ -66,14 +66,14 @@ services:
         -DlocalTransform.core-aio.url=https://transform-core-aio:8090/
         -Dcsrf.filter.enabled=false
         -Ddsync.service.uris=https://localhost:9090/alfresco
-        -Dencryption.ssl.keystore.location=/usr/local/tomcat/alf_data/keystore/alfresco.keystore
-        -Dencryption.ssl.truststore.location=/usr/local/tomcat/alf_data/keystore/alfresco.truststore
-        -Dssl-keystore.password=password
-        -Dssl-truststore.password=password
         -Dhttpclient.config.sharedfilestore.mTLSEnabled=true
         -Dhttpclient.config.sharedfilestore.hostnameVerificationDisabled=${HOSTNAME_VERIFICATION_DISABLED}
         -Dhttpclient.config.transform.mTLSEnabled=true
         -Dhttpclient.config.transform.hostnameVerificationDisabled=${HOSTNAME_VERIFICATION_DISABLED}
+        -Dencryption.ssl.keystore.location=/usr/local/tomcat/alf_data/keystore/alfresco.keystore
+        -Dencryption.ssl.truststore.location=/usr/local/tomcat/alf_data/keystore/alfresco.truststore
+        -Dssl-keystore.password=password
+        -Dssl-truststore.password=password
         -XX:MinRAMPercentage=50
         -XX:MaxRAMPercentage=80
     volumes:
