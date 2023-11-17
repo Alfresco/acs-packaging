@@ -36,15 +36,15 @@ public class PathFieldsReindexingTests extends NodesSecondaryChildrenRelatedTest
 
         // given
         STEP("Create some nested folders.");
-        folders().createNestedFolders(A, B, C);
-        folders().createNestedFolders(K, L, M);
-        folders().createNestedFolders(X, Y, Z);
+        folders.add().nestedRandomFolders(A, B, C).create();
+        folders.add().nestedRandomFolders(K, L, M).create();
+        folders.add().nestedRandomFolders(X, Y, Z).create();
 
         STEP("Add some extra secondary parent relationships.");
-        folders(K).addSecondaryChild(folders(B));
-        folders(X).addSecondaryChild(folders(K));
-        folders(L).addSecondaryChildren(folders(C), folders(Y));
-        folders(M).addSecondaryChild(folders(C));
+        folders.modify(K).add().secondaryContent(folders.get(B));
+        folders.modify(X).add().secondaryContent(folders.get(K));
+        folders.modify(L).add().secondaryContent(folders.get(C), folders.get(Y));
+        folders.modify(M).add().secondaryContent(folders.get(C));
 
         STEP("Reindex everything before starting tests.");
         AlfrescoStackInitializer.reindexEverything();
@@ -54,28 +54,28 @@ public class PathFieldsReindexingTests extends NodesSecondaryChildrenRelatedTest
     public void testPrimaryParentField()
     {
         STEP("Check that only M has L as a primary parent.");
-        SearchRequest query = req("PRIMARYPARENT:" + folders(L).getNodeRef());
+        SearchRequest query = req("PRIMARYPARENT:" + folders.get(L).getNodeRef());
         searchQueryService.expectResultsFromQuery(query, testUser,
-                folders(M).getName());
+                folders.get(M).getName());
     }
 
     @Test(groups = TestGroup.SEARCH)
     public void testParentFieldIncludesSecondaryParents()
     {
         STEP("Check that three nodes have L as a primary or secondary parent.");
-        SearchRequest query = req("PARENT:" + folders(L).getNodeRef());
+        SearchRequest query = req("PARENT:" + folders.get(L).getNodeRef());
         searchQueryService.expectResultsFromQuery(query, testUser,
-                folders(C).getName(), folders(M).getName(), folders(Y).getName());
+                folders.get(C).getName(), folders.get(M).getName(), folders.get(Y).getName());
     }
 
     @Test(groups = TestGroup.SEARCH)
     public void testAncestorFieldIncludesSecondaryAssociations()
     {
         STEP("Check which nodes have K as an ancestor.");
-        SearchRequest query = req("ANCESTOR:" + folders(K).getNodeRef());
+        SearchRequest query = req("ANCESTOR:" + folders.get(K).getNodeRef());
         searchQueryService.expectResultsFromQuery(query, testUser,
-                folders(B).getName(), folders(C).getName(), folders(L).getName(), folders(M).getName(),
-                folders(Y).getName(), folders(Z).getName());
+                folders.get(B).getName(), folders.get(C).getName(), folders.get(L).getName(), folders.get(M).getName(),
+                folders.get(Y).getName(), folders.get(Z).getName());
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -83,10 +83,10 @@ public class PathFieldsReindexingTests extends NodesSecondaryChildrenRelatedTest
     {
         // then
         STEP("Verify that folderC can be found by secondary PATH using secondary parent folderM.");
-        SearchRequest query = req("PATH:\"//cm:" + folders(M).getName() + "//*\"");
+        SearchRequest query = req("PATH:\"//cm:" + folders.get(M).getName() + "//*\"");
         searchQueryService.expectResultsFromQuery(query, testUser,
                 // secondary path
-                folders(C).getName());
+                folders.get(C).getName());
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -94,14 +94,14 @@ public class PathFieldsReindexingTests extends NodesSecondaryChildrenRelatedTest
     {
         // then
         STEP("Verify that primary and secondary children of folderL can be found using PATH index.");
-        SearchRequest query = req("PATH:\"//cm:" + folders(L).getName() + "//*\"");
+        SearchRequest query = req("PATH:\"//cm:" + folders.get(L).getName() + "//*\"");
         searchQueryService.expectResultsFromQuery(query, testUser,
                 // primary path
-                folders(M).getName(),
+                folders.get(M).getName(),
                 // secondary path
-                folders(C).getName(),
-                folders(Y).getName(),
-                folders(Z).getName());
+                folders.get(C).getName(),
+                folders.get(Y).getName(),
+                folders.get(Z).getName());
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -109,13 +109,13 @@ public class PathFieldsReindexingTests extends NodesSecondaryChildrenRelatedTest
     {
         // then
         STEP("Verify we can get direct children of a secondary paths (X-K=L) referenced in a query.");
-        SearchRequest query = req("PATH:\"//cm:" + folders(X).getName() + "//cm:" + folders(L).getName() + "/*\"");
+        SearchRequest query = req("PATH:\"//cm:" + folders.get(X).getName() + "//cm:" + folders.get(L).getName() + "/*\"");
         searchQueryService.expectResultsFromQuery(query, testUser,
                 // primary path from L
-                folders(M).getName(),
+                folders.get(M).getName(),
                 // secondary path from L
-                folders(C).getName(),
-                folders(Y).getName()
+                folders.get(C).getName(),
+                folders.get(Y).getName()
                 );
     }
 
@@ -124,15 +124,15 @@ public class PathFieldsReindexingTests extends NodesSecondaryChildrenRelatedTest
     {
         // then
         STEP("Verify we can find all secondary descendents (excluding direct children) of folderX.");
-        SearchRequest query = req("PATH:\"//cm:" + folders(X).getName() + "//*//*\"");
+        SearchRequest query = req("PATH:\"//cm:" + folders.get(X).getName() + "//*//*\"");
         searchQueryService.expectResultsFromQuery(query, testUser,
                 // primary path
-                folders(Z).getName(),
+                folders.get(Z).getName(),
                 // secondary path
-                folders(Y).getName(), // Y _is_ a direct primary child, but this query should only find it via the secondary path.
-                folders(B).getName(),
-                folders(C).getName(),
-                folders(L).getName(),
-                folders(M).getName());
+                folders.get(Y).getName(), // Y _is_ a direct primary child, but this query should only find it via the secondary path.
+                folders.get(B).getName(),
+                folders.get(C).getName(),
+                folders.get(L).getName(),
+                folders.get(M).getName());
     }
 }
