@@ -32,7 +32,7 @@ env:
   AWS_REGION: eu-west-1
   TAS_ENVIRONMENT: ./tests/environment
   TAS_SCRIPTS: ../alfresco-community-repo/packaging/tests/scripts
-  ALF_LICENCE_S3_PATH: s3://acs-license/acs/alf231-allenabled.lic
+  ALF_LICENCE_S3_PATH: s3://acs-license/acs/alf232-allenabled.lic
   ALF_LICENCE_LOCAL_PATH: /tmp/licence.lic
   PYTHON_VERSION: 3.7.15
   DTAS_VERSION: v1.2.2
@@ -381,49 +381,49 @@ jobs:
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
-#  upgrade_tas_tests:
-#    name: ${{ matrix.testSuite }} Upgrade TAS tests
-#    runs-on: ubuntu-latest
-#    if: >
-#      !contains(github.event.head_commit.message, '[skip search]') &&
-#      !contains(github.event.head_commit.message, '[skip tests]')
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        include:
-#          - testSuite: Elasticsearch
-#            search-engine-type: elasticsearch
-#          - testSuite: Opensearch
-#            search-engine-type: opensearch
-#    steps:
-#      - uses: actions/checkout@v3
-#        with:
-#          persist-credentials: false
-#      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
-#      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
-#      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
-#      - name: "Build"
-#        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-#        run: |
-#          bash ./scripts/ci/init.sh
-#          bash ./scripts/ci/build.sh
-#      - name: "Configure AWS credentials"
-#        uses: aws-actions/configure-aws-credentials@v1
-#        with:
-#          aws-access-key-id: ${{ secrets.AWS_S3_ACSLICENSE_ACCESS_KEY_ID }}
-#          aws-secret-access-key: ${{ secrets.AWS_S3_ACSLICENSE_SECRET_ACCESS_KEY }}
-#          aws-region: ${{ env.AWS_REGION }}
-#      - name: "Copy Licence"
-#        run: aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
-#      - name: "Run tests"
-#        id: tests
-#        timeout-minutes: 30
-#        run: mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}" "-Ddatabase.type=postgresql" "-Dindeximage=alfresco-es-indexing-jdbc:latest" "-Dreindeximage=alfresco-es-reindexing-jdbc:latest" "-Drepoimage=alfresco-repository-databases:latest"
-#      - name: "Dump all Docker containers logs"
-#        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v1.41.0
-#        if: failure() && steps.tests.outcome == 'failure'
-#      - name: "Clean Maven cache"
-#        run: bash ./scripts/ci/cleanup_cache.sh
+  upgrade_tas_tests:
+    name: ${{ matrix.testSuite }} Upgrade TAS tests
+    runs-on: ubuntu-latest
+    if: >
+      !contains(github.event.head_commit.message, '[skip search]') &&
+      !contains(github.event.head_commit.message, '[skip tests]')
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - testSuite: Elasticsearch
+            search-engine-type: elasticsearch
+          - testSuite: Opensearch
+            search-engine-type: opensearch
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+      - name: "Build"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          bash ./scripts/ci/init.sh
+          bash ./scripts/ci/build.sh
+      - name: "Configure AWS credentials"
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_S3_ACSLICENSE_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_S3_ACSLICENSE_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: "Copy Licence"
+        run: aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
+      - name: "Run tests"
+        id: tests
+        timeout-minutes: 30
+        run: mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}" "-Ddatabase.type=postgresql" "-Dindeximage=alfresco-es-indexing-jdbc:latest" "-Dreindeximage=alfresco-es-reindexing-jdbc:latest" "-Drepoimage=alfresco-repository-databases:latest"
+      - name: "Dump all Docker containers logs"
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v1.41.0
+        if: failure() && steps.tests.outcome == 'failure'
+      - name: "Clean Maven cache"
+        run: bash ./scripts/ci/cleanup_cache.sh
 
   all_amps_tests:
     name: "All AMPs tests"
