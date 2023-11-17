@@ -3,7 +3,7 @@ package org.alfresco.elasticsearch.reindexing;
 import static org.alfresco.elasticsearch.SearchQueryService.req;
 import static org.alfresco.utility.report.log.Step.STEP;
 
-import org.alfresco.elasticsearch.reindexing.utils.Categories;
+import org.alfresco.rest.repo.resource.Categories;
 import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.utility.model.TestGroup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ import org.testng.annotations.Test;
 /**
  * Tests verifying live indexing of secondary children and ANCESTOR index in Elasticsearch.
  */
-@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert", "PMD.JUnit4TestShouldUseTestAnnotation"}) // these are testng tests and use searchQueryService.expectResultsFromQuery for assertion
+@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert"}) // these are testng tests and use searchQueryService.expectResultsFromQuery for assertion
 public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelatedTests
 {
 
@@ -34,13 +34,13 @@ public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelated
 
         // given
         STEP("Create nested folders in site's Document Library.");
-        folders().createNestedFolders(A, B);
+        folders.add().nestedRandomFolders(A, B).create();
 
         STEP("Create nested categories.");
-        categories.createNestedCategories(K, L);
+        categories.add().nestedRandomCategories(K, L).create();
 
         STEP("Link folders to category.");
-        folders(A).linkToCategory(categories.get(L));
+        folders.modify(A).linkTo(categories.get(L));
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -58,7 +58,7 @@ public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelated
         // then
         STEP("Verify that searching by PARENT and category will find one descendant node: folderA.");
         SearchRequest query = req("PARENT:" + categories.get(L).getId());
-        searchQueryService.expectResultsFromQuery(query, testUser, folders(A).getName());
+        searchQueryService.expectResultsFromQuery(query, testUser, folders.get(A).getName());
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -66,22 +66,22 @@ public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelated
     {
         // given
         STEP("Create nested folders in site's Document Library.");
-        folders().createNestedFolders(C);
+        folders.add().randomFolder(C).create();
 
         STEP("Create nested categories.");
-        categories.createNestedCategories(M);
+        categories.add().randomCategory(M).create();
 
         STEP("Link folders to category.");
-        folders(C).linkToCategory(categories.get(M));
+        folders.modify(C).linkTo(categories.get(M));
 
         // when
         STEP("Verify that searching by PARENT and category will find one descendant node: folderC.");
         SearchRequest query = req("PARENT:" + categories.get(M).getId());
-        searchQueryService.expectResultsFromQuery(query, testUser, folders(C).getName());
+        searchQueryService.expectResultsFromQuery(query, testUser, folders.get(C).getName());
 
         // then
         STEP("Delete categoryM.");
-        categories.delete(M);
+        categories.delete(categories.get(M));
 
         STEP("Verify that searching by PARENT and deleted category will find no descendant nodes.");
         searchQueryService.expectResultsFromQuery(query, testUser);
@@ -92,22 +92,22 @@ public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelated
     {
         // given
         STEP("Create nested folders in site's Document Library.");
-        folders().createNestedFolders(C);
+        folders.add().randomFolder(X).create();
 
         STEP("Create nested categories.");
-        categories.createNestedCategories(P, Q);
+        categories.add().nestedRandomCategories(P, Q).create();
 
         STEP("Link folders to category.");
-        folders(C).linkToCategory(categories.get(Q));
+        folders.modify(X).linkTo(categories.get(Q));
 
         // when
         STEP("Verify that searching by PARENT and category will find one descendant node: folderC.");
         SearchRequest query = req("PARENT:" + categories.get(Q).getId());
-        searchQueryService.expectResultsFromQuery(query, testUser, folders(C).getName());
+        searchQueryService.expectResultsFromQuery(query, testUser, folders.get(X).getName());
 
         // then
         STEP("Delete categoryM.");
-        categories.delete(P);
+        categories.delete(categories.get(P));
 
         STEP("Verify that searching by PARENT and deleted category will find no descendant nodes.");
         searchQueryService.expectResultsFromQuery(query, testUser);
