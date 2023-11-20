@@ -51,7 +51,7 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
         folders.add().nestedRandomFolders(K, L, M).create();
         folders.add().nestedRandomFolders(X, Y, Z).create();
         folders.add().randomFolders(P, Q, R, S).create();
-        fileInP = folders.modify(P).add().randomFile().withRandomTitle().withRandomDescription().withRandomContent().create();
+        fileInP = folders.modify(P).add().randomFile().create();
 
         STEP("Create few secondary parent-child relationships.");
         folders.modify(K).add().secondaryContent(folders.get(B));
@@ -288,7 +288,7 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
     {
         // given
         STEP("Create nested folders (G and H) inside folderS and folderT in Document Library. Make folderP a secondary child of folderG.");
-        FolderModel folderG = folders.modify(S).add().randomFolder( "G").create();
+        FolderModel folderG = folders.modify(S).add().randomFolder("G").create();
         FolderModel folderH = folders.modify(folderG).add().randomFolder("H").create();
         FolderModel folderT = folders.add().randomFolder("T").create();
         folders.modify(folderG).add().secondaryContent(folders.get(P));

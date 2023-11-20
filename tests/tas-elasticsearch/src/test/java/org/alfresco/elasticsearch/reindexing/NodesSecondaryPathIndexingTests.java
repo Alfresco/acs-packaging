@@ -179,7 +179,7 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
     {
         // given
         STEP("Create two nested folders (E and F) in Document Library.");
-        FolderModel folderE = folders.add().randomFolder( "E").create();
+        FolderModel folderE = folders.add().randomFolder("E").create();
         FolderModel folderF = folders.modify(folderE).add().randomFolder("F").create();
         STEP("Make folderE a secondary children of folderQ and folderR a secondary children of folderE.");
         folders.modify(Q).add().secondaryContent(folderE);
