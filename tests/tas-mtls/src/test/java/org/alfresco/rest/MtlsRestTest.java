@@ -1,6 +1,9 @@
 package org.alfresco.rest;
 
 import javax.net.ssl.SSLHandshakeException;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.lang.reflect.Method;
 
 import io.restassured.RestAssured;
@@ -113,5 +116,16 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
         folderModel.setNodeRef(folderNodeRef);
 
         return folderModel;
+    }
+
+    protected File createTestFile(String fileName, String fileContent) throws IOException
+    {
+        File testFile = new File(fileName);
+        try (FileWriter fileWriter = new FileWriter(testFile))
+        {
+            fileWriter.write(fileContent);
+        }
+
+        return testFile;
     }
 }

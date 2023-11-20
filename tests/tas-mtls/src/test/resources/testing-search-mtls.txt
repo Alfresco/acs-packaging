@@ -1,2 +1,0 @@
-We need to verify indexing working in solr/elasticsearch to do that we need to upload this text file and search with a word inside it,
-like "incomprehensible" to verify it has been indexed properly.

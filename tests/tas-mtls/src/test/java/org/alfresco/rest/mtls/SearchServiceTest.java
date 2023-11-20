@@ -10,33 +10,54 @@ import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.UserModel;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import java.io.File;
+import java.io.IOException;
 
 @ContextConfiguration("classpath:alfresco-mtls-context.xml")
 public class SearchServiceTest extends MtlsRestTest
 {
-    public static final String TEXT_FILE = "testing-search-mtls.txt";
+    private static final String TEST_FILE_NAME = "testing-search-mtls.txt";
+    private static final String TEST_FILE_KEYWORD = "incomprehensible";
+    private static final String TEST_FILE_CONTENT = "We need to verify indexing working in solr/elasticsearch to do that we need to upload this \n"
+                                                    + "text file and search with a word inside it,\n"
+                                                    + "like \"" + TEST_FILE_KEYWORD + "\" to verify it has been indexed properly.";
 
     private UserModel adminUser;
+    private File testFile;
 
-    @BeforeClass(alwaysRun = true) public void dataPreparation()
+    @BeforeClass(alwaysRun = true)
+    public void dataPreparation() throws IOException
     {
         adminUser = dataUser.getAdminUser();
+        testFile = createTestFile(TEST_FILE_NAME, TEST_FILE_CONTENT);
     }
 
-    @Test public void testIndexingWithMTLSEnabledTest() throws InterruptedException
+    @AfterClass(alwaysRun = true)
+    public void dataCleanup()
+    {
+        if (testFile != null && testFile.exists()) {
+            testFile.delete();
+        }
+    }
+
+    @Test
+    public void testIndexingWithMTLSEnabledTest() throws InterruptedException
     {
         FolderModel folderModel = selectSharedFolder(adminUser);
         RestNodeModel fileNode = null;
         try
         {
-            int initialSearchResultsCount = countSearchResults();
+            int initialSearchResultsCount = countSearchResults(TEST_FILE_KEYWORD);
 
-            restClient.authenticateUser(adminUser).configureRequestSpec().addMultiPart("filedata", Utility.getTestResourceFile(TEXT_FILE));
+            restClient.authenticateUser(adminUser).configureRequestSpec().addMultiPart("filedata", testFile);
             fileNode = restClient.authenticateUser(adminUser).withCoreAPI().usingNode(folderModel).createNode();
 
-            verifyResultsIncreaseWithRetry(initialSearchResultsCount);
+            verifyResultsIncreaseWithRetry(TEST_FILE_KEYWORD, initialSearchResultsCount);
         }
         finally
         {
@@ -48,10 +69,10 @@ public class SearchServiceTest extends MtlsRestTest
         }
     }
 
-    private int countSearchResults() {
+    private int countSearchResults(String keyword) {
         RestRequestQueryModel queryModel = new RestRequestQueryModel();
         queryModel.setLanguage("afts");
-        queryModel.setQuery("incomprehensible");
+        queryModel.setQuery(keyword);
 
         SearchRequest searchRequest = new SearchRequest(queryModel);
         SearchResponse searchResponse = restClient.authenticateUser(adminUser).withSearchAPI().search(searchRequest);
@@ -59,12 +80,12 @@ public class SearchServiceTest extends MtlsRestTest
         return searchResponse.getEntries().size();
     }
 
-    private void verifyResultsIncreaseWithRetry(int initialSearchWordCount) throws InterruptedException {
+    private void verifyResultsIncreaseWithRetry(String keyword, int initialSearchWordCount) throws InterruptedException {
         int retryDelay = 5000;
         int retryLimit = 10;
         for (int i = 0; i < retryLimit; i++) {
             LOGGER.info("Attempt: " + (i+1));
-            if (countSearchResults() == initialSearchWordCount + 1) {
+            if (countSearchResults(keyword) == initialSearchWordCount + 1) {
                 return;
             }
             Thread.sleep(retryDelay);
