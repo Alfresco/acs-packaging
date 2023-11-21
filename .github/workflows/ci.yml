@@ -153,6 +153,7 @@ jobs:
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
+
   pmd_scan:
     name: "PMD Scan"
     runs-on: ubuntu-latest
