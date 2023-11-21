@@ -61,7 +61,7 @@ jobs:
         run: bash ./scripts/ci/cleanup_cache.sh
 
   veracode_sast_acs:
-    name: "Pipeline SAST Scan"
+    name: "Pipeline SAST Scan ACS"
     runs-on: ubuntu-latest
     if: >
       ((github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request')) &&
@@ -103,7 +103,7 @@ jobs:
         run: bash ./scripts/ci/cleanup_cache.sh
 
   veracode_sast_share:
-    name: "Pipeline SAST Scan"
+    name: "Pipeline SAST Scan Share"
     runs-on: ubuntu-latest
     if: >
       ((github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request')) &&
@@ -118,15 +118,6 @@ jobs:
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
-      - name: Upload scan result
-        if: success() || failure()
-        run: zip readable_output.zip readable_results.txt
-      - name: Upload Artifact
-        if: success() || failure()
-        uses: actions/upload-artifact@v3
-        with:
-          name: Veracode Pipeline-Scan Results - Share (Human Readable)
-          path: readable_output.zip
       - name: "Run Share SAST Scan"
         uses: veracode/Veracode-pipeline-scan-action@v1.0.10
         with:
