@@ -15,6 +15,7 @@ public class TestMtlsProperties
     @Value("${testClient.truststore.location}") private String truststoreLocation;
     @Value("${testClient.truststore.password}") private String truststorePassword;
     @Value("${testClient.truststore.type}") private String truststoreType;
+    @Value("${testClient.disableHostnameVerification}") private boolean disableHostnameVerification;
 
     public TestMtlsProperties()
     {
@@ -78,5 +79,15 @@ public class TestMtlsProperties
     public void setTruststoreType(String truststoreType)
     {
         this.truststoreType = truststoreType;
+    }
+
+    public boolean isDisableHostnameVerification()
+    {
+        return disableHostnameVerification;
+    }
+
+    public void setDisableHostnameVerification(boolean disableHostnameVerification)
+    {
+        this.disableHostnameVerification = disableHostnameVerification;
     }
 }

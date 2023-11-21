@@ -14,13 +14,9 @@ import org.alfresco.rest.search.SearchNodeModel;
 import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.rest.search.SearchResponse;
 import org.alfresco.utility.LogFactory;
-import org.alfresco.utility.data.DataContent;
-import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUserAIS;
 import org.alfresco.utility.model.FolderModel;
-import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
-import org.alfresco.utility.network.ServerHealth;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -59,6 +55,11 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
                 .keystoreType(testMtlsProperties.getKeystoreType())
                 .trustStore(testMtlsProperties.getTruststoreLocation(), testMtlsProperties.getTruststorePassword())
                 .trustStoreType(testMtlsProperties.getTruststoreType());
+
+        if (testMtlsProperties.isDisableHostnameVerification()) {
+            sslConfig = sslConfig.allowAllHostnames();
+        }
+
         RestAssured.config = RestAssured.config().sslConfig(sslConfig);
     }
 

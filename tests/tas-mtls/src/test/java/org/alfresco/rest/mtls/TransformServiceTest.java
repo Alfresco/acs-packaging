@@ -2,7 +2,6 @@ package org.alfresco.rest.mtls;
 
 import org.alfresco.rest.MtlsRestTest;
 import org.alfresco.rest.model.RestNodeModel;
-import org.alfresco.utility.Utility;
 import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.UserModel;
