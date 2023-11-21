@@ -511,11 +511,7 @@ jobs:
           bash ./scripts/ci/build.sh
       - name: "Set up the environment"
         run: |
-          echo "Before docker-compose file"
-          cat ${{ env.TAS_ENVIRONMENT }}/${{ matrix.compose-file }}
-          echo "After docker-compose file"
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/${{ matrix.compose-file }}
-          cat ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh
           ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "https://localhost:8443/alfresco"
       - name: "Run tests"
         id: tests
