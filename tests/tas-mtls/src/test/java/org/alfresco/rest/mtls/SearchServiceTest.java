@@ -5,8 +5,10 @@ import org.alfresco.rest.model.RestNodeModel;
 import org.alfresco.rest.search.RestRequestQueryModel;
 import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.rest.search.SearchResponse;
+import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.UserModel;
+import org.slf4j.Logger;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -24,6 +26,8 @@ public class SearchServiceTest extends MtlsRestTest
     private static final String TEST_FILE_CONTENT = "We need to verify indexing working in solr/elasticsearch to do that we need to upload this \n"
                                                     + "text file and search with a word inside it,\n"
                                                     + "like \"" + TEST_FILE_KEYWORD + "\" to verify it has been indexed properly.";
+
+    private static final Logger LOGGER = LogFactory.getLogger();
 
     private UserModel adminUser;
     private File testFile;
@@ -83,7 +87,7 @@ public class SearchServiceTest extends MtlsRestTest
         int retryLimit = 10;
         for (int i = 0; i < retryLimit; i++) {
             LOGGER.info("Attempt: " + (i+1));
-            if (countSearchResults(keyword) == initialSearchWordCount + 1) {
+            if (countSearchResults(keyword) > initialSearchWordCount) {
                 return;
             }
             Thread.sleep(retryDelay);

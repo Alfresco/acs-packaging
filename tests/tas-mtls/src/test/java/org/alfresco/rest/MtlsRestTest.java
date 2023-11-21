@@ -1,10 +1,14 @@
 package org.alfresco.rest;
 
 import javax.net.ssl.SSLHandshakeException;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import io.restassured.RestAssured;
 import io.restassured.config.SSLConfig;
@@ -33,10 +37,10 @@ import org.testng.annotations.Test;
 @ContextConfiguration ("classpath:alfresco-mtls-context.xml")
 public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
 {
-    protected static Logger LOGGER = LogFactory.getLogger();
+    private static final Logger LOGGER = LogFactory.getLogger();
 
     @Autowired
-    protected TestMtlsProperties testMtlsProperties;
+    protected MtlsTestProperties mtlsTestProperties;
     @Autowired
     protected DataUserAIS dataUser;
     @Autowired
@@ -51,12 +55,12 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
 
         //Needed to communicate with mTLS Repository
         SSLConfig sslConfig = SSLConfig.sslConfig()
-                .keyStore(testMtlsProperties.getKeystoreLocation(), testMtlsProperties.getKeystorePassword())
-                .keystoreType(testMtlsProperties.getKeystoreType())
-                .trustStore(testMtlsProperties.getTruststoreLocation(), testMtlsProperties.getTruststorePassword())
-                .trustStoreType(testMtlsProperties.getTruststoreType());
+                .keyStore(mtlsTestProperties.getKeystoreLocation(), mtlsTestProperties.getKeystorePassword())
+                .keystoreType(mtlsTestProperties.getKeystoreType())
+                .trustStore(mtlsTestProperties.getTruststoreLocation(), mtlsTestProperties.getTruststorePassword())
+                .trustStoreType(mtlsTestProperties.getTruststoreType());
 
-        if (testMtlsProperties.isDisableHostnameVerification()) {
+        if (mtlsTestProperties.isDisableHostnameVerification()) {
             sslConfig = sslConfig.allowAllHostnames();
         }
 
@@ -121,12 +125,12 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
 
     protected File createTestFile(String fileName, String fileContent) throws IOException
     {
-        File testFile = new File(fileName);
-        try (FileWriter fileWriter = new FileWriter(testFile))
+        Path filePath = Paths.get(fileName);
+        try (BufferedWriter fileWriter = Files.newBufferedWriter(Paths.get(fileName)))
         {
             fileWriter.write(fileContent);
         }
 
-        return testFile;
+        return filePath.toFile();
     }
 }

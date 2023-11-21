@@ -7,7 +7,7 @@ import org.springframework.context.annotation.PropertySources;
 
 @Configuration
 @PropertySources({@PropertySource({"classpath:default.properties"})})
-public class TestMtlsProperties
+public class MtlsTestProperties
 {
     @Value("${testClient.keystore.location}") private String keystoreLocation;
     @Value("${testClient.keystore.password}") private String keystorePassword;
@@ -17,7 +17,7 @@ public class TestMtlsProperties
     @Value("${testClient.truststore.type}") private String truststoreType;
     @Value("${testClient.disableHostnameVerification}") private boolean disableHostnameVerification;
 
-    public TestMtlsProperties()
+    public MtlsTestProperties()
     {
     }
 
