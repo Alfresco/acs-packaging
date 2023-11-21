@@ -118,8 +118,7 @@ services:
     links:
       - activemq
     volumes:
-      - ${CI_WORKSPACE}/keystores/transformRouter/transformRouter.truststore:/transformRouter.truststore
-      - ${CI_WORKSPACE}/keystores/transformRouter/transformRouter.keystore:/transformRouter.keystore
+      - ${CI_WORKSPACE}/keystores/transformRouter:/
 
   transform-core-aio:
     image: quay.io/alfresco/alfresco-transform-core-aio:${TRANSFORMERS_TAG}
@@ -158,8 +157,7 @@ services:
     links:
       - activemq
     volumes:
-      - ${CI_WORKSPACE}/keystores/tengineAIO/tengineAIO.truststore:/tengineAIO.truststore
-      - ${CI_WORKSPACE}/keystores/tengineAIO/tengineAIO.keystore:/tengineAIO.keystore
+      - ${CI_WORKSPACE}/keystores/tengineAIO:/
 
   shared-file-store:
     image: quay.io/alfresco/alfresco-shared-file-store:${TRANSFORM_ROUTER_TAG}
@@ -196,8 +194,7 @@ services:
       - "8099:8099"
     volumes:
       - shared-file-store-volume:/tmp/Alfresco/sfs
-      - ${CI_WORKSPACE}/keystores/sharedFileStore/sharedFileStore.truststore:/sharedFileStore.truststore
-      - ${CI_WORKSPACE}/keystores/sharedFileStore/sharedFileStore.keystore:/sharedFileStore.keystore
+      - ${CI_WORKSPACE}/keystores/sharedFileStore:/
 
   postgres:
     image: postgres:${POSTGRES_TAG}
@@ -237,13 +234,11 @@ services:
 
       JAVA_TOOL_OPTIONS:
         -Dsolr.jetty.truststore.password=password  -Dsolr.jetty.keystore.password=password
-        -Dssl-keystore.password=password -Dssl-keystore.aliases=ssl-alfresco-ca,searchengine -Dssl-keystore.ssl-alfresco-ca.password=password -Dssl-keystore.searchengine.password=password
-        -Dssl-truststore.password=password -Dssl-truststore.aliases=alfresco-ca -Dssl-truststore.alfresco-ca.password=password
+        -Dssl-keystore.password=password -Dssl-truststore.password=password
     ports:
       - "8083:8983" # Browser port
     volumes:
-      - ${CI_WORKSPACE}/keystores/searchEngine/searchEngine.keystore:/opt/alfresco-search-services/keystore/searchEngine.keystore
-      - ${CI_WORKSPACE}/keystores/searchEngine/searchEngine.truststore:/opt/alfresco-search-services/keystore/searchEngine.truststore
+      - ${CI_WORKSPACE}/keystores/searchEngine:/opt/alfresco-search-services/keystore
 
   activemq:
     image: quay.io/alfresco/alfresco-activemq:${ACTIVEMQ_TAG}
