@@ -65,18 +65,15 @@ jobs:
     runs-on: ubuntu-latest
     if: >
       github.event_name == 'pull_request' &&
-      (contains(github.event.head_commit.message, '[pmd]') ||
-      (!contains(github.event.head_commit.message, '[skip pmd]') &&
-       !contains(github.event.head_commit.message, '[skip tests]')))
+      !contains(github.event.head_commit.message, '[skip pmd]') &&
+      !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
-      - name: "Init"
-        run: bash ./scripts/ci/init.sh
       - uses: Alfresco/ya-pmd-scan@v3.0.0
         with:
-          classpath-build-command: "bash ./scripts/ci/build.sh"
+          classpath-build-command: "bash ./scripts/ci/init.sh && bash ./scripts/ci/build.sh"
 
   tas_tests:
     name: ${{ matrix.testSuite }} TAS tests
