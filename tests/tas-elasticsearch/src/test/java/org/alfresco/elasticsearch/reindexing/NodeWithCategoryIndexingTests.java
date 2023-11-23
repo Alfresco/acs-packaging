@@ -1,5 +1,7 @@
 package org.alfresco.elasticsearch.reindexing;
 
+import static java.lang.String.format;
+
 import static org.alfresco.elasticsearch.SearchQueryService.req;
 import static org.alfresco.utility.report.log.Step.STEP;
 
@@ -13,7 +15,7 @@ import org.testng.annotations.Test;
 /**
  * Tests verifying live indexing of secondary children and ANCESTOR index in Elasticsearch.
  */
-@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert", "PMD.JUnit4TestShouldUseTestAnnotation"}) // these are testng tests and use searchQueryService.expectResultsFromQuery for assertion
+@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert", "PMD.JUnit4TestShouldUseTestAnnotation", "PMD.MethodNamingConventions", "PMD.LocalVariableNamingConventions"}) // these are testng tests and use searchQueryService.expectResultsFromQuery for assertion
 public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelatedTests
 {
 
@@ -111,5 +113,59 @@ public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelated
 
         STEP("Verify that searching by PARENT and deleted category will find no descendant nodes.");
         searchQueryService.expectResultsFromQuery(query, testUser);
+    }
+
+    @Test(groups = TestGroup.SEARCH)
+    public void testSearchByPath()
+    {
+        // given
+        String Kname = categories.get(K).getName();
+        String Lname = categories.get(L).getName();
+        String Aname = folders(A).getName();
+
+        // then
+        STEP("Verify that searching by PATH and category will find: folderA");
+        SearchRequest query = req(format("PATH:'/cm:categoryRoot/cm:generalclassifiable/cm:%s/cm:%s/cm:%s'", Kname, Lname, Aname));
+        searchQueryService.expectResultsFromQuery(query, testUser, folders(A).getName());
+    }
+
+    @Test(groups = TestGroup.SEARCH)
+    public void ensureCategoriesAreNotTransitive_lookingForExactChildren()
+    {
+        // given
+        String Kname = categories.get(K).getName();
+        String Lname = categories.get(L).getName();
+        String Aname = folders(A).getName();
+        String Bname = folders(B).getName();
+
+        // then
+        STEP("Verify that searching by PATH for nested folder will return no results (Dependency to category is not transitive)");
+        SearchRequest query = req(format("PATH:'/cm:categoryRoot/cm:generalclassifiable/cm:%s/cm:%s/cm:%s/cm:%s'", Kname, Lname, Aname, Bname));
+        searchQueryService.expectNoResultsFromQuery(query, testUser);
+    }
+
+    @Test(groups = TestGroup.SEARCH)
+    public void ensureCategoriesAreNotTransitive_lookingForAllDescendants()
+    {
+        // given
+        String Kname = categories.get(K).getName();
+        String Lname = categories.get(L).getName();
+
+        // then
+        STEP("Verify that searching by PATH and category will find: folderA");
+        SearchRequest query = req(format("PATH:'/cm:categoryRoot/cm:generalclassifiable/cm:%s/cm:%s//*'", Kname, Lname));
+        searchQueryService.expectResultsFromQuery(query, testUser, folders(A).getName());
+    }
+
+    @Test(groups = TestGroup.SEARCH)
+    public void ensureCategoriesAreNotTransitive_lookingForAllDescendants_byParentCategory()
+    {
+        // given
+        String Kname = categories.get(K).getName();
+
+        // then
+        STEP("Verify that searching by PATH and category will find: folderA");
+        SearchRequest query = req(format("PATH:'/cm:categoryRoot/cm:generalclassifiable/cm:%s//*'", Kname));
+        searchQueryService.expectResultsFromQuery(query, testUser, categories.get(L).getName(), folders(A).getName());
     }
 }
