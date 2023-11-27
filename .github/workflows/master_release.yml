@@ -156,7 +156,18 @@ jobs:
         run: |
           bash scripts/ci/verify_release_tag.sh
           bash scripts/ci/maven_release.sh $COMPUTED_BUILD_NUMBER
-          bash scripts/ci/prepare_staging_deploy.sh
+          echo "Move the final artifacts to a set of folders to be copied to S3"
+          mkdir -p deploy_dir
+          cp distribution/target/alfresco.war deploy_dir
+          cp distribution/target/*-distribution*.zip deploy_dir
+          ls -lA deploy_dir
+          mkdir -p deploy_dir_share
+          cp distribution-share/target/*.war deploy_dir_share
+          cp distribution-share/target/*.zip deploy_dir_share
+          ls -lA deploy_dir_share
+          mkdir -p deploy_dir_ags
+          cp distribution-ags/target/*.zip deploy_dir_ags
+          ls -lA deploy_dir_ags
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
       - name: "Configure AWS credentials"
