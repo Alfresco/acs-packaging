@@ -96,7 +96,7 @@ jobs:
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
-          name: Veracode Pipeline-Scan Results - ACS (Human Readable)
+          name: Veracode Pipeline-Scan Results (Human Readable)
           path: readable_output.zip
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
