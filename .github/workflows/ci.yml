@@ -89,6 +89,7 @@ jobs:
           summary_output: true
           summary_output_file: readable_results.txt
           summary_display: true
+          debug: 1
       - name: Upload scan result
         if: success() || failure()
         run: zip readable_output.zip readable_results.txt
