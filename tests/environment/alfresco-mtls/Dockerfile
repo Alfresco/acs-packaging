@@ -3,10 +3,6 @@ FROM quay.io/alfresco/alfresco-content-repository:latest
 ENV TOMCAT_DIR=/usr/local/tomcat
 ENV ALF_DATA_DIR=${TOMCAT_DIR}/alf_data
 
-# COMMS
-ARG SOLR_COMMS
-ENV SOLR_COMMS $SOLR_COMMS
-
 # SSL
 ARG ALIAS
 ARG TRUSTSTORE_NAME
