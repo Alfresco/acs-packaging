@@ -81,7 +81,7 @@ jobs:
         with:
           vid: '${{ secrets.VERACODE_API_ID }}'
           vkey: '${{ secrets.VERACODE_API_KEY }}'
-          file: "distribution/target/alfresco.war"
+          file: "distribution/target/alfresco-content-services-*.jar"
           fail_build: true
           project_name: acs-packaging
           issue_details: true
