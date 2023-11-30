@@ -87,11 +87,11 @@ jobs:
           issue_details: true
           veracode_policy_name: Alfresco Default
           summary_output: true
-          summary_output_file: readable_results.txt
+          summary_output_file: readable_results_acs.txt
           summary_display: true
       - name: Upload scan result
         if: success() || failure()
-        run: zip readable_output.zip readable_results.txt
+        run: zip readable_output.zip readable_results_acs.txt
       - name: Upload Artifact
         if: success() || failure()
         uses: actions/upload-artifact@v3
@@ -128,11 +128,11 @@ jobs:
           issue_details: true
           veracode_policy_name: Alfresco Default
           summary_output: true
-          summary_output_file: readable_results.txt
+          summary_output_file: readable_results_share.txt
           summary_display: true
       - name: Upload scan result
         if: success() || failure()
-        run: zip readable_output.zip readable_results.txt
+        run: zip readable_output.zip readable_results_share.txt
       - name: Upload Artifact
         if: success() || failure()
         uses: actions/upload-artifact@v3
