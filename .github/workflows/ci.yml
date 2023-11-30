@@ -61,7 +61,7 @@ jobs:
         run: bash ./scripts/ci/cleanup_cache.sh
 
   veracode_sast_acs:
-    name: "Pipeline SAST Scan"
+    name: "Pipeline SAST Scan - ACS"
     runs-on: ubuntu-latest
     if: >
       ((github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request')) &&
@@ -81,15 +81,14 @@ jobs:
         with:
           vid: '${{ secrets.VERACODE_API_ID }}'
           vkey: '${{ secrets.VERACODE_API_KEY }}'
-          file: "distribution/target/alfresco-content-services-*.jar"
+          file: "distribution/target/alfresco.war"
           fail_build: true
-          project_name: acs-packaging
+          project_name: acs-packaging-acs
           issue_details: true
           veracode_policy_name: Alfresco Default
           summary_output: true
           summary_output_file: readable_results.txt
           summary_display: true
-          debug: 1
       - name: Upload scan result
         if: success() || failure()
         run: zip readable_output.zip readable_results.txt
@@ -97,7 +96,48 @@ jobs:
         if: success() || failure()
         uses: actions/upload-artifact@v3
         with:
-          name: Veracode Pipeline-Scan Results (Human Readable)
+          name: Veracode Pipeline-Scan Results - ACS (Human Readable)
+          path: readable_output.zip
+      - name: "Clean Maven cache"
+        run: bash ./scripts/ci/cleanup_cache.sh
+
+  veracode_sast_share:
+    name: "Pipeline SAST Scan - Share"
+    runs-on: ubuntu-latest
+    if: >
+      ((github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request')) &&
+      !contains(github.event.head_commit.message, '[skip tests]')
+    steps:
+      - uses: actions/checkout@v3
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+      - name: "Build"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          bash ./scripts/ci/init.sh
+          bash ./scripts/ci/build.sh
+      - name: "Run SAST Scan"
+        uses: veracode/Veracode-pipeline-scan-action@v1.0.10
+        with:
+          vid: '${{ secrets.VERACODE_API_ID }}'
+          vkey: '${{ secrets.VERACODE_API_KEY }}'
+          file: "distribution-share/target/share.war"
+          fail_build: true
+          project_name: acs-packaging-share
+          issue_details: true
+          veracode_policy_name: Alfresco Default
+          summary_output: true
+          summary_output_file: readable_results.txt
+          summary_display: true
+      - name: Upload scan result
+        if: success() || failure()
+        run: zip readable_output.zip readable_results.txt
+      - name: Upload Artifact
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: Veracode Pipeline-Scan Results - Share (Human Readable)
           path: readable_output.zip
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
