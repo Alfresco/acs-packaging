@@ -122,7 +122,7 @@ jobs:
         with:
           vid: '${{ secrets.VERACODE_API_ID }}'
           vkey: '${{ secrets.VERACODE_API_KEY }}'
-          file: "distribution-share/target/share.war"
+          file: "distribution-share/target/alfresco-content-services-share-distribution-*.zip"
           fail_build: true
           project_name: acs-packaging-share
           issue_details: true
