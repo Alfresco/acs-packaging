@@ -40,9 +40,6 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     private static Slf4jLogConsumer LOG_CONSUMER = new Slf4jLogConsumer(LOGGER);
 
     public static final String CUSTOM_ALFRESCO_INDEX = "custom-alfresco-index";
-    private final static Consumer<CreateContainerCmd> MEDIUM_RAM_LIMIT = cmd -> cmd.getHostConfig()
-            .withMemory((long) 3400*1024*1024)
-            .withMemorySwap((long) 3400*1024*1024);
 
     public static Network network;
 
@@ -178,6 +175,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                         "SPRING_DATASOURCE_PASSWORD", databaseType.getPassword(),
                         "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
                         "SPRING_ACTIVEMQ_BROKER-URL", "nio://activemq:61616",
+                        "JAVA_TOOL_OPTIONS", "-Xmx1g",
                         "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config"));
         return env;
     }
@@ -204,7 +202,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
             .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
             .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
             .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config")
-            .withEnv("JAVA_TOOL_OPTIONS", "-agentlib:jdwp=transport=dt_socket,address=*:5005,server=y,suspend=n")
+            .withEnv("JAVA_TOOL_OPTIONS", "-Xmx2g -agentlib:jdwp=transport=dt_socket,address=*:5005,server=y,suspend=n")
             .withExposedPorts(5005);
     }
 
@@ -228,8 +226,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                 .withExposedPorts(9200)
                 .withEnv("xpack.security.enabled", "false")
                 .withEnv("discovery.type", "single-node")
-                .withEnv("ES_JAVA_OPTS", "-Xms1g -Xmx1g")
-                .withCreateContainerCmdModifier(MEDIUM_RAM_LIMIT);
+                .withEnv("ES_JAVA_OPTS", "-Xms2g -Xmx2g");
     }
 
     protected GenericContainer createOpensearchContainer()
@@ -240,8 +237,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                 .withExposedPorts(9200)
                 .withEnv("plugins.security.disabled", "true")
                 .withEnv("discovery.type", "single-node")
-                .withEnv("OPENSEARCH_JAVA_OPTS", "-Xms1g -Xmx1g")
-                .withCreateContainerCmdModifier(MEDIUM_RAM_LIMIT);
+                .withEnv("OPENSEARCH_JAVA_OPTS", "-Xms2g -Xmx2g");
     }
 
     protected GenericContainer createOpensearchDashboardsContainer()
@@ -267,7 +263,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         return new GenericContainer(getImagesConfig().getActiveMqImage())
                        .withNetwork(network)
                        .withNetworkAliases("activemq")
-                       .withEnv("JAVA_OPTS", "-Xms256m -Xmx512m")
+                       .withEnv("JAVA_OPTS", "-Xms512m -Xmx1g")
                        .waitingFor(Wait.forListeningPort())
                        .withStartupTimeout(Duration.ofMinutes(2))
                        .withExposedPorts(61616, 8161, 5672, 61613);
@@ -323,11 +319,9 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     {
         DockerImageName oracleImageName = DockerImageName.parse(getImagesConfig().getOracleImage());
 
-
         return new OracleContainer(oracleImageName)
                 .withNetwork(network)
-                .withNetworkAliases("oracle")
-                .withCreateContainerCmdModifier(MEDIUM_RAM_LIMIT);
+                .withNetworkAliases("oracle");
     }
 
     private GenericContainer createSfsContainer()
@@ -335,7 +329,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         return new GenericContainer(getImagesConfig().getSharedFileStoreImage())
                        .withNetwork(network)
                        .withNetworkAliases("shared-file-store")
-                       .withEnv("JAVA_OPTS", "-Xms256m -Xmx256m")
+                       .withEnv("JAVA_OPTS", "-Xms256m -Xmx512m")
                        .withEnv("scheduler.content.age.millis", "86400000")
                        .withEnv("scheduler.cleanup.interval", "86400000")
                        .withExposedPorts(8099)
@@ -407,7 +401,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 "-Dalfresco.restApi.basicAuthScheme=true " +
                                 "-Dquery.cmis.queryConsistency=EVENTUAL " +
                                 "-Dquery.fts.queryConsistency=EVENTUAL " +
-                                "-Xms1500m -Xmx1500m ")
+                                "-Xms1g -Xmx2g ")
                        .withNetwork(network)
                        .withNetworkAliases("alfresco")
                        .waitingFor(new LogMessageWaitStrategy().withRegEx(".*Server startup in.*\\n"))
