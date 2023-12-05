@@ -303,8 +303,9 @@ jobs:
 
   tas_tests_search_api:
     name: ${{ matrix.testSuite }} | TAS tests (Search API)
-    runs-on: ubuntu-latest
+    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
     if: >
+      (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request') &&
       !contains(github.event.head_commit.message, '[skip search]') &&
       !contains(github.event.head_commit.message, '[skip tests]')
     strategy:
@@ -323,12 +324,10 @@ jobs:
             profiles: all-tas-tests,elastic
             search-engine-type: elasticsearch
             db-type: mariadb
-#          Temporarily commented out due to frequent GHA timeouts,
-#          pending further investigation as part of ACS-6177.
-#          - testSuite: Elasticsearch MS SQL
-#            profiles: all-tas-tests,elastic
-#            search-engine-type: elasticsearch
-#            db-type: mssql
+          - testSuite: Elasticsearch MS SQL
+            profiles: all-tas-tests,elastic
+            search-engine-type: elasticsearch
+            db-type: mssql
           - testSuite: Elasticsearch Oracle 19.3.0-ee
             profiles: all-tas-tests,elastic
             search-engine-type: elasticsearch
@@ -366,7 +365,6 @@ jobs:
         with:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
