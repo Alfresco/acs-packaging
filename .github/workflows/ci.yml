@@ -42,7 +42,7 @@ jobs:
     name: "Source Clear Scan (SCA)"
     runs-on: ubuntu-latest
     if: >
-      ((github.ref_name == 'master' || startsWith(github.ref_name, 'release/')) && github.event_name != 'pull_request') &&
+      (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request') &&
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
@@ -64,7 +64,7 @@ jobs:
     name: "Pipeline SAST Scan - ACS"
     runs-on: ubuntu-latest
     if: >
-      ((github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request')) &&
+      (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request') &&
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v3
