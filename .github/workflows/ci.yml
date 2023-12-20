@@ -75,7 +75,7 @@ jobs:
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
           repository: "Alfresco/veracode-baseline-archive"
-          file-path: "alfresco-enterprise-repo/alfresco-enterprise-repo-baseline.json"
+          file-path: "acs-packaging/acs-packaging-acs-baseline.json"
           target: "baseline.json"
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
@@ -93,11 +93,12 @@ jobs:
           issue_details: true
           veracode_policy_name: Alfresco Default
           summary_output: true
-          summary_output_file: readable_results.json
+          summary_output_file: results.json
           summary_display: true
+          baseline_file: baseline.json
       - name: Upload scan result
         if: success() || failure()
-        run: zip readable_output.zip readable_results.json
+        run: zip readable_output.zip results.json
       - name: Upload Artifact
         if: success() || failure()
         uses: actions/upload-artifact@v3
