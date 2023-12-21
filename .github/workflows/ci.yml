@@ -71,23 +71,17 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
-      - uses: Alfresco/alfresco-build-tools/.github/actions/github-download-file@v5.6.0
-        with:
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
-          repository: "Alfresco/veracode-baseline-archive"
-          file-path: "acs-packaging/acs-packaging-acs-baseline.json"
-          target: "baseline.json"
-      - name: "Build"
-        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        run: |
-          bash ./scripts/ci/init.sh
-          bash ./scripts/ci/build.sh
       - name: Download the Pipeline Scanner
         uses: wei/curl@master
         with:
           args: -O https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip
       - name: Unzip the Pipeline Scanner
         run: unzip pipeline-scan-LATEST.zip
+      - name: "Build"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          bash ./scripts/ci/init.sh
+          bash ./scripts/ci/build.sh
       - name: Run Pipeline Scanner
         run: java -Dpipeline.debug=true -jar pipeline-scan.jar --veracode_api_id "${{secrets.VERACODE_API_ID}}" --veracode_api_key "${{secrets.VERACODE_API_KEY}}" --file "distribution-share/target/share.war" --summary_output_file "readable-results.txt"
       - name: Upload scan result
