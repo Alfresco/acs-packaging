@@ -82,23 +82,17 @@ jobs:
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
-      - name: "Run SAST Scan"
-        uses: veracode/Veracode-pipeline-scan-action@v1.0.10
+      - name: Download the Pipeline Scanner
+        uses: wei/curl@master
         with:
-          vid: '${{ secrets.VERACODE_API_ID }}'
-          vkey: '${{ secrets.VERACODE_API_KEY }}'
-          file: "distribution/target/alfresco.war"
-          fail_build: true
-          project_name: acs-packaging-acs
-          issue_details: true
-          veracode_policy_name: Alfresco Default
-          summary_output: true
-          summary_output_file: results.json
-          summary_display: true
-          baseline_file: baseline.json
+          args: -O https://downloads.veracode.com/securityscan/pipeline-scan-LATEST.zip
+      - name: Unzip the Pipeline Scanner
+        run: unzip pipeline-scan-LATEST.zip
+      - name: Run Pipeline Scanner
+        run: java -Dpipeline.debug=true -jar pipeline-scan.jar --veracode_api_id "${{secrets.VERACODE_API_ID}}" --veracode_api_key "${{secrets.VERACODE_API_KEY}}" --file "distribution-share/target/share.war" --summary_output_file "readable-results.txt"
       - name: Upload scan result
         if: success() || failure()
-        run: zip readable_output.zip results.json
+        run: zip readable_output.zip readable-results.txt
       - name: Upload Artifact
         if: success() || failure()
         uses: actions/upload-artifact@v3
