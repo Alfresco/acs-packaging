@@ -89,12 +89,12 @@ def increment_version(rel_ver, branch_type):
 
 
 def get_next_dev_version(type):
-    if next_dev_version is None:
-        logger.debug("Getting next dev version. Incrementing released %s for %s" % (release_version, type))
-        return increment_version(release_version, type)
-    else:
+    if next_dev_version:
         logger.debug("Getting next dev version from input parameter (%s)" % next_dev_version)
         return next_dev_version
+    else:
+        logger.debug("Getting next dev version. Incrementing released %s for %s" % (release_version, type))
+        return increment_version(release_version, type)
 
 
 def switch_dir(project):
