@@ -32,6 +32,7 @@ parser.add_argument('-s', '--skip_push', action='store_true', help='skip git pus
 parser.add_argument('-t', '--test_branches', action='store_true', help='use test branches')
 parser.add_argument('-c', '--cleanup', action='store_true', help='cleanup test branches')
 parser.add_argument('-a', '--ahead', action='store_true', help='create branches ahead of release')
+parser.add_argument('-z', '--trace', action='store_true', help='trace command line')
 
 if len(sys.argv) == 1:
     parser.print_help()
@@ -268,8 +269,7 @@ def update_ent_repo_acs_label(project, version, branch_type):
 
 def exec_cmd(cmd_args):
     logger.debug("Executing command line of %s" % " ".join(cmd_args))
-    subprocess.run(cmd_args, shell=True) if logging.DEBUG == logger.level else subprocess.run(cmd_args, shell=True,
-                                                                                              stdout=subprocess.DEVNULL)
+    subprocess.run(cmd_args, shell=True) if args.trace else subprocess.run(cmd_args, shell=True, stdout=subprocess.DEVNULL)
 
 
 def set_versions(project, version, profiles: list[str]):
