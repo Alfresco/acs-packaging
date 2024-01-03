@@ -4,25 +4,34 @@
 # 'pip install lxml'
 
 import argparse
-import sys
-import os
 import logging
-from xml.etree import ElementTree as et
+import os
 import re
 import subprocess
+import sys
+from xml.etree import ElementTree as et
 
-POM_NS = "http://maven.apache.org/POM/4.0.0"
-PROJECTS = ["acs-packaging", "enterprise-share", "enterprise-repo", "community-repo", "acs-community-packaging"]
-YAML_DICT = {"acs-packaging": "master_release.yml", "acs-community-packaging": "ci.yml"}
+SERVICE_PACK = 'servicepack'
+HOTFIX = 'hotfix'
+
+POM_NS = 'http://maven.apache.org/POM/4.0.0'
+COMMUNITY_PACKAGING = 'acs-community-packaging'
+COMMUNITY_REPO = 'alfresco-community-repo'
+ENTERPRISE_REPO = 'alfresco-enterprise-repo'
+ENTERPRISE_SHARE = 'alfresco-enterprise-share'
+ACS_PACKAGING = 'acs-packaging'
+PROJECTS = [ACS_PACKAGING, ENTERPRISE_SHARE, ENTERPRISE_REPO, COMMUNITY_REPO, COMMUNITY_PACKAGING]
+YAML_DICT = {ACS_PACKAGING: 'master_release.yml', COMMUNITY_PACKAGING: 'ci.yml'}
 
 # read command line arguments
-parser = argparse.ArgumentParser(description='Create git branches after ACS release.')
+parser = argparse.ArgumentParser(description="Create git branches after ACS release.")
 parser.add_argument('-r', '--release', metavar='x.y.z', help='release version (x.y.z format)')
 parser.add_argument('-n', '--next_dev', metavar='x.y.z', help='next development version (x.y.z format)')
 parser.add_argument('-v', '--verbose', action='store_true', help='Print out verbose processing information')
 parser.add_argument('-s', '--skip_push', action='store_true', help='skip git push')
 parser.add_argument('-t', '--test_branches', action='store_true', help='use test branches')
 parser.add_argument('-c', '--cleanup', action='store_true', help='cleanup test branches')
+parser.add_argument('-a', '--ahead', action='store_true', help='create branches ahead of release')
 
 if len(sys.argv) == 1:
     parser.print_help()
@@ -31,7 +40,7 @@ if len(sys.argv) == 1:
 # set global variables
 script_path = os.path.dirname(sys.argv[0])
 script_abspath = os.path.abspath(script_path)
-root_dir_path_end = script_abspath.find("acs-packaging")
+root_dir_path_end = script_abspath.find(ACS_PACKAGING)
 root_abspath = script_abspath[:root_dir_path_end]
 
 args = parser.parse_args()
@@ -41,7 +50,7 @@ next_dev_version = args.next_dev if args.next_dev else input(
     "Enter next development version (optional, use x.y or x.y.z format or leave empty): ")
 
 # setup logging
-logger = logging.getLogger("CONSOLE")
+logger = logging.getLogger('CONSOLE')
 console_handler = logging.StreamHandler()
 if args.verbose:
     logger.setLevel(logging.DEBUG)
@@ -65,15 +74,15 @@ def get_version_number(rel_ver, index):
 
 
 def increment_version(rel_ver, branch_type):
-    if branch_type == "hotfix":
+    if branch_type == HOTFIX:
         incremented = get_version_number(rel_ver, 2) + 1
         versions = rel_ver.split(".")
-        versions[2] = string(incremented)
+        versions[2] = str(incremented)
         return ".".join(versions)
-    if branch_type == "servicepack":
+    if branch_type == SERVICE_PACK:
         incremented = get_version_number(rel_ver, 1) + 1
         versions = rel_ver.split(".")
-        versions[1] = string(incremented)
+        versions[1] = str(incremented)
         versions[2] = "0"
         return ".".join(versions)
 
@@ -88,7 +97,7 @@ def get_next_dev_version(type):
 def switch_dir(project):
     logger.debug("Current dir: %s" % os.getcwd())
     os.chdir(os.path.dirname(root_abspath))
-    if project != "root":
+    if project != 'root':
         os.chdir(project)
     logger.debug("Switched dir to: %s" % os.getcwd())
 
@@ -112,9 +121,8 @@ def load_xml(xml_path):
     return xml_tree
 
 
-def update_acs_ver_pom_properties(version, project):
-    if project == "alfresco-community-repo":
-        prefix = "acs."
+def update_acs_ver_pom_properties(project, version):
+    prefix = "acs." if project == COMMUNITY_REPO else ""
     switch_dir(project)
     pom_path = "pom.xml"
     pom_tree = load_xml(pom_path)
@@ -134,57 +142,121 @@ def update_scm_tag(tag, project):
     logger.debug("Setting scm tag to %s in %s pom.xml" % (tag, project))
     update_xml_tag(pom_tree, "{%s}scm/{%s}tag" % (POM_NS, POM_NS), tag)
     pom_tree.write(pom_path)
-    switch_dir("root")
+    switch_dir('root')
 
 
-def update_ci_yaml(filename, project, release_version, next_dev_version):
+def update_line(text: list[str], text_to_match, replacement_value):
+    regex = re.compile(text_to_match + ".*", re.IGNORECASE)
+    for i in range(len(text)):
+        if text_to_match in text[i]:
+            line = i
+    if line:
+        text[line] = regex.sub("%s %s" % (text_to_match, replacement_value), text[line])
+
+    return text
+
+
+def update_ci_yaml(filename, project, rel_version, dev_version):
     ci_yaml_path = os.path.join(project, ".github", "workflows")
     switch_dir(ci_yaml_path)
-    rel_regex = re.compile("RELEASE_VERSION:.*", re.IGNORECASE)
-    dev_regex = re.compile("DEVELOPMENT_VERSION:.*", re.IGNORECASE)
-    with open(filename, "r") as file:
+    with open(filename, 'r') as file:
         text = file.readlines()
 
+    release_version_match = "RELEASE_VERSION:"
+    development_version_match = "DEVELOPMENT_VERSION:"
+
+    if text:
+        logger.debug("Setting RELEASE_VERSION, DEVELOPMENT_VERSION (%s, %s) in %s ci.yml" % (rel_version, dev_version, project))
+        update_line(text, release_version_match, rel_version)
+        update_line(text, development_version_match, dev_version)
+        with open(filename, 'w') as file:
+            file.writelines(text)
+
+    switch_dir('root')
+
+
+def read_property(text: list[str], key):
     for i in range(len(text)):
-        if "RELEASE_VERSION:" in text[i]:
-            rel_line = i
-        if "DEVELOPMENT_VERSION:" in text[i]:
-            dev_line = i
-
-    logger.debug("Setting RELEASE_VERSION, DEVELOPMENT_VERSION (%s, %s) in %s ci.yml" % (release_version, next_dev_version, project))
-    text[rel_line] = rel_regex.sub("RELEASE_VERSION: %s" % release_version, text[rel_line])
-    text[dev_line] = dev_regex.sub("DEVELOPMENT_VERSION: %s" % next_dev_version, text[dev_line])
-
-    with open(filename, "w") as file:
-        file.writelines(text)
-
-    switch_dir("root")
+        if key in text[i]:
+            line = i
+    return text[line].split("=")[1] if line else None
 
 
-def increment_schema(increment):
-    project = "alfresco-community-repo"
+def increment_schema(project, increment):
     properties_path = os.path.join(project, "repository", "src", "main", "resources", "alfresco")
     filename = "repository.properties"
     switch_dir(properties_path)
-    key = "version.schema="
-    regex = re.compile(key + ".*", re.IGNORECASE)
-    with open(filename, "r") as file:
+    with open(filename, 'r') as file:
         text = file.readlines()
 
-    for i in range(len(text)):
-        if key in text[i]:
-            line_no = i
-
-    schema = text[line_no].split("=")[1]
+    key = "version.schema="
+    schema = read_property(text, key)
     new_schema = int(schema) + increment
 
     logger.debug("Updating property version.schema from %s to %s in %s" % (schema, new_schema, project))
-    text[line_no] = regex.sub(key + str(new_schema), text[line_no])
+    update_line(text, key, str(new_schema))
 
-    with open(filename, "w") as file:
+    with open(filename, 'w') as file:
         file.writelines(text)
 
-    switch_dir("root")
+    switch_dir('root')
+
+
+def update_acs_comm_pck_dependencies(branch_type, project):
+    switch_dir(project)
+    xml_tree = load_xml("pom.xml")
+    comm_repo_next_ver = increment_version(calculate_hotfix_version(COMMUNITY_REPO), branch_type)
+    update_xml_tag(xml_tree, "{%s}properties/{%s}dependency.alfresco-community-repo.version" % (POM_NS, POM_NS), comm_repo_next_ver)
+    update_xml_tag(xml_tree, "{%s}parent/{%s}version" % (POM_NS, POM_NS), comm_repo_next_ver)
+    comm_share_next_ver = increment_version(calculate_hotfix_version(ENTERPRISE_SHARE), branch_type)
+    update_xml_tag(xml_tree, "{%s}properties/{%s}dependency.alfresco-community-share.version" % (POM_NS, POM_NS), comm_share_next_ver)
+    switch_dir('root')
+
+
+def set_ags_test_versions(project, version):
+    properties_path = os.path.join(project, "amps", "ags", "rm-community", "rm-community-repo", "test", "resources", "alfresco")
+    filename = "version.properties"
+    switch_dir(properties_path)
+    with open(filename, 'r') as file:
+        text = file.readlines()
+
+    logger.debug("Updating versions to %s in version.properties file in %s" % (version, project))
+    major_key = "version.major="
+    update_line(text, major_key, version.split[0])
+    minor_key = "version.minor="
+    update_line(text, minor_key, version.split[1])
+    revision_key = "version.revision="
+    update_line(text, revision_key, version.split[2])
+
+    with open(filename, 'w') as file:
+        file.writelines(text)
+
+    switch_dir('root')
+
+
+def calculate_increment(version, next_dev_ver):
+    ver = version.split(".")
+    next_ver = next_dev_ver.split(".")
+    if ver[0] < next_ver[0]:
+        return 1000
+    if ver[1] < next_ver[1]:
+        return 100
+    return 1
+
+
+def update_ent_repo_acs_label(project, version, branch_type):
+    switch_dir(project)
+    filename = "pom.xml"
+    if branch_type == 'hotfix':
+        xml_tree = load_xml(filename)
+        update_xml_tag(xml_tree, "{%s}properties/{%s}acs.version.label" % (POM_NS, POM_NS), ".1")
+    else:
+        with open(filename, 'r') as file:
+            text = file.readlines()
+        update_line(text, "<acs.version.label", " /> <!-- %s.<acs.version.label> -->" % version)
+        with open(filename, 'w') as file:
+            file.writelines(text)
+        switch_dir('root')
 
 
 def exec_cmd(cmd_args):
@@ -197,9 +269,8 @@ def set_versions(project, version, profiles: list[str]):
     switch_dir(project)
     arguments = ["mvn", "versions:set", "-DgenerateBackupPoms=false", "-DnewVersion=%s" % version, "-P%s" % ",".join(profiles)]
     logger.debug("Updating versions to %s in pom of %s" % (version, project))
-
     exec_cmd(arguments)
-    switch_dir("root")
+    switch_dir('root')
 
 
 def checkout_branch(project, branch):
@@ -207,7 +278,7 @@ def checkout_branch(project, branch):
     logger.debug("Checking out %s branch in %s" % (branch, project))
     exec_cmd(["git", "fetch"])
     exec_cmd(["git", "checkout", branch])
-    switch_dir("root")
+    switch_dir('root')
 
 
 def create_branch(project, branch, tag):
@@ -215,17 +286,18 @@ def create_branch(project, branch, tag):
     logger.debug("Creating %s branch in %s from %s tag" % (branch, project, tag))
     checkout_branch(project, tag)
     exec_cmd(["git", "switch", "-c", branch])
-    switch_dir("root")
+    switch_dir('root')
 
 
 def commit_and_push(project, message):
     logger.debug("Committing changes in %s. Commit message: %s" % (project, message))
     switch_dir(project)
     exec_cmd(["git", "commit", "--all", "-m", message])
-    if args.skip_push:
+    if not args.skip_push:
         logger.debug("Pushing changes in %s to remote." % project)
         exec_cmd(["git", "push"])
-    switch_dir("root")
+    switch_dir('root')
+
 
 def calculate_hotfix_branch():
     rel_ver = release_version.split(".")
@@ -233,51 +305,81 @@ def calculate_hotfix_branch():
     prefix = "test/release/" if args.test_branches else "release/"
     return prefix + ".".join(rel_ver)
 
+
 def calculate_hotfix_version(project):
-    match project:
-        case "acs-packaging" | "acs-community-packaging":
-            return release_version
-        case "alfresco-enterprise-repo":
-            switch_dir("acs-packaging")
-            ent_repo_ver = get_xml_tag_value("pom.xml", "{%s}properties/{%s}dependency.alfresco-enterprise-repo.version" % (POM_NS, POM_NS))
-            switch_dir("root")
-            return ent_repo_ver
-        case "alfresco-enterprise-share":
-            switch_dir("acs-packaging")
-            ent_share_ver = get_xml_tag_value("pom.xml", "{%s}properties/{%s}dependency.alfresco-enterprise-share.version" % (POM_NS, POM_NS))
-            switch_dir("root")
-            return ent_share_ver
-        case "alfresco-community-repo":
-            switch_dir("alfresco-enterprise-repo")
-            comm_repo_ver = get_xml_tag_value("pom.xml", "{%s}properties/{%s}dependency.alfresco-community-repo.version" % (POM_NS, POM_NS))
-            switch_dir("root")
-            return comm_repo_ver
+    if project == ACS_PACKAGING or project == COMMUNITY_PACKAGING:
+        return release_version
+    elif project == ENTERPRISE_REPO:
+        switch_dir(ACS_PACKAGING)
+        ent_repo_ver = get_xml_tag_value("pom.xml",
+                                         "{%s}properties/{%s}dependency.alfresco-enterprise-repo.version" % (POM_NS, POM_NS))
+        switch_dir('root')
+        return ent_repo_ver
+    elif project == ENTERPRISE_SHARE:
+        switch_dir(ACS_PACKAGING)
+        ent_share_ver = get_xml_tag_value("pom.xml",
+                                          "{%s}properties/{%s}dependency.alfresco-enterprise-share.version" % (POM_NS, POM_NS))
+        switch_dir('root')
+        return ent_share_ver
+    elif project == COMMUNITY_REPO:
+        switch_dir(ENTERPRISE_REPO)
+        comm_repo_ver = get_xml_tag_value("pom.xml",
+                                          "{%s}properties/{%s}dependency.alfresco-community-repo.version" % (POM_NS, POM_NS))
+        switch_dir('root')
+        return comm_repo_ver
 
 
 def update_project(project, version, branch_type):
-    set_versions(project, version, ["dev"])
-    update_scm_tag("HEAD", project)
-    if project.endswith("packaging"):
-        update_ci_yaml(YAML_DICT.get(project), project, version, get_next_dev_version(branch_type))
-    if project == "alfresco-community-repo":
-        update_acs_ver_pom_properties(version, project)
-        increment_schema(1)
-    if project == "alfresco-enterprise-share":
-        update_acs_ver_pom_properties(version, project)
-    if project == "alfresco-enterprise-repo":
-        switch_dir(project)
-        xml_tree = load_xml("pom.xml")
-        update_xml_tag(xml_tree, "{%s}properties/{%s}acs.version.label" % (POM_NS, POM_NS), ".1")
+    set_versions(project, version + "-SNAPSHOT", ["dev"])
+    update_scm_tag('HEAD', project)
+    next_dev_ver = get_next_dev_version(branch_type)
+    if project == ACS_PACKAGING:
+        update_ci_yaml(YAML_DICT.get(project), project, version, next_dev_ver)
+    elif project == ENTERPRISE_SHARE:
+        update_acs_ver_pom_properties(project, version)
+    elif project == ENTERPRISE_REPO:
+        update_ent_repo_acs_label(project, version, branch_type)
+    elif project == COMMUNITY_REPO:
+        update_acs_ver_pom_properties(project, version)
+        increment_schema(project, calculate_increment(version, next_dev_ver))
+        set_ags_test_versions(project, version)
+    elif project == COMMUNITY_PACKAGING:
+        update_ci_yaml(YAML_DICT.get(project), project, version, next_dev_ver)
+        update_acs_comm_pck_dependencies(branch_type, project)
+
+def log_progress(project, message):
+    logger.info("---------------------------------------------")
+    logger.info("Processing:")
+    logger.info(project)
+    logger.info("Message:")
+    logger.info(message)
+    logger.info("---------------------------------------------")
+
 
 def create_hotfix_branches():
     hotfix_branch = calculate_hotfix_branch()
-    branch_type = "hotfix"
     for i in range(len(PROJECTS)):
         project = PROJECTS[i]
-        tag_version = calculate_hotfix_version(project)
-        create_branch(project, hotfix_branch, tag_version)
-        version = increment_version(tag_version, branch_type) + "-SNAPSHOT"
-        update_project(project, version, branch_type)
+        log_progress(project, "Creating hotfix branches")
+        rel_tag_version = 'master' if args.ahead else calculate_hotfix_version(project)
+        create_branch(project, hotfix_branch, rel_tag_version)
+        version = increment_version(rel_tag_version, HOTFIX)
+        update_project(project, version, HOTFIX)
+        commit_and_push(project, "Creating hotfix branch %s for %s ACS release [skip ci]" % (hotfix_branch, release_version))
 
 
-create_hotfix_branches()
+def modify_master_branches():
+    for i in range(len(PROJECTS)):
+        project = PROJECTS[i]
+        log_progress(project, "Updating master for next release")
+        next_dev_ver = get_next_dev_version(SERVICE_PACK)
+        version = increment_version(next_dev_ver, SERVICE_PACK)
+        checkout_branch(project, 'master')
+        update_project(project, version, SERVICE_PACK)
+        commit_and_push(project, "Updating master branch to %s after %s ACS release [skip ci]" % (next_dev_ver, release_version))
+
+
+if release_version:
+    create_hotfix_branches()
+    modify_master_branches()
+
