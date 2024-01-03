@@ -383,9 +383,8 @@ def modify_master_branches():
         project = PROJECTS[i]
         log_progress(project, "Updating master for next release")
         next_dev_ver = get_next_dev_version(SERVICE_PACK)
-        version = increment_version(next_dev_ver, SERVICE_PACK)
         checkout_branch(project, 'master')
-        update_project(project, version, SERVICE_PACK)
+        update_project(project, next_dev_ver, SERVICE_PACK)
         commit_and_push(project, "Updating master branch to %s after %s ACS release [skip ci]" % (next_dev_ver, release_version))
 
 
