@@ -170,8 +170,8 @@ def update_ci_yaml(filename, project, rel_version, dev_version):
 
     if text:
         logger.debug("Setting RELEASE_VERSION, DEVELOPMENT_VERSION (%s, %s) in %s ci.yml" % (rel_version, dev_version, project))
-        update_line(text, release_version_match, rel_version)
-        update_line(text, development_version_match, dev_version)
+        update_line(text, release_version_match, rel_version + "-A1")
+        update_line(text, development_version_match, dev_version + "-A1-SNAPSHOT")
         with open(filename, 'w') as file:
             file.writelines(text)
 
