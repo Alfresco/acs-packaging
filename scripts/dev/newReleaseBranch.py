@@ -74,6 +74,7 @@ def get_version_number(rel_ver, index):
 
 
 def increment_version(rel_ver, branch_type):
+    logger.debug("Incrementing %s version for %s branch" % (rel_ver, branch_type))
     if branch_type == HOTFIX:
         incremented = get_version_number(rel_ver, 2) + 1
         versions = rel_ver.split(".")
@@ -89,8 +90,10 @@ def increment_version(rel_ver, branch_type):
 
 def get_next_dev_version(type):
     if next_dev_version is None:
+        logger.debug("Getting next dev version. Incrementing released %s for %s" % (release_version, type))
         return increment_version(release_version, type)
     else:
+        logger.debug("Getting next dev version from input parameter (%s)" % next_dev_version)
         return next_dev_version
 
 
@@ -205,11 +208,15 @@ def increment_schema(project, increment):
 def update_acs_comm_pck_dependencies(branch_type, project):
     switch_dir(project)
     xml_tree = load_xml("pom.xml")
+    logger.debug("Updating comm-repo and comm-share dependencies in %s" % project)
     comm_repo_next_ver = increment_version(calculate_hotfix_version(COMMUNITY_REPO), branch_type)
+    logger.debug("comm-repo dependency: %s" % comm_repo_next_ver)
     update_xml_tag(xml_tree, "{%s}properties/{%s}dependency.alfresco-community-repo.version" % (POM_NS, POM_NS), comm_repo_next_ver)
     update_xml_tag(xml_tree, "{%s}parent/{%s}version" % (POM_NS, POM_NS), comm_repo_next_ver)
     comm_share_next_ver = increment_version(calculate_hotfix_version(ENTERPRISE_SHARE), branch_type)
+    logger.debug("comm-share dependency: %s" % comm_share_next_ver)
     update_xml_tag(xml_tree, "{%s}properties/{%s}dependency.alfresco-community-share.version" % (POM_NS, POM_NS), comm_share_next_ver)
+    logger.debug("comm-repo dependency set to %s" % comm_repo_next_ver)
     switch_dir('root')
 
 
@@ -283,8 +290,9 @@ def checkout_branch(project, branch):
 
 def create_branch(project, branch, tag):
     switch_dir(project)
-    logger.debug("Creating %s branch in %s from %s tag" % (branch, project, tag))
     checkout_branch(project, tag)
+    switch_dir(project)
+    logger.debug("Creating %s branch in %s from %s tag" % (branch, project, tag))
     exec_cmd(["git", "switch", "-c", branch])
     switch_dir('root')
 
@@ -303,7 +311,9 @@ def calculate_hotfix_branch():
     rel_ver = release_version.split(".")
     rel_ver[2] = "N"
     prefix = "test/release/" if args.test_branches else "release/"
-    return prefix + ".".join(rel_ver)
+    hotfix_branch = prefix + ".".join(rel_ver)
+    logger.debug("Calculated hotfix branch as %s " % hotfix_branch)
+    return hotfix_branch
 
 
 def calculate_hotfix_version(project):
