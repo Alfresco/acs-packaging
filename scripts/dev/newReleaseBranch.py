@@ -269,7 +269,13 @@ def update_ent_repo_acs_label(project, version, branch_type):
 
 def exec_cmd(cmd_args):
     logger.debug("Executing command line of %s" % " ".join(cmd_args))
-    subprocess.run(cmd_args, shell=True) if args.trace else subprocess.run(cmd_args, shell=True, stdout=subprocess.DEVNULL)
+    try:
+        ret = subprocess.run(cmd_args, shell=True) if args.trace else subprocess.run(cmd_args, shell=True, stdout=subprocess.DEVNULL)
+        ret.check_returncode()
+    except subprocess.CalledProcessError as e:
+        logger.ERROR("Error:\nreturn code: %s\nOutput: %s" % (e.returncode, e.stderr.decode("utf-8")))
+        raise
+
 
 
 def set_versions(project, version, profiles: list[str]):
