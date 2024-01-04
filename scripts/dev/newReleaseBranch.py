@@ -27,12 +27,12 @@ YAML_DICT = {ACS_PACKAGING: 'master_release.yml', COMMUNITY_PACKAGING: 'ci.yml'}
 parser = argparse.ArgumentParser(description="Create git branches after ACS release.")
 parser.add_argument('-r', '--release', metavar='x.y.z', help='release version (x.y.z format)')
 parser.add_argument('-n', '--next_dev', metavar='x.y.z', help='next development version (x.y.z format)')
-parser.add_argument('-v', '--verbose', action='store_true', help='Print out verbose processing information')
+parser.add_argument('-v', '--verbose', action='store_true', help='print out verbose processing information')
 parser.add_argument('-s', '--skip_push', action='store_true', help='skip git push')
 parser.add_argument('-t', '--test_branches', action='store_true', help='use test branches')
 parser.add_argument('-c', '--cleanup', action='store_true', help='cleanup test branches')
 parser.add_argument('-a', '--ahead', action='store_true', help='create branches ahead of release')
-parser.add_argument('-z', '--trace', action='store_true', help='trace command line')
+parser.add_argument('-z', '--trace', action='store_true', help='trace processing information')
 
 if len(sys.argv) == 1:
     parser.print_help()
@@ -317,21 +317,21 @@ def calculate_hotfix_branch():
 
 
 def calculate_hotfix_version(project):
+    tag_or_branch = 'master' if args.ahead else release_version
+    checkout_branch(ACS_PACKAGING, tag_or_branch)
+    switch_dir(ACS_PACKAGING)
+    ent_repo_ver = get_xml_tag_value("pom.xml",
+                                     "{%s}properties/{%s}dependency.alfresco-enterprise-repo.version" % (POM_NS, POM_NS))
+    ent_share_ver = get_xml_tag_value("pom.xml",
+                                      "{%s}properties/{%s}dependency.alfresco-enterprise-share.version" % (POM_NS, POM_NS))
     if project == ACS_PACKAGING or project == COMMUNITY_PACKAGING:
         return release_version
     elif project == ENTERPRISE_REPO:
-        switch_dir(ACS_PACKAGING)
-        ent_repo_ver = get_xml_tag_value("pom.xml",
-                                         "{%s}properties/{%s}dependency.alfresco-enterprise-repo.version" % (POM_NS, POM_NS))
-        switch_dir('root')
         return ent_repo_ver
     elif project == ENTERPRISE_SHARE:
-        switch_dir(ACS_PACKAGING)
-        ent_share_ver = get_xml_tag_value("pom.xml",
-                                          "{%s}properties/{%s}dependency.alfresco-enterprise-share.version" % (POM_NS, POM_NS))
-        switch_dir('root')
         return ent_share_ver
     elif project == COMMUNITY_REPO:
+        checkout_branch(ENTERPRISE_REPO, ent_repo_ver)
         switch_dir(ENTERPRISE_REPO)
         comm_repo_ver = get_xml_tag_value("pom.xml",
                                           "{%s}properties/{%s}dependency.alfresco-community-repo.version" % (POM_NS, POM_NS))
@@ -357,6 +357,7 @@ def update_project(project, version, branch_type):
     elif project == COMMUNITY_PACKAGING:
         update_ci_yaml(YAML_DICT.get(project), project, version, next_dev_ver)
         update_acs_comm_pck_dependencies(branch_type, project)
+
 
 def log_progress(project, message):
     logger.info("---------------------------------------------")
