@@ -274,8 +274,15 @@ def exec_cmd(cmd_args):
 
 def set_versions(project, version, profiles: list[str]):
     switch_dir(project)
-    arguments = ["mvn", "versions:set", "-DgenerateBackupPoms=false", "-DnewVersion=%s" % version, "-P%s" % ",".join(profiles)]
-    logger.debug("Updating versions to %s in pom of %s" % (version, project))
+    if "packaging" in project:
+        snapshot_ver = version + "-SNAPSHOT"
+    else:
+        ver = version.split(".")
+        ver[3] = "1"
+        snapshot_ver = ".".join(ver) + "-SNAPSHOT"
+
+    arguments = ["mvn", "versions:set", "-DgenerateBackupPoms=false", "-DnewVersion=%s" % snapshot_ver, "-P%s" % ",".join(profiles)]
+    logger.debug("Updating versions to %s in pom of %s" % (snapshot_ver, project))
     exec_cmd(arguments)
     switch_dir('root')
 
@@ -317,13 +324,13 @@ def calculate_hotfix_branch():
 
 
 def calculate_hotfix_version(project):
-    tag_or_branch = 'master' if args.ahead else release_version
-    checkout_branch(ACS_PACKAGING, tag_or_branch)
+    checkout_branch(ACS_PACKAGING, 'master' if args.ahead else release_version)
     switch_dir(ACS_PACKAGING)
     ent_repo_ver = get_xml_tag_value("pom.xml",
                                      "{%s}properties/{%s}dependency.alfresco-enterprise-repo.version" % (POM_NS, POM_NS))
     ent_share_ver = get_xml_tag_value("pom.xml",
                                       "{%s}properties/{%s}dependency.alfresco-enterprise-share.version" % (POM_NS, POM_NS))
+    switch_dir('root')
     if project == ACS_PACKAGING or project == COMMUNITY_PACKAGING:
         return release_version
     elif project == ENTERPRISE_REPO:
@@ -340,7 +347,8 @@ def calculate_hotfix_version(project):
 
 
 def update_project(project, version, branch_type):
-    set_versions(project, version + "-SNAPSHOT", ["dev"])
+    profiles = ["dev"] if "packaging" in project else ["ags"]
+    set_versions(project, version + "-SNAPSHOT", profiles)
     update_scm_tag('HEAD', project)
     next_dev_ver = get_next_dev_version(branch_type)
     if project == ACS_PACKAGING:
