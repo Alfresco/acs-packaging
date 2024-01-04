@@ -273,7 +273,7 @@ def exec_cmd(cmd_args):
         ret = subprocess.run(cmd_args, shell=True) if args.trace else subprocess.run(cmd_args, shell=True, stdout=subprocess.DEVNULL)
         ret.check_returncode()
     except subprocess.CalledProcessError as e:
-        logger.ERROR("Error:\nreturn code: %s\nOutput: %s" % (e.returncode, e.stderr.decode("utf-8")))
+        logger.error("Error:\nreturn code: %s\nOutput: %s" % (e.returncode, e.stderr.decode("utf-8")))
         raise
 
 
