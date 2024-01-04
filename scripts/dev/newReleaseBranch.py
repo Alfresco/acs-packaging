@@ -284,8 +284,9 @@ def set_versions(project, version, profiles: list[str]):
         snapshot_ver = version + "-SNAPSHOT"
     else:
         ver = version.split(".")
-        ver[3] = "1"
-        snapshot_ver = ".".join(ver) + "-SNAPSHOT"
+        if len(ver) == 4:
+            ver.pop()
+        snapshot_ver = ".".join(ver) + ".1-SNAPSHOT"
 
     arguments = ["mvn", "versions:set", "-DgenerateBackupPoms=false", "-DnewVersion=%s" % snapshot_ver, "-P%s" % ",".join(profiles)]
     logger.debug("Updating versions to %s in pom of %s" % (snapshot_ver, project))
@@ -354,7 +355,7 @@ def calculate_hotfix_version(project):
 
 def update_project(project, version, branch_type):
     profiles = ["dev"] if "packaging" in project else ["ags"]
-    set_versions(project, version + "-SNAPSHOT", profiles)
+    set_versions(project, version, profiles)
     update_scm_tag('HEAD', project)
     next_dev_ver = get_next_dev_version(branch_type)
     if project == ACS_PACKAGING:
