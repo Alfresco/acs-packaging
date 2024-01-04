@@ -120,7 +120,8 @@ def update_xml_tag(xml_tree, tag_path, new_value):
 def load_xml(xml_path):
     logger.debug("Loading %s XML file" % xml_path)
     et.register_namespace("", POM_NS)
-    xml_tree = et.ElementTree()
+    parser = et.XMLParser(target=et.TreeBuilder(insert_comments=True))
+    xml_tree = et.parse(xml_path, parser=parser)
     xml_tree.parse(xml_path)
     return xml_tree
 
@@ -135,7 +136,7 @@ def update_acs_ver_pom_properties(project, version):
     update_xml_tag(pom_tree, "{%s}properties/{%s}%sversion.major" % (POM_NS, POM_NS, prefix), split_version[0])
     update_xml_tag(pom_tree, "{%s}properties/{%s}%sversion.minor" % (POM_NS, POM_NS, prefix), split_version[1])
     update_xml_tag(pom_tree, "{%s}properties/{%s}%sversion.revision" % (POM_NS, POM_NS, prefix), split_version[2])
-    pom_tree.write(pom_path)
+    pom_tree.write(pom_path, encoding='utf-8', xml_declaration=True)
     switch_dir("root")
 
 
@@ -145,7 +146,7 @@ def update_scm_tag(tag, project):
     pom_tree = load_xml(pom_path)
     logger.debug("Setting scm tag to %s in %s pom.xml" % (tag, project))
     update_xml_tag(pom_tree, "{%s}scm/{%s}tag" % (POM_NS, POM_NS), tag)
-    pom_tree.write(pom_path)
+    pom_tree.write(pom_path, encoding='utf-8', xml_declaration=True)
     switch_dir('root')
 
 
