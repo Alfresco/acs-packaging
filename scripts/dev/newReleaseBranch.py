@@ -120,7 +120,7 @@ def update_xml_tag(xml_tree, tag_path, new_value):
 def load_xml(xml_path):
     logger.debug("Loading %s XML file" % xml_path)
     et.register_namespace("", POM_NS)
-    parser = et.XMLParser(target=et.TreeBuilder(insert_comments=True))
+    parser = CommentedTreeBuilder()
     xml_tree = et.parse(xml_path, parser=parser)
     xml_tree.parse(xml_path)
     return xml_tree
@@ -231,11 +231,11 @@ def set_ags_test_versions(project, version):
 
     logger.debug("Updating versions to %s in version.properties file in %s" % (version, project))
     major_key = "version.major="
-    update_line(text, major_key, version.split[0])
+    update_line(text, major_key, version.spli(".")[0])
     minor_key = "version.minor="
-    update_line(text, minor_key, version.split[1])
+    update_line(text, minor_key, version.split(".")[1])
     revision_key = "version.revision="
-    update_line(text, revision_key, version.split[2])
+    update_line(text, revision_key, version.split(".")[2])
 
     with open(filename, 'w') as file:
         file.writelines(text)
@@ -276,7 +276,6 @@ def exec_cmd(cmd_args):
     except subprocess.CalledProcessError as e:
         logger.error("Error:\nreturn code: %s\nOutput: %s" % (e.returncode, e.stderr.decode("utf-8")))
         raise
-
 
 
 def set_versions(project, version, profiles: list[str]):
@@ -410,3 +409,13 @@ if release_version:
     create_hotfix_branches()
     modify_master_branches()
 
+
+class CommentedTreeBuilder(et.XMLTreeBuilder):
+    def __init__(self, html=0, target=None):
+        et.XMLTreeBuilder.__init__(self, html, target)
+        self._parser.CommentHandler = self.handle_comment
+
+    def handle_comment(self, data):
+        self._target.start(et.Comment, {})
+        self._target.data(data)
+        self._target.end(et.Comment)
