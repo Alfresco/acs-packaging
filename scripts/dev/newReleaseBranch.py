@@ -3,6 +3,8 @@
 # 'pip install gitpython'
 # 'pip install lxml'
 
+#!/usr/bin/env python
+
 import argparse
 import logging
 import os
@@ -70,6 +72,16 @@ logger.debug("Use test branches: %s" % args.test_branches)
 logger.debug("Cleanup test branches: %s" % args.cleanup)
 
 
+class CommentedTreeBuilder(et.TreeBuilder):
+    def __init__(self, *args, **kwargs):
+        super(CommentedTreeBuilder, self).__init__(*args, **kwargs)
+
+    def comment(self, data):
+        self.start(et.Comment, {})
+        self.data(data)
+        self.end(et.Comment)
+
+
 def get_version_number(rel_ver, index):
     return int(rel_ver.split(".")[index])
 
@@ -120,7 +132,7 @@ def update_xml_tag(xml_tree, tag_path, new_value):
 def load_xml(xml_path):
     logger.debug("Loading %s XML file" % xml_path)
     et.register_namespace("", POM_NS)
-    parser = CommentedTreeBuilder()
+    parser = et.XMLParser(target=CommentedTreeBuilder())
     xml_tree = et.parse(xml_path, parser=parser)
     xml_tree.parse(xml_path)
     return xml_tree
@@ -410,12 +422,4 @@ if release_version:
     modify_master_branches()
 
 
-class CommentedTreeBuilder(et.XMLTreeBuilder):
-    def __init__(self, html=0, target=None):
-        et.XMLTreeBuilder.__init__(self, html, target)
-        self._parser.CommentHandler = self.handle_comment
 
-    def handle_comment(self, data):
-        self._target.start(et.Comment, {})
-        self._target.data(data)
-        self._target.end(et.Comment)
