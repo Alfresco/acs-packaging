@@ -243,7 +243,7 @@ def set_ags_test_versions(project, version):
 
     logger.debug("Updating versions to %s in version.properties file in %s" % (version, project))
     major_key = "version.major="
-    update_line(text, major_key, version.spli(".")[0])
+    update_line(text, major_key, version.split(".")[0])
     minor_key = "version.minor="
     update_line(text, minor_key, version.split(".")[1])
     revision_key = "version.revision="
