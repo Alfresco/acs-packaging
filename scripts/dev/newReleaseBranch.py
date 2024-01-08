@@ -382,9 +382,9 @@ def update_project(project, version, branch_type):
         increment_schema(project, calculate_increment(version, next_dev_ver))
         set_ags_test_versions(project, version)
     elif project == COMMUNITY_PACKAGING:
-        update_ci_yaml(YAML_DICT.get(project), project, version, next_dev_ver)
         update_ci_yaml(YAML_DICT.get(project), project, version, next_dev_ver) if branch_type == SERVICE_PACK else update_ci_yaml(
             YAML_DICT.get(project), project, version + "-A1", next_dev_ver + "-A1-SNAPSHOT")
+        update_acs_comm_pck_dependencies(branch_type, project)
 
 
 def log_progress(project, message):
