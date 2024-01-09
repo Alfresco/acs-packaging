@@ -1,6 +1,69 @@
+#######################################
 # This script creates HotFix branches for repo, share and packaging projects, and updates the master branches ready for the next SP/major release.
 # To use this script you need to install lxml:
 # 'pip install lxml'
+# Run the script without passing any arguments or with -h/--help argument to get usage information.
+# See below script behaviour explained.
+#######################################
+# Create a HotFix branches for the released version (for X.Y.Z release it will be X.Y.N eg., create 23.2.N for 23.2.0 release)
+# 1. acs-packaging:
+# - set RELEASE_VERSION to X.Y.Z+1, DEVELOPMENT_VERSION to X.Y.Z+1-SNAPSHOT in master_release.yml
+# - set POM versions to X.Y.Z+1-SNAPSHOT
+# - set scm-tag in main POM to HEAD
+# 2. enterprise-share
+# - set scm-tag in main POM to HEAD
+# - set ACS version properties in main POM to X.Y.Z+1
+# - set POM versions to  X.Y.Z+1.1-SNAPSHOT
+# 3. enterprise-repo:
+# - set POM versions to  X.Y.Z+1.1-SNAPSHOT
+# - set scm-tag in main POM to HEAD
+# - set acs.version.label to .1
+# 4. community-share
+# - set scm-tag in main POM to HEAD
+# - set ACS version properties in main POM to X.Y.Z+1
+# - set main POM versions to  X.Y.Z+1.1-SNAPSHOT
+# 5. community-repo:
+# - set ACS version properties in main POM to X.Y.Z+1
+# - set POM versions to  X.Y.Z+1.1-SNAPSHOT
+# - set scm-tag in main POM to HEAD
+# - increment schema by 1 in repository.properties?
+# - set version.revision to Z+1 in version.properties (test resources)
+# 6. acs-community-packaging
+# - set RELEASE_VERSION to X.Y.Z+1, DEVELOPMENT_VERSION to X.Y.Z+1-SNAPSHOT in ci.yml
+# - set POM versions to X.Y.Z+1-SNAPSHOT?
+# - set scm-tag in main POM to HEAD
+# - set comm-repo dependency in main POM to X.Y.Z+1.1
+# - set comm-share dependency in main POM to X.Y.Z+1.1
+#######################################
+# Update master branch for the next SP/major release
+# 1. acs-packaging:
+# - set RELEASE_VERSION to <next_development_version> passed as script argument or X.Y+1.0-A1 (if <next_development_version> not passed), DEVELOPMENT_VERSION to <next_development_version>-SNAPSHOT or X.Y+1.0-A1-SNAPSHOT (if <next_development_version> not passed) in master_release.yml
+# - set POM versions to <next_development_version>-SNAPSHOT or X.Y+1.0-A1-SNAPSHOT (if <next_development_version> not passed)
+# - set scm-tag in main POM to HEAD
+# 2. enterprise-share
+# - set scm-tag in main POM to HEAD
+# - set ACS version properties in main POM to <next_development_version> or X.Y+1.0 (if <next_development_version> not passed)
+# - set POM versions to <next_development_version>.1-SNAPSHOT or X.Y+1.0.1-SNAPSHOT (if <next_development_version> not passed)
+# 3. enterprise-repo:
+# - set POM versions to <next_development_version>.1-SNAPSHOT or X.Y+1.0.1-SNAPSHOT (if <next_development_version> not passed)
+# - set scm-tag in main POM to HEAD
+# - set acs.version.label comment to <!-- X.Y+1.0.<acs.version.label> -->
+# 4. community-share
+# - set scm-tag in main POM to HEAD
+# - set ACS version properties in main POM to <next_development_version> or X.Y+1.0 (if <next_development_version> not passed)
+# - set POM versions to <next_development_version>.1-SNAPSHOT or X.Y+1.0.1-SNAPSHOT (if <next_development_version> not passed)
+# 5. community-repo:
+# - set ACS version properties in main POM to <next_development_version> or X.Y+1.0 (if <next_development_version> not passed)
+# - set POM versions to <next_development_version>.1-SNAPSHOT or X.Y+1.0.1-SNAPSHOT (if <next_development_version> not passed)
+# - set scm-tag in main POM to HEAD
+# - increment schema by 100 (when next development minor version bumped) or 1000 (when next development version major bumped) in repository.properties
+# - set version.major/version.minor/version.revision to <next_development_version> or X.Y+1.0 (if <next_development_version> not passed) in version.properties (test resources)
+# 6. acs-community-packaging
+# - set RELEASE_VERSION to <next_development_version> passed as script argument or X.Y+1.0-A1 (if <next_development_version> not passed), DEVELOPMENT_VERSION to <next_development_version>-SNAPSHOT or X.Y+1.0-A1-SNAPSHOT (if <next_development_version> not passed) in master_release.yml
+# - set scm-tag in main POM to HEAD
+# - set comm-repo dependency in main POM to <next_development_version>.1 or X.Y+1.0.1 (if <next_development_version> not passed)
+# - set comm-share dependency in main POM to <next_development_version>.1 or X.Y+1.0.1 (if <next_development_version> not passed)
+#######################################
 
 # !/usr/bin/env python
 
@@ -12,7 +75,7 @@ import subprocess
 import sys
 from xml.etree import ElementTree as et
 
-SERVICE_PACK = 'servicepack'
+MASTER = 'master'
 HOTFIX = 'hotfix'
 
 POM_NS = 'http://maven.apache.org/POM/4.0.0'
@@ -31,8 +94,8 @@ parser.add_argument('-n', '--next_dev', metavar='x.y.z', help='next development 
 parser.add_argument('-v', '--verbose', action='store_true', help='print out verbose processing information')
 parser.add_argument('-s', '--skip_push', action='store_true', help='skip git push')
 parser.add_argument('-t', '--test_branches', action='store_true', help='use test branches')
-parser.add_argument('-c', '--cleanup', action='store_true', help='cleanup test branches')
-parser.add_argument('-a', '--ahead', action='store_true', help='create branches ahead of release')
+parser.add_argument('-c', '--cleanup', action='store_true', help='cleanup local release branches (experimental)')
+parser.add_argument('-a', '--ahead', action='store_true', help='create branches ahead of release (experimental)')
 parser.add_argument('-z', '--trace', action='store_true', help='trace processing information')
 
 if len(sys.argv) == 1:
@@ -86,6 +149,10 @@ def get_version_number(rel_ver, index):
     return int(rel_ver.split(".")[index])
 
 
+def is_version_bumped(version, next_version, index):
+    return get_version_number(version, index) < get_version_number(next_version, index) if next_version else False
+
+
 def increment_version(rel_ver, branch_type):
     logger.debug("Incrementing %s version for %s branch" % (rel_ver, branch_type))
     versions = rel_ver.split(".")
@@ -93,10 +160,13 @@ def increment_version(rel_ver, branch_type):
         incremented = get_version_number(rel_ver, 2) + 1
         versions[2] = str(incremented)
 
-    if branch_type == SERVICE_PACK:
+    is_major_bumped = is_version_bumped(rel_ver, next_dev_version, 0)
+    if branch_type == MASTER:
         incremented = get_version_number(rel_ver, 1) + 1
-        versions[1] = str(incremented)
-        versions[2] = "0"
+        versions[1] = str(incremented) if not is_major_bumped else next_dev_version.split(".")[1]
+        versions[2] = "0" if not is_major_bumped else next_dev_version.split(".")[2]
+        if is_major_bumped:
+            versions[0] = next_dev_version.split(".")[0]
 
     if len(versions) == 4:
         versions.pop()
@@ -107,7 +177,7 @@ def increment_version(rel_ver, branch_type):
 
 
 def get_next_dev_version(type):
-    if next_dev_version:
+    if next_dev_version and not type == HOTFIX:
         logger.debug("Getting next dev version from input parameter (%s)" % next_dev_version)
         return next_dev_version
     else:
@@ -209,8 +279,8 @@ def increment_schema(project, increment):
     text = read_file(filename)
 
     key = "version.schema="
-    schema = read_property(text, key)
-    new_schema = int(schema) + increment
+    schema = int(read_property(text, key))
+    new_schema = int(schema / increment) * increment + increment if increment == 1000 else schema + increment
 
     logger.debug("Updating property version.schema from %s to %s in %s" % (schema, new_schema, project))
     update_line(text, key, str(new_schema))
@@ -258,12 +328,10 @@ def set_ags_test_versions(project, version):
 
 def calculate_increment(version, next_dev_ver):
     logger.debug("Calculating increment for version %s with next version %s" % (version, next_dev_ver))
-    ver = version.split(".")
-    next_ver = next_dev_ver.split(".")
-    if ver[0] < next_ver[0]:
+    if is_version_bumped(version, next_dev_ver, 0):
         logger.debug("Increment by 1000")
         return 1000
-    if ver[1] < next_ver[1]:
+    if is_version_bumped(version, next_dev_ver, 1):
         logger.debug("Increment by 100")
         return 100
     logger.debug("Increment by 1")
@@ -289,6 +357,15 @@ def exec_cmd(cmd_args):
     try:
         ret = subprocess.run(cmd_args, shell=True) if args.trace else subprocess.run(cmd_args, shell=True, stdout=subprocess.DEVNULL)
         ret.check_returncode()
+    except subprocess.CalledProcessError as e:
+        logger.error("Error:\nreturn code: %s\nOutput: %s" % (e.returncode, e.stderr.decode("utf-8")))
+        raise
+
+
+def get_cmd_exec_result(cmd_args):
+    logger.debug("Getting results of command line execution of %s" % " ".join(cmd_args))
+    try:
+        return subprocess.check_output(cmd_args)
     except subprocess.CalledProcessError as e:
         logger.error("Error:\nreturn code: %s\nOutput: %s" % (e.returncode, e.stderr.decode("utf-8")))
         raise
@@ -337,18 +414,19 @@ def commit_and_push(project, message):
     switch_dir('root')
 
 
-def calculate_hotfix_branch():
+def calculate_branch(type):
     rel_ver = release_version.split(".")
-    rel_ver[2] = "N"
+    if type == HOTFIX:
+        rel_ver[2] = "N"
     prefix = "test/release/" if args.test_branches else "release/"
     hotfix_branch = prefix + ".".join(rel_ver)
-    logger.debug("Calculated hotfix branch as %s " % hotfix_branch)
+    logger.debug("Calculated %s branch as %s " % (type, hotfix_branch))
     return hotfix_branch
 
 
 def calculate_hotfix_version(project):
     logger.debug("Calculating hotfix versions for %s " % project)
-    checkout_branch(ACS_PACKAGING, 'master' if args.ahead else release_version)
+    checkout_branch(ACS_PACKAGING, MASTER if args.ahead else release_version)
     switch_dir(ACS_PACKAGING)
     ent_repo_ver = get_xml_tag_value("pom.xml",
                                      "{%s}properties/{%s}dependency.alfresco-enterprise-repo.version" % (POM_NS, POM_NS))
@@ -380,7 +458,7 @@ def update_project(project, version, branch_type):
     update_scm_tag('HEAD', project)
     next_dev_ver = get_next_dev_version(branch_type)
     if project == ACS_PACKAGING:
-        update_ci_yaml(YAML_DICT.get(project), project, version + "-A1", next_dev_ver + "-A1-SNAPSHOT") if branch_type == SERVICE_PACK else (
+        update_ci_yaml(YAML_DICT.get(project), project, version + "-A1", next_dev_ver + "-A1-SNAPSHOT") if branch_type == MASTER else (
             update_ci_yaml(YAML_DICT.get(project), project, version, next_dev_ver + "-SNAPSHOT"))
     elif project == ENTERPRISE_SHARE:
         update_acs_ver_pom_properties(project, version)
@@ -391,7 +469,7 @@ def update_project(project, version, branch_type):
         increment_schema(project, calculate_increment(release_version, next_dev_ver))
         set_ags_test_versions(project, version)
     elif project == COMMUNITY_PACKAGING:
-        update_ci_yaml(YAML_DICT.get(project), project, version + "-A1", next_dev_ver + "-A1-SNAPSHOT") if branch_type == SERVICE_PACK else (
+        update_ci_yaml(YAML_DICT.get(project), project, version + "-A1", next_dev_ver + "-A1-SNAPSHOT") if branch_type == MASTER else (
             update_ci_yaml(YAML_DICT.get(project), project, version, next_dev_ver + "-SNAPSHOT"))
         update_acs_comm_pck_dependencies(branch_type, project)
 
@@ -406,11 +484,11 @@ def log_progress(project, message):
 
 
 def create_hotfix_branches():
-    hotfix_branch = calculate_hotfix_branch()
+    hotfix_branch = calculate_branch(HOTFIX)
     for i in range(len(PROJECTS)):
         project = PROJECTS[i]
         log_progress(project, "Creating hotfix branches")
-        rel_tag_version = 'master' if args.ahead else calculate_hotfix_version(project)
+        rel_tag_version = release_version if args.ahead else calculate_hotfix_version(project)
         create_branch(project, hotfix_branch, rel_tag_version)
         version = increment_version(rel_tag_version, HOTFIX)
         update_project(project, version, HOTFIX)
@@ -421,13 +499,51 @@ def modify_master_branches():
     for i in range(len(PROJECTS)):
         project = PROJECTS[i]
         log_progress(project, "Updating master for next release")
-        next_dev_ver = get_next_dev_version(SERVICE_PACK)
-        checkout_branch(project, 'master')
-        update_project(project, next_dev_ver, SERVICE_PACK)
+        next_dev_ver = get_next_dev_version(MASTER)
+        checkout_branch(project, MASTER)
+        update_project(project, next_dev_ver, MASTER)
         commit_and_push(project, "Updating master branch to %s after %s ACS release [skip ci]" % (next_dev_ver, release_version))
-        checkout_branch(project, 'master')
+        checkout_branch(project, MASTER)
+
+
+def create_release_branches():
+    for i in range(len(PROJECTS)):
+        project = PROJECTS[i]
+        log_progress(project, "Creating release branches")
+        rel_branch = calculate_branch('release')
+        create_branch(project, rel_branch, MASTER)
+        commit_and_push(project, "Creating release branch %s for %s ACS release [skip ci]" % (rel_branch, release_version))
+
+
+def cleanup_branches():
+    for i in range(len(PROJECTS)):
+        project = PROJECTS[i]
+        log_progress(project, "Deleting test/release branches and resetting master to origin")
+        checkout_branch(project, MASTER)
+        switch_dir(project)
+        exec_cmd(["git", "reset", "--hard", "origin/master"])
+        stdout = get_cmd_exec_result(["git", "branch", "--list"])
+        out = stdout.decode()
+        branches = [b.strip('* ') for b in out.splitlines()]
+        for b in branches:
+            branch = str(b)
+            if "test/release/" in branch:
+                logger.debug("Deleting  %s branch" % branch)
+                exec_cmd(["git", "branch", "-D", branch])
+
+
+if args.cleanup:
+    cleanup_branches()
+    logger.info("Cleaned up test/release branches. Exiting.")
+    sys.exit(0)
 
 
 if release_version:
-    create_hotfix_branches()
+    if args.ahead:
+        create_release_branches()
+    else:
+        create_hotfix_branches()
+    # needs a small rework as below method will cause issues when this script is run with args.ahead and subsequently without it
     modify_master_branches()
+    log_progress("All projects", "Finished creating branches. Exiting.")
+    sys.exit(0)
