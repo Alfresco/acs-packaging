@@ -1,44 +1,72 @@
 #######################################
 # This script creates HotFix branches for repo, share and packaging projects, and updates the master branches ready for the next SP/major release.
-# To use this script you need to install lxml:
-# 'pip install lxml'
 # Run the script without passing any arguments or with -h/--help argument to get usage information.
+# When the script is run with indicating that next version is a major bump (-r/--release version major is lowera than -n/--next_dev version major)
+# then HF and SP branches get created. Otherwise (no major version bump), only HF branches are created.
+# Script can also be run ahead of release (-a/--ahead argument) and then it will only create release/X.Y.Z branches
 # See below script behaviour explained.
 #######################################
-# Create a HotFix branches for the released version (for X.Y.Z release it will be X.Y.N eg., create 23.2.N for 23.2.0 release)
+# Create a HotFix branches for the released version (for X.Y.Z release it will be release/X.Y.N eg., create release/23.2.N for 23.2.0 release)
 # 1. acs-packaging:
-# - set RELEASE_VERSION to X.Y.Z+1, DEVELOPMENT_VERSION to X.Y.Z+1-SNAPSHOT in master_release.yml
-# - set POM versions to X.Y.Z+1-SNAPSHOT
+# - set RELEASE_VERSION to X.Y.1, DEVELOPMENT_VERSION to X.Y.2-SNAPSHOT in master_release.yml
+# - set POM versions to X.Y.1-SNAPSHOT
 # - set scm-tag in main POM to HEAD
 # 2. enterprise-share
 # - set scm-tag in main POM to HEAD
-# - set ACS version properties in main POM to X.Y.Z+1
-# - set POM versions to  X.Y.Z+1.1-SNAPSHOT
+# - set ACS version properties in main POM to X.Y.1
+# - set POM versions to  X.Y.1.1-SNAPSHOT
 # 3. enterprise-repo:
-# - set POM versions to  X.Y.Z+1.1-SNAPSHOT
+# - set POM versions to  X.Y.1.1-SNAPSHOT
 # - set scm-tag in main POM to HEAD
 # - set acs.version.label to .1
 # 4. community-share
 # - set scm-tag in main POM to HEAD
-# - set ACS version properties in main POM to X.Y.Z+1
-# - set main POM versions to  X.Y.Z+1.1-SNAPSHOT
+# - set ACS version properties in main POM to X.Y.1
+# - set main POM versions to  X.Y.1.1-SNAPSHOT
 # 5. community-repo:
-# - set ACS version properties in main POM to X.Y.Z+1
-# - set POM versions to  X.Y.Z+1.1-SNAPSHOT
+# - set ACS version properties in main POM to X.Y.1
+# - set POM versions to  X.Y.1.1-SNAPSHOT
 # - set scm-tag in main POM to HEAD
-# - increment schema by 1 in repository.properties?
+# - increment schema by 1 in repository.properties
+# - set version.revision to 1 in version.properties (test resources)
+# 6. acs-community-packaging
+# - not created as we do not release hot fixes for community version
+#######################################
+# Create a HotFix branches for the released version (for X.Y.Z release it will be release/X.Y+1.0 eg., create release/23.3.0 for 23.2.0 release)
+# 1. acs-packaging:
+# - set RELEASE_VERSION to X.Y+1.0-A1, DEVELOPMENT_VERSION to X.Y+1.0-A2-SNAPSHOT in master_release.yml
+# - set POM versions to X.Y+1.0-SNAPSHOT
+# - set scm-tag in main POM to HEAD
+# 2. enterprise-share
+# - set scm-tag in main POM to HEAD
+# - set ACS version properties in main POM to X.Y+1.0
+# - set POM versions to  X.Y+1.0.1-SNAPSHOT
+# 3. enterprise-repo:
+# - set POM versions to  X.Y+1.0.1-SNAPSHOT
+# - set scm-tag in main POM to HEAD
+# - set acs.version.label comment to <!-- X.Y+1.0.<acs.version.label> -->
+# 4. community-share
+# - set scm-tag in main POM to HEAD
+# - set ACS version properties in main POM to X.Y+1.0
+# - set main POM versions to  X.Y+1.0.1-SNAPSHOT
+# 5. community-repo:
+# - set ACS version properties in main POM to X.Y+1.0
+# - set POM versions to  X.Y+1.0.1-SNAPSHOT
+# - set scm-tag in main POM to HEAD
+# - increment schema by 100 in repository.properties
 # - set version.revision to Z+1 in version.properties (test resources)
 # 6. acs-community-packaging
-# - set RELEASE_VERSION to X.Y.Z+1, DEVELOPMENT_VERSION to X.Y.Z+1-SNAPSHOT in ci.yml
-# - set POM versions to X.Y.Z+1-SNAPSHOT?
+# - set RELEASE_VERSION to X.Y+1.0-A1, DEVELOPMENT_VERSION to X.Y+1.0-A2-SNAPSHOT in ci.yml
+# - set POM versions to X.Y+1.0-SNAPSHOT
 # - set scm-tag in main POM to HEAD
-# - set comm-repo dependency in main POM to X.Y.Z+1.1
-# - set comm-share dependency in main POM to X.Y.Z+1.1
+# - set comm-repo dependency in main POM to X.Y+1.0.1
+# - set comm-share dependency in main POM to X.Y+1.0.1
 #######################################
 # Update master branch for the next SP/major release
 # 1. acs-packaging:
-# - set RELEASE_VERSION to <next_development_version> passed as script argument or X.Y+1.0-A1 (if <next_development_version> not passed), DEVELOPMENT_VERSION to <next_development_version>-SNAPSHOT or X.Y+1.0-A1-SNAPSHOT (if <next_development_version> not passed) in master_release.yml
-# - set POM versions to <next_development_version>-SNAPSHOT or X.Y+1.0-A1-SNAPSHOT (if <next_development_version> not passed)
+# - set RELEASE_VERSION to <next_development_version>-A1 passed as script argument or X.Y+1.0-A1 (if <next_development_version> not passed),
+#   DEVELOPMENT_VERSION to <next_development_version>-A2-SNAPSHOT or X.Y+1.0-A2-SNAPSHOT (if <next_development_version> not passed) in master_release.yml
+# - set POM versions to <next_development_version>-SNAPSHOT or X.Y+1.0-SNAPSHOT (if <next_development_version> not passed)
 # - set scm-tag in main POM to HEAD
 # 2. enterprise-share
 # - set scm-tag in main POM to HEAD
@@ -59,7 +87,8 @@
 # - increment schema by 100 (when next development minor version bumped) or 1000 (when next development version major bumped) in repository.properties
 # - set version.major/version.minor/version.revision to <next_development_version> or X.Y+1.0 (if <next_development_version> not passed) in version.properties (test resources)
 # 6. acs-community-packaging
-# - set RELEASE_VERSION to <next_development_version> passed as script argument or X.Y+1.0-A1 (if <next_development_version> not passed), DEVELOPMENT_VERSION to <next_development_version>-SNAPSHOT or X.Y+1.0-A1-SNAPSHOT (if <next_development_version> not passed) in master_release.yml
+# - set RELEASE_VERSION to <next_development_version>-A1 passed as script argument or X.Y+1.0-A1 (if <next_development_version> not passed),
+#   DEVELOPMENT_VERSION to <next_development_version>-A2-SNAPSHOT or X.Y+1.0-A2-SNAPSHOT (if <next_development_version> not passed) in master_release.yml
 # - set scm-tag in main POM to HEAD
 # - set comm-repo dependency in main POM to <next_development_version>.1 or X.Y+1.0.1 (if <next_development_version> not passed)
 # - set comm-share dependency in main POM to <next_development_version>.1 or X.Y+1.0.1 (if <next_development_version> not passed)
@@ -77,6 +106,7 @@ from xml.etree import ElementTree as et
 
 MASTER = 'master'
 HOTFIX = 'hotfix'
+SERVICE_PACK = 'service_pack'
 
 POM_NS = 'http://maven.apache.org/POM/4.0.0'
 COMMUNITY_PACKAGING = 'acs-community-packaging'
@@ -111,8 +141,7 @@ root_abspath = script_abspath[:root_dir_path_end]
 args = parser.parse_args()
 
 release_version = args.release if args.release else input("Enter released version (mandatory, use x.y or x.y.z format): ")
-next_dev_version = args.next_dev if args.next_dev else input(
-    "Enter next development version (optional, use x.y or x.y.z format or leave empty): ")
+next_dev_version = args.next_dev if args.next_dev else input("Enter next development version (optional, use x.y or x.y.z format or leave empty): ")
 
 # setup logging
 logger = logging.getLogger('CONSOLE')
@@ -159,9 +188,12 @@ def increment_version(rel_ver, branch_type):
     if branch_type == HOTFIX:
         incremented = get_version_number(rel_ver, 2) + 1
         versions[2] = str(incremented)
-
-    is_major_bumped = is_version_bumped(rel_ver, next_dev_version, 0)
+    if branch_type == SERVICE_PACK:
+        incremented = get_version_number(rel_ver, 1) + 1
+        versions[1] = str(incremented)
+        versions[2] = "0"
     if branch_type == MASTER:
+        is_major_bumped = is_version_bumped(rel_ver, next_dev_version, 0)
         incremented = get_version_number(rel_ver, 1) + 1
         versions[1] = str(incremented) if not is_major_bumped else next_dev_version.split(".")[1]
         versions[2] = "0" if not is_major_bumped else next_dev_version.split(".")[2]
@@ -171,13 +203,13 @@ def increment_version(rel_ver, branch_type):
     if len(versions) == 4:
         versions.pop()
         versions.append("1")
-    logger.debug("Incremented to %s" % incremented)
-    incremented = ".".join(versions)
-    return incremented
+    incremented_ver = ".".join(versions)
+    logger.debug("Incremented to %s" % incremented_ver)
+    return incremented_ver
 
 
 def get_next_dev_version(type):
-    if next_dev_version and not type == HOTFIX:
+    if next_dev_version and type == MASTER:
         logger.debug("Getting next dev version from input parameter (%s)" % next_dev_version)
         return next_dev_version
     else:
@@ -292,14 +324,14 @@ def increment_schema(project, increment):
 
 def update_acs_comm_pck_dependencies(branch_type, project):
     logger.debug("Updating comm-repo and comm-share dependencies in %s" % project)
-    comm_repo_next_ver = increment_version(calculate_hotfix_version(COMMUNITY_REPO), branch_type)
+    comm_repo_next_ver = increment_version(calculate_version(COMMUNITY_REPO), branch_type)
     logger.debug("comm-repo dependency: %s" % comm_repo_next_ver)
     switch_dir(project)
     pom_path = "pom.xml"
     text = read_file(pom_path)
     update_xml_tag(text, "<dependency.alfresco-community-repo.version>", comm_repo_next_ver)
-    update_xml_tag(text, "<version>", comm_repo_next_ver)
-    comm_share_next_ver = increment_version(calculate_hotfix_version(ENTERPRISE_SHARE), branch_type)
+    update_xml_tag(text, "<version>\d", comm_repo_next_ver)
+    comm_share_next_ver = increment_version(calculate_version(ENTERPRISE_SHARE), branch_type)
     logger.debug("comm-share dependency: %s" % comm_share_next_ver)
     switch_dir(project)
     update_xml_tag(text, "<dependency.alfresco-community-share.version>", comm_share_next_ver)
@@ -342,11 +374,17 @@ def update_ent_repo_acs_label(project, version, branch_type):
     switch_dir(project)
     filename = "pom.xml"
     text = read_file(filename)
+    versions = version.split(".")
+    if len(versions) == 4:
+        versions.pop()
+    ver = ".".join(versions)
 
     if branch_type == HOTFIX:
+        logger.debug("Setting acs.version.label to .1 in %s" % project)
         update_line(text, "<acs.version.label", ">.1</acs.version.label>")
     else:
-        update_line(text, "<acs.version.label", "/> <!-- %s.<acs.version.label> -->" % version)
+        logger.debug("Setting acs.version.label comment to %s in %s" % (ver, project))
+        update_line(text, "<acs.version.label", "/> <!-- %s.<acs.version.label> -->" % ver)
 
     save_file(filename, text)
     switch_dir('root')
@@ -418,14 +456,16 @@ def calculate_branch(type):
     rel_ver = release_version.split(".")
     if type == HOTFIX:
         rel_ver[2] = "N"
+    if type == SERVICE_PACK:
+        rel_ver[1] = int(rel_ver[1]) + 1
     prefix = "test/release/" if args.test_branches else "release/"
-    hotfix_branch = prefix + ".".join(rel_ver)
-    logger.debug("Calculated %s branch as %s " % (type, hotfix_branch))
-    return hotfix_branch
+    branch = prefix + ".".join(rel_ver) if type == HOTFIX else prefix + increment_version(release_version, type)
+    logger.debug("Calculated %s branch as %s " % (type, branch))
+    return branch
 
 
-def calculate_hotfix_version(project):
-    logger.debug("Calculating hotfix versions for %s " % project)
+def calculate_version(project):
+    logger.debug("Calculating tag version for %s " % project)
     checkout_branch(ACS_PACKAGING, MASTER if args.ahead else release_version)
     switch_dir(ACS_PACKAGING)
     ent_repo_ver = get_xml_tag_value("pom.xml",
@@ -434,13 +474,13 @@ def calculate_hotfix_version(project):
                                       "{%s}properties/{%s}dependency.alfresco-enterprise-share.version" % (POM_NS, POM_NS))
     switch_dir('root')
     if project == ACS_PACKAGING or project == COMMUNITY_PACKAGING:
-        logger.debug("Hotfix versions for %s is %s" % (project, release_version))
+        logger.debug("Tag version for %s is %s" % (project, release_version))
         return release_version
     elif project == ENTERPRISE_REPO:
-        logger.debug("Hotfix versions for %s is %s" % (project, ent_repo_ver))
+        logger.debug("Tag version for %s is %s" % (project, ent_repo_ver))
         return ent_repo_ver
     elif project == ENTERPRISE_SHARE:
-        logger.debug("Hotfix versions for %s is %s" % (project, ent_share_ver))
+        logger.debug("Tag version for %s is %s" % (project, ent_share_ver))
         return ent_share_ver
     elif project == COMMUNITY_REPO:
         checkout_branch(ENTERPRISE_REPO, ent_repo_ver)
@@ -448,7 +488,7 @@ def calculate_hotfix_version(project):
         comm_repo_ver = get_xml_tag_value("pom.xml",
                                           "{%s}properties/{%s}dependency.alfresco-community-repo.version" % (POM_NS, POM_NS))
         switch_dir('root')
-        logger.debug("Hotfix versions for %s is %s" % (project, comm_repo_ver))
+        logger.debug("Tag version for %s is %s" % (project, comm_repo_ver))
         return comm_repo_ver
 
 
@@ -458,8 +498,8 @@ def update_project(project, version, branch_type):
     update_scm_tag('HEAD', project)
     next_dev_ver = get_next_dev_version(branch_type)
     if project == ACS_PACKAGING:
-        update_ci_yaml(YAML_DICT.get(project), project, version + "-A1", next_dev_ver + "-A1-SNAPSHOT") if branch_type == MASTER else (
-            update_ci_yaml(YAML_DICT.get(project), project, version, next_dev_ver + "-SNAPSHOT"))
+        update_ci_yaml(YAML_DICT.get(project), project, version + "-A1", next_dev_ver + "-A2-SNAPSHOT") if branch_type is not HOTFIX else (
+            update_ci_yaml(YAML_DICT.get(project), project, version, increment_version(next_dev_ver, HOTFIX) + "-SNAPSHOT"))
     elif project == ENTERPRISE_SHARE:
         update_acs_ver_pom_properties(project, version)
     elif project == ENTERPRISE_REPO:
@@ -469,8 +509,8 @@ def update_project(project, version, branch_type):
         increment_schema(project, calculate_increment(release_version, next_dev_ver))
         set_ags_test_versions(project, version)
     elif project == COMMUNITY_PACKAGING:
-        update_ci_yaml(YAML_DICT.get(project), project, version + "-A1", next_dev_ver + "-A1-SNAPSHOT") if branch_type == MASTER else (
-            update_ci_yaml(YAML_DICT.get(project), project, version, next_dev_ver + "-SNAPSHOT"))
+        update_ci_yaml(YAML_DICT.get(project), project, version + "-A1", next_dev_ver + "-A2-SNAPSHOT") if branch_type is not HOTFIX else (
+            update_ci_yaml(YAML_DICT.get(project), project, version, increment_version(next_dev_ver, HOTFIX) + "-SNAPSHOT"))
         update_acs_comm_pck_dependencies(branch_type, project)
 
 
@@ -487,12 +527,25 @@ def create_hotfix_branches():
     hotfix_branch = calculate_branch(HOTFIX)
     for i in range(len(PROJECTS)):
         project = PROJECTS[i]
-        log_progress(project, "Creating hotfix branches")
-        rel_tag_version = release_version if args.ahead else calculate_hotfix_version(project)
-        create_branch(project, hotfix_branch, rel_tag_version)
-        version = increment_version(rel_tag_version, HOTFIX)
-        update_project(project, version, HOTFIX)
-        commit_and_push(project, "Creating hotfix branch %s for %s ACS release [skip ci]" % (hotfix_branch, release_version))
+        if project is not COMMUNITY_PACKAGING:
+            log_progress(project, "Creating hotfix branches")
+            rel_tag_version = calculate_version(project)
+            create_branch(project, hotfix_branch, rel_tag_version)
+            version = increment_version(rel_tag_version, HOTFIX)
+            update_project(project, version, HOTFIX)
+            commit_and_push(project, "Creating hotfix branch %s for %s ACS release [skip ci]" % (hotfix_branch, release_version))
+
+
+def create_service_pack_branches():
+    sp_branch = calculate_branch(SERVICE_PACK)
+    for i in range(len(PROJECTS)):
+        project = PROJECTS[i]
+        log_progress(project, "Creating service pack branches")
+        rel_tag_version = calculate_version(project)
+        create_branch(project, sp_branch, rel_tag_version)
+        version = increment_version(rel_tag_version, SERVICE_PACK)
+        update_project(project, version, SERVICE_PACK)
+        commit_and_push(project, "Creating service pack branch %s after %s ACS release [skip ci]" % (sp_branch, release_version))
 
 
 def modify_master_branches():
@@ -543,7 +596,9 @@ if release_version:
         create_release_branches()
     else:
         create_hotfix_branches()
-    # needs a small rework as below method will cause issues when this script is run with args.ahead and subsequently without it
+        if is_version_bumped(release_version, next_dev_version, 0):
+            create_service_pack_branches()
+    # need fix as below method will cause issues when this script is run with args.ahead and subsequently without it
     modify_master_branches()
     log_progress("All projects", "Finished creating branches. Exiting.")
     sys.exit(0)
