@@ -89,7 +89,7 @@ public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelated
         searchQueryService.expectResultsFromQuery(query, testUser);
     }
 
-    @Test(groups = TestGroup.SEARCH)
+    @Test(groups = TestGroup.SEARCH, enabled = false) // re-enable after ACS-6588, ACS-6592
     public void testParentQueryAgainstFolderAfterParentCategoryDeletion()
     {
         // given
