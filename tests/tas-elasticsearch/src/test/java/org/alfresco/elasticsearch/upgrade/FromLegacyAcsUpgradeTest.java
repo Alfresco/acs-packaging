@@ -47,7 +47,7 @@ public class FromLegacyAcsUpgradeTest
                 mirroredEnv.expectNoSearchResult(ofMinutes(1), SEARCH_TERM);
 
                 mirroredEnv.startLiveIndexing();
-                mirroredEnv.reindexByIds(0, initialReIndexingUpperBound);
+                mirroredEnv.reindexByIds(0, initialReIndexingUpperBound * 2);
 
                 Assert.assertTrue(elasticsearch.getIndexedDocumentCount() > 0);
                 mirroredEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM, FILE_UPLOADED_AFTER_LEGACY_ENVIRONMENT_STARTUP);

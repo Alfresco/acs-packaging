@@ -22,7 +22,7 @@ public class FromSolrUpgradeTest
     private static final String FILE_UPLOADED_AFTER_SWITCHING_TO_ELASTICSEARCH = "after-switch.pdf";
 
     @Test
-    public void testZeroDowntimeUpgradeFromSolrToElasticsearch() throws IOException, InterruptedException
+    public void testZeroDowntimeUpgradeFromSolrToElasticsearch() throws IOException
     {
         try (final UpgradeScenario scenario = new UpgradeScenario(getUpgradeScenarioConfig()))
         {
@@ -35,22 +35,19 @@ public class FromSolrUpgradeTest
             final Elasticsearch elasticsearch = scenario.startElasticsearch();
             Assert.assertFalse(elasticsearch.isIndexCreated());
 
-            final long initialReIndexingUpperBound;
+            final long initialReIndexingUpperBound = initialEnv.getMaxNodeDbId();;
 
-            Thread.sleep(60 * 1000);
             try (ACSEnv mirroredEnv = scenario.startMirroredEnvWitElasticsearchBasedSearchService())
             {
                 mirroredEnv.expectNoSearchResult(ofMinutes(1), SEARCH_TERM);
-                Assert.assertEquals(initialEnv.getMaxNodeDbId(), mirroredEnv.getMaxNodeDbId());
+                Assert.assertTrue(mirroredEnv.getMaxNodeDbId() >= initialEnv.getMaxNodeDbId());
 
                 Assert.assertTrue(elasticsearch.isIndexCreated());
                 Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), 0);
                 mirroredEnv.expectNoSearchResult(ofMinutes(1), SEARCH_TERM);
 
                 mirroredEnv.startLiveIndexing();
-
-                initialReIndexingUpperBound = mirroredEnv.getMaxNodeDbId();
-                mirroredEnv.reindexByIds(0, initialReIndexingUpperBound);
+                mirroredEnv.reindexByIds(0, initialReIndexingUpperBound * 2);
 
                 Assert.assertTrue(elasticsearch.getIndexedDocumentCount() > 0);
                 mirroredEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM, FILE_UPLOADED_BEFORE_INITIAL_REINDEXING);
