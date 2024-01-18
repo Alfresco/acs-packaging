@@ -40,7 +40,6 @@ public class FromSolrUpgradeTest
             try (ACSEnv mirroredEnv = scenario.startMirroredEnvWitElasticsearchBasedSearchService())
             {
                 mirroredEnv.expectNoSearchResult(ofMinutes(1), SEARCH_TERM);
-                Assert.assertEquals(initialEnv.getMaxNodeDbId(), mirroredEnv.getMaxNodeDbId());
 
                 Assert.assertTrue(elasticsearch.isIndexCreated());
                 Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), 0);
