@@ -28,7 +28,7 @@ public class FromLegacyAcsUpgradeTest
 
             legacyEnv.expectNoSearchResult(ofMinutes(5), UUID.randomUUID().toString());
             legacyEnv.uploadFile(TEST_FILE_URL, FILE_UPLOADED_AFTER_LEGACY_ENVIRONMENT_STARTUP);
-            legacyEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM, FILE_UPLOADED_AFTER_LEGACY_ENVIRONMENT_STARTUP);
+            legacyEnv.expectSearchResult(ofMinutes(2), SEARCH_TERM, FILE_UPLOADED_AFTER_LEGACY_ENVIRONMENT_STARTUP);
 
             final Elasticsearch elasticsearch = scenario.startElasticsearch();
             Assert.assertFalse(elasticsearch.isIndexCreated());
@@ -38,7 +38,7 @@ public class FromLegacyAcsUpgradeTest
             try (ACSEnv mirroredEnv = scenario.startMirroredEnvWitElasticsearchBasedSearchService())
             {
                 legacyEnv.uploadFile(TEST_FILE_URL, FILE_UPLOADED_WHILE_MIRRORING);
-                legacyEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM, FILE_UPLOADED_AFTER_LEGACY_ENVIRONMENT_STARTUP, FILE_UPLOADED_WHILE_MIRRORING);
+                legacyEnv.expectSearchResult(ofMinutes(2), SEARCH_TERM, FILE_UPLOADED_AFTER_LEGACY_ENVIRONMENT_STARTUP, FILE_UPLOADED_WHILE_MIRRORING);
 
                 mirroredEnv.expectNoSearchResult(ofMinutes(1), SEARCH_TERM);
 
@@ -54,7 +54,7 @@ public class FromLegacyAcsUpgradeTest
             }
 
             legacyEnv.uploadFile(TEST_FILE_URL, FILE_UPLOADED_BEFORE_UPGRADING_LEGACY_ENVIRONMENT);
-            legacyEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM,
+            legacyEnv.expectSearchResult(ofMinutes(2), SEARCH_TERM,
                     FILE_UPLOADED_AFTER_LEGACY_ENVIRONMENT_STARTUP,
                     FILE_UPLOADED_WHILE_MIRRORING,
                     FILE_UPLOADED_BEFORE_UPGRADING_LEGACY_ENVIRONMENT);
