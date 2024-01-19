@@ -35,7 +35,7 @@ public class FromSolrUpgradeTest
             final Elasticsearch elasticsearch = scenario.startElasticsearch();
             Assert.assertFalse(elasticsearch.isIndexCreated());
 
-            final long initialReIndexingUpperBound = initialEnv.getMaxNodeDbId();;
+            final long initialReIndexingUpperBound = initialEnv.getMaxNodeDbId();
 
             try (ACSEnv mirroredEnv = scenario.startMirroredEnvWitElasticsearchBasedSearchService())
             {
