@@ -42,6 +42,7 @@ public class FromLegacyAcsUpgradeTest
 
                 mirroredEnv.expectNoSearchResult(ofMinutes(1), SEARCH_TERM);
 
+                elasticsearch.waitForIndexCreation(ofMinutes(1));
                 Assert.assertTrue(elasticsearch.isIndexCreated());
                 Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), 0);
                 mirroredEnv.expectNoSearchResult(ofMinutes(1), SEARCH_TERM);

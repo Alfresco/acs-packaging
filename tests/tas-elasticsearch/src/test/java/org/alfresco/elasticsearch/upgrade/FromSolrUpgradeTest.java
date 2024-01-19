@@ -22,7 +22,7 @@ public class FromSolrUpgradeTest
     private static final String FILE_UPLOADED_AFTER_SWITCHING_TO_ELASTICSEARCH = "after-switch.pdf";
 
     @Test
-    public void testZeroDowntimeUpgradeFromSolrToElasticsearch() throws IOException
+    public void testZeroDowntimeUpgradeFromSolrToElasticsearch() throws IOException, InterruptedException
     {
         try (final UpgradeScenario scenario = new UpgradeScenario(getUpgradeScenarioConfig()))
         {
@@ -41,7 +41,7 @@ public class FromSolrUpgradeTest
             {
                 mirroredEnv.expectNoSearchResult(ofMinutes(1), SEARCH_TERM);
                 Assert.assertTrue(mirroredEnv.getMaxNodeDbId() >= initialEnv.getMaxNodeDbId());
-
+                elasticsearch.waitForIndexCreation(ofMinutes(1));
                 Assert.assertTrue(elasticsearch.isIndexCreated());
                 Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), 0);
                 mirroredEnv.expectNoSearchResult(ofMinutes(1), SEARCH_TERM);
