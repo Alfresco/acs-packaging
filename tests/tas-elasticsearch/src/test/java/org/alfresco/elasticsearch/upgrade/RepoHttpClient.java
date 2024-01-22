@@ -7,6 +7,8 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
@@ -213,6 +215,8 @@ class RepoHttpClient
                 .map(m -> m.get("name"))
                 .filter(String.class::isInstance).map(String.class::cast)
                 .collect(Collectors.toUnmodifiableSet());
+
+        System.err.println("[" + LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS) + "] " + term + " -> " + names);
 
         return Optional.of(names);
     }
