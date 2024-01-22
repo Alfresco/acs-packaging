@@ -102,7 +102,7 @@ class ACSEnv extends BaseACSEnv
                                 "-Dtransform.service.url=http://transform-router:8095 " +
                                 "-Dsfs.url=http://shared-file-store:8099/ " +
                                 "-DlocalTransform.core-aio.url=http://transform-core-aio:8090/ " +
-                                "-Xmx768m -XshowSettings:vm")
+                                "-Xmx2g -XshowSettings:vm")
                 .withNetwork(network)
                 .withNetworkAliases("alfresco")
                 .withExposedPorts(8080);
@@ -111,7 +111,7 @@ class ACSEnv extends BaseACSEnv
     private void createTransformRouterContainer(Network network)
     {
         newContainer(GenericContainer.class, cfg.getTransformRouterImage())
-                .withEnv("JAVA_OPTS", " -Xmx384m -XshowSettings:vm")
+                .withEnv("JAVA_OPTS", " -Xmx512m -XshowSettings:vm")
                 .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
                 .withEnv("CORE_AIO_URL", "http://transform-core-aio:8090")
                 .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
@@ -122,7 +122,7 @@ class ACSEnv extends BaseACSEnv
     private void createTransformCoreAIOContainer(Network network)
     {
         newContainer(GenericContainer.class, cfg.getTransformCoreAIOImage())
-                .withEnv("JAVA_OPTS", " -Xmx1024m -XshowSettings:vm")
+                .withEnv("JAVA_OPTS", " -Xmx1g -XshowSettings:vm")
                 .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
                 .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
                 .withNetwork(network)
@@ -132,7 +132,7 @@ class ACSEnv extends BaseACSEnv
     private void createSharedFileStoreContainer(Network network)
     {
         newContainer(GenericContainer.class, cfg.getSharedFileStoreImage())
-                .withEnv("JAVA_OPTS", " -Xmx384m -XshowSettings:vm")
+                .withEnv("JAVA_OPTS", " -Xmx512m -XshowSettings:vm")
                 .withEnv("scheduler.content.age.millis", "86400000")
                 .withEnv("scheduler.cleanup.interval", "86400000")
                 .withNetwork(network)
