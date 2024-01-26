@@ -158,7 +158,7 @@ class ACSEnv extends BaseACSEnv
 
     private GenericContainer<?> createReIndexingContainer(long fromId, long toId)
     {
-        return newContainer(GenericContainer.class, cfg.getReIndexingImage())
+        GenericContainer<?> cnt = newContainer(GenericContainer.class, cfg.getReIndexingImage())
                 .withEnv("ELASTICSEARCH_INDEXNAME", cfg.getIndexName())
                 .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://" + cfg.getElasticsearchHostname() + ":9200")
                 .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
@@ -170,16 +170,20 @@ class ACSEnv extends BaseACSEnv
                 .withEnv("ALFRESCO_REINDEX_TO_ID", Long.toString(toId))
                 .withEnv("ALFRESCO_REINDEX_JOB_NAME", "reindexByIds")
                 .withNetwork(alfresco.getNetwork());
+
+        return cnt.withLogConsumer(of -> System.err.print("[liveindexing] " + of.getUtf8String()));
     }
 
     private GenericContainer<?> createLiveIndexingContainer()
     {
-        return newContainer(GenericContainer.class, cfg.getLiveIndexingImage())
+        GenericContainer<?> cnt = newContainer(GenericContainer.class, cfg.getLiveIndexingImage())
                 .withEnv("ELASTICSEARCH_INDEXNAME", cfg.getIndexName())
                 .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://" + cfg.getElasticsearchHostname() + ":9200")
                 .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
                 .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
                 .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config")
                 .withNetwork(alfresco.getNetwork());
+
+        return cnt.withLogConsumer(of -> System.err.print("[liveindexing] " + of.getUtf8String()));
     }
 }
