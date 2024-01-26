@@ -19,7 +19,6 @@ class ACSEnv52 extends LegacyACSEnv
         createSolr6Container(network);
 
         alfresco = createRepositoryContainer(network);
-        alfresco.withLogConsumer(of -> System.err.print("[repo] " + of.getUtf8String()));
     }
 
     @Override
