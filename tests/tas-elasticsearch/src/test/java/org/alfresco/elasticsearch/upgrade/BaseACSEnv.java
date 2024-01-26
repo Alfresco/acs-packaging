@@ -162,7 +162,6 @@ abstract class BaseACSEnv implements AutoCloseable
 
     public void expectSearchResult(Duration timeout, String term, String... expectedFiles)
     {
-        System.err.println("[" + LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS) + "] Starting search for " + term + " and expecting " + Arrays.toString(expectedFiles));
         final Set<String> expected = Stream
                 .of(expectedFiles)
                 .filter(Objects::nonNull)
