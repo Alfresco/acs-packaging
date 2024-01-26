@@ -4,8 +4,6 @@ import static java.time.Duration.ofMinutes;
 
 import static org.alfresco.elasticsearch.upgrade.Utils.waitFor;
 
-import java.time.Duration;
-
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -184,6 +182,6 @@ class ACSEnv extends BaseACSEnv
                 .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
                 .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config")
                 .withNetwork(alfresco.getNetwork())
-                .waitingFor(new LogMessageWaitStrategy().withRegEx(".+Started LiveIndexingApp.+").withStartupTimeout(Duration.ofMinutes(1)));
+                .waitingFor(new LogMessageWaitStrategy().withRegEx(".+Started LiveIndexingApp.+").withStartupTimeout(ofMinutes(1)));
     }
 }
