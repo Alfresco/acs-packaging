@@ -59,7 +59,7 @@ class ACSEnv extends BaseACSEnv
     public void reindexByIds(long fromId, long toId)
     {
         final GenericContainer<?> reIndexing = createReIndexingContainer(fromId, toId);
-
+        reIndexing.withLogConsumer(of -> System.err.print("[reindexing] " + of.getUtf8String()));
         reIndexing.start();
         waitFor("Re-indexing Startup", ofMinutes(1), reIndexing::isRunning);
         waitFor("Re-indexing Exit", ofMinutes(5), () -> !reIndexing.isRunning());
