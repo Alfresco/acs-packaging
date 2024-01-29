@@ -68,6 +68,7 @@ class ACSEnv extends BaseACSEnv
     public void startLiveIndexing()
     {
         final GenericContainer<?> liveIndexing = createLiveIndexingContainer();
+        liveIndexing.withLogConsumer(of -> System.err.print("[liveindexing] " + of.getUtf8String()));
         liveIndexing.start();
     }
 
@@ -181,6 +182,7 @@ class ACSEnv extends BaseACSEnv
                 .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
                 .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
                 .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config")
+                .withEnv("_JAVA_OPTIONS", "-Dlogging.level.org.alfresco=DEBUG")
                 .withNetwork(alfresco.getNetwork())
                 .waitingFor(new LogMessageWaitStrategy().withRegEx(".+Started LiveIndexingApp.+").withStartupTimeout(ofMinutes(1)));
     }

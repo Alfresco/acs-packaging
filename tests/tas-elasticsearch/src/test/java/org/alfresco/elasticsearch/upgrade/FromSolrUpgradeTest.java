@@ -73,7 +73,7 @@ public class FromSolrUpgradeTest
             // FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING is still not indexed
             Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), documentsCount + 1);
 
-            initialEnv.reindexByIds(initialReIndexingUpperBound, 1_000_000_000);
+            initialEnv.reindexByIds((long)(initialReIndexingUpperBound * 0.9), 1_000_000_000);
             //Gap has been closed by running reindexing. Both FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING and
             // FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING have been indexed.
             Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), documentsCount + 2);
