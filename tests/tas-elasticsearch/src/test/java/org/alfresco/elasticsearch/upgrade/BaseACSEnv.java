@@ -270,6 +270,12 @@ abstract class BaseACSEnv implements AutoCloseable
 
     public void enableLogging()
     {
-        createdContainers.forEach(c -> c.withLogConsumer(of -> System.err.print("[" + c.getNetworkAliases().get(0) + "] " + of.getUtf8String())));
+        createdContainers.forEach(c -> c.withLogConsumer(of -> System.err.print("[" + getNetworkAlias(c) + "] " + of.getUtf8String())));
+    }
+
+    private String getNetworkAlias(GenericContainer<?> c)
+    {
+        List<String> aliases = c.getNetworkAliases();
+        return aliases.get(aliases.size() - 1);
     }
 }
