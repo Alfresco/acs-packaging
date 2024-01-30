@@ -101,6 +101,8 @@ class ACSEnv52 extends LegacyACSEnv
 
         final ACSEnv upgradedEnv = new ACSEnv(postgres, cfg, "elasticsearch");
 
+        upgradedEnv.enableLogging();
+
         upgradedEnv.setContentStoreHostPath(this.getContentStoreHostPath());
 
         return upgradedEnv;

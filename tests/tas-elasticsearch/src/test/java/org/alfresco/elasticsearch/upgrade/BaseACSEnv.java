@@ -267,4 +267,9 @@ abstract class BaseACSEnv implements AutoCloseable
             return ProbeResult.fail(e);
         }
     }
+
+    public void enableLogging()
+    {
+        createdContainers.forEach(c -> c.withLogConsumer(of -> System.err.print("[" + c.getNetworkAliases().get(0) + "] " + of.getUtf8String())));
+    }
 }
