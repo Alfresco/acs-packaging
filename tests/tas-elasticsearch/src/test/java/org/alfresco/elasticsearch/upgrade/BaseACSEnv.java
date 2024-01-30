@@ -167,6 +167,7 @@ abstract class BaseACSEnv implements AutoCloseable
         waitFor("Reaching the point where `" + expected + "` is returned.", timeout, () -> {
             try
             {
+                System.err.println("Running: " + getRunningContainers());
                 Optional<Set<String>> actual = repoHttpClient.searchForFiles(term);
                 return actual.map(expected::equals).orElse(false);
             } catch (IOException e)
@@ -174,6 +175,11 @@ abstract class BaseACSEnv implements AutoCloseable
                 return false;
             }
         });
+    }
+
+    private List<String> getRunningContainers()
+    {
+        return createdContainers.stream().filter(GenericContainer::isRunning).map(this::getNetworkAlias).toList();
     }
 
     protected String getContainerAlfDataPath()
@@ -276,6 +282,7 @@ abstract class BaseACSEnv implements AutoCloseable
     private String getNetworkAlias(GenericContainer<?> c)
     {
         List<String> aliases = c.getNetworkAliases();
+        if (aliases.size() <= 1) return c.getDockerImageName();
         return aliases.get(aliases.size() - 1);
     }
 }
