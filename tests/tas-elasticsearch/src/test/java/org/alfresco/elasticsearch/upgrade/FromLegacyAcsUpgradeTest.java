@@ -62,10 +62,13 @@ public class FromLegacyAcsUpgradeTest
 
             try (final ACSEnv upgradedEnv = scenario.upgradeLegacyEnvironmentToCurrent())
             {
-                upgradedEnv.uploadFile(TEST_FILE_URL, FILE_UPLOADED_AFTER_UPGRADE);
                 upgradedEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM, FILE_UPLOADED_AFTER_LEGACY_ENVIRONMENT_STARTUP);
 
                 upgradedEnv.startLiveIndexing();
+
+                upgradedEnv.uploadFile(TEST_FILE_URL, FILE_UPLOADED_AFTER_UPGRADE);
+                upgradedEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM, FILE_UPLOADED_AFTER_LEGACY_ENVIRONMENT_STARTUP,
+                        FILE_UPLOADED_AFTER_UPGRADE);
 
                 upgradedEnv.reindexByIds((long)(initialReIndexingUpperBound * 0.9), 1_000_000_000);
                 upgradedEnv.expectSearchResult(ofMinutes(2), SEARCH_TERM,
