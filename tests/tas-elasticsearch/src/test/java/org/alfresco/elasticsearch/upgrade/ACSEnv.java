@@ -118,7 +118,8 @@ class ACSEnv extends BaseACSEnv
                 .withEnv("CORE_AIO_URL", "http://transform-core-aio:8090")
                 .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
                 .withNetwork(network)
-                .withNetworkAliases("transform-router");
+                .withNetworkAliases("transform-router")
+                .waitingFor(new LogMessageWaitStrategy().withRegEx(".+Starting application components.+Done.*").withStartupTimeout(ofMinutes(2)));
     }
 
     private void createTransformCoreAIOContainer(Network network)
@@ -128,7 +129,8 @@ class ACSEnv extends BaseACSEnv
                 .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
                 .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
                 .withNetwork(network)
-                .withNetworkAliases("transform-core-aio");
+                .withNetworkAliases("transform-core-aio")
+                .waitingFor(new LogMessageWaitStrategy().withRegEx(".+Starting application components.+Done.*").withStartupTimeout(ofMinutes(2)));
     }
 
     private void createSharedFileStoreContainer(Network network)
