@@ -59,7 +59,7 @@ class ACSEnv extends BaseACSEnv
     public void reindexByIds(long fromId, long toId)
     {
         final GenericContainer<?> reIndexing = createReIndexingContainer(fromId, toId);
-        reIndexing.withLogConsumer(of -> System.err.print("[reindexing] " + of.getUtf8String()));
+
         reIndexing.start();
         waitFor("Re-indexing Startup", ofMinutes(1), reIndexing::isRunning);
         waitFor("Re-indexing Exit", ofMinutes(5), () -> !reIndexing.isRunning());
@@ -68,7 +68,6 @@ class ACSEnv extends BaseACSEnv
     public void startLiveIndexing()
     {
         final GenericContainer<?> liveIndexing = createLiveIndexingContainer();
-        liveIndexing.withLogConsumer(of -> System.err.print("[liveindexing] " + of.getUtf8String()));
         liveIndexing.start();
     }
 
@@ -139,6 +138,7 @@ class ACSEnv extends BaseACSEnv
                 .withEnv("JAVA_OPTS", " -Xmx512m -XshowSettings:vm")
                 .withEnv("scheduler.content.age.millis", "86400000")
                 .withEnv("scheduler.cleanup.interval", "86400000")
+                .withEnv("_JAVA_OPTIONS", "-Dlogging.level.org.alfresco=DEBUG")
                 .withNetwork(network)
                 .withNetworkAliases("shared-file-store");
     }
