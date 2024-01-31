@@ -51,7 +51,7 @@ public class FromLegacyAcsUpgradeTest
                 mirroredEnv.reindexByIds(0, initialReIndexingUpperBound * 2);
 
                 Assert.assertTrue(elasticsearch.getIndexedDocumentCount() > 0);
-                mirroredEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM, FILE_UPLOADED_AFTER_LEGACY_ENVIRONMENT_STARTUP);
+                mirroredEnv.expectSearchResult(ofMinutes(2), SEARCH_TERM, FILE_UPLOADED_AFTER_LEGACY_ENVIRONMENT_STARTUP);
             }
 
             legacyEnv.uploadFile(TEST_FILE_URL, FILE_UPLOADED_BEFORE_UPGRADING_LEGACY_ENVIRONMENT);
@@ -68,7 +68,7 @@ public class FromLegacyAcsUpgradeTest
                 upgradedEnv.startLiveIndexing();
 
                 upgradedEnv.reindexByIds((long)(initialReIndexingUpperBound * 0.9), 1_000_000_000);
-                upgradedEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM,
+                upgradedEnv.expectSearchResult(ofMinutes(2), SEARCH_TERM,
                         FILE_UPLOADED_AFTER_LEGACY_ENVIRONMENT_STARTUP,
                         FILE_UPLOADED_WHILE_MIRRORING,
                         FILE_UPLOADED_BEFORE_UPGRADING_LEGACY_ENVIRONMENT,

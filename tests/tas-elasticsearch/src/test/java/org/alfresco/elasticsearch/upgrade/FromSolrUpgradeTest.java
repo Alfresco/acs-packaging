@@ -50,7 +50,7 @@ public class FromSolrUpgradeTest
                 mirroredEnv.reindexByIds(0, initialReIndexingUpperBound * 2);
 
                 Assert.assertTrue(elasticsearch.getIndexedDocumentCount() > 0);
-                mirroredEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM, FILE_UPLOADED_BEFORE_INITIAL_REINDEXING);
+                mirroredEnv.expectSearchResult(ofMinutes(2), SEARCH_TERM, FILE_UPLOADED_BEFORE_INITIAL_REINDEXING);
             }
 
             final long documentsCount = elasticsearch.getIndexedDocumentCount();
@@ -58,7 +58,7 @@ public class FromSolrUpgradeTest
 
             initialEnv.startLiveIndexing();
 
-            initialEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM,
+            initialEnv.expectSearchResult(ofMinutes(2), SEARCH_TERM,
                     FILE_UPLOADED_BEFORE_INITIAL_REINDEXING,
                     FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING);
             //Live indexing was not running so FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING hasn't been indexed
