@@ -12,6 +12,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.time.Duration;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
@@ -72,6 +73,19 @@ class Elasticsearch implements AutoCloseable
                 .map(Number.class::cast)
                 .map(Number::longValue)
                 .orElseThrow();
+    }
+
+    public void waitForIndexCreation(Duration timeout)
+    {
+        waitFor("Elasticsearch Index created", timeout, () -> {
+            try
+            {
+                return isIndexCreated();
+            } catch (IOException e)
+            {
+                return false;
+            }
+        });
     }
 
     public boolean isIndexCreated() throws IOException

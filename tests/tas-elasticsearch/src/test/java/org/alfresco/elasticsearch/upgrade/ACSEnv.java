@@ -7,6 +7,7 @@ import static org.alfresco.elasticsearch.upgrade.Utils.waitFor;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 
 class ACSEnv extends BaseACSEnv
 {
@@ -102,7 +103,7 @@ class ACSEnv extends BaseACSEnv
                                 "-Dtransform.service.url=http://transform-router:8095 " +
                                 "-Dsfs.url=http://shared-file-store:8099/ " +
                                 "-DlocalTransform.core-aio.url=http://transform-core-aio:8090/ " +
-                                "-Xmx768m -XshowSettings:vm")
+                                "-Xmx2g -XshowSettings:vm")
                 .withNetwork(network)
                 .withNetworkAliases("alfresco")
                 .withExposedPorts(8080);
@@ -111,30 +112,33 @@ class ACSEnv extends BaseACSEnv
     private void createTransformRouterContainer(Network network)
     {
         newContainer(GenericContainer.class, cfg.getTransformRouterImage())
-                .withEnv("JAVA_OPTS", " -Xmx384m -XshowSettings:vm")
+                .withEnv("JAVA_OPTS", " -Xmx512m -XshowSettings:vm")
                 .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
                 .withEnv("CORE_AIO_URL", "http://transform-core-aio:8090")
                 .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
                 .withNetwork(network)
-                .withNetworkAliases("transform-router");
+                .withNetworkAliases("transform-router")
+                .waitingFor(new LogMessageWaitStrategy().withRegEx(".+Starting application components.+Done.*").withStartupTimeout(ofMinutes(2)));
     }
 
     private void createTransformCoreAIOContainer(Network network)
     {
         newContainer(GenericContainer.class, cfg.getTransformCoreAIOImage())
-                .withEnv("JAVA_OPTS", " -Xmx1024m -XshowSettings:vm")
+                .withEnv("JAVA_OPTS", " -Xmx1g -XshowSettings:vm")
                 .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
                 .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
                 .withNetwork(network)
-                .withNetworkAliases("transform-core-aio");
+                .withNetworkAliases("transform-core-aio")
+                .waitingFor(new LogMessageWaitStrategy().withRegEx(".+Starting application components.+Done.*").withStartupTimeout(ofMinutes(2)));
     }
 
     private void createSharedFileStoreContainer(Network network)
     {
         newContainer(GenericContainer.class, cfg.getSharedFileStoreImage())
-                .withEnv("JAVA_OPTS", " -Xmx384m -XshowSettings:vm")
+                .withEnv("JAVA_OPTS", " -Xmx512m -XshowSettings:vm")
                 .withEnv("scheduler.content.age.millis", "86400000")
                 .withEnv("scheduler.cleanup.interval", "86400000")
+                .withEnv("_JAVA_OPTIONS", "-Dlogging.level.org.alfresco=DEBUG")
                 .withNetwork(network)
                 .withNetworkAliases("shared-file-store");
     }
@@ -180,6 +184,8 @@ class ACSEnv extends BaseACSEnv
                 .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
                 .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
                 .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config")
-                .withNetwork(alfresco.getNetwork());
+                .withEnv("_JAVA_OPTIONS", "-Dlogging.level.org.alfresco=DEBUG")
+                .withNetwork(alfresco.getNetwork())
+                .waitingFor(new LogMessageWaitStrategy().withRegEx(".+Started LiveIndexingApp.+").withStartupTimeout(ofMinutes(1)));
     }
 }
