@@ -3,7 +3,6 @@
 # Run the script without passing any arguments or with -h/--help argument to get usage information.
 # When the script is run with indicating that next version is a major bump (-r/--release version major is lowera than -n/--next_dev version major)
 # then HF and SP branches get created. Otherwise (no major version bump), only HF branches are created.
-# Script can also be run ahead of release (-a/--ahead argument) and then it will only create release/X.Y.Z branches
 # See below script behaviour explained.
 #######################################
 # Create a HotFix branches for the released version (for X.Y.Z release it will be release/X.Y.N eg., create release/23.2.N for 23.2.0 release)
@@ -442,24 +441,31 @@ def create_branch(project, branch, tag):
     switch_dir('root')
 
 
-def commit_and_push(project, message):
+def commit_and_push(project, option, message):
     logger.debug("Committing changes in %s. Commit message: %s" % (project, message))
     switch_dir(project)
-    exec_cmd(["git", "commit", "--all", "-m", message])
+    exec_cmd(["git", "commit", option, "-m", message])
     if not args.skip_push:
         logger.debug("Pushing changes in %s to remote." % project)
         exec_cmd(["git", "push"])
     switch_dir('root')
 
 
+def commit_all_and_push(project, message):
+    commit_and_push(project, "--all", message)
+
+
 def calculate_branch(type):
     rel_ver = release_version.split(".")
     if type == HOTFIX:
         rel_ver[2] = "N"
-    if type == SERVICE_PACK:
+    elif type == SERVICE_PACK:
         rel_ver[1] = int(rel_ver[1]) + 1
+        rel_ver.pop(2)
+    else:
+        rel_ver.pop(2)
     prefix = "test/release/" if args.test_branches else "release/"
-    branch = prefix + ".".join(rel_ver) if type == HOTFIX else prefix + increment_version(release_version, type)
+    branch = prefix + ".".join(rel_ver)
     logger.debug("Calculated %s branch as %s " % (type, branch))
     return branch
 
@@ -533,7 +539,7 @@ def create_hotfix_branches():
             create_branch(project, hotfix_branch, rel_tag_version)
             version = increment_version(rel_tag_version, HOTFIX)
             update_project(project, version, HOTFIX)
-            commit_and_push(project, "Creating hotfix branch %s for %s ACS release [skip ci]" % (hotfix_branch, release_version))
+            commit_all_and_push(project, "Creating hotfix branch %s for %s ACS release [skip ci]" % (hotfix_branch, release_version))
 
 
 def create_service_pack_branches():
@@ -545,7 +551,7 @@ def create_service_pack_branches():
         create_branch(project, sp_branch, rel_tag_version)
         version = increment_version(rel_tag_version, SERVICE_PACK)
         update_project(project, version, SERVICE_PACK)
-        commit_and_push(project, "Creating service pack branch %s after %s ACS release [skip ci]" % (sp_branch, release_version))
+        commit_all_and_push(project, "Creating service pack branch %s after %s ACS release [skip ci]" % (sp_branch, release_version))
 
 
 def modify_master_branches():
@@ -555,7 +561,7 @@ def modify_master_branches():
         next_dev_ver = get_next_dev_version(MASTER)
         checkout_branch(project, MASTER)
         update_project(project, next_dev_ver, MASTER)
-        commit_and_push(project, "Updating master branch to %s after %s ACS release [skip ci]" % (next_dev_ver, release_version))
+        commit_all_and_push(project, "Updating master branch to %s after %s ACS release [skip ci]" % (next_dev_ver, release_version))
         checkout_branch(project, MASTER)
 
 
@@ -565,7 +571,7 @@ def create_release_branches():
         log_progress(project, "Creating release branches")
         rel_branch = calculate_branch('release')
         create_branch(project, rel_branch, MASTER)
-        commit_and_push(project, "Creating release branch %s for %s ACS release [skip ci]" % (rel_branch, release_version))
+        commit_and_push(project, "--allow-empty", "Creating release branch %s for %s ACS release [skip ci]" % (rel_branch, release_version))
 
 
 def cleanup_branches():
