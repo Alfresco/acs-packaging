@@ -5,7 +5,7 @@
 # then HF and SP branches get created. Otherwise (no major version bump), only HF branches are created.
 # See below script behaviour explained.
 #######################################
-# Create a HotFix branches for the released version (for X.Y.Z release it will be release/X.Y.N eg., create release/23.2.N for 23.2.0 release)
+# Create HotFix branches for the released version (for X.Y.Z release it will be release/X.Y.N eg., create release/23.2.N for 23.2.0 release)
 # 1. acs-packaging:
 # - set RELEASE_VERSION to X.Y.1, DEVELOPMENT_VERSION to X.Y.2-SNAPSHOT in master_release.yml
 # - set POM versions to X.Y.1-SNAPSHOT
@@ -31,7 +31,7 @@
 # 6. acs-community-packaging
 # - not created as we do not release hot fixes for community version
 #######################################
-# Create a HotFix branches for the released version (for X.Y.Z release it will be release/X.Y+1.0 eg., create release/23.3.0 for 23.2.0 release)
+# Create ServicePack branches for the released version (for X.Y.Z release it will be release/X.Y+1 eg., create release/23.3 for 23.2.0 release)
 # 1. acs-packaging:
 # - set RELEASE_VERSION to X.Y+1.0-A1, DEVELOPMENT_VERSION to X.Y+1.0-A2-SNAPSHOT in master_release.yml
 # - set POM versions to X.Y+1.0-SNAPSHOT
@@ -460,7 +460,7 @@ def calculate_branch(type):
     if type == HOTFIX:
         rel_ver[2] = "N"
     elif type == SERVICE_PACK:
-        rel_ver[1] = int(rel_ver[1]) + 1
+        rel_ver[1] = str(int(rel_ver[1]) + 1)
         rel_ver.pop(2)
     else:
         rel_ver.pop(2)
