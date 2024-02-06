@@ -3,6 +3,7 @@
 # Run the script without passing any arguments or with -h/--help argument to get usage information.
 # When the script is run with indicating that next version is a major bump (-r/--release version major is lowera than -n/--next_dev version major)
 # then HF and SP branches get created. Otherwise (no major version bump), only HF branches are created.
+# Script can also create release branches ahead of release so that master/main branches do not need to get the code frozem (-a/--ahead argument is passed)
 # See below script behaviour explained.
 #######################################
 # Create HotFix branches for the released version (for X.Y.Z release it will be release/X.Y.N eg., create release/23.2.N for 23.2.0 release)
@@ -91,6 +92,10 @@
 # - set scm-tag in main POM to HEAD
 # - set comm-repo dependency in main POM to <next_development_version>.1 or X.Y+1.0.1 (if <next_development_version> not passed)
 # - set comm-share dependency in main POM to <next_development_version>.1 or X.Y+1.0.1 (if <next_development_version> not passed)
+#######################################
+# In case when release branches are to be created ahead of release (for X.Y.Z release it will be release/X.Y eg., create release/23.2 for 23.2.0 release)
+# In all 6 projects, branches are created from master branch without any additional changes.
+# Master branches are updated for the next SP/major release in a same way as in case of post release script execution (see above).
 #######################################
 
 # !/usr/bin/env python
