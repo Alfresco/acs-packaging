@@ -26,7 +26,6 @@
 # - set ACS version properties in main POM to X.Y.1
 # - set POM versions to  X.Y.1.1-SNAPSHOT
 # - set scm-tag in main POM to HEAD
-# - increment schema by 1 in repository.properties
 # - set version.revision to 1 in version.properties (test resources)
 # 6. acs-community-packaging
 # - not created as we do not release hot fixes for community version
@@ -34,7 +33,7 @@
 # Create ServicePack branches for the released version (for X.Y.Z release it will be release/X.Y+1 eg., create release/23.3 for 23.2.0 release)
 # 1. acs-packaging:
 # - set RELEASE_VERSION to X.Y+1.0-A1, DEVELOPMENT_VERSION to X.Y+1.0-A2-SNAPSHOT in master_release.yml
-# - set POM versions to X.Y+1.0-SNAPSHOT
+# - set POM versions to X.Y+1.0-A1-SNAPSHOT
 # - set scm-tag in main POM to HEAD
 # 2. enterprise-share
 # - set scm-tag in main POM to HEAD
@@ -56,7 +55,7 @@
 # - set version.revision to Z+1 in version.properties (test resources)
 # 6. acs-community-packaging
 # - set RELEASE_VERSION to X.Y+1.0-A1, DEVELOPMENT_VERSION to X.Y+1.0-A2-SNAPSHOT in ci.yml
-# - set POM versions to X.Y+1.0-SNAPSHOT
+# - set POM versions to X.Y+1.0-A1-SNAPSHOT
 # - set scm-tag in main POM to HEAD
 # - set comm-repo dependency in main POM to X.Y+1.0.1
 # - set comm-share dependency in main POM to X.Y+1.0.1
@@ -65,7 +64,7 @@
 # 1. acs-packaging:
 # - set RELEASE_VERSION to <next_development_version>-A1 passed as script argument or X.Y+1.0-A1 (if <next_development_version> not passed),
 #   DEVELOPMENT_VERSION to <next_development_version>-A2-SNAPSHOT or X.Y+1.0-A2-SNAPSHOT (if <next_development_version> not passed) in master_release.yml
-# - set POM versions to <next_development_version>-SNAPSHOT or X.Y+1.0-SNAPSHOT (if <next_development_version> not passed)
+# - set POM versions to <next_development_version>-A1-SNAPSHOT or X.Y+1.0-A1-SNAPSHOT (if <next_development_version> not passed)
 # - set scm-tag in main POM to HEAD
 # 2. enterprise-share
 # - set scm-tag in main POM to HEAD
@@ -88,6 +87,7 @@
 # 6. acs-community-packaging
 # - set RELEASE_VERSION to <next_development_version>-A1 passed as script argument or X.Y+1.0-A1 (if <next_development_version> not passed),
 #   DEVELOPMENT_VERSION to <next_development_version>-A2-SNAPSHOT or X.Y+1.0-A2-SNAPSHOT (if <next_development_version> not passed) in master_release.yml
+# - set POM versions to <next_development_version>-A1-SNAPSHOT or X.Y+1.0-A1-SNAPSHOT (if <next_development_version> not passed)
 # - set scm-tag in main POM to HEAD
 # - set comm-repo dependency in main POM to <next_development_version>.1 or X.Y+1.0.1 (if <next_development_version> not passed)
 # - set comm-share dependency in main POM to <next_development_version>.1 or X.Y+1.0.1 (if <next_development_version> not passed)
@@ -123,7 +123,7 @@ parser.add_argument('-n', '--next_dev', metavar='x.y.z', help='next development 
 parser.add_argument('-v', '--verbose', action='store_true', help='print out verbose processing information')
 parser.add_argument('-s', '--skip_push', action='store_true', help='skip git push')
 parser.add_argument('-t', '--test_branches', action='store_true', help='use test branches')
-parser.add_argument('-c', '--cleanup', action='store_true', help='cleanup local release branches (experimental)')
+parser.add_argument('-c', '--cleanup', action='store_true', help='cleanup local test release branches (experimental)')
 parser.add_argument('-a', '--ahead', action='store_true', help='create branches ahead of release (experimental)')
 parser.add_argument('-z', '--trace', action='store_true', help='trace processing information')
 
@@ -365,8 +365,8 @@ def calculate_increment(version, next_dev_ver):
     if is_version_bumped(version, next_dev_ver, 1):
         logger.debug("Increment by 100")
         return 100
-    logger.debug("Increment by 1")
-    return 1
+    logger.debug("Increment by 0")
+    return 0
 
 
 def update_ent_repo_acs_label(project, version, branch_type):
@@ -408,10 +408,11 @@ def get_cmd_exec_result(cmd_args):
         raise
 
 
-def set_versions(project, version, profiles: list[str]):
+def set_versions(project, version, branch_type):
+    profiles = ["dev"] if "packaging" in project else ["ags"]
     switch_dir(project)
     if "packaging" in project:
-        snapshot_ver = version + "-SNAPSHOT"
+        snapshot_ver = version + "-SNAPSHOT" if branch_type == HOTFIX else version + "-A1-SNAPSHOT"
     else:
         ver = version.split(".")
         if len(ver) == 4:
@@ -499,8 +500,7 @@ def calculate_version(project):
 
 
 def update_project(project, version, branch_type):
-    profiles = ["dev"] if "packaging" in project else ["ags"]
-    set_versions(project, version, profiles)
+    set_versions(project, version, branch_type)
     update_scm_tag('HEAD', project)
     next_dev_ver = get_next_dev_version(branch_type)
     if project == ACS_PACKAGING:
