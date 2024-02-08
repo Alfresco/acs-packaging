@@ -103,6 +103,7 @@
 import argparse
 import logging
 import os
+import pathlib
 import re
 import subprocess
 import sys
@@ -119,7 +120,6 @@ ENTERPRISE_REPO = 'alfresco-enterprise-repo'
 ENTERPRISE_SHARE = 'alfresco-enterprise-share'
 ACS_PACKAGING = 'acs-packaging'
 PROJECTS = [ACS_PACKAGING, ENTERPRISE_SHARE, ENTERPRISE_REPO, COMMUNITY_REPO, COMMUNITY_PACKAGING]
-YAML_DICT = {ACS_PACKAGING: 'master_release.yml', COMMUNITY_PACKAGING: 'ci.yml'}
 
 # read command line arguments
 parser = argparse.ArgumentParser(description="Create git branches after ACS release.")
@@ -134,13 +134,11 @@ parser.add_argument('-z', '--trace', action='store_true', help='trace processing
 
 if len(sys.argv) == 1:
     parser.print_help()
-    parser.exit()
+    exit(0)
 
 # set global variables
-script_path = os.path.dirname(sys.argv[0])
-script_abspath = os.path.abspath(script_path)
-root_dir_path_end = script_abspath.find(ACS_PACKAGING)
-root_abspath = script_abspath[:root_dir_path_end]
+script_directory = str(pathlib.Path(__file__).parent.resolve())
+root_abspath = script_directory.split(ACS_PACKAGING)[0]
 
 args = parser.parse_args()
 
@@ -160,11 +158,11 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 console_handler.setFormatter(formatter)
 logger.addHandler(console_handler)
 
-logger.debug("Released version: %s" % release_version)
-logger.debug("Next development version: %s" % next_dev_version)
-logger.debug("Skip push: %s" % args.skip_push)
-logger.debug("Use test branches: %s" % args.test_branches)
-logger.debug("Cleanup test branches: %s" % args.cleanup)
+logger.debug(f"Released version: {release_version}")
+logger.debug(f"Next development version: {next_dev_version}")
+logger.debug(f"Skip push: {args.skip_push}")
+logger.debug(f"Use test branches: {args.test_branches}")
+logger.debug(f"Cleanup test branches: {args.cleanup}")
 
 
 def read_file(filename):
@@ -187,7 +185,7 @@ def is_version_bumped(version, next_version, index):
 
 
 def increment_version(rel_ver, branch_type):
-    logger.debug("Incrementing %s version for %s branch" % (rel_ver, branch_type))
+    logger.debug(f"Incrementing {rel_ver} version for {branch_type} branch")
     versions = rel_ver.split(".")
     if branch_type == HOTFIX:
         incremented = get_version_number(rel_ver, 2) + 1
@@ -208,25 +206,25 @@ def increment_version(rel_ver, branch_type):
         versions.pop()
         versions.append("1")
     incremented_ver = ".".join(versions)
-    logger.debug("Incremented to %s" % incremented_ver)
+    logger.debug(f"Incremented to {incremented_ver}")
     return incremented_ver
 
 
-def get_next_dev_version(type):
-    if next_dev_version and type == MASTER:
-        logger.debug("Getting next dev version from input parameter (%s)" % next_dev_version)
+def get_next_dev_version(branch_type):
+    if next_dev_version and branch_type == MASTER:
+        logger.debug(f"Getting next dev version from input parameter ({next_dev_version})")
         return next_dev_version
     else:
-        logger.debug("Getting next dev version. Incrementing released %s for %s" % (release_version, type))
-        return increment_version(release_version, type)
+        logger.debug(f"Getting next dev version. Incrementing released {release_version} for {branch_type}")
+        return increment_version(release_version, branch_type)
 
 
 def switch_dir(project):
-    logger.debug("Current dir: %s" % os.getcwd())
+    logger.debug(f"Current dir: {os.getcwd()}")
     os.chdir(os.path.dirname(root_abspath))
     if project != 'root':
         os.chdir(project)
-    logger.debug("Switched dir to: %s" % os.getcwd())
+    logger.debug(f"Switched dir to: {os.getcwd()}")
 
 
 def get_xml_tag_value(xml_path, tag_path):
@@ -241,7 +239,7 @@ def update_xml_tag(text, tag, new_value):
 
 
 def load_xml(xml_path):
-    logger.debug("Loading %s XML file" % xml_path)
+    logger.debug(f"Loading {xml_path} XML file")
     et.register_namespace("", POM_NS)
     xml_tree = et.parse(xml_path)
     xml_tree.parse(xml_path)
@@ -253,11 +251,11 @@ def update_acs_ver_pom_properties(project, version):
     switch_dir(project)
     pom_path = "pom.xml"
     split_version = version.split(".")
-    logger.debug("Setting ACS versions (%s) in %s pom.xml" % (split_version, project))
+    logger.debug(f"Setting ACS versions ({split_version}) in {project} pom.xml")
     text = read_file(pom_path)
-    update_xml_tag(text, "<%sversion.major>" % prefix, split_version[0])
-    update_xml_tag(text, "<%sversion.minor>" % prefix, split_version[1])
-    update_xml_tag(text, "<%sversion.revision>" % prefix, split_version[2])
+    update_xml_tag(text, f"<{prefix}version.major>", split_version[0])
+    update_xml_tag(text, f"<{prefix}version.minor>", split_version[1])
+    update_xml_tag(text, f"<{prefix}version.revision>", split_version[2])
     save_file(pom_path, text)
     switch_dir("root")
 
@@ -265,7 +263,7 @@ def update_acs_ver_pom_properties(project, version):
 def update_scm_tag(tag, project):
     switch_dir(project)
     pom_path = "pom.xml"
-    logger.debug("Setting scm tag to %s in %s pom.xml" % (tag, project))
+    logger.debug(f"Setting scm tag to {tag} in {project} pom.xml")
     text = read_file(pom_path)
     update_xml_tag(text, "<tag>", tag)
     save_file(pom_path, text)
@@ -293,7 +291,7 @@ def update_ci_yaml(filename, project, rel_version, dev_version):
     development_version_match = "DEVELOPMENT_VERSION:"
 
     if text:
-        logger.debug("Setting RELEASE_VERSION, DEVELOPMENT_VERSION (%s, %s) in %s ci.yml" % (rel_version, dev_version, project))
+        logger.debug(f"Setting RELEASE_VERSION, DEVELOPMENT_VERSION ({rel_version}, {dev_version}) in {project} ci.yml")
         update_line(text, release_version_match, rel_version)
         update_line(text, development_version_match, dev_version)
         save_file(filename, text)
@@ -318,7 +316,7 @@ def increment_schema(project, increment):
     schema = int(read_property(text, key))
     new_schema = int(schema / increment) * increment + increment if increment == 1000 else schema + increment
 
-    logger.debug("Updating property version.schema from %s to %s in %s" % (schema, new_schema, project))
+    logger.debug(f"Updating property version.schema from {schema} to {new_schema} in {project}")
     update_line(text, key, str(new_schema))
 
     save_file(filename, text)
@@ -327,16 +325,16 @@ def increment_schema(project, increment):
 
 
 def update_acs_comm_pck_dependencies(branch_type, project):
-    logger.debug("Updating comm-repo and comm-share dependencies in %s" % project)
+    logger.debug(f"Updating comm-repo and comm-share dependencies in {project}")
     comm_repo_next_ver = increment_version(calculate_version(COMMUNITY_REPO), branch_type)
-    logger.debug("comm-repo dependency: %s" % comm_repo_next_ver)
+    logger.debug(f"comm-repo dependency: {comm_repo_next_ver}")
     switch_dir(project)
     pom_path = "pom.xml"
     text = read_file(pom_path)
     update_xml_tag(text, "<dependency.alfresco-community-repo.version>", comm_repo_next_ver)
     update_xml_tag(text, "<version>\d", comm_repo_next_ver)
     comm_share_next_ver = increment_version(calculate_version(ENTERPRISE_SHARE), branch_type)
-    logger.debug("comm-share dependency: %s" % comm_share_next_ver)
+    logger.debug(f"comm-share dependency: {comm_share_next_ver}")
     switch_dir(project)
     update_xml_tag(text, "<dependency.alfresco-community-share.version>", comm_share_next_ver)
     save_file(pom_path, text)
@@ -349,7 +347,7 @@ def set_ags_test_versions(project, version):
     switch_dir(properties_path)
     text = read_file(filename)
 
-    logger.debug("Updating versions to %s in version.properties file in %s" % (version, project))
+    logger.debug(f"Updating versions to {version} in version.properties file in {project}")
     major_key = "version.major="
     update_line(text, major_key, version.split(".")[0])
     minor_key = "version.minor="
@@ -363,7 +361,7 @@ def set_ags_test_versions(project, version):
 
 
 def calculate_increment(version, next_dev_ver):
-    logger.debug("Calculating increment for version %s with next version %s" % (version, next_dev_ver))
+    logger.debug(f"Calculating increment for version {version} with next version {next_dev_ver}")
     if is_version_bumped(version, next_dev_ver, 0):
         logger.debug("Increment by 1000")
         return 1000
@@ -384,32 +382,32 @@ def update_ent_repo_acs_label(project, version, branch_type):
     ver = ".".join(versions)
 
     if branch_type == HOTFIX:
-        logger.debug("Setting acs.version.label to .1 in %s" % project)
+        logger.debug(f"Setting acs.version.label to .1 in {project}")
         update_line(text, "<acs.version.label", ">.1</acs.version.label>")
     else:
-        logger.debug("Setting acs.version.label comment to %s in %s" % (ver, project))
-        update_line(text, "<acs.version.label", "/> <!-- %s.<acs.version.label> -->" % ver)
+        logger.debug(f"Setting acs.version.label comment to {ver} in {project}")
+        update_line(text, f"<acs.version.label", "/> <!-- {ver}.<acs.version.label> -->")
 
     save_file(filename, text)
     switch_dir('root')
 
 
 def exec_cmd(cmd_args):
-    logger.debug("Executing command line of %s" % " ".join(cmd_args))
+    logger.debug("Executing command line of " + " ".join(cmd_args))
     try:
         ret = subprocess.run(cmd_args, shell=True) if args.trace else subprocess.run(cmd_args, shell=True, stdout=subprocess.DEVNULL)
         ret.check_returncode()
     except subprocess.CalledProcessError as e:
-        logger.error("Error:\nreturn code: %s\nOutput: %s" % (e.returncode, e.stderr.decode("utf-8")))
+        logger.error(f"Error:\nreturn code: {e.returncode}\nOutput: " + e.stderr.decode("utf-8"))
         raise
 
 
 def get_cmd_exec_result(cmd_args):
-    logger.debug("Getting results of command line execution of %s" % " ".join(cmd_args))
+    logger.debug("Getting results of command line execution of " + " ".join(cmd_args))
     try:
         return subprocess.check_output(cmd_args)
     except subprocess.CalledProcessError as e:
-        logger.error("Error:\nreturn code: %s\nOutput: %s" % (e.returncode, e.stderr.decode("utf-8")))
+        logger.error(f"Error:\nreturn code: {e.returncode}\nOutput: " + e.stderr.decode("utf-8"))
         raise
 
 
@@ -424,15 +422,15 @@ def set_versions(project, version, branch_type):
             ver.pop()
         snapshot_ver = ".".join(ver) + ".1-SNAPSHOT"
 
-    arguments = ["mvn", "versions:set", "-DgenerateBackupPoms=false", "-DnewVersion=%s" % snapshot_ver, "-P%s" % ",".join(profiles)]
-    logger.debug("Updating versions to %s in pom of %s" % (snapshot_ver, project))
+    arguments = ["mvn", "versions:set", "-DgenerateBackupPoms=false", f"-DnewVersion={snapshot_ver}", "-P" + ",".join(profiles)]
+    logger.debug(f"Updating versions to {snapshot_ver} in pom of {project}")
     exec_cmd(arguments)
     switch_dir('root')
 
 
 def checkout_branch(project, branch):
     switch_dir(project)
-    logger.debug("Checking out %s branch in %s" % (branch, project))
+    logger.debug(f"Checking out {branch} branch in {project}")
     exec_cmd(["git", "fetch"])
     exec_cmd(["git", "checkout", branch])
     switch_dir('root')
@@ -442,17 +440,17 @@ def create_branch(project, branch, tag):
     switch_dir(project)
     checkout_branch(project, tag)
     switch_dir(project)
-    logger.debug("Creating %s branch in %s from %s tag" % (branch, project, tag))
+    logger.debug(f"Creating {branch} branch in {project} from {tag} tag")
     exec_cmd(["git", "switch", "-c", branch])
     switch_dir('root')
 
 
 def commit_and_push(project, option, message):
-    logger.debug("Committing changes in %s. Commit message: %s" % (project, message))
+    logger.debug(f"Committing changes in {project}. Commit message: {message}")
     switch_dir(project)
     exec_cmd(["git", "commit", option, "-m", message])
     if not args.skip_push:
-        logger.debug("Pushing changes in %s to remote." % project)
+        logger.debug(f"Pushing changes in {project} to remote.")
         exec_cmd(["git", "push"])
     switch_dir('root')
 
@@ -461,23 +459,23 @@ def commit_all_and_push(project, message):
     commit_and_push(project, "--all", message)
 
 
-def calculate_branch(type):
+def calculate_branch(branch_type):
     rel_ver = release_version.split(".")
-    if type == HOTFIX:
+    if branch_type == HOTFIX:
         rel_ver[2] = "N"
-    elif type == SERVICE_PACK:
+    elif branch_type == SERVICE_PACK:
         rel_ver[1] = str(int(rel_ver[1]) + 1)
         rel_ver.pop(2)
     else:
         rel_ver.pop(2)
     prefix = "test/release/" if args.test_branches else "release/"
     branch = prefix + ".".join(rel_ver)
-    logger.debug("Calculated %s branch as %s " % (type, branch))
+    logger.debug(f"Calculated {branch_type} branch as {branch}")
     return branch
 
 
 def calculate_version(project):
-    logger.debug("Calculating tag version for %s " % project)
+    logger.debug(f"Calculating tag version for {project}")
     checkout_branch(ACS_PACKAGING, MASTER if args.ahead else release_version)
     switch_dir(ACS_PACKAGING)
     ent_repo_ver = get_xml_tag_value("pom.xml",
@@ -486,13 +484,13 @@ def calculate_version(project):
                                       "{%s}properties/{%s}dependency.alfresco-enterprise-share.version" % (POM_NS, POM_NS))
     switch_dir('root')
     if project == ACS_PACKAGING or project == COMMUNITY_PACKAGING:
-        logger.debug("Tag version for %s is %s" % (project, release_version))
+        logger.debug(f"Tag version for {project} is {release_version}")
         return release_version
     elif project == ENTERPRISE_REPO:
-        logger.debug("Tag version for %s is %s" % (project, ent_repo_ver))
+        logger.debug(f"Tag version for {project} is {ent_repo_ver}")
         return ent_repo_ver
     elif project == ENTERPRISE_SHARE:
-        logger.debug("Tag version for %s is %s" % (project, ent_share_ver))
+        logger.debug(f"Tag version for {project} is {ent_share_ver}")
         return ent_share_ver
     elif project == COMMUNITY_REPO:
         checkout_branch(ENTERPRISE_REPO, ent_repo_ver)
@@ -500,7 +498,7 @@ def calculate_version(project):
         comm_repo_ver = get_xml_tag_value("pom.xml",
                                           "{%s}properties/{%s}dependency.alfresco-community-repo.version" % (POM_NS, POM_NS))
         switch_dir('root')
-        logger.debug("Tag version for %s is %s" % (project, comm_repo_ver))
+        logger.debug(f"Tag version for {project} is {comm_repo_ver}")
         return comm_repo_ver
 
 
@@ -509,8 +507,8 @@ def update_project(project, version, branch_type):
     update_scm_tag('HEAD', project)
     next_dev_ver = get_next_dev_version(branch_type)
     if project == ACS_PACKAGING:
-        update_ci_yaml(YAML_DICT.get(project), project, version + "-A1", next_dev_ver + "-A2-SNAPSHOT") if branch_type is not HOTFIX else (
-            update_ci_yaml(YAML_DICT.get(project), project, version, increment_version(next_dev_ver, HOTFIX) + "-SNAPSHOT"))
+        update_ci_yaml('master_release.yml', project, version + "-A1", next_dev_ver + "-A2-SNAPSHOT") if branch_type is not HOTFIX else (
+            update_ci_yaml('master_release.yml', project, version, increment_version(next_dev_ver, HOTFIX) + "-SNAPSHOT"))
     elif project == ENTERPRISE_SHARE:
         update_acs_ver_pom_properties(project, version)
     elif project == ENTERPRISE_REPO:
@@ -520,8 +518,8 @@ def update_project(project, version, branch_type):
         increment_schema(project, calculate_increment(release_version, next_dev_ver))
         set_ags_test_versions(project, version)
     elif project == COMMUNITY_PACKAGING:
-        update_ci_yaml(YAML_DICT.get(project), project, version + "-A1", next_dev_ver + "-A2-SNAPSHOT") if branch_type is not HOTFIX else (
-            update_ci_yaml(YAML_DICT.get(project), project, version, increment_version(next_dev_ver, HOTFIX) + "-SNAPSHOT"))
+        update_ci_yaml('ci.yml', project, version + "-A1", next_dev_ver + "-A2-SNAPSHOT") if branch_type is not HOTFIX else (
+            update_ci_yaml('ci.yml', project, version, increment_version(next_dev_ver, HOTFIX) + "-SNAPSHOT"))
         update_acs_comm_pck_dependencies(branch_type, project)
 
 
@@ -544,7 +542,7 @@ def create_hotfix_branches():
             create_branch(project, hotfix_branch, rel_tag_version)
             version = increment_version(rel_tag_version, HOTFIX)
             update_project(project, version, HOTFIX)
-            commit_all_and_push(project, "Creating hotfix branch %s for %s ACS release [skip ci]" % (hotfix_branch, release_version))
+            commit_all_and_push(project, f"Creating hotfix branch {hotfix_branch} for {release_version} ACS release [skip ci]")
 
 
 def create_service_pack_branches():
@@ -556,7 +554,7 @@ def create_service_pack_branches():
         create_branch(project, sp_branch, rel_tag_version)
         version = increment_version(rel_tag_version, SERVICE_PACK)
         update_project(project, version, SERVICE_PACK)
-        commit_all_and_push(project, "Creating service pack branch %s after %s ACS release [skip ci]" % (sp_branch, release_version))
+        commit_all_and_push(project, f"Creating service pack branch {sp_branch} after {release_version} ACS release [skip ci]")
 
 
 def modify_master_branches():
@@ -566,7 +564,7 @@ def modify_master_branches():
         next_dev_ver = get_next_dev_version(MASTER)
         checkout_branch(project, MASTER)
         update_project(project, next_dev_ver, MASTER)
-        commit_all_and_push(project, "Updating master branch to %s after %s ACS release [skip ci]" % (next_dev_ver, release_version))
+        commit_all_and_push(project, f"Updating master branch to {next_dev_ver} after {release_version} ACS release [skip ci]")
         checkout_branch(project, MASTER)
 
 
@@ -576,7 +574,7 @@ def create_release_branches():
         log_progress(project, "Creating release branches")
         rel_branch = calculate_branch('release')
         create_branch(project, rel_branch, MASTER)
-        commit_and_push(project, "--allow-empty", "Creating release branch %s for %s ACS release [skip ci]" % (rel_branch, release_version))
+        commit_and_push(project, "--allow-empty", f"Creating release branch {rel_branch} for {release_version} ACS release [skip ci]")
 
 
 def cleanup_branches():
@@ -592,7 +590,7 @@ def cleanup_branches():
         for b in branches:
             branch = str(b)
             if "test/release/" in branch:
-                logger.debug("Deleting  %s branch" % branch)
+                logger.debug(f"Deleting  {branch} branch")
                 exec_cmd(["git", "branch", "-D", branch])
 
 
