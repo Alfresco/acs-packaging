@@ -507,8 +507,10 @@ def update_project(project, version, branch_type):
     update_scm_tag('HEAD', project)
     next_dev_ver = get_next_dev_version(branch_type)
     if project == ACS_PACKAGING:
-        update_ci_yaml('master_release.yml', project, version + "-A1", next_dev_ver + "-A2-SNAPSHOT") if branch_type is not HOTFIX else (
-            update_ci_yaml('master_release.yml', project, version, increment_version(next_dev_ver, HOTFIX) + "-SNAPSHOT"))
+        if branch_type is not HOTFIX:
+            update_ci_yaml('master_release.yml', project, version + "-A1", next_dev_ver + "-A2-SNAPSHOT")
+        else:
+            update_ci_yaml('master_release.yml', project, version, increment_version(next_dev_ver, HOTFIX) + "-SNAPSHOT")
     elif project == ENTERPRISE_SHARE:
         update_acs_ver_pom_properties(project, version)
     elif project == ENTERPRISE_REPO:
@@ -518,8 +520,10 @@ def update_project(project, version, branch_type):
         increment_schema(project, calculate_increment(release_version, next_dev_ver))
         set_ags_test_versions(project, version)
     elif project == COMMUNITY_PACKAGING:
-        update_ci_yaml('ci.yml', project, version + "-A1", next_dev_ver + "-A2-SNAPSHOT") if branch_type is not HOTFIX else (
-            update_ci_yaml('ci.yml', project, version, increment_version(next_dev_ver, HOTFIX) + "-SNAPSHOT"))
+        if branch_type is not HOTFIX:
+            update_ci_yaml('ci.yml', project, version + "-A1", next_dev_ver + "-A2-SNAPSHOT")
+        else:
+            update_ci_yaml('ci.yml', project, version, increment_version(next_dev_ver, HOTFIX) + "-SNAPSHOT")
         update_acs_comm_pck_dependencies(branch_type, project)
 
 
