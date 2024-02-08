@@ -124,6 +124,7 @@ PROJECTS = [ACS_PACKAGING, ENTERPRISE_SHARE, ENTERPRISE_REPO, COMMUNITY_REPO, CO
 # read command line arguments
 parser = argparse.ArgumentParser(description="Create git branches after ACS release.")
 parser.add_argument('-r', '--release', metavar='x.y.z', help='release version (x.y.z format)')
+parser.add_argument('-m', '--master_skip', action='store_true', help='skip prepare master branch')
 parser.add_argument('-n', '--next_dev', metavar='x.y.z', help='next development version (x.y.z format)')
 parser.add_argument('-v', '--verbose', action='store_true', help='print out verbose processing information')
 parser.add_argument('-s', '--skip_push', action='store_true', help='skip git push')
@@ -287,8 +288,8 @@ def update_ci_yaml(filename, project, rel_version, dev_version):
     switch_dir(ci_yaml_path)
     text = read_file(filename)
 
-    release_version_match = "RELEASE_VERSION:"
-    development_version_match = "DEVELOPMENT_VERSION:"
+    release_version_match = "RELEASE_VERSION: "
+    development_version_match = "DEVELOPMENT_VERSION: "
 
     if text:
         logger.debug(f"Setting RELEASE_VERSION, DEVELOPMENT_VERSION ({rel_version}, {dev_version}) in {project} ci.yml")
@@ -612,6 +613,7 @@ if release_version:
         if is_version_bumped(release_version, next_dev_version, 0):
             create_service_pack_branches()
     # need fix as below method will cause issues when this script is run with args.ahead and subsequently without it
-    modify_master_branches()
+    if not args.master_skip:
+        modify_master_branches()
     log_progress("All projects", "Finished creating branches. Exiting.")
     sys.exit(0)
