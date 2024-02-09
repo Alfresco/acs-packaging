@@ -146,8 +146,11 @@ root_abspath = script_directory.split(ACS_PACKAGING)[0]
 
 args = parser.parse_args()
 
-release_version = args.release if args.release else input("Enter released version (mandatory, use x.y or x.y.z format): ")
-next_dev_version = args.next_dev if args.next_dev else input("Enter next development version (optional, use x.y or x.y.z format or leave empty): ")
+release_version = ""
+next_dev_version = ""
+if not args.unit_test:
+    release_version = args.release if args.release else input("Enter released version (mandatory, use x.y or x.y.z format): ")
+    next_dev_version = args.next_dev if args.next_dev else input("Enter next development version (optional, use x.y or x.y.z format or leave empty): ")
 
 # setup logging
 logger = logging.getLogger('CONSOLE')
@@ -250,7 +253,15 @@ def increment_version(rel_ver, branch_type):
     return incremented_ver
 
 
-def get_next_dev_version(branch_type):
+def get_next_dev_version(branch_type, release_version=release_version, next_dev_version=next_dev_version):
+    """Get the next development version for the given branch type
+    >>> get_next_dev_version("master", release_version="23.1.1", next_dev_version="")
+    '23.2.0'
+    >>> get_next_dev_version("hotfix", release_version="23.1.1", next_dev_version="")
+    '23.1.2'
+    >>> get_next_dev_version("master", release_version="23.1.1", next_dev_version="24.1.0")
+    '24.1.0'
+    """
     if next_dev_version and branch_type == MASTER:
         logger.debug(f"Getting next dev version from input parameter ({next_dev_version})")
         return next_dev_version
@@ -543,7 +554,17 @@ def commit_all_and_push(project, message):
     commit_and_push(project, "--all", message)
 
 
-def calculate_branch(branch_type):
+def calculate_branch(branch_type, release_version=release_version, use_test_branches=args.test_branches):
+    """Calculate the branch name
+    >>> calculate_branch("master", release_version="24.1.0")
+    'release/24.1'
+    >>> calculate_branch("service_pack", release_version="24.1.0")
+    'release/24.2'
+    >>> calculate_branch("hotfix", release_version="24.1.0")
+    'release/24.1.N'
+    >>> calculate_branch("hotfix", release_version="24.1.0", use_test_branches=True)
+    'test/release/24.1.N'
+    """
     rel_ver = release_version.split(".")
     if branch_type == HOTFIX:
         rel_ver[2] = "N"
@@ -552,7 +573,7 @@ def calculate_branch(branch_type):
         rel_ver.pop(2)
     else:
         rel_ver.pop(2)
-    prefix = "test/release/" if args.test_branches else "release/"
+    prefix = "test/release/" if use_test_branches else "release/"
     branch = prefix + ".".join(rel_ver)
     logger.debug(f"Calculated {branch_type} branch as {branch}")
     return branch
