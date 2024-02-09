@@ -4,6 +4,8 @@
 # When the script is run with indicating that next version is a major bump (-r/--release version major is lowera than -n/--next_dev version major)
 # then HF and SP branches get created. Otherwise (no major version bump), only HF branches are created.
 # Script can also create release branches ahead of release so that master/main branches do not need to get the code frozem (-a/--ahead argument is passed)
+# If -u argument provided then unit tests are run.
+# If -m argument provided then master branch preparation is skipped (most likely to be used when preparing release branches ahead of release).
 # See below script behaviour explained.
 #######################################
 # Create HotFix branches for the released version (for X.Y.Z release it will be release/X.Y.N eg., create release/23.2.N for 23.2.0 release)
@@ -132,6 +134,7 @@ parser.add_argument('-t', '--test_branches', action='store_true', help='use test
 parser.add_argument('-c', '--cleanup', action='store_true', help='cleanup local test release branches (experimental)')
 parser.add_argument('-a', '--ahead', action='store_true', help='create branches ahead of release (experimental)')
 parser.add_argument('-z', '--trace', action='store_true', help='trace processing information')
+parser.add_argument('-u', '--unit_test', action='store_true', help='run unit tests')
 
 if len(sys.argv) == 1:
     parser.print_help()
@@ -178,14 +181,50 @@ def save_file(filename, text):
 
 
 def get_version_number(rel_ver, index):
+    """Get version form at index
+    >>> get_version_number("23.1.0", 0)
+    23
+    >>> get_version_number("23.2.0", 1)
+    2
+    >>> get_version_number("23.1.4", 2)
+    4
+    """
     return int(rel_ver.split(".")[index])
 
 
 def is_version_bumped(version, next_version, index):
+    """Check if version at index has increased
+    >>> is_version_bumped("23.3.0", "24.1.0", 0)
+    True
+    >>> is_version_bumped("23.2.0", "23.3.0", 1)
+    True
+    >>> is_version_bumped("23.1.0", "23.1.1", 2)
+    True
+    >>> is_version_bumped("23.3.0", "23.4.0", 0)
+    False
+    >>> is_version_bumped("23.2.0", "24.2.0", 1)
+    False
+    >>> is_version_bumped("23.1.0", "23.2.0", 2)
+    False
+    """
     return get_version_number(version, index) < get_version_number(next_version, index) if next_version else False
 
 
 def increment_version(rel_ver, branch_type):
+    """Increment version for branch type
+    >>> increment_version("23.1.0", "hotfix")
+    '23.1.1'
+    >>> increment_version("23.1.0", "service_pack")
+    '23.2.0'
+    >>> increment_version("23.1.1", "service_pack")
+    '23.2.0'
+    >>> increment_version("23.1.0.85", "hotfix")
+    '23.1.1.1'
+    >>> increment_version("23.1.0.61", "service_pack")
+    '23.2.0.1'
+    >>> increment_version("23.1.1", "master")
+    '23.2.0'
+    """
     logger.debug(f"Incrementing {rel_ver} version for {branch_type} branch")
     versions = rel_ver.split(".")
     if branch_type == HOTFIX:
@@ -235,7 +274,14 @@ def get_xml_tag_value(xml_path, tag_path):
 
 def update_xml_tag(text, tag, new_value):
     closing_tag = tag.replace("<", "</")
-    update_line(text, tag, "%s%s" % (new_value, closing_tag))
+    update_line(text, tag, new_value + closing_tag)
+    """
+    >>> update_xml_tag(['   <url>http://github.com/Alfresco</url>', '   <tag>HEAD</tag>', ' </scm>'], "<tag>", "23.2.1")
+    ['   <url>http://github.com/Alfresco</url>', '   <tag>23.2.1</tag>', ' </scm>']    
+    """
+    # Following tests don't work as there seem to be some issues with regex special characters. With actual XML files all seem to work.
+    # >>> update_xml_tag([" <artifactId>acs-comm-packaging</artifactId>", "  <version>23.1.0</version>","  <artifactId>something</artifactId>","    <version>${dep.version}</version>"], "<version>\d", "23.2.0")
+    # [' <artifactId>acs-comm-packaging</artifactId>', '  <version>23.2.0</version>', '  <artifactId>something</artifactId>', '    <version>${dep.version}</version>']
     return text
 
 
@@ -272,13 +318,36 @@ def update_scm_tag(tag, project):
 
 
 def update_line(text: list[str], text_to_match, replacement_value):
+    """Update part of line after matching text with given value
+    >>> update_line(["BASE_BUILD_NUMBER: 10000", "RELEASE_VERSION: 23.1.0", "DEVELOPMENT_VERSION: 23.2.0-A1-SNAPSHOT"], "RELEASE_VERSION: ", "23.2.0")
+    ['BASE_BUILD_NUMBER: 10000', 'RELEASE_VERSION: 23.2.0', 'DEVELOPMENT_VERSION: 23.2.0-A1-SNAPSHOT']
+    >>> update_line(["BASE_BUILD_NUMBER: 10000", "RELEASE_VERSION: 23.1.0", "DEVELOPMENT_VERSION: 23.1.0-SNAPSHOT"], "DEVELOPMENT_VERSION: ", "23.2.0-A1-SNAPSHOT")
+    ['BASE_BUILD_NUMBER: 10000', 'RELEASE_VERSION: 23.1.0', 'DEVELOPMENT_VERSION: 23.2.0-A1-SNAPSHOT']
+    >>> update_line(["repository.name=Main Repository", "version.schema=19000", "dir.root=./alf_data"], "version.schema=", "19100")
+    ['repository.name=Main Repository', 'version.schema=19100', 'dir.root=./alf_data']
+    >>> update_line(["<url>http://github.com/Alfresco</url>", "<tag>23.1.0</tag>", "</scm>"], "<tag>", "HEAD</tag>")
+    ['<url>http://github.com/Alfresco</url>', '<tag>HEAD</tag>', '</scm>']
+    >>> update_line(["version.label=", "version.major=23", "version.minor=2", "version.revision=0"], "version.major=", "24")
+    ['version.label=', 'version.major=24', 'version.minor=2', 'version.revision=0']
+    >>> update_line(["version.major=23", "version.minor=2", "version.revision=0"], "version.minor=", "3")
+    ['version.major=23', 'version.minor=3', 'version.revision=0']
+    >>> update_line(["version.major=23", "version.minor=2", "version.revision=0"], "version.revision=", "1")
+    ['version.major=23', 'version.minor=2', 'version.revision=1']
+    >>> update_line(["<dependency.alfresco-community-repo.version>23.2.0.1</dependency.alfresco-community-repo.version>", "<acs.version.label /> <!-- 23.1.0.<acs.version.label> -->", "<version.edition>Enterprise</version.edition>"], "<acs.version.label", ">.1</acs.version.label>")
+    ['<dependency.alfresco-community-repo.version>23.2.0.1</dependency.alfresco-community-repo.version>', '<acs.version.label>.1</acs.version.label>', '<version.edition>Enterprise</version.edition>']
+    >>> update_line(["<dependency.alfresco-community-repo.version>23.2.0.1</dependency.alfresco-community-repo.version>", "<acs.version.label>.1</acs.version.label>", "<version.edition>Enterprise</version.edition>"], "<acs.version.label", "/> <!-- 23.2.0.<acs.version.label> -->")
+    ['<dependency.alfresco-community-repo.version>23.2.0.1</dependency.alfresco-community-repo.version>', '<acs.version.label/> <!-- 23.2.0.<acs.version.label> -->', '<version.edition>Enterprise</version.edition>']
+    """
+    # Following tests don't work as there seem to be some issues with regex special characters. With actual XML files all seem to work.
+    # >>> update_line([' <artifactId>acs-comm-packaging</artifactId>', '  <version>23.1.0</version>', '  <artifactId>something</artifactId>', '    <version>${dep.version}</version>'], "<version>\d", "23.2.0</version>")
+    # [' <artifactId>acs-packaging</artifactId>', '  <version>23.2.0</version>', '  <artifactId>org.something</artifactId>', '    <version>${dep.version}</version>']
     regex = re.compile(text_to_match + ".*", re.IGNORECASE)
     line = None
     for i in range(len(text)):
         if text_to_match in text[i]:
             line = i
     if line:
-        text[line] = regex.sub("%s%s" % (text_to_match, replacement_value), text[line])
+        text[line] = regex.sub(text_to_match + replacement_value, text[line])
 
     return text
 
@@ -301,6 +370,12 @@ def update_ci_yaml(filename, project, rel_version, dev_version):
 
 
 def read_property(text: list[str], key):
+    """Read property value given its key
+    >>> read_property(["key1=value1", "key2=value2", "key3=value3"], "key3")
+    'value3'
+    >>> read_property(["key1=value1", "key2=value2", "key3=value3"], "key2")
+    'value2'
+    """
     for i in range(len(text)):
         if key in text[i]:
             line = i
@@ -362,6 +437,14 @@ def set_ags_test_versions(project, version):
 
 
 def calculate_increment(version, next_dev_ver):
+    """Calculate version schema increment
+    >>> calculate_increment("23.1.0", "23.1.1")
+    0
+    >>> calculate_increment("23.1.0", "23.2.0")
+    100
+    >>> calculate_increment("23.1.0", "24.1.0")
+    1000
+    """
     logger.debug(f"Calculating increment for version {version} with next version {next_dev_ver}")
     if is_version_bumped(version, next_dev_ver, 0):
         logger.debug("Increment by 1000")
@@ -598,11 +681,15 @@ def cleanup_branches():
                 logger.debug(f"Deleting  {branch} branch")
                 exec_cmd(["git", "branch", "-D", branch])
 
+if args.unit_test:
+    import doctest
+    doctest.testmod()
+    exit(0)
 
 if args.cleanup:
     cleanup_branches()
     logger.info("Cleaned up test/release branches. Exiting.")
-    sys.exit(0)
+    exit(0)
 
 
 if release_version:
@@ -612,8 +699,7 @@ if release_version:
         create_hotfix_branches()
         if is_version_bumped(release_version, next_dev_version, 0):
             create_service_pack_branches()
-    # need fix as below method will cause issues when this script is run with args.ahead and subsequently without it
     if not args.master_skip:
         modify_master_branches()
     log_progress("All projects", "Finished creating branches. Exiting.")
-    sys.exit(0)
+    exit(0)
