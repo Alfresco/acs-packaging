@@ -1,14 +1,14 @@
 #######################################
 # This script creates HotFix branches for repo, share and packaging projects, and updates the master branches ready for the next SP/major release.
 # Run the script without passing any arguments or with -h/--help argument to get usage information.
-# When the script is run with indicating that next version is a major bump (-r/--release version major is lowera than -n/--next_dev version major)
+# When the script is run with indicating that next version is a major bump (-r/--release version major is lower than -n/--next_dev version major)
 # then HF and SP branches get created. Otherwise (no major version bump), only HF branches are created.
 # Script can also create release branches ahead of release so that master/main branches do not need to get the code frozem (-a/--ahead argument is passed)
 # If -u argument provided then unit tests are run.
 # If -m argument provided then master branch preparation is skipped (most likely to be used when preparing release branches ahead of release).
 # See below script behaviour explained.
 #######################################
-# Create HotFix branches for the released version (for X.Y.Z release it will be release/X.Y.N eg., create release/23.2.N for 23.2.0 release)
+# Create HotFix branches for the released version (for X.Y.Z release it will be release/X.Y eg., create release/23.2 for 23.2.0 release)
 # 1. acs-packaging:
 # - set RELEASE_VERSION to X.Y.1, DEVELOPMENT_VERSION to X.Y.2-SNAPSHOT in master_release.yml
 # - set POM versions to X.Y.1-SNAPSHOT
@@ -33,7 +33,7 @@
 # 6. acs-community-packaging
 # - not created as we do not release hot fixes for community version
 #######################################
-# Create ServicePack branches for the released version (for X.Y.Z release it will be release/X.Y+1 eg., create release/23.3 for 23.2.0 release)
+# Create ServicePack branches for the released version (for X.Y.Z release it will be release/X.N eg., create release/23.N for 23.3.0 release)
 # 1. acs-packaging:
 # - set RELEASE_VERSION to X.Y+1.0-A1, DEVELOPMENT_VERSION to X.Y+1.0-A2-SNAPSHOT in master_release.yml
 # - set POM versions to X.Y+1.0-A1-SNAPSHOT
@@ -95,8 +95,8 @@
 # - set comm-repo dependency in main POM to <next_development_version>.1 or X.Y+1.0.1 (if <next_development_version> not passed)
 # - set comm-share dependency in main POM to <next_development_version>.1 or X.Y+1.0.1 (if <next_development_version> not passed)
 #######################################
-# In case when release branches are to be created ahead of release (for X.Y.Z release it will be release/X.Y eg., create release/23.2 for 23.2.0 release)
-# In all 6 projects, branches are created from master branch without any additional changes.
+# In case when release branches are to be created ahead of release (for X.Y.Z release it will be release/stabilization/X.Y eg., create release/stabilization/23.2 for 23.2.0 release)
+# In all 5 projects, branches are created from master branch without any additional changes.
 # Master branches are updated for the next SP/major release in a same way as in case of post release script execution (see above).
 #######################################
 
@@ -114,6 +114,7 @@ from xml.etree import ElementTree as et
 MASTER = 'master'
 HOTFIX = 'hotfix'
 SERVICE_PACK = 'service_pack'
+RELEASE = 'release'
 
 POM_NS = 'http://maven.apache.org/POM/4.0.0'
 COMMUNITY_PACKAGING = 'acs-community-packaging'
@@ -556,24 +557,28 @@ def commit_all_and_push(project, message):
 
 def calculate_branch(branch_type, release_version=release_version, use_test_branches=args.test_branches):
     """Calculate the branch name
-    >>> calculate_branch("master", release_version="24.1.0")
-    'release/24.1'
+    >>> calculate_branch("master", release_version="23.2.0")
+    'release/23.2'
+    >>> calculate_branch("service_pack", release_version="23.3.0")
+    'release/23.N'
     >>> calculate_branch("service_pack", release_version="24.1.0")
-    'release/24.2'
+    'release/24.N'
     >>> calculate_branch("hotfix", release_version="24.1.0")
-    'release/24.1.N'
+    'release/24.1'
     >>> calculate_branch("hotfix", release_version="24.1.0", use_test_branches=True)
-    'test/release/24.1.N'
+    'test/release/24.1'
+    >>> calculate_branch("release", release_version="23.2.0")
+    'release/stabilization/23.2'
+    >>> calculate_branch("release", release_version="23.2.0", use_test_branches=True)
+    'test/release/stabilization/23.2'
     """
     rel_ver = release_version.split(".")
-    if branch_type == HOTFIX:
-        rel_ver[2] = "N"
-    elif branch_type == SERVICE_PACK:
-        rel_ver[1] = str(int(rel_ver[1]) + 1)
-        rel_ver.pop(2)
-    else:
-        rel_ver.pop(2)
+    if branch_type == SERVICE_PACK:
+        rel_ver[1] = "N"
+    rel_ver.pop(2)
     prefix = "test/release/" if use_test_branches else "release/"
+    if branch_type == RELEASE:
+        prefix += "stabilization/"
     branch = prefix + ".".join(rel_ver)
     logger.debug(f"Calculated {branch_type} branch as {branch}")
     return branch
@@ -681,7 +686,7 @@ def create_release_branches():
     for i in range(len(PROJECTS)):
         project = PROJECTS[i]
         log_progress(project, "Creating release branches")
-        rel_branch = calculate_branch('release')
+        rel_branch = calculate_branch(RELEASE)
         create_branch(project, rel_branch, MASTER)
         commit_and_push(project, "--allow-empty", f"Creating release branch {rel_branch} for {release_version} ACS release [skip ci]")
 
