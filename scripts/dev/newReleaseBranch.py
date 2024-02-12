@@ -559,7 +559,7 @@ def commit_all_and_push(project, message):
 def calculate_branch(branch_type, release_version=release_version, use_test_branches=args.test_branches):
     """Calculate the branch name
     >>> calculate_branch("master", release_version="23.2.0")
-    'release/23.2'
+    'master'
     >>> calculate_branch("service_pack", release_version="23.3.0")
     'release/23.N'
     >>> calculate_branch("service_pack", release_version="24.1.0")
@@ -573,6 +573,8 @@ def calculate_branch(branch_type, release_version=release_version, use_test_bran
     >>> calculate_branch("release", release_version="23.2.0", use_test_branches=True)
     'test/release/stabilization/23.2'
     """
+    if branch_type == MASTER:
+        return MASTER
     rel_ver = release_version.split(".")
     if branch_type == SERVICE_PACK:
         rel_ver[1] = "N"
