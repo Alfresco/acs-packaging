@@ -285,15 +285,14 @@ def get_xml_tag_value(xml_path, tag_path):
 
 
 def update_xml_tag(text, tag, new_value):
-    closing_tag = tag.replace("<", "</")
-    update_line(text, tag, new_value + closing_tag)
     """
     >>> update_xml_tag(['   <url>http://github.com/Alfresco</url>', '   <tag>HEAD</tag>', ' </scm>'], "<tag>", "23.2.1")
-    ['   <url>http://github.com/Alfresco</url>', '   <tag>23.2.1</tag>', ' </scm>']    
+    ['   <url>http://github.com/Alfresco</url>', '   <tag>23.2.1</tag>', ' </scm>']
+    >>> update_xml_tag([" <artifactId>acs-comm-packaging</artifactId>", "  <version>23.1.0</version>","  <artifactId>something</artifactId>","    <version>${dep.version}</version>"], "<version>", "23.2.0")
+    [' <artifactId>acs-comm-packaging</artifactId>', '  <version>23.2.0</version>', '  <artifactId>something</artifactId>', '    <version>${dep.version}</version>']
     """
-    # Following tests don't work as there seem to be some issues with regex special characters. With actual XML files all seem to work.
-    # >>> update_xml_tag([" <artifactId>acs-comm-packaging</artifactId>", "  <version>23.1.0</version>","  <artifactId>something</artifactId>","    <version>${dep.version}</version>"], "<version>\d", "23.2.0")
-    # [' <artifactId>acs-comm-packaging</artifactId>', '  <version>23.2.0</version>', '  <artifactId>something</artifactId>', '    <version>${dep.version}</version>']
+    closing_tag = tag.replace("<", "</")
+    update_line(text, tag, new_value + closing_tag)
     return text
 
 
@@ -349,16 +348,18 @@ def update_line(text: list[str], text_to_match, replacement_value):
     ['<dependency.alfresco-community-repo.version>23.2.0.1</dependency.alfresco-community-repo.version>', '<acs.version.label>.1</acs.version.label>', '<version.edition>Enterprise</version.edition>']
     >>> update_line(["<dependency.alfresco-community-repo.version>23.2.0.1</dependency.alfresco-community-repo.version>", "<acs.version.label>.1</acs.version.label>", "<version.edition>Enterprise</version.edition>"], "<acs.version.label", "/> <!-- 23.2.0.<acs.version.label> -->")
     ['<dependency.alfresco-community-repo.version>23.2.0.1</dependency.alfresco-community-repo.version>', '<acs.version.label/> <!-- 23.2.0.<acs.version.label> -->', '<version.edition>Enterprise</version.edition>']
+    >>> update_line(['  <version>23.1.0</version>'], "<version>", "23.2.0</version>")
+    ['  <version>23.2.0</version>']
+    >>> update_line([' <artifactId>acs-packaging</artifactId>', '  <version>23.1.0</version>', '  <artifactId>something</artifactId>', '    <version>${dep.version}</version>'], "<version>", "23.2.0</version>")
+    [' <artifactId>acs-packaging</artifactId>', '  <version>23.2.0</version>', '  <artifactId>something</artifactId>', '    <version>${dep.version}</version>']
     """
-    # Following tests don't work as there seem to be some issues with regex special characters. With actual XML files all seem to work.
-    # >>> update_line([' <artifactId>acs-comm-packaging</artifactId>', '  <version>23.1.0</version>', '  <artifactId>something</artifactId>', '    <version>${dep.version}</version>'], "<version>\d", "23.2.0</version>")
-    # [' <artifactId>acs-packaging</artifactId>', '  <version>23.2.0</version>', '  <artifactId>org.something</artifactId>', '    <version>${dep.version}</version>']
     regex = re.compile(text_to_match + ".*", re.IGNORECASE)
     line = None
     for i in range(len(text)):
         if text_to_match in text[i]:
             line = i
-    if line:
+            break
+    if line != None:
         text[line] = regex.sub(text_to_match + replacement_value, text[line])
 
     return text
@@ -420,7 +421,7 @@ def update_acs_comm_pck_dependencies(branch_type, project):
     pom_path = "pom.xml"
     text = read_file(pom_path)
     update_xml_tag(text, "<dependency.alfresco-community-repo.version>", comm_repo_next_ver)
-    update_xml_tag(text, "<version>\d", comm_repo_next_ver)
+    update_xml_tag(text, "<version>", comm_repo_next_ver)
     comm_share_next_ver = increment_version(calculate_version(ENTERPRISE_SHARE), branch_type)
     logger.debug(f"comm-share dependency: {comm_share_next_ver}")
     switch_dir(project)
