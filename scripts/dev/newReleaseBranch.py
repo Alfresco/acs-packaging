@@ -21,16 +21,12 @@
 # - set POM versions to  X.Y.1.1-SNAPSHOT
 # - set scm-tag in main POM to HEAD
 # - set acs.version.label to .1
-# 4. community-share
-# - set scm-tag in main POM to HEAD
-# - set ACS version properties in main POM to X.Y.1
-# - set main POM versions to  X.Y.1.1-SNAPSHOT
-# 5. community-repo:
+# 4. community-repo:
 # - set ACS version properties in main POM to X.Y.1
 # - set POM versions to  X.Y.1.1-SNAPSHOT
 # - set scm-tag in main POM to HEAD
 # - set version.revision to 1 in version.properties (test resources)
-# 6. acs-community-packaging
+# 5. acs-community-packaging
 # - not created as we do not release hot fixes for community version
 #######################################
 # Create ServicePack branches for the released version (for X.Y.Z release it will be release/X.N eg., create release/23.N for 23.3.0 release)
@@ -46,17 +42,13 @@
 # - set POM versions to  X.Y+1.0.1-SNAPSHOT
 # - set scm-tag in main POM to HEAD
 # - set acs.version.label comment to <!-- X.Y+1.0.<acs.version.label> -->
-# 4. community-share
-# - set scm-tag in main POM to HEAD
-# - set ACS version properties in main POM to X.Y+1.0
-# - set main POM versions to  X.Y+1.0.1-SNAPSHOT
-# 5. community-repo:
+# 4. community-repo:
 # - set ACS version properties in main POM to X.Y+1.0
 # - set POM versions to  X.Y+1.0.1-SNAPSHOT
 # - set scm-tag in main POM to HEAD
 # - increment schema by 100 in repository.properties
 # - set version.revision to Z+1 in version.properties (test resources)
-# 6. acs-community-packaging
+# 5. acs-community-packaging
 # - set RELEASE_VERSION to X.Y+1.0-A1, DEVELOPMENT_VERSION to X.Y+1.0-A2-SNAPSHOT in ci.yml
 # - set POM versions to X.Y+1.0-A1-SNAPSHOT
 # - set scm-tag in main POM to HEAD
@@ -77,17 +69,13 @@
 # - set POM versions to <next_development_version>.1-SNAPSHOT or X.Y+1.0.1-SNAPSHOT (if <next_development_version> not passed)
 # - set scm-tag in main POM to HEAD
 # - set acs.version.label comment to <!-- X.Y+1.0.<acs.version.label> -->
-# 4. community-share
-# - set scm-tag in main POM to HEAD
-# - set ACS version properties in main POM to <next_development_version> or X.Y+1.0 (if <next_development_version> not passed)
-# - set POM versions to <next_development_version>.1-SNAPSHOT or X.Y+1.0.1-SNAPSHOT (if <next_development_version> not passed)
-# 5. community-repo:
+# 4. community-repo:
 # - set ACS version properties in main POM to <next_development_version> or X.Y+1.0 (if <next_development_version> not passed)
 # - set POM versions to <next_development_version>.1-SNAPSHOT or X.Y+1.0.1-SNAPSHOT (if <next_development_version> not passed)
 # - set scm-tag in main POM to HEAD
 # - increment schema by 100 (when next development minor version bumped) or 1000 (when next development version major bumped) in repository.properties
 # - set version.major/version.minor/version.revision to <next_development_version> or X.Y+1.0 (if <next_development_version> not passed) in version.properties (test resources)
-# 6. acs-community-packaging
+# 5. acs-community-packaging
 # - set RELEASE_VERSION to <next_development_version>-A1 passed as script argument or X.Y+1.0-A1 (if <next_development_version> not passed),
 #   DEVELOPMENT_VERSION to <next_development_version>-A2-SNAPSHOT or X.Y+1.0-A2-SNAPSHOT (if <next_development_version> not passed) in master_release.yml
 # - set POM versions to <next_development_version>-A1-SNAPSHOT or X.Y+1.0-A1-SNAPSHOT (if <next_development_version> not passed)
@@ -483,7 +471,7 @@ def update_ent_repo_acs_label(project, version, branch_type):
         update_line(text, "<acs.version.label", ">.1</acs.version.label>")
     else:
         logger.debug(f"Setting acs.version.label comment to {ver} in {project}")
-        update_line(text, f"<acs.version.label", "/> <!-- {ver}.<acs.version.label> -->")
+        update_line(text, "<acs.version.label", f"/> <!-- {ver}.<acs.version.label> -->")
 
     save_file(filename, text)
     switch_dir('root')
