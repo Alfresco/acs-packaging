@@ -306,6 +306,8 @@ jobs:
       - name: "Run the environment"
         run: |
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-cmis-elastic-tests.yml ${{ env.TAS_ENVIRONMENT }}/${{matrix.compose-file}}
+          docker logs -f environment_alfresco_1 &
+          docker logs -f environment_database_1 &
           ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
       - name: "Run tests"
         id: tests
