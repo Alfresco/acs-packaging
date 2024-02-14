@@ -264,7 +264,7 @@ jobs:
 
   cmis_tas_tests_elasticsearch:
     name: CMIS TAS tests - Elastic Search | ${{ matrix.testSuite }} (CMIS API)
-    runs-on: ubuntu-latest
+    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
     if: >
       !contains(github.event.head_commit.message, '[skip search]') &&
       !contains(github.event.head_commit.message, '[skip tests]')
