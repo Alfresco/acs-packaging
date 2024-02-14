@@ -200,9 +200,8 @@ jobs:
     name: CMIS TAS tests - Elastic Search | ${{ matrix.testSuite }} (CMIS API)
     runs-on: alfrescoPub-ubuntu2204-16G-4CPU
     if: >
-      (!contains(github.event.head_commit.message, '[skip search]') &&
-      !contains(github.event.head_commit.message, '[skip tests]')) ||
-      contains(github.event.head_commit.message, '[just cmis]')
+      !contains(github.event.head_commit.message, '[skip search]') &&
+      !contains(github.event.head_commit.message, '[skip tests]')
     strategy:
       fail-fast: false
       matrix:
@@ -251,6 +250,7 @@ jobs:
         run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
       - name: "Dump all Docker containers logs"
         uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v1.41.0
+        if: failure() && steps.tests.outcome == 'failure'
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
