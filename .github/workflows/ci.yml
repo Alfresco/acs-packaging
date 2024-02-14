@@ -200,8 +200,9 @@ jobs:
     name: CMIS TAS tests - Elastic Search | ${{ matrix.testSuite }} (CMIS API)
     runs-on: ubuntu-latest
     if: >
-      !contains(github.event.head_commit.message, '[skip search]') &&
-      !contains(github.event.head_commit.message, '[skip tests]')
+      (!contains(github.event.head_commit.message, '[skip search]') &&
+      !contains(github.event.head_commit.message, '[skip tests]')) ||
+      contains(github.event.head_commit.message, '[just cmis]')
     strategy:
       fail-fast: false
       matrix:
@@ -243,16 +244,11 @@ jobs:
       - name: "Sleep for 120 seconds"
         run: sleep 120s
         shell: bash
-      - name: "Run tests"
-        id: tests
-        timeout-minutes: 40
-        run: mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
       - name: "Print output after failure"
         if: ${{ always() && steps.tests.outcome == 'failure' }}
         run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
       - name: "Dump all Docker containers logs"
         uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v1.41.0
-        if: failure()
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
