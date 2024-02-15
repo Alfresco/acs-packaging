@@ -26,6 +26,7 @@
         <alfresco.desktop-sync.version>5.0.0-A14</alfresco.desktop-sync.version>
         <alfresco.ais.version>3.0.1</alfresco.ais.version>
 
+
         <acs.version>${acs.version.major}.${acs.version.minor}.${acs.version.revision}${acs.version.label}</acs.version>
         <repo.image.tag>${dependency.alfresco-enterprise-repo.version}</repo.image.tag>
         <share.image.tag>${dependency.alfresco-enterprise-share.version}</share.image.tag>
