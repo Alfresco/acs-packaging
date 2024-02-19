@@ -284,9 +284,10 @@ jobs:
           - testSuite: MS SQL
             db-properties: -Ddb.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver -Ddb.username=sa -Ddb.password=Alfresco1 -Ddb.url=jdbc:sqlserver://database:1433 -Ddb.txn.isolation=4096 -Ddb.pool.max=275
             compose-file: docker-compose-mssql.yml
-          - testSuite: Oracle 19.3.0-ee
-            db-properties: -Ddb.driver=oracle.jdbc.OracleDriver -Ddb.name=alfresco -Ddb.url=jdbc:oracle:thin:@database:1521/PDB1 -Ddb.username=alfresco -Ddb.password=alfresco
-            compose-file: docker-compose-oracle.yml
+#            below suite is temporarily commented out, see ACS-6793
+#          - testSuite: Oracle 19.3.0-ee
+#            db-properties: -Ddb.driver=oracle.jdbc.OracleDriver -Ddb.name=alfresco -Ddb.url=jdbc:oracle:thin:@database:1521/PDB1 -Ddb.username=alfresco -Ddb.password=alfresco
+#            compose-file: docker-compose-oracle.yml
     steps:
       - uses: actions/checkout@v3
         with:
