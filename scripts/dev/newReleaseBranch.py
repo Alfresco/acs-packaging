@@ -272,15 +272,17 @@ def get_xml_tag_value(xml_path, tag_path):
     return xml_tree.getroot().find(tag_path).text
 
 
-def update_xml_tag(text, tag, new_value):
+def update_xml_tag(text, tag, new_value, match_after_regex=None):
     """
     >>> update_xml_tag(['   <url>http://github.com/Alfresco</url>', '   <tag>HEAD</tag>', ' </scm>'], "<tag>", "23.2.1")
     ['   <url>http://github.com/Alfresco</url>', '   <tag>23.2.1</tag>', ' </scm>']
     >>> update_xml_tag([" <artifactId>acs-comm-packaging</artifactId>", "  <version>23.1.0</version>","  <artifactId>something</artifactId>","    <version>${dep.version}</version>"], "<version>", "23.2.0")
     [' <artifactId>acs-comm-packaging</artifactId>', '  <version>23.2.0</version>', '  <artifactId>something</artifactId>', '    <version>${dep.version}</version>']
+    >>> update_xml_tag([" <artifactId>acs-comm-packaging</artifactId>", "  <version>23.1.0</version>","  <artifactId>something</artifactId>","    <version>${dep.version}</version>"], "<version>", "23.2.0", "something")
+    [' <artifactId>acs-comm-packaging</artifactId>', '  <version>23.1.0</version>', '  <artifactId>something</artifactId>', '    <version>23.2.0</version>']
     """
     closing_tag = tag.replace("<", "</")
-    update_line(text, tag, new_value + closing_tag)
+    update_line(text, tag, new_value + closing_tag, match_after_regex)
     return text
 
 
@@ -316,7 +318,7 @@ def update_scm_tag(tag, project):
     switch_dir('root')
 
 
-def update_line(text: list[str], text_to_match, replacement_value):
+def update_line(text: list[str], text_to_match, replacement_value, match_after_regex=None):
     """Update part of line after matching text with given value
     >>> update_line(["BASE_BUILD_NUMBER: 10000", "RELEASE_VERSION: 23.1.0", "DEVELOPMENT_VERSION: 23.2.0-A1-SNAPSHOT"], "RELEASE_VERSION: ", "23.2.0")
     ['BASE_BUILD_NUMBER: 10000', 'RELEASE_VERSION: 23.2.0', 'DEVELOPMENT_VERSION: 23.2.0-A1-SNAPSHOT']
@@ -340,15 +342,23 @@ def update_line(text: list[str], text_to_match, replacement_value):
     ['  <version>23.2.0</version>']
     >>> update_line([' <artifactId>acs-packaging</artifactId>', '  <version>23.1.0</version>', '  <artifactId>something</artifactId>', '    <version>${dep.version}</version>'], "<version>", "23.2.0</version>")
     [' <artifactId>acs-packaging</artifactId>', '  <version>23.2.0</version>', '  <artifactId>something</artifactId>', '    <version>${dep.version}</version>']
+    >>> update_line([' <artifactId>acs-packaging</artifactId>', '  <version>23.1.0</version>', '  <artifactId>something</artifactId>', '    <version>${dep.version}</version>'], "<version>", "23.2.0</version>", "<artifactId>something</artifactId>")
+    [' <artifactId>acs-packaging</artifactId>', '  <version>23.1.0</version>', '  <artifactId>something</artifactId>', '    <version>23.2.0</version>']
+    >>> update_line([' <artifactId>acs-packaging</artifactId>', '  <version>23.1.0</version>', '  <artifactId>something</artifactId>', '    <version>${dep.version}</version>'], "<version>", "23.2.0</version>", "String not in text")
+    [' <artifactId>acs-packaging</artifactId>', '  <version>23.1.0</version>', '  <artifactId>something</artifactId>', '    <version>${dep.version}</version>']
     """
+    start_search = True if match_after_regex == None else False
     regex = re.compile(text_to_match + ".*", re.IGNORECASE)
-    line = None
-    for i in range(len(text)):
-        if text_to_match in text[i]:
-            line = i
+    match_index = None
+    for i, line in enumerate(text):
+        if not start_search:
+            if re.findall(match_after_regex, line, re.IGNORECASE):
+                start_search = True
+        elif text_to_match in line:
+            match_index = i
             break
-    if line != None:
-        text[line] = regex.sub(text_to_match + replacement_value, text[line])
+    if match_index != None:
+        text[match_index] = regex.sub(text_to_match + replacement_value, text[match_index])
 
     return text
 
@@ -409,7 +419,7 @@ def update_acs_comm_pck_dependencies(branch_type, project):
     pom_path = "pom.xml"
     text = read_file(pom_path)
     update_xml_tag(text, "<dependency.alfresco-community-repo.version>", comm_repo_next_ver)
-    update_xml_tag(text, "<version>", comm_repo_next_ver)
+    update_xml_tag(text, "<version>", comm_repo_next_ver, '<parent>')
     comm_share_next_ver = increment_version(calculate_version(ENTERPRISE_SHARE), branch_type)
     logger.debug(f"comm-share dependency: {comm_share_next_ver}")
     switch_dir(project)
