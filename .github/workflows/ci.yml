@@ -305,6 +305,7 @@ jobs:
 #        run: sudo sh -c "mv ${GITHUB_WORKSPACE}/docker/* /var/lib/docker"
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@feature/ACS-6793_expand_free_disk_space_action
         with:
+          root-reserve-mb: 8192
           remove-dotnet: 'true'
           remove-android: 'true'
           remove-haskell: 'true'
