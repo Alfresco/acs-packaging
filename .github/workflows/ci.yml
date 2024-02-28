@@ -288,26 +288,33 @@ jobs:
             db-properties: -Ddb.driver=oracle.jdbc.OracleDriver -Ddb.name=alfresco -Ddb.url=jdbc:oracle:thin:@database:1521/PDB1 -Ddb.username=alfresco -Ddb.password=alfresco
             compose-file: docker-compose-oracle.yml
     steps:
-      - name: Move /var/lib/docker/
-        run: sudo mv /var/lib/docker/ "${GITHUB_WORKSPACE}/docker"
-      - name: Maximize build space
-        uses: easimon/maximize-build-space@master
+#      - name: Move /var/lib/docker/
+#        run: sudo mv /var/lib/docker/ "${GITHUB_WORKSPACE}/docker"
+#      - name: Maximize build space
+#        uses: easimon/maximize-build-space@master
+#        with:
+#          build-mount-path: '/var/lib/docker/'
+#          remove-dotnet: 'true'
+#          remove-android: 'true'
+#          remove-haskell: 'true'
+#          remove-codeql: 'true'
+#          root-reserve-mb: 512
+#          temp-reserve-mb: 32
+#          swap-size-mb: 32
+#      - name: Restore /var/lib/docker/
+#        run: sudo sh -c "mv ${GITHUB_WORKSPACE}/docker/* /var/lib/docker"
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@feature/ACS-6793_expand_free_disk_space_action
         with:
-          build-mount-path: '/var/lib/docker/'
           remove-dotnet: 'true'
           remove-android: 'true'
           remove-haskell: 'true'
           remove-codeql: 'true'
-          root-reserve-mb: 512
-          temp-reserve-mb: 32
-          swap-size-mb: 32
-      - name: Restore /var/lib/docker/
-        run: sudo sh -c "mv ${GITHUB_WORKSPACE}/docker/* /var/lib/docker"
+          remove-boost: 'true'
+          remove-tools-cache: 'true'
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
