@@ -306,8 +306,8 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@feature/ACS-6793_expand_free_disk_space_action
         with:
           only-remove-files: true
-#          remove-android: 'true'
-#          remove-codeql: 'true'
+          remove-android: 'true'
+          remove-codeql: 'true'
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
