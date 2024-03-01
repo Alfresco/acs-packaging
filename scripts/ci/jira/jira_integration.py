@@ -171,7 +171,7 @@ def whether_create_issue():
 
 def set_current_release():
     """Set current release name. """
-    sql_query = 'project = "OPSEXP" AND type = "Epic" AND status IN ("Open","In Progress") ORDER BY created DESC'
+    sql_query = 'project = "OPSEXP" AND status IN ("Open","In Progress") ORDER BY created DESC'
     output = jira.jql(sql_query)
     epics = output['issues']
     release_trains = []
