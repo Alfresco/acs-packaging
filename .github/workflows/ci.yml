@@ -309,7 +309,7 @@ jobs:
           remove-android: 'true'
           remove-codeql: 'true'
           remove-tools-cache: 'true'
-          remove-boost: 'true'
+          remove-boost: 'false'
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
