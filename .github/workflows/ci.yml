@@ -308,8 +308,8 @@ jobs:
           only-remove-files: false
           remove-android: 'true'
           remove-codeql: 'true'
-          remove-tools-cache: 'true'
-          remove-boost: 'false'
+          remove-tools-cache: 'false'
+          remove-boost: 'true'
       - uses: actions/checkout@v3
         with:
           persist-credentials: false
