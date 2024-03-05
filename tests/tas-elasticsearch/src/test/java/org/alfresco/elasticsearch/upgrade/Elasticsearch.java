@@ -44,6 +44,7 @@ class Elasticsearch implements AutoCloseable
 
         searchContainer = new GenericContainer<>(cfg.getSearchEngineImage())
                 .withEnv("discovery.type", "single-node")
+                .withEnv("network.publish_host", cfg.getElasticsearchHostname())
                 .withNetworkAliases(cfg.getElasticsearchHostname())
                 .withNetwork(network)
                 .withExposedPorts(9200).withCreateContainerCmdModifier(cmd -> {
