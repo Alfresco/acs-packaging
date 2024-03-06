@@ -290,7 +290,7 @@ jobs:
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@feature/ACS-6793_expand_free_disk_space_action
         with:
-          merge-disk-volumes: false
+          merge-disk-volumes: true
           remove-android: 'true'
           remove-codeql: 'true'
       - uses: actions/checkout@v3
