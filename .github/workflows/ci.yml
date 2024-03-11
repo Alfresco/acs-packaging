@@ -292,7 +292,6 @@ jobs:
         with:
           merge-disk-volumes: true
           root-reserve-mb: 16384
-          swap-size-mb: 2048
           remove-android: 'true'
           remove-codeql: 'true'
       - uses: actions/checkout@v3
