@@ -291,6 +291,7 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v5.18.0
         with:
           merge-disk-volumes: true
+          root-reserve-mb: 16384
           remove-android: 'true'
           remove-codeql: 'true'
       - uses: actions/checkout@v3
