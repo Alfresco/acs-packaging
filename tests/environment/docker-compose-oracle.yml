@@ -1,7 +1,7 @@
 services:
   database:
     image: quay.io/alfresco/oracle-database:${ORACLE_TAG}
-    mem_limit: 2g
+    mem_limit: 4g
     environment:
       - ORACLE_SID=ORCL
       - ORACLE_PDB=PDB1

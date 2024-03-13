@@ -160,7 +160,7 @@ services:
 
   kibana:
     image: kibana:${KIBANA_TAG}
-    mem_limit: 256m
+    mem_limit: 1024m
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
     ports:
