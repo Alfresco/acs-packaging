@@ -23,9 +23,9 @@
         <alfresco.azure-connector.version>3.2.0</alfresco.azure-connector.version>
         <alfresco.salesforce-connector.version>2.4.2</alfresco.salesforce-connector.version>
         <alfresco.outlook.version>2.9.0</alfresco.outlook.version>
-        <alfresco.transformation-engine.version>3.1.0</alfresco.transformation-engine.version>
+        <alfresco.transformation-engine.version>4.1.0</alfresco.transformation-engine.version>
         <alfresco.desktop-sync.version>3.11.0</alfresco.desktop-sync.version>
-        <alfresco.ais.version>1.5.0</alfresco.ais.version>
+        <alfresco.ais.version>3.1.0</alfresco.ais.version>
 
         <acs.version>${acs.version.major}.${acs.version.minor}.${acs.version.revision}${acs.version.label}</acs.version>
         <repo.image.tag>${dependency.alfresco-enterprise-repo.version}</repo.image.tag>
