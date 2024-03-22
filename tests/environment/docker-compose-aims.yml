@@ -65,9 +65,9 @@ services:
       - 8082:8080
       - 8000:8000
     depends_on:
-      - keycloak
+      - alfresco-identity-service
     links:
-      - keycloak
+      - alfresco-identity-service
 
   postgres:
     image: library/postgres:${POSTGRES_TAG}
@@ -106,8 +106,8 @@ services:
       - 61616:61616 # OpenWire
       - 61613:61613 # STOMP
 
-  keycloak:
-    image: quay.io/keycloak/keycloak:${KEYCLOAK_TAG}
+  alfresco-identity-service:
+    image: quay.io/alfresco/alfresco-identity-service:${AIMS_TAG}
     environment:
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD=admin
