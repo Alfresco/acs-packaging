@@ -18,23 +18,29 @@ import org.testng.ITestResult;
  */
 public class RetryAnalyzer implements IRetryAnalyzer
 {
-    private static Logger LOGGER = LoggerFactory.getLogger(RetryAnalyzer.class);
-    private static int RETRY_LIMIT = 3;
+    private static final Logger LOGGER = LoggerFactory.getLogger(RetryAnalyzer.class);
+    private static final int RETRY_LIMIT = 3;
     private int retryNumber = 0;
 
     @Override
     public boolean retry(ITestResult testResult) {
         retryNumber++;
+        Throwable throwable = testResult.getThrowable();
         if (retryNumber == RETRY_LIMIT)
         {
+            LOGGER.info("Retry limit reached: {}, shouldRetry: {}", retryNumber, false, throwable);
             return false;
         }
-        Throwable throwable = testResult.getThrowable();
-        boolean shouldRetry = throwable != null
-                                && (throwable instanceof IllegalStateException
-                                    && throwable.getMessage().contains("connection still allocated"))
-                                || (throwable instanceof ConcurrentModificationException);
-        LOGGER.info("Retry: {}, shouldRetry: {}", retryNumber, shouldRetry, throwable);
-        return shouldRetry;
+        else
+        {
+            boolean shouldRetry = throwable != null
+                    && (throwable instanceof IllegalStateException
+                    && throwable.getMessage().contains("connection still allocated"))
+                    || (throwable instanceof ConcurrentModificationException)
+                    || (throwable instanceof AssertionError
+                    && throwable.getMessage().contains("Maximum retry period reached"));
+            LOGGER.info("Retry: {}, shouldRetry: {}", retryNumber, shouldRetry, throwable);
+            return shouldRetry;
+        }
     }
 }

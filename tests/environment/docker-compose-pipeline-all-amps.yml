@@ -149,7 +149,7 @@ services:
             - 8083:8983 #Browser port
 
     activemq:
-        image: alfresco/alfresco-activemq:5.17.1-jre11-rockylinux8
+        image: alfresco/alfresco-activemq:5.17.6-jre17-rockylinux8
         mem_limit: 1g
         ports:
             - 8161:8161 # Web Console
@@ -177,7 +177,7 @@ services:
             - share
 
     sync-service:
-        image: quay.io/alfresco/service-sync:3.9.0
+        image: quay.io/alfresco/service-sync:3.11.0
         mem_limit: 1g
         environment:
             JAVA_OPTS : "
