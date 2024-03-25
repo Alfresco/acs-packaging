@@ -27,8 +27,6 @@
         <alfresco.desktop-sync.version>3.11.0</alfresco.desktop-sync.version>
         <alfresco.ais.version>1.5.0</alfresco.ais.version>
 
-        <dependency.spring-security.version>5.8.11</dependency.spring-security.version>
-
         <acs.version>${acs.version.major}.${acs.version.minor}.${acs.version.revision}${acs.version.label}</acs.version>
         <repo.image.tag>${dependency.alfresco-enterprise-repo.version}</repo.image.tag>
         <share.image.tag>${dependency.alfresco-enterprise-share.version}</share.image.tag>
