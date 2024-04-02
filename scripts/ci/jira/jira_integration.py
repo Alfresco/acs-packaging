@@ -98,11 +98,11 @@ def create_issue():
         'description': get_description(),
         'labels': get_labels(),
         'versions': [{'name': 'none'}],
-        # customfield_14820
+        # customfield_13654
         get_custom_field_id('Release Train'): {'value': CURRENT_RELEASE},
-        # customfield_11423
+        # customfield_10100
         get_custom_field_id('Epic Link'): get_epic_id_to_assign(project_id),
-        # customfield_15014
+        # customfield_13657
         get_custom_field_id('Bug Priority'): {'value': 'Category 2'},
     }
     if get_project_components(JOB_NAME):
@@ -178,8 +178,8 @@ def set_current_release():
 
     for epic in epics:
         # if epic is linked to some release train
-        if epic['fields']['customfield_14820']:
-            release_trains.append(epic['fields']['customfield_14820']['value'])
+        if epic['fields']['customfield_13654']:
+            release_trains.append(epic['fields']['customfield_13654']['value'])
     return max(set(release_trains), key=release_trains.count)
 
 
