@@ -14,7 +14,7 @@ logging.basicConfig(format='%(levelname)s: %(message)s', level=logging.INFO)
 logging.getLogger('JiraIssue').addHandler(logging.StreamHandler(sys.stdout))
 
 jira = Jira(
-    url='https://alfresco.atlassian.net/',
+    url='https://hyland.atlassian.net/',
     username='alfresco-build@hyland.com',
     password=JIRA_TOKEN
 )
