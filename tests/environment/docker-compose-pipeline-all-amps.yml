@@ -176,7 +176,6 @@ services:
             - alfresco
             - share
 
-
     sync-service:
         image: quay.io/alfresco/service-sync:5.0.0-A18
         mem_limit: 1g
