@@ -155,17 +155,17 @@ jobs:
             pom-dir: tests/tas-cmis
             profiles: all-tas-tests,run-cmis-browser
             compose-file: docker-compose-cmis-tests.yml
-            deploy-timeout: 40
+            deploy-timeout: 60
           - testSuite: CMIS (ATOM binding)
             pom-dir: tests/tas-cmis
             profiles: all-tas-tests,run-cmis-atom
             compose-file: docker-compose-cmis-tests.yml
-            deploy-timeout: 40
+            deploy-timeout: 60
           - testSuite: CMIS (WEBSERVICES binding)
             pom-dir: tests/tas-cmis
             profiles: all-tas-tests,run-cmis-webservices
             compose-file: docker-compose-cmis-tests.yml
-            deploy-timeout: 40
+            deploy-timeout: 60
           - testSuite: Email
             pom-dir: tests/tas-email
             profiles: all-tas-tests
