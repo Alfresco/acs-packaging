@@ -112,7 +112,8 @@ jobs:
           echo "TEST_GIT_TAG=$TEST_GIT_TAG" >> $GITHUB_ENV
       - name: "Prepare test config"
         run: |
-          git checkout $TEST_GIT_TAG
+          # TODO: uncomment after tests
+          #git checkout $TEST_GIT_TAG
           mvn clean install -B -ntp -DskipTests -f tests/pipeline-all-amps/repo/pom.xml
           cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
       - name: "Set up the environment"
@@ -139,9 +140,7 @@ jobs:
           git clone --depth 1 --branch $DTAS_VERSION https://${{ secrets.BOT_GITHUB_USERNAME }}:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
           cd dtas
           pip install -r requirements.txt
-          # NOTE: some tests are temporarily disabled since the related components don't provide native ARM64 images yet
-          python3 -m pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s \
-            -k "not test_adw_reachability"
+          python3 -m pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
       - name: "Dump all Docker containers logs"
         uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v3.6.0
         if: failure() && (steps.setup-env.outcome == 'failure' || steps.run-tests.outcome == 'failure')
