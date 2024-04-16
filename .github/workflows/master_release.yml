@@ -23,8 +23,8 @@ env:
   GITHUB_ACTIONS_DEPLOY_TIMEOUT: 60
   BASE_BUILD_NUMBER: 10000
   # Release version has to start with real version (7.2.1-....) for the docker image to build successfully.
-  RELEASE_VERSION: 7.2.1.14
-  DEVELOPMENT_VERSION: 7.2.1.15-SNAPSHOT
+  RELEASE_VERSION: 7.2.1.15
+  DEVELOPMENT_VERSION: 7.2.1.16-SNAPSHOT
 
 jobs:
   run_ci:
