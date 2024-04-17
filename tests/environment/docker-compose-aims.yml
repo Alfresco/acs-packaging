@@ -65,9 +65,9 @@ services:
       - 8082:8080
       - 8000:8000
     depends_on:
-      - alfresco-identity-service
+      - keycloak
     links:
-      - alfresco-identity-service
+      - keycloak
 
   postgres:
     image: library/postgres:${POSTGRES_TAG}
@@ -106,14 +106,14 @@ services:
       - 61616:61616 # OpenWire
       - 61613:61613 # STOMP
 
-  alfresco-identity-service:
-    image: quay.io/alfresco/alfresco-identity-service:${AIMS_TAG}
+  keycloak:
+    image: quay.io/keycloak/keycloak:${KEYCLOAK_TAG}
     environment:
-      - KEYCLOAK_USER=admin
-      - KEYCLOAK_PASSWORD=admin
-      - KEYCLOAK_IMPORT=/tmp/alfresco-realm.json
-      - DB_VENDOR=h2
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_DB=dev-mem
+    command: ["start-dev", "--import-realm", "--http-relative-path=/auth", "--hostname=localhost", "--http-enabled=true"]
     volumes:
-      - ./realms/alfresco-realm.json:/tmp/alfresco-realm.json
+      - ./realms/alfresco-realm.json:/opt/keycloak/data/import/alfresco-realm.json
     ports:
       - 8999:8080
