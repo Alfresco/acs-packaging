@@ -1,6 +1,6 @@
 # Build
-The `acs-packaging` project uses _Travis CI_. \
-The `.travis.yml` config file can be found in the root of the repository.
+The `acs-packaging` project uses GitHub Actions_. \
+The `ci.yml` config file can be found in the .github/workflows/ folder.
 
 
 ## Stages

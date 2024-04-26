@@ -9,7 +9,7 @@ pushd "$(dirname "${BASH_SOURCE[0]}")/../../"
 source "$(dirname "${BASH_SOURCE[0]}")/build_functions.sh"
 
 if [ -z "${RELEASE_VERSION}" ]; then
-  echo "Please provide a Release version in the format <acs-version>-<additional-info> (7.2.1-EA or 7.2.1)"
+  echo "Please provide a Release version in the format <acs-version>-<additional-info> (e.g. 7.2.0-A2)"
   exit 1
 fi
 

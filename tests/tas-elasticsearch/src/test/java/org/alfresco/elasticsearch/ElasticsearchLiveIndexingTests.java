@@ -98,10 +98,10 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
         dataUser.addUserToSite(userMultiSite, siteModel1, UserRole.SiteContributor);
         dataUser.addUserToSite(userMultiSite, siteModel2, UserRole.SiteContributor);
 
-        createContent(FILE_0_NAME, "This is the first test", siteModel1, userSite1);
-        createContent(FILE_1_NAME, "This is another TEST file", siteModel1, userSite1);
-        createContent(FILE_2_NAME, "This is another test file", siteModel2, userSite2);
-        createContent(FILE_3_NAME, "This is another Test file", siteModel1, userSite2);
+        createContent(FILE_0_NAME, "This is the firstfile esliveindexing test", siteModel1, userSite1);
+        createContent(FILE_1_NAME, "This is another ESLIVEINDEXING TEST file", siteModel1, userSite1);
+        createContent(FILE_2_NAME, "This is another esliveindexing test file", siteModel2, userSite2);
+        createContent(FILE_3_NAME, "This is another Esliveindexing Test file", siteModel1, userSite2);
         //remove the user from site, but he keeps ownership on FILE_3_NAME 
         dataUser.removeUserFromSite(userSite2, siteModel1);
     }
@@ -112,7 +112,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void searchCanFindAFileUsingIncludeParameter()
     {
-        SearchRequest queryWithoutIncludes = req("first");
+        SearchRequest queryWithoutIncludes = req("firstfile");
         Predicate<SearchNodeModel> allFieldsNull = searchNodeModel ->
                 searchNodeModel.getProperties() == null
                         && searchNodeModel.getPath() == null
@@ -130,7 +130,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
         queryWithIncludes.setInclude(asList("properties", "path", "aspectNames", "isLocked", "allowableOperations",
                 "permissions", "isLink", "association"));
         RestRequestQueryModel queryReq = new RestRequestQueryModel();
-        queryReq.setQuery("first");
+        queryReq.setQuery("firstfile");
         queryWithIncludes.setQuery(queryReq);
         Predicate<SearchNodeModel> noFieldsNull = searchNodeModel ->
                 searchNodeModel.getProperties() != null
@@ -151,8 +151,8 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     public void searchCanFindAFile()
     {
         // this test must found only one documents, while documents in the system are four because
-        // only one contains the word "first".
-        searchQueryService.expectResultsFromQuery(req("first"), userSite1, FILE_0_NAME);
+        // only one contains the word "firstfile".
+        searchQueryService.expectResultsFromQuery(req("firstfile"), userSite1, FILE_0_NAME);
     }
 
     @TestRail(section = TestGroup.SEARCH,
@@ -161,7 +161,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void searchCanFindFilesOnASite()
     {
-        searchQueryService.expectResultsFromQuery(req("test"), userSite1, FILE_0_NAME, FILE_1_NAME, FILE_3_NAME);
+        searchQueryService.expectResultsFromQuery(req("esliveindexing"), userSite1, FILE_0_NAME, FILE_1_NAME, FILE_3_NAME);
     }
 
     @TestRail(section = TestGroup.SEARCH,
@@ -170,7 +170,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void searchCanFindAFileOnMultipleSitesWithOwner()
     {
-        searchQueryService.expectResultsFromQuery(req("test"), userSite2, FILE_3_NAME, FILE_2_NAME);
+        searchQueryService.expectResultsFromQuery(req("esliveindexing"), userSite2, FILE_3_NAME, FILE_2_NAME);
     }
 
     @TestRail(section = TestGroup.SEARCH,
@@ -179,7 +179,7 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void searchCanFindAFileOnMultipleSites()
     {
-        searchQueryService.expectResultsFromQuery(req("test"), userMultiSite, FILE_0_NAME, FILE_1_NAME, FILE_3_NAME, FILE_2_NAME);
+        searchQueryService.expectResultsFromQuery(req("esliveindexing"), userMultiSite, FILE_0_NAME, FILE_1_NAME, FILE_3_NAME, FILE_2_NAME);
     }
 
     @TestRail (section = TestGroup.SEARCH,
