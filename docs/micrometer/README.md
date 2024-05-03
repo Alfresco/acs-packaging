@@ -34,15 +34,18 @@ metrics.restMetricsReporter.enabled=false
 metrics.restMetricsReporter.path.enabled=false
 ```
 
+> This feature is enterprise only!
+
 We have defined the main property metrics.enabled which defaults to false. If
 turned off, the web-script API will return 404.
 
 :warning: In case you want to enable REST metrics with path enabled, make sure
-yor Prometheus instance can cope with the amount of time series that will be
-created, or ensure relabeling is done in Prometheus configuration to reduce the
-number of time series.
-
-This feature is enterprise only!
+your Prometheus instance can cope with the amount of time series that will be
+created, or ensure relabeling is done in scrapping configuration to reduce the
+amount of time series. In the example below, `metricRelabelings` are used to
+extract the version, model and endpoint of the REST API from the `servicePath`
+label and then drop the inital label, thus avoiding to create huge amounts of
+time series.
 
 Once the Alfresco endpoint is configured to expose metrics, Prometheus must be
 configured to scrape the endpoint. The following is an example of a Prometheus
@@ -125,11 +128,8 @@ spec:
       app.kubernetes.io/instance: acs
 ```
 
-> Where the label selector and namespace should be adjusted to your own deployment.
-
-The `metricRelabelings` are used to extract the version, model and endpoint of
-the REST API from the `servicePath` label, and avoid creating huge amounts of
-time series when `metrics.restMetricsReporter.path.enabled` is set to `true`.
+> `metadata.namespace` and `selector.matchLabels` should be adjusted to your own
+  deployment.
 
 ### Grafana Dashboards
 
