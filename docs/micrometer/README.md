@@ -36,16 +36,16 @@ metrics.restMetricsReporter.path.enabled=false
 
 > This feature is enterprise only!
 
-We have defined the main property metrics.enabled which defaults to false. If
-turned off, the web-script API will return 404.
+We have defined the main property `metrics.enabled` which defaults to `false`.
+If turned off, the web-script API will return 404.
 
 :warning: In case you want to enable REST metrics with path enabled, make sure
 your Prometheus instance can cope with the amount of time series that will be
 created, or ensure relabeling is done in scrapping configuration to reduce the
 amount of time series. In the example below, `metricRelabelings` are used to
 extract the version, model and endpoint of the REST API from the `servicePath`
-label and then drop the inital label, thus avoiding to create huge amounts of
-time series.
+label and then drop the initial label, thus avoiding the creation of huge
+numbers of time series.
 
 Once the Alfresco endpoint is configured to expose metrics, Prometheus must be
 configured to scrape the endpoint. The following is an example of a Prometheus
@@ -131,7 +131,7 @@ spec:
 > `metadata.namespace` and `selector.matchLabels` should be adjusted to your own
   deployment.
 
-### Grafana Dashboards
+## Grafana Dashboards
 
 This folder also contains dashboards that you can import in your
 [Grafana](https://grafana.com/) app to visualize various metrics exposed by
@@ -144,7 +144,8 @@ Feel free to update or add new Dashboards or queries that others may find useful
 * [Alfresco JVM Metrics](/docs/micrometer/Alfresco_Enterprise_JVM_Dashboard-1714472967588.json)
 * [Alfresco Servlet Metrics](/docs/micrometer/Alfresco_Enterprise_Servlet_Dashboard-1714473338586.json)
 
-> The JVM metrics dashboard have been largely inspired from the "JVM micrometer"
-> dashboard available at https://grafana.com/dashboards/4701. One can choose to
-reuse this orignal dashboard btu be aware that Alfresco micrometer
-implementation do not populate the `application` label this dashboard expects.
+> The Alfresco JVM metrics dashboard have been largely inspired from the "JVM
+> micrometer" dashboard available at [Grafana
+> Dashboards](https://grafana.com/dashboards/4701). One can choose to reuse this
+> original dashboard but be aware that Alfresco micrometer implementation does
+> not populate the `application` label this dashboard expects.
