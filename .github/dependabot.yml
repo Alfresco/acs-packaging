@@ -42,3 +42,7 @@ updates:
     - 4.1.0
   registries:
   - maven-repository-artifacts-alfresco-com-nexus-content-groups-int
+- package-ecosystem: "github-actions"
+  directory: "/"
+  schedule:
+    interval: "monthly"
