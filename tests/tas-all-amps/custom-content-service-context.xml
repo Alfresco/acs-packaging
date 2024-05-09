@@ -26,7 +26,7 @@
         <bean id="store2.authConfig" class="org.alfresco.integrations.connector.authentication.AuthConfig" >
             <property name="accountName" value="${connector.az.store2.account.name}" />
             <property name="accountKey" value="${connector.az.store2.account.key}" />
-
+            <property name="apiEndpoint" value="${connector.az.store2.apiEndpoint:blob.core.windows.net}" />
             <!-- more here ... -->
 
         </bean>
