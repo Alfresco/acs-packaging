@@ -512,7 +512,7 @@ createProjectBranchesFromAcsVersion() {
   communityRepoVersion=`getPomProperty          alfresco-enterprise-repo   "<dependency.alfresco-community-repo.version>"`
   createBranchFromTag alfresco-community-repo   "${communityRepoVersion}"  "${branch}"
   modifyProject "${version}"                    "${branchType}"            "${schemaMultiple}"      ags Library   NewBranch
-  commitAndPush "${message}"
+  commitAndPush "${message} [skip ci]"
 
   createBranchFromTag acs-community-packaging   "${hotFixVersion}"        "${branch}"
   modifyProject "${version}"                    "${branchType}"           "${schemaMultiple}"       dev Packaging NewBranch
