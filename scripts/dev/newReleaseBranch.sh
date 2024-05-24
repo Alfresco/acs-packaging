@@ -283,9 +283,16 @@ EOF
 setNextReleaseVersion() {
   local version="${1}"
 
-  echo "${prefix}    set - RELEASE_VERSION=${version}"
-  ed -s .github/workflows/master_release.yml &>${loggingOut} << EOF
-/.*- RELEASE_VERSION.*$/s//    - RELEASE_VERSION=${version}/
+  FILE_NAME=".github/workflows/master_release.yml"
+  PWD_BASENAME=$(basename $PWD)
+  if [ "$PWD_BASENAME" == "acs-community-packaging" ]; then
+    FILE_NAME=".github/workflows/ci.yml"
+  fi
+  echo FILE_NAME: "$FILE_NAME"
+
+  echo "${prefix}    set  RELEASE_VERSION=${version}"
+  ed -s $FILE_NAME &>${loggingOut} << EOF
+/.* RELEASE_VERSION.*$/s//  RELEASE_VERSION:${version}/
 wq
 EOF
 }
@@ -303,9 +310,16 @@ EOF
 setNextDevelopmentVersion() {
   local version="${1}"
 
-  echo "${prefix}    set - DEVELOPMENT_VERSION=${version}"
-  ed -s .github/workflows/master_release.yml &>${loggingOut} << EOF
-/.*- DEVELOPMENT_VERSION.*$/s//    - DEVELOPMENT_VERSION=${version}/
+  FILE_NAME=".github/workflows/master_release.yml"
+  PWD_BASENAME=$(basename $PWD)
+  if [ "$PWD_BASENAME" == "acs-community-packaging" ]; then
+    FILE_NAME=".github/workflows/ci.yml"
+  fi
+  echo FILE_NAME: "$FILE_NAME"
+
+  echo "${prefix}    set  DEVELOPMENT_VERSION=${version}"
+  ed -s $FILE_NAME &>${loggingOut} << EOF
+/.* DEVELOPMENT_VERSION.*$/s//  DEVELOPMENT_VERSION:${version}/
 wq
 EOF
 }
@@ -668,7 +682,7 @@ modifyOriginalProjectBranches() {
 }
 
 createAndModifyProjectBranches() {
-  createHotFixProjectBranches "${hotFixVersion}" "${hotFixBranch}"
+#  createHotFixProjectBranches "${hotFixVersion}" "${hotFixBranch}"
   if [[ "${hotFixRevision}" == "0" ]]
   then
     createServicePackProjectBranches "${hotFixVersion}" "${servicePackBranch}" "${servicePackVersion}"
