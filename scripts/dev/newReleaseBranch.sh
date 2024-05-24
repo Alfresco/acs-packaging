@@ -540,7 +540,7 @@ modifyOriginalProjectBranchesForNextRelease() {
 
   checkout alfresco-community-repo   "${branch}"
   modifyProject "${version}" "${branchType}" "${schemaMultiple}" ags Library   OriginalBranch
-  commitAndPush "${message}"
+  commitAndPush "${message} [skip ci]"
 
   checkout acs-community-packaging   "${branch}"
   modifyProject "${version}" "${branchType}" "${schemaMultiple}" dev Packaging OriginalBranch
