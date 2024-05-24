@@ -283,31 +283,55 @@ EOF
 setNextReleaseVersion() {
   local version="${1}"
 
-  echo "${prefix}    set - RELEASE_VERSION=${version}"
-  ed -s .travis.yml &>${loggingOut} << EOF
-/.*- RELEASE_VERSION.*$/s//    - RELEASE_VERSION=${version}/
+  echo "${prefix}    set RELEASE_VERSION: ${version}"
+  if [[ `getCurrentProject` == "acs-community-packaging" ]]
+  then
+    ed -s .github/workflows/ci.yml &>${loggingOut} << EOF
+/.*RELEASE_VERSION.*$/s//  RELEASE_VERSION: ${version}/
 wq
 EOF
+  else
+    ed -s .github/workflows/master_release.yml &>${loggingOut} << EOF
+/.*RELEASE_VERSION.*$/s//  RELEASE_VERSION: ${version}/
+wq
+EOF
+  fi
 }
 
 setStartWithRealVersion() {
   local version="${1}"
 
   echo "${prefix}    set # ... start with real version ${version}"
-  ed -s .travis.yml &>${loggingOut} << EOF
+  if [[ `getCurrentProject` == "acs-community-packaging" ]]
+  then
+    ed -s .github/workflows/ci.yml &>${loggingOut} << EOF
 /.*start with real version.*$/s//    # Release version has to start with real version (${version}-....) for the docker image to build successfully./
 wq
 EOF
+  else
+    ed -s .github/workflows/master_release.yml &>${loggingOut} << EOF
+/.*start with real version.*$/s//    # Release version has to start with real version (${version}-....) for the docker image to build successfully./
+wq
+EOF
+  fi
 }
 
 setNextDevelopmentVersion() {
   local version="${1}"
 
-  echo "${prefix}    set - DEVELOPMENT_VERSION=${version}"
-  ed -s .travis.yml &>${loggingOut} << EOF
-/.*- DEVELOPMENT_VERSION.*$/s//    - DEVELOPMENT_VERSION=${version}/
+  echo "${prefix}    set DEVELOPMENT_VERSION: ${version}"
+  if [[ `getCurrentProject` == "acs-community-packaging" ]]
+  then
+      ed -s .github/workflows/ci.yml &>${loggingOut} << EOF
+/.*DEVELOPMENT_VERSION.*$/s//  DEVELOPMENT_VERSION: ${version}/
 wq
 EOF
+  else
+    ed -s .github/workflows/master_release.yml &>${loggingOut} << EOF
+/.*DEVELOPMENT_VERSION.*$/s//  DEVELOPMENT_VERSION: ${version}/
+wq
+EOF
+  fi
 }
 
 setVersionInPackaging() {
