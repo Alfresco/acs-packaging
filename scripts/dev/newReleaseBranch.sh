@@ -682,7 +682,7 @@ modifyOriginalProjectBranches() {
 }
 
 createAndModifyProjectBranches() {
-#  createHotFixProjectBranches "${hotFixVersion}" "${hotFixBranch}"
+  createHotFixProjectBranches "${hotFixVersion}" "${hotFixBranch}"
   if [[ "${hotFixRevision}" == "0" ]]
   then
     createServicePackProjectBranches "${hotFixVersion}" "${servicePackBranch}" "${servicePackVersion}"
