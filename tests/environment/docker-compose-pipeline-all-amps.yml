@@ -168,7 +168,6 @@ services:
         mem_limit: 128m
         environment:
             DISABLE_CONTROL_CENTER: true
-            DISABLE_SYNCSERVICE: true
             DISABLE_PROMETHEUS: true
         depends_on:
             - alfresco
