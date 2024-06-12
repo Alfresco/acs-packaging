@@ -1,7 +1,7 @@
 # BUILD STAGE
 FROM alfresco/alfresco-content-repository:latest AS JOLOKIABUILDER
 
-ARG JOLOKIA_VER=1.6.2
+ARG JOLOKIA_VER=2.0.2
 ARG TOMCAT_DIR=/usr/local/tomcat
 
 USER root
