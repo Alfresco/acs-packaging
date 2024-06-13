@@ -128,9 +128,9 @@ services:
   proxy:
     image: alfresco/alfresco-acs-nginx:${ACS_NGINX_TAG}
     environment:
-      DISABLE_CONTROL_CENTER: true
-      DISABLE_SYNCSERVICE: true
-      DISABLE_PROMETHEUS: true
+      DISABLE_CONTROL_CENTER: "true"
+      DISABLE_SYNCSERVICE: "true"
+      DISABLE_PROMETHEUS: "true"
     mem_limit: 128m
     depends_on:
       - alfresco
