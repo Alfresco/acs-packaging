@@ -240,7 +240,6 @@ services:
       - "8083:8983" # Browser port
     volumes:
       - ${CI_WORKSPACE}/keystores/searchEngine:/opt/alfresco-search-services/keystore
-      - ./etc:/opt/alfresco-insight-engine/solr/server/etc
 
   activemq:
     image: quay.io/alfresco/alfresco-activemq:${ACTIVEMQ_TAG}
