@@ -84,7 +84,7 @@ jobs:
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
       - name: "Run SAST Scan"
-        uses: veracode/Veracode-pipeline-scan-action@v1.0.10
+        uses: veracode/Veracode-pipeline-scan-action@v1.0.16
         with:
           vid: '${{ secrets.VERACODE_API_ID }}'
           vkey: '${{ secrets.VERACODE_API_KEY }}'
@@ -112,7 +112,7 @@ jobs:
   ### TODO: Implement SAST scan for Share when it starts working, since currently scanning Share crashes the Veracode engine
 
   veracode_sast_share:
-    name: "Pipeline SAST Scan - ACS"
+    name: "Pipeline SAST Scan - Share"
     runs-on: ubuntu-latest
     if: >
       (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request') &&
@@ -129,7 +129,7 @@ jobs:
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
       - name: "Run SAST Scan"
-        uses: veracode/Veracode-pipeline-scan-action@v1.0.10
+        uses: veracode/Veracode-pipeline-scan-action@v1.0.16
         with:
           vid: '${{ secrets.VERACODE_API_ID }}'
           vkey: '${{ secrets.VERACODE_API_KEY }}'
