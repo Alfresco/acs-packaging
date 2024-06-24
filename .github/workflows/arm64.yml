@@ -107,7 +107,7 @@ jobs:
           if [ -z $TEST_GIT_TAG ]; then
             TEST_GIT_TAG=$(git tag --list --sort=-taggerdate | head -n 1)
           fi
-          echo "TEST_GIT_TAG=$TEST_GIT_TAG" >> $GITHUB_ENV
+          echo "TEST_GIT_TAG=23.3.0-A19" >> $GITHUB_ENV
       - name: "Prepare test config"
         run: |
           git checkout $TEST_GIT_TAG
