@@ -107,7 +107,7 @@ jobs:
           if [ -z $TEST_GIT_TAG ]; then
             TEST_GIT_TAG=$(git tag --list --sort=-taggerdate | head -n 1)
           fi
-          echo "TEST_GIT_TAG=23.3.0-A19" >> $GITHUB_ENV
+          echo "TEST_GIT_TAG=23.3.0-A22" >> $GITHUB_ENV
       - name: "Prepare test config"
         run: |
           git checkout $TEST_GIT_TAG
@@ -138,6 +138,9 @@ jobs:
           cd dtas
           pip install -r requirements.txt
           python3 -m pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
+      - name: "Docker ps"
+        run: |
+          docker ps
       - name: "Dump all Docker containers logs"
         uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v3.6.0
         if: failure() && (steps.setup-env.outcome == 'failure' || steps.run-tests.outcome == 'failure')
