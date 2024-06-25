@@ -122,7 +122,6 @@ jobs:
         run: |
           # Make necessary env files available
           git clone --depth=1 --branch master https://${{ secrets.BOT_GITHUB_USERNAME }}:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/Alfresco/alfresco-community-repo.git ../alfresco-community-repo
-          git checkout fix/ACS-8228_investigate_failure
           # Start the environment
           export PIPELINE_ALL_AMPS_REGISTRY=quay.io/
           export PIPELINE_ALL_AMPS_TAG=$TEST_GIT_TAG
