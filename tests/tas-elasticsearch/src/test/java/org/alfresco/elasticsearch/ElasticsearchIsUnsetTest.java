@@ -83,7 +83,7 @@ public class ElasticsearchIsUnsetTest extends AbstractTestNGSpringContextTests
     @Test
     public void testElasticsearchIsUnsetQuery() throws Exception
     {
-        makeSureNodeIsReadyForTesting();
+        assertNodeIsReadyForTesting();
 
         //cm:title is set, we should have no result
         shouldNotFindNode("ISUNSET:\"" + CM_TITLE_PROPERTY + "\"");
@@ -121,7 +121,7 @@ public class ElasticsearchIsUnsetTest extends AbstractTestNGSpringContextTests
         setAspects(noCmTitled);
     }
 
-    private void makeSureNodeIsReadyForTesting()
+    private void assertNodeIsReadyForTesting()
     {
         assertThat(testNode.getAspects()).contains(CM_TITLED_ASPECT);
         shouldFindNode();
