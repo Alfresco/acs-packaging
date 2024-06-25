@@ -139,6 +139,7 @@ jobs:
           pip install -r requirements.txt
           python3 -m pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
       - name: "Docker ps"
+        if: failure()
         run: |
           docker ps
       - name: "Dump all Docker containers logs"
