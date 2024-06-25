@@ -4,18 +4,18 @@
     <artifactId>acs-packaging</artifactId>
     <packaging>pom</packaging>
     <name>Alfresco Content Services Packaging</name>
-    <version>23.3.0-A22-SNAPSHOT</version>
+    <version>23.3.0-A23-SNAPSHOT</version>
 
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-enterprise-repo</artifactId>
         <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
-        <version>23.3.0.49-SNAPSHOT</version>
+        <version>23.3.0.50-SNAPSHOT</version>
     </parent>
 
     <properties>
-        <dependency.alfresco-enterprise-repo.version>23.3.0.49-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
-        <dependency.alfresco-enterprise-share.version>23.3.0.67-SNAPSHOT</dependency.alfresco-enterprise-share.version>
+        <dependency.alfresco-enterprise-repo.version>23.3.0.50-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
+        <dependency.alfresco-enterprise-share.version>23.3.0.68-SNAPSHOT</dependency.alfresco-enterprise-share.version>
 
         <alfresco.rm-enterprise-rest-api-explorer.version>3.0.2</alfresco.rm-enterprise-rest-api-explorer.version>
 
