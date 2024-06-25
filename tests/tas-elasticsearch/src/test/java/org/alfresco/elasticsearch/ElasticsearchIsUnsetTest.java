@@ -87,7 +87,7 @@ public class ElasticsearchIsUnsetTest extends AbstractTestNGSpringContextTests
 
         //cm:title is set, we should have no result
         shouldNotFindNode("ISUNSET:\"" + CM_TITLE_PROPERTY + "\"");
-        shouldFindNode("NOT ISUNSET:\"" + CM_TITLE_PROPERTY + "\"");
+        shouldNotFindNode("NOT ISUNSET:\"" + CM_TITLE_PROPERTY + "\"");
 
         //cm:description is not set, we should have a result
         shouldFindNode("ISUNSET:\"" + CM_DESCRIPTION_PROPERTY + "\"");
