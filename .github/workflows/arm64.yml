@@ -122,6 +122,7 @@ jobs:
         run: |
           # Make necessary env files available
           git clone --depth=1 --branch master https://${{ secrets.BOT_GITHUB_USERNAME }}:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/Alfresco/alfresco-community-repo.git ../alfresco-community-repo
+          git checkout fix/ACS-8228_investigate_failure
           # Start the environment
           export PIPELINE_ALL_AMPS_REGISTRY=quay.io/
           export PIPELINE_ALL_AMPS_TAG=$TEST_GIT_TAG
@@ -138,10 +139,6 @@ jobs:
           cd dtas
           pip install -r requirements.txt
           python3 -m pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
-      - name: "Docker ps"
-        if: failure()
-        run: |
-          docker ps
       - name: "Dump all Docker containers logs"
         uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v3.6.0
         if: failure() && (steps.setup-env.outcome == 'failure' || steps.run-tests.outcome == 'failure')
