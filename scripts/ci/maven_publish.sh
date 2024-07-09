@@ -20,7 +20,7 @@ git checkout "${RELEASE_VERSION}"
 mvn -B \
   -ntp \
   -Ppublish,all-tas-tests,pipeline,ags \
-  -DaltDeploymentRepository=alfresco-enterprise-releases::default::https://artifacts.alfresco.com/nexus/content/repositories/enterprise-releases \
+  -DaltDeploymentRepository=alfresco-enterprise-releases::default::https://nexus3.alfresco.com/nexus/content/repositories/enterprise-releases \
   -DskipTests \
   clean deploy
 
