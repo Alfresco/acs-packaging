@@ -266,7 +266,7 @@ Hello World T-Engine. See [here](custom-transforms-and-renditions.md#configure-a
 
 6. Start ACS using the modified docker-compose file.
     ```bash
-    docker-compose up
+    docker compose up
     ```
 
 #### Test custom rendition
