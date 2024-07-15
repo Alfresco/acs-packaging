@@ -299,12 +299,6 @@ jobs:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
-      - name: "Re-enable support for legacy image formats in the daemon" # Temporary fix for unsupported Docker Image Format/Manifest Version/Schema combinations
-        run: |
-          sudo mkdir -p /etc/systemd/system/docker.service.d
-          sudo bash -c 'echo -e "[Service]\nEnvironment=\"DOCKER_ENABLE_DEPRECATED_PULL_SCHEMA_1_IMAGE=1\"" >> /etc/systemd/system/docker.service.d/deprecated-schema.conf'       
-          sudo systemctl daemon-reload
-          sudo systemctl restart docker
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -429,12 +423,6 @@ jobs:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
-      - name: "Re-enable support for legacy image formats in the daemon" # Temporary fix for unsupported Docker Image Format/Manifest Version/Schema combinations
-        run: |
-          sudo mkdir -p /etc/systemd/system/docker.service.d
-          sudo bash -c 'echo -e "[Service]\nEnvironment=\"DOCKER_ENABLE_DEPRECATED_PULL_SCHEMA_1_IMAGE=1\"" >> /etc/systemd/system/docker.service.d/deprecated-schema.conf'       
-          sudo systemctl daemon-reload
-          sudo systemctl restart docker
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -471,12 +459,6 @@ jobs:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
-      - name: "Re-enable support for legacy image formats in the daemon" # Temporary fix for unsupported Docker Image Format/Manifest Version/Schema combinations
-        run: |
-          sudo mkdir -p /etc/systemd/system/docker.service.d
-          sudo bash -c 'echo -e "[Service]\nEnvironment=\"DOCKER_ENABLE_DEPRECATED_PULL_SCHEMA_1_IMAGE=1\"" >> /etc/systemd/system/docker.service.d/deprecated-schema.conf'       
-          sudo systemctl daemon-reload
-          sudo systemctl restart docker
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
