@@ -75,7 +75,7 @@ class ACSEnv52 extends LegacyACSEnv
         //We are going to share the content repository so we need to align the uid and gid for the alfresco user
         final ImageFromDockerfile repoImage = new ImageFromDockerfile("repo-with-changed-uid-and-gid")
                 .withDockerfileFromBuilder(builder -> builder
-                        .from("quay.io/alfresco/alfresco-content-repository-52:5.2.6")
+                        .from("quay.io/alfresco/dev:acs-8362-acs")
                         .user("root")
                         .run("groupmod -g 33000 alfresco && usermod -u 33000 alfresco && chgrp -R -h alfresco /usr/local/tomcat && chown -R -h alfresco /usr/local/tomcat")
                         .user("alfresco")

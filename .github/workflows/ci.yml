@@ -450,55 +450,49 @@ jobs:
 #      - name: "Clean Maven cache"
 #        run: bash ./scripts/ci/cleanup_cache.sh
 
-#  upgrade_tas_tests:
-#    name: ${{ matrix.testSuite }} Upgrade TAS tests
-#    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
-#    if: >
-#      (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request' || github.ref_name == 'fix/ACS-8362_make_acs_5_x_image_compatible_with_docker_26') &&
-#      !contains(github.event.head_commit.message, '[skip search]') &&
-#      !contains(github.event.head_commit.message, '[skip tests]')
-#    strategy:
-#      fail-fast: false
-#      matrix:
-#        include:
-#          - testSuite: Elasticsearch
-#            search-engine-type: elasticsearch
-#          - testSuite: Opensearch
-#            search-engine-type: opensearch
-#    steps:
-#      - uses: actions/checkout@v3
-#        with:
-#          persist-credentials: false
-#      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
-#      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
-#      - name: "Re-enable support for legacy image formats in the daemon" # Temporary fix for unsupported Docker Image Format/Manifest Version/Schema combinations
-#        run: |
-#          sudo mkdir -p /etc/systemd/system/docker.service.d
-#          sudo bash -c 'echo -e "[Service]\nEnvironment=\"DOCKER_ENABLE_DEPRECATED_PULL_SCHEMA_1_IMAGE=1\"" >> /etc/systemd/system/docker.service.d/deprecated-schema.conf'
-#          sudo systemctl daemon-reload
-#          sudo systemctl restart docker
-#      - name: "Build"
-#        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-#        run: |
-#          bash ./scripts/ci/init.sh
-#          bash ./scripts/ci/build.sh
-#      - name: "Configure AWS credentials"
-#        uses: aws-actions/configure-aws-credentials@v1
-#        with:
-#          aws-access-key-id: ${{ secrets.AWS_S3_ACSLICENSE_ACCESS_KEY_ID }}
-#          aws-secret-access-key: ${{ secrets.AWS_S3_ACSLICENSE_SECRET_ACCESS_KEY }}
-#          aws-region: ${{ env.AWS_REGION }}
-#      - name: "Copy Licence"
-#        run: aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
-#      - name: "Run tests"
-#        id: tests
-#        timeout-minutes: 30
-#        run: mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}" "-Ddatabase.type=postgresql" "-Dindeximage=alfresco-es-indexing-jdbc:latest" "-Dreindeximage=alfresco-es-reindexing-jdbc:latest" "-Drepoimage=alfresco-repository-databases:latest"
-#      - name: "Dump all Docker containers logs"
-#        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v1.41.0
-#        if: failure() && steps.tests.outcome == 'failure'
-#      - name: "Clean Maven cache"
-#        run: bash ./scripts/ci/cleanup_cache.sh
+  upgrade_tas_tests:
+    name: ${{ matrix.testSuite }} Upgrade TAS tests
+    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    if: >
+      (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request' || github.ref_name == 'fix/ACS-8362_make_acs_5_x_image_compatible_with_docker_26') &&
+      !contains(github.event.head_commit.message, '[skip search]') &&
+      !contains(github.event.head_commit.message, '[skip tests]')
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - testSuite: Elasticsearch
+            search-engine-type: elasticsearch
+          - testSuite: Opensearch
+            search-engine-type: opensearch
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+      - name: "Build"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        run: |
+          bash ./scripts/ci/init.sh
+          bash ./scripts/ci/build.sh
+      - name: "Configure AWS credentials"
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_S3_ACSLICENSE_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_S3_ACSLICENSE_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: "Copy Licence"
+        run: aws s3 cp ${ALF_LICENCE_S3_PATH} ${ALF_LICENCE_LOCAL_PATH}
+      - name: "Run tests"
+        id: tests
+        timeout-minutes: 30
+        run: mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}" "-Ddatabase.type=postgresql" "-Dindeximage=alfresco-es-indexing-jdbc:latest" "-Dreindeximage=alfresco-es-reindexing-jdbc:latest" "-Drepoimage=alfresco-repository-databases:latest"
+      - name: "Dump all Docker containers logs"
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v1.41.0
+        if: failure() && steps.tests.outcome == 'failure'
+      - name: "Clean Maven cache"
+        run: bash ./scripts/ci/cleanup_cache.sh
 
   update_image:
     name: Update alfresco-content-repository-52 image
@@ -510,15 +504,21 @@ jobs:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+      - name: "Re-enable support for legacy image formats in the daemon" # Temporary fix for unsupported Docker Image Format/Manifest Version/Schema combinations
+        run: |
+          sudo mkdir -p /etc/systemd/system/docker.service.d
+          sudo bash -c 'echo -e "[Service]\nEnvironment=\"DOCKER_ENABLE_DEPRECATED_PULL_SCHEMA_1_IMAGE=1\"" >> /etc/systemd/system/docker.service.d/deprecated-schema.conf'
+          sudo systemctl daemon-reload
+          sudo systemctl restart docker
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
           bash ./scripts/ci/init.sh
-      - name: "Build and push image"
+      - name: "Create bak image"
         run: |
-          cd scripts/ci
-          docker build -t quay.io/alfresco/dev:acs-8362-acs .
-          docker push quay.io/alfresco/dev:acs-8362-acs
+          docker pull quay.io/alfresco/alfresco-content-repository-52:5.2.6
+          docker image tag quay.io/alfresco/alfresco-content-repository-52:5.2.6 quay.io/alfresco/alfresco-content-repository-52:5.2.6-bak
+          docker push quay.io/alfresco/alfresco-content-repository-52:5.2.6-bak
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
