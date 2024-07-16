@@ -299,6 +299,20 @@
                                 </configuration>
                             </execution>
                             <execution>
+                                <id>apply-repo-jar-extensions</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>bash</executable>
+                                    <arguments>
+                                        <argument>-c</argument>
+                                        <argument>find ${project.build.directory}/amps/ -name \*.jar -exec cp {} ${project.build.directory}/war/alfresco/WEB-INF/lib/ \;</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
                                 <id>apply-share-amps</id>
                                 <phase>process-resources</phase>
                                 <goals>
