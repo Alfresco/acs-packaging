@@ -26,6 +26,7 @@ ARG GROUPANME=Alfresco
 
 # Copy the amps from build context to the appropriate location for your application server
 COPY target/amps/*.amp ${TOMCAT_DIR}/amps/
+COPY target/amps/*.jar ${TOMCAT_DIR}/webapps/alfresco/WEB-INF/lib/
 
 # Copy api-explorer
 COPY --chown=root:${GROUPANME} --from=SWAGGERBUILDER /build/api-explorer ${TOMCAT_DIR}/webapps/api-explorer
