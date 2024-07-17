@@ -48,7 +48,6 @@
                         </goals>
                         <configuration>
                             <artifactItems>
-                                <!-- Do not comment out, as this will cause problems in the Single Pipeline. -->
                                 <!-- TODO fix test failure APPS-702 -->
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
@@ -58,7 +57,6 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
-                                <!-- Do not comment out, as this will cause problems in the Single Pipeline. -->
                                 <artifactItem>
                                     <groupId>org.alfresco.integrations</groupId>
                                     <artifactId>alfresco-s3-connector</artifactId>
@@ -67,7 +65,6 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
-                                <!-- Do not comment out, as this will cause problems in the Single Pipeline. -->
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-share-services</artifactId>
@@ -76,7 +73,6 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
-                                <!-- Do not comment out, as this will cause problems in the Single Pipeline. -->
                                 <artifactItem>
                                     <groupId>org.alfresco.aos-module</groupId>
                                     <artifactId>alfresco-aos-module</artifactId>
@@ -84,7 +80,6 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
-                                <!-- Do not comment out, as this will cause problems in the Single Pipeline. -->
                                 <artifactItem>
                                     <groupId>org.alfresco.integrations</groupId>
                                     <artifactId>alfresco-googledrive-repo-enterprise</artifactId>
@@ -92,7 +87,6 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
-                                <!-- Do not comment out, as this will cause problems in the Single Pipeline. -->
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-ai-repo</artifactId>
@@ -101,7 +95,6 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
-                                <!-- Do not comment out, as this will cause problems in the Single Pipeline. -->
                                 <artifactItem>
                                     <groupId>org.alfresco.integrations</groupId>
                                     <artifactId>alfresco-azure-connector</artifactId>
@@ -110,7 +103,6 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
-                                <!-- Do not comment out, as this will cause problems in the Single Pipeline. -->
                                 <artifactItem>
                                     <groupId>org.alfresco.integrations</groupId>
                                     <artifactId>alfresco-content-connector-for-salesforce-repo</artifactId>
@@ -119,7 +111,6 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
-                                <!-- Do not comment out, as this will cause problems in the Single Pipeline. -->
                                 <artifactItem>
                                     <groupId>org.alfresco.services.sync</groupId>
                                     <artifactId>alfresco-device-sync-repo</artifactId>
@@ -128,7 +119,6 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/amps</outputDirectory>
                                 </artifactItem>
-                                <!-- Do not comment out, as this will cause problems in the Single Pipeline. -->
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-hxinsight-connector-hxinsight-extension</artifactId>
@@ -148,7 +138,6 @@
                         </goals>
                         <configuration>
                             <artifactItems>
-                                <!-- Do not comment out, as this will cause problems in the Single Pipeline. -->
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>alfresco-rm-enterprise-rest-api-explorer</artifactId>
@@ -158,7 +147,6 @@
                                     <destFileName>gs-api-explorer.war</destFileName>
                                     <outputDirectory>${project.build.directory}/wars</outputDirectory>
                                 </artifactItem>
-                                <!-- Do not comment out, as this will cause problems in the Single Pipeline. -->
                                 <artifactItem>
                                     <groupId>org.alfresco</groupId>
                                     <artifactId>api-explorer</artifactId>

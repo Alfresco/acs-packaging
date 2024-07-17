@@ -35,7 +35,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Alfresco S3 Connector                            | @alfresco.s3connector.version@                 |
 | Alfresco Content Connector for Azure             | @alfresco.azure-connector.version@             |
 | Alfresco Outlook Integration                     | @alfresco.outlook.version@                     |
-| Alfresco Extension for Hyland Experience Insight | @alfresco.hxinsight-connector.version@         |
+| Alfresco Connector for Hyland Experience Insight | @alfresco.hxinsight-connector.version@         |
 | Alfresco SDK                                     | 5.0                                            | 4.2            |
 
 ##### Microsoft Office Suite
