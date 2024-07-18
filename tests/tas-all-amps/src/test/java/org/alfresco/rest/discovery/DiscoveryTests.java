@@ -77,7 +77,9 @@ public class DiscoveryTests extends RestTest
                 "alfresco-share-services",
                 "org_alfresco_device_sync_repo",
                 "alfresco-ai-repo",
-                "org_alfresco_module_rm", "alfresco-rm-enterprise-repo"
+                "org_alfresco_module_rm",
+                "alfresco-rm-enterprise-repo",
+                "alfresco-hxinsight-connector-hxinsight-extension"
         );
 
         expectedModules.forEach(module ->
