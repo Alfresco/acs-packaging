@@ -68,10 +68,10 @@ jobs:
       !contains(github.event.head_commit.message, '[skip pmd]') &&
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
-      - uses: Alfresco/ya-pmd-scan@v2.0.5
-        with:
-          pmd-version: "7.0.0-rc4"
-          pmd-sha256-digest: "81c15cb9e875f0c788e4246e5f0041b1df1b33983b9f65550ee4e8c4b285570b"
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v5.18.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+      - uses: Alfresco/ya-pmd-scan@v4.0.0
 
   tas_tests:
     name: ${{ matrix.testSuite }} TAS tests
