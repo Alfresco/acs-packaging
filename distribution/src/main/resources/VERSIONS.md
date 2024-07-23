@@ -23,19 +23,20 @@ This file lists the recommended components for this Service Pack. Use it along w
 ± Based on Alfresco Community Repository @dependency.alfresco-community-repo.version@
 
 ##### Alfresco Modules and Integrations
-| Component | Recommended | Also Available |
-|---|---|---|
-| Alfresco Share Services | @dependency.alfresco-community-repo.version@ |
-| Alfresco Google Docs Integration | @alfresco.googledrive.version@ |
-| Alfresco Governance Services (Repository) | @dependency.alfresco-enterprise-repo.version@ |
-| Alfresco Governance Services (Share) | @dependency.alfresco-enterprise-share.version@ |
-| Alfresco Intelligence Services | @alfresco.ais.version@ |
-| Alfresco Office Services | @alfresco.aos-module.version@ |
-| Alfresco Content Connector for Salesforce | @alfresco.salesforce-connector.version@ |
-| Alfresco S3 Connector | @alfresco.s3connector.version@ |
-| Alfresco Content Connector for Azure | @alfresco.azure-connector.version@ |
-| Alfresco Outlook Integration | @alfresco.outlook.version@ |
-| Alfresco SDK | 5.0 | 4.2 |
+| Component                                        | Recommended                                    | Also Available |
+|--------------------------------------------------|------------------------------------------------|----------------|
+| Alfresco Share Services                          | @dependency.alfresco-community-repo.version@   |
+| Alfresco Google Docs Integration                 | @alfresco.googledrive.version@                 |
+| Alfresco Governance Services (Repository)        | @dependency.alfresco-enterprise-repo.version@  |
+| Alfresco Governance Services (Share)             | @dependency.alfresco-enterprise-share.version@ |
+| Alfresco Intelligence Services                   | @alfresco.ais.version@                         |
+| Alfresco Office Services                         | @alfresco.aos-module.version@                  |
+| Alfresco Content Connector for Salesforce        | @alfresco.salesforce-connector.version@        |
+| Alfresco S3 Connector                            | @alfresco.s3connector.version@                 |
+| Alfresco Content Connector for Azure             | @alfresco.azure-connector.version@             |
+| Alfresco Outlook Integration                     | @alfresco.outlook.version@                     |
+| Alfresco Connector for Hyland Experience Insight | @alfresco.hxinsight-connector.version@         |
+| Alfresco SDK                                     | 5.0                                            | 4.2            |
 
 ##### Microsoft Office Suite
 | Component | Recommended | Also Available |

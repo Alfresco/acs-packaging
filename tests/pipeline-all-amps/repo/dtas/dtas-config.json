@@ -65,6 +65,11 @@
                     "id": "alfresco-content-connector-for-salesforce-repo",
                     "version": "${alfresco.salesforce-connector.version}",
                     "installed": true
+                },
+                {
+                    "id": "alfresco-hxinsight-connector-hxinsight-extension",
+                    "version": "${alfresco.hxinsight-connector.version}",
+                    "installed": true
                 }
             ]
         },
