@@ -27,6 +27,26 @@ jobs:
           fetch-depth: 0
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v5.35.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v5.35.0
+      - name: "Install required software"
+        run: |
+          # Install Docker as per https://docs.docker.com/engine/install/ubuntu/
+          apt-get update
+          apt-get install ca-certificates curl gnupg -y
+          install -m 0755 -d /etc/apt/keyrings
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+          chmod a+r /etc/apt/keyrings/docker.gpg
+          echo \
+            "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+            "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
+            tee /etc/apt/sources.list.d/docker.list > /dev/null
+          apt-get update
+          # Additionally install git, zip and unzip (required by SDKMAN to install Maven), python3
+          apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin git zip unzip python3 python3-pip -y
+      - name: "Install Maven"
+        uses: sdkman/sdkman-action@b1f9b696c79148b66d3d3a06f7ea801820318d0f
+        with:
+          candidate: maven
+          version: "3.8.8"
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v5.35.0
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
