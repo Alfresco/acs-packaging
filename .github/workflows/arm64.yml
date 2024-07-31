@@ -17,7 +17,7 @@ env:
 jobs:
   arm64_health_check:
     name: "ARM64 Health Check"
-    runs-on: ubuntu-latest-arm64
+    runs-on: ubuntu-latest-arm64-small
     outputs:
       test_failure: ${{ steps.persist_test_failure_flag.outputs.test_failure }}
     steps:
@@ -27,16 +27,6 @@ jobs:
           fetch-depth: 0
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v5.35.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v5.35.0
-      - name: "Setup Docker Engine"
-        uses: Alfresco/alfresco-build-tools/.github/actions/setup-docker@v5.35.0
-      - name: "Install required tools"
-        run: |
-          sudo apt-get install zip unzip -y
-      - name: "Install Maven"
-        uses: sdkman/sdkman-action@b1f9b696c79148b66d3d3a06f7ea801820318d0f
-        with:
-          candidate: maven
-          version: "3.8.8"
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v5.35.0
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
