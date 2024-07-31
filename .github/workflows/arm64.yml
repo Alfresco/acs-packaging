@@ -27,7 +27,7 @@ jobs:
           fetch-depth: 0
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v5.35.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v5.35.0
-      - name: "Setup Docker Engine on ARM64 runner"
+      - name: "Setup Docker Engine"
         uses: Alfresco/alfresco-build-tools/.github/actions/setup-docker@v5.35.0
       - name: "Install required tools"
         run: |
