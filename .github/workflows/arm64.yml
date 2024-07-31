@@ -86,7 +86,7 @@ jobs:
           version: "3.8.8"
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v3.6.0
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
         with:
           platforms: linux/amd64,linux/arm64
       - name: "Login to Docker Hub"
