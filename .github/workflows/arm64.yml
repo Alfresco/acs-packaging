@@ -28,7 +28,6 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v5.35.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v5.35.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v5.35.0
-      - uses: actions/setup-python@v5
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3.2.0
         with:
@@ -80,7 +79,9 @@ jobs:
           # Make necessary test files available
           git clone --depth 1 --branch $DTAS_VERSION https://${{ secrets.BOT_GITHUB_USERNAME }}:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
           cd dtas
-          pip install -r requirements.txt
+          python3 -m venv .venv
+          source .venv/bin/activate
+          python3 -m pip install -r requirements.txt
           python3 -m pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
       - name: "Dump all Docker containers logs"
         if: failure() && (steps.setup-env.outcome == 'failure' || steps.run-tests.outcome == 'failure')
