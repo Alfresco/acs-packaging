@@ -35,7 +35,7 @@ env:
   ALF_LICENCE_S3_PATH: s3://acs-license/acs/alf23-allenabled.lic
   ALF_LICENCE_LOCAL_PATH: /tmp/licence.lic
   PYTHON_VERSION: 3.7.15
-  DTAS_VERSION: v1.2.2
+  DTAS_VERSION: v1.5.5
 
 jobs:
   veracode_sca:
