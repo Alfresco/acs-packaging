@@ -10,11 +10,11 @@
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-enterprise-repo</artifactId>
         <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
-        <version>19.105</version>
+        <version>19.106</version>
     </parent>
 
     <properties>
-        <dependency.alfresco-enterprise-repo.version>19.105</dependency.alfresco-enterprise-repo.version>
+        <dependency.alfresco-enterprise-repo.version>19.106</dependency.alfresco-enterprise-repo.version>
         <dependency.alfresco-enterprise-share.version>19.103</dependency.alfresco-enterprise-share.version>
 
         <alfresco.rm-enterprise-rest-api-explorer.version>3.0.2</alfresco.rm-enterprise-rest-api-explorer.version>
