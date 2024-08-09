@@ -2,8 +2,10 @@ package org.alfresco.elasticsearch.reindexing;
 
 import static org.alfresco.elasticsearch.SearchQueryService.req;
 import static org.alfresco.utility.model.FileType.TEXT_PLAIN;
+import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.alfresco.elasticsearch.SearchQueryService;
 import org.alfresco.rest.core.RestWrapper;
@@ -94,6 +96,17 @@ public class CategoryReindexingTests extends AbstractTestNGSpringContextTests
         restClient.authenticateUser(testUser).withCoreAPI().usingNode(testFile).linkToCategory(categoryALink);
         restClient.authenticateUser(testUser).withCoreAPI().usingNode(testFile).linkToCategory(categoryBLink);
         restClient.authenticateUser(testUser).withCoreAPI().usingNode(testFolder).linkToCategory(categoryBLink);
+
+        await().atMost(20, TimeUnit.SECONDS).until(
+            () -> restClient.authenticateUser(dataUser.getAdminUser()).withCoreAPI().usingNode(testFile).getLinkedCategories()
+                    .getEntries()
+                    .stream().anyMatch(category -> categoryA.getId().equals(category.onModel().getId())) &&
+                restClient.authenticateUser(dataUser.getAdminUser()).withCoreAPI().usingNode(testFile).getLinkedCategories()
+                    .getEntries()
+                    .stream().anyMatch(category -> categoryB.getId().equals(category.onModel().getId())) &&
+                restClient.authenticateUser(dataUser.getAdminUser()).withCoreAPI().usingNode(testFolder).getLinkedCategories()
+                    .getEntries()
+                    .stream().anyMatch(category -> categoryB.getId().equals(category.onModel().getId())));
 
         Step.STEP("Run the reindexer before starting the tests.");
         AlfrescoStackInitializer.reindexEverything();
