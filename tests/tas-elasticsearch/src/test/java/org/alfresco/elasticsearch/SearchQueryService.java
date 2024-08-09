@@ -33,7 +33,7 @@ import org.springframework.http.HttpStatus;
 public class SearchQueryService
 {
     /** Maximum time to allow for search query to return correct results. */
-    private static final int MAX_TIME = 10000;
+    private static final int MAX_TIME = 20000;
     @Autowired
     private RestWrapper client;
 

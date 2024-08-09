@@ -95,6 +95,8 @@ public class CategoryReindexingTests extends AbstractTestNGSpringContextTests
         restClient.authenticateUser(testUser).withCoreAPI().usingNode(testFile).linkToCategory(categoryBLink);
         restClient.authenticateUser(testUser).withCoreAPI().usingNode(testFolder).linkToCategory(categoryBLink);
 
+        Utility.sleep(1000);
+
         Step.STEP("Run the reindexer before starting the tests.");
         AlfrescoStackInitializer.reindexEverything();
     }
