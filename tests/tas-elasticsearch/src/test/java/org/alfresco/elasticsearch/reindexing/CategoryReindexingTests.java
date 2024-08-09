@@ -65,7 +65,7 @@ public class CategoryReindexingTests extends AbstractTestNGSpringContextTests
 
     /** Create a user, private site and two categories. Create a folder (in category B) containing a document (in category A and category B). */
     @BeforeClass (alwaysRun = true)
-    public void dataPreparation()
+    public void dataPreparation() throws InterruptedException
     {
         serverHealth.isServerReachable();
         serverHealth.assertServerIsOnline();
@@ -97,17 +97,17 @@ public class CategoryReindexingTests extends AbstractTestNGSpringContextTests
         restClient.authenticateUser(testUser).withCoreAPI().usingNode(testFile).linkToCategory(categoryBLink);
         restClient.authenticateUser(testUser).withCoreAPI().usingNode(testFolder).linkToCategory(categoryBLink);
 
-        await().atMost(20, TimeUnit.SECONDS).until(
-            () -> restClient.authenticateUser(dataUser.getAdminUser()).withCoreAPI().usingNode(testFile).getLinkedCategories()
+        await().atMost(30, TimeUnit.SECONDS).until(
+            () -> restClient.authenticateUser(testUser).withCoreAPI().usingNode(testFile).getLinkedCategories()
                     .getEntries()
                     .stream().anyMatch(category -> categoryA.getId().equals(category.onModel().getId())) &&
-                restClient.authenticateUser(dataUser.getAdminUser()).withCoreAPI().usingNode(testFile).getLinkedCategories()
+                restClient.authenticateUser(testUser).withCoreAPI().usingNode(testFile).getLinkedCategories()
                     .getEntries()
                     .stream().anyMatch(category -> categoryB.getId().equals(category.onModel().getId())) &&
-                restClient.authenticateUser(dataUser.getAdminUser()).withCoreAPI().usingNode(testFolder).getLinkedCategories()
+                restClient.authenticateUser(testUser).withCoreAPI().usingNode(testFolder).getLinkedCategories()
                     .getEntries()
                     .stream().anyMatch(category -> categoryB.getId().equals(category.onModel().getId())));
-
+        await().wait(30000L);
         Step.STEP("Run the reindexer before starting the tests.");
         AlfrescoStackInitializer.reindexEverything();
     }
