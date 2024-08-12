@@ -90,6 +90,7 @@ public class CategoryReindexingTests extends AbstractTestNGSpringContextTests
         FileModel fileModel = FileModel.getRandomFileModel(TEXT_PLAIN);
         testFile = dataContent.usingUser(testUser).usingResource(testFolder).createContent(fileModel);
 
+        Thread.sleep(20000L);
         Step.STEP("Assign the document to both categories and the folder to category B.");
         RestCategoryLinkBodyModel categoryALink = RestCategoryLinkBodyModel.builder().categoryId(categoryA.getId()).create();
         RestCategoryLinkBodyModel categoryBLink = RestCategoryLinkBodyModel.builder().categoryId(categoryB.getId()).create();
@@ -107,7 +108,6 @@ public class CategoryReindexingTests extends AbstractTestNGSpringContextTests
                 restClient.authenticateUser(testUser).withCoreAPI().usingNode(testFolder).getLinkedCategories()
                     .getEntries()
                     .stream().anyMatch(category -> categoryB.getId().equals(category.onModel().getId())));
-        await().wait(30000L);
         Step.STEP("Run the reindexer before starting the tests.");
         AlfrescoStackInitializer.reindexEverything();
     }
