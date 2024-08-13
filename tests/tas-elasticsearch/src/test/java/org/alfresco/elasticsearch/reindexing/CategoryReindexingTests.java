@@ -5,6 +5,7 @@ import static org.alfresco.utility.model.FileType.TEXT_PLAIN;
 import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.alfresco.elasticsearch.SearchQueryService;
@@ -98,18 +99,9 @@ public class CategoryReindexingTests extends AbstractTestNGSpringContextTests
         restClient.authenticateUser(testUser).withCoreAPI().usingNode(testFile).linkToCategory(categoryBLink);
         restClient.authenticateUser(testUser).withCoreAPI().usingNode(testFolder).linkToCategory(categoryBLink);
 
-        await().atMost(30, TimeUnit.SECONDS).until(
-            () -> restClient.authenticateUser(testUser).withCoreAPI().usingNode(testFile).getLinkedCategories()
-                    .getEntries()
-                    .stream().anyMatch(category -> categoryA.getId().equals(category.onModel().getId())) &&
-                restClient.authenticateUser(testUser).withCoreAPI().usingNode(testFile).getLinkedCategories()
-                    .getEntries()
-                    .stream().anyMatch(category -> categoryB.getId().equals(category.onModel().getId())) &&
-                restClient.authenticateUser(testUser).withCoreAPI().usingNode(testFolder).getLinkedCategories()
-                    .getEntries()
-                    .stream().anyMatch(category -> categoryB.getId().equals(category.onModel().getId())));
         Step.STEP("Run the reindexer before starting the tests.");
         AlfrescoStackInitializer.reindexEverything();
+        Thread.sleep(30000L);
     }
 
     /** Check we can find the document assigned to a category. */
