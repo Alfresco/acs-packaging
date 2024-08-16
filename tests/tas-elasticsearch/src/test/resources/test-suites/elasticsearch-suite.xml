@@ -4,22 +4,19 @@
   <listeners>
     <listener class-name="org.alfresco.utility.testng.AlphabeticalPriorityInterceptor" />
   </listeners>
-<!--  <test name="elasticsearch" verbose="3" preserve-order="false">-->
-<!--    <packages>-->
-<!--      <package name="org.alfresco.elasticsearch" />-->
-<!--    </packages>-->
-<!--  </test>-->
-<!--  <test name="initial_reindex" verbose="3">-->
-<!--    <packages>-->
-<!--      <package name="org.alfresco.elasticsearch.initialReindex" />-->
-<!--    </packages>-->
-<!--  </test>-->
+  <test name="elasticsearch" verbose="3" preserve-order="false">
+    <packages>
+      <package name="org.alfresco.elasticsearch" />
+    </packages>
+  </test>
+  <test name="initial_reindex" verbose="3">
+    <packages>
+      <package name="org.alfresco.elasticsearch.initialReindex" />
+    </packages>
+  </test>
   <test name="reindexing" verbose="3">
-<!--    <packages>-->
-<!--      <package name="org.alfresco.elasticsearch.reindexing" />-->
-<!--    </packages>-->
-    <classes>
-      <class name="org.alfresco.elasticsearch.reindexing.CategoryReindexingTests"/>
-    </classes>
+    <packages>
+      <package name="org.alfresco.elasticsearch.reindexing" />
+    </packages>
   </test>
 </suite>

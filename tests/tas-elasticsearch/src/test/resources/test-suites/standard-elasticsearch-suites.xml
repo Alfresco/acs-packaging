@@ -3,6 +3,6 @@
 <suite name="Parallel REST API tests for Elasticsearch" verbose="1" parallel="true">
    <suite-files>
       <suite-file path="elasticsearch-suite.xml" />
-<!--      <suite-file path="elasticsearch-parallel-suite.xml" />-->
+      <suite-file path="elasticsearch-parallel-suite.xml" />
    </suite-files>
 </suite>
