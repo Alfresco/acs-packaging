@@ -2,11 +2,8 @@ package org.alfresco.elasticsearch.reindexing;
 
 import static org.alfresco.elasticsearch.SearchQueryService.req;
 import static org.alfresco.utility.model.FileType.TEXT_PLAIN;
-import static org.testcontainers.shaded.org.awaitility.Awaitility.await;
 
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 import org.alfresco.elasticsearch.SearchQueryService;
 import org.alfresco.rest.core.RestWrapper;
@@ -66,7 +63,7 @@ public class CategoryReindexingTests extends AbstractTestNGSpringContextTests
 
     /** Create a user, private site and two categories. Create a folder (in category B) containing a document (in category A and category B). */
     @BeforeClass (alwaysRun = true)
-    public void dataPreparation() throws InterruptedException
+    public void dataPreparation()
     {
         serverHealth.isServerReachable();
         serverHealth.assertServerIsOnline();
@@ -91,7 +88,6 @@ public class CategoryReindexingTests extends AbstractTestNGSpringContextTests
         FileModel fileModel = FileModel.getRandomFileModel(TEXT_PLAIN);
         testFile = dataContent.usingUser(testUser).usingResource(testFolder).createContent(fileModel);
 
-        Thread.sleep(20000L);
         Step.STEP("Assign the document to both categories and the folder to category B.");
         RestCategoryLinkBodyModel categoryALink = RestCategoryLinkBodyModel.builder().categoryId(categoryA.getId()).create();
         RestCategoryLinkBodyModel categoryBLink = RestCategoryLinkBodyModel.builder().categoryId(categoryB.getId()).create();
@@ -101,7 +97,6 @@ public class CategoryReindexingTests extends AbstractTestNGSpringContextTests
 
         Step.STEP("Run the reindexer before starting the tests.");
         AlfrescoStackInitializer.reindexEverything();
-        Thread.sleep(30000L);
     }
 
     /** Check we can find the document assigned to a category. */
