@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>content-repository-tests</artifactId>
-        <version>23.4.0-A3-SNAPSHOT</version>
+        <version>23.4.0-A3</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
