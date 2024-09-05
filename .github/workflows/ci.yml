@@ -51,6 +51,8 @@ jobs:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+        with:
+          java-version: "21"
       - name: "Init"
         run: bash ./scripts/ci/init.sh
       - uses: Alfresco/alfresco-build-tools/.github/actions/veracode@v1.35.2
@@ -72,6 +74,8 @@ jobs:
       - uses: actions/checkout@v3
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+        with:
+          java-version: "21"
       - uses: Alfresco/alfresco-build-tools/.github/actions/github-download-file@v5.6.0
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
@@ -122,6 +126,8 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v5.18.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+        with:
+          java-version: "21"
       - uses: Alfresco/ya-pmd-scan@v4.0.0
         with:
           classpath-build-command: "bash ./scripts/ci/init.sh && bash ./scripts/ci/build.sh"
@@ -193,6 +199,8 @@ jobs:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+        with:
+          java-version: "21"
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -241,6 +249,8 @@ jobs:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+        with:
+          java-version: "21"
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -299,6 +309,8 @@ jobs:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+        with:
+          java-version: "21"
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -425,6 +437,8 @@ jobs:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+        with:
+          java-version: "21"
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -461,6 +475,8 @@ jobs:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+        with:
+          java-version: "21"
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -496,6 +512,8 @@ jobs:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+        with:
+          java-version: "21"
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -557,6 +575,8 @@ jobs:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+        with:
+          java-version: "21"
       - name: "Generate Keystores and Truststores for Mutual TLS configuration"
         if: ${{ matrix.mtls }}
         run: |
@@ -600,6 +620,8 @@ jobs:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+        with:
+          java-version: "21"
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -630,6 +652,8 @@ jobs:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+        with:
+          java-version: "21"
       - uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -672,6 +696,8 @@ jobs:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+        with:
+          java-version: "21"
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -708,6 +734,8 @@ jobs:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+        with:
+          java-version: "21"
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
         with:
