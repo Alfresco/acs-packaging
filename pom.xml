@@ -25,7 +25,7 @@
         <alfresco.outlook.version>2.9.0</alfresco.outlook.version>
         <alfresco.desktop-sync.version>4.0.0</alfresco.desktop-sync.version>
         <alfresco.ais.version>3.1.6</alfresco.ais.version>
-        <alfresco.hxinsight-connector.version>1.0.0-A13</alfresco.hxinsight-connector.version>
+        <alfresco.hxinsight-connector.version>1.0.0-A14</alfresco.hxinsight-connector.version>
 
         <acs.version>${acs.version.major}.${acs.version.minor}.${acs.version.revision}${acs.version.label}</acs.version>
         <repo.image.tag>${dependency.alfresco-enterprise-repo.version}</repo.image.tag>
