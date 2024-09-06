@@ -28,6 +28,11 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v5.35.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v5.35.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v5.35.0
+        with:
+          java-version: "21"
+      - name: "print java runtime version"
+        run: |
+          java -version
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3.2.0
         with:
