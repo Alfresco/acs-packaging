@@ -23,14 +23,14 @@ jobs:
       ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
     steps:
       - name: "Configure AWS credentials"
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_EC2_GITHUB_RUNNER_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_EC2_GITHUB_RUNNER_SECRET_ACCESS_KEY }}
           aws-region: eu-west-2
       - name: "Start EC2 runner"
         id: start-ec2-runner
-        uses: machulav/ec2-github-runner@4e0303de215db88e1c489e07a15ca4d867f488ea
+        uses: machulav/ec2-github-runner@fcfb31a5760dad1314a64a0e172b78ec6fc8a17e
         with:
           mode: start
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
@@ -55,12 +55,12 @@ jobs:
     outputs:
       test_failure: ${{ steps.persist_test_failure_flag.outputs.test_failure }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
           fetch-depth: 0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v3.6.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v3.6.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v7.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v7.0.0
       - name: "Install required software"
         run: |
           # Install Docker as per https://docs.docker.com/engine/install/ubuntu/
@@ -86,18 +86,18 @@ jobs:
         with:
           candidate: maven
           version: "3.8.8"
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v3.6.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.0.0
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
         with:
           platforms: linux/amd64,linux/arm64
       - name: "Login to Docker Hub"
-        uses: docker/login-action@v2.1.0
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: "Login to Quay.io"
-        uses: docker/login-action@v2.1.0
+        uses: docker/login-action@v3
         with:
           registry: quay.io
           username: ${{ secrets.QUAY_USERNAME }}
@@ -143,7 +143,7 @@ jobs:
           python3 -m pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s \
             -k "not test_adw_reachability"
       - name: "Dump all Docker containers logs"
-        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v3.6.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v7.0.0
         if: failure() && (steps.setup-env.outcome == 'failure' || steps.run-tests.outcome == 'failure')
       - name: "Persist test failure flag"
         id: persist_test_failure_flag
@@ -159,13 +159,13 @@ jobs:
     if: always()
     steps:
       - name: "Configure AWS credentials"
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_EC2_GITHUB_RUNNER_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_EC2_GITHUB_RUNNER_SECRET_ACCESS_KEY }}
           aws-region: eu-west-2
       - name: "Stop EC2 runner"
-        uses: machulav/ec2-github-runner@4e0303de215db88e1c489e07a15ca4d867f488ea
+        uses: machulav/ec2-github-runner@fcfb31a5760dad1314a64a0e172b78ec6fc8a17e
         with:
           mode: stop
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
@@ -179,8 +179,8 @@ jobs:
       - arm64_health_check
     if: always()
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
       - name: "Run the JIRA Integration script"
         run: |
           pip install -r ./scripts/ci/jira/requirements.txt
