@@ -27,6 +27,7 @@
         <alfresco.ais.version>3.1.6</alfresco.ais.version>
         <alfresco.hxinsight-connector.version>1.0.0-A15</alfresco.hxinsight-connector.version>
 
+
         <acs.version>${acs.version.major}.${acs.version.minor}.${acs.version.revision}${acs.version.label}</acs.version>
         <repo.image.tag>${dependency.alfresco-enterprise-repo.version}</repo.image.tag>
         <share.image.tag>${dependency.alfresco-enterprise-share.version}</share.image.tag>
