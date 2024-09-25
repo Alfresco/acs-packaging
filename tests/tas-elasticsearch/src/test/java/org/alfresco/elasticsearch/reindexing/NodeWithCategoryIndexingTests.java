@@ -15,7 +15,7 @@ import org.testng.annotations.Test;
 /**
  * Tests verifying live indexing of secondary children and ANCESTOR index in Elasticsearch.
  */
-@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert"}) // these are testng tests and use searchQueryService.expectResultsFromQuery for assertion
+@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert", "PMD.MethodNamingConventions", "PMD.LocalVariableNamingConventions"}) // these are testng tests and use searchQueryService.expectResultsFromQuery for assertion
 public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelatedTests
 {
 
@@ -121,7 +121,7 @@ public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelated
         // given
         String Kname = categories.get(K).getName();
         String Lname = categories.get(L).getName();
-        String Aname = folders(A).getName();
+        String Aname = folders.get(A).getName();
 
         // then
         STEP("Verify that searching by PATH and category will find: folderA");
@@ -135,8 +135,8 @@ public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelated
         // given
         String Kname = categories.get(K).getName();
         String Lname = categories.get(L).getName();
-        String Aname = folders(A).getName();
-        String Bname = folders(B).getName();
+        String Aname = folders.get(A).getName();
+        String Bname = folders.get(B).getName();
 
         // then
         STEP("Verify that searching by PATH for nested folder will return no results (Dependency to category is not transitive)");
@@ -166,6 +166,6 @@ public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelated
         // then
         STEP("Verify that searching by PATH and category will find: folderA");
         SearchRequest query = req(format("PATH:'/cm:categoryRoot/cm:generalclassifiable/cm:%s//*'", Kname));
-        searchQueryService.expectResultsFromQuery(query, testUser, categories.get(L).getName(), folders(A).getName());
+        searchQueryService.expectResultsFromQuery(query, testUser, categories.get(L).getName(), folders.get(A).getName());
     }
 }
