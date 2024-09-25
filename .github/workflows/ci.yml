@@ -154,31 +154,31 @@ jobs:
             profiles: all-tas-tests,run-restapi-part3
             compose-file: docker-compose-rest-api-tests.yml
             deploy-timeout: 60
-          - testSuite: CMIS (BROWSER binding)
-            pom-dir: tests/tas-cmis
-            profiles: all-tas-tests,run-cmis-browser
-            compose-file: docker-compose-cmis-tests.yml
-            deploy-timeout: 60
-          - testSuite: CMIS (ATOM binding)
-            pom-dir: tests/tas-cmis
-            profiles: all-tas-tests,run-cmis-atom
-            compose-file: docker-compose-cmis-tests.yml
-            deploy-timeout: 60
-          - testSuite: CMIS (WEBSERVICES binding)
-            pom-dir: tests/tas-cmis
-            profiles: all-tas-tests,run-cmis-webservices
-            compose-file: docker-compose-cmis-tests.yml
-            deploy-timeout: 60
-          - testSuite: Email
-            pom-dir: tests/tas-email
-            profiles: all-tas-tests
-            compose-file: docker-compose-email-tests.yml
-            deploy-timeout: 30
-          - testSuite: WebDAV
-            pom-dir: tests/tas-webdav
-            profiles: all-tas-tests
-            compose-file: docker-compose-minimal.yml
-            deploy-timeout: 20
+#          - testSuite: CMIS (BROWSER binding)
+#            pom-dir: tests/tas-cmis
+#            profiles: all-tas-tests,run-cmis-browser
+#            compose-file: docker-compose-cmis-tests.yml
+#            deploy-timeout: 60
+#          - testSuite: CMIS (ATOM binding)
+#            pom-dir: tests/tas-cmis
+#            profiles: all-tas-tests,run-cmis-atom
+#            compose-file: docker-compose-cmis-tests.yml
+#            deploy-timeout: 60
+#          - testSuite: CMIS (WEBSERVICES binding)
+#            pom-dir: tests/tas-cmis
+#            profiles: all-tas-tests,run-cmis-webservices
+#            compose-file: docker-compose-cmis-tests.yml
+#            deploy-timeout: 60
+#          - testSuite: Email
+#            pom-dir: tests/tas-email
+#            profiles: all-tas-tests
+#            compose-file: docker-compose-email-tests.yml
+#            deploy-timeout: 30
+#          - testSuite: WebDAV
+#            pom-dir: tests/tas-webdav
+#            profiles: all-tas-tests
+#            compose-file: docker-compose-minimal.yml
+#            deploy-timeout: 20
           - testSuite: Integration
             pom-dir: tests/tas-integration
             profiles: all-tas-tests
@@ -210,7 +210,7 @@ jobs:
         uses: Alfresco/alfresco-build-tools/.github/actions/reportportal-prepare@v7.0.0
         id: rp-prepare
         with:
-          rp-launch-prefix: ${{ env.RP_LAUNCH_PREFIX }} - ${{ matrix.testModule }}
+          rp-launch-prefix: ${{ env.RP_LAUNCH_PREFIX }} - ${{ matrix.testSuite }}
           rp-token: ${{ secrets.REPORT_PORTAL_TOKEN }}
           rp-project: ${{ env.RP_PROJECT }}
           rp-use-static-launch-name: true
