@@ -12,92 +12,33 @@ env:
   TAS_ENVIRONMENT: ./tests/environment
   TAS_SCRIPTS: ../alfresco-community-repo/packaging/tests/scripts
   AWS_REGION: eu-west-1
-  DTAS_VERSION: v1.2.2
+  DTAS_VERSION: v1.5.5
 
 jobs:
-  start-runner:
-    name: "Start self-hosted EC2 runner"
-    runs-on: ubuntu-latest
-    outputs:
-      label: ${{ steps.start-ec2-runner.outputs.label }}
-      ec2-instance-id: ${{ steps.start-ec2-runner.outputs.ec2-instance-id }}
-    steps:
-      - name: "Configure AWS credentials"
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_EC2_GITHUB_RUNNER_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_EC2_GITHUB_RUNNER_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-2
-      - name: "Start EC2 runner"
-        id: start-ec2-runner
-        uses: machulav/ec2-github-runner@4e0303de215db88e1c489e07a15ca4d867f488ea
-        with:
-          mode: start
-          github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
-          ec2-image-id: ami-0ec31c3e3b729bb6d # Ubuntu 22.04 ARM64 w/ 125GB drive
-          ec2-instance-type: c6g.2xlarge
-          subnet-id: subnet-0777c70a4cd9ce944
-          security-group-id: sg-0f89a325d9eb147cb
-          aws-resource-tags: >
-            [
-              {"Key": "Name", "Value": "arm64-acs-packaging-gh-runner"},
-              {"Key": "Creator", "Value": "${{ github.repository }}"},
-              {"Key": "Owner", "Value": "ACS Feature Teams"},
-              {"Key": "Department", "Value": "Alfresco Engineering"},
-              {"Key": "Purpose", "Value": "GH runner for ARM64 acs-packaging tests"},
-              {"Key": "Production", "Value": "false"}
-            ]
-
   arm64_health_check:
     name: "ARM64 Health Check"
-    needs: start-runner
-    runs-on: ${{ needs.start-runner.outputs.label }}
+    runs-on: ubuntu-latest-arm64-small
     outputs:
       test_failure: ${{ steps.persist_test_failure_flag.outputs.test_failure }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
           fetch-depth: 0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v3.6.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v3.6.0
-      - name: "Install required software"
-        run: |
-          # Install Docker as per https://docs.docker.com/engine/install/ubuntu/
-          apt-get update
-          apt-get install ca-certificates curl gnupg -y
-          install -m 0755 -d /etc/apt/keyrings
-          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-          chmod a+r /etc/apt/keyrings/docker.gpg
-          echo \
-            "deb [arch="$(dpkg --print-architecture)" signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-            "$(. /etc/os-release && echo "$VERSION_CODENAME")" stable" | \
-            tee /etc/apt/sources.list.d/docker.list > /dev/null
-          apt-get update
-          # Additionally install git, zip and unzip (required by SDKMAN to install Maven), python3
-          apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin git zip unzip python3 python3-pip -y
-          # Allow usage of "docker-compose" rather than "docker compose" in bash scripts
-          ln -f -s /usr/libexec/docker/cli-plugins/docker-compose /usr/local/bin/docker-compose
-          # Workaround due to $HOME not being set causing issues with settings.xml installation in setup-build-java
-          mkdir -p /root/.m2
-          cp .ci.settings.xml /root/.m2/settings.xml
-      - name: "Install Maven"
-        uses: sdkman/sdkman-action@b1f9b696c79148b66d3d3a06f7ea801820318d0f
-        with:
-          candidate: maven
-          version: "3.8.8"
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v3.6.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v7.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v7.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.0.0
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
         with:
           platforms: linux/amd64,linux/arm64
       - name: "Login to Docker Hub"
-        uses: docker/login-action@v2.1.0
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       - name: "Login to Quay.io"
-        uses: docker/login-action@v2.1.0
+        uses: docker/login-action@v3
         with:
           registry: quay.io
           username: ${{ secrets.QUAY_USERNAME }}
@@ -138,40 +79,17 @@ jobs:
           # Make necessary test files available
           git clone --depth 1 --branch $DTAS_VERSION https://${{ secrets.BOT_GITHUB_USERNAME }}:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
           cd dtas
-          pip install -r requirements.txt
-          # NOTE: some tests are temporarily disabled since the related components don't provide native ARM64 images yet
-          python3 -m pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s \
-            --ignore=tests/scenarios/test_sync.py \
-            -k "not test_adw_reachability"
+          python3 -m venv .venv
+          source .venv/bin/activate
+          python3 -m pip install -r requirements.txt
+          python3 -m pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
       - name: "Dump all Docker containers logs"
-        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v3.6.0
         if: failure() && (steps.setup-env.outcome == 'failure' || steps.run-tests.outcome == 'failure')
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v7.0.0
       - name: "Persist test failure flag"
         id: persist_test_failure_flag
-        run: echo "test_failure=true" >> "$GITHUB_OUTPUT"
         if: failure()
-
-  stop-runner:
-    name: "Stop self-hosted EC2 runner"
-    needs:
-      - start-runner
-      - arm64_health_check
-    runs-on: ubuntu-latest
-    if: always()
-    steps:
-      - name: "Configure AWS credentials"
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_EC2_GITHUB_RUNNER_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_EC2_GITHUB_RUNNER_SECRET_ACCESS_KEY }}
-          aws-region: eu-west-2
-      - name: "Stop EC2 runner"
-        uses: machulav/ec2-github-runner@4e0303de215db88e1c489e07a15ca4d867f488ea
-        with:
-          mode: stop
-          github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
-          label: ${{ needs.start-runner.outputs.label }}
-          ec2-instance-id: ${{ needs.start-runner.outputs.ec2-instance-id }}
+        run: echo "test_failure=true" >> "$GITHUB_OUTPUT"
 
   jira_integration:
     name: "JIRA integration"
@@ -180,8 +98,8 @@ jobs:
       - arm64_health_check
     if: always()
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
       - name: "Run the JIRA Integration script"
         run: |
           pip install -r ./scripts/ci/jira/requirements.txt

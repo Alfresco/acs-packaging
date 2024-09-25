@@ -3,9 +3,9 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:hz="http://www.hazelcast.com/schema/spring"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-                http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                http://www.springframework.org/schema/beans/spring-beans.xsd
                 http://www.hazelcast.com/schema/spring
-                https://hazelcast.com/schema/spring/hazelcast-spring-2.4.xsd">
+                https://hazelcast.com/schema/spring/hazelcast-spring-5.3.xsd">
    
    <!--
         Hazelcast distributed messaging configuration - Share web-tier cluster config
@@ -19,7 +19,7 @@
    <hz:topic id="topic" instance-ref="webframework.cluster.slingshot" name="slingshot-topic"/>
    <hz:hazelcast id="webframework.cluster.slingshot">
       <hz:config>
-         <hz:group name="slingshot" password="alfresco"/>
+         <hz:cluster-name>slingshot</hz:cluster-name>
          <hz:network port="5801" port-auto-increment="true">
             <hz:join>
                <hz:multicast enabled="true"

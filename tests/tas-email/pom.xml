@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>content-repository-tests</artifactId>
-        <version>23.2.0-A3-SNAPSHOT</version>
+        <version>23.4.0-A8-SNAPSHOT</version>
     </parent>
 
     <developers>
@@ -42,6 +42,12 @@
         <dependency>
             <groupId>org.alfresco.tas</groupId>
             <artifactId>email</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.epam.reportportal</groupId>
+            <artifactId>agent-java-testng</artifactId>
             <scope>test</scope>
         </dependency>
     </dependencies>

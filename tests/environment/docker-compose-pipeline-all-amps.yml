@@ -127,7 +127,7 @@ services:
             - 5432:5432
 
     solr6:
-        image: alfresco/alfresco-search-services:2.0.8-A3
+        image: alfresco/alfresco-search-services:2.0.11
         mem_limit: 3g
         environment:
             #Solr needs to know how to register itself with Alfresco
@@ -164,8 +164,11 @@ services:
             BASE_PATH: ./
 
     proxy:
-        image: alfresco/alfresco-acs-nginx:3.0.1
-        mem_limit: 128m
+        image: alfresco/alfresco-acs-nginx:${ACS_NGINX_TAG}
+        mem_limit: 512m
+        environment:
+            DISABLE_CONTROL_CENTER: "true"
+            DISABLE_PROMETHEUS: "true"
         depends_on:
             - alfresco
             - digital-workspace
@@ -177,7 +180,7 @@ services:
             - share
 
     sync-service:
-        image: quay.io/alfresco/service-sync:4.0.0
+        image: quay.io/alfresco/service-sync:5.1.0-A7
         mem_limit: 1g
         environment:
             JAVA_OPTS : "

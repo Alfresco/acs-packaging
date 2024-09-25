@@ -3,8 +3,7 @@
         "host": "http://localhost:8080",
         "username": "admin.pipeline@alfresco.com",
         "password": "admin",
-        "request_timeout_seconds": "45",
-        "wait_rendition_max_attempts": "15"
+        "request_timeout_seconds": "45"
     },
     "assertions": {
         "acs": {
@@ -66,11 +65,16 @@
                     "id": "alfresco-content-connector-for-salesforce-repo",
                     "version": "${alfresco.salesforce-connector.version}",
                     "installed": true
+                },
+                {
+                    "id": "alfresco-hxinsight-connector-hxinsight-extension",
+                    "version": "${alfresco.hxinsight-connector.version}",
+                    "installed": true
                 }
             ]
         },
         "adw": {
-            "version": "2.0.0"
+            "version": "4.4.1"
         }
     }
 }

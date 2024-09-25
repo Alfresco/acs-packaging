@@ -58,7 +58,7 @@ class ACSEnv52 extends LegacyACSEnv
 
     private void createSolr6Container(Network network)
     {
-        newContainer(GenericContainer.class,"alfresco/alfresco-search-services:1.3.0.6")
+        newContainer(GenericContainer.class, "alfresco/alfresco-search-services:1.3.0.6")
                 .withEnv("SOLR_ALFRESCO_HOST", "alfresco")
                 .withEnv("SOLR_ALFRESCO_PORT", "8080")
                 .withEnv("ALFRESCO_SECURE_COMMS", "none")

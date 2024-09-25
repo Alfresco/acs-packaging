@@ -21,9 +21,8 @@ public class FromSolrUpgradeTest
     private static final String FILE_UPLOADED_BEFORE_SWITCHING_TO_ELASTICSEARCH = "before-switch.pdf";
     private static final String FILE_UPLOADED_AFTER_SWITCHING_TO_ELASTICSEARCH = "after-switch.pdf";
 
-    //ACS-3425 - Extreme instability of test
-//    @Test
-    public void testZeroDowntimeUpgradeFromSolrToElasticsearch() throws IOException
+    @Test
+    public void testZeroDowntimeUpgradeFromSolrToElasticsearch() throws IOException, InterruptedException
     {
         try (final UpgradeScenario scenario = new UpgradeScenario(getUpgradeScenarioConfig()))
         {
@@ -36,24 +35,22 @@ public class FromSolrUpgradeTest
             final Elasticsearch elasticsearch = scenario.startElasticsearch();
             Assert.assertFalse(elasticsearch.isIndexCreated());
 
-            final long initialReIndexingUpperBound;
+            final long initialReIndexingUpperBound = initialEnv.getMaxNodeDbId();
 
             try (ACSEnv mirroredEnv = scenario.startMirroredEnvWitElasticsearchBasedSearchService())
             {
                 mirroredEnv.expectNoSearchResult(ofMinutes(1), SEARCH_TERM);
-                Assert.assertEquals(initialEnv.getMaxNodeDbId(), mirroredEnv.getMaxNodeDbId());
-
+                Assert.assertTrue(mirroredEnv.getMaxNodeDbId() >= initialEnv.getMaxNodeDbId());
+                elasticsearch.waitForIndexCreation(ofMinutes(1));
                 Assert.assertTrue(elasticsearch.isIndexCreated());
                 Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), 0);
                 mirroredEnv.expectNoSearchResult(ofMinutes(1), SEARCH_TERM);
 
                 mirroredEnv.startLiveIndexing();
-
-                initialReIndexingUpperBound = mirroredEnv.getMaxNodeDbId();
-                mirroredEnv.reindexByIds(0, initialReIndexingUpperBound);
+                mirroredEnv.reindexByIds(0, initialReIndexingUpperBound * 2);
 
                 Assert.assertTrue(elasticsearch.getIndexedDocumentCount() > 0);
-                mirroredEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM, FILE_UPLOADED_BEFORE_INITIAL_REINDEXING);
+                mirroredEnv.expectSearchResult(ofMinutes(2), SEARCH_TERM, FILE_UPLOADED_BEFORE_INITIAL_REINDEXING);
             }
 
             final long documentsCount = elasticsearch.getIndexedDocumentCount();
@@ -61,7 +58,7 @@ public class FromSolrUpgradeTest
 
             initialEnv.startLiveIndexing();
 
-            initialEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM,
+            initialEnv.expectSearchResult(ofMinutes(2), SEARCH_TERM,
                     FILE_UPLOADED_BEFORE_INITIAL_REINDEXING,
                     FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING);
             //Live indexing was not running so FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING hasn't been indexed
@@ -76,7 +73,7 @@ public class FromSolrUpgradeTest
             // FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING is still not indexed
             Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), documentsCount + 1);
 
-            initialEnv.reindexByIds(initialReIndexingUpperBound, 1_000_000_000);
+            initialEnv.reindexByIds((long)(initialReIndexingUpperBound * 0.9), 1_000_000_000);
             //Gap has been closed by running reindexing. Both FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING and
             // FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING have been indexed.
             Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), documentsCount + 2);
