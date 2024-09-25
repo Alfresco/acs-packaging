@@ -126,7 +126,7 @@ public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelated
         // then
         STEP("Verify that searching by PATH and category will find: folderA");
         SearchRequest query = req(format("PATH:'/cm:categoryRoot/cm:generalclassifiable/cm:%s/cm:%s/cm:%s'", Kname, Lname, Aname));
-        searchQueryService.expectResultsFromQuery(query, testUser, folders(A).getName());
+        searchQueryService.expectResultsFromQuery(query, testUser, folders.get(A).getName());
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -154,7 +154,7 @@ public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelated
         // then
         STEP("Verify that searching by PATH and category will find: folderA");
         SearchRequest query = req(format("PATH:'/cm:categoryRoot/cm:generalclassifiable/cm:%s/cm:%s//*'", Kname, Lname));
-        searchQueryService.expectResultsFromQuery(query, testUser, folders(A).getName());
+        searchQueryService.expectResultsFromQuery(query, testUser, folders.get(A).getName());
     }
 
     @Test(groups = TestGroup.SEARCH)
