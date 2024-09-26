@@ -22,8 +22,8 @@ env:
   GITHUB_ACTIONS_DEPLOY_TIMEOUT: 60
   BASE_BUILD_NUMBER: 10000
     # Release version has to start with real version (23.2.0-....) for the docker image to build successfully.
-  RELEASE_VERSION: 23.4.0-A5
-  DEVELOPMENT_VERSION: 23.4.0-A6-SNAPSHOT
+  RELEASE_VERSION: 23.4.0-A7
+  DEVELOPMENT_VERSION: 23.4.0-A8-SNAPSHOT
 
 jobs:
   run_ci:
@@ -44,14 +44,14 @@ jobs:
         ports:
           - 5000:5000
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v7.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v7.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.0.0
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
         with:
           platforms: linux/amd64,linux/arm64
       - name: "Build"
@@ -82,15 +82,15 @@ jobs:
         ports:
           - 5000:5000
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
-      - uses: actions/setup-python@v4
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v7.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v7.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.0.0
+      - uses: actions/setup-python@v5
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
         with:
           platforms: linux/amd64,linux/arm64
       - name: "Build"
@@ -98,7 +98,7 @@ jobs:
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh -m
-      - uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@v7.0.0
         with:
           username: ${{ env.GIT_USERNAME }}
           email: ${{ env.GIT_EMAIL }}
@@ -115,7 +115,7 @@ jobs:
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
       - name: "Configure AWS credentials"
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_S3_STAGING_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_S3_STAGING_SECRET_KEY }}
@@ -139,16 +139,16 @@ jobs:
       contains(github.event.head_commit.message, '[publish]') &&
       github.event_name != 'pull_request'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
           fetch-depth: 0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v7.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v7.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.0.0
       - name: "Init"
         run: bash ./scripts/ci/init.sh
-      - uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@v7.0.0
         with:
           username: ${{ env.GIT_USERNAME }}
           email: ${{ env.GIT_EMAIL }}
@@ -157,7 +157,7 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: bash scripts/ci/maven_publish.sh
       - name: "Configure AWS credentials"
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_S3_RELEASE_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_S3_RELEASE_SECRET_ACCESS_KEY }}
@@ -183,15 +183,15 @@ jobs:
       !contains(github.event.head_commit.message, '[no downstream]'))) &&
       github.event_name != 'pull_request'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v1.35.2
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v1.35.2
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v7.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v7.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.0.0
       - name: "Init"
         run: bash ./scripts/ci/init.sh
-      - uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@v1.35.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@v7.0.0
         with:
           username: ${{ env.GIT_USERNAME }}
           email: ${{ env.GIT_EMAIL }}
