@@ -612,7 +612,7 @@ jobs:
         env:
           RP_OPTS: ${{ github.ref_name == 'feature/ACS-6309_Bump_TestNG' && steps.rp-prepare.outputs.mvn-opts || '' }}
         run: |
-          eval "args=($RP_OPTS)
+          eval "args=($RP_OPTS)"
           mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -P${{ matrix.profiles }} -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}" "-Ddatabase.type=${{ matrix.db-type }}" -Dindeximage="alfresco-es-indexing-jdbc:latest" -Dreindeximage="alfresco-es-reindexing-jdbc:latest" -Drepoimage="alfresco-repository-databases:latest" "${args[@]}"
         continue-on-error: true
       - name: "Update GitHub Step Summary"
