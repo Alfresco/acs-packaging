@@ -522,7 +522,7 @@ jobs:
     name: ${{ matrix.testSuite }} | TAS tests (Search API)
     runs-on: alfrescoPub-ubuntu2204-16G-4CPU
     if: >
-      (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request') &&
+      (github.ref_name == 'feature/ACS-6309_Bump_TestNG' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request') &&
       !contains(github.event.head_commit.message, '[skip search]') &&
       !contains(github.event.head_commit.message, '[skip tests]')
     strategy:
@@ -588,10 +588,48 @@ jobs:
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
+      - name: "Prepare Report Portal"
+        if: github.ref_name == 'feature/ACS-6309_Bump_TestNG'
+        uses: Alfresco/alfresco-build-tools/.github/actions/reportportal-prepare@v7.0.0
+        id: rp-prepare
+        with:
+          rp-launch-prefix: ${{ env.RP_LAUNCH_PREFIX }} - ${{ matrix.testSuite }}
+          rp-token: ${{ secrets.REPORT_PORTAL_TOKEN }}
+          rp-project: ${{ env.RP_PROJECT }}
+          rp-use-static-launch-name: true
+        continue-on-error: true
+      - name: "Add GitHub Step Summary"
+        if: github.ref_name == 'feature/ACS-6309_Bump_TestNG'
+        env:
+          RP_ENABLED: ${{ steps.rp-prepare.outputs.enabled }}
+          RP_KEY: ${{ steps.rp-prepare.outputs.key }}
+          RP_URL: ${{ steps.rp-prepare.outputs.url }}
+        run: bash scripts/ci/add_step_summary.sh
+        continue-on-error: true
       - name: "Run tests"
         id: tests
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        run: mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -P${{ matrix.profiles }} -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}" "-Ddatabase.type=${{ matrix.db-type }}" -Dindeximage="alfresco-es-indexing-jdbc:latest" -Dreindeximage="alfresco-es-reindexing-jdbc:latest" -Drepoimage="alfresco-repository-databases:latest"
+        env:
+          RP_OPTS: ${{ github.ref_name == 'feature/ACS-6309_Bump_TestNG' && steps.rp-prepare.outputs.mvn-opts || '' }}
+        run: |
+          eval "args=($RP_OPTS)
+          mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -P${{ matrix.profiles }} -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}" "-Ddatabase.type=${{ matrix.db-type }}" -Dindeximage="alfresco-es-indexing-jdbc:latest" -Dreindeximage="alfresco-es-reindexing-jdbc:latest" -Drepoimage="alfresco-repository-databases:latest" "${args[@]}"
+        continue-on-error: true
+      - name: "Update GitHub Step Summary"
+        if: github.ref_name == 'feature/ACS-6309_Bump_TestNG'
+        run: |
+          echo "#### ⏱ After Tests: $(date -u +'%Y-%m-%d %H:%M:%S%:z')" >> $GITHUB_STEP_SUMMARY
+        continue-on-error: true
+      - name: "Summarize Report Portal"
+        if: github.ref_name == 'feature/ACS-6309_Bump_TestNG'
+        uses: Alfresco/alfresco-build-tools/.github/actions/reportportal-summarize@v7.0.0
+        id: rp-summarize
+        with:
+          tests-outcome: ${{ steps.tests.outcome }}
+          rp-launch-key: ${{ steps.rp-prepare.outputs.key }}
+          rp-project: ${{ env.RP_PROJECT }}
+          rp-token: ${{ secrets.REPORT_PORTAL_TOKEN }}
+        continue-on-error: true
       - name: "Dump all Docker containers logs"
         uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v7.0.0
         if: failure() && steps.tests.outcome == 'failure'
