@@ -343,6 +343,11 @@ jobs:
       - name: "Print output after failure"
         if: ${{ always() && matrix.testSuite == 'REST API' && steps.tests.outcome == 'failure' }}
         run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-restapi"
+      - name: "Exit on failure"
+        if: steps.tests.outcome != 'success'
+        run: |
+          echo "::error title=run-tests::Tests failed: re-throwing on error."
+          exit 1
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
@@ -445,6 +450,11 @@ jobs:
       - name: "Dump all Docker containers logs"
         uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v7.0.0
         if: failure() && (steps.tests.outcome == 'failure' || steps.env.outcome == 'failure')
+      - name: "Exit on failure"
+        if: steps.tests.outcome != 'success'
+        run: |
+          echo "::error title=run-tests::Tests failed: re-throwing on error."
+          exit 1
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
@@ -515,6 +525,11 @@ jobs:
       - name: "Print output after failure"
         if: ${{ always() && steps.tests.outcome == 'failure' }}
         run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
+      - name: "Exit on failure"
+        if: steps.tests.outcome != 'success'
+        run: |
+          echo "::error title=run-tests::Tests failed: re-throwing on error."
+          exit 1
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
@@ -633,6 +648,11 @@ jobs:
       - name: "Dump all Docker containers logs"
         uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v7.0.0
         if: failure() && steps.tests.outcome == 'failure'
+      - name: "Exit on failure"
+        if: steps.tests.outcome != 'success'
+        run: |
+          echo "::error title=run-tests::Tests failed: re-throwing on error."
+          exit 1
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
