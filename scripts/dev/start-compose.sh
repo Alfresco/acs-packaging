@@ -4,3 +4,4 @@ export TRANSFORM_ROUTER_TAG=$(mvn -f acs-packaging/pom.xml help:evaluate -Dexpre
 
 # .env files are picked up from project directory correctly on docker-compose 1.23.0+
 docker compose -f acs-packaging/dev/docker-compose.yml up
+docker compose -f acs-packaging/dev/docker-compose.yml logs -f &
