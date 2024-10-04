@@ -619,7 +619,6 @@ jobs:
     name: "Single Pipeline image tests"
     runs-on: ubuntu-latest
     if: >
-      github.event_name != 'pull_request' &&
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v7.0.0
