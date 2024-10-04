@@ -5,6 +5,7 @@ import static org.alfresco.utility.report.log.Step.STEP;
 
 import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.utility.model.FileModel;
+import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.TestGroup;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -46,21 +47,18 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
 
         // given
         STEP("Create few sets of nested folders in site's Document Library.");
-        folders().createNestedFolders(A, B, C);
-        folders().createNestedFolders(K, L, M);
-        folders().createNestedFolders(X, Y, Z);
-        folders().createFolder(P);
-        folders().createFolder(Q);
-        folders().createFolder(R);
-        folders().createFolder(S);
-        fileInP = folders(P).createRandomDocument();
+        folders.add().nestedRandomFolders(A, B, C).create();
+        folders.add().nestedRandomFolders(K, L, M).create();
+        folders.add().nestedRandomFolders(X, Y, Z).create();
+        folders.add().randomFolders(P, Q, R, S).create();
+        fileInP = folders.modify(P).add().randomFile().create();
 
         STEP("Create few secondary parent-child relationships.");
-        folders(K).addSecondaryChild(folders(B));
-        folders(X).addSecondaryChild(folders(K));
-        folders(L).addSecondaryChildren(folders(C), folders(Y));
-        folders(M).addSecondaryChild(folders(C));
-        folders(A).addSecondaryChild(fileInP);
+        folders.modify(K).add().secondaryContent(folders.get(B));
+        folders.modify(X).add().secondaryContent(folders.get(K));
+        folders.modify(L).add().secondaryContent(folders.get(C), folders.get(Y));
+        folders.modify(M).add().secondaryContent(folders.get(C));
+        folders.modify(A).add().secondaryContent(fileInP);
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -68,9 +66,9 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
     {
         // then
         STEP("Verify that searching by ANCESTOR and folderM will find one descendant node: folderC.");
-        SearchRequest query = req("ANCESTOR:" + folders(M).getNodeRef());
+        SearchRequest query = req("ANCESTOR:" + folders.get(M).getNodeRef());
         searchQueryService.expectResultsFromQuery(query, testUser,
-            folders(C).getName());
+            folders.get(C).getName());
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -78,14 +76,14 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
     {
         // then
         STEP("Verify that searching by ANCESTOR and folderL will find nodes: folderM, folderC, folderY and folderZ.");
-        SearchRequest queryAncestorL = req("ANCESTOR:" + folders(L).getNodeRef());
+        SearchRequest queryAncestorL = req("ANCESTOR:" + folders.get(L).getNodeRef());
         searchQueryService.expectResultsFromQuery(queryAncestorL, testUser,
             // primary descendant
-            folders(M).getName(),
+            folders.get(M).getName(),
             // secondary descendants
-            folders(C).getName(),
-            folders(Y).getName(),
-            folders(Z).getName());
+            folders.get(C).getName(),
+            folders.get(Y).getName(),
+            folders.get(Z).getName());
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -93,11 +91,11 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
     {
         // then
         STEP("Verify that searching by ANCESTOR and folderA will find nodes: folderB, folderC and fileInP.");
-        SearchRequest query = req("ANCESTOR:" + folders(A).getNodeRef());
+        SearchRequest query = req("ANCESTOR:" + folders.get(A).getNodeRef());
         searchQueryService.expectResultsFromQuery(query, testUser,
             // primary descendants
-            folders(B).getName(),
-            folders(C).getName(),
+            folders.get(B).getName(),
+            folders.get(C).getName(),
             // secondary descendant
             fileInP.getName());
     }
@@ -107,17 +105,17 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
     {
         // then
         STEP("Verify that all descendant of folderX can be found.");
-        SearchRequest query = req("ANCESTOR:" + folders(X).getNodeRef());
+        SearchRequest query = req("ANCESTOR:" + folders.get(X).getNodeRef());
         searchQueryService.expectResultsFromQuery(query, testUser,
             // primary descendants
-            folders(Y).getName(),
-            folders(Z).getName(),
+            folders.get(Y).getName(),
+            folders.get(Z).getName(),
             // secondary descendants
-            folders(B).getName(),
-            folders(C).getName(),
-            folders(K).getName(),
-            folders(L).getName(),
-            folders(M).getName()
+            folders.get(B).getName(),
+            folders.get(C).getName(),
+            folders.get(K).getName(),
+            folders.get(L).getName(),
+            folders.get(M).getName()
         );
     }
 
@@ -143,17 +141,17 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
     {
         // given
         STEP("Add to folderQ a secondary child folderR and verify if it can be found using ANCESTOR index and secondary child node reference.");
-        folders(Q).addSecondaryChild(folders(R));
+        folders.modify(Q).add().secondaryContent(folders.get(R));
 
         STEP("Verify that searching by ANCESTOR and folderQ will find secondary descendant node: folderR.");
-        SearchRequest query = req("ANCESTOR:" + folders(Q).getNodeRef());
+        SearchRequest query = req("ANCESTOR:" + folders.get(Q).getNodeRef());
         searchQueryService.expectResultsFromQuery(query, testUser,
             // secondary descendant
-            folders(R).getName());
+            folders.get(R).getName());
 
         // when
         STEP("Delete the secondary parent-child relationship between folderQ and FolderR.");
-        folders(Q).removeSecondaryChild(folders(R));
+        folders.modify(Q).remove().secondaryContent(folders.get(R));
 
         // then
         STEP("Verify that folderQ cannot be found by ANCESTOR and folderQ anymore.");
@@ -185,23 +183,23 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
     {
         // given
         STEP("Create two nested folders (E and F) in Document Library.");
-        Folder folderE = folders().createFolder( "E");
-        Folder folderF = folderE.createNestedFolder( "F");
+        FolderModel folderE = folders.add().randomFolder("E").create();
+        FolderModel folderF = folders.modify(folderE).add().randomFolder("F").create();
         STEP("Make folderE a secondary children of folderQ and folderR a secondary children of folderE.");
-        folders(Q).addSecondaryChild(folderE);
-        folderE.addSecondaryChild(folders(R));
+        folders.modify(Q).add().secondaryContent(folderE);
+        folders.modify(folderE).add().secondaryContent(folders.get(R));
 
         STEP("Verify that searching by ANCESTOR and folderQ will find its secondary descendant: folderE, folderF and folderR.");
-        SearchRequest queryAncestorQ = req("ANCESTOR:" + folders(Q).getNodeRef());
+        SearchRequest queryAncestorQ = req("ANCESTOR:" + folders.get(Q).getNodeRef());
         searchQueryService.expectResultsFromQuery(queryAncestorQ, testUser,
             // secondary descendants
             folderE.getName(),
             folderF.getName(),
-            folders(R).getName());
+            folders.get(R).getName());
 
         // when
         STEP("Delete folderE with its content.");
-        folders().delete(folderE);
+        folders.modify(folderE).delete();
 
         // then
         STEP("Verify that searching by ANCESTOR and folderQ will not find any nodes.");
@@ -228,24 +226,24 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
     {
         // given
         STEP("Create folderD inside folderQ, and add folderP to D as a secondary child.");
-        Folder folderD = folders(Q).createNestedFolder( "D");
-        folderD.addSecondaryChild(folders(P));
+        FolderModel folderD = folders.modify(Q).add().randomFolder("D").create();
+        folders.modify(folderD).add().secondaryContent(folders.get(P));
 
         STEP("Verify that searching by ANCESTOR and folderQ will find its primary and secondary descendant nodes: folderD, folderP and file.");
-        SearchRequest queryAncestorQ = req("ANCESTOR:" + folders(Q).getNodeRef());
+        SearchRequest queryAncestorQ = req("ANCESTOR:" + folders.get(Q).getNodeRef());
         searchQueryService.expectResultsFromQuery(queryAncestorQ, testUser,
             // primary descendant
             folderD.getName(),
             // secondary descendants
-            folders(P).getName(),
+            folders.get(P).getName(),
             fileInP.getName());
         STEP("Verify that searching by ANCESTOR and folderR will not find any descendant nodes.");
-        SearchRequest queryAncestorR = req("ANCESTOR:" + folders(R).getNodeRef());
+        SearchRequest queryAncestorR = req("ANCESTOR:" + folders.get(R).getNodeRef());
         searchQueryService.expectNoResultsFromQuery(queryAncestorR, testUser);
 
         // when
         STEP("Move folderD from folderQ to folderR.");
-        folderD.moveTo(folders(R));
+        folders.modify(folderD).moveTo(folders.get(R));
 
         // then
         STEP("Verify that search result for ANCESTOR and folderQ will not find any descendant anymore.");
@@ -255,11 +253,11 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
             // primary descendant
             folderD.getName(),
             // secondary descendants
-            folders(P).getName(),
+            folders.get(P).getName(),
             fileInP.getName());
 
         STEP("Clean-up - delete folderD.");
-        folders().delete(folderD);
+        folders.modify(folderD).delete();
     }
 
     /**
@@ -290,19 +288,19 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
     {
         // given
         STEP("Create nested folders (G and H) inside folderS and folderT in Document Library. Make folderP a secondary child of folderG.");
-        Folder folderG = folders(S).createNestedFolder( "G");
-        Folder folderH = folderG.createNestedFolder("H");
-        Folder folderT = folders().createFolder("T");
-        folderG.addSecondaryChild(folders(P));
+        FolderModel folderG = folders.modify(S).add().randomFolder("G").create();
+        FolderModel folderH = folders.modify(folderG).add().randomFolder("H").create();
+        FolderModel folderT = folders.add().randomFolder("T").create();
+        folders.modify(folderG).add().secondaryContent(folders.get(P));
 
         STEP("Verify that searching by ANCESTOR and folderS will find its descendant nodes: folderG, folderH, folderP and file in P.");
-        SearchRequest queryAncestorS = req("ANCESTOR:" + folders(S).getNodeRef());
+        SearchRequest queryAncestorS = req("ANCESTOR:" + folders.get(S).getNodeRef());
         searchQueryService.expectResultsFromQuery(queryAncestorS, testUser,
             // primary descendants
             folderG.getName(),
             folderH.getName(),
             // secondary descendants
-            folders(P).getName(),
+            folders.get(P).getName(),
             fileInP.getName());
         STEP("Verify that searching by ANCESTOR and folderT will not find any nodes.");
         SearchRequest queryAncestorT = req("ANCESTOR:" + folderT.getNodeRef());
@@ -310,7 +308,7 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
 
         // when
         STEP("Copy folderG with its content to folderT.");
-        Folder folderGCopy = folderG.copyTo(folderT);
+        FolderModel folderGCopy = folders.modify(folderG).copyTo(folderT);
 
         // then
         STEP("Verify that searching by ANCESTOR and folderS will find its descendant nodes: folderG, folderH, folderP and file in P.");
@@ -319,7 +317,7 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
             folderG.getName(),
             folderH.getName(),
             // secondary descendants
-            folders(P).getName(),
+            folders.get(P).getName(),
             fileInP.getName());
         STEP("Verify that searching by ANCESTOR and folderT will find its descendant nodes: folderG-copy, folderH-copy, folderP, file.");
         searchQueryService.expectResultsFromQuery(queryAncestorT, testUser,
@@ -327,11 +325,11 @@ public class NodesSecondaryAncestorIndexingTests extends NodesSecondaryChildrenR
             folderGCopy.getName(),
             folderH.getName(), // the same name as folderH-copy
             // secondary descendants
-            folders(P).getName(),
+            folders.get(P).getName(),
             fileInP.getName());
 
         STEP("Clean-up - delete folderG and folderT (with G's copy).");
-        folders().delete(folderG);
-        folders().delete(folderT);
+        folders.modify(folderG).delete();
+        folders.modify(folderT).delete();
     }
 }
