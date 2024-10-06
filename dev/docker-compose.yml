@@ -54,7 +54,7 @@ services:
             - 5432:5432
 
     solr6:
-        image: quay.io/alfresco/insight-engine:2.0.11
+        image: quay.io/alfresco/insight-engine:2.0.12
         environment:
             #Solr needs to know how to register itself with Alfresco
             SOLR_ALFRESCO_HOST: "host.docker.internal"

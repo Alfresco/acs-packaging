@@ -127,7 +127,7 @@ services:
             - 5432:5432
 
     solr6:
-        image: alfresco/alfresco-search-services:2.0.11
+        image: alfresco/alfresco-search-services:2.0.12
         mem_limit: 3g
         environment:
             #Solr needs to know how to register itself with Alfresco
@@ -180,7 +180,7 @@ services:
             - share
 
     sync-service:
-        image: quay.io/alfresco/service-sync:5.1.0-A7
+        image: quay.io/alfresco/service-sync:5.1.0-M2
         mem_limit: 1g
         environment:
             JAVA_OPTS : "
