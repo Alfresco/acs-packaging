@@ -239,6 +239,12 @@
                 <version>${alfresco.desktop-sync.version}</version>
                 <type>amp</type>
             </dependency>
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>${dependency.testng.version}</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>
