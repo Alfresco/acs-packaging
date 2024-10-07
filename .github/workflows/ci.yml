@@ -602,8 +602,6 @@ jobs:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v7.0.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.0.0
-        with:
-          java-version: ${{ matrix.java-version }}
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -611,6 +609,10 @@ jobs:
           bash ./scripts/ci/build.sh
       - name: "Set up the environment"
         run: mvn -B -V clean install -ntp -Pags -DskipTests -Dmaven.javadoc.skip=true
+      - name: "Change Java version for tests"
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.0.0
+        with:
+          java-version: ${{ matrix.java-version }}
       - name: "Run tests"
         id: tests
         timeout-minutes: 20
