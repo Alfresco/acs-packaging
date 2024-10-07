@@ -239,19 +239,6 @@
                 <version>${alfresco.desktop-sync.version}</version>
                 <type>amp</type>
             </dependency>
-            <!-- Dependencies below are added for test purposes - it should be inherited from parent - enterprise repo -->
-            <dependency>
-                <groupId>com.epam.reportportal</groupId>
-                <artifactId>agent-java-testng</artifactId>
-                <version>5.4.2</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.testng</groupId>
-                <artifactId>testng</artifactId>
-                <version>7.9.0</version>
-                <scope>test</scope>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>
