@@ -45,7 +45,7 @@ logger.alfresco-repo-content-transform-TransformerDebug.level=debug\n\
 # Grant all security permissions to jolokia and share in order to work properly.
 RUN sed -i -e "\$a\grant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/jolokia\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};\ngrant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/share\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};" ${TOMCAT_DIR}/conf/catalina.policy
 
-# Switch between currently installed JRE version and 11
+# Switch between currently installed JRE version and 21
 ARG JAVA_VERSION
 RUN if [[ "$JAVA_VERSION" == "21" ]]; then \
       ARCH=$(uname -m | sed s/86_//); \
