@@ -163,14 +163,17 @@ jobs:
           - testSuite: REST API
             pom: tests/tas-restapi/pom.xml
             profiles: all-tas-tests,run-restapi-aims
+            log-folder: tests/tas-restapi
             deploy-timeout: 60
           - testSuite: CMIS - BROWSER binding
             pom: tests/tas-cmis/pom.xml
             profiles: all-tas-tests,run-cmis-browser-with-aims
+            log-folder: tests/tas-cmis
             deploy-timeout: 40
           - testSuite: CMIS - ATOM binding
             pom: tests/tas-cmis/pom.xml
             profiles: all-tas-tests,run-cmis-atom-with-aims
+            log-folder: tests/tas-cmis
             deploy-timeout: 40
     steps:
       - uses: actions/checkout@v4
@@ -189,6 +192,7 @@ jobs:
       - name: "Set HOST_IP"
         run: echo "HOST_IP=$(hostname  -I | cut -f1 -d' ')" >> $GITHUB_ENV
       - name: "Set up the environment"
+        id: env
         run: |
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-aims.yml
           ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco" 180
@@ -197,8 +201,11 @@ jobs:
         timeout-minutes: ${{ matrix.deploy-timeout }}
         run: mvn -B install -ntp -f ${{ matrix.pom }} -P${{ matrix.profiles }} -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
       - name: "Print output after failure"
-        if: ${{ always() && matrix.testSuite == 'REST API' && steps.tests.outcome == 'failure' }}
-        run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-restapi"
+        if: ${{ always() && steps.tests.outcome == 'failure' }}
+        run: ${TAS_SCRIPTS}/output_logs_for_failures.sh ${{ matrix.log-folder }}
+      - name: "Dump all Docker containers logs"
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v7.0.0
+        if: failure() && (steps.tests.outcome == 'failure' || steps.env.outcome == 'failure')
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
   
