@@ -249,8 +249,6 @@ jobs:
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
-      - name: "Set HOST_IP"
-        run: echo "HOST_IP=$(hostname  -I | cut -f1 -d' ')" >> $GITHUB_ENV
       - name: "Set up the environment"
         id: env
         run: |
@@ -259,7 +257,9 @@ jobs:
       - name: "Run tests"
         id: tests
         timeout-minutes: ${{ matrix.deploy-timeout }}
-        run: mvn -B install -ntp -f ${{ matrix.pom }} -P${{ matrix.profiles }} -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
+        run: |
+          HOST_IP=$(hostname  -I | cut -f1 -d' ')
+          mvn -B install -ntp -f ${{ matrix.pom }} -P${{ matrix.profiles }} -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
       - name: "Print output after failure"
         if: ${{ always() && steps.tests.outcome == 'failure' }}
         run: ${TAS_SCRIPTS}/output_logs_for_failures.sh ${{ matrix.log-folder }}
