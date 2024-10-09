@@ -5,6 +5,7 @@ import static org.alfresco.utility.report.log.Step.STEP;
 
 import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.utility.model.FileModel;
+import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.TestGroup;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -46,28 +47,25 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
 
         // given
         STEP("Create few sets of nested folders in site's Document Library.");
-        folders().createNestedFolders(A, B, C);
-        folders().createNestedFolders(K, L, M);
-        folders().createNestedFolders(X, Y, Z);
-        folders().createFolder(P);
-        folders().createFolder(Q);
-        folders().createFolder(R);
-        folders().createFolder(S);
-        fileInP = folders(P).createRandomDocument();
+        folders.add().nestedRandomFolders(A, B, C).create();
+        folders.add().nestedRandomFolders(K, L, M).create();
+        folders.add().nestedRandomFolders(X, Y, Z).create();
+        folders.add().randomFolders(P, Q, R, S).create();
+        fileInP = folders.modify(P).add().randomFile().create();
 
         STEP("Create few secondary parent-child relationships.");
-        folders(K).addSecondaryChild(folders(B));
-        folders(X).addSecondaryChild(folders(K));
-        folders(L).addSecondaryChildren(folders(C), folders(Y));
-        folders(M).addSecondaryChild(folders(C));
-        folders(A).addSecondaryChild(fileInP);
+        folders.modify(K).add().secondaryContent(folders.get(B));
+        folders.modify(X).add().secondaryContent(folders.get(K));
+        folders.modify(L).add().secondaryContent(folders.get(C), folders.get(Y));
+        folders.modify(M).add().secondaryContent(folders.get(C));
+        folders.modify(A).add().secondaryContent(fileInP);
 
         STEP("Add to folderQ a secondary child folderR.");
-        folders(Q).addSecondaryChild(folders(R));
+        folders.modify(Q).add().secondaryContent(folders.get(R));
 
         // when
         STEP("Delete the secondary parent relationship between folderQ and FolderR.");
-        folders(Q).removeSecondaryChild(folders(R));
+        folders.modify(Q).remove().secondaryContent(folders.get(R));
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -75,10 +73,10 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
     {
         // then
         STEP("Verify that folderC can be found by secondary PATH using secondary parent folderM.");
-        SearchRequest query = req("PATH:\"//cm:" + folders(M).getName() + "//*\"");
+        SearchRequest query = req("PATH:\"//cm:" + folders.get(M).getName() + "//*\"");
         searchQueryService.expectResultsFromQuery(query, testUser,
             // secondary path
-            folders(C).getName());
+            folders.get(C).getName());
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -86,14 +84,14 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
     {
         // then
         STEP("Verify that primary and secondary children of folderL can be found using PATH index.");
-        SearchRequest query = req("PATH:\"//cm:" + folders(L).getName() + "//*\"");
+        SearchRequest query = req("PATH:\"//cm:" + folders.get(L).getName() + "//*\"");
         searchQueryService.expectResultsFromQuery(query, testUser,
             // primary path
-            folders(M).getName(),
+            folders.get(M).getName(),
             // secondary path
-            folders(C).getName(),
-            folders(Y).getName(),
-            folders(Z).getName()
+            folders.get(C).getName(),
+            folders.get(Y).getName(),
+            folders.get(Z).getName()
         );
     }
 
@@ -102,11 +100,11 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
     {
         // then
         STEP("Verify that a file being a secondary child of folderA can be found using PATH index.");
-        SearchRequest query = req("PATH:\"//cm:" + folders(A).getName() + "//*\"");
+        SearchRequest query = req("PATH:\"//cm:" + folders.get(A).getName() + "//*\"");
         searchQueryService.expectResultsFromQuery(query, testUser,
             // primary path
-            folders(B).getName(),
-            folders(C).getName(),
+            folders.get(B).getName(),
+            folders.get(C).getName(),
             // secondary path
             fileInP.getName());
     }
@@ -116,17 +114,17 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
     {
         // then
         STEP("Verify that all secondary children of folderX can be found.");
-        SearchRequest query = req("PATH:\"//cm:" + folders(X).getName() + "//*\"");
+        SearchRequest query = req("PATH:\"//cm:" + folders.get(X).getName() + "//*\"");
         searchQueryService.expectResultsFromQuery(query, testUser,
             // primary path
-            folders(Y).getName(),
-            folders(Z).getName(),
+            folders.get(Y).getName(),
+            folders.get(Z).getName(),
             // secondary path
-            folders(B).getName(),
-            folders(C).getName(),
-            folders(K).getName(),
-            folders(L).getName(),
-            folders(M).getName()
+            folders.get(B).getName(),
+            folders.get(C).getName(),
+            folders.get(K).getName(),
+            folders.get(L).getName(),
+            folders.get(M).getName()
         );
     }
 
@@ -152,7 +150,7 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
     {
         // then
         STEP("Verify that folderR cannot be found by PATH and folderQ anymore.");
-        SearchRequest query = req("PATH:\"//cm:" + folders(Q).getName() + "//*\"");
+        SearchRequest query = req("PATH:\"//cm:" + folders.get(Q).getName() + "//*\"");
         searchQueryService.expectNoResultsFromQuery(query, testUser);
     }
 
@@ -181,30 +179,30 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
     {
         // given
         STEP("Create two nested folders (E and F) in Document Library.");
-        Folder folderE = folders().createFolder( "E");
-        Folder folderF = folderE.createNestedFolder( "F");
+        FolderModel folderE = folders.add().randomFolder("E").create();
+        FolderModel folderF = folders.modify(folderE).add().randomFolder("F").create();
         STEP("Make folderE a secondary children of folderQ and folderR a secondary children of folderE.");
-        folders(Q).addSecondaryChild(folderE);
-        folderE.addSecondaryChild(folders(R));
+        folders.modify(Q).add().secondaryContent(folderE);
+        folders.modify(folderE).add().secondaryContent(folders.get(R));
 
         STEP("Verify that searching by PATH and folderQ will find nodes: folderE, folderF and folderR.");
-        SearchRequest queryPathQ = req("PATH:\"//cm:" + folders(Q).getName() + "//*\"");
+        SearchRequest queryPathQ = req("PATH:\"//cm:" + folders.get(Q).getName() + "//*\"");
         searchQueryService.expectResultsFromQuery(queryPathQ, testUser,
             // secondary path
             folderE.getName(),
             folderF.getName(),
-            folders(R).getName());
+            folders.get(R).getName());
         STEP("Verify that searching by PATH and folderE will find its primary and secondary children: folderF and folderR.");
         SearchRequest queryPathD = req("PATH:\"//cm:" + folderE.getName() + "//*\"");
         searchQueryService.expectResultsFromQuery(queryPathD, testUser,
             // primary path
             folderF.getName(),
             // secondary path
-            folders(R).getName());
+            folders.get(R).getName());
 
         // when
         STEP("Delete folderE and verify that PATH was updated for nodes folderQ and folderR.");
-        folders().delete(folderE);
+        folders.modify(folderE).delete();
 
         // then
         searchQueryService.expectNoResultsFromQuery(queryPathQ, testUser);
@@ -231,48 +229,48 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
     {
         // given
         STEP("Create folderD inside folderQ, and add folderP as a secondary child.");
-        Folder folderD = folders(Q).createNestedFolder( "D");
-        folderD.addSecondaryChild(folders(P));
-        folders(M).addSecondaryChild(folderD);
+        FolderModel folderD = folders.modify(Q).add().randomFolder("D").create();
+        folders.modify(folderD).add().secondaryContent(folders.get(P));
+        folders.modify(M).add().secondaryContent(folderD);
 
         STEP("Verify that searching by PATH and folderD will find nodes: folderP and file.");
         SearchRequest queryPathD = req("PATH:\"//cm:" + folderD.getName() + "//*\"");
         searchQueryService.expectResultsFromQuery(queryPathD, testUser,
             // secondary path
-            folders(P).getName(),
+            folders.get(P).getName(),
             fileInP.getName());
         STEP("Verify that searching by PATH and folderQ will find nodes: folderD, folderP and file.");
-        SearchRequest queryPathQ = req("PATH:\"//cm:" + folders(Q).getName() + "//*\"");
+        SearchRequest queryPathQ = req("PATH:\"//cm:" + folders.get(Q).getName() + "//*\"");
         searchQueryService.expectResultsFromQuery(queryPathQ, testUser,
             // primary path
             folderD.getName(),
             // secondary path
-            folders(P).getName(),
+            folders.get(P).getName(),
             fileInP.getName());
 
         // when
         STEP("Move folderD from folderQ to folderR.");
-        folderD.moveTo(folders(R));
+        folders.modify(folderD).moveTo(folders.get(R));
 
         // then
         STEP("Verify that search result for PATH and folderD didn't change.");
         searchQueryService.expectResultsFromQuery(queryPathD, testUser,
             // secondary path
-            folders(P).getName(),
+            folders.get(P).getName(),
             fileInP.getName());
         STEP("Verify that searching by PATH and folderQ doesn't return any node anymore.");
         searchQueryService.expectNoResultsFromQuery(queryPathQ, testUser);
         STEP("Verify that searching by PATH and folderR will find nodes: folderD, folderP and file.");
-        SearchRequest queryPathR = req("PATH:\"//cm:" + folders(R).getName() + "//*\"");
+        SearchRequest queryPathR = req("PATH:\"//cm:" + folders.get(R).getName() + "//*\"");
         searchQueryService.expectResultsFromQuery(queryPathR, testUser,
             // primary path
             folderD.getName(),
             // secondary path
-            folders(P).getName(),
+            folders.get(P).getName(),
             fileInP.getName());
 
         STEP("Clean-up - delete folderD.");
-        folders().delete(folderD);
+        folders.modify(folderD).delete();
     }
 
     /**
@@ -303,10 +301,10 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
     {
         // given
         STEP("Create nested folders (G and H) inside folderS and folderT in Document Library. Make folderP a secondary child of folderG.");
-        Folder folderG = folders(S).createNestedFolder( "G");
-        Folder folderH = folderG.createNestedFolder("H");
-        Folder folderT = folders().createFolder("T");
-        folderG.addSecondaryChild(folders(P));
+        FolderModel folderG = folders.modify(S).add().randomFolder("G").create();
+        FolderModel folderH = folders.modify(folderG).add().randomFolder("H").create();
+        FolderModel folderT = folders.add().randomFolder("T").create();
+        folders.modify(folderG).add().secondaryContent(folders.get(P));
 
         STEP("Verify that searching by PATH and folderG will find nodes: folderH, folderP and file.");
         SearchRequest queryPathG = req("PATH:\"//cm:" + folderG.getName() + "//*\"");
@@ -314,21 +312,21 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
             // primary path
             folderH.getName(),
             // secondary path
-            folders(P).getName(),
+            folders.get(P).getName(),
             fileInP.getName());
         STEP("Verify that searching by PATH and folderS will find nodes: folderG, folderH, folderP and file.");
-        SearchRequest queryPathS = req("PATH:\"//cm:" + folders(S).getName() + "//*\"");
+        SearchRequest queryPathS = req("PATH:\"//cm:" + folders.get(S).getName() + "//*\"");
         searchQueryService.expectResultsFromQuery(queryPathS, testUser,
             // primary path
             folderG.getName(),
             folderH.getName(),
             // secondary path
-            folders(P).getName(),
+            folders.get(P).getName(),
             fileInP.getName());
 
         // when
         STEP("Copy folderG with its content to folderT.");
-        Folder folderGCopy = folderG.copyTo(folderT);
+        FolderModel folderGCopy = folders.modify(folderG).copyTo(folderT);
 
         // then
         STEP("Verify that search result for PATH and folderS didn't change.");
@@ -337,15 +335,15 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
             folderH.getName(),
             folderG.getName(),
             // secondary path
-            folders(P).getName(),
+            folders.get(P).getName(),
             fileInP.getName());
         STEP("Verify that searching by PATH and folderS/folderG will find nodes: folderH, folderP and file in P.");
-        SearchRequest queryPathSG = req("PATH:\"//cm:" + folders(S).getName() + "/cm:" + folderG.getName() + "//*\"");
+        SearchRequest queryPathSG = req("PATH:\"//cm:" + folders.get(S).getName() + "/cm:" + folderG.getName() + "//*\"");
         searchQueryService.expectResultsFromQuery(queryPathSG, testUser,
             // primary path
             folderH.getName(),
             // secondary path
-            folders(P).getName(),
+            folders.get(P).getName(),
             fileInP.getName());
         STEP("Verify that folderG was copied with secondary parent-child relationship and PATH reflects that - search by folderT/folderGCopy should find nodes: folderH, folderP and file in P.");
         SearchRequest queryPathTGCopy = req("PATH:\"//cm:" + folderT.getName() + "/cm:" + folderGCopy.getName() + "//*\"");
@@ -353,11 +351,11 @@ public class NodesSecondaryPathIndexingTests extends NodesSecondaryChildrenRelat
             // primary path
             folderH.getName(), // the same name as folderH-copy
             // secondary path
-            folders(P).getName(),
+            folders.get(P).getName(),
             fileInP.getName());
 
         STEP("Clean-up - delete folderG and folderT (with G's copy).");
-        folders().delete(folderG);
-        folders().delete(folderT);
+        folders.modify(folderG).delete();
+        folders.modify(folderT).delete();
     }
 }
