@@ -46,7 +46,7 @@ logger.alfresco-repo-content-transform-TransformerDebug.level=debug\n\
 RUN sed -i -e "\$a\grant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/jolokia\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};\ngrant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/share\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};" ${TOMCAT_DIR}/conf/catalina.policy
 
 # Switch between currently installed JRE version and 21
-ARG JAVA_VERSION
+ARG JAVA_VERSION=17
 RUN if [[ "$JAVA_VERSION" == "21" ]]; then \
       ARCH=$(uname -m | sed s/86_//); \
       JAVA_RELEASE=21.0.4_7; \
