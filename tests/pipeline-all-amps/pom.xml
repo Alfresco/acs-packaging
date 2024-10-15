@@ -167,6 +167,7 @@
                                         </buildx>
                                         <dockerFileDir>${project.basedir}</dockerFileDir>
                                         <args>
+                                            <JAVA_VERSION>17</JAVA_VERSION>
                                             <BASE_IMAGE>${local.registry}/${base.image}</BASE_IMAGE>
                                         </args>
                                     </build>
