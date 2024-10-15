@@ -47,6 +47,7 @@ RUN sed -i -e "\$a\grant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/jolokia
 
 # Switch between currently installed JRE version and 21
 ARG JAVA_VERSION=17
+RUN echo "hello ${JAVA_VERSION}!"
 RUN if [[ "$JAVA_VERSION" == "21" ]]; then \
       ARCH=$(uname -m | sed s/86_//); \
       JAVA_RELEASE=21.0.4_7; \
