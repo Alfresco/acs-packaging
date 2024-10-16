@@ -15,6 +15,7 @@
         <skipDockerImage>${share.skipDockerImage}</skipDockerImage>
         <docker.quay-expires.value>NEVER</docker.quay-expires.value>
         <base.image>alfresco/alfresco-share-base:${share.image.tag}</base.image>
+        <image.java.version>DEFAULT</image.java.version>
         <scripts.directory>${project.parent.parent.parent.basedir}/scripts/dev</scripts.directory>
     </properties>
 
