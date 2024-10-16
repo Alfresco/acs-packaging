@@ -15,7 +15,7 @@
         <skipDockerImage>${repo.skipDockerImage}</skipDockerImage>
         <docker.quay-expires.value>NEVER</docker.quay-expires.value>
         <base.image>alfresco/alfresco-enterprise-repo-base:${repo.image.tag}</base.image>
-        <image.java.version>17</image.java.version>
+        <image.java.version>DEFAULT</image.java.version>
         <scripts.directory>${project.parent.parent.parent.basedir}/scripts/dev</scripts.directory>
     </properties>
 
