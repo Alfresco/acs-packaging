@@ -349,7 +349,6 @@ jobs:
       - name: "Dump all Docker containers logs"
         uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v7.1.1
         if: failure() && (steps.tests.outcome == 'failure' || steps.env.outcome == 'failure')
-        run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-restapi"
       - name: "Exit on failure"
         if: steps.tests.outcome != 'success'
         run: |
