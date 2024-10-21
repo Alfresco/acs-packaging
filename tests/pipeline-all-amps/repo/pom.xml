@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>pipeline-all-amps</artifactId>
-        <version>23.4.0-A11-SNAPSHOT</version>
+        <version>23.4.0-A14-SNAPSHOT</version>
     </parent>
 
     <artifactId>alfresco-pipeline-all-amps-repo</artifactId>
@@ -15,6 +15,7 @@
         <skipDockerImage>${repo.skipDockerImage}</skipDockerImage>
         <docker.quay-expires.value>NEVER</docker.quay-expires.value>
         <base.image>alfresco/alfresco-enterprise-repo-base:${repo.image.tag}</base.image>
+        <image.java.version>DEFAULT</image.java.version>
         <scripts.directory>${project.parent.parent.parent.basedir}/scripts/dev</scripts.directory>
     </properties>
 

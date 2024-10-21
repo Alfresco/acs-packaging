@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>content-repository-tests</artifactId>
-        <version>23.4.0-A11-SNAPSHOT</version>
+        <version>23.4.0-A14-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -34,6 +34,7 @@
                                 <build>
                                     <args>
                                         <BASE_IMAGE>${base.image}</BASE_IMAGE>
+                                        <JAVA_VERSION>${image.java.version}</JAVA_VERSION>
                                     </args>
                                     <contextDir>${project.basedir}</contextDir>
                                 </build>
@@ -116,6 +117,7 @@
                                         <dockerFileDir>${project.basedir}</dockerFileDir>
                                         <args>
                                             <BASE_IMAGE>${local.registry}/${base.image}</BASE_IMAGE>
+                                            <JAVA_VERSION>${image.java.version}</JAVA_VERSION>
                                         </args>
                                     </build>
                                 </image>
@@ -168,6 +170,7 @@
                                         <dockerFileDir>${project.basedir}</dockerFileDir>
                                         <args>
                                             <BASE_IMAGE>${local.registry}/${base.image}</BASE_IMAGE>
+                                            <JAVA_VERSION>${image.java.version}</JAVA_VERSION>
                                         </args>
                                     </build>
                                 </image>
@@ -220,6 +223,7 @@
                                         <dockerFileDir>${project.basedir}</dockerFileDir>
                                         <args>
                                             <BASE_IMAGE>${local.registry}/${base.image}</BASE_IMAGE>
+                                            <JAVA_VERSION>${image.java.version}</JAVA_VERSION>
                                         </args>
                                     </build>
                                 </image>
