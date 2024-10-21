@@ -325,6 +325,7 @@ jobs:
           RP_OPTS: ${{ github.ref_name == 'master' && steps.rp-prepare.outputs.mvn-opts || '' }}
         run: |
           eval "args=($RP_OPTS)"
+          HOST_IP=$(hostname -I | cut -f1 -d' ')
           mvn -B install -ntp -f ${{ matrix.pom }} -P${{ matrix.profiles }} -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth" "${args[@]}"
         continue-on-error: true
       - name: "Update GitHub Step Summary"
@@ -342,16 +343,12 @@ jobs:
           rp-project: ${{ env.RP_PROJECT }}
           rp-token: ${{ secrets.REPORT_PORTAL_TOKEN }}
         continue-on-error: true
-        run: |
-          HOST_IP=$(hostname  -I | cut -f1 -d' ')
-          mvn -B install -ntp -f ${{ matrix.pom }} -P${{ matrix.profiles }} -Denvironment=aims-environment -DrunBugs=false "-Didentity-service.auth-server-url=http://${HOST_IP}:8999/auth"
       - name: "Print output after failure"
         if: ${{ always() && steps.tests.outcome == 'failure' }}
         run: ${TAS_SCRIPTS}/output_logs_for_failures.sh ${{ matrix.log-folder }}
       - name: "Dump all Docker containers logs"
         uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v7.1.1
         if: failure() && (steps.tests.outcome == 'failure' || steps.env.outcome == 'failure')
-        if: ${{ always() && matrix.testSuite == 'REST API' && steps.tests.outcome == 'failure' }}
         run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-restapi"
       - name: "Exit on failure"
         if: steps.tests.outcome != 'success'
