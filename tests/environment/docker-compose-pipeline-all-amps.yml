@@ -149,7 +149,7 @@ services:
             - 8083:8983 #Browser port
 
     activemq:
-        image: alfresco/alfresco-activemq:5.18.3-jre17-rockylinux8
+        image: apache/activemq-classic:6.1.3
         mem_limit: 1g
         ports:
             - 8161:8161 # Web Console

@@ -57,7 +57,7 @@ services:
       - 5432:5432
 
   activemq:
-    image: alfresco/alfresco-activemq:${ACTIVEMQ_TAG}
+    image: apache/activemq-classic:${ACTIVEMQ_TAG}
     ports:
       - 8161:8161 # Web Console
       - 5672:5672 # AMQP
