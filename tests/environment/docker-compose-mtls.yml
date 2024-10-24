@@ -242,7 +242,7 @@ services:
       - ${CI_WORKSPACE}/keystores/searchEngine:/opt/alfresco-search-services/keystore
 
   activemq:
-    image: quay.io/alfresco/alfresco-activemq:${ACTIVEMQ_TAG}
+    image: apache/activemq-classic:${ACTIVEMQ_TAG}
     mem_limit: 1g
     ports:
       - "8161:8161" # Web Console

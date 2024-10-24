@@ -514,7 +514,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         @Override
         public String getActiveMqImage()
         {
-            return "alfresco/alfresco-activemq:" + envProperties.apply("ACTIVEMQ_TAG");
+            return "apache/activemq-classic:" + envProperties.apply("ACTIVEMQ_TAG");
         }
 
         @Override
