@@ -108,6 +108,14 @@ public class CategoryIndexingTests extends AbstractTestNGSpringContextTests
         searchQueryService.expectResultsFromQuery(query, testUser, testFile.getName());
     }
 
+    /** Check we can find the document assigned to a category even when the query includes a StoreRef. */
+    @Test (groups = TestGroup.SEARCH)
+    public void testFindDocumentByCategory()
+    {
+        SearchRequest query = req("cm:categories:\"workspace://SpacesStore/" + categoryA.getId() + "\"");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFile.getName());
+    }
+
     /** Check we can find the folder and document assigned to the other category. */
     @Test (groups = TestGroup.SEARCH)
     public void testFindFolderByCategory() {
