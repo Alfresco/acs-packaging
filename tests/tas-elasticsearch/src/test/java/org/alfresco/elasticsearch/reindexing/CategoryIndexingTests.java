@@ -33,6 +33,7 @@ import org.testng.annotations.Test;
 /**
  * Tests to verify live indexing of paths using Elasticsearch.
  */
+@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert"}) // these are TAS E2E tests and use searchQueryService.expectResultsFromQuery for assertion
 @ContextConfiguration (locations = "classpath:alfresco-elasticsearch-context.xml",
         initializers = AlfrescoStackInitializer.class)
 public class CategoryIndexingTests extends AbstractTestNGSpringContextTests
