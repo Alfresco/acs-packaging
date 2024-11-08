@@ -33,6 +33,7 @@ import org.testng.annotations.Test;
 /**
  * Tests to verify live indexing of paths using Elasticsearch.
  */
+@SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert"}) // these are TAS E2E tests and use searchQueryService.expectResultsFromQuery for assertion
 @ContextConfiguration (locations = "classpath:alfresco-elasticsearch-context.xml",
         initializers = AlfrescoStackInitializer.class)
 public class CategoryIndexingTests extends AbstractTestNGSpringContextTests
@@ -105,6 +106,14 @@ public class CategoryIndexingTests extends AbstractTestNGSpringContextTests
     public void testFindDocumentByCategory()
     {
         SearchRequest query = req("cm:categories:\"" + categoryA.getId() + "\"");
+        searchQueryService.expectResultsFromQuery(query, testUser, testFile.getName());
+    }
+
+    /** Check we can find the document assigned to a category even when the query includes a StoreRef. */
+    @Test (groups = TestGroup.SEARCH)
+    public void testFindDocumentByCategoryWithStoreRef()
+    {
+        SearchRequest query = req("cm:categories:\"workspace://SpacesStore/" + categoryA.getId() + "\"");
         searchQueryService.expectResultsFromQuery(query, testUser, testFile.getName());
     }
 
