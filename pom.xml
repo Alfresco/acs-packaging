@@ -23,7 +23,7 @@
         <alfresco.azure-connector.version>5.0.3-A2</alfresco.azure-connector.version>
         <alfresco.salesforce-connector.version>3.2.0-A2</alfresco.salesforce-connector.version>
         <alfresco.outlook.version>2.9.0</alfresco.outlook.version>
-        <alfresco.desktop-sync.version>5.1.0-A10</alfresco.desktop-sync.version>
+        <alfresco.desktop-sync.version>5.1.0-M2</alfresco.desktop-sync.version>
         <alfresco.ais.version>3.1.7-A4</alfresco.ais.version>
         <alfresco.hxinsight-connector.version>1.0.1-A2</alfresco.hxinsight-connector.version>
 
