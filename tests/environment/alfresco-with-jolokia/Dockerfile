@@ -1,14 +1,13 @@
 # BUILD STAGE
 FROM alfresco/alfresco-content-repository:latest AS JOLOKIABUILDER
 
-ARG JOLOKIA_VER=1.6.2
+ARG JOLOKIA_VER=2.1.2
 ARG TOMCAT_DIR=/usr/local/tomcat
 
 USER root
 RUN yum install -y curl-minimal unzip && \
     mkdir -p /build/jolokia && \
     curl -o /build/jolokia-jee.war https://repo1.maven.org/maven2/org/jolokia/jolokia-war-unsecured/${JOLOKIA_VER}/jolokia-war-unsecured-${JOLOKIA_VER}.war && \
-    ${TOMCAT_DIR}/bin/migrate.sh /build/jolokia-jee.war /build/jolokia.war && \
     unzip -q /build/jolokia.war -d /build/jolokia && chmod -R g+r,g-w,o= /build
 
 # ACTUAL IMAGE
