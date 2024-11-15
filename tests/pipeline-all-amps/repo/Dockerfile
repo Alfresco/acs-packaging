@@ -7,7 +7,7 @@ ARG JOLOKIA_VER=2.1.2
 USER root
 RUN yum install -y curl unzip && \
     mkdir -p /build/{api-explorer,gs-api-explorer,jolokia} && \
-    curl -o /build/jolokia.war https://repo1.maven.org/maven2/org/jolokia/jolokia-war-unsecured/${JOLOKIA_VER}/jolokia-war-unsecured-${JOLOKIA_VER}.war && \
+    curl -o /build/jolokia.war https://repo1.maven.org/maven2/org/jolokia/jolokia-agent-war-unsecured/${JOLOKIA_VER}/jolokia-agent-war-unsecured-${JOLOKIA_VER}.war && \
     unzip -q /build/jolokia.war -d /build/jolokia
 
 COPY target/wars/api-explorer.war /build
