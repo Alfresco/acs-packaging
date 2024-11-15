@@ -1,14 +1,15 @@
 # BUILD STAGE
-FROM alfresco/alfresco-content-repository:latest AS JOLOKIABUILDER
+FROM alpine:3.20.3 AS JOLOKIABUILDER
 
 ARG JOLOKIA_VER=2.1.2
-ARG TOMCAT_DIR=/usr/local/tomcat
 
 USER root
-RUN yum install -y curl-minimal unzip && \
+RUN apk update && \
+    apk add --no-cache curl unzip && \
     mkdir -p /build/jolokia && \
     curl -o /build/jolokia.war https://repo1.maven.org/maven2/org/jolokia/jolokia-agent-war-unsecured/${JOLOKIA_VER}/jolokia-agent-war-unsecured-${JOLOKIA_VER}.war && \
-    unzip -q /build/jolokia.war -d /build/jolokia && chmod -R g+r,g-w,o= /build
+    unzip -q /build/jolokia.war -d /build/jolokia &&  \
+    chmod -R g+r,g-w,o= /build
 
 # ACTUAL IMAGE
 FROM alfresco/alfresco-content-repository:latest
