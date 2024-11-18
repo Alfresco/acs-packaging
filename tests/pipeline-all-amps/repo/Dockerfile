@@ -1,12 +1,11 @@
 ARG BASE_IMAGE
 # BUILD STAGE SWAGGERBUILDER
-FROM alpine:3.20.3 AS SWAGGERBUILDER
+FROM alfresco/alfresco-content-repository:latest AS SWAGGERBUILDER
 
 ARG JOLOKIA_VER=2.1.2
 
 USER root
-RUN apk update && \
-    apk add --no-cache curl unzip && \
+RUN yum install -y curl-minimal unzip && \
     mkdir -p /build/{api-explorer,gs-api-explorer,jolokia} && \
     curl -o /build/jolokia.war https://repo1.maven.org/maven2/org/jolokia/jolokia-agent-war-unsecured/${JOLOKIA_VER}/jolokia-agent-war-unsecured-${JOLOKIA_VER}.war && \
     unzip -q /build/jolokia.war -d /build/jolokia
