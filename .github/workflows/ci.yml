@@ -7,10 +7,12 @@ on:
       - fix/**
       - master
       - release/**
+      - ACS-9009-add-possibility-to-set-preferences
   push:
     branches:
       - feature/**
       - fix/**
+      - ACS-9009-add-possibility-to-set-preferences
   workflow_call:
   workflow_dispatch:
 
