@@ -1,13 +1,13 @@
 ARG BASE_IMAGE
 # BUILD STAGE SWAGGERBUILDER
-FROM debian:11-slim AS SWAGGERBUILDER
+FROM alfresco/alfresco-content-repository:latest AS SWAGGERBUILDER
 
-ARG JOLOKIA_VER=1.6.2
+ARG JOLOKIA_VER=2.1.2
 
-RUN DEBIAN_FRONTEND=noninteractive; \
-    apt-get update -yqq && apt-get -yqq install curl unzip && \
+USER root
+RUN yum install -y curl-minimal unzip && \
     mkdir -p /build/{api-explorer,gs-api-explorer,jolokia} && \
-    curl -o /build/jolokia.war https://repo1.maven.org/maven2/org/jolokia/jolokia-war-unsecured/${JOLOKIA_VER}/jolokia-war-unsecured-${JOLOKIA_VER}.war && \
+    curl -o /build/jolokia.war https://repo1.maven.org/maven2/org/jolokia/jolokia-agent-war-unsecured/${JOLOKIA_VER}/jolokia-agent-war-unsecured-${JOLOKIA_VER}.war && \
     unzip -q /build/jolokia.war -d /build/jolokia
 
 COPY target/wars/api-explorer.war /build
