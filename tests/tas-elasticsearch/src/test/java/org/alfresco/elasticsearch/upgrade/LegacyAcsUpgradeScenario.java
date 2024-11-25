@@ -4,6 +4,7 @@ import static org.alfresco.elasticsearch.upgrade.Utils.createNetwork;
 import static org.alfresco.elasticsearch.upgrade.Utils.createTempContentStoreDirectory;
 
 import java.nio.file.Path;
+import java.util.Optional;
 
 import org.testcontainers.containers.Network;
 
@@ -72,15 +73,13 @@ class LegacyAcsUpgradeScenario implements AutoCloseable
 
     private void uploadLicence(ACSEnv env)
     {
-        final String licencePath = getTargetAcsLicencePath();
-        if (!env.uploadLicence(licencePath))
-        {
-            throw new RuntimeException("Failed to upload licence from `" + licencePath + "`.");
-        }
+        String licencePath = getTargetAcsLicencePath();
+        env.tryToUploadLicence(licencePath);
     }
 
     private String getTargetAcsLicencePath()
     {
-        return System.getenv("ALF_LICENCE_LOCAL_PATH");
+        return Optional.ofNullable(System.getenv("ALF_LICENCE_LOCAL_PATH"))
+                .orElseThrow(() -> new IllegalStateException("ALF_LICENCE_LOCAL_PATH environment variable is not set"));
     }
 }

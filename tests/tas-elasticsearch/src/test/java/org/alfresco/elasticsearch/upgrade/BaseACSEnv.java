@@ -4,6 +4,7 @@ import static java.time.Duration.ofMinutes;
 
 import static org.alfresco.elasticsearch.upgrade.Utils.waitFor;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
@@ -140,11 +141,16 @@ abstract class BaseACSEnv implements AutoCloseable
         repoHttpClient.setSearchService("elasticsearch");
     }
 
-    public boolean uploadLicence(String licencePath)
+    public void tryToUploadLicence(String licencePath)
     {
         try
         {
-            return repoHttpClient.uploadLicense(licencePath);
+            File licence = new File(licencePath);
+            if (!licence.isFile() || !licence.canRead())
+            {
+                throw new RuntimeException("Licence file at: %s is not a file or is not readable".formatted(licencePath));
+            }
+            repoHttpClient.uploadLicense(licence);
         }
         catch (IOException e)
         {
