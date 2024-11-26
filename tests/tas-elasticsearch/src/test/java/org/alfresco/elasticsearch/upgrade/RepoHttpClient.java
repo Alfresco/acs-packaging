@@ -109,7 +109,7 @@ class RepoHttpClient
         }
     }
 
-    public boolean uploadLicense(String licensePath) throws IOException
+    public void uploadLicense(File license) throws IOException
     {
         final HttpGet getCsrfToken = authenticate(new HttpGet(uploadLicenseAdminApiUri));
         final HttpClientContext httpCtx = HttpClientContext.create();
@@ -128,9 +128,6 @@ class RepoHttpClient
             csrfCookie = Objects.requireNonNull(cookies.get("alf-csrftoken"));
         }
 
-
-        File license = new File(licensePath);
-
         final URI uploadLicenseAdminCsrfApiUri = URI.create(new URIBuilder(uploadLicenseAdminApiUri)
                 .addParameter(csrfCookie.getName(), URLDecoder.decode(csrfCookie.getValue(), StandardCharsets.US_ASCII))
                 .toString());
@@ -144,12 +141,11 @@ class RepoHttpClient
         final HttpPost uploadRequest = authenticate(new HttpPost(uploadLicenseAdminCsrfApiUri));
         uploadRequest.setEntity(uploadEntity);
 
-        try (CloseableHttpResponse response = client.execute(uploadRequest, httpCtx))
+        var responseMap = executeAndGetResponseMap(uploadRequest, httpCtx);
+        if (!Boolean.TRUE.equals(responseMap.get("success")))
         {
-            String responseBody = EntityUtils.toString(response.getEntity());
-            return gson.fromJson(responseBody, Map.class).get("success").equals(true);
+            throw new IOException("Failed to upload a licence. Server response error: " + responseMap.get("error"));
         }
-
     }
 
     public boolean isServerUp() throws IOException
@@ -215,6 +211,15 @@ class RepoHttpClient
                 .collect(Collectors.toUnmodifiableSet());
 
         return Optional.of(names);
+    }
+
+    private Map<?,?> executeAndGetResponseMap(HttpPost httpPost, HttpClientContext httpCtx) throws IOException
+    {
+        try (CloseableHttpResponse response = client.execute(httpPost, httpCtx))
+        {
+            String responseBody = EntityUtils.toString(response.getEntity());
+            return gson.fromJson(responseBody, Map.class);
+        }
     }
 
     private <T extends HttpMessage> T authenticate(T msg)
