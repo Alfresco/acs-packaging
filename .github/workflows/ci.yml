@@ -45,15 +45,15 @@ jobs:
       (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request') &&
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.4.0
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v7.1.1
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.4.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.4.0
       - name: "Init"
         run: bash ./scripts/ci/init.sh
-      - uses: Alfresco/alfresco-build-tools/.github/actions/veracode@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/veracode@v8.4.0
         continue-on-error: true
         with:
           srcclr-api-token: ${{ secrets.SRCCLR_API_TOKEN }}
@@ -68,11 +68,11 @@ jobs:
       github.actor != 'dependabot[bot]' &&
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.4.0
       - uses: actions/checkout@v4
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v7.1.1
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.1.1
-      - uses: Alfresco/alfresco-build-tools/.github/actions/github-download-file@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.4.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.4.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/github-download-file@v8.4.0
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
           repository: "Alfresco/veracode-baseline-archive"
@@ -119,9 +119,9 @@ jobs:
       !contains(github.event.head_commit.message, '[skip pmd]') &&
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v7.1.1
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v7.1.1
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.4.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.4.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.4.0
       - uses: Alfresco/ya-pmd-scan@v4.1.0
         with:
           classpath-build-command: "bash ./scripts/ci/init.sh && bash ./scripts/ci/build.sh"
@@ -187,12 +187,12 @@ jobs:
             compose-file: docker-compose-with-ldap.yml
             deploy-timeout: 10
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.4.0
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v7.1.1
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.4.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.4.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -238,12 +238,12 @@ jobs:
             log-folder: tests/tas-cmis
             deploy-timeout: 40
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.4.0
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v7.1.1
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.4.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.4.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -264,7 +264,7 @@ jobs:
         if: ${{ always() && steps.tests.outcome == 'failure' }}
         run: ${TAS_SCRIPTS}/output_logs_for_failures.sh ${{ matrix.log-folder }}
       - name: "Dump all Docker containers logs"
-        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v7.1.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v8.4.0
         if: failure() && (steps.tests.outcome == 'failure' || steps.env.outcome == 'failure')
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
@@ -295,7 +295,7 @@ jobs:
             db-properties: -Ddb.driver=oracle.jdbc.OracleDriver -Ddb.name=alfresco -Ddb.url=jdbc:oracle:thin:@database:1521/PDB1 -Ddb.username=alfresco -Ddb.password=alfresco
             compose-file: docker-compose-oracle.yml
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.4.0
         with:
           merge-disk-volumes: true
           root-reserve-mb: 16384
@@ -304,8 +304,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v7.1.1
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.4.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.4.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -328,7 +328,7 @@ jobs:
         if: failure() && (steps.tests.outcome == 'failure' || steps.env.outcome == 'failure')
         run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
       - name: "Dump all Docker containers logs"
-        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v7.1.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v8.4.0
         if: failure() && (steps.tests.outcome == 'failure' || steps.env.outcome == 'failure')
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
@@ -340,12 +340,12 @@ jobs:
       !contains(github.event.head_commit.message, '[skip search]') &&
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.4.0
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v7.1.1
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.4.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.4.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -428,8 +428,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v7.1.1
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.4.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.4.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -440,7 +440,7 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -P${{ matrix.profiles }} -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}" "-Ddatabase.type=${{ matrix.db-type }}" -Dindeximage="alfresco-es-indexing-jdbc:latest" -Dreindeximage="alfresco-es-reindexing-jdbc:latest" -Drepoimage="alfresco-repository-databases:latest"
       - name: "Dump all Docker containers logs"
-        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v7.1.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v8.4.0
         if: failure() && steps.tests.outcome == 'failure'
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
@@ -464,8 +464,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v7.1.1
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.4.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.4.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -484,7 +484,7 @@ jobs:
         timeout-minutes: 30
         run: mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}" "-Ddatabase.type=postgresql" "-Dindeximage=alfresco-es-indexing-jdbc:latest" "-Dreindeximage=alfresco-es-reindexing-jdbc:latest" "-Drepoimage=alfresco-repository-databases:latest"
       - name: "Dump all Docker containers logs"
-        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v7.1.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v8.4.0
         if: failure() && steps.tests.outcome == 'failure'
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
@@ -495,12 +495,12 @@ jobs:
     if: >
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.4.0
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v7.1.1
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.4.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.4.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -526,7 +526,7 @@ jobs:
         if: failure() && steps.tests.outcome == 'failure'
         run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-all-amps"
       - name: "Dump all Docker containers logs"
-        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v7.1.1
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v8.4.0
         if: failure() && (steps.tests.outcome == 'failure' || steps.env.outcome == 'failure')
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
@@ -556,12 +556,12 @@ jobs:
             disabledHostnameVerification: true
             deploy-timeout: 10
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.4.0
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v7.1.1
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.4.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.4.0
       - name: "Generate Keystores and Truststores for Mutual TLS configuration"
         if: ${{ matrix.mtls }}
         run: |
@@ -603,12 +603,12 @@ jobs:
       matrix:
         java-version: [17, 21]
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.4.0
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v7.1.1
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.4.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.4.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -616,7 +616,7 @@ jobs:
           bash ./scripts/ci/build.sh
       - name: "Set up the environment"
         run: mvn -B -V clean install -ntp -Pags -DskipTests -Dmaven.javadoc.skip=true
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.4.0
         with:
           java-version: ${{ matrix.java-version }}
       - name: "Run tests"
@@ -640,12 +640,12 @@ jobs:
       matrix:
         java-version: [DEFAULT, 21]
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.4.0
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v7.1.1
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.4.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.4.0
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -684,12 +684,12 @@ jobs:
     if: >
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.4.0
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v7.1.1
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.4.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.4.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -720,12 +720,12 @@ jobs:
         ports:
           - 5000:5000
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.4.0
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v7.1.1
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.1.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.4.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.4.0
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
