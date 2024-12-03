@@ -117,6 +117,9 @@ else
   pullUpstreamTagAndBuildDockerImage "${SHARE_UPSTREAM_REPO}" "${SHARE_DEPENDENCY_VERSION}" "-P$BUILD_PROFILE -Pags -Dlicense.failOnNotUptodateHeader=true -Ddocker.quay-expires.value=NEVER -Ddependency.alfresco-community-repo.version=${COM_DEPENDENCY_VERSION} -Ddependency.alfresco-enterprise-repo.version=${ENT_DEPENDENCY_VERSION}"
 fi
 
+DSYNC_UPSTREAM_REPO="github.com/Alfresco/dsync-services.git"
+pullAndBuildSameBranchOnUpstream "${DSYNC_UPSTREAM_REPO}"
+
 # Build the current project
 if [[ -n "$IMAGE_TAG" ]]; then
   ACS_IMAGE="-Dimage.tag=$IMAGE_TAG"
