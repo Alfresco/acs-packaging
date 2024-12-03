@@ -118,7 +118,7 @@ else
 fi
 
 DSYNC_UPSTREAM_REPO="github.com/Alfresco/dsync-services.git"
-pullAndBuildSameBranchOnUpstream "${DSYNC_UPSTREAM_REPO}"
+pullAndBuildSameBranch "${DSYNC_UPSTREAM_REPO}"
 
 # Build the current project
 if [[ -n "$IMAGE_TAG" ]]; then
