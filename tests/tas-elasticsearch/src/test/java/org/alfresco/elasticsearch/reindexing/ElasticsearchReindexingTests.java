@@ -184,7 +184,11 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // Delete index documents
         cleanUpIndex();
         // Restart ElasticsearchConnector to Index Content
-        AlfrescoStackInitializer.liveIndexer.start();
+        if (contentIndexingEnabled)
+        {
+            // Reindexer requires lifeIndexer to index content.
+            AlfrescoStackInitializer.liveIndexer.start();
+        }
 
         // WHEN
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
