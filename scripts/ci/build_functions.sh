@@ -169,22 +169,6 @@ function pullAndBuildSameBranchOnUpstream() {
   popd
 }
 
-function pullAndBuildSameBranch() {
-  local UPSTREAM_REPO="${1}"
-
-  local SOURCE_BRANCH="$(identifyUpstreamSourceBranch "${UPSTREAM_REPO}")"
-
-  cloneRepo "${UPSTREAM_REPO}" "${SOURCE_BRANCH}"
-
-  pushd "$(dirname "${BASH_SOURCE[0]}")/../../../"
-
-  cd "$(basename "${UPSTREAM_REPO%.git}")"
-
-  mvn -B -ntp -V -q clean install -DskipTests -Dmaven.javadoc.skip=true
-
-  popd
-}
-
 function retieveLatestTag() {
   local REPO="${1}"
   local BRANCH="${2}"
