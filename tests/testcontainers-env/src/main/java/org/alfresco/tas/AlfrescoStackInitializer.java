@@ -145,10 +145,18 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     }
 
     /**
-     * Run the alfresco-elasticsearch-reindexing container.
-     *
-     * @param envParam Any environment variables to override from the defaults.
+     * Run the alfresco-elasticsearch-reindexing container with path reindexing enabled.
      */
+    public static void reindexEverything()
+    {
+        reindex(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true")); // Ensure path reindexing is enabled.
+    }
+
+        /**
+         * Run the alfresco-elasticsearch-reindexing container.
+         *
+         * @param envParam Any environment variables to override from the defaults.
+         */
     public static void reindex(Map<String, String> envParam)
     {
         // Run the reindexing container.
