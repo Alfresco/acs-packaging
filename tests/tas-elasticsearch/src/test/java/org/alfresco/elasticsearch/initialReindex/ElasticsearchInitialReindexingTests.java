@@ -1,9 +1,9 @@
 package org.alfresco.elasticsearch.initialReindex;
 
 import static org.alfresco.elasticsearch.SearchQueryService.req;
-import static org.alfresco.tas.AlfrescoStackInitializer.getImagesConfig;
+import static org.alfresco.tas.AlfrescoStackInitializer.*;
+import static org.alfresco.utility.model.FileType.TEXT_PLAIN;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -13,19 +13,15 @@ import org.alfresco.tas.AlfrescoStackInitializer;
 import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
+import org.alfresco.utility.model.FileModel;
+import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.TestGroup;
+import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.report.log.Step;
-import org.apache.http.HttpHost;
-import org.opensearch.client.RestClient;
-import org.opensearch.client.RestHighLevelClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.startupcheck.IndefiniteWaitOneShotStartupCheckStrategy;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -37,10 +33,6 @@ import org.testng.annotations.Test;
 
 public class ElasticsearchInitialReindexingTests extends AbstractTestNGSpringContextTests
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ElasticsearchInitialReindexingTests.class);
-
-    public static final String CUSTOM_ALFRESCO_INDEX = "custom-alfresco-index";
-
     @Autowired
     private ServerHealth serverHealth;
     @Autowired
@@ -52,11 +44,8 @@ public class ElasticsearchInitialReindexingTests extends AbstractTestNGSpringCon
     @Autowired
     protected SearchQueryService searchQueryService;
 
-    private org.alfresco.utility.model.UserModel testUser;
-
-    private org.alfresco.utility.model.SiteModel testSite;
-
-    private RestHighLevelClient elasticClient;
+    private UserModel testUser;
+    private SiteModel testSite;
 
     /**
      * Create a user and a private site and wait for these to be indexed.
@@ -72,13 +61,6 @@ public class ElasticsearchInitialReindexingTests extends AbstractTestNGSpringCon
         testUser = dataUser.createRandomTestUser();
         testSite = dataSite.usingUser(testUser).createPrivateRandomSite();
         createDocument();
-
-        Step.STEP("create ES client");
-        elasticClient = new RestHighLevelClient(
-                RestClient.builder(new HttpHost(AlfrescoStackInitializer.searchEngineContainer.getContainerIpAddress(),
-                                                AlfrescoStackInitializer.searchEngineContainer.getFirstMappedPort(),
-                                                "http")));
-
     }
 
     /**
@@ -96,34 +78,12 @@ public class ElasticsearchInitialReindexingTests extends AbstractTestNGSpringCon
         // WHEN
         // Run reindexer against the initial documents.
         reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByIds",
-                       "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
-                       "ALFRESCO_REINDEX_FROM_ID", "0",
-                       "ALFRESCO_REINDEX_TO_ID", "1000"));
+                "ALFRESCO_REINDEX_FROM_ID", "0",
+                "ALFRESCO_REINDEX_TO_ID", "1000"));
 
         // THEN
         // Check system document is indexed.
         searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), "budget.xls");
-    }
-
-    /**
-     * Run the alfresco-elasticsearch-reindexing container.
-     *
-     * @param envParam Any environment variables to override from the defaults.
-     */
-    private void reindex(Map<String, String> envParam)
-    {
-        // Run the reindexing container.
-        Map<String, String> env = AlfrescoStackInitializer.getReindexEnvBasic();
-        env.putAll(envParam);
-
-        try (GenericContainer reindexingComponent = new GenericContainer(getImagesConfig().getReIndexingImage())
-                                                            .withEnv(env)
-                                                            .withNetwork(AlfrescoStackInitializer.network)
-                                                            .withStartupCheckStrategy(
-                                                                    new IndefiniteWaitOneShotStartupCheckStrategy()))
-        {
-            reindexingComponent.start();
-        }
     }
 
     /**
@@ -136,7 +96,7 @@ public class ElasticsearchInitialReindexingTests extends AbstractTestNGSpringCon
         String documentName = "TestFile" + UUID.randomUUID() + ".txt";
         dataContent.usingUser(testUser)
                    .usingSite(testSite)
-                   .createContent(new org.alfresco.utility.model.FileModel(documentName, org.alfresco.utility.model.FileType.TEXT_PLAIN, "content"));
+                   .createContent(new FileModel(documentName, TEXT_PLAIN, "content"));
         return documentName;
     }
 }

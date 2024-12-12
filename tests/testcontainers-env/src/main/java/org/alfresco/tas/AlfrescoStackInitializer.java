@@ -145,14 +145,15 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     }
 
     /**
-     * Run the alfresco-elasticsearch-reindexing container with path reindexing enabled.
+     * Run the alfresco-elasticsearch-reindexing container.
+     *
+     * @param envParam Any environment variables to override from the defaults.
      */
-    public static void reindexEverything()
+    public static void reindex(Map<String, String> envParam)
     {
         // Run the reindexing container.
         Map<String, String> env = AlfrescoStackInitializer.getReindexEnvBasic();
-        env.putAll(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true", // Ensure path reindexing is enabled.
-                        "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
+        env.putAll(envParam);
 
         try (GenericContainer reindexingComponent = new GenericContainer(getImagesConfig().getReIndexingImage())
                 .withEnv(env)
@@ -174,6 +175,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                         "SPRING_DATASOURCE_USERNAME", databaseType.getUsername(),
                         "SPRING_DATASOURCE_PASSWORD", databaseType.getPassword(),
                         "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
+                        "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
                         "SPRING_ACTIVEMQ_BROKER-URL", "nio://activemq:61616",
                         "JAVA_TOOL_OPTIONS", "-Xmx1g",
                         "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config"));

@@ -4,8 +4,11 @@ import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.joining;
 
 import static org.alfresco.elasticsearch.SearchQueryService.req;
+import static org.alfresco.tas.AlfrescoStackInitializer.reindex;
 
 import java.util.Arrays;
+import java.util.Map;
+
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 
@@ -65,7 +68,7 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
 
         // Before we start testing the live indexing we need to use the reindexing component to index the system nodes.
         Step.STEP("Index system nodes.");
-        AlfrescoStackInitializer.reindexEverything();
+        reindex(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true")); // Ensure path reindexing is enabled.
 
         Step.STEP("Create a test user and private site.");
         testUser = dataUser.createRandomTestUser();
