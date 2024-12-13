@@ -45,7 +45,7 @@ import org.testng.annotations.Test;
  */
 @ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
                       initializers = AlfrescoStackInitializer.class)
-@SuppressWarnings("PMD.JUnit4TestShouldUseTestAnnotation") // these are testng tests
+@SuppressWarnings({"PMD.JUnit4TestShouldUseTestAnnotation", "PMD.JUnitTestsShouldIncludeAssert"}) // these are testng tests
 public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTests
 {
     @Autowired
@@ -97,7 +97,8 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // WHEN
         // Run reindexer (leaving ALFRESCO_REINDEX_TO_TIME as default).
-        reindex(Map.of("ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime));
+        reindex(Map.of("ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
+                "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
 
         // THEN
         // Check document indexed.
@@ -116,7 +117,8 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // WHEN
         // Run reindexer (with default dates to reindex everything).
-        reindex(Map.of("ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime));
+        reindex(Map.of("ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
+                "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
 
         // THEN
         // Check document indexed.
@@ -139,6 +141,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // WHEN
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
         reindex(Map.of("ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
+                "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
             "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "true",
             "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "true",
             "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "false"));
@@ -161,6 +164,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // WHEN
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
         reindex(Map.of("ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
+                "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
             "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "true",
             "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "false",
             "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "false"));
@@ -184,6 +188,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // WHEN
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
         reindex(Map.of("ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
+                "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
             "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "false",
             "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "true",
             "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "false"));
@@ -207,6 +212,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // WHEN
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
         reindex(Map.of("ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
+                "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
             "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "true",
             "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "false",
             "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true"));
@@ -230,6 +236,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // WHEN
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
         reindex(Map.of("ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
+                "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
             "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "true",
             "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "true",
             "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true"));
@@ -251,6 +258,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // WHEN
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
         reindex(Map.of("ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
+                "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
             "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "false",
             "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "false",
             "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true"));
@@ -274,8 +282,9 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // WHEN
         // Run reindexer with path indexing enabled (and with default dates to reindex everything).
-        reindex(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED",
-                "true", "ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime));
+        reindex(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true",
+                "ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
+                "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
 
         // THEN
         // Check path indexed.
@@ -300,7 +309,8 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // WHEN
         // Run reindexer with path indexing enabled (and with default dates to reindex everything).
         reindex(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true",
-                "ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime));
+                "ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
+                "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
 
         // THEN
         // Check path indexed.

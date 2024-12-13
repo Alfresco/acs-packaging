@@ -149,7 +149,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
      */
     public static void reindexEverything()
     {
-        reindex(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true")); // Ensure path reindexing is enabled.
+        reindex(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true", // Ensure path reindexing is enabled.
+                "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
     }
 
         /**
@@ -183,7 +184,6 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                         "SPRING_DATASOURCE_USERNAME", databaseType.getUsername(),
                         "SPRING_DATASOURCE_PASSWORD", databaseType.getPassword(),
                         "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
-                        "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
                         "SPRING_ACTIVEMQ_BROKER-URL", "nio://activemq:61616",
                         "JAVA_TOOL_OPTIONS", "-Xmx1g",
                         "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config"));

@@ -1,7 +1,7 @@
 package org.alfresco.elasticsearch.initialReindex;
 
 import static org.alfresco.elasticsearch.SearchQueryService.req;
-import static org.alfresco.tas.AlfrescoStackInitializer.*;
+import static org.alfresco.tas.AlfrescoStackInitializer.reindex;
 import static org.alfresco.utility.model.FileType.TEXT_PLAIN;
 
 import java.util.Map;
