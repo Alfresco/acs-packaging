@@ -86,9 +86,9 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     public void testReindexerFixesBrokenIndex()
     {
         // GIVEN
-        String reindexerStartTime = getReindexerStartTime();
         cleanUpIndex();
         liveIndexer.stop();
+        String reindexerStartTime = getReindexerStartTimeNow();
         String documentName = createDocumentWithRandomName();
         // Check document not indexed.
         // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
@@ -97,41 +97,47 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // WHEN
         // Run reindexer (leaving ALFRESCO_REINDEX_TO_TIME as default).
-        reindex(Map.of("ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
-                "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
+        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+                "ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime));
 
         // THEN
         // Check document indexed.
         searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
+
+        // TIDY
+        cleanUpIndex();
+        liveIndexer.start();
     }
 
     @Test(groups = TestGroup.SEARCH)
     public void testRecreateIndex()
     {
         // GIVEN
-        String reindexerStartTime = getReindexerStartTime();
-        liveIndexer.start();
         String documentName = createDocumentWithRandomName();
         liveIndexer.stop();
         cleanUpIndex();
 
         // WHEN
         // Run reindexer (with default dates to reindex everything).
-        reindex(Map.of("ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
-                "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
+        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
 
         // THEN
         // Check document indexed.
         // Nb. The cm:name:* term ensures that the query hits the index rather than the db.
         SearchRequest query = req("cm:name:" + documentName + " AND cm:name:*");
         searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
+
+        // TIDY
+        // Restart ElasticsearchConnector.
+        cleanUpIndex();
+        liveIndexer.start();
     }
 
     @Test(groups = TestGroup.SEARCH)
     public void testRecreateIndexWithMetadataAndContent()
     {
         // GIVEN
-        String reindexerStartTime = getReindexerStartTime();
+        String reindexerStartTime = getReindexerStartTimeTwentyMinutesAgo();
         liveIndexer.stop();
         String documentName = createDocumentWithRandomName();
         cleanUpIndex();
@@ -140,8 +146,8 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // WHEN
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
-        reindex(Map.of("ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
-                "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+                "ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
             "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "true",
             "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "true",
             "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "false"));
@@ -156,15 +162,15 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     public void testRecreateIndexWithMetadataAndNoContent()
     {
         // GIVEN
-        String reindexerStartTime = getReindexerStartTime();
+        String reindexerStartTime = getReindexerStartTimeTwentyMinutesAgo();
         liveIndexer.stop();
         String documentName = createDocumentWithRandomName();
         cleanUpIndex();
 
         // WHEN
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
-        reindex(Map.of("ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
-                "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+                "ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
             "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "true",
             "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "false",
             "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "false"));
@@ -178,7 +184,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     public void testRecreateIndexWithNoMetadataAndContent()
     {
         // GIVEN
-        String reindexerStartTime = getReindexerStartTime();
+        String reindexerStartTime = getReindexerStartTimeTwentyMinutesAgo();
         liveIndexer.stop();
         String documentName = createDocumentWithRandomName();
         cleanUpIndex();
@@ -187,8 +193,8 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // WHEN
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
-        reindex(Map.of("ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
-                "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+                "ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
             "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "false",
             "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "true",
             "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "false"));
@@ -204,15 +210,15 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     public void testRecreateIndexWithMetadataAndNoContentAndPath()
     {
         // GIVEN
-        String reindexerStartTime = getReindexerStartTime();
+        String reindexerStartTime = getReindexerStartTimeTwentyMinutesAgo();
         liveIndexer.stop();
         String documentName = createDocumentWithRandomName();
         cleanUpIndex();
 
         // WHEN
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
-        reindex(Map.of("ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
-                "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+                "ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
             "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "true",
             "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "false",
             "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true"));
@@ -226,7 +232,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     public void testRecreateIndexWithMetadataAndContentAndPath()
     {
         // GIVEN
-        String reindexerStartTime = getReindexerStartTime();
+        String reindexerStartTime = getReindexerStartTimeTwentyMinutesAgo();
         liveIndexer.stop();
         String documentName = createDocumentWithRandomName();
         cleanUpIndex();
@@ -235,8 +241,8 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // WHEN
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
-        reindex(Map.of("ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
-                "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+                "ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
             "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "true",
             "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "true",
             "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true"));
@@ -250,15 +256,15 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     public void testRecreateIndexWithNoMetadataAndPath()
     {
         // GIVEN
-        String reindexerStartTime = getReindexerStartTime();
+        String reindexerStartTime = getReindexerStartTimeTwentyMinutesAgo();
         liveIndexer.stop();
         String documentName = createDocumentWithRandomName();
         cleanUpIndex();
 
         // WHEN
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
-        reindex(Map.of("ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
-                "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+                "ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
             "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "false",
             "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "false",
             "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true"));
@@ -274,8 +280,6 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     public void testPathReindex()
     {
         // GIVEN
-        String reindexerStartTime = getReindexerStartTime();
-        liveIndexer.start();
         String documentName = createDocumentWithRandomName();
         liveIndexer.stop();
         cleanUpIndex();
@@ -283,7 +287,6 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // WHEN
         // Run reindexer with path indexing enabled (and with default dates to reindex everything).
         reindex(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true",
-                "ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
                 "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
 
         // THEN
@@ -294,14 +297,15 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // Also check that the document can be obtained by a path query against the site.
         query = req("PATH:\"//" + testSite.getTitle() + "/documentLibrary/*\" AND cm:name:" + documentName + " AND cm:name:*");
         searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
+
+        // TIDY
+        liveIndexer.start();
     }
 
     @Test (groups = TestGroup.SEARCH)
     public void testPathReindexQueryWithNamespaces()
     {
         // GIVEN
-        String reindexerStartTime = getReindexerStartTime();
-        liveIndexer.start();
         String documentName = createDocumentWithRandomName();
         liveIndexer.stop();
         cleanUpIndex();
@@ -309,7 +313,6 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // WHEN
         // Run reindexer with path indexing enabled (and with default dates to reindex everything).
         reindex(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true",
-                "ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
                 "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
 
         // THEN
@@ -320,13 +323,28 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // Also check that the document can be obtained by a path query against the site.
         query = req("PATH:\"//cm:" + testSite.getTitle() + "/cm:documentLibrary/*\" AND cm:name:" + documentName + " AND cm:name:*");
         searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
+
+        // TIDY
+        liveIndexer.start();
     }
 
-    private String getReindexerStartTime()
+    private String getReindexerStartTimeNow()
+    {
+        ZonedDateTime now = ZonedDateTime.now(Clock.systemUTC());
+        return formatTimeForReindexer(now);
+    }
+
+    private String getReindexerStartTimeTwentyMinutesAgo()
     {
         // Initial timestamp for reindexing by date: this will save reindexing time for these tests
         ZonedDateTime now = ZonedDateTime.now(Clock.systemUTC());
-        return DateTimeFormatter.ofPattern("yyyyMMddHHmm").format(now.minusMinutes(1));
+        // ACS-5044 Increased time to 20 minutes as 10 minutes proved insufficient to prevent intermittent failures
+        return formatTimeForReindexer(now.minusMinutes(20));
+    }
+
+    private String formatTimeForReindexer(ZonedDateTime zonedDateTime)
+    {
+        return DateTimeFormatter.ofPattern("yyyyMMddHHmm").format(zonedDateTime);
     }
 
     private String createDocumentWithRandomName()
