@@ -149,10 +149,20 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
      */
     public static void reindexEverything()
     {
+        reindex(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true", // Ensure path reindexing is enabled.
+                "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
+    }
+
+        /**
+         * Run the alfresco-elasticsearch-reindexing container.
+         *
+         * @param envParam Any environment variables to override from the defaults.
+         */
+    public static void reindex(Map<String, String> envParam)
+    {
         // Run the reindexing container.
         Map<String, String> env = AlfrescoStackInitializer.getReindexEnvBasic();
-        env.putAll(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true", // Ensure path reindexing is enabled.
-                        "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
+        env.putAll(envParam);
 
         try (GenericContainer reindexingComponent = new GenericContainer(getImagesConfig().getReIndexingImage())
                 .withEnv(env)
