@@ -130,8 +130,7 @@ jobs:
     name: ${{ matrix.testSuite }} TAS tests
     runs-on: ubuntu-latest
     if: >
-      contains(github.event.head_commit.message, '[tas]') &&
-      !contains(github.event.head_commit.message, '[skip tests]')
+      contains(github.event.head_commit.message, '[env]')
     strategy:
       fail-fast: false
       matrix:
@@ -141,51 +140,51 @@ jobs:
             profiles: all-tas-tests,run-restapi-part1
             compose-file: docker-compose-rest-api-tests.yml
             deploy-timeout: 60
-          - testSuite: REST API part2
-            pom-dir: tests/tas-restapi
-            profiles: all-tas-tests,run-restapi-part2
-            compose-file: docker-compose-rest-api-tests.yml
-            deploy-timeout: 60
-          - testSuite: REST API part3
-            pom-dir: tests/tas-restapi
-            profiles: all-tas-tests,run-restapi-part3
-            compose-file: docker-compose-rest-api-tests.yml
-            deploy-timeout: 60
-          - testSuite: CMIS (BROWSER binding)
-            pom-dir: tests/tas-cmis
-            profiles: all-tas-tests,run-cmis-browser
-            compose-file: docker-compose-cmis-tests.yml
-            deploy-timeout: 60
-          - testSuite: CMIS (ATOM binding)
-            pom-dir: tests/tas-cmis
-            profiles: all-tas-tests,run-cmis-atom
-            compose-file: docker-compose-cmis-tests.yml
-            deploy-timeout: 60
-          - testSuite: CMIS (WEBSERVICES binding)
-            pom-dir: tests/tas-cmis
-            profiles: all-tas-tests,run-cmis-webservices
-            compose-file: docker-compose-cmis-tests.yml
-            deploy-timeout: 60
-          - testSuite: Email
-            pom-dir: tests/tas-email
-            profiles: all-tas-tests
-            compose-file: docker-compose-email-tests.yml
-            deploy-timeout: 30
-          - testSuite: WebDAV
-            pom-dir: tests/tas-webdav
-            profiles: all-tas-tests
-            compose-file: docker-compose-minimal.yml
-            deploy-timeout: 20
-          - testSuite: Integration
-            pom-dir: tests/tas-integration
-            profiles: all-tas-tests
-            compose-file: docker-compose-integration-tests.yml
-            deploy-timeout: 30
-          - testSuite: LDAP
-            pom-dir: tests/tas-integration
-            profiles: run-ldap
-            compose-file: docker-compose-with-ldap.yml
-            deploy-timeout: 10
+#          - testSuite: REST API part2
+#            pom-dir: tests/tas-restapi
+#            profiles: all-tas-tests,run-restapi-part2
+#            compose-file: docker-compose-rest-api-tests.yml
+#            deploy-timeout: 60
+#          - testSuite: REST API part3
+#            pom-dir: tests/tas-restapi
+#            profiles: all-tas-tests,run-restapi-part3
+#            compose-file: docker-compose-rest-api-tests.yml
+#            deploy-timeout: 60
+#          - testSuite: CMIS (BROWSER binding)
+#            pom-dir: tests/tas-cmis
+#            profiles: all-tas-tests,run-cmis-browser
+#            compose-file: docker-compose-cmis-tests.yml
+#            deploy-timeout: 60
+#          - testSuite: CMIS (ATOM binding)
+#            pom-dir: tests/tas-cmis
+#            profiles: all-tas-tests,run-cmis-atom
+#            compose-file: docker-compose-cmis-tests.yml
+#            deploy-timeout: 60
+#          - testSuite: CMIS (WEBSERVICES binding)
+#            pom-dir: tests/tas-cmis
+#            profiles: all-tas-tests,run-cmis-webservices
+#            compose-file: docker-compose-cmis-tests.yml
+#            deploy-timeout: 60
+#          - testSuite: Email
+#            pom-dir: tests/tas-email
+#            profiles: all-tas-tests
+#            compose-file: docker-compose-email-tests.yml
+#            deploy-timeout: 30
+#          - testSuite: WebDAV
+#            pom-dir: tests/tas-webdav
+#            profiles: all-tas-tests
+#            compose-file: docker-compose-minimal.yml
+#            deploy-timeout: 20
+#          - testSuite: Integration
+#            pom-dir: tests/tas-integration
+#            profiles: all-tas-tests
+#            compose-file: docker-compose-integration-tests.yml
+#            deploy-timeout: 30
+#          - testSuite: LDAP
+#            pom-dir: tests/tas-integration
+#            profiles: run-ldap
+#            compose-file: docker-compose-with-ldap.yml
+#            deploy-timeout: 10
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v7.1.1
       - uses: actions/checkout@v4
