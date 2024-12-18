@@ -193,6 +193,14 @@ jobs:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v7.1.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.1.1
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        with:
+          # provide access to SSH user that triggered the build
+          limit-access-to-actor: true
+        env:
+          AWS_ACCESS_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_ACCESS_KEY_ID }}
+          AWS_SECRET_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_SECRET_ACCESS_KEY }}
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
