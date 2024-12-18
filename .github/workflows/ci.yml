@@ -83,12 +83,14 @@ jobs:
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
+      - name: "Remove excluded files"
+        run: bash ./scripts/ci/remove-sast-exclusions.sh
       - name: "Run SAST Scan"
         uses: veracode/Veracode-pipeline-scan-action@v1.0.16
         with:
           vid: '${{ secrets.VERACODE_API_ID }}'
           vkey: '${{ secrets.VERACODE_API_KEY }}'
-          file: "distribution/target/alfresco.war"
+          file: "distribution/target/alfresco-reduced.war"
           fail_build: true
           project_name: acs-packaging-acs
           issue_details: true
