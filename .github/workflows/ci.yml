@@ -84,13 +84,15 @@ jobs:
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
       - name: "Remove excluded files"
-        run: bash ./scripts/ci/remove-sast-exclusions.sh
+        run: |
+          bash mkdir temp-dir-for-sast
+          bash ./scripts/ci/remove-sast-exclusions.sh ./distribution/target/alfresco-reduced.war ./temp-dir-for-sast/reduced.war
       - name: "Run SAST Scan"
         uses: veracode/Veracode-pipeline-scan-action@v1.0.16
         with:
           vid: '${{ secrets.VERACODE_API_ID }}'
           vkey: '${{ secrets.VERACODE_API_KEY }}'
-          file: "distribution/target/alfresco-reduced.war"
+          file: "temp-dir-for-sast/reduced.war"
           fail_build: true
           project_name: acs-packaging-acs
           issue_details: true
@@ -108,6 +110,8 @@ jobs:
         with:
           name: Veracode Pipeline-Scan Results - ACS (Human Readable)
           path: readable_output.zip
+      - name: "Remove temporary directory"
+        run: bash rm -rfv temp-dir-for-sast
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
