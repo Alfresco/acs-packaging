@@ -4,7 +4,7 @@ set -ex
 pushd "$(dirname "${BASH_SOURCE[0]}")/../../"
 
 # Copy war file to temporary directory
-/bin/cp -f "$1" ./temp-dir-for-sast/reduced.war
+cp -f "$1" ./temp-dir-for-sast/reduced.war
 
 # Remove files to be excluded from Veracode SAST
 exclusions="./scripts/ci/SAST-exclusion-list.txt"
