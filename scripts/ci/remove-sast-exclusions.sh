@@ -4,7 +4,7 @@ set -ex
 pushd "$(dirname "${BASH_SOURCE[0]}")/../../"
 
 # Copy war file to temporary directory
-cp -f "$1" ./temp-dir-for-sast/reduced.war
+cp -f "$1" "$2"
 
 # Remove files to be excluded from Veracode SAST
 exclusions="./scripts/ci/SAST-exclusion-list.txt"
@@ -13,7 +13,7 @@ then
     while read -r line
     do
       echo "Removing WEB-INF/lib/$line"
-      zip -d ./temp-dir-for-sast/reduced.war "WEB-INF/lib/$line" || true
+      zip -d "$2" "WEB-INF/lib/$line" || true
     done < "$exclusions"
 else
     echo "No files to be excluded from SAST"
