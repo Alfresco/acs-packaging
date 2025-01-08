@@ -70,6 +70,8 @@ jobs:
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v7.1.1
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v7.1.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.1.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/github-download-file@v7.1.1
