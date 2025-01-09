@@ -34,7 +34,7 @@ env:
   TAS_SCRIPTS: ../alfresco-community-repo/packaging/tests/scripts
   ALF_LICENCE_S3_PATH: s3://acs-license/acs/alf25-allenabled.lic
   ALF_LICENCE_LOCAL_PATH: /tmp/licence.lic
-  PYTHON_VERSION: 3.7.15
+  PYTHON_VERSION: 3.8.12
   DTAS_VERSION: v1.5.5
 
 jobs:
@@ -70,6 +70,8 @@ jobs:
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v7.1.1
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v7.1.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.1.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/github-download-file@v7.1.1
