@@ -55,12 +55,12 @@ This file lists the recommended components for this Service Pack. Use it along w
 ##### Databases
 | Component | Recommended | Also Available |
 |---|---|---|
-| MySQL | 8.0 | 5.7.23 |
-| MS SQL Server | 2019 | 2017 |
-| Oracle | 19c (19.3)  | |
+| MySQL | 8.0 | |
+| MS SQL Server | 2022 | 2019 |
+| Oracle | 23c | |
 | PostgreSQL | 16.6 | 15.10, 14.15 |
-| MariaDB | 10.6 | 10.5, 10.4 |
-| Amazon Aurora PostgreSQL | 14.3 |
+| MariaDB | 10.11 | 10.6, 10.5 |
+| Amazon Aurora PostgreSQL | 15.5 | |
 
 ##### Database Connectors
 | Component | Recommended | Also Available |
