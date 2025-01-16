@@ -293,10 +293,10 @@ jobs:
           - testSuite: MySQL
             db-properties: -Ddb.driver=com.mysql.cj.jdbc.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:mysql://database:3306/alfresco
             compose-file: docker-compose-mysql.yml
-          - testSuite: MariaDB 10.6
+          - testSuite: MariaDB 10.11
             db-properties: -Ddb.driver=org.mariadb.jdbc.Driver -Ddb.username=alfresco -Ddb.password=alfresco -Ddb.url=jdbc:mariadb://database:3306/alfresco
             compose-file: docker-compose-mariadb.yml
-          - testSuite: MS SQL
+          - testSuite: MS SQL 2022
             db-properties: -Ddb.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver -Ddb.username=sa -Ddb.password=Alfresco1 -Ddb.url=jdbc:sqlserver://database:1433 -Ddb.txn.isolation=4096 -Ddb.pool.max=275
             compose-file: docker-compose-mssql.yml
           - testSuite: Oracle 19.3.0-ee
@@ -392,7 +392,7 @@ jobs:
             profiles: all-tas-tests,elastic
             search-engine-type: elasticsearch
             db-type: mysql
-          - testSuite: Elasticsearch Maria DB 10.6
+          - testSuite: Elasticsearch Maria DB 10.11
             profiles: all-tas-tests,elastic
             search-engine-type: elasticsearch
             db-type: mariadb
@@ -416,7 +416,7 @@ jobs:
             profiles: all-tas-tests,elastic-basic-auth
             search-engine-type: elasticsearch
             db-type: mysql
-          - testSuite: Elasticsearch Basic Auth MariaDB 10.6
+          - testSuite: Elasticsearch Basic Auth MariaDB 10.11
             profiles: all-tas-tests,elastic-basic-auth
             search-engine-type: elasticsearch
             db-type: mariadb
