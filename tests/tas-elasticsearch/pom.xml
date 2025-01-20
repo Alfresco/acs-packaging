@@ -107,6 +107,7 @@
         </exclusion>
       </exclusions>
     </dependency>
+<!--    Adding opensearch-rest-high-level-client until it will be fully removed in ACS-->
     <dependency>
       <groupId>org.opensearch.client</groupId>
       <artifactId>opensearch-rest-high-level-client</artifactId>
