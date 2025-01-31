@@ -506,7 +506,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         @Override
         public String getElasticsearchImage()
         {
-            return "docker.elastic.co/elasticsearch/elasticsearch:" + envProperties.apply("ES_TAG");
+            return "docker.elastic.co/elasticsearch/elasticsearch:" + envProperties.apply("ELASTICSEARCH_TAG");
         }
 
         @Override
