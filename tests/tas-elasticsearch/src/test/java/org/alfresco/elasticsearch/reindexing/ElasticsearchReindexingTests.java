@@ -28,12 +28,14 @@ import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
 import org.apache.http.HttpHost;
-import org.opensearch.client.RequestOptions;
 import org.opensearch.client.RestClient;
-import org.opensearch.client.RestHighLevelClient;
-import org.opensearch.index.query.QueryBuilders;
-import org.opensearch.index.reindex.BulkByScrollResponse;
-import org.opensearch.index.reindex.DeleteByQueryRequest;
+import org.opensearch.client.json.jackson.JacksonJsonpMapper;
+import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.opensearch._types.query_dsl.QueryBuilders;
+import org.opensearch.client.opensearch.core.DeleteByQueryRequest;
+import org.opensearch.client.opensearch.core.DeleteByQueryResponse;
+import org.opensearch.client.transport.OpenSearchTransport;
+import org.opensearch.client.transport.rest_client.RestClientTransport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -61,7 +63,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
     private UserModel testUser;
     private SiteModel testSite;
-    private RestHighLevelClient elasticClient;
+    private OpenSearchClient elasticClient;
 
     @BeforeClass(alwaysRun = true)
     public void dataPreparation()
@@ -76,10 +78,12 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         createDocumentWithRandomName();
 
         STEP("create ES client");
-        elasticClient = new RestHighLevelClient(
-                RestClient.builder(new HttpHost(searchEngineContainer.getContainerIpAddress(),
-                                                searchEngineContainer.getFirstMappedPort(),
-                                                "http")));
+
+        RestClient httpClient = RestClient.builder(new HttpHost(searchEngineContainer.getContainerIpAddress(),
+                                                                searchEngineContainer.getFirstMappedPort(), "http"))
+                    .build();
+        OpenSearchTransport transport = new RestClientTransport(httpClient, new JacksonJsonpMapper());
+        elasticClient = new OpenSearchClient(transport);
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -360,10 +364,14 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     {
         try
         {
-            DeleteByQueryRequest request = new DeleteByQueryRequest(CUSTOM_ALFRESCO_INDEX);
-            request.setQuery(QueryBuilders.matchAllQuery());
-            BulkByScrollResponse response = elasticClient.deleteByQuery(request, RequestOptions.DEFAULT);
-            STEP("Deleted " + response.getDeleted() + " documents from index");
+            DeleteByQueryRequest request = new DeleteByQueryRequest.Builder().index(CUSTOM_ALFRESCO_INDEX)
+                        .query(QueryBuilders.matchAll()
+                                           .build()
+                                           .toQuery())
+                        .build();
+
+            DeleteByQueryResponse response = elasticClient.deleteByQuery(request);
+            STEP("Deleted " + response.deleted() + " documents from index");
         }
         catch (IOException e)
         {
