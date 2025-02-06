@@ -100,18 +100,6 @@
       <artifactId>alfresco-elasticsearch-shared</artifactId>
       <version>${dependency.elasticsearch-shared.version}</version>
       <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-<!--    Adding opensearch-rest-high-level-client until it will be fully removed in ACS-->
-    <dependency>
-      <groupId>org.opensearch.client</groupId>
-      <artifactId>opensearch-rest-high-level-client</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.jsoup</groupId>
