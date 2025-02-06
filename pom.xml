@@ -15,7 +15,7 @@
 
     <properties>
         <dependency.alfresco-enterprise-repo.version>22.36</dependency.alfresco-enterprise-repo.version>
-        <dependency.alfresco-enterprise-share.version>22.24</dependency.alfresco-enterprise-share.version>
+        <dependency.alfresco-enterprise-share.version>22.25</dependency.alfresco-enterprise-share.version>
 
         <alfresco.rm-enterprise-rest-api-explorer.version>3.0.2</alfresco.rm-enterprise-rest-api-explorer.version>
 
