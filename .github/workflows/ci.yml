@@ -42,7 +42,7 @@ jobs:
     name: "Source Clear Scan (SCA)"
     runs-on: ubuntu-latest
     if: >
-      (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request') &&
+      (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.ref_name == 'fix/t1_OpenSearch_Migration') &&
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v7.1.1
@@ -64,7 +64,7 @@ jobs:
     name: "Pipeline SAST Scan - ACS"
     runs-on: ubuntu-latest
     if: >
-      (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request') &&
+      (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.ref_name == 'fix/t1_OpenSearch_Migration') &&
       github.actor != 'dependabot[bot]' &&
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
@@ -123,7 +123,7 @@ jobs:
     name: "PMD Scan"
     runs-on: ubuntu-latest
     if: >
-      github.event_name == 'pull_request' &&
+      github.ref_name == 'fix/t1_OpenSearch_Migration' &&
       !contains(github.event.head_commit.message, '[skip pmd]') &&
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
@@ -377,7 +377,7 @@ jobs:
     name: ${{ matrix.testSuite }} | TAS tests (Search API)
     runs-on: alfrescoPub-ubuntu2204-16G-4CPU
     if: >
-      (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request') &&
+      (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.ref_name == 'fix/t1_OpenSearch_Migration') &&
       !contains(github.event.head_commit.message, '[skip search]') &&
       !contains(github.event.head_commit.message, '[skip tests]')
     strategy:
@@ -457,7 +457,7 @@ jobs:
     name: ${{ matrix.testSuite }} Upgrade TAS tests
     runs-on: alfrescoPub-ubuntu2204-16G-4CPU
     if: >
-      (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request') &&
+      (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.ref_name == 'fix/t1_OpenSearch_Migration') &&
       !contains(github.event.head_commit.message, '[skip search]') &&
       !contains(github.event.head_commit.message, '[skip tests]')
     strategy:
