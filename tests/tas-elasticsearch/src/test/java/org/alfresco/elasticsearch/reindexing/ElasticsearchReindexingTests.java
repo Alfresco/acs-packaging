@@ -82,6 +82,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         RestClient httpClient = RestClient.builder(new HttpHost(searchEngineContainer.getContainerIpAddress(),
                                                                 searchEngineContainer.getFirstMappedPort(), "http"))
                     .build();
+      
         OpenSearchTransport transport = new RestClientTransport(httpClient, new JacksonJsonpMapper());
         elasticClient = new OpenSearchClient(transport);
     }
