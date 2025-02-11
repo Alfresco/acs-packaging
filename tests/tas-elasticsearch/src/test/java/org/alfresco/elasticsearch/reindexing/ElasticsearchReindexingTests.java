@@ -31,6 +31,7 @@ import org.apache.http.HttpHost;
 import org.opensearch.client.RestClient;
 import org.opensearch.client.json.jackson.JacksonJsonpMapper;
 import org.opensearch.client.opensearch.OpenSearchClient;
+import org.opensearch.client.opensearch._types.Conflicts;
 import org.opensearch.client.opensearch._types.query_dsl.QueryBuilders;
 import org.opensearch.client.opensearch.core.DeleteByQueryRequest;
 import org.opensearch.client.opensearch.core.DeleteByQueryResponse;
@@ -367,6 +368,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         {
             DeleteByQueryRequest request = new DeleteByQueryRequest.Builder().index(CUSTOM_ALFRESCO_INDEX)
                         .refresh(true)
+                        .conflicts(Conflicts.Proceed)
                         .query(QueryBuilders.matchAll()
                                            .build()
                                            .toQuery())
