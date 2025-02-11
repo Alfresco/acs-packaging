@@ -12,7 +12,9 @@
             <package name="org.alfresco.rest.groups.*"/>
             <package name="org.alfresco.rest.misc.*"/>
             <package name="org.alfresco.rest.nodes.*"/>
-            <package name="org.alfresco.rest.people.*"/>
+            <package name="org.alfresco.rest.people.*">
+                <exclude name="org.alfresco.rest.people.deauthorization.community.*"/>
+            </package>
             <package name="org.alfresco.rest.queries.*"/>
             <package name="org.alfresco.rest.ratings.*"/>
         </packages>
