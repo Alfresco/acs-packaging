@@ -366,6 +366,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         try
         {
             DeleteByQueryRequest request = new DeleteByQueryRequest.Builder().index(CUSTOM_ALFRESCO_INDEX)
+                        .refresh(true)
                         .query(QueryBuilders.matchAll()
                                            .build()
                                            .toQuery())
