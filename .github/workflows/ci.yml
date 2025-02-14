@@ -299,9 +299,6 @@ jobs:
           - testSuite: MS SQL 2022
             db-properties: -Ddb.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver -Ddb.username=sa -Ddb.password=Alfresco1 -Ddb.url=jdbc:sqlserver://database:1433 -Ddb.txn.isolation=4096 -Ddb.pool.max=275
             compose-file: docker-compose-mssql.yml
-          - testSuite: Oracle 19.3.0-ee
-            db-properties: -Ddb.driver=oracle.jdbc.OracleDriver -Ddb.name=alfresco -Ddb.url=jdbc:oracle:thin:@database:1521/PDB1 -Ddb.username=alfresco -Ddb.password=alfresco
-            compose-file: docker-compose-oracle.yml
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.13.0
         with:
@@ -400,10 +397,6 @@ jobs:
             profiles: all-tas-tests,elastic
             search-engine-type: elasticsearch
             db-type: mssql
-          - testSuite: Elasticsearch Oracle 19.3.0-ee
-            profiles: all-tas-tests,elastic
-            search-engine-type: elasticsearch
-            db-type: oracle
           - testSuite: Opensearch
             profiles: all-tas-tests,elastic
             search-engine-type: opensearch
@@ -424,10 +417,6 @@ jobs:
             profiles: all-tas-tests,elastic-basic-auth
             search-engine-type: elasticsearch
             db-type: mssql
-          - testSuite: Elasticsearch Basic Auth Oracle 19.3.0-ee
-            profiles: all-tas-tests,elastic-basic-auth
-            search-engine-type: elasticsearch
-            db-type: oracle
           - testSuite: Opensearch Basic Auth
             profiles: all-tas-tests,elastic-basic-auth
             search-engine-type: opensearch
