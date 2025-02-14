@@ -31,10 +31,10 @@ import org.apache.http.HttpHost;
 import org.opensearch.client.RestClient;
 import org.opensearch.client.json.jackson.JacksonJsonpMapper;
 import org.opensearch.client.opensearch.OpenSearchClient;
-import org.opensearch.client.opensearch._types.Conflicts;
 import org.opensearch.client.opensearch._types.query_dsl.QueryBuilders;
 import org.opensearch.client.opensearch.core.DeleteByQueryRequest;
 import org.opensearch.client.opensearch.core.DeleteByQueryResponse;
+import org.opensearch.client.opensearch.indices.RefreshRequest;
 import org.opensearch.client.transport.OpenSearchTransport;
 import org.opensearch.client.transport.rest_client.RestClientTransport;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -366,13 +366,14 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     {
         try
         {
+            RefreshRequest refreshRequest = new RefreshRequest.Builder().index(CUSTOM_ALFRESCO_INDEX).build();
+            elasticClient.indices().refresh(refreshRequest);
+
             DeleteByQueryRequest request = new DeleteByQueryRequest.Builder().index(CUSTOM_ALFRESCO_INDEX)
-                        .refresh(true)
-                        .conflicts(Conflicts.Proceed)
-                        .query(QueryBuilders.matchAll()
-                                           .build()
-                                           .toQuery())
-                        .build();
+                    .query(QueryBuilders.matchAll()
+                            .build()
+                            .toQuery())
+                    .build();
 
             DeleteByQueryResponse response = elasticClient.deleteByQuery(request);
             STEP("Deleted " + response.deleted() + " documents from index");
