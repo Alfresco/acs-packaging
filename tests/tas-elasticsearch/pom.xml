@@ -112,6 +112,7 @@
       <groupId>org.opensearch.client</groupId>
       <artifactId>opensearch-rest-high-level-client</artifactId>
       <scope>test</scope>
+      <version>2.11.1</version>
     </dependency>
     <dependency>
       <groupId>org.jsoup</groupId>
