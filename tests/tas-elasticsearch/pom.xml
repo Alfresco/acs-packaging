@@ -102,17 +102,10 @@
       <scope>test</scope>
       <exclusions>
         <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
+            <groupId>org.eclipse</groupId>
+            <artifactId>yasson</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-<!--    Adding opensearch-rest-high-level-client until it will be fully removed in ACS-->
-    <dependency>
-      <groupId>org.opensearch.client</groupId>
-      <artifactId>opensearch-rest-high-level-client</artifactId>
-      <scope>test</scope>
-      <version>2.11.1</version>
     </dependency>
     <dependency>
       <groupId>org.jsoup</groupId>
