@@ -10,7 +10,7 @@ https://www.alfresco.com/legal/agreements and https://www.alfresco.com/terms-use
 
 The SNAPSHOT version of artifacts are **never** published.
 
-### Contributing guide
+### Contributing guide 
 Please use [this guide](CONTRIBUTING.md) to make a contribution to the project.
 
 # General
