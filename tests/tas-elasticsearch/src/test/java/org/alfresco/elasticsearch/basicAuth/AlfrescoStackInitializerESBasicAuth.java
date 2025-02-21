@@ -138,8 +138,6 @@ public class AlfrescoStackInitializerESBasicAuth extends AlfrescoStackInitialize
         {
             return super.createElasticContainer()
                     .withEnv("xpack.security.enabled", "true")
-                    .withEnv("xpack.security.transport.ssl.enabled", "true")
-                    .withEnv("xpack.security.http.ssl.enabled", "true")
                     .withEnv("ELASTIC_PASSWORD", SEARCH_ENGINE_PASSWORD);
         }
     }
