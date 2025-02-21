@@ -56,13 +56,13 @@ class Elasticsearch implements AutoCloseable
 
         if(SearchEngineType.ELASTICSEARCH_ENGINE == cfg.getSearchEngineType())
         {
-            searchContainer.withEnv("xpack.security.enabled", "false");
+            searchContainer.withEnv("xpack.security.enabled", "false")
                 .withEnv("xpack.security.transport.ssl.enabled", "false")
-                .withEnv("xpack.security.http.ssl.enabled", "false")
+                .withEnv("xpack.security.http.ssl.enabled", "false");
         }
         if(SearchEngineType.OPENSEARCH_ENGINE == cfg.getSearchEngineType())
         {
-            searchContainer.withEnv("plugins.security.disabled", "true");
+            searchContainer.withEnv("plugins.security.disabled", "true")
                 .withEnv("plugins.security.ssl.http.enabled", "false");
         }
 
