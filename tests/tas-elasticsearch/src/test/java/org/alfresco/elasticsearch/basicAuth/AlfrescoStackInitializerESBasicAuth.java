@@ -55,7 +55,7 @@ public class AlfrescoStackInitializerESBasicAuth extends AlfrescoStackInitialize
     private void applyNewSecurityConfigs(GenericContainer opensearchContainer) throws IOException, InterruptedException
     {
         opensearchContainer.execInContainer("sh", "-c", "/usr/share/opensearch/plugins/opensearch-security/tools/securityadmin.sh " +
-                "-cd /usr/share/opensearch/plugins/opensearch-security/securityconfig " +
+                "-cd /usr/share/opensearch/config/opensearch-security " +
                 "-icl -nhnv " +
                 "-cert /usr/share/opensearch/config/kirk.pem " +
                 "-cacert /usr/share/opensearch/config/root-ca.pem " +
@@ -66,21 +66,21 @@ public class AlfrescoStackInitializerESBasicAuth extends AlfrescoStackInitialize
     private void addNewRoleMapping(GenericContainer opensearchContainer, String role, String username) throws IOException, InterruptedException
     {
         opensearchContainer.execInContainer(
-                "sh", "-c", "echo '\n\n" + newOpensearchRoleMapping(role, username) +"' >> /usr/share/opensearch/plugins/opensearch-security/securityconfig/roles_mapping.yml"
+                "sh", "-c", "echo '\n\n" + newOpensearchRoleMapping(role, username) +"' >> /usr/share/opensearch/config/opensearch-security/roles_mapping.yml"
         );
     }
 
     private void addNewRole(GenericContainer opensearchContainer, String role, String index) throws IOException, InterruptedException
     {
         opensearchContainer.execInContainer(
-                "sh", "-c", "echo '\n\n" + newOpensearchRule(role, index) +"' >> /usr/share/opensearch/plugins/opensearch-security/securityconfig/roles.yml"
+                "sh", "-c", "echo '\n\n" + newOpensearchRule(role, index) +"' >> /usr/share/opensearch/config/opensearch-security/roles.yml"
         );
     }
 
     private void addNewUser(GenericContainer opensearchContainer, String username, String passwordHash) throws IOException, InterruptedException
     {
         opensearchContainer.execInContainer(
-                "sh", "-c", "echo '\n\n" + newOpensearchUser(username, passwordHash) +"' >> /usr/share/opensearch/plugins/opensearch-security/securityconfig/internal_users.yml"
+                "sh", "-c", "echo '\n\n" + newOpensearchUser(username, passwordHash) +"' >> /usr/share/opensearch/config/opensearch-security/internal_users.yml"
         );
     }
 
