@@ -23,6 +23,10 @@
 
     <properties>
         <suiteXmlFile>${project.basedir}/src/test/resources/all-amps-suite.xml</suiteXmlFile>
+
+        <sap-content-connector-genericXchange.version>2.0.2-SNAPSHOT</sap-content-connector-genericXchange.version>
+        <sap-content-connector-repo.version>6.0.1</sap-content-connector-repo.version>
+        <sap-content-connector-share.version>6.0.1</sap-content-connector-share.version>
     </properties>
 
     <dependencies>
@@ -42,6 +46,24 @@
             <groupId>org.alfresco.integrations</groupId>
             <artifactId>alfresco-googledrive-repo-enterprise</artifactId>
             <version>${alfresco.googledrive.version}</version>
+            <type>amp</type>
+        </dependency>
+        <dependency>
+            <groupId>com.alfresco.integrations</groupId>
+            <artifactId>sap-content-connector-genericXchange</artifactId>
+            <version>${sap-content-connector-genericXchange.version}</version>
+            <type>amp</type>
+        </dependency>
+        <dependency>
+            <groupId>com.alfresco.integrations</groupId>
+            <artifactId>sap-content-connector-repo</artifactId>
+            <version>${sap-content-connector-repo.version}</version>
+            <type>amp</type>
+        </dependency>
+        <dependency>
+            <groupId>com.alfresco.integrations</groupId>
+            <artifactId>sap-content-connector-share</artifactId>
+            <version>${sap-content-connector-share.version}</version>
             <type>amp</type>
         </dependency>
 
@@ -268,6 +290,31 @@
                                             <type>jar</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>
+                                        </artifactItem>
+
+                                        <artifactItem>
+                                            <groupId>com.alfresco.integrations</groupId>
+                                            <artifactId>sap-content-connector-genericXchange</artifactId>
+                                            <version>${sap-content-connector-genericXchange.version}</version>
+                                            <type>amp</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>com.alfresco.integrations</groupId>
+                                            <artifactId>sap-content-connector-repo</artifactId>
+                                            <version>${sap-content-connector-repo.version}</version>
+                                            <type>amp</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>com.alfresco.integrations</groupId>
+                                            <artifactId>sap-content-connector-share</artifactId>
+                                            <version>${sap-content-connector-share.version}</version>
+                                            <type>amp</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/amps_share</outputDirectory>
                                         </artifactItem>
                                     </artifactItems>
                                 </configuration>
