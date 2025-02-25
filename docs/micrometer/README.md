@@ -14,11 +14,12 @@ repository service directly (by-passing the ingress).
 Prometheus uses a pulling pattern on the specified endpoints and is able to
 provide aggregation of time series events that help monitoring our application.
 
-Three types of metrics are exposed by the repository:
+Several types of metrics are exposed by the repository:
 
 * JVM metrics
 * DB (mybatis) metrics
 * REST API metrics
+* Authentication metrics (tickets/sessions and users)
 
 All of these and specific details about each gathered metric can be controlled
 with system properties:
@@ -32,6 +33,7 @@ metrics.dbMetricsReporter.query.statements.enabled=false
 metrics.jvmMetricsReporter.enabled=false
 metrics.restMetricsReporter.enabled=false
 metrics.restMetricsReporter.path.enabled=false
+metrics.authenticationMetricsReporter.enabled=false
 ```
 
 > This feature is enterprise only!
@@ -143,6 +145,7 @@ Feel free to update or add new Dashboards or queries that others may find useful
 * [Alfresco REST API Metrics](/docs/micrometer/Alfresco_Enterprise_REST_API_Dashboard-1714475951666.json)
 * [Alfresco JVM Metrics](/docs/micrometer/Alfresco_Enterprise_JVM_Dashboard-1714472967588.json)
 * [Alfresco Servlet Metrics](/docs/micrometer/Alfresco_Enterprise_Servlet_Dashboard-1714473338586.json)
+* [Alfresco Authentication Metrics](/docs/micrometer/Alfresco_Enterprise_Authentication_Dashboard.json)
 
 > The Alfresco JVM metrics dashboard have been largely inspired from the "JVM
 > micrometer" dashboard available at [Grafana
