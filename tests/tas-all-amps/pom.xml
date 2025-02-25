@@ -352,6 +352,7 @@
                                         <argument>install</argument>
                                         <argument>${project.build.directory}/amps</argument>
                                         <argument>${project.build.directory}/war/alfresco</argument>
+                                        <argument>-verbose</argument>
                                         <argument>-directory</argument>
                                         <argument>-nobackup</argument>
                                         <argument>-force</argument>
