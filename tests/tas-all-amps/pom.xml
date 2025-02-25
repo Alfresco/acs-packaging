@@ -70,6 +70,7 @@
             <groupId>com.alfresco.integrations</groupId>
             <artifactId>sap-content-connector-cmis-repo</artifactId>
             <version>${sap-content-connector-cmis-repo.version}</version>
+            <type>amp</type>
         </dependency>
 
         <dependency>
