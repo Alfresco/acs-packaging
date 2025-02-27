@@ -56,9 +56,9 @@ class LegacyAcsUpgradeScenario implements AutoCloseable
     @Override
     public void close()
     {
-        initialEnv.close();
-        elasticsearch.close();
-        mirroredEnv.close();
+//        initialEnv.close();
+//        elasticsearch.close();
+//        mirroredEnv.close();
     }
 
     public ACSEnv upgradeLegacyEnvironmentToCurrent()
