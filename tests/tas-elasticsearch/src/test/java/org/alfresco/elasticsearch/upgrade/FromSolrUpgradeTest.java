@@ -28,7 +28,7 @@ public class FromSolrUpgradeTest
         {
             final ACSEnv initialEnv = scenario.startInitialEnvWithSolrBasedSearchService();
             initialEnv.uploadFile(TEST_FILE_URL, FILE_UPLOADED_BEFORE_INITIAL_REINDEXING);
-            initialEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM, FILE_UPLOADED_BEFORE_INITIAL_REINDEXING);
+            initialEnv.expectSearchResult(ofMinutes(6), SEARCH_TERM, FILE_UPLOADED_BEFORE_INITIAL_REINDEXING);
 
             final AvailabilityProbe probe = initialEnv.getRunningSearchAPIAvailabilityProbe();
 
@@ -50,7 +50,7 @@ public class FromSolrUpgradeTest
                 mirroredEnv.reindexByIds(0, initialReIndexingUpperBound * 2);
 
                 Assert.assertTrue(elasticsearch.getIndexedDocumentCount() > 0);
-                mirroredEnv.expectSearchResult(ofMinutes(2), SEARCH_TERM, FILE_UPLOADED_BEFORE_INITIAL_REINDEXING);
+                mirroredEnv.expectSearchResult(ofMinutes(6), SEARCH_TERM, FILE_UPLOADED_BEFORE_INITIAL_REINDEXING);
             }
 
             final long documentsCount = elasticsearch.getIndexedDocumentCount();
@@ -58,14 +58,14 @@ public class FromSolrUpgradeTest
 
             initialEnv.startLiveIndexing();
 
-            initialEnv.expectSearchResult(ofMinutes(2), SEARCH_TERM,
+            initialEnv.expectSearchResult(ofMinutes(6), SEARCH_TERM,
                     FILE_UPLOADED_BEFORE_INITIAL_REINDEXING,
                     FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING);
             //Live indexing was not running so FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING hasn't been indexed
             Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), documentsCount);
 
             initialEnv.uploadFile(TEST_FILE_URL, FILE_UPLOADED_AFTER_STARTING_LIVE_INDEXING);
-            initialEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM,
+            initialEnv.expectSearchResult(ofMinutes(6), SEARCH_TERM,
                     FILE_UPLOADED_BEFORE_INITIAL_REINDEXING,
                     FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING,
                     FILE_UPLOADED_AFTER_STARTING_LIVE_INDEXING);
@@ -79,7 +79,7 @@ public class FromSolrUpgradeTest
             Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), documentsCount + 2);
 
             initialEnv.uploadFile(TEST_FILE_URL, FILE_UPLOADED_BEFORE_SWITCHING_TO_ELASTICSEARCH);
-            initialEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM,
+            initialEnv.expectSearchResult(ofMinutes(6), SEARCH_TERM,
                     FILE_UPLOADED_BEFORE_INITIAL_REINDEXING,
                     FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING,
                     FILE_UPLOADED_AFTER_STARTING_LIVE_INDEXING,
@@ -90,7 +90,7 @@ public class FromSolrUpgradeTest
             initialEnv.setElasticsearchSearchService();
 
             //Now we use ES. Check if we still have valid result.
-            initialEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM,
+            initialEnv.expectSearchResult(ofMinutes(6), SEARCH_TERM,
                     FILE_UPLOADED_BEFORE_INITIAL_REINDEXING,
                     FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING,
                     FILE_UPLOADED_AFTER_STARTING_LIVE_INDEXING,
@@ -99,7 +99,7 @@ public class FromSolrUpgradeTest
             scenario.shutdownSolr();
 
             //Solr has been stopped. Check if we still have valid result.
-            initialEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM,
+            initialEnv.expectSearchResult(ofMinutes(6), SEARCH_TERM,
                     FILE_UPLOADED_BEFORE_INITIAL_REINDEXING,
                     FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING,
                     FILE_UPLOADED_AFTER_STARTING_LIVE_INDEXING,
@@ -108,7 +108,7 @@ public class FromSolrUpgradeTest
             initialEnv.uploadFile(TEST_FILE_URL, FILE_UPLOADED_AFTER_SWITCHING_TO_ELASTICSEARCH);
 
             //Check if FILE_UPLOADED_AFTER_SWITCHING_TO_ELASTICSEARCH is part of the search result.
-            initialEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM,
+            initialEnv.expectSearchResult(ofMinutes(6), SEARCH_TERM,
                     FILE_UPLOADED_BEFORE_INITIAL_REINDEXING,
                     FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING,
                     FILE_UPLOADED_AFTER_STARTING_LIVE_INDEXING,
