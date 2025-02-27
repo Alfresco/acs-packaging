@@ -444,7 +444,7 @@ jobs:
 
   upgrade_tas_tests:
     name: ${{ matrix.testSuite }} Upgrade TAS tests
-    runs-on: ubuntu-latest
+    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
     if: >
       (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request') &&
       !contains(github.event.head_commit.message, '[skip search]') &&
