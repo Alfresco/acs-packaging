@@ -1,5 +1,5 @@
 ARG BASE_IMAGE
-FROM ${BASE_IMAGE}
+FROM alfresco/alfresco-enterprise-repo-base:latest
 
 # Set default docker_context.
 ARG resource_path=target
@@ -11,7 +11,7 @@ ARG IMAGEUSERNAME=alfresco
 # Set default environment args
 ARG TOMCAT_DIR=/usr/local/tomcat
 
-LABEL quay.expires-after=${docker.quay-expires.value}
+#LABEL quay.expires-after=${docker.quay-expires.value}
 
 USER root
 
@@ -24,7 +24,7 @@ COPY ${resource_path}/amps/* ${TOMCAT_DIR}/amps/
 # Install amps on alfresco.war
 RUN java -jar ${TOMCAT_DIR}/alfresco-mmt/alfresco-mmt*.jar install \
               ${TOMCAT_DIR}/amps \
-              ${TOMCAT_DIR}/webapps/alfresco -directory -nobackup
+              ${TOMCAT_DIR}/webapps/alfresco -directory -nobackup --force
 
 # The standard configuration is to have all Tomcat files owned by root with group GROUPNAME and whilst owner has read/write privileges,
 # group only has restricted permissions and world has no permissions.
