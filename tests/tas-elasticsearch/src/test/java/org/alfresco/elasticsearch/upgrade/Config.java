@@ -45,8 +45,7 @@ interface Config
 
     static Config getUpgradeScenarioConfig()
     {
-        return new Config()
-        {
+        return new Config() {
             @Override
             public String getRepositoryImage()
             {
@@ -108,18 +107,20 @@ interface Config
             }
 
             @Override
-            public String getOpensearchImage() {
+            public String getOpensearchImage()
+            {
                 return getImagesConfig().getOpensearchImage();
             }
 
             @Override
-            public String getSearchEngineImage() {
-                return getImagesConfig().getSearchEngineType() == SearchEngineType.OPENSEARCH_ENGINE ?
-                        getOpensearchImage() : getElasticsearchImage();
+            public String getSearchEngineImage()
+            {
+                return getImagesConfig().getSearchEngineType() == SearchEngineType.OPENSEARCH_ENGINE ? getOpensearchImage() : getElasticsearchImage();
             }
 
             @Override
-            public SearchEngineType getSearchEngineType() {
+            public SearchEngineType getSearchEngineType()
+            {
                 return getImagesConfig().getSearchEngineType();
             }
         };

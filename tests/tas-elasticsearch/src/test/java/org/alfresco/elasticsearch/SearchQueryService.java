@@ -17,6 +17,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Sets;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 
 import org.alfresco.rest.core.RestWrapper;
 import org.alfresco.rest.search.RestRequestQueryModel;
@@ -26,8 +28,6 @@ import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.rest.search.SearchResponse;
 import org.alfresco.utility.Utility;
 import org.alfresco.utility.model.UserModel;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 
 /** A class providing methods for testing search queries. */
 public class SearchQueryService
@@ -53,13 +53,13 @@ public class SearchQueryService
     public void expectResultsInOrder(SearchRequest searchRequest, UserModel user, boolean isAscending, String... expected)
     {
         Consumer<SearchResponse> response = searchResponse -> assertNamesInOrder(searchResponse, isAscending, expected);
-        expectResultsFromQuery(searchRequest,user,response);
+        expectResultsFromQuery(searchRequest, user, response);
     }
 
     public void expectResultsInOrder(SearchRequest searchRequest, UserModel user, String... expectedOrder)
     {
         Consumer<SearchResponse> response = searchResponse -> assertNamesInOrder(searchResponse, expectedOrder);
-        expectResultsFromQuery(searchRequest,user,response);
+        expectResultsFromQuery(searchRequest, user, response);
     }
 
     public void expectResultsStartingWithOneOf(SearchRequest searchRequest, UserModel user, String... expected)
@@ -67,13 +67,13 @@ public class SearchQueryService
         Consumer<SearchResponse> response = searchResponse -> {
             List<String> expectedFirstElements = List.of(expected);
             String actualFirstElement = searchResponse.getEntries().stream()
-                .map(SearchNodeModel::getModel)
-                .map(SearchNodeModel::getName)
-                .findFirst()
-                .orElse(null);
+                    .map(SearchNodeModel::getModel)
+                    .map(SearchNodeModel::getName)
+                    .findFirst()
+                    .orElse(null);
             assertTrue(expectedFirstElements.contains(actualFirstElement), "Unexpected search results - actual first element: " + actualFirstElement + ", expected one of: " + expectedFirstElements + " |");
         };
-        expectResultsFromQuery(searchRequest,user,response);
+        expectResultsFromQuery(searchRequest, user, response);
     }
 
     public void expectResultsFromQuery(SearchRequest searchRequest, UserModel user, String... expected)
@@ -121,11 +121,10 @@ public class SearchQueryService
     {
         try
         {
-            Utility.sleep(1000, MAX_TIME, () ->
-            {
+            Utility.sleep(1000, MAX_TIME, () -> {
                 SearchResponse response = client.authenticateUser(user)
-                                                .withSearchAPI()
-                                                .search(searchRequest);
+                        .withSearchAPI()
+                        .search(searchRequest);
                 client.assertStatusCodeIs(HttpStatus.OK);
                 assertionMethod.accept(response);
             });
@@ -136,8 +135,8 @@ public class SearchQueryService
         }
     }
 
-    public void expectErrorFromQuery(SearchRequest searchRequest, org.alfresco.utility.model.UserModel user, 
-                                        HttpStatus expectedStatusCode, String containsErrorString)
+    public void expectErrorFromQuery(SearchRequest searchRequest, org.alfresco.utility.model.UserModel user,
+            HttpStatus expectedStatusCode, String containsErrorString)
     {
         client.authenticateUser(user).withSearchAPI().search(searchRequest);
         client.assertStatusCodeIs(expectedStatusCode);
@@ -147,9 +146,9 @@ public class SearchQueryService
     private void assertNodeRefs(SearchResponse actual, String... expected)
     {
         Set<String> result = actual.getEntries().stream()
-                                   .map(SearchNodeModel::getModel)
-                                   .map(SearchNodeModel::getId)
-                                   .collect(Collectors.toSet());
+                .map(SearchNodeModel::getModel)
+                .map(SearchNodeModel::getId)
+                .collect(Collectors.toSet());
         Set<String> expectedList = Sets.newHashSet(expected);
         assertEquals(result, expectedList, "Unexpected search results - got " + result + " expected " + expectedList);
     }
@@ -157,9 +156,9 @@ public class SearchQueryService
     private void assertNames(SearchResponse actual, String... expected)
     {
         Set<String> result = actual.getEntries().stream()
-                                   .map(SearchNodeModel::getModel)
-                                   .map(SearchNodeModel::getName)
-                                   .collect(Collectors.toSet());
+                .map(SearchNodeModel::getModel)
+                .map(SearchNodeModel::getName)
+                .collect(Collectors.toSet());
         Set<String> expectedList = Sets.newHashSet(expected);
         assertEquals(result, expectedList, "Unexpected search results - got " + result + " expected " + expectedList);
     }
@@ -170,16 +169,18 @@ public class SearchQueryService
         Set<String> expectedSet = Sets.newHashSet(expected);
         // Filter to only include results that were expected.
         Set<String> filteredResults = actual.getEntries().stream()
-                                            .map(SearchNodeModel::getModel)
-                                            .map(SearchNodeModel::getName)
-                                            .filter(name -> expectedSet.contains(name))
-                                            .collect(Collectors.toSet());
+                .map(SearchNodeModel::getModel)
+                .map(SearchNodeModel::getName)
+                .filter(name -> expectedSet.contains(name))
+                .collect(Collectors.toSet());
         assertEquals(filteredResults, expectedSet, "Did not receive all the expected search results - got " + filteredResults + " from expected set " + expectedSet);
     }
 
-    private List<String> orderNames(boolean isAscending, String... filename){
+    private List<String> orderNames(boolean isAscending, String... filename)
+    {
         List<String> orderedNames = Arrays.stream(filename).sorted().collect(Collectors.toList());
-        if(!isAscending){
+        if (!isAscending)
+        {
             orderedNames = orderedNames.stream().sorted(Comparator.reverseOrder()).collect(Collectors.toList());
         }
         return orderedNames;
@@ -199,18 +200,18 @@ public class SearchQueryService
     {
         List<String> expectedInOrder = List.of(expectedOrder);
         List<String> result = actual.getEntries().stream()
-            .map(SearchNodeModel::getModel)
-            .map(SearchNodeModel::getName)
-            .toList();
+                .map(SearchNodeModel::getModel)
+                .map(SearchNodeModel::getName)
+                .toList();
         assertEquals(result, expectedInOrder, "Unexpected search results - got " + result + " expected " + expectedInOrder);
     }
 
     private void assertNodeTypes(SearchResponse actual, String... expected)
     {
         Set<String> result = actual.getEntries().stream()
-                                   .map(SearchNodeModel::getModel)
-                                   .map(SearchNodeModel::getNodeType)
-                                   .collect(Collectors.toSet());
+                .map(SearchNodeModel::getModel)
+                .map(SearchNodeModel::getNodeType)
+                .collect(Collectors.toSet());
         Set<String> expectedList = Sets.newHashSet(expected);
         assertEquals(result, expectedList, "Unexpected search results - got " + result + " expected " + expectedList);
     }
@@ -218,10 +219,10 @@ public class SearchQueryService
     private void assertAllSearchResults(SearchResponse actual, Predicate<SearchNodeModel> assertion, Function<SearchNodeModel, String> failureMessageFunction)
     {
         String result = actual.getEntries().stream()
-                              .map(SearchNodeModel::getModel)
-                              .filter(Predicate.not(assertion))
-                              .map(failureMessageFunction)
-                              .collect(Collectors.joining("\n"));
+                .map(SearchNodeModel::getModel)
+                .filter(Predicate.not(assertion))
+                .map(failureMessageFunction)
+                .collect(Collectors.joining("\n"));
         assertTrue(result.isEmpty(), "assertAllSearchResults failed with these issues:\n" + result);
     }
 
@@ -251,8 +252,8 @@ public class SearchQueryService
         Optional.ofNullable(language).ifPresent(restRequestQueryModel::setLanguage);
         SearchRequest request = new SearchRequest(restRequestQueryModel);
         List<RestRequestTemplatesModel> templatesModels = templates.entrySet().stream()
-            .map(entry -> RestRequestTemplatesModel.builder().name(entry.getKey()).template(entry.getValue()).create())
-            .toList();
+                .map(entry -> RestRequestTemplatesModel.builder().name(entry.getKey()).template(entry.getValue()).create())
+                .toList();
         request.setTemplates(templatesModels);
 
         return request;

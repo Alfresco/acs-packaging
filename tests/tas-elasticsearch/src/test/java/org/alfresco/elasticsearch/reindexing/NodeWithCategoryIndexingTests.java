@@ -5,12 +5,13 @@ import static java.lang.String.format;
 import static org.alfresco.elasticsearch.SearchQueryService.req;
 import static org.alfresco.utility.report.log.Step.STEP;
 
-import org.alfresco.rest.repo.resource.Categories;
-import org.alfresco.rest.search.SearchRequest;
-import org.alfresco.utility.model.TestGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import org.alfresco.rest.repo.resource.Categories;
+import org.alfresco.rest.search.SearchRequest;
+import org.alfresco.utility.model.TestGroup;
 
 /**
  * Tests verifying live indexing of secondary children and ANCESTOR index in Elasticsearch.
@@ -22,12 +23,7 @@ public class NodeWithCategoryIndexingTests extends NodesSecondaryChildrenRelated
     @Autowired
     private Categories categories;
 
-    /*
-    A --- B  (folders)
-    \____
-         \
-    K --- L  (categories)
-     */
+    /* A --- B (folders) \____ \ K --- L (categories) */
     @BeforeClass(alwaysRun = true)
     @Override
     public void dataPreparation()

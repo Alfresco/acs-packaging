@@ -5,6 +5,12 @@ import static org.alfresco.utility.model.FileType.TEXT_PLAIN;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
 import org.alfresco.elasticsearch.SearchQueryService;
 import org.alfresco.rest.core.RestWrapper;
 import org.alfresco.rest.model.RestCategoryLinkBodyModel;
@@ -22,16 +28,11 @@ import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.report.log.Step;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 /**
  * Tests to verify live indexing of paths using Elasticsearch.
  */
-@ContextConfiguration (locations = "classpath:alfresco-elasticsearch-context.xml",
+@ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
         initializers = AlfrescoStackInitializer.class)
 public class CategoryReindexingTests extends AbstractTestNGSpringContextTests
 {
@@ -62,7 +63,7 @@ public class CategoryReindexingTests extends AbstractTestNGSpringContextTests
     private FolderModel testFolder;
 
     /** Create a user, private site and two categories. Create a folder (in category B) containing a document (in category A and category B). */
-    @BeforeClass (alwaysRun = true)
+    @BeforeClass(alwaysRun = true)
     public void dataPreparation()
     {
         serverHealth.isServerReachable();
@@ -74,9 +75,9 @@ public class CategoryReindexingTests extends AbstractTestNGSpringContextTests
 
         Step.STEP("Create two categories under the root.");
         List<RestCategoryModel> categories = List.of(RestCategoryModel.builder().name(CATEGORY_A_NAME).create(),
-                                                     RestCategoryModel.builder().name(CATEGORY_B_NAME).create());
+                RestCategoryModel.builder().name(CATEGORY_B_NAME).create());
         List<RestCategoryModel> categoryList = restClient.authenticateUser(dataUser.getAdminUser()).withCoreAPI()
-                                                    .usingCategory(ROOT_CATEGORY).createCategoriesList(categories).getEntries();
+                .usingCategory(ROOT_CATEGORY).createCategoriesList(categories).getEntries();
         categoryA = categoryList.get(0).onModel();
         categoryB = categoryList.get(1).onModel();
 
@@ -100,36 +101,41 @@ public class CategoryReindexingTests extends AbstractTestNGSpringContextTests
     }
 
     /** Check we can find the document assigned to a category. */
-    @Test (groups = TestGroup.SEARCH)
-    public void testFindDocumentByCategory() {
+    @Test(groups = TestGroup.SEARCH)
+    public void testFindDocumentByCategory()
+    {
         SearchRequest query = req("cm:categories:\"" + categoryA.getId() + "\"");
         searchQueryService.expectResultsFromQuery(query, testUser, testFile.getName());
     }
 
     /** Check we can find the folder and document assigned to the other category. */
-    @Test (groups = TestGroup.SEARCH)
-    public void testFindFolderByCategory() {
+    @Test(groups = TestGroup.SEARCH)
+    public void testFindFolderByCategory()
+    {
         SearchRequest query = req("cm:categories:\"" + categoryB.getId() + "\"");
         searchQueryService.expectResultsFromQuery(query, testUser, testFile.getName(), testFolder.getName());
     }
 
     /** Check we can find the document by the pseudo-path created for the category. */
-    @Test (groups = TestGroup.SEARCH)
-    public void testQueryByCategoryPseudoPath() {
+    @Test(groups = TestGroup.SEARCH)
+    public void testQueryByCategoryPseudoPath()
+    {
         SearchRequest query = req("PATH:\"/cm:categoryRoot/cm:generalclassifiable/cm:" + CATEGORY_A_NAME + "/*\"");
         searchQueryService.expectResultsFromQuery(query, testUser, testFile.getName());
     }
 
     /** Check we can find the document by a partial path match for the category. */
-    @Test (groups = TestGroup.SEARCH)
-    public void testQueryByPartialCategoryPathA() {
+    @Test(groups = TestGroup.SEARCH)
+    public void testQueryByPartialCategoryPathA()
+    {
         SearchRequest query = req("PATH:\"//cm:" + CATEGORY_A_NAME + "/*\"");
         searchQueryService.expectResultsFromQuery(query, testUser, testFile.getName());
     }
 
     /** Check we can find the document and folder by a partial path match for the second category. */
-    @Test (groups = TestGroup.SEARCH)
-    public void testQueryByPartialCategoryPathB() {
+    @Test(groups = TestGroup.SEARCH)
+    public void testQueryByPartialCategoryPathB()
+    {
         SearchRequest query = req("PATH:\"//cm:" + CATEGORY_B_NAME + "/*\"");
         searchQueryService.expectResultsFromQuery(query, testUser, testFile.getName(), testFolder.getName());
     }

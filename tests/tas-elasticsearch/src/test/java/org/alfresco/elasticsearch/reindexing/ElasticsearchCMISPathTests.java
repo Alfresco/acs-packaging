@@ -3,6 +3,12 @@ package org.alfresco.elasticsearch.reindexing;
 import static org.alfresco.elasticsearch.SearchQueryService.req;
 import static org.alfresco.tas.TestDataUtility.getAlphabeticUUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
 import org.alfresco.elasticsearch.SearchQueryService;
 import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.tas.AlfrescoStackInitializer;
@@ -19,13 +25,8 @@ import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.report.log.Step;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
-@ContextConfiguration (locations = "classpath:alfresco-elasticsearch-context.xml",
+@ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
         initializers = AlfrescoStackInitializer.class)
 /**
  * Tests for CMIS queries that require path indexing against Elasticsearch.
@@ -66,6 +67,7 @@ public class ElasticsearchCMISPathTests extends AbstractTestNGSpringContextTests
 
     /**
      * Data will be prepared using the schema below:
+     * 
      * <pre>
      * Site
      * + Document Library
@@ -79,7 +81,7 @@ public class ElasticsearchCMISPathTests extends AbstractTestNGSpringContextTests
      *   +-document10
      * </pre>
      */
-    @BeforeClass (alwaysRun = true)
+    @BeforeClass(alwaysRun = true)
     public void dataPreparation()
     {
         serverHealth.assertServerIsOnline();
@@ -103,16 +105,16 @@ public class ElasticsearchCMISPathTests extends AbstractTestNGSpringContextTests
         document10 = createContent(DOC_10_NAME, "This is document 10", folder1, user);
     }
 
-    @TestRail (description = "Check that we can select subfolders using IN_TREE with Elasticsearch.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
-    @Test (groups = TestGroup.SEARCH)
+    @TestRail(description = "Check that we can select subfolders using IN_TREE with Elasticsearch.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test(groups = TestGroup.SEARCH)
     public void inTreeQuery_selectSubfolders()
     {
         SearchRequest query = req("cmis", "SELECT * FROM cmis:folder WHERE IN_TREE('" + folder0.getNodeRef() + "')");
         searchQueryService.expectResultsFromQuery(query, user, FOLDER_00_NAME, FOLDER_000_NAME);
     }
 
-    @TestRail (description = "Check that we can select documents using IN_TREE with Elasticsearch.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
-    @Test (groups = TestGroup.SEARCH)
+    @TestRail(description = "Check that we can select documents using IN_TREE with Elasticsearch.", section = TestGroup.SEARCH, executionType = ExecutionType.REGRESSION)
+    @Test(groups = TestGroup.SEARCH)
     public void inTreeQuery_selectDocuments()
     {
         SearchRequest query = req("cmis", "SELECT * FROM cmis:document WHERE IN_TREE('" + folder0.getNodeRef() + "')");

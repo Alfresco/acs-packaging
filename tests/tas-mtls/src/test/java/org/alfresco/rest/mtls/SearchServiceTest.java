@@ -1,5 +1,15 @@
 package org.alfresco.rest.mtls;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.slf4j.Logger;
+import org.springframework.test.context.ContextConfiguration;
+import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
 import org.alfresco.rest.MtlsRestTest;
 import org.alfresco.rest.model.RestNodeModel;
 import org.alfresco.rest.search.RestRequestQueryModel;
@@ -8,15 +18,6 @@ import org.alfresco.rest.search.SearchResponse;
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.UserModel;
-import org.slf4j.Logger;
-import org.springframework.test.context.ContextConfiguration;
-import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
-import java.io.File;
-import java.io.IOException;
 
 @ContextConfiguration("classpath:alfresco-mtls-context.xml")
 public class SearchServiceTest extends MtlsRestTest
@@ -24,8 +25,8 @@ public class SearchServiceTest extends MtlsRestTest
     private static final String TEST_FILE_NAME = "testing-search-mtls.txt";
     private static final String TEST_FILE_KEYWORD = "incomprehensible";
     private static final String TEST_FILE_CONTENT = "We need to verify indexing working in solr/elasticsearch to do that we need to upload this \n"
-                                                    + "text file and search with a word inside it,\n"
-                                                    + "like \"" + TEST_FILE_KEYWORD + "\" to verify it has been indexed properly.";
+            + "text file and search with a word inside it,\n"
+            + "like \"" + TEST_FILE_KEYWORD + "\" to verify it has been indexed properly.";
 
     private static final Logger LOGGER = LogFactory.getLogger();
 
@@ -42,7 +43,8 @@ public class SearchServiceTest extends MtlsRestTest
     @AfterClass(alwaysRun = true)
     public void dataCleanup()
     {
-        if (testFile != null && testFile.exists()) {
+        if (testFile != null && testFile.exists())
+        {
             testFile.delete();
         }
     }
@@ -63,7 +65,7 @@ public class SearchServiceTest extends MtlsRestTest
         }
         finally
         {
-            //Clean up file for easier local retries of test
+            // Clean up file for easier local retries of test
             if (fileNode != null)
             {
                 restClient.authenticateUser(adminUser).withCoreAPI().usingNode(folderModel).deleteNode(fileNode.getId());
@@ -71,7 +73,8 @@ public class SearchServiceTest extends MtlsRestTest
         }
     }
 
-    private int countSearchResults(String keyword) {
+    private int countSearchResults(String keyword)
+    {
         RestRequestQueryModel queryModel = new RestRequestQueryModel();
         queryModel.setLanguage("afts");
         queryModel.setQuery(keyword);
@@ -82,12 +85,15 @@ public class SearchServiceTest extends MtlsRestTest
         return searchResponse.getEntries().size();
     }
 
-    private void verifyResultsIncreaseWithRetry(String keyword, int initialSearchWordCount) throws InterruptedException {
+    private void verifyResultsIncreaseWithRetry(String keyword, int initialSearchWordCount) throws InterruptedException
+    {
         int retryDelay = 5000;
         int retryLimit = 10;
-        for (int i = 0; i < retryLimit; i++) {
-            LOGGER.info("Attempt: " + (i+1));
-            if (countSearchResults(keyword) > initialSearchWordCount) {
+        for (int i = 0; i < retryLimit; i++)
+        {
+            LOGGER.info("Attempt: " + (i + 1));
+            if (countSearchResults(keyword) > initialSearchWordCount)
+            {
                 return;
             }
             Thread.sleep(retryDelay);

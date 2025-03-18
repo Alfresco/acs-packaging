@@ -2,6 +2,8 @@ package org.alfresco.elasticsearch.utility;
 
 import static org.alfresco.utility.model.FileType.TEXT_PLAIN;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import org.alfresco.rest.core.RestWrapper;
 import org.alfresco.rest.model.RestCategoryLinkBodyModel;
 import org.alfresco.rest.model.RestCategoryModel;
@@ -14,7 +16,6 @@ import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /** Helper methods for Elasticsearch E2E tests. */
 public class ElasticsearchRESTHelper
@@ -36,7 +37,8 @@ public class ElasticsearchRESTHelper
     /**
      * Create a private site.
      *
-     * @param user The user to use.
+     * @param user
+     *            The user to use.
      * @return The new site.
      */
     public SiteModel createPrivateSite(UserModel user)
@@ -47,8 +49,10 @@ public class ElasticsearchRESTHelper
     /**
      * Create a folder in a site.
      *
-     * @param user The user to use.
-     * @param site The site to create the folder in.
+     * @param user
+     *            The user to use.
+     * @param site
+     *            The site to create the folder in.
      * @return The new folder.
      */
     public FolderModel createFolderInSite(UserModel user, SiteModel site)
@@ -59,8 +63,10 @@ public class ElasticsearchRESTHelper
     /**
      * Create a text file in a site.
      *
-     * @param user The user to use.
-     * @param site The site to create the file in.
+     * @param user
+     *            The user to use.
+     * @param site
+     *            The site to create the file in.
      * @return The new file.
      */
     public FileModel createFileInSite(UserModel user, SiteModel site)
@@ -72,8 +78,10 @@ public class ElasticsearchRESTHelper
     /**
      * Create a file in a folder.
      *
-     * @param user The user to use.
-     * @param folder The folder to create the file in.
+     * @param user
+     *            The user to use.
+     * @param folder
+     *            The folder to create the file in.
      * @return The new file.
      */
     public FileModel createFileInFolder(UserModel user, FolderModel folder)
@@ -85,39 +93,45 @@ public class ElasticsearchRESTHelper
     /**
      * Create a category.
      *
-     * @param ancestorCategories The path of categories between the root and the new category, or leave blank to
-     * create the category at the "-root-".
+     * @param ancestorCategories
+     *            The path of categories between the root and the new category, or leave blank to create the category at the "-root-".
      * @return The newly created category.
      */
     public RestCategoryModel createCategory(RestCategoryModel... ancestorCategories)
     {
         RestCategoryModel parent = (ancestorCategories.length > 0 ? ancestorCategories[ancestorCategories.length - 1] : ROOT_CATEGORY);
         return client.authenticateUser(dataUser.getAdminUser()).withCoreAPI()
-                     .usingCategory(parent)
-                     .createSingleCategory(RestCategoryModel.builder().name(RandomData.getRandomAlphanumeric()).create());
+                .usingCategory(parent)
+                .createSingleCategory(RestCategoryModel.builder().name(RandomData.getRandomAlphanumeric()).create());
     }
 
     /**
      * Link a file or folder to a category.
      *
-     * @param user The user who should create the link.
-     * @param node The file or folder to be linked.
-     * @param categoryHierarchy The full list of categories from the root (excluding "-root-") to the category to use.
+     * @param user
+     *            The user who should create the link.
+     * @param node
+     *            The file or folder to be linked.
+     * @param categoryHierarchy
+     *            The full list of categories from the root (excluding "-root-") to the category to use.
      * @return The category that was linked to.
      */
     public RestCategoryModel linkToCategory(UserModel user, ContentModel node, RestCategoryModel... categoryHierarchy)
     {
         RestCategoryModel linkedToCategory = (categoryHierarchy.length > 0 ? categoryHierarchy[categoryHierarchy.length - 1] : ROOT_CATEGORY);
         return client.authenticateUser(user).withCoreAPI().usingNode(node)
-                                            .linkToCategory(RestCategoryLinkBodyModel.builder().categoryId(linkedToCategory.getId()).create());
+                .linkToCategory(RestCategoryLinkBodyModel.builder().categoryId(linkedToCategory.getId()).create());
     }
 
     /**
      * Unlink a node from a category.
      *
-     * @param user The user who should remove the link.
-     * @param node The node to unlink.
-     * @param categoryHierarchy The full list of categories from the root (excluding "-root-") to the category to use.
+     * @param user
+     *            The user who should remove the link.
+     * @param node
+     *            The node to unlink.
+     * @param categoryHierarchy
+     *            The full list of categories from the root (excluding "-root-") to the category to use.
      */
     public void unlinkFromCategory(UserModel user, ContentModel node, RestCategoryModel... categoryHierarchy)
     {

@@ -3,12 +3,13 @@ package org.alfresco.elasticsearch.reindexing;
 import static org.alfresco.elasticsearch.SearchQueryService.req;
 import static org.alfresco.utility.report.log.Step.STEP;
 
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
 import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.TestGroup;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 /**
  * Tests verifying live indexing of secondary children and PARENT index in Elasticsearch.
@@ -21,6 +22,7 @@ public class NodesSecondaryParentIndexingTests extends NodesSecondaryChildrenRel
 
     /**
      * Creates a user and a private site containing below hierarchy of folders.
+     * 
      * <pre>
      * Site
      * DL (Document Library)
@@ -36,8 +38,8 @@ public class NodesSecondaryParentIndexingTests extends NodesSecondaryChildrenRel
      *  += fR
      *  += fS
      * </pre>
-     * Parent += Child - primary parent-child relationship
-     * Parent +- Child - secondary parent-child relationship
+     * 
+     * Parent += Child - primary parent-child relationship Parent +- Child - secondary parent-child relationship
      */
     @BeforeClass(alwaysRun = true)
     @Override
@@ -68,7 +70,7 @@ public class NodesSecondaryParentIndexingTests extends NodesSecondaryChildrenRel
         STEP("Verify that searching by PARENT and folderM will find node folderC.");
         SearchRequest query = req("PARENT:" + folders.get(M).getNodeRef());
         searchQueryService.expectResultsFromQuery(query, testUser,
-            folders.get(C).getName());
+                folders.get(C).getName());
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -78,11 +80,11 @@ public class NodesSecondaryParentIndexingTests extends NodesSecondaryChildrenRel
         STEP("Verify that searching by PARENT and folderL will find nodes: folderM, FolderC and folderY.");
         SearchRequest query = req("PARENT:" + folders.get(L).getNodeRef());
         searchQueryService.expectResultsFromQuery(query, testUser,
-            // primary child
-            folders.get(M).getName(),
-            // secondary children
-            folders.get(C).getName(),
-            folders.get(Y).getName());
+                // primary child
+                folders.get(M).getName(),
+                // secondary children
+                folders.get(C).getName(),
+                folders.get(Y).getName());
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -92,15 +94,15 @@ public class NodesSecondaryParentIndexingTests extends NodesSecondaryChildrenRel
         STEP("Verify that searching by PARENT and folderA will find nodes: folderB and file.");
         SearchRequest query = req("PARENT:" + folders.get(A).getNodeRef());
         searchQueryService.expectResultsFromQuery(query, testUser,
-            // primary child
-            folders.get(B).getName(),
-            // secondary child
-            fileInP.getName());
+                // primary child
+                folders.get(B).getName(),
+                // secondary child
+                fileInP.getName());
     }
 
     /**
-     * Verify that removing secondary parent-child relationship will result in updating ES index: PARENT.
-     * Test changes below folders hierarchy:
+     * Verify that removing secondary parent-child relationship will result in updating ES index: PARENT. Test changes below folders hierarchy:
+     * 
      * <pre>
      * DL
      *  += fQ
@@ -108,11 +110,11 @@ public class NodesSecondaryParentIndexingTests extends NodesSecondaryChildrenRel
      *     |
      *  += fR
      * </pre>
+     * 
      * into:
+     * 
      * <pre>
-     * DL
-     *  += fQ
-     *  += fR
+     * DL += fQ += fR
      * </pre>
      */
     @Test(groups = TestGroup.SEARCH)
@@ -124,8 +126,8 @@ public class NodesSecondaryParentIndexingTests extends NodesSecondaryChildrenRel
 
         SearchRequest query = req("PARENT:" + folders.get(Q).getNodeRef());
         searchQueryService.expectResultsFromQuery(query, testUser,
-            // secondary child
-            folders.get(R).getName());
+                // secondary child
+                folders.get(R).getName());
 
         // when
         STEP("Delete the secondary parent relationship between folderQ and FolderR and verify that folderR cannot be found by PARENT and folderQ anymore.");
@@ -136,8 +138,8 @@ public class NodesSecondaryParentIndexingTests extends NodesSecondaryChildrenRel
     }
 
     /**
-     * Verify that removing a node D (fD) having a secondary children relationship will remove the relationships and update PARENT index in ES.
-     * Test changes below folders hierarchy from:
+     * Verify that removing a node D (fD) having a secondary children relationship will remove the relationships and update PARENT index in ES. Test changes below folders hierarchy from:
+     * 
      * <pre>
      * DL
      *  += fQ
@@ -148,11 +150,11 @@ public class NodesSecondaryParentIndexingTests extends NodesSecondaryChildrenRel
      *     |
      *  += fR
      * </pre>
+     * 
      * into:
+     * 
      * <pre>
-     * DL
-     *  += fQ
-     *  += fR
+     * DL += fQ += fR
      * </pre>
      */
     @Test(groups = TestGroup.SEARCH)
@@ -169,15 +171,15 @@ public class NodesSecondaryParentIndexingTests extends NodesSecondaryChildrenRel
         STEP("Verify that searching by PARENT and folderQ will find its secondary child: folderE.");
         SearchRequest queryParentQ = req("PARENT:" + folders.get(Q).getNodeRef());
         searchQueryService.expectResultsFromQuery(queryParentQ, testUser,
-            // secondary child
-            folderE.getName());
+                // secondary child
+                folderE.getName());
         STEP("Verify that searching by PARENT and folderE will find its primary and secondary children: folderF and folderR.");
         SearchRequest queryParentD = req("PARENT:" + folderE.getNodeRef());
         searchQueryService.expectResultsFromQuery(queryParentD, testUser,
-            // primary child
-            folderF.getName(),
-            // secondary child
-            folders.get(R).getName());
+                // primary child
+                folderF.getName(),
+                // secondary child
+                folders.get(R).getName());
 
         // when
         STEP("Delete folderE and verify that PARENT was updated for nodes folderQ and folderR.");
@@ -190,17 +192,21 @@ public class NodesSecondaryParentIndexingTests extends NodesSecondaryChildrenRel
 
     /**
      * Verify that moving folder D (fD) containing secondary children from hierarchy:
+     * 
      * <pre>
      * DL
      *  += fQ += fD +- fP += file
      *  += fR
      * </pre>
+     * 
      * to:
+     * 
      * <pre>
      * DL
      *  += fQ
      *  += fR += fD +- fP += file
      * </pre>
+     * 
      * will update PARENT index in ES.
      */
     @Test(groups = TestGroup.SEARCH)
@@ -214,13 +220,13 @@ public class NodesSecondaryParentIndexingTests extends NodesSecondaryChildrenRel
         STEP("Verify that searching by PARENT and folderD will find node folderP.");
         SearchRequest queryParentD = req("PARENT:" + folderD.getNodeRef());
         searchQueryService.expectResultsFromQuery(queryParentD, testUser,
-            // secondary child
-            folders.get(P).getName());
+                // secondary child
+                folders.get(P).getName());
         STEP("Verify that searching by PARENT and folderQ will find node folderD.");
         SearchRequest queryParentQ = req("PARENT:" + folders.get(Q).getNodeRef());
         searchQueryService.expectResultsFromQuery(queryParentQ, testUser,
-            // primary child
-            folderD.getName());
+                // primary child
+                folderD.getName());
 
         // when
         STEP("Move folderD from folderQ to folderR.");
@@ -229,23 +235,23 @@ public class NodesSecondaryParentIndexingTests extends NodesSecondaryChildrenRel
         // then
         STEP("Verify that search result for PARENT and folderD didn't change.");
         searchQueryService.expectResultsFromQuery(queryParentD, testUser,
-            // secondary child
-            folders.get(P).getName());
+                // secondary child
+                folders.get(P).getName());
         STEP("Verify that searching by PARENT and folderQ doesn't return any node anymore.");
         searchQueryService.expectNoResultsFromQuery(queryParentQ, testUser);
         STEP("Verify that searching by PARENT and folderR will find node folderD.");
         SearchRequest queryParentR = req("PARENT:" + folders.get(R).getNodeRef());
         searchQueryService.expectResultsFromQuery(queryParentR, testUser,
-            // primary child
-            folderD.getName());
+                // primary child
+                folderD.getName());
 
         STEP("Clean-up - delete folderD.");
         folders.modify(folderD).delete();
     }
 
     /**
-     * Verify that copying folder will also result in copying folder's secondary children and update PARENT index in ES.
-     * Test changes below folders hierarchy:
+     * Verify that copying folder will also result in copying folder's secondary children and update PARENT index in ES. Test changes below folders hierarchy:
+     * 
      * <pre>
      * DL
      *  += fS += fG += fH
@@ -254,7 +260,9 @@ public class NodesSecondaryParentIndexingTests extends NodesSecondaryChildrenRel
      *  += fP += file
      *  += fT
      * </pre>
+     * 
      * into:
+     * 
      * <pre>
      * DL
      *  += fS += fG += fH
@@ -264,7 +272,7 @@ public class NodesSecondaryParentIndexingTests extends NodesSecondaryChildrenRel
      *        \
      *         +
      *  += fT += fG-c += fH-c
-     *  </pre>
+     * </pre>
      */
     @Test(groups = TestGroup.SEARCH)
     public void testSecondaryParentWithCopiedSecondaryParentNode()
@@ -279,20 +287,20 @@ public class NodesSecondaryParentIndexingTests extends NodesSecondaryChildrenRel
         STEP("Verify that searching by PARENT and folderG will find nodes: folderH, folderP and file.");
         SearchRequest queryParentG = req("PARENT:" + folderG.getNodeRef());
         searchQueryService.expectResultsFromQuery(queryParentG, testUser,
-            // primary child
-            folderH.getName(),
-            // secondary child
-            folders.get(P).getName());
+                // primary child
+                folderH.getName(),
+                // secondary child
+                folders.get(P).getName());
         STEP("Verify that searching by PARENT and folderS will find nodes: folderG, folderH, folderP and file.");
         SearchRequest queryParentS = req("PARENT:" + folders.get(S).getNodeRef());
         searchQueryService.expectResultsFromQuery(queryParentS, testUser,
-            // primary child
-            folderG.getName());
+                // primary child
+                folderG.getName());
         STEP("Verify that searching by PARENT and folderP will find node: file.");
         SearchRequest queryParentP = req("PARENT:" + folders.get(P).getNodeRef());
         searchQueryService.expectResultsFromQuery(queryParentP, testUser,
-            // primary child
-            fileInP.getName());
+                // primary child
+                fileInP.getName());
 
         // when
         STEP("Copy folderG with its content to folderT.");
@@ -301,25 +309,25 @@ public class NodesSecondaryParentIndexingTests extends NodesSecondaryChildrenRel
         // then
         STEP("Verify that search result for PARENT and folderS didn't change.");
         searchQueryService.expectResultsFromQuery(queryParentS, testUser,
-            // primary child
-            folderG.getName());
+                // primary child
+                folderG.getName());
         STEP("Verify that searching by PARENT and folderS/folderG will find nodes: folderH, folderP and file in P.");
         searchQueryService.expectResultsFromQuery(queryParentG, testUser,
-            // primary child
-            folderH.getName(),
-            // secondary child
-            folders.get(P).getName());
+                // primary child
+                folderH.getName(),
+                // secondary child
+                folders.get(P).getName());
         STEP("Verify that folderG was copied with secondary parent-child relationship and PARENT reflects that - search by folderT/folderGCopy should find nodes: folderH, folderP and file in P.");
         SearchRequest queryParentGCopy = req("PARENT:" + folderGCopy.getNodeRef());
         searchQueryService.expectResultsFromQuery(queryParentGCopy, testUser,
-            // primary child
-            folderH.getName(), // name is the same as folderH-copy
-            // secondary child
-            folders.get(P).getName());
+                // primary child
+                folderH.getName(), // name is the same as folderH-copy
+                // secondary child
+                folders.get(P).getName());
         STEP("Verify that this time searching by PARENT and folderP will find node: file.");
         searchQueryService.expectResultsFromQuery(queryParentP, testUser,
-            // primary child
-            fileInP.getName());
+                // primary child
+                fileInP.getName());
 
         STEP("Clean-up - delete folderG and folderT (with G's copy).");
         folders.modify(folderG).delete();

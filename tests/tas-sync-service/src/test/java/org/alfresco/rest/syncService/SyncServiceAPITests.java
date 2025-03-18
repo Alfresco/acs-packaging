@@ -3,6 +3,12 @@ package org.alfresco.rest.syncService;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.springframework.http.HttpStatus;
+import org.testng.Assert;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
 import org.alfresco.rest.SyncServiceTest;
 import org.alfresco.rest.model.RestSubscriberModel;
 import org.alfresco.rest.model.RestSubscriberModelCollection;
@@ -19,18 +25,13 @@ import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.model.UserModel;
-import org.slf4j.Logger;
-import org.springframework.http.HttpStatus;
-import org.testng.Assert;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 /**
  * Sanity tests for Testing Sync Service APIs
  *
  * @author mbhave
  */
-@Test(groups = { TestGroup.SYNC_API, TestGroup.REQUIRES_AMP })
+@Test(groups = {TestGroup.SYNC_API, TestGroup.REQUIRES_AMP})
 public class SyncServiceAPITests extends SyncServiceTest
 {
     private static Logger LOG = LogFactory.getLogger();

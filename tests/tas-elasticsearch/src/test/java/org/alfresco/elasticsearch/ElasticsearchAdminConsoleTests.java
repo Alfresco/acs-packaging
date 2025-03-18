@@ -1,5 +1,24 @@
 package org.alfresco.elasticsearch;
 
+import static java.util.Arrays.asList;
+
+import static org.springframework.http.HttpMethod.GET;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
 import org.alfresco.rest.core.RestRequest;
 import org.alfresco.rest.core.RestResponse;
 import org.alfresco.rest.core.RestWrapper;
@@ -21,26 +40,9 @@ import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.report.log.Step;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import static java.util.Arrays.asList;
-import static org.springframework.http.HttpMethod.GET;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
 
 @ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
-                      initializers = AlfrescoStackInitializer.class)
+        initializers = AlfrescoStackInitializer.class)
 public class ElasticsearchAdminConsoleTests extends AbstractTestNGSpringContextTests
 {
     private static final String ADMIN_CONSOLE_URL = "/alfresco/s/enterprise/admin/admin-searchservice";
@@ -82,8 +84,8 @@ public class ElasticsearchAdminConsoleTests extends AbstractTestNGSpringContextT
      * Check the "elasticsearch" subsystem is selected and that the creation of a new document is reflected in the document counts.
      */
     @TestRail(section = TestGroup.SEARCH,
-              executionType = ExecutionType.REGRESSION,
-              description = "Verify that the Elasticsearch subsystem is selected and that the creation of a new document is reflected in the document counts.")
+            executionType = ExecutionType.REGRESSION,
+            description = "Verify that the Elasticsearch subsystem is selected and that the creation of a new document is reflected in the document counts.")
     @Test(groups = TestGroup.SEARCH)
     public void elasticsearchAdminConsolePage() throws Exception
     {
@@ -92,7 +94,7 @@ public class ElasticsearchAdminConsoleTests extends AbstractTestNGSpringContextT
 
         Step.STEP("Check that elasticsearch is selected and displayed.");
         assertEquals(document.select("option[value=elasticsearch]").attr("selected"), "selected",
-                     "Expected elasticsearch subsystem to be shown as selected.");
+                "Expected elasticsearch subsystem to be shown as selected.");
         assertFalse(document.select("#elasticsearchSearch").hasClass("hidden"), "Expected elasticsearch section to be displayed.");
 
         Step.STEP("Get the number of indexed and indexable documents.");
@@ -119,7 +121,7 @@ public class ElasticsearchAdminConsoleTests extends AbstractTestNGSpringContextT
     private void createDocumentAndEnsureIndexed(String fileName) throws Exception
     {
         dataContent.usingUser(user).usingSite(siteModel)
-                   .createContent(new FileModel(fileName, FileType.TEXT_PLAIN, "content"));
+                .createContent(new FileModel(fileName, FileType.TEXT_PLAIN, "content"));
         Utility.sleep(1000, 20000, () -> {
             RestRequestQueryModel queryReq = new RestRequestQueryModel();
             queryReq.setQuery("cm:name:\"" + fileName + "\"");
@@ -142,15 +144,17 @@ public class ElasticsearchAdminConsoleTests extends AbstractTestNGSpringContextT
     /**
      * Check that the search response contains exactly the expected file.
      *
-     * @param actual   The search results.
-     * @param expected The expected filename.
+     * @param actual
+     *            The search results.
+     * @param expected
+     *            The expected filename.
      */
     private void checkFileIndexed(SearchResponse actual, String expected)
     {
         client.assertStatusCodeIs(HttpStatus.OK);
         List<String> result = actual.getEntries().stream()
-                                    .map(SearchNodeModel::getModel)
-                                    .map(SearchNodeModel::getName).collect(Collectors.toList());
+                .map(SearchNodeModel::getModel)
+                .map(SearchNodeModel::getName).collect(Collectors.toList());
         assertEquals(result, asList(expected), "Didn't find unique instance of indexed file.");
     }
 }

@@ -1,9 +1,10 @@
 package org.alfresco.elasticsearch.reindexing;
 
-import static org.alfresco.elasticsearch.SearchQueryService.req;
 import static org.springframework.http.HttpStatus.OK;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
+
+import static org.alfresco.elasticsearch.SearchQueryService.req;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -11,6 +12,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import org.alfresco.dataprep.AlfrescoHttpClientFactory;
 import org.alfresco.elasticsearch.SearchQueryService;
@@ -31,13 +38,8 @@ import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.report.log.Step;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
-@ContextConfiguration (locations = "classpath:alfresco-elasticsearch-context.xml",
+@ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
         initializers = AlfrescoStackInitializer.class)
 public class ElasticsearchTagIndexingTests extends AbstractTestNGSpringContextTests
 {
@@ -64,7 +66,7 @@ public class ElasticsearchTagIndexingTests extends AbstractTestNGSpringContextTe
     private UserModel testUser;
     private FolderModel testFolder;
 
-    @BeforeClass (alwaysRun = true)
+    @BeforeClass(alwaysRun = true)
     public void dataPreparation()
     {
         serverHealth.assertServerIsOnline();
@@ -80,55 +82,55 @@ public class ElasticsearchTagIndexingTests extends AbstractTestNGSpringContextTe
                 .createFolder(new FolderModel(unique("FOLDER")));
     }
 
-    @TestRail (section = { TestGroup.SEARCH, TestGroup.TAGS }, executionType = ExecutionType.REGRESSION,
+    @TestRail(section = {TestGroup.SEARCH, TestGroup.TAGS}, executionType = ExecutionType.REGRESSION,
             description = "Verify the TAG queries work correctly")
-    @Test (groups = { TestGroup.SEARCH, TestGroup.TAGS, TestGroup.REGRESSION })
+    @Test(groups = {TestGroup.SEARCH, TestGroup.TAGS, TestGroup.REGRESSION})
     public void testTAGUseCases()
     {
         final String tag1 = unique("TAG1");
 
-        //No result for not existing tag
+        // No result for not existing tag
         assertTagQueryResult(tag1, List.of());
 
-        //Tag first file - tag is created - expect single result
+        // Tag first file - tag is created - expect single result
         final FileModel file1 = givenFile("test1");
         tagContent(file1, tag1);
         assertTagQueryResult(tag1, List.of(file1));
 
-        //Tag another file - tag is reused - expect two items in the result
+        // Tag another file - tag is reused - expect two items in the result
         final FileModel file2 = givenFile("test2");
         tagContent(file2, tag1);
         assertTagQueryResult(tag1, List.of(file1, file2));
 
         final String tag2 = unique("TAG2");
 
-        //Just a sanity check - No result for the second tag
+        // Just a sanity check - No result for the second tag
         assertTagQueryResult(tag2, List.of());
 
-        //Tag second file with a new tag
+        // Tag second file with a new tag
         final String tag2Id = tagContent(file2, tag2);
         assertTagQueryResult(tag1, List.of(file1, file2));
         assertTagQueryResult(tag2, List.of(file2));
 
-        //Tag new file with the second tag
+        // Tag new file with the second tag
         final FileModel file3 = givenFile("test3");
         tagContent(file3, tag2);
         assertTagQueryResult(tag1, List.of(file1, file2));
         assertTagQueryResult(tag2, List.of(file2, file3));
 
-        //test disjunction and conjunction
+        // test disjunction and conjunction
         assertTagQueryResult(tag1, "OR", tag2, List.of(file1, file2, file3));
         assertTagQueryResult(tag1, "AND", tag2, List.of(file2));
         final String unknownTag = unique("unknown");
         assertTagQueryResult(tag1, "OR", unknownTag, List.of(file1, file2));
         assertTagQueryResult(tag1, "AND", unknownTag, List.of());
 
-        //Delete file
+        // Delete file
         deleteFile(file1);
         assertTagQueryResult(tag1, List.of(file2));
         assertTagQueryResult(tag2, List.of(file2, file3));
 
-        //Rename tag
+        // Rename tag
         final String newTag2 = unique("NEW-TAG2");
         assertTagQueryResult(newTag2, List.of());
         renameTag(tag2Id, newTag2);
@@ -136,7 +138,7 @@ public class ElasticsearchTagIndexingTests extends AbstractTestNGSpringContextTe
         assertTagQueryResult(newTag2, List.of(file2, file3));
         assertTagQueryResult(tag2, List.of());
 
-        //Delete tag
+        // Delete tag
         deleteTag(file3, newTag2);
         assertTagQueryResult(tag1, List.of(file2));
         assertTagQueryResult(tag2, List.of());
@@ -161,7 +163,8 @@ public class ElasticsearchTagIndexingTests extends AbstractTestNGSpringContextTe
                     if (contentNames.isEmpty())
                     {
                         searchQueryService.expectNoResultsFromQuery(query, testUser);
-                    } else
+                    }
+                    else
                     {
                         Collections.shuffle(contentNames);
                         searchQueryService.expectResultsFromQuery(query, testUser, contentNames.toArray(String[]::new));
@@ -187,7 +190,8 @@ public class ElasticsearchTagIndexingTests extends AbstractTestNGSpringContextTe
                 if (contentNames.isEmpty())
                 {
                     searchQueryService.expectNoResultsFromQuery(query, testUser);
-                } else
+                }
+                else
                 {
                     Collections.shuffle(contentNames);
                     searchQueryService.expectResultsFromQuery(query, testUser, contentNames.toArray(String[]::new));
@@ -202,8 +206,7 @@ public class ElasticsearchTagIndexingTests extends AbstractTestNGSpringContextTe
                 tagName.toLowerCase(Locale.ROOT),
                 tagName.toUpperCase(Locale.ROOT),
                 "\"" + tagName.toLowerCase(Locale.ROOT) + "\"",
-                "\"" + tagName.toUpperCase(Locale.ROOT) + "\""
-                      );
+                "\"" + tagName.toUpperCase(Locale.ROOT) + "\"");
     }
 
     private FileModel givenFile(final String fileName)

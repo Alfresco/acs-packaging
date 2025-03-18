@@ -2,6 +2,12 @@ package org.alfresco.elasticsearch.reindexing;
 
 import static org.alfresco.utility.report.log.Step.STEP;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+
 import org.alfresco.elasticsearch.SearchQueryService;
 import org.alfresco.rest.core.RestWrapper;
 import org.alfresco.rest.repo.resource.Folders;
@@ -12,14 +18,9 @@ import org.alfresco.utility.data.DataUser;
 import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 
 @ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
-    initializers = AlfrescoStackInitializer.class)
+        initializers = AlfrescoStackInitializer.class)
 public abstract class NodesSecondaryChildrenRelatedTests extends AbstractTestNGSpringContextTests
 {
     @SuppressWarnings("PMD.OneDeclarationPerLine")

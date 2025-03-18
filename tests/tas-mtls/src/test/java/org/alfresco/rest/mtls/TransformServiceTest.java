@@ -1,10 +1,8 @@
 package org.alfresco.rest.mtls;
 
-import org.alfresco.rest.MtlsRestTest;
-import org.alfresco.rest.model.RestNodeModel;
-import org.alfresco.utility.model.FileModel;
-import org.alfresco.utility.model.FolderModel;
-import org.alfresco.utility.model.UserModel;
+import java.io.File;
+import java.io.IOException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
@@ -12,10 +10,13 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.File;
-import java.io.IOException;
+import org.alfresco.rest.MtlsRestTest;
+import org.alfresco.rest.model.RestNodeModel;
+import org.alfresco.utility.model.FileModel;
+import org.alfresco.utility.model.FolderModel;
+import org.alfresco.utility.model.UserModel;
 
-@ContextConfiguration ("classpath:alfresco-mtls-context.xml")
+@ContextConfiguration("classpath:alfresco-mtls-context.xml")
 public class TransformServiceTest extends MtlsRestTest
 {
     private static final String TEST_FILE_NAME = "testing-transform-mtls.txt";
@@ -24,7 +25,7 @@ public class TransformServiceTest extends MtlsRestTest
     private UserModel adminUser;
     private File testFile;
 
-    @BeforeClass (alwaysRun = true)
+    @BeforeClass(alwaysRun = true)
     public void dataPreparation() throws IOException
     {
         adminUser = dataUser.getAdminUser();
@@ -34,7 +35,8 @@ public class TransformServiceTest extends MtlsRestTest
     @AfterClass(alwaysRun = true)
     public void dataCleanup()
     {
-        if (testFile != null && testFile.exists()) {
+        if (testFile != null && testFile.exists())
+        {
             testFile.delete();
         }
     }
@@ -45,7 +47,8 @@ public class TransformServiceTest extends MtlsRestTest
         FolderModel testFolder = selectSharedFolder(adminUser);
         FileModel testFileModel = new FileModel(testFile.getName());
 
-        try {
+        try
+        {
             restClient.authenticateUser(adminUser).configureRequestSpec().addMultiPart("filedata", testFile);
             RestNodeModel rnm = restClient.authenticateUser(adminUser).withCoreAPI().usingNode(testFolder).createNode();
             testFileModel.setNodeRef(rnm.getId());
@@ -64,7 +67,7 @@ public class TransformServiceTest extends MtlsRestTest
         }
         finally
         {
-            //Clean up file for easier local retries of test
+            // Clean up file for easier local retries of test
             if (testFileModel.getNodeRef() != null)
             {
                 restClient.authenticateUser(adminUser).withCoreAPI().usingNode(testFolder).deleteNode(testFileModel.getNodeRef());

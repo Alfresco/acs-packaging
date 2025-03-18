@@ -17,7 +17,7 @@ class UpgradeScenario implements AutoCloseable
 
     public UpgradeScenario(Config cfg)
     {
-        //We need to keep these networks in stable lexicographical order. By default, UUIDs are used and in wrong order
+        // We need to keep these networks in stable lexicographical order. By default, UUIDs are used and in wrong order
         // attaching a running container to second network clears exposed ports.
         final Network initialEnvNetwork = createNetwork("B");
         final Network mirroredEnvNetwork = createNetwork("A");

@@ -7,6 +7,12 @@ import static org.alfresco.utility.model.FileType.TEXT_PLAIN;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
 import org.alfresco.elasticsearch.SearchQueryService;
 import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.tas.AlfrescoStackInitializer;
@@ -19,17 +25,12 @@ import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.report.log.Step;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 /**
  * In this test we are verifying end-to-end the reindexer component on Elasticsearch.
  */
 @ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
-                      initializers = AlfrescoStackInitializer.class)
+        initializers = AlfrescoStackInitializer.class)
 
 public class ElasticsearchInitialReindexingTests extends AbstractTestNGSpringContextTests
 {
@@ -95,8 +96,8 @@ public class ElasticsearchInitialReindexingTests extends AbstractTestNGSpringCon
     {
         String documentName = "TestFile" + UUID.randomUUID() + ".txt";
         dataContent.usingUser(testUser)
-                   .usingSite(testSite)
-                   .createContent(new FileModel(documentName, TEXT_PLAIN, "content"));
+                .usingSite(testSite)
+                .createContent(new FileModel(documentName, TEXT_PLAIN, "content"));
         return documentName;
     }
 }

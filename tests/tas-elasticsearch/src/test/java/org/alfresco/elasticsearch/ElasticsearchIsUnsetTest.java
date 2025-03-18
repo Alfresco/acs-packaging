@@ -1,13 +1,30 @@
 package org.alfresco.elasticsearch;
 
+import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
+import static java.util.function.Predicate.not;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Stream.concat;
+import static java.util.stream.Stream.of;
+
+import static org.apache.http.entity.ContentType.APPLICATION_JSON;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import static org.alfresco.elasticsearch.SearchQueryService.req;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import com.google.common.io.CharStreams;
 import com.google.gson.Gson;
-import org.alfresco.dataprep.AlfrescoHttpClient;
-import org.alfresco.dataprep.AlfrescoHttpClientFactory;
-import org.alfresco.rest.search.SearchRequest;
-import org.alfresco.tas.AlfrescoStackInitializer;
-import org.alfresco.utility.data.DataUser;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -23,26 +40,11 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
-import static java.util.Objects.requireNonNull;
-import static java.util.Optional.ofNullable;
-import static java.util.function.Predicate.not;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Stream.concat;
-import static java.util.stream.Stream.of;
-import static org.alfresco.elasticsearch.SearchQueryService.req;
-import static org.apache.http.entity.ContentType.APPLICATION_JSON;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.alfresco.dataprep.AlfrescoHttpClient;
+import org.alfresco.dataprep.AlfrescoHttpClientFactory;
+import org.alfresco.rest.search.SearchRequest;
+import org.alfresco.tas.AlfrescoStackInitializer;
+import org.alfresco.utility.data.DataUser;
 
 @ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
         initializers = AlfrescoStackInitializer.class)
@@ -66,7 +68,6 @@ public class ElasticsearchIsUnsetTest extends AbstractTestNGSpringContextTests
     private AlfrescoHttpClient alfrescoClient;
     private AlfNode testNode;
 
-
     @BeforeClass
     public void setUp() throws IOException
     {
@@ -85,17 +86,17 @@ public class ElasticsearchIsUnsetTest extends AbstractTestNGSpringContextTests
     {
         assertNodeIsReadyForTesting();
 
-        //cm:title is set, we should have no result
+        // cm:title is set, we should have no result
         shouldNotFindNode("ISUNSET:\"" + CM_TITLE_PROPERTY + "\"");
         shouldFindNode("NOT ISUNSET:\"" + CM_TITLE_PROPERTY + "\"");
 
-        //cm:description is not set, we should have a result
+        // cm:description is not set, we should have a result
         shouldFindNode("ISUNSET:\"" + CM_DESCRIPTION_PROPERTY + "\"");
         shouldNotFindNode("NOT ISUNSET:\"" + CM_DESCRIPTION_PROPERTY + "\"");
 
         removeCmTitledAspect();
 
-        //ISUNSET is type aware, no cm:titled aspect so no result
+        // ISUNSET is type aware, no cm:titled aspect so no result
         shouldNotFindNode("ISUNSET:\"" + CM_TITLE_PROPERTY + "\"");
         shouldNotFindNode("ISUNSET:\"" + CM_DESCRIPTION_PROPERTY + "\"");
         shouldFindNode("NOT ISUNSET:\"" + CM_TITLE_PROPERTY + "\"");
@@ -103,7 +104,7 @@ public class ElasticsearchIsUnsetTest extends AbstractTestNGSpringContextTests
 
         restoreCmTitledAspect();
 
-        //cm:titled aspect is back but cm:title property has been "unset"
+        // cm:titled aspect is back but cm:title property has been "unset"
         shouldFindNode("ISUNSET:\"" + CM_TITLE_PROPERTY + "\"");
         shouldFindNode("ISUNSET:\"" + CM_DESCRIPTION_PROPERTY + "\"");
         shouldNotFindNode("NOT ISUNSET:\"" + CM_TITLE_PROPERTY + "\"");

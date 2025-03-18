@@ -1,16 +1,26 @@
 package org.alfresco.elasticsearch;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+
 import static org.alfresco.elasticsearch.SearchQueryService.req;
 import static org.alfresco.utility.data.RandomData.getRandomFile;
 import static org.alfresco.utility.data.RandomData.getRandomName;
 import static org.alfresco.utility.report.log.Step.STEP;
-import static org.apache.commons.lang3.StringUtils.EMPTY;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import org.alfresco.rest.model.RestTagModel;
 import org.alfresco.rest.search.SearchRequest;
@@ -24,17 +34,9 @@ import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 @ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
-    initializers = AlfrescoStackInitializer.class)
+        initializers = AlfrescoStackInitializer.class)
 public class ElasticsearchBoostedSearchTests extends AbstractTestNGSpringContextTests
 {
     private static final String SEARCH_TERM = "mountain";
@@ -92,7 +94,7 @@ public class ElasticsearchBoostedSearchTests extends AbstractTestNGSpringContext
         dataUser.deleteUser(testUser);
     }
 
-    @Test(groups = { TestGroup.SEARCH })
+    @Test(groups = {TestGroup.SEARCH})
     public void testAftsQuery_simpleTermBoost()
     {
         STEP("Search for files and folders by name with higher priority for files");
@@ -106,7 +108,7 @@ public class ElasticsearchBoostedSearchTests extends AbstractTestNGSpringContext
         searchQueryService.expectResultsInOrder(searchRequest, testUser, folderWithTermInName.getName(), fileWithTermInName.getName());
     }
 
-    @Test(groups = { TestGroup.SEARCH })
+    @Test(groups = {TestGroup.SEARCH})
     public void testAftsQuery_complexTermBoost()
     {
         STEP("Search for files and folders by name or title with higher priority for files by name");
@@ -130,7 +132,7 @@ public class ElasticsearchBoostedSearchTests extends AbstractTestNGSpringContext
         searchQueryService.expectResultsInOrder(searchRequest, testUser, folderWithTermInTitle.getName(), folderWithTermInName.getName(), fileWithTermInTitle.getName(), fileWithTermInName.getName());
     }
 
-    @Test(groups = { TestGroup.SEARCH })
+    @Test(groups = {TestGroup.SEARCH})
     public void testAftsQuery_phraseBoost()
     {
         STEP("Search for files by name or TEXT with higher priority for name filter");
@@ -144,7 +146,7 @@ public class ElasticsearchBoostedSearchTests extends AbstractTestNGSpringContext
         searchQueryService.expectResultsInOrder(searchRequest, testUser, fileWithPhraseInContent.getName(), fileWithTermInName.getName());
     }
 
-    @Test(groups = { TestGroup.SEARCH })
+    @Test(groups = {TestGroup.SEARCH})
     public void testAftsQuery_exactTermBoost()
     {
         STEP("Search for files by exact name or content with higher priority for exact name filter");
@@ -158,7 +160,7 @@ public class ElasticsearchBoostedSearchTests extends AbstractTestNGSpringContext
         searchQueryService.expectResultsInOrder(searchRequest, testUser, fileWithPhraseInContent.getName(), fileWithTermInName.getName());
     }
 
-    @Test(groups = { TestGroup.SEARCH })
+    @Test(groups = {TestGroup.SEARCH})
     public void testAftsQuery_expandedTermBoost()
     {
         STEP("Search for files by expanded name and two different terms with higher priority for first term");
@@ -172,7 +174,7 @@ public class ElasticsearchBoostedSearchTests extends AbstractTestNGSpringContext
         searchQueryService.expectResultsInOrder(searchRequest, testUser, fileWithDifferentTermInName.getName(), fileWithTermInName.getName());
     }
 
-    @Test(groups = { TestGroup.SEARCH })
+    @Test(groups = {TestGroup.SEARCH})
     public void testAftsQuery_fuzzyMatchingBoost()
     {
         STEP("Fuzzy matching search for files by name or title with higher priority for fuzzy name filter");
@@ -189,7 +191,7 @@ public class ElasticsearchBoostedSearchTests extends AbstractTestNGSpringContext
     /**
      * Verify if boosts works fine with words proximity search. Files containing terms within specific distance from another one should be returned.
      */
-    @Test(groups = { TestGroup.SEARCH })
+    @Test(groups = {TestGroup.SEARCH})
     public void testAftsQuery_proximitySearchBoost()
     {
         STEP("Search for files by name or proximity TEXT with higher priority for name filter");
@@ -203,7 +205,7 @@ public class ElasticsearchBoostedSearchTests extends AbstractTestNGSpringContext
         searchQueryService.expectResultsInOrder(searchRequest, testUser, fileWithPhraseInContent.getName(), fileWithTermInName.getName());
     }
 
-    @Test(groups = { TestGroup.SEARCH })
+    @Test(groups = {TestGroup.SEARCH})
     public void testAftsQuery_dateRangeSearchBoost()
     {
         String timeFrom = creationTime.format(DateTimeFormatter.ISO_DATE_TIME);
@@ -223,7 +225,7 @@ public class ElasticsearchBoostedSearchTests extends AbstractTestNGSpringContext
     /**
      * Verify if boosts works fine with words range search. Files containing words from alphabetical range (from 'mountain' to 'phrase', this includes word 'other') should be returned.
      */
-    @Test(groups = { TestGroup.SEARCH })
+    @Test(groups = {TestGroup.SEARCH})
     public void testAftsQuery_wordsRangeSearchBoost()
     {
         STEP("Search for files by name or words in content from given range with higher priority for name filter");
@@ -239,7 +241,7 @@ public class ElasticsearchBoostedSearchTests extends AbstractTestNGSpringContext
         searchQueryService.expectResultsFromQuery(searchRequest, testUser, fileWithTermInName.getName(), fileWithPhraseInContent.getName(), fileWithDifferentTermInName.getName());
     }
 
-    @Test(groups = { TestGroup.SEARCH })
+    @Test(groups = {TestGroup.SEARCH})
     public void testAftsQuery_wildcardSearchBoost()
     {
         STEP("Search for files by wildcard name or title with higher priority for wildcard name filter");
@@ -257,7 +259,7 @@ public class ElasticsearchBoostedSearchTests extends AbstractTestNGSpringContext
         searchQueryService.expectResultsFromQuery(searchRequest, testUser, fileWithTermInName.getName(), fileWithDifferentTermInName.getName(), fileWithTermInTitle.getName());
     }
 
-    @Test(groups = { TestGroup.SEARCH })
+    @Test(groups = {TestGroup.SEARCH})
     public void testAftsQuery_invalidNegativeBoost()
     {
         STEP("Try to search for files by name using negative boost and expect 500 error response");
@@ -290,16 +292,16 @@ public class ElasticsearchBoostedSearchTests extends AbstractTestNGSpringContext
         fileModel.setDescription(description);
 
         FileModel file = dataContent
-            .usingAdmin()
-            .usingResource(contentRoot)
-            .createContent(fileModel);
+                .usingAdmin()
+                .usingResource(contentRoot)
+                .createContent(fileModel);
 
         if (StringUtils.isNotBlank(tag))
         {
             dataContent
-                .usingAdmin()
-                .usingResource(file)
-                .addTagToContent(RestTagModel.builder().tag(tag).create());
+                    .usingAdmin()
+                    .usingResource(file)
+                    .addTagToContent(RestTagModel.builder().tag(tag).create());
         }
 
         return file;
@@ -322,16 +324,16 @@ public class ElasticsearchBoostedSearchTests extends AbstractTestNGSpringContext
         FolderModel folderModel = new FolderModel(folderName, title, description);
 
         FolderModel folder = dataContent
-            .usingAdmin()
-            .usingResource(contentRoot)
-            .createFolder(folderModel);
+                .usingAdmin()
+                .usingResource(contentRoot)
+                .createFolder(folderModel);
 
         if (StringUtils.isNotBlank(tag))
         {
             dataContent
-                .usingAdmin()
-                .usingResource(folder)
-                .addTagToContent(RestTagModel.builder().tag(tag).create());
+                    .usingAdmin()
+                    .usingResource(folder)
+                    .addTagToContent(RestTagModel.builder().tag(tag).create());
         }
 
         return folder;

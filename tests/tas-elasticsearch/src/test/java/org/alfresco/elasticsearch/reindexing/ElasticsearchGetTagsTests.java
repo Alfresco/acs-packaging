@@ -4,6 +4,14 @@ import static org.alfresco.utility.report.log.Step.STEP;
 
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
 import org.alfresco.dataprep.CMISUtil;
 import org.alfresco.rest.core.RestWrapper;
 import org.alfresco.rest.model.RestTagModel;
@@ -19,16 +27,9 @@ import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 @ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
-    initializers = AlfrescoStackInitializer.class)
+        initializers = AlfrescoStackInitializer.class)
 public class ElasticsearchGetTagsTests extends AbstractTestNGSpringContextTests
 {
 
@@ -63,25 +64,25 @@ public class ElasticsearchGetTagsTests extends AbstractTestNGSpringContextTests
 
         STEP("Create few tags");
         apple = restClient.authenticateUser(user).withCoreAPI().usingResource(document)
-            .addTag(RandomData.getRandomName("apple"));
+                .addTag(RandomData.getRandomName("apple"));
         banana = restClient.authenticateUser(dataUser.getAdminUser()).withCoreAPI()
-            .createSingleTag(RestTagModel.builder().tag(RandomData.getRandomName("banana")).create());
+                .createSingleTag(RestTagModel.builder().tag(RandomData.getRandomName("banana")).create());
         pineapple = restClient.authenticateUser(dataUser.getAdminUser()).withCoreAPI()
-            .createSingleTag(RestTagModel.builder().tag(RandomData.getRandomName("pineapple")).create());
+                .createSingleTag(RestTagModel.builder().tag(RandomData.getRandomName("pineapple")).create());
         winegrape = restClient.authenticateUser(dataUser.getAdminUser()).withCoreAPI()
-            .createSingleTag(RestTagModel.builder().tag(RandomData.getRandomName("winegrape")).create());
+                .createSingleTag(RestTagModel.builder().tag(RandomData.getRandomName("winegrape")).create());
         grapefruit = restClient.authenticateUser(dataUser.getAdminUser()).withCoreAPI()
-            .createSingleTag(RestTagModel.builder().tag(RandomData.getRandomName("grapefruit")).create());
+                .createSingleTag(RestTagModel.builder().tag(RandomData.getRandomName("grapefruit")).create());
         orange = restClient.authenticateUser(dataUser.getAdminUser()).withCoreAPI()
-            .createSingleTag(RestTagModel.builder().tag(RandomData.getRandomName("orange")).create());
+                .createSingleTag(RestTagModel.builder().tag(RandomData.getRandomName("orange")).create());
 
         STEP("Wait for indexing to complete");
         Utility.sleep(500, 10000, () -> restClient.authenticateUser(dataUser.getAdminUser())
-            .withParams("where=(tag MATCHES ('oran*'))")
-            .withCoreAPI()
-            .getTags()
-            .assertThat()
-            .entrySetContains("tag", orange.getTag().toLowerCase()));
+                .withParams("where=(tag MATCHES ('oran*'))")
+                .withCoreAPI()
+                .getTags()
+                .assertThat()
+                .entrySetContains("tag", orange.getTag().toLowerCase()));
     }
 
     @AfterClass
@@ -103,117 +104,117 @@ public class ElasticsearchGetTagsTests extends AbstractTestNGSpringContextTests
     /**
      * Verify if exact name filter can be applied.
      */
-    @Test(groups = { TestGroup.REST_API, TestGroup.TAGS, TestGroup.REGRESSION })
+    @Test(groups = {TestGroup.REST_API, TestGroup.TAGS, TestGroup.REGRESSION})
     public void testGetTags_withSingleNameFilter()
     {
         STEP("Get tags with names filter using EQUALS and expect one item in result");
         final RestTagModelsCollection returnedCollection = restClient.authenticateUser(user)
-            .withParams("where=(tag='" + apple.getTag() + "')")
-            .withCoreAPI()
-            .getTags();
+                .withParams("where=(tag='" + apple.getTag() + "')")
+                .withCoreAPI()
+                .getTags();
 
         restClient.assertStatusCodeIs(HttpStatus.OK);
         returnedCollection.assertThat()
-            .entrySetMatches("tag", Set.of(apple.getTag().toLowerCase()));
+                .entrySetMatches("tag", Set.of(apple.getTag().toLowerCase()));
     }
 
     /**
      * Verify if multiple names can be applied as a filter.
      */
-    @Test(groups = { TestGroup.REST_API, TestGroup.TAGS, TestGroup.REGRESSION })
+    @Test(groups = {TestGroup.REST_API, TestGroup.TAGS, TestGroup.REGRESSION})
     public void testGetTags_withTwoNameFilters()
     {
         STEP("Get tags with names filter using IN and expect two items in result");
         final RestTagModelsCollection returnedCollection = restClient.authenticateUser(user)
-            .withParams("where=(tag IN ('" + apple.getTag() + "', '" + banana.getTag() + "'))")
-            .withCoreAPI()
-            .getTags();
+                .withParams("where=(tag IN ('" + apple.getTag() + "', '" + banana.getTag() + "'))")
+                .withCoreAPI()
+                .getTags();
 
         restClient.assertStatusCodeIs(HttpStatus.OK);
         returnedCollection.assertThat()
-            .entrySetMatches("tag", Set.of(apple.getTag().toLowerCase(), banana.getTag().toLowerCase()));
+                .entrySetMatches("tag", Set.of(apple.getTag().toLowerCase(), banana.getTag().toLowerCase()));
     }
 
     /**
      * Verify if alike name filter can be applied.
      */
-    @Test(groups = { TestGroup.REST_API, TestGroup.TAGS, TestGroup.REGRESSION })
+    @Test(groups = {TestGroup.REST_API, TestGroup.TAGS, TestGroup.REGRESSION})
     public void testGetTags_whichNamesStartsWithOrphan()
     {
         STEP("Get tags with names filter using MATCHES and expect one item in result");
         final RestTagModelsCollection returnedCollection = restClient.authenticateUser(user)
-            .withParams("where=(tag MATCHES ('*an*'))")
-            .withCoreAPI()
-            .getTags();
+                .withParams("where=(tag MATCHES ('*an*'))")
+                .withCoreAPI()
+                .getTags();
 
         restClient.assertStatusCodeIs(HttpStatus.OK);
         returnedCollection.assertThat()
-            .entrySetContains("tag", banana.getTag().toLowerCase(), orange.getTag().toLowerCase());
+                .entrySetContains("tag", banana.getTag().toLowerCase(), orange.getTag().toLowerCase());
     }
 
     /**
      * Verify that tags can be filtered by exact name and alike name at the same time.
      */
-    @Test(groups = { TestGroup.REST_API, TestGroup.TAGS, TestGroup.REGRESSION })
+    @Test(groups = {TestGroup.REST_API, TestGroup.TAGS, TestGroup.REGRESSION})
     public void testGetTags_withExactNameAndAlikeFilters()
     {
         STEP("Get tags with names filter using EQUALS and MATCHES and expect four items in result");
         final RestTagModelsCollection returnedCollection = restClient.authenticateUser(user)
-            .withParams("where=(tag='" + orange.getTag() + "' OR tag MATCHES ('*grape*'))")
-            .withCoreAPI()
-            .getTags();
+                .withParams("where=(tag='" + orange.getTag() + "' OR tag MATCHES ('*grape*'))")
+                .withCoreAPI()
+                .getTags();
 
         restClient.assertStatusCodeIs(HttpStatus.OK);
         returnedCollection.assertThat()
-            .entrySetMatches("tag", Set.of(orange.getTag().toLowerCase(), grapefruit.getTag().toLowerCase(), winegrape.getTag().toLowerCase()));
+                .entrySetMatches("tag", Set.of(orange.getTag().toLowerCase(), grapefruit.getTag().toLowerCase(), winegrape.getTag().toLowerCase()));
     }
 
     /**
      * Verify if multiple alike filters can be applied.
      */
-    @Test(groups = { TestGroup.REST_API, TestGroup.TAGS, TestGroup.REGRESSION })
+    @Test(groups = {TestGroup.REST_API, TestGroup.TAGS, TestGroup.REGRESSION})
     public void testGetTags_withTwoAlikeFilters()
     {
         STEP("Get tags applying names filter using MATCHES twice and expect four items in result");
         final RestTagModelsCollection returnedCollection = restClient.authenticateUser(user)
-            .withParams("where=(tag MATCHES ('*apple*') OR tag MATCHES ('grape*'))")
-            .withCoreAPI()
-            .getTags();
+                .withParams("where=(tag MATCHES ('*apple*') OR tag MATCHES ('grape*'))")
+                .withCoreAPI()
+                .getTags();
 
         restClient.assertStatusCodeIs(HttpStatus.OK);
         returnedCollection.assertThat()
-            .entrySetMatches("tag", Set.of(apple.getTag().toLowerCase(), pineapple.getTag().toLowerCase(), grapefruit.getTag().toLowerCase()));
+                .entrySetMatches("tag", Set.of(apple.getTag().toLowerCase(), pineapple.getTag().toLowerCase(), grapefruit.getTag().toLowerCase()));
     }
 
     /**
      * Verify that providing incorrect field name in where query will result with 400 (Bad Request).
      */
-    @Test(groups = { TestGroup.REST_API, TestGroup.TAGS, TestGroup.REGRESSION })
+    @Test(groups = {TestGroup.REST_API, TestGroup.TAGS, TestGroup.REGRESSION})
     public void testGetTags_withWrongWherePropertyNameAndExpect400()
     {
         STEP("Try to get tags with names filter using EQUALS and wrong property name and expect 400");
         restClient.authenticateUser(user)
-            .withParams("where=(name=apple)")
-            .withCoreAPI()
-            .getTags();
+                .withParams("where=(name=apple)")
+                .withCoreAPI()
+                .getTags();
 
         restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST)
-            .assertLastError().containsSummary("Where query error: property with name: name is not expected");
+                .assertLastError().containsSummary("Where query error: property with name: name is not expected");
     }
 
     /**
      * Verify tht AND operator is not supported in where query and expect 400 (Bad Request).
      */
-    @Test(groups = { TestGroup.REST_API, TestGroup.TAGS, TestGroup.REGRESSION })
+    @Test(groups = {TestGroup.REST_API, TestGroup.TAGS, TestGroup.REGRESSION})
     public void testGetTags_queryAndOperatorNotSupported()
     {
         STEP("Try to get tags applying names filter using AND operator and expect 400");
         restClient.authenticateUser(user)
-            .withParams("where=(tag=apple AND tag IN ('banana', 'melon'))")
-            .withCoreAPI()
-            .getTags();
+                .withParams("where=(tag=apple AND tag IN ('banana', 'melon'))")
+                .withCoreAPI()
+                .getTags();
 
         restClient.assertStatusCodeIs(HttpStatus.BAD_REQUEST)
-            .assertLastError().containsSummary("An invalid WHERE query was received. Unsupported Predicate");
+                .assertLastError().containsSummary("An invalid WHERE query was received. Unsupported Predicate");
     }
 }

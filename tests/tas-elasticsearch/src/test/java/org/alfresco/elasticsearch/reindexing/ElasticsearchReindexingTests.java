@@ -1,5 +1,7 @@
 package org.alfresco.elasticsearch.reindexing;
 
+import static org.junit.Assert.fail;
+
 import static org.alfresco.elasticsearch.SearchQueryService.req;
 import static org.alfresco.tas.AlfrescoStackInitializer.CUSTOM_ALFRESCO_INDEX;
 import static org.alfresco.tas.AlfrescoStackInitializer.liveIndexer;
@@ -7,7 +9,6 @@ import static org.alfresco.tas.AlfrescoStackInitializer.reindex;
 import static org.alfresco.tas.AlfrescoStackInitializer.searchEngineContainer;
 import static org.alfresco.utility.model.FileType.TEXT_PLAIN;
 import static org.alfresco.utility.report.log.Step.STEP;
-import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.time.Clock;
@@ -16,17 +17,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.UUID;
 
-import org.alfresco.elasticsearch.SearchQueryService;
-import org.alfresco.rest.search.SearchRequest;
-import org.alfresco.tas.AlfrescoStackInitializer;
-import org.alfresco.utility.data.DataContent;
-import org.alfresco.utility.data.DataSite;
-import org.alfresco.utility.data.DataUser;
-import org.alfresco.utility.model.FileModel;
-import org.alfresco.utility.model.SiteModel;
-import org.alfresco.utility.model.TestGroup;
-import org.alfresco.utility.model.UserModel;
-import org.alfresco.utility.network.ServerHealth;
 import org.apache.http.HttpHost;
 import org.opensearch.client.RestClient;
 import org.opensearch.client.json.jackson.JacksonJsonpMapper;
@@ -43,11 +33,23 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import org.alfresco.elasticsearch.SearchQueryService;
+import org.alfresco.rest.search.SearchRequest;
+import org.alfresco.tas.AlfrescoStackInitializer;
+import org.alfresco.utility.data.DataContent;
+import org.alfresco.utility.data.DataSite;
+import org.alfresco.utility.data.DataUser;
+import org.alfresco.utility.model.FileModel;
+import org.alfresco.utility.model.SiteModel;
+import org.alfresco.utility.model.TestGroup;
+import org.alfresco.utility.model.UserModel;
+import org.alfresco.utility.network.ServerHealth;
+
 /**
  * In this test we are verifying end-to-end the reindexer component on Elasticsearch.
  */
 @ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
-                      initializers = AlfrescoStackInitializer.class)
+        initializers = AlfrescoStackInitializer.class)
 @SuppressWarnings({"PMD.JUnit4TestShouldUseTestAnnotation", "PMD.JUnitTestsShouldIncludeAssert"}) // these are testng tests
 public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTests
 {
@@ -81,9 +83,9 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         STEP("create ES client");
 
         RestClient httpClient = RestClient.builder(new HttpHost(searchEngineContainer.getContainerIpAddress(),
-                                                                searchEngineContainer.getFirstMappedPort(), "http"))
-                    .build();
-      
+                searchEngineContainer.getFirstMappedPort(), "http"))
+                .build();
+
         OpenSearchTransport transport = new RestClientTransport(httpClient, new JacksonJsonpMapper());
         elasticClient = new OpenSearchClient(transport);
     }
@@ -154,9 +156,9 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
         reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
                 "ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
-            "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "true",
-            "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "true",
-            "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "false"));
+                "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "true",
+                "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "true",
+                "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "false"));
 
         // THEN
         // Document is still indexed after reindexing.
@@ -177,9 +179,9 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
         reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
                 "ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
-            "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "true",
-            "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "false",
-            "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "false"));
+                "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "true",
+                "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "false",
+                "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "false"));
 
         // THEN
         SearchRequest query = req("cm:name:'" + documentName + "' AND TEXT:'content'");
@@ -201,9 +203,9 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
         reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
                 "ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
-            "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "false",
-            "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "true",
-            "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "false"));
+                "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "false",
+                "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "true",
+                "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "false"));
 
         // THEN
         // When not using metadata, document shouldn't be present in Elasticsearch index,
@@ -225,9 +227,9 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
         reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
                 "ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
-            "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "true",
-            "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "false",
-            "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true"));
+                "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "true",
+                "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "false",
+                "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true"));
 
         // THEN
         SearchRequest query = req("cm:name:'%s' AND PATH:'/app:company_home/st:sites/cm:%s/cm:documentLibrary/cm:%s'".formatted(documentName, testSite, documentName));
@@ -249,9 +251,9 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
         reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
                 "ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
-            "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "true",
-            "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "true",
-            "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true"));
+                "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "true",
+                "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "true",
+                "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true"));
 
         // THEN
         SearchRequest query = req("cm:name:'%s' AND TEXT:'content' AND PATH:'/app:company_home/st:sites/cm:%s/cm:documentLibrary/cm:%s'".formatted(documentName, testSite, documentName));
@@ -271,9 +273,9 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
         reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
                 "ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
-            "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "false",
-            "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "false",
-            "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true"));
+                "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "false",
+                "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "false",
+                "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true"));
 
         // THEN
         // When not using metadata, document shouldn't be present in Elasticsearch index,
@@ -282,7 +284,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         searchQueryService.expectNoResultsFromQuery(query, dataUser.getAdminUser());
     }
 
-    @Test (groups = TestGroup.SEARCH)
+    @Test(groups = TestGroup.SEARCH)
     public void testPathReindex()
     {
         // GIVEN
@@ -308,7 +310,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         liveIndexer.start();
     }
 
-    @Test (groups = TestGroup.SEARCH)
+    @Test(groups = TestGroup.SEARCH)
     public void testPathReindexQueryWithNamespaces()
     {
         // GIVEN
@@ -357,8 +359,8 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     {
         String documentName = "TestFile" + UUID.randomUUID() + ".txt";
         dataContent.usingUser(testUser)
-                   .usingSite(testSite)
-                   .createContent(new FileModel(documentName, TEXT_PLAIN, "content"));
+                .usingSite(testSite)
+                .createContent(new FileModel(documentName, TEXT_PLAIN, "content"));
         return documentName;
     }
 
