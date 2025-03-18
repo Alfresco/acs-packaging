@@ -7,9 +7,10 @@ import static org.alfresco.elasticsearch.upgrade.Config.getUpgradeScenarioConfig
 import java.io.IOException;
 import java.net.URL;
 
-import org.alfresco.elasticsearch.upgrade.AvailabilityProbe.Stats;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import org.alfresco.elasticsearch.upgrade.AvailabilityProbe.Stats;
 
 public class FromSolrUpgradeTest
 {
@@ -61,7 +62,7 @@ public class FromSolrUpgradeTest
             initialEnv.expectSearchResult(ofMinutes(2), SEARCH_TERM,
                     FILE_UPLOADED_BEFORE_INITIAL_REINDEXING,
                     FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING);
-            //Live indexing was not running so FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING hasn't been indexed
+            // Live indexing was not running so FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING hasn't been indexed
             Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), documentsCount);
 
             initialEnv.uploadFile(TEST_FILE_URL, FILE_UPLOADED_AFTER_STARTING_LIVE_INDEXING);
@@ -69,12 +70,12 @@ public class FromSolrUpgradeTest
                     FILE_UPLOADED_BEFORE_INITIAL_REINDEXING,
                     FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING,
                     FILE_UPLOADED_AFTER_STARTING_LIVE_INDEXING);
-            //FILE_UPLOADED_AFTER_STARTING_LIVE_INDEXING has been indexed, but we still have a gap.
+            // FILE_UPLOADED_AFTER_STARTING_LIVE_INDEXING has been indexed, but we still have a gap.
             // FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING is still not indexed
             Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), documentsCount + 1);
 
-            initialEnv.reindexByIds((long)(initialReIndexingUpperBound * 0.9), 1_000_000_000);
-            //Gap has been closed by running reindexing. Both FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING and
+            initialEnv.reindexByIds((long) (initialReIndexingUpperBound * 0.9), 1_000_000_000);
+            // Gap has been closed by running reindexing. Both FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING and
             // FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING have been indexed.
             Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), documentsCount + 2);
 
@@ -84,12 +85,12 @@ public class FromSolrUpgradeTest
                     FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING,
                     FILE_UPLOADED_AFTER_STARTING_LIVE_INDEXING,
                     FILE_UPLOADED_BEFORE_SWITCHING_TO_ELASTICSEARCH);
-            //Live indexing is still running so FILE_UPLOADED_BEFORE_SWITCHING_TO_ELASTICSEARCH should be indexed as well.
+            // Live indexing is still running so FILE_UPLOADED_BEFORE_SWITCHING_TO_ELASTICSEARCH should be indexed as well.
             Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), documentsCount + 3);
 
             initialEnv.setElasticsearchSearchService();
 
-            //Now we use ES. Check if we still have valid result.
+            // Now we use ES. Check if we still have valid result.
             initialEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM,
                     FILE_UPLOADED_BEFORE_INITIAL_REINDEXING,
                     FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING,
@@ -98,7 +99,7 @@ public class FromSolrUpgradeTest
 
             scenario.shutdownSolr();
 
-            //Solr has been stopped. Check if we still have valid result.
+            // Solr has been stopped. Check if we still have valid result.
             initialEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM,
                     FILE_UPLOADED_BEFORE_INITIAL_REINDEXING,
                     FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING,
@@ -107,7 +108,7 @@ public class FromSolrUpgradeTest
 
             initialEnv.uploadFile(TEST_FILE_URL, FILE_UPLOADED_AFTER_SWITCHING_TO_ELASTICSEARCH);
 
-            //Check if FILE_UPLOADED_AFTER_SWITCHING_TO_ELASTICSEARCH is part of the search result.
+            // Check if FILE_UPLOADED_AFTER_SWITCHING_TO_ELASTICSEARCH is part of the search result.
             initialEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM,
                     FILE_UPLOADED_BEFORE_INITIAL_REINDEXING,
                     FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING,
@@ -120,4 +121,3 @@ public class FromSolrUpgradeTest
         }
     }
 }
-

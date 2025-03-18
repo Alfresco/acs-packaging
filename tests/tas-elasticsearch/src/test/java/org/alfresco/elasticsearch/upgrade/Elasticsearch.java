@@ -23,10 +23,10 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.ConnectToNetworkCmd;
 import com.github.dockerjava.api.model.ContainerNetwork;
 import com.google.gson.Gson;
-
-import org.alfresco.tas.SearchEngineType;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
+
+import org.alfresco.tas.SearchEngineType;
 
 class Elasticsearch implements AutoCloseable
 {
@@ -50,20 +50,20 @@ class Elasticsearch implements AutoCloseable
                 .withNetwork(network)
                 .withExposedPorts(9200).withCreateContainerCmdModifier(cmd -> {
                     cmd.getHostConfig()
-                            .withMemory((long)3400*1024*1024)
-                            .withMemorySwap((long)3400*1024*1024);
+                            .withMemory((long) 3400 * 1024 * 1024)
+                            .withMemorySwap((long) 3400 * 1024 * 1024);
                 });
 
-        if(SearchEngineType.ELASTICSEARCH_ENGINE == cfg.getSearchEngineType())
+        if (SearchEngineType.ELASTICSEARCH_ENGINE == cfg.getSearchEngineType())
         {
             searchContainer.withEnv("xpack.security.enabled", "false")
-                .withEnv("xpack.security.transport.ssl.enabled", "false")
-                .withEnv("xpack.security.http.ssl.enabled", "false");
+                    .withEnv("xpack.security.transport.ssl.enabled", "false")
+                    .withEnv("xpack.security.http.ssl.enabled", "false");
         }
-        if(SearchEngineType.OPENSEARCH_ENGINE == cfg.getSearchEngineType())
+        if (SearchEngineType.OPENSEARCH_ENGINE == cfg.getSearchEngineType())
         {
             searchContainer.withEnv("plugins.security.disabled", "true")
-                .withEnv("plugins.security.ssl.http.enabled", "false");
+                    .withEnv("plugins.security.ssl.http.enabled", "false");
         }
 
     }
@@ -85,7 +85,8 @@ class Elasticsearch implements AutoCloseable
             try
             {
                 return isIndexCreated();
-            } catch (IOException e)
+            }
+            catch (IOException e)
             {
                 return false;
             }
@@ -97,7 +98,8 @@ class Elasticsearch implements AutoCloseable
         try
         {
             return getString("/" + cfg.getIndexName() + "/_mapping").contains("cm%3Acontent");
-        } catch (FileNotFoundException e)
+        }
+        catch (FileNotFoundException e)
         {
             return false;
         }
@@ -141,7 +143,8 @@ class Elasticsearch implements AutoCloseable
                     .create("http://" + searchContainer.getHost() + ":" + searchContainer.getMappedPort(9200))
                     .resolve(path);
             return uri.toURL();
-        } catch (MalformedURLException e)
+        }
+        catch (MalformedURLException e)
         {
             throw new RuntimeException("Failed to create a valid url.", e);
         }
@@ -153,7 +156,8 @@ class Elasticsearch implements AutoCloseable
             try
             {
                 return !isIndexCreated();
-            } catch (IOException e)
+            }
+            catch (IOException e)
             {
                 return false;
             }
@@ -168,9 +172,9 @@ class Elasticsearch implements AutoCloseable
         additionalNetworks
                 .stream()
                 .map(client.connectToNetworkCmd()
-                           .withContainerId(containerId)
-                           .withContainerNetwork(new ContainerNetwork()
-                                   .withAliases(searchContainer.getNetworkAliases()))::withNetworkId)
+                        .withContainerId(containerId)
+                        .withContainerNetwork(new ContainerNetwork()
+                                .withAliases(searchContainer.getNetworkAliases()))::withNetworkId)
                 .forEach(ConnectToNetworkCmd::exec);
     }
 

@@ -47,7 +47,8 @@ class AvailabilityProbe
 
     public void start()
     {
-        if (thread.isAlive()) return;
+        if (thread.isAlive())
+            return;
         thread.start();
     }
 
@@ -78,7 +79,8 @@ class AvailabilityProbe
         public int getSuccessRatioInPercents()
         {
             final long ok = Optional.ofNullable(results.get(ProbeResult.ok())).orElse(0L);
-            if (ok == 0) return 0;
+            if (ok == 0)
+                return 0;
 
             final long total = results.values().stream().mapToLong(Number::longValue).sum();
             return (int) (((ok * 1000) / total) / 10);
@@ -104,7 +106,8 @@ class AvailabilityProbe
 
         public static ProbeResult fail(Throwable reason)
         {
-            if (reason == null) return fail();
+            if (reason == null)
+                return fail();
             return FAILURES_CACHE.computeIfAbsent(reason.getClass(), ProbeResult::new);
         }
 

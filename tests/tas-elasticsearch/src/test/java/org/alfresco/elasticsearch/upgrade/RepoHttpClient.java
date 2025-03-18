@@ -17,7 +17,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpMessage;
 import org.apache.http.HttpStatus;
@@ -43,14 +42,14 @@ class RepoHttpClient
     private static final int HTTP_TIMEOUT_MS = 5_000;
 
     final CloseableHttpClient client = HttpClientBuilder.create()
-                                                        .setDefaultRequestConfig(
-                                                                RequestConfig.copy(RequestConfig.DEFAULT)
-                                                                             .setConnectionRequestTimeout(HTTP_TIMEOUT_MS)
-                                                                             .setSocketTimeout(HTTP_TIMEOUT_MS)
-                                                                             .setConnectionRequestTimeout(HTTP_TIMEOUT_MS)
-                                                                             .setRedirectsEnabled(false)
-                                                                             .build())
-                                                        .build();
+            .setDefaultRequestConfig(
+                    RequestConfig.copy(RequestConfig.DEFAULT)
+                            .setConnectionRequestTimeout(HTTP_TIMEOUT_MS)
+                            .setSocketTimeout(HTTP_TIMEOUT_MS)
+                            .setConnectionRequestTimeout(HTTP_TIMEOUT_MS)
+                            .setRedirectsEnabled(false)
+                            .build())
+            .build();
 
     final Gson gson = new Gson();
     private final URI searchApiUri;
@@ -213,7 +212,7 @@ class RepoHttpClient
         return Optional.of(names);
     }
 
-    private Map<?,?> executeAndGetResponseMap(HttpPost httpPost, HttpClientContext httpCtx) throws IOException
+    private Map<?, ?> executeAndGetResponseMap(HttpPost httpPost, HttpClientContext httpCtx) throws IOException
     {
         try (CloseableHttpResponse response = client.execute(httpPost, httpCtx))
         {

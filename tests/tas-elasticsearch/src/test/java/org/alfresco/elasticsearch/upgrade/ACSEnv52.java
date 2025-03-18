@@ -72,7 +72,7 @@ class ACSEnv52 extends LegacyACSEnv
 
     private GenericContainer<?> createRepositoryContainer(Network network)
     {
-        //We are going to share the content repository so we need to align the uid and gid for the alfresco user
+        // We are going to share the content repository so we need to align the uid and gid for the alfresco user
         final ImageFromDockerfile repoImage = new ImageFromDockerfile("repo-with-changed-uid-and-gid")
                 .withDockerfileFromBuilder(builder -> builder
                         .from("quay.io/alfresco/alfresco-content-repository-52:5.2.6")
@@ -86,7 +86,7 @@ class ACSEnv52 extends LegacyACSEnv
                 .withEnv("JAVA_TOOL_OPTIONS",
                         "-Dsolr.host=solr6 " +
                                 "-Dsolr.port=8983 " +
-                                "-Dsolr.secureComms=none "+
+                                "-Dsolr.secureComms=none " +
                                 "-Dsolr.base.url=/solr " +
                                 "-Dindex.subsystem.name=solr6")
                 .withNetwork(network)

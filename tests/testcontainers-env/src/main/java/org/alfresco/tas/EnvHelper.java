@@ -13,12 +13,13 @@ public class EnvHelper
 
     /** Private constructor for helper class. */
     private EnvHelper()
-    {
-    }
+    {}
 
     /**
      * Load the value of a property from the .env file.
-     * @param key The key to look up.
+     * 
+     * @param key
+     *            The key to look up.
      * @return The value as a string.
      */
     public static String getEnvProperty(String key)
@@ -28,6 +29,7 @@ public class EnvHelper
 
     /**
      * Load all the properties from the .env file.
+     * 
      * @return The properties.
      */
     public static Properties loadEnvProperties()

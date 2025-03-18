@@ -2,9 +2,10 @@ package org.alfresco.elasticsearch.basicAuth;
 
 import java.io.IOException;
 
+import org.testcontainers.containers.GenericContainer;
+
 import org.alfresco.tas.AlfrescoStackInitializer;
 import org.alfresco.tas.SearchEngineType;
-import org.testcontainers.containers.GenericContainer;
 
 /**
  * ACS Stack Docker Compose initializer with Basic Authentication for Search Engine service (Opensearch or Elasticsearch).
@@ -22,7 +23,7 @@ public class AlfrescoStackInitializerESBasicAuth extends AlfrescoStackInitialize
     {
         SearchEngineType usedEngine = getImagesConfig().getSearchEngineType();
 
-        if(SearchEngineType.OPENSEARCH_ENGINE.equals(usedEngine))
+        if (SearchEngineType.OPENSEARCH_ENGINE.equals(usedEngine))
         {
             configureNewUser(searchEngineContainer);
         }
@@ -32,7 +33,7 @@ public class AlfrescoStackInitializerESBasicAuth extends AlfrescoStackInitialize
     {
         try
         {
-            //Using password hash for setting up test only
+            // Using password hash for setting up test only
             String passwordHash = hashPassword(opensearchContainer, SEARCH_ENGINE_PASSWORD);
 
             addNewUser(opensearchContainer, SEARCH_ENGINE_USERNAME, passwordHash);
@@ -59,35 +60,31 @@ public class AlfrescoStackInitializerESBasicAuth extends AlfrescoStackInitialize
                 "-icl -nhnv " +
                 "-cert /usr/share/opensearch/config/kirk.pem " +
                 "-cacert /usr/share/opensearch/config/root-ca.pem " +
-                "-key /usr/share/opensearch/config/kirk-key.pem"
-        );
+                "-key /usr/share/opensearch/config/kirk-key.pem");
     }
 
     private void addNewRoleMapping(GenericContainer opensearchContainer, String role, String username) throws IOException, InterruptedException
     {
         opensearchContainer.execInContainer(
-                "sh", "-c", "echo '\n\n" + newOpensearchRoleMapping(role, username) +"' >> /usr/share/opensearch/config/opensearch-security/roles_mapping.yml"
-        );
+                "sh", "-c", "echo '\n\n" + newOpensearchRoleMapping(role, username) + "' >> /usr/share/opensearch/config/opensearch-security/roles_mapping.yml");
     }
 
     private void addNewRole(GenericContainer opensearchContainer, String role, String index) throws IOException, InterruptedException
     {
         opensearchContainer.execInContainer(
-                "sh", "-c", "echo '\n\n" + newOpensearchRule(role, index) +"' >> /usr/share/opensearch/config/opensearch-security/roles.yml"
-        );
+                "sh", "-c", "echo '\n\n" + newOpensearchRule(role, index) + "' >> /usr/share/opensearch/config/opensearch-security/roles.yml");
     }
 
     private void addNewUser(GenericContainer opensearchContainer, String username, String passwordHash) throws IOException, InterruptedException
     {
         opensearchContainer.execInContainer(
-                "sh", "-c", "echo '\n\n" + newOpensearchUser(username, passwordHash) +"' >> /usr/share/opensearch/config/opensearch-security/internal_users.yml"
-        );
+                "sh", "-c", "echo '\n\n" + newOpensearchUser(username, passwordHash) + "' >> /usr/share/opensearch/config/opensearch-security/internal_users.yml");
     }
 
     private String newOpensearchUser(String username, String passwordHash)
     {
-        return username +":\n" +
-                "  hash: \"" + passwordHash +"\"\n" +
+        return username + ":\n" +
+                "  hash: \"" + passwordHash + "\"\n" +
                 "  reserved: false\n" +
                 "  backend_roles:\n" +
                 "  - \"all_access\"\n" +
@@ -128,7 +125,7 @@ public class AlfrescoStackInitializerESBasicAuth extends AlfrescoStackInitialize
     {
         SearchEngineType usedEngine = getImagesConfig().getSearchEngineType();
 
-        if(SearchEngineType.OPENSEARCH_ENGINE.equals(usedEngine))
+        if (SearchEngineType.OPENSEARCH_ENGINE.equals(usedEngine))
         {
             return super.createOpensearchContainer()
                     .withEnv("plugins.security.disabled", "false")

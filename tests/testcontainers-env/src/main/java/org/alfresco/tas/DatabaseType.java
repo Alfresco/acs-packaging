@@ -6,11 +6,7 @@ import java.util.Map;
 
 public enum DatabaseType
 {
-    POSTGRESQL_DB("postgresql", "org.postgresql.Driver", "jdbc:postgresql://postgres:5432/alfresco", "alfresco", "alfresco"),
-    MYSQL_DB("mysql", "com.mysql.cj.jdbc.Driver", "jdbc:mysql://mysql:3306/alfresco", "alfresco", "alfresco"),
-    MARIA_DB("mariadb", "org.mariadb.jdbc.Driver", "jdbc:mariadb://mariadb:3306/alfresco", "alfresco", "alfresco"),
-    MSSQL_DB("mssql", "com.microsoft.sqlserver.jdbc.SQLServerDriver", "jdbc:sqlserver://mssql:1433;user=sa;password=Alfresco1;lockTimeout=1000", "sa", "Alfresco1", Map.of("txn.isolation", "4096", "pool.max", "275")),
-    ORACLE_DB("oracle", "oracle.jdbc.OracleDriver", "jdbc:oracle:thin:@oracle:1521/PDB1", "alfresco", "alfresco");
+    POSTGRESQL_DB("postgresql", "org.postgresql.Driver", "jdbc:postgresql://postgres:5432/alfresco", "alfresco", "alfresco"), MYSQL_DB("mysql", "com.mysql.cj.jdbc.Driver", "jdbc:mysql://mysql:3306/alfresco", "alfresco", "alfresco"), MARIA_DB("mariadb", "org.mariadb.jdbc.Driver", "jdbc:mariadb://mariadb:3306/alfresco", "alfresco", "alfresco"), MSSQL_DB("mssql", "com.microsoft.sqlserver.jdbc.SQLServerDriver", "jdbc:sqlserver://mssql:1433;user=sa;password=Alfresco1;lockTimeout=1000", "sa", "Alfresco1", Map.of("txn.isolation", "4096", "pool.max", "275")), ORACLE_DB("oracle", "oracle.jdbc.OracleDriver", "jdbc:oracle:thin:@oracle:1521/PDB1", "alfresco", "alfresco");
 
     private final String type;
     private final String driver;
@@ -54,11 +50,13 @@ public enum DatabaseType
         return url;
     }
 
-    public String getUsername() {
+    public String getUsername()
+    {
         return username;
     }
 
-    public String getPassword() {
+    public String getPassword()
+    {
         return password;
     }
 
@@ -70,8 +68,8 @@ public enum DatabaseType
     public static DatabaseType from(String type)
     {
         return Arrays.stream(DatabaseType.values())
-                     .filter(database -> database.getType().equals(type.toLowerCase()))
-                     .findFirst()
-                     .orElseThrow(() -> new IllegalArgumentException("Database of type + '" + type + "' not defined."));
+                .filter(database -> database.getType().equals(type.toLowerCase()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Database of type + '" + type + "' not defined."));
     }
 }

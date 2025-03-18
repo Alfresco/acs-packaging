@@ -14,8 +14,8 @@ public class TestDataUtility
     public static String getAlphabeticUUID()
     {
         return IntStream.range(0, 16)
-                        .map(i -> ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length())))
-                        .mapToObj(Character::toString)
-                        .collect(Collectors.joining());
+                .map(i -> ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length())))
+                .mapToObj(Character::toString)
+                .collect(Collectors.joining());
     }
 }

@@ -4,8 +4,7 @@ import java.util.Arrays;
 
 public enum SearchEngineType
 {
-    OPENSEARCH_ENGINE("opensearch"),
-    ELASTICSEARCH_ENGINE("elasticsearch");
+    OPENSEARCH_ENGINE("opensearch"), ELASTICSEARCH_ENGINE("elasticsearch");
 
     private final String type;
 

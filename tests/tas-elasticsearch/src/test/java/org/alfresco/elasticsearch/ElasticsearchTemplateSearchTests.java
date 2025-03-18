@@ -7,6 +7,14 @@ import static org.alfresco.utility.report.log.Step.STEP;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
 import org.alfresco.rest.model.RestTagModel;
 import org.alfresco.rest.search.RestRequestDefaultsModel;
 import org.alfresco.rest.search.SearchRequest;
@@ -20,16 +28,9 @@ import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 @ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
-    initializers = AlfrescoStackInitializer.class)
+        initializers = AlfrescoStackInitializer.class)
 public class ElasticsearchTemplateSearchTests extends AbstractTestNGSpringContextTests
 {
     private static final String SEARCH_TERM = "sample";
@@ -86,7 +87,7 @@ public class ElasticsearchTemplateSearchTests extends AbstractTestNGSpringContex
         dataUser.deleteUser(testUser);
     }
 
-    @Test(groups = { TestGroup.SEARCH })
+    @Test(groups = {TestGroup.SEARCH})
     public void testAftsQuery_simpleTemplate()
     {
         STEP("Search for files by name using simple template with one property");
@@ -97,7 +98,7 @@ public class ElasticsearchTemplateSearchTests extends AbstractTestNGSpringContex
         searchQueryService.expectNodeRefsFromQuery(request, testUser, fileWithTermInName.getNodeRef());
     }
 
-    @Test(groups = { TestGroup.SEARCH })
+    @Test(groups = {TestGroup.SEARCH})
     public void testAftsQuery_simpleTemplateWithPhrase()
     {
         STEP("Search for files containing specific phrase using simple template with one property");
@@ -108,7 +109,7 @@ public class ElasticsearchTemplateSearchTests extends AbstractTestNGSpringContex
         searchQueryService.expectNodeRefsFromQuery(request, testUser, fileWithPhraseInContent.getNodeRef());
     }
 
-    @Test(groups = { TestGroup.SEARCH })
+    @Test(groups = {TestGroup.SEARCH})
     public void testAftsQuery_templateWithTwoParameters()
     {
         STEP("Search for files using template containing multiple properties");
@@ -119,29 +120,29 @@ public class ElasticsearchTemplateSearchTests extends AbstractTestNGSpringContex
         searchQueryService.expectNodeRefsFromQuery(request, testUser, fileWithTermInName.getNodeRef(), fileWithTermInTitle.getNodeRef());
     }
 
-    @Test(groups = { TestGroup.SEARCH })
+    @Test(groups = {TestGroup.SEARCH})
     public void testAftsQuery_nestedTemplate()
     {
         Map<String, String> templates = Map.of(
-            "_NODE", "%(cm:name cm:title)",
-            "_NODET", "%(_NODEX TAG)",
-            "_NODEX", "%(_NODE cm:description)"
+                "_NODE", "%(cm:name cm:title)",
+                "_NODET", "%(_NODEX TAG)",
+                "_NODEX", "%(_NODE cm:description)"
 
         );
         STEP("Search for files using more complex two-level nested template containing multiple properties");
         String query = "TYPE:'cm:content' AND _NODEX:" + SEARCH_TERM;
         SearchRequest request = req("afts", query, templates);
         searchQueryService.expectNodeRefsFromQuery(request, testUser,
-            fileWithTermInName.getNodeRef(), fileWithTermInDescription.getNodeRef(), fileWithTermInTitle.getNodeRef());
+                fileWithTermInName.getNodeRef(), fileWithTermInDescription.getNodeRef(), fileWithTermInTitle.getNodeRef());
 
         STEP("Search for files using three-level nested template containing multiple properties");
         String queryIncludingTag = "TYPE:'cm:content' AND _NODET:" + SEARCH_TERM;
         SearchRequest requestIncludingTag = req("afts", queryIncludingTag, templates);
         searchQueryService.expectNodeRefsFromQuery(requestIncludingTag, testUser,
-            fileWithTermInName.getNodeRef(), fileWithTermInDescription.getNodeRef(), fileWithTermInTitle.getNodeRef(), fileWithTermInTag.getNodeRef());
+                fileWithTermInName.getNodeRef(), fileWithTermInDescription.getNodeRef(), fileWithTermInTitle.getNodeRef(), fileWithTermInTag.getNodeRef());
     }
 
-    @Test(groups = { TestGroup.SEARCH })
+    @Test(groups = {TestGroup.SEARCH})
     public void testAftsQuery_templateNameAsQueryDefaultFieldName()
     {
         STEP("Search for files using template containing multiple properties, as a default search field");
@@ -153,7 +154,7 @@ public class ElasticsearchTemplateSearchTests extends AbstractTestNGSpringContex
         searchQueryService.expectNodeRefsFromQuery(request, testUser, fileWithTermInName.getNodeRef(), fileWithTermInTitle.getNodeRef());
     }
 
-    @Test(groups = { TestGroup.SEARCH })
+    @Test(groups = {TestGroup.SEARCH})
     public void testAftsQuery_templateWithFixedValue()
     {
         STEP("Search for files and folders using template containing multiple properties, including a fixed one");
@@ -164,7 +165,7 @@ public class ElasticsearchTemplateSearchTests extends AbstractTestNGSpringContex
         searchQueryService.expectNodeRefsFromQuery(request, testUser, folderWithTermInName.getNodeRef());
     }
 
-    @Test(groups = { TestGroup.SEARCH })
+    @Test(groups = {TestGroup.SEARCH})
     public void testAftsQuery_boostedTemplate()
     {
         STEP("Search for files using templates and boosts, where second term has higher priority ");
@@ -179,7 +180,7 @@ public class ElasticsearchTemplateSearchTests extends AbstractTestNGSpringContex
         searchQueryService.expectResultsInOrder(requestInvertedBoost, testUser, fileWithTermInName.getName(), fileWithDifferentTermInName.getName());
     }
 
-    @Test(groups = { TestGroup.SEARCH })
+    @Test(groups = {TestGroup.SEARCH})
     public void testAftsQuery_expandedTemplate()
     {
         Map<String, String> templates = Map.of("_NODE", "%cm:name");
@@ -188,6 +189,7 @@ public class ElasticsearchTemplateSearchTests extends AbstractTestNGSpringContex
 
         searchQueryService.expectNodeRefsFromQuery(request, testUser, fileWithTermInName.getNodeRef());
     }
+
     private ContentModel createRandomFileWithTitle(String title)
     {
         return createRandomFile(title, null, null);
@@ -222,16 +224,16 @@ public class ElasticsearchTemplateSearchTests extends AbstractTestNGSpringContex
         fileModel.setDescription(description);
 
         FileModel file = dataContent
-            .usingAdmin()
-            .usingResource(contentRoot)
-            .createContent(fileModel);
+                .usingAdmin()
+                .usingResource(contentRoot)
+                .createContent(fileModel);
 
         if (StringUtils.isNotBlank(tag))
         {
             dataContent
-                .usingAdmin()
-                .usingResource(file)
-                .addTagToContent(RestTagModel.builder().tag(tag).create());
+                    .usingAdmin()
+                    .usingResource(file)
+                    .addTagToContent(RestTagModel.builder().tag(tag).create());
         }
 
         return file;
@@ -249,16 +251,16 @@ public class ElasticsearchTemplateSearchTests extends AbstractTestNGSpringContex
         FolderModel folderModel = new FolderModel(folderName, title, description);
 
         FolderModel folder = dataContent
-            .usingAdmin()
-            .usingResource(contentRoot)
-            .createFolder(folderModel);
+                .usingAdmin()
+                .usingResource(contentRoot)
+                .createFolder(folderModel);
 
         if (StringUtils.isNotBlank(tag))
         {
             dataContent
-                .usingAdmin()
-                .usingResource(folder)
-                .addTagToContent(RestTagModel.builder().tag(tag).create());
+                    .usingAdmin()
+                    .usingResource(folder)
+                    .addTagToContent(RestTagModel.builder().tag(tag).create());
         }
 
         return folder;

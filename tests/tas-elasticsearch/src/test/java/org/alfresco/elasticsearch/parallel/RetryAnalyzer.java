@@ -9,12 +9,13 @@ import org.testng.ITestResult;
 
 /**
  * Sometimes REST tests fail when run in parallel with:
+ * 
  * <pre>
  *     java.lang.IllegalStateException: Invalid use of BasicClientConnManager: connection still allocated.
  *     Make sure to release the connection before allocating another one.
  * </pre>
- * Other times restassured fails with <code>java.util.ConcurrentModificationException</code>.
- * If we detect a test failed due to these timing issues then we rerun it up to three times.
+ * 
+ * Other times restassured fails with <code>java.util.ConcurrentModificationException</code>. If we detect a test failed due to these timing issues then we rerun it up to three times.
  */
 public class RetryAnalyzer implements IRetryAnalyzer
 {
@@ -23,7 +24,8 @@ public class RetryAnalyzer implements IRetryAnalyzer
     private int retryNumber = 0;
 
     @Override
-    public boolean retry(ITestResult testResult) {
+    public boolean retry(ITestResult testResult)
+    {
         retryNumber++;
         Throwable throwable = testResult.getThrowable();
         if (retryNumber == RETRY_LIMIT)
@@ -35,10 +37,10 @@ public class RetryAnalyzer implements IRetryAnalyzer
         {
             boolean shouldRetry = throwable != null
                     && (throwable instanceof IllegalStateException
-                    && throwable.getMessage().contains("connection still allocated"))
+                            && throwable.getMessage().contains("connection still allocated"))
                     || (throwable instanceof ConcurrentModificationException)
                     || (throwable instanceof AssertionError
-                    && throwable.getMessage().contains("Maximum retry period reached"));
+                            && throwable.getMessage().contains("Maximum retry period reached"));
             LOGGER.info("Retry: {}, shouldRetry: {}", retryNumber, shouldRetry, throwable);
             return shouldRetry;
         }

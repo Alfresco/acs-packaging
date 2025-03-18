@@ -23,7 +23,8 @@ public class FromLegacyAcsUpgradeTest
     @Test
     public void testLegacyUpgrade() throws IOException
     {
-        try (LegacyAcsUpgradeScenario scenario = new LegacyAcsUpgradeScenario(getUpgradeScenarioConfig())) {
+        try (LegacyAcsUpgradeScenario scenario = new LegacyAcsUpgradeScenario(getUpgradeScenarioConfig()))
+        {
             final LegacyACSEnv legacyEnv = scenario.startLegacyEnv();
 
             legacyEnv.expectNoSearchResult(ofMinutes(5), UUID.randomUUID().toString());
@@ -70,7 +71,7 @@ public class FromLegacyAcsUpgradeTest
                 upgradedEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM, FILE_UPLOADED_AFTER_LEGACY_ENVIRONMENT_STARTUP,
                         FILE_UPLOADED_AFTER_UPGRADE);
 
-                upgradedEnv.reindexByIds((long)(initialReIndexingUpperBound * 0.9), 1_000_000_000);
+                upgradedEnv.reindexByIds((long) (initialReIndexingUpperBound * 0.9), 1_000_000_000);
                 upgradedEnv.expectSearchResult(ofMinutes(2), SEARCH_TERM,
                         FILE_UPLOADED_AFTER_LEGACY_ENVIRONMENT_STARTUP,
                         FILE_UPLOADED_WHILE_MIRRORING,

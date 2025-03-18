@@ -9,17 +9,23 @@ import org.springframework.context.annotation.PropertySources;
 @PropertySources({@PropertySource({"classpath:default.properties"})})
 public class MtlsTestProperties
 {
-    @Value("${testClient.keystore.location}") private String keystoreLocation;
-    @Value("${testClient.keystore.password}") private String keystorePassword;
-    @Value("${testClient.keystore.type}") private String keystoreType;
-    @Value("${testClient.truststore.location}") private String truststoreLocation;
-    @Value("${testClient.truststore.password}") private String truststorePassword;
-    @Value("${testClient.truststore.type}") private String truststoreType;
-    @Value("${testClient.disableHostnameVerification}") private boolean disableHostnameVerification;
+    @Value("${testClient.keystore.location}")
+    private String keystoreLocation;
+    @Value("${testClient.keystore.password}")
+    private String keystorePassword;
+    @Value("${testClient.keystore.type}")
+    private String keystoreType;
+    @Value("${testClient.truststore.location}")
+    private String truststoreLocation;
+    @Value("${testClient.truststore.password}")
+    private String truststorePassword;
+    @Value("${testClient.truststore.type}")
+    private String truststoreType;
+    @Value("${testClient.disableHostnameVerification}")
+    private boolean disableHostnameVerification;
 
     public MtlsTestProperties()
-    {
-    }
+    {}
 
     public String getKeystoreLocation()
     {

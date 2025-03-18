@@ -1,14 +1,22 @@
 package org.alfresco.elasticsearch;
 
-import static org.alfresco.utility.data.RandomData.getRandomName;
-import static org.alfresco.utility.report.log.Step.STEP;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 import static org.testng.Assert.assertTrue;
 
+import static org.alfresco.utility.data.RandomData.getRandomName;
+import static org.alfresco.utility.report.log.Step.STEP;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import org.alfresco.dataprep.CMISUtil;
 import org.alfresco.rest.core.RestWrapper;
@@ -27,15 +35,9 @@ import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 @ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
-    initializers = AlfrescoStackInitializer.class)
+        initializers = AlfrescoStackInitializer.class)
 public class ElasticsearchCategoriesCountTests extends AbstractTestNGSpringContextTests
 {
     protected static final String INCLUDE_COUNT_PARAM = "count";
@@ -86,13 +88,13 @@ public class ElasticsearchCategoriesCountTests extends AbstractTestNGSpringConte
 
         STEP("Wait for indexing to complete");
         Utility.sleep(500, 60000, () -> restClient.authenticateUser(user)
-            .withCoreAPI()
-            .usingCategory(categoryLinkedWithBoth)
-            .include(INCLUDE_COUNT_PARAM)
-            .getCategory()
-            .assertThat()
-            .field(FIELD_COUNT)
-            .is(2));
+                .withCoreAPI()
+                .usingCategory(categoryLinkedWithBoth)
+                .include(INCLUDE_COUNT_PARAM)
+                .getCategory()
+                .assertThat()
+                .field(FIELD_COUNT)
+                .is(2));
     }
 
     @AfterClass
@@ -106,15 +108,15 @@ public class ElasticsearchCategoriesCountTests extends AbstractTestNGSpringConte
     /**
      * Verify count for a category linked with file and folder.
      */
-    @Test(groups = { TestGroup.REST_API })
+    @Test(groups = {TestGroup.REST_API})
     public void testGetCategoryById_includeCount()
     {
         STEP("Get linked category and verify if count is higher than 0");
         final RestCategoryModel actualCategory = restClient.authenticateUser(user)
-            .withCoreAPI()
-            .usingCategory(categoryLinkedWithBoth)
-            .include(INCLUDE_COUNT_PARAM)
-            .getCategory();
+                .withCoreAPI()
+                .usingCategory(categoryLinkedWithBoth)
+                .include(INCLUDE_COUNT_PARAM)
+                .getCategory();
 
         restClient.assertStatusCodeIs(OK);
         actualCategory.assertThat().field(FIELD_ID).is(categoryLinkedWithBoth.getId());
@@ -124,15 +126,15 @@ public class ElasticsearchCategoriesCountTests extends AbstractTestNGSpringConte
     /**
      * Verify count for a category not linked with any content.
      */
-    @Test(groups = { TestGroup.REST_API })
+    @Test(groups = {TestGroup.REST_API})
     public void testGetCategoryById_includeCountForNonLinkedCategory()
     {
         STEP("Get non-linked category and verify if count is 0");
         final RestCategoryModel actualCategory = restClient.authenticateUser(user)
-            .withCoreAPI()
-            .usingCategory(notLinkedCategory)
-            .include(INCLUDE_COUNT_PARAM)
-            .getCategory();
+                .withCoreAPI()
+                .usingCategory(notLinkedCategory)
+                .include(INCLUDE_COUNT_PARAM)
+                .getCategory();
 
         restClient.assertStatusCodeIs(OK);
         actualCategory.assertThat().field(FIELD_ID).is(notLinkedCategory.getId());
@@ -142,33 +144,33 @@ public class ElasticsearchCategoriesCountTests extends AbstractTestNGSpringConte
     /**
      * Verify count for three categories: linked with file, linked with folder and third not linked to any content.
      */
-    @Test(groups = { TestGroup.REST_API })
+    @Test(groups = {TestGroup.REST_API})
     public void testGetCategories_includeCount()
     {
         STEP("Get few categories and verify its counts");
         final RestCategoryModel parentCategory = createCategoryModelWithId(ROOT_CATEGORY_ID);
         final RestCategoryModelsCollection actualCategories = restClient.authenticateUser(user)
-            .withCoreAPI()
-            .usingCategory(parentCategory)
-            .include(INCLUDE_COUNT_PARAM)
-            .getCategoryChildren();
+                .withCoreAPI()
+                .usingCategory(parentCategory)
+                .include(INCLUDE_COUNT_PARAM)
+                .getCategoryChildren();
 
         restClient.assertStatusCodeIs(OK);
         assertTrue(actualCategories.getEntries().stream()
-            .map(RestCategoryModel::onModel)
-            .anyMatch(category -> category.getId().equals(categoryLinkedWithFolder.getId()) && category.getCount() == 1));
+                .map(RestCategoryModel::onModel)
+                .anyMatch(category -> category.getId().equals(categoryLinkedWithFolder.getId()) && category.getCount() == 1));
         assertTrue(actualCategories.getEntries().stream()
-            .map(RestCategoryModel::onModel)
-            .anyMatch(category -> category.getId().equals(categoryLinkedWithFile.getId()) && category.getCount() == 1));
+                .map(RestCategoryModel::onModel)
+                .anyMatch(category -> category.getId().equals(categoryLinkedWithFile.getId()) && category.getCount() == 1));
         assertTrue(actualCategories.getEntries().stream()
-            .map(RestCategoryModel::onModel)
-            .anyMatch(category -> category.getId().equals(notLinkedCategory.getId()) && category.getCount() == 0));
+                .map(RestCategoryModel::onModel)
+                .anyMatch(category -> category.getId().equals(notLinkedCategory.getId()) && category.getCount() == 0));
     }
 
     /**
      * Create category and verify that its count is 0.
      */
-    @Test(groups = { TestGroup.REST_API })
+    @Test(groups = {TestGroup.REST_API})
     public void testCreateCategory_includingCount()
     {
         STEP("Create a category under root and verify if count is 0");
@@ -176,10 +178,10 @@ public class ElasticsearchCategoriesCountTests extends AbstractTestNGSpringConte
         final RestCategoryModel rootCategory = createCategoryModelWithId(ROOT_CATEGORY_ID);
         final RestCategoryModel aCategory = createCategoryModelWithName(categoryName);
         final RestCategoryModel createdCategory = restClient.authenticateUser(dataUser.getAdminUser())
-            .withCoreAPI()
-            .include(INCLUDE_COUNT_PARAM)
-            .usingCategory(rootCategory)
-            .createSingleCategory(aCategory);
+                .withCoreAPI()
+                .include(INCLUDE_COUNT_PARAM)
+                .usingCategory(rootCategory)
+                .createSingleCategory(aCategory);
 
         STEP("Create a category under root category (as admin)");
         restClient.assertStatusCodeIs(CREATED);
@@ -190,17 +192,17 @@ public class ElasticsearchCategoriesCountTests extends AbstractTestNGSpringConte
     /**
      * Update category linked to file and folder and verify that its count is 2.
      */
-    @Test(groups = { TestGroup.REST_API })
+    @Test(groups = {TestGroup.REST_API})
     public void testUpdateCategory_includeCount()
     {
         STEP("Update linked category and verify if count is higher than 0");
         final String categoryNewName = getRandomName("NewCategoryName");
         final RestCategoryModel fixedCategoryModel = createCategoryModelWithName(categoryNewName);
         final RestCategoryModel updatedCategory = restClient.authenticateUser(dataUser.getAdminUser())
-            .withCoreAPI()
-            .usingCategory(categoryLinkedWithBoth)
-            .include(INCLUDE_COUNT_PARAM)
-            .updateCategory(fixedCategoryModel);
+                .withCoreAPI()
+                .usingCategory(categoryLinkedWithBoth)
+                .include(INCLUDE_COUNT_PARAM)
+                .updateCategory(fixedCategoryModel);
 
         restClient.assertStatusCodeIs(OK);
         updatedCategory.assertThat().field(FIELD_ID).is(categoryLinkedWithBoth.getId());
@@ -210,17 +212,17 @@ public class ElasticsearchCategoriesCountTests extends AbstractTestNGSpringConte
     /**
      * Update category not linked to any content and verify that its count is 0.
      */
-    @Test(groups = { TestGroup.REST_API })
+    @Test(groups = {TestGroup.REST_API})
     public void testUpdateCategory_includeCountForNonLinkedCategory()
     {
         STEP("Update non-linked category and verify if count is 0");
         final String categoryNewName = getRandomName("NewCategoryName");
         final RestCategoryModel fixedCategoryModel = createCategoryModelWithName(categoryNewName);
         final RestCategoryModel updatedCategory = restClient.authenticateUser(dataUser.getAdminUser())
-            .withCoreAPI()
-            .usingCategory(notLinkedCategory)
-            .include(INCLUDE_COUNT_PARAM)
-            .updateCategory(fixedCategoryModel);
+                .withCoreAPI()
+                .usingCategory(notLinkedCategory)
+                .include(INCLUDE_COUNT_PARAM)
+                .updateCategory(fixedCategoryModel);
 
         restClient.assertStatusCodeIs(OK);
         updatedCategory.assertThat().field(FIELD_ID).is(notLinkedCategory.getId());
@@ -230,9 +232,9 @@ public class ElasticsearchCategoriesCountTests extends AbstractTestNGSpringConte
     private RestCategoryModelsCollection linkContentToCategories(final RepoTestModel node, final RestCategoryModel... categories)
     {
         final List<RestCategoryLinkBodyModel> categoryLinkModels = Arrays.stream(categories)
-            .map(RestCategoryModel::getId)
-            .map(this::createCategoryLinkModelWithId)
-            .collect(Collectors.toList());
+                .map(RestCategoryModel::getId)
+                .map(this::createCategoryLinkModelWithId)
+                .collect(Collectors.toList());
         final RestCategoryModelsCollection linkedCategories = restClient.authenticateUser(user).withCoreAPI().usingNode(node).linkToCategories(categoryLinkModels);
 
         restClient.assertStatusCodeIs(CREATED);
@@ -249,9 +251,9 @@ public class ElasticsearchCategoriesCountTests extends AbstractTestNGSpringConte
     {
         final RestCategoryModel categoryModel = createCategoryModelWithName(getRandomName(CATEGORY_NAME_PREFIX));
         final RestCategoryModel createdCategory = restClient.authenticateUser(dataUser.getAdminUser())
-            .withCoreAPI()
-            .usingCategory(parentCategory)
-            .createSingleCategory(categoryModel);
+                .withCoreAPI()
+                .usingCategory(parentCategory)
+                .createSingleCategory(categoryModel);
         restClient.assertStatusCodeIs(CREATED);
 
         return createdCategory;
@@ -270,15 +272,15 @@ public class ElasticsearchCategoriesCountTests extends AbstractTestNGSpringConte
     private RestCategoryModel createCategoryModelWithIdAndName(final String id, final String name)
     {
         return RestCategoryModel.builder()
-            .id(id)
-            .name(name)
-            .create();
+                .id(id)
+                .name(name)
+                .create();
     }
 
     private RestCategoryLinkBodyModel createCategoryLinkModelWithId(final String id)
     {
         return RestCategoryLinkBodyModel.builder()
-            .categoryId(id)
-            .create();
+                .categoryId(id)
+                .create();
     }
 }

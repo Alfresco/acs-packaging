@@ -10,7 +10,6 @@ import java.util.UUID;
 import java.util.function.BooleanSupplier;
 
 import com.google.common.util.concurrent.RateLimiter;
-
 import org.testcontainers.containers.Network;
 
 class Utils
@@ -25,7 +24,8 @@ class Utils
                 Files.setPosixFilePermissions(tempDir, PosixFilePermissions.fromString("rwxrwxrwx"));
             }
             return tempDir;
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             throw new RuntimeException("Couldn't create aa temp directory.", e);
         }

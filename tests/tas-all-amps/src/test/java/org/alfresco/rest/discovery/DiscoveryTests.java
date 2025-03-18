@@ -7,6 +7,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
 import org.alfresco.rest.RestTest;
 import org.alfresco.rest.core.RestResponse;
 import org.alfresco.rest.model.RestDiscoveryModel;
@@ -14,9 +18,6 @@ import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
-import org.springframework.http.HttpStatus;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 public class DiscoveryTests extends RestTest
 {
@@ -29,8 +30,8 @@ public class DiscoveryTests extends RestTest
         userModel = dataUser.createRandomTestUser();
     }
 
-    @Test(groups = { TestGroup.REST_API, TestGroup.DISCOVERY, TestGroup.SANITY })
-    @TestRail(section = { TestGroup.REST_API, TestGroup.DISCOVERY }, executionType = ExecutionType.SANITY,
+    @Test(groups = {TestGroup.REST_API, TestGroup.DISCOVERY, TestGroup.SANITY})
+    @TestRail(section = {TestGroup.REST_API, TestGroup.DISCOVERY}, executionType = ExecutionType.SANITY,
             description = "Sanity tests for GET /discovery endpoint")
     public void getRepositoryInformation() throws Exception
     {
@@ -56,8 +57,8 @@ public class DiscoveryTests extends RestTest
         response.getRepository().getStatus().assertThat().field("isReadOnly").is(false);
     }
 
-    @Test(groups = { TestGroup.REST_API, TestGroup.DISCOVERY, TestGroup.ALL_AMPS, TestGroup.SANITY })
-    @TestRail(section = { TestGroup.REST_API, TestGroup.DISCOVERY }, executionType = ExecutionType.SANITY,
+    @Test(groups = {TestGroup.REST_API, TestGroup.DISCOVERY, TestGroup.ALL_AMPS, TestGroup.SANITY})
+    @TestRail(section = {TestGroup.REST_API, TestGroup.DISCOVERY}, executionType = ExecutionType.SANITY,
             description = "Sanity tests for GET /discovery endpoint")
     public void getRepositoryInstalledModules() throws Exception
     {
@@ -79,11 +80,9 @@ public class DiscoveryTests extends RestTest
                 "alfresco-ai-repo",
                 "org_alfresco_module_rm",
                 "alfresco-rm-enterprise-repo",
-                "alfresco-hxinsight-connector-hxinsight-extension"
-        );
+                "alfresco-hxinsight-connector-hxinsight-extension");
 
-        expectedModules.forEach(module ->
-                assertTrue(modules.contains(module), String.format("Expected module %s is not installed", module)));
+        expectedModules.forEach(module -> assertTrue(modules.contains(module), String.format("Expected module %s is not installed", module)));
 
         // Check that all installed modules are in INSTALLED and also UNKNOWN state as reported by some
         List<String> modulesStates = restClient.onResponse().getResponse().jsonPath().getList("entry.repository.modules.installState", String.class);

@@ -3,17 +3,19 @@ package org.alfresco.elasticsearch.reindexing;
 import static org.alfresco.elasticsearch.SearchQueryService.req;
 import static org.alfresco.utility.report.log.Step.STEP;
 
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
 import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.tas.AlfrescoStackInitializer;
 import org.alfresco.utility.model.TestGroup;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 @SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert"}) // these are TAS E2E tests and use searchQueryService.expectResultsFromQuery for assertion
 public class PathFieldsReindexingTests extends NodesSecondaryChildrenRelatedTests
 {
     /**
      * Creates a user and a private site containing below hierarchy of folders.
+     * 
      * <pre>
      * Site
      * DL (Document Library)
@@ -25,8 +27,8 @@ public class PathFieldsReindexingTests extends NodesSecondaryChildrenRelatedTest
      *     +     |
      *  += fX += fY += fZ
      * </pre>
-     * Parent += Child - primary parent-child relationship
-     * Parent +- Child - secondary parent-child relationship
+     * 
+     * Parent += Child - primary parent-child relationship Parent +- Child - secondary parent-child relationship
      */
     @BeforeClass(alwaysRun = true)
     @Override
@@ -115,8 +117,7 @@ public class PathFieldsReindexingTests extends NodesSecondaryChildrenRelatedTest
                 folders.get(M).getName(),
                 // secondary path from L
                 folders.get(C).getName(),
-                folders.get(Y).getName()
-                );
+                folders.get(Y).getName());
     }
 
     @Test(groups = TestGroup.SEARCH)

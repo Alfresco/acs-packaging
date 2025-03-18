@@ -9,6 +9,12 @@ import java.util.Arrays;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
 import org.alfresco.elasticsearch.SearchQueryService;
 import org.alfresco.elasticsearch.utility.ElasticsearchRESTHelper;
 import org.alfresco.rest.core.RestWrapper;
@@ -25,18 +31,13 @@ import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.report.log.Step;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 /**
  * Tests to check that paths are updated correctly.
  * <p>
  * Path updates require waiting for an index refresh to happen and so have been designed to be run in parallel.
  */
-@ContextConfiguration (locations = "classpath:alfresco-elasticsearch-context.xml",
+@ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
         initializers = AlfrescoStackInitializer.class)
 public class PathUpdateTests extends AbstractTestNGSpringContextTests
 {
@@ -57,7 +58,7 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
     /**
      * Create a user and a private site containing some nested folders with a document in.
      */
-    @BeforeClass (alwaysRun = true)
+    @BeforeClass(alwaysRun = true)
     public void dataPreparation()
     {
         serverHealth.isServerReachable();
@@ -165,8 +166,8 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
         Step.STEP("Update the name of the category.");
         String newCategoryName = category.getName() + "_updated";
         restClient.authenticateUser(dataUser.getAdminUser()).withCoreAPI()
-                  .usingCategory(category)
-                  .updateCategory(RestCategoryModel.builder().name(newCategoryName).create());
+                .usingCategory(category)
+                .updateCategory(RestCategoryModel.builder().name(newCategoryName).create());
 
         Step.STEP("Check there is a path with the updated category name.");
         SearchRequest query = req("PATH:\"" + categoryPath(newCategoryName, testFile.getName()) + "\"");
@@ -185,8 +186,8 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
         Step.STEP("Update the parent category name and check the file's paths are updated.");
         String newCategoryName = parentCategory.getName() + "_updated";
         restClient.authenticateUser(dataUser.getAdminUser()).withCoreAPI()
-                  .usingCategory(parentCategory)
-                  .updateCategory(RestCategoryModel.builder().name(newCategoryName).create());
+                .usingCategory(parentCategory)
+                .updateCategory(RestCategoryModel.builder().name(newCategoryName).create());
 
         Step.STEP("Check there is a path with the updated category name.");
         SearchRequest query = req("PATH:\"" + categoryPath(newCategoryName, childCategory.getName(), testFile.getName()) + "\"");
@@ -196,7 +197,8 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
     /**
      * Rename the specified node to have "_updated" on the end.
      *
-     * @param node The node to update.
+     * @param node
+     *            The node to update.
      * @return The updated node.
      */
     private RestNodeModel renameNode(ContentModel node)
@@ -210,8 +212,10 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
     /**
      * Move the specified node to a folder.
      *
-     * @param node The node to move.
-     * @param targetFolder The folder to move the node to.
+     * @param node
+     *            The node to move.
+     * @param targetFolder
+     *            The folder to move the node to.
      * @return The updated node.
      */
     private RestNodeModel moveNode(ContentModel node, FolderModel targetFolder)
@@ -224,19 +228,22 @@ public class PathUpdateTests extends AbstractTestNGSpringContextTests
     /**
      * Create a path to a file or folder in a site.
      *
-     * @param site The site object.
-     * @param documentLibraryNames The list of names of nodes from the document library to the target file or folder.
+     * @param site
+     *            The site object.
+     * @param documentLibraryNames
+     *            The list of names of nodes from the document library to the target file or folder.
      * @return An absolute path suitable for use in a path query.
      */
     private String pathInSite(SiteModel site, String... documentLibraryNames)
     {
-        return "/app:company_home/st:sites/cm:"+ site.getId() + "/cm:documentLibrary/cm:" + stream(documentLibraryNames).collect(joining("/cm:"));
+        return "/app:company_home/st:sites/cm:" + site.getId() + "/cm:documentLibrary/cm:" + stream(documentLibraryNames).collect(joining("/cm:"));
     }
 
     /**
      * Create a path to a file or folder via the category hierarchy.
      *
-     * @param nodeNames The ordered list of node names from the root category to the node that was categorised.
+     * @param nodeNames
+     *            The ordered list of node names from the root category to the node that was categorised.
      * @return An absolute path through the categories to the specified node.
      */
     private String categoryPath(String... nodeNames)

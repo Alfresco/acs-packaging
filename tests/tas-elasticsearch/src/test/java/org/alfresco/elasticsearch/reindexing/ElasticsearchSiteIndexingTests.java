@@ -10,6 +10,17 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.chemistry.opencmis.client.api.CmisObject;
+import org.apache.chemistry.opencmis.client.api.Document;
+import org.apache.chemistry.opencmis.client.api.Folder;
+import org.apache.chemistry.opencmis.client.api.Session;
+import org.apache.logging.log4j.util.Strings;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
 import org.alfresco.dataprep.AlfrescoHttpClientFactory;
 import org.alfresco.dataprep.CMISUtil;
 import org.alfresco.dataprep.ContentActions;
@@ -32,18 +43,8 @@ import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.report.log.Step;
 import org.alfresco.utility.testrail.ExecutionType;
 import org.alfresco.utility.testrail.annotation.TestRail;
-import org.apache.chemistry.opencmis.client.api.CmisObject;
-import org.apache.chemistry.opencmis.client.api.Document;
-import org.apache.chemistry.opencmis.client.api.Folder;
-import org.apache.chemistry.opencmis.client.api.Session;
-import org.apache.logging.log4j.util.Strings;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
-@ContextConfiguration (locations = "classpath:alfresco-elasticsearch-context.xml",
+@ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
         initializers = AlfrescoStackInitializer.class)
 public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextTests
 {
@@ -87,7 +88,7 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
     private FileModel file3;
     private FileModel file4;
 
-    @BeforeClass (alwaysRun = true)
+    @BeforeClass(alwaysRun = true)
     public void dataPreparation()
     {
         serverHealth.assertServerIsOnline();
@@ -104,22 +105,22 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
                 .createFolder(new FolderModel(unique("FOLDER")));
     }
 
-    @TestRail (section = { TestGroup.SEARCH, TestGroup.SITES }, executionType = ExecutionType.REGRESSION,
+    @TestRail(section = {TestGroup.SEARCH, TestGroup.SITES}, executionType = ExecutionType.REGRESSION,
             description = "Verify the SITE queries work correctly")
-    @Test (groups = { TestGroup.SEARCH, TestGroup.SITES, TestGroup.REGRESSION })
+    @Test(groups = {TestGroup.SEARCH, TestGroup.SITES, TestGroup.REGRESSION})
     public void testSiteUseCasesForCreateModifyDeleteSite()
     {
         // Remove the automatically created Sample Site
         deleteSite(SAMPLE_SITE_ID);
 
-        //Sometimes this test may fail, so if previous data exists it must be deleted before the next run
+        // Sometimes this test may fail, so if previous data exists it must be deleted before the next run
         Stream.of(fileNotInSite, file1, file2, file3, file4)
-            .filter(Objects::nonNull)
-            .forEach(this::deleteFile);
+                .filter(Objects::nonNull)
+                .forEach(this::deleteFile);
         Stream.of(testSite1, testSite2)
-           .filter(Objects::nonNull)
-           .map(SiteModel::getId)
-           .forEach(this::deleteSite);
+                .filter(Objects::nonNull)
+                .map(SiteModel::getId)
+                .forEach(this::deleteSite);
 
         Step.STEP("Site creation use cases");
 
@@ -248,9 +249,9 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
         assertSiteQueryResult(EVERYTHING, "AND", FILE_CONTENT_CONDITION, List.of(fileNotInSite));
     }
 
-    @TestRail (section = { TestGroup.SEARCH, TestGroup.SITES }, executionType = ExecutionType.REGRESSION,
+    @TestRail(section = {TestGroup.SEARCH, TestGroup.SITES}, executionType = ExecutionType.REGRESSION,
             description = "Verify the SITE content manipulation works correctly.")
-    @Test (groups = { TestGroup.SEARCH, TestGroup.SITES, TestGroup.REGRESSION })
+    @Test(groups = {TestGroup.SEARCH, TestGroup.SITES, TestGroup.REGRESSION})
     public void manipulatingFilesAndContentBetweenSites()
     {
         Step.STEP("Moving files between sites and modifying content use cases");
@@ -260,51 +261,53 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
         FileModel file5 = createContentInSite(publicSite1, "file5");
         assertSiteQueryResult(publicSite1.getId(), List.of(DOCUMENT_LIBRARY, file5));
 
-        //Moving a file between sites.
+        // Moving a file between sites.
         moveFile(file5, publicSite1, publicSite2);
         assertSiteQueryResult(publicSite1.getId(), List.of(DOCUMENT_LIBRARY));
         assertSiteQueryResult(publicSite2.getId(), List.of(DOCUMENT_LIBRARY, file5));
 
-        //Moving a file out of a site.
+        // Moving a file out of a site.
         moveFileOutsideOfSite(file5, publicSite2, testFolder);
         assertSiteQueryResult(publicSite2.getId(), List.of(DOCUMENT_LIBRARY));
 
-        //Moving a file to the site
+        // Moving a file to the site
         FileModel file6 = dataContent
                 .usingAdmin()
                 .usingResource(contentRoot())
                 .createContent(CMISUtil.DocumentType.TEXT_PLAIN);
-        FileModel file7 = createContentInSite(publicSite1, "file7"); //Ensuring that DocumentLibrary exists in the publicSite1
+        FileModel file7 = createContentInSite(publicSite1, "file7"); // Ensuring that DocumentLibrary exists in the publicSite1
         assertSiteQueryResult(publicSite1.getId(), List.of(DOCUMENT_LIBRARY, file7));
         moveFileToTheSite(file6, publicSite1);
         assertSiteQueryResult(publicSite1.getId(), List.of(DOCUMENT_LIBRARY, file6, file7));
 
-        //Removing file.
+        // Removing file.
         FileModel file8 = createContentInSite(publicSite2, "file8");
         assertSiteQueryResult(publicSite2.getId(), List.of(DOCUMENT_LIBRARY, file8));
         deleteFile(file8);
         assertSiteQueryResult(publicSite2.getId(), List.of(DOCUMENT_LIBRARY));
 
-        //Document modification.
+        // Document modification.
         FileModel file9 = createContentInSite(publicSite2, "file9", "Initial Content.");
         assertContentInGivenFileUnderSiteQueryResult(publicSite2.getId(), "initial", List.of(file9));
         modifyDocument(file9, "Modified Content.");
         assertContentInGivenFileUnderSiteQueryResult(publicSite2.getId(), "modified", List.of(file9));
 
-        //Cleanup.
+        // Cleanup.
         deleteFiles(file6, file7, file9);
         dataContent.usingAdmin().deleteSite(publicSite1);
         dataContent.usingAdmin().deleteSite(publicSite2);
     }
 
-    private void deleteFiles(FileModel... fileModels) {
-        for(FileModel fileModel : fileModels)
+    private void deleteFiles(FileModel... fileModels)
+    {
+        for (FileModel fileModel : fileModels)
         {
             deleteFile(fileModel);
         }
     }
 
-    private void moveFileToTheSite(FileModel file, SiteModel targetSite) {
+    private void moveFileToTheSite(FileModel file, SiteModel targetSite)
+    {
         Session session = dataContent.getContentActions().getCMISSession(alfrescoHttpClientFactory.getAdminUser(), alfrescoHttpClientFactory.getAdminPassword());
         ContentActions actions = dataContent.usingAdmin().getContentActions();
         CmisObject objFrom = actions.getCmisObject(session, file.getName());
@@ -312,15 +315,18 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
 
         List parents;
         CmisObject parent;
-        if (objFrom instanceof Document) {
-            Document d = (Document)objFrom;
+        if (objFrom instanceof Document)
+        {
+            Document d = (Document) objFrom;
             parents = d.getParents();
-            parent = session.getObject(((Folder)parents.get(0)).getId());
+            parent = session.getObject(((Folder) parents.get(0)).getId());
             d.move(parent, objTarget);
-        } else if (objFrom instanceof Folder) {
-            Folder f = (Folder)objFrom;
+        }
+        else if (objFrom instanceof Folder)
+        {
+            Folder f = (Folder) objFrom;
             parents = f.getParents();
-            parent = session.getObject(((Folder)parents.get(0)).getId());
+            parent = session.getObject(((Folder) parents.get(0)).getId());
             f.move(parent, objTarget);
         }
     }
@@ -368,7 +374,7 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
         for (final String language : LANGUAGES_TO_CHECK)
         {
             Step.STEP("Searching for SITE `" + site1Name + "` " + operator + " `" + condition + "` using `" + language + "` language.");
-            final SearchRequest query = req(language, "SITE:" + site1Name + " "  + operator + condition);
+            final SearchRequest query = req(language, "SITE:" + site1Name + " " + operator + condition);
             if (contentNames.isEmpty())
             {
                 searchQueryService.expectNoResultsFromQuery(query, user);
@@ -423,7 +429,7 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
                         sourceSite.getId(),
                         file.getName(),
                         targetSite.getId(),
-                        targetFolder != null ? targetFolder.getName() : Strings.EMPTY //if empty then target folder is documentLibrary (which is default target location)
+                        targetFolder != null ? targetFolder.getName() : Strings.EMPTY // if empty then target folder is documentLibrary (which is default target location)
                 );
     }
 
@@ -436,15 +442,18 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
 
         List parents;
         CmisObject parent;
-        if (objFrom instanceof Document) {
-            Document d = (Document)objFrom;
+        if (objFrom instanceof Document)
+        {
+            Document d = (Document) objFrom;
             parents = d.getParents();
-            parent = session.getObject(((Folder)parents.get(0)).getId());
+            parent = session.getObject(((Folder) parents.get(0)).getId());
             d.move(parent, objTarget);
-        } else if (objFrom instanceof Folder) {
-            Folder f = (Folder)objFrom;
+        }
+        else if (objFrom instanceof Folder)
+        {
+            Folder f = (Folder) objFrom;
             parents = f.getParents();
-            parent = session.getObject(((Folder)parents.get(0)).getId());
+            parent = session.getObject(((Folder) parents.get(0)).getId());
             f.move(parent, objTarget);
         }
     }

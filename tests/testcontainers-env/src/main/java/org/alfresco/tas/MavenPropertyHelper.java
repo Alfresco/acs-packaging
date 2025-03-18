@@ -15,13 +15,13 @@ public class MavenPropertyHelper
 
     /** Private constructor for helper class. */
     private MavenPropertyHelper()
-    {
-    }
+    {}
 
     /**
      * Load the value of a property from Maven.
      *
-     * @param key The key to look up.
+     * @param key
+     *            The key to look up.
      * @return The value as a string.
      */
     public static String getMavenProperty(String key)

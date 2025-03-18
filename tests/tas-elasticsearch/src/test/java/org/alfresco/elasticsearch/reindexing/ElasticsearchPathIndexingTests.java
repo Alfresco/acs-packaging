@@ -7,6 +7,12 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
 import org.alfresco.elasticsearch.SearchQueryService;
 import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.tas.AlfrescoStackInitializer;
@@ -18,17 +24,12 @@ import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.TestGroup;
 import org.alfresco.utility.network.ServerHealth;
 import org.alfresco.utility.report.log.Step;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 /**
  * Tests to verify live indexing of paths using Elasticsearch.
  */
 @ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
-                      initializers = AlfrescoStackInitializer.class)
+        initializers = AlfrescoStackInitializer.class)
 @SuppressWarnings({"PMD.JUnitTestsShouldIncludeAssert", "PMD.JUnit4TestShouldUseTestAnnotation"}) // these are testng tests and use searchQueryService.expectResultsFromQuery for assertion
 public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextTests
 {
@@ -172,26 +173,28 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName, testFileNameWithWhitespace, testFolders.get(1).getName(), testFolders.get(2).getName());
     }
 
-    @Test (groups = TestGroup.SEARCH)
-    public void testWhereFolderIsAncestor() {
+    @Test(groups = TestGroup.SEARCH)
+    public void testWhereFolderIsAncestor()
+    {
         SearchRequest query = req("ANCESTOR:\"" + testFolders.get(2).getNodeRef() + "\" AND name:*");
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName, testFileNameWithWhitespace);
     }
 
-    @Test (groups = TestGroup.SEARCH)
-    public void testAncestorWithWorkspaceReference() {
+    @Test(groups = TestGroup.SEARCH)
+    public void testAncestorWithWorkspaceReference()
+    {
         SearchRequest query = req("ANCESTOR:\"workspace://SpacesStore/" + testFolders.get(0).getNodeRef() + "\" AND name:*");
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName, testFileNameWithWhitespace, testFolders.get(1).getName(), testFolders.get(2).getName());
     }
 
-    @Test (groups = TestGroup.SEARCH)
+    @Test(groups = TestGroup.SEARCH)
     public void testPrimaryParent()
     {
         SearchRequest query = req("PRIMARYPARENT:\"" + testFolders.get(1).getNodeRef() + "\" AND name:*");
         searchQueryService.expectResultsFromQuery(query, testUser, testFolders.get(2).getName());
     }
 
-    @Test (groups = TestGroup.SEARCH)
+    @Test(groups = TestGroup.SEARCH)
     public void testParent()
     {
         SearchRequest query = req("PARENT:\"" + testFolders.get(1).getNodeRef() + "\" AND name:*");
@@ -217,7 +220,7 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH, enabled = false)
     public void testUpdatePath()
     {
-        //disabled test: find a way to rename or move a folder on repository
+        // disabled test: find a way to rename or move a folder on repository
         String folderPath = testFolders.stream().map(folder -> "cm:" + folder.getName()).collect(Collectors.joining("/"));
         SearchRequest query = req("PATH:\"/app:company_home/cm:" + testFileName + "\" AND cm:name:*");
         searchQueryService.expectResultsFromQuery(query, testUser, testFileName);
@@ -242,7 +245,7 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
                 dataContent.usingResource(folders.get(depth - 1));
             }
             dataContent.usingUser(testUser)
-                       .createFolder(folderModel);
+                    .createFolder(folderModel);
         }
         return folders;
     }
@@ -250,7 +253,8 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     /**
      * Create a document in the given folder using the test user and a random filename.
      *
-     * @param folderModel The location to create the document.
+     * @param folderModel
+     *            The location to create the document.
      * @return The randomly generated name of the new document.
      */
     private String createDocument(FolderModel folderModel)
@@ -261,15 +265,17 @@ public class ElasticsearchPathIndexingTests extends AbstractTestNGSpringContextT
     /**
      * Create a document in the given folder using the test user and the given filename.
      *
-     * @param folderModel The location to create the document.
-     * @param filename    the filename.
+     * @param folderModel
+     *            The location to create the document.
+     * @param filename
+     *            the filename.
      * @return the passed filename.
      */
     private String createDocument(FolderModel folderModel, String filename)
     {
         dataContent.usingUser(testUser)
-                   .usingResource(folderModel)
-                   .createContent(new org.alfresco.utility.model.FileModel(filename, org.alfresco.utility.model.FileType.TEXT_PLAIN, "content"));
+                .usingResource(folderModel)
+                .createContent(new org.alfresco.utility.model.FileModel(filename, org.alfresco.utility.model.FileType.TEXT_PLAIN, "content"));
         return filename;
     }
 }

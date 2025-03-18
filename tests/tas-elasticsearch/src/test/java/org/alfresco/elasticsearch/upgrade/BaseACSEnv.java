@@ -21,12 +21,13 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.alfresco.elasticsearch.upgrade.AvailabilityProbe.ProbeResult;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.Container.ExecResult;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 import org.testcontainers.images.builder.Transferable;
+
+import org.alfresco.elasticsearch.upgrade.AvailabilityProbe.ProbeResult;
 
 abstract class BaseACSEnv implements AutoCloseable
 {
@@ -102,7 +103,8 @@ abstract class BaseACSEnv implements AutoCloseable
     public AvailabilityProbe getRunningSearchAPIAvailabilityProbe()
     {
         final AvailabilityProbe current = searchAPIAvailabilityProbe.get();
-        if (current != null) return current;
+        if (current != null)
+            return current;
 
         final AvailabilityProbe created = AvailabilityProbe.create(10, this::checkSearchAPIAvailability);
         if (searchAPIAvailabilityProbe.compareAndSet(null, created))
@@ -175,7 +177,8 @@ abstract class BaseACSEnv implements AutoCloseable
             {
                 Optional<Set<String>> actual = repoHttpClient.searchForFiles(term);
                 return actual.map(expected::equals).orElse(false);
-            } catch (IOException e)
+            }
+            catch (IOException e)
             {
                 return false;
             }
@@ -194,7 +197,8 @@ abstract class BaseACSEnv implements AutoCloseable
             final T container = clazz.getConstructor(String.class).newInstance(image);
             createdContainers.add(container);
             return container;
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             throw new RuntimeException("Failed to create a container for `" + image + "`.", e);
         }
@@ -207,7 +211,8 @@ abstract class BaseACSEnv implements AutoCloseable
             final T container = clazz.getConstructor(Future.class).newInstance(image);
             createdContainers.add(container);
             return container;
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             throw new RuntimeException("Failed to create a container for `" + image + "`.", e);
         }
@@ -229,7 +234,8 @@ abstract class BaseACSEnv implements AutoCloseable
             try
             {
                 return repoHttpClient.isServerUp();
-            } catch (IOException e)
+            }
+            catch (IOException e)
             {
                 return false;
             }
@@ -247,10 +253,12 @@ abstract class BaseACSEnv implements AutoCloseable
         try
         {
             result = container.execInContainer("sh", "-c", command);
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             throw new RuntimeException("Failed to execute command `" + command + "`.", e);
-        } catch (InterruptedException e)
+        }
+        catch (InterruptedException e)
         {
             Thread.currentThread().interrupt();
             throw new RuntimeException("Command execution has been interrupted..", e);
@@ -268,7 +276,8 @@ abstract class BaseACSEnv implements AutoCloseable
         try
         {
             return repoHttpClient.searchForFiles("testing").map(v -> ProbeResult.ok()).orElseGet(ProbeResult::fail);
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             return ProbeResult.fail(e);
         }
