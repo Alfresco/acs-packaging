@@ -59,8 +59,8 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v7.0.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v7.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.13.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.13.0
       - name: "Install required software"
         run: |
           # Install Docker as per https://docs.docker.com/engine/install/ubuntu/
@@ -86,7 +86,7 @@ jobs:
         with:
           candidate: maven
           version: "3.8.8"
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.13.0
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
@@ -143,7 +143,7 @@ jobs:
           python3 -m pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s \
             -k "not test_adw_reachability"
       - name: "Dump all Docker containers logs"
-        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v7.0.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v8.13.0
         if: failure() && (steps.setup-env.outcome == 'failure' || steps.run-tests.outcome == 'failure')
       - name: "Persist test failure flag"
         id: persist_test_failure_flag
