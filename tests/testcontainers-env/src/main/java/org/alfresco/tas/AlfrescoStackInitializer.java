@@ -120,15 +120,32 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
      */
     public static void reindexEverything()
     {
-        // Run the reindexing container.
+        reindex(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true", // Ensure path reindexing is enabled.
+                "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
+    }
+
+    public static Map<String, String> getReindexEnvBasic()
+    {
         Map<String, String> env = new HashMap<>(
-                Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true", // Ensure path reindexing is enabled.
-                        "SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200",
+            Map.of("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200",
                         "SPRING_DATASOURCE_URL", "jdbc:postgresql://postgres:5432/alfresco",
                         "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
                         "SPRING_ACTIVEMQ_BROKER-URL", "nio://activemq:61616",
-                        "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config",
-                        "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
+                        "JAVA_TOOL_OPTIONS", "-Xmx1g",
+                        "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config"));
+        return env;
+    }
+
+        /**
+         * Run the alfresco-elasticsearch-reindexing container.
+         *
+         * @param envParam Any environment variables to override from the defaults.
+         */
+    public static void reindex(Map<String, String> envParam)
+    {
+        // Run the reindexing container.
+        Map<String, String> env = AlfrescoStackInitializer.getReindexEnvBasic();
+        env.putAll(envParam);
 
         try (GenericContainer reindexingComponent = new GenericContainer(getImagesConfig().getReIndexingImage())
                 .withEnv(env)
