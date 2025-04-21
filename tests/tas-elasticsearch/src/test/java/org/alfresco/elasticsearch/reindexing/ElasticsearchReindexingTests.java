@@ -80,8 +80,8 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         Step.STEP("create ES client");
         elasticClient = new RestHighLevelClient(
-                RestClient.builder(new HttpHost(searchEngineContainer.getContainerIpAddress(),
-                                                searchEngineContainer.getFirstMappedPort(),
+                RestClient.builder(new HttpHost(AlfrescoStackInitializer.searchEngineContainer.getContainerIpAddress(),
+                                                AlfrescoStackInitializer.searchEngineContainer.getFirstMappedPort(),
                                                 "http")));
     }
 
@@ -100,7 +100,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // WHEN
         // Run reindexer (leaving ALFRESCO_REINDEX_TO_TIME as default).
-        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+        AlfrescoStackInitializer.reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
                        "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
                        "ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime));
 
@@ -123,7 +123,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // WHEN
         // Run reindexer (with default dates to reindex everything).
-        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+        AlfrescoStackInitializer.reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
                        "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX));
 
         // THEN
@@ -151,7 +151,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // WHEN
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
-        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+        AlfrescoStackInitializer.reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
             "ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
             "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "true",
             "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "true",
@@ -174,7 +174,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // WHEN
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
-        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+        AlfrescoStackInitializer.reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
             "ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
             "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "true",
             "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "false",
@@ -198,7 +198,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // WHEN
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
-        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+        AlfrescoStackInitializer.reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
                 "ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
             "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "false",
             "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "true",
@@ -222,14 +222,14 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // WHEN
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
-        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+        AlfrescoStackInitializer.reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
                 "ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
             "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "true",
             "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "false",
             "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true"));
 
         // THEN
-        SearchRequest query = req("cm:name:'%s' AND PATH:'/app:company_home/st:sites/cm:%s/cm:documentLibrary/cm:%s'".formatted(documentName, testSite, documentName));
+        SearchRequest query = req("cm:name:'" + documentName + "' AND PATH:'/app:company_home/st:sites/cm:" + testSite + "/cm:documentLibrary/cm:" + documentName + "'");
         searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
     }
 
@@ -246,14 +246,14 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // WHEN
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
-        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+        AlfrescoStackInitializer.reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
                 "ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
             "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "true",
             "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "true",
             "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true"));
 
         // THEN
-        SearchRequest query = req("cm:name:'%s' AND TEXT:'content' AND PATH:'/app:company_home/st:sites/cm:%s/cm:documentLibrary/cm:%s'".formatted(documentName, testSite, documentName));
+        SearchRequest query = req("cm:name:'" + documentName + "' AND TEXT:'content' AND PATH:'/app:company_home/st:sites/cm:" + testSite + "/cm:documentLibrary/cm:" + documentName + "'");
         searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
     }
 
@@ -268,7 +268,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // WHEN
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
-        reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+        AlfrescoStackInitializer.reindex(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
                 "ALFRESCO_REINDEX_FROM_TIME", reindexerStartTime,
             "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "false",
             "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "false",
@@ -291,7 +291,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // WHEN
         // Run reindexer with path indexing enabled (and with default dates to reindex everything).
-        reindex(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true",
+        AlfrescoStackInitializer.reindex(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true",
                 "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
                 "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX));
 
@@ -318,7 +318,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // WHEN
         // Run reindexer with path indexing enabled (and with default dates to reindex everything).
-        reindex(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true",
+        AlfrescoStackInitializer.reindex(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true",
                 "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
 
         // THEN
@@ -358,7 +358,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         String documentName = "TestFile" + UUID.randomUUID() + ".txt";
         dataContent.usingUser(testUser)
                    .usingSite(testSite)
-                   .createContent(new FileModel(documentName, TEXT_PLAIN, "content"));
+                   .createContent(new FileModel(documentName, org.alfresco.utility.model.FileType.TEXT_PLAIN, "content"));
         return documentName;
     }
 
