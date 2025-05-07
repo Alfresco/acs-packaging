@@ -39,7 +39,7 @@ import org.testng.annotations.Test;
  * In this test we are verifying end-to-end the reindexer component on Elasticsearch.
  */
 @ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
-                      initializers = AlfrescoStackInitializer.class)
+        initializers = AlfrescoStackInitializer.class)
 @SuppressWarnings("PMD.JUnit4TestShouldUseTestAnnotation") // these are testng tests
 public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTests
 {
@@ -80,8 +80,8 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         STEP("create ES client");
         elasticClient = new RestHighLevelClient(
                 RestClient.builder(new HttpHost(AlfrescoStackInitializer.searchEngineContainer.getContainerIpAddress(),
-                                                AlfrescoStackInitializer.searchEngineContainer.getFirstMappedPort(),
-                                                "http")));
+                        AlfrescoStackInitializer.searchEngineContainer.getFirstMappedPort(),
+                        "http")));
 
     }
 
@@ -106,9 +106,10 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // WHEN
         // Run reindexer (leaving ALFRESCO_REINDEX_TO_TIME as default).
-        try(GenericContainer reindexingComponent = createReindexContainer(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+        try (GenericContainer reindexingComponent = createReindexContainer(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
                 "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
-                "ALFRESCO_REINDEX_FROM_TIME", testStart))) {
+                "ALFRESCO_REINDEX_FROM_TIME", testStart)))
+        {
             //Reindex
             reindexingComponent.start();
 
@@ -136,8 +137,9 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // WHEN
         // Run reindexer (with default dates to reindex everything).
-        try(GenericContainer reindexingComponent = createReindexContainer(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
-                       "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX))) {
+        try (GenericContainer reindexingComponent = createReindexContainer(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+                "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX)))
+        {
             //Reindex
             reindexingComponent.start();
 
@@ -157,18 +159,24 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
     /**
      * Common testing method for reindexing enabled and disabled features tests.
-     * @param metadataIndexingEnabled Reindexing metadata is enabled when true, disabled when false
-     * @param contentIndexingEnabled Reindexing content is enabled when true, disabled when false
-     * @param pathIndexingEnabled Reindexing path is enabled when true, disabled when false
-     * @param queryString Verification query string. It may include a <DOCUMENT_NAME> mark that is replaced by the actual document name created.
-     * @param expectingDocNameAsResult Result from verification query string is the name of the document created when true, empty result when false.
+     *
+     * @param metadataIndexingEnabled
+     *         Reindexing metadata is enabled when true, disabled when false
+     * @param contentIndexingEnabled
+     *         Reindexing content is enabled when true, disabled when false
+     * @param pathIndexingEnabled
+     *         Reindexing path is enabled when true, disabled when false
+     * @param queryString
+     *         Verification query string. It may include a <DOCUMENT_NAME> mark that is replaced by the actual document name created.
+     * @param expectingDocNameAsResult
+     *         Result from verification query string is the name of the document created when true, empty result when false.
      */
     private void internalTestEnabledFeatures(
-        Boolean metadataIndexingEnabled,
-        Boolean contentIndexingEnabled,
-        Boolean pathIndexingEnabled,
-        String queryString,
-        Boolean expectingDocNameAsResult
+            Boolean metadataIndexingEnabled,
+            Boolean contentIndexingEnabled,
+            Boolean pathIndexingEnabled,
+            String queryString,
+            Boolean expectingDocNameAsResult
     )
     {
         // Initial timestamp for reindexing by date: this will save reindexing time for these tests
@@ -188,21 +196,25 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // WHEN
         // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
-        try(GenericContainer reindexingComponent = createReindexContainer(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
-            "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
-            "ALFRESCO_REINDEX_FROM_TIME", testStart,
-            "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", metadataIndexingEnabled.toString(),
-            "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", contentIndexingEnabled.toString(),
-            "ALFRESCO_REINDEX_PATHINDEXINGENABLED", pathIndexingEnabled.toString()))) {
+        try (GenericContainer reindexingComponent = createReindexContainer(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+                "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
+                "ALFRESCO_REINDEX_FROM_TIME", testStart,
+                "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", metadataIndexingEnabled.toString(),
+                "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", contentIndexingEnabled.toString(),
+                "ALFRESCO_REINDEX_PATHINDEXINGENABLED", pathIndexingEnabled.toString())))
+        {
             //Reindex
             reindexingComponent.start();
 
             // THEN
             SearchRequest query = req(queryString.replace("<DOCUMENT_NAME>", documentName));
 
-            if (expectingDocNameAsResult) {
+            if (expectingDocNameAsResult)
+            {
                 searchQueryService.expectResultsFromQuery(query, dataUser.getAdminUser(), documentName);
-            } else {
+            }
+            else
+            {
                 searchQueryService.expectNoResultsFromQuery(query, dataUser.getAdminUser());
             }
         }
@@ -213,14 +225,43 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     public void testRecreateIndexWithMetadataAndContent()
     {
         internalTestEnabledFeatures(true, true, false,
-            "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content'", true);
+                "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content'", true);
     }
 
     @Test(groups = TestGroup.SEARCH)
     public void testRecreateIndexWithMetadataAndNoContent()
     {
-        internalTestEnabledFeatures(true, false, false,
-            "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content'", false);
+        // Initial timestamp for reindexing by date: this will save reindexing time for these tests
+        ZonedDateTime now = ZonedDateTime.now(Clock.systemUTC());
+        // ACS-5044 Increased time to 20 minutes as 10 minutes proved insufficient to prevent intermittent failures
+        String testStart = DateTimeFormatter.ofPattern("yyyyMMddHHmm").format(now.minusMinutes(20));
+
+        // GIVEN
+        // Stop ElasticsearchConnector
+        AlfrescoStackInitializer.liveIndexer.stop();
+        // Create document
+        String documentName = createDocument();
+        // Delete index documents
+        cleanUpIndex();
+
+        // WHEN
+        // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
+        try (GenericContainer reindexingComponent = createReindexContainer(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+                "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
+                "ALFRESCO_REINDEX_FROM_TIME", testStart,
+                "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "true",
+                "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "false",
+                "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "false")))
+        {
+            //Reindex
+            reindexingComponent.start();
+
+            // THEN
+            // When not using metadata, document shouldn't be present in Elasticsearch index
+            // since metadata reindexing process is indexing also permissions
+            SearchRequest query = req("cm:name:'" + documentName + "' AND cm:name:*");
+            searchQueryService.expectNoResultsFromQuery(query, dataUser.getAdminUser());
+        }
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -229,34 +270,61 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         // When not using metadata, document shouldn't be present in Elasticsearch index,
         // since metadata reindexing process is indexing also permissions
         internalTestEnabledFeatures(false, true, false,
-            "cm:name:'<DOCUMENT_NAME>' AND cm:name:*", false);
+                "cm:name:'<DOCUMENT_NAME>' AND cm:name:*", false);
     }
 
     @Test(groups = TestGroup.SEARCH)
     public void testRecreateIndexWithMetadataAndNoContentAndPath()
     {
         internalTestEnabledFeatures(true, false, true,
-            "cm:name:'<DOCUMENT_NAME>' AND PATH:'/app:company_home/st:sites/cm:" + testSite + "/cm:documentLibrary/cm:<DOCUMENT_NAME>'", true);
+                "cm:name:'<DOCUMENT_NAME>' AND PATH:'/app:company_home/st:sites/cm:" + testSite + "/cm:documentLibrary/cm:<DOCUMENT_NAME>'", true);
     }
 
     @Test(groups = TestGroup.SEARCH)
     public void testRecreateIndexWithMetadataAndContentAndPath()
     {
         internalTestEnabledFeatures(true, true, true,
-            "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content' " +
-                "AND PATH:'/app:company_home/st:sites/cm:" + testSite + "/cm:documentLibrary/cm:<DOCUMENT_NAME>'", true);
+                "cm:name:'<DOCUMENT_NAME>' AND TEXT:'content' " +
+                        "AND PATH:'/app:company_home/st:sites/cm:" + testSite + "/cm:documentLibrary/cm:<DOCUMENT_NAME>'", true);
     }
 
     @Test(groups = TestGroup.SEARCH)
     public void testRecreateIndexWithNoMetadataAndPath()
     {
-        // When not using metadata, document shouldn't be present in Elasticsearch index,
-        // since metadata reindexing process is indexing also permissions
-        internalTestEnabledFeatures(false, false, true,
-            "cm:name:'<DOCUMENT_NAME>' AND cm:name:*", false);
+        // Initial timestamp for reindexing by date: this will save reindexing time for these tests
+        ZonedDateTime now = ZonedDateTime.now(Clock.systemUTC());
+        // ACS-5044 Increased time to 20 minutes as 10 minutes proved insufficient to prevent intermittent failures
+        String testStart = DateTimeFormatter.ofPattern("yyyyMMddHHmm").format(now.minusMinutes(20));
+
+        // GIVEN
+        // Stop ElasticsearchConnector
+        AlfrescoStackInitializer.liveIndexer.stop();
+        // Create document
+        String documentName = createDocument();
+        // Delete index documents
+        cleanUpIndex();
+
+        // WHEN
+        // Run reindexer leaving ALFRESCO_REINDEX_TO_TIME as default
+        try (GenericContainer reindexingComponent = createReindexContainer(Map.of("ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
+                "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
+                "ALFRESCO_REINDEX_FROM_TIME", testStart,
+                "ALFRESCO_REINDEX_METADATAINDEXINGENABLED", "false",
+                "ALFRESCO_REINDEX_CONTENTINDEXINGENABLED", "false",
+                "ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true")))
+        {
+            //Reindex
+            reindexingComponent.start();
+
+            // THEN
+            // When not using metadata, document shouldn't be present in Elasticsearch index
+            // since metadata reindexing process is indexing also permissions
+            SearchRequest query = req("cm:name:'" + documentName + "' AND cm:name:*");
+            searchQueryService.expectNoResultsFromQuery(query, dataUser.getAdminUser());
+        }
     }
 
-    @Test (groups = TestGroup.SEARCH)
+    @Test(groups = TestGroup.SEARCH)
     public void testPathReindex()
     {
         // GIVEN
@@ -269,9 +337,10 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // WHEN
         // Run reindexer with path indexing enabled (and with default dates to reindex everything).
-        try(GenericContainer reindexingComponent = createReindexContainer(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true",
+        try (GenericContainer reindexingComponent = createReindexContainer(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true",
                 "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
-                "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX))) {
+                "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX)))
+        {
             //Reindex
             reindexingComponent.start();
 
@@ -290,7 +359,7 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         AlfrescoStackInitializer.liveIndexer.start();
     }
 
-    @Test (groups = TestGroup.SEARCH)
+    @Test(groups = TestGroup.SEARCH)
     public void testPathReindexQueryWithNamespaces()
     {
         // GIVEN
@@ -303,9 +372,10 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
 
         // WHEN
         // Run reindexer with path indexing enabled (and with default dates to reindex everything).
-        try(GenericContainer reindexingComponent = createReindexContainer(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true",
+        try (GenericContainer reindexingComponent = createReindexContainer(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true",
                 "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate",
-                "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX))) {
+                "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX)))
+        {
             //Reindex
             reindexingComponent.start();
 
@@ -327,7 +397,8 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     /**
      * Run the alfresco-elasticsearch-reindexing container.
      *
-     * @param envParam Any environment variables to override from the defaults.
+     * @param envParam
+     *         Any environment variables to override from the defaults.
      * @return reindex container
      */
     private GenericContainer createReindexContainer(Map<String, String> envParam)
@@ -337,9 +408,9 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         env.putAll(envParam);
 
         return new GenericContainer(getImagesConfig().getReIndexingImage())
-                                    .withEnv(env)
-                                    .withNetwork(AlfrescoStackInitializer.network)
-                                    .withStartupCheckStrategy(new IndefiniteWaitOneShotStartupCheckStrategy());
+                .withEnv(env)
+                .withNetwork(AlfrescoStackInitializer.network)
+                .withStartupCheckStrategy(new IndefiniteWaitOneShotStartupCheckStrategy());
     }
 
     /**
@@ -351,8 +422,8 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     {
         String documentName = "TestFile" + UUID.randomUUID() + ".txt";
         dataContent.usingUser(testUser)
-                   .usingSite(testSite)
-                   .createContent(new org.alfresco.utility.model.FileModel(documentName, org.alfresco.utility.model.FileType.TEXT_PLAIN, "content"));
+                .usingSite(testSite)
+                .createContent(new org.alfresco.utility.model.FileModel(documentName, org.alfresco.utility.model.FileType.TEXT_PLAIN, "content"));
         return documentName;
     }
 
