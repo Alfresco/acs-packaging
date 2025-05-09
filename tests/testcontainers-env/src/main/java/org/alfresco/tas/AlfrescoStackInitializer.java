@@ -115,8 +115,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         alfresco.followOutput(LOG_CONSUMER);
 
         TestPropertySourceUtils.addInlinedPropertiesToEnvironment(configurableApplicationContext,
-                                                                  "alfresco.server=" + alfresco.getContainerIpAddress(),
-                                                                  "alfresco.port=" + alfresco.getFirstMappedPort());
+                "alfresco.server=" + alfresco.getContainerIpAddress(),
+                "alfresco.port=" + alfresco.getFirstMappedPort());
 
     }
 
@@ -124,18 +124,18 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     {
         switch (getImagesConfig().getDatabaseType())
         {
-            case POSTGRESQL_DB:
-                return createPosgresContainer();
-            case MYSQL_DB:
-                return createMySqlContainer();
-            case MARIA_DB:
-                return createMariaDBContainer();
-            case MSSQL_DB:
-                return createMsSqlContainer();
-            case ORACLE_DB:
-                return createOracleDBContainer();
-            default:
-                throw new IllegalArgumentException("Database not set.");
+        case POSTGRESQL_DB:
+            return createPosgresContainer();
+        case MYSQL_DB:
+            return createMySqlContainer();
+        case MARIA_DB:
+            return createMariaDBContainer();
+        case MSSQL_DB:
+            return createMsSqlContainer();
+        case ORACLE_DB:
+            return createOracleDBContainer();
+        default:
+            throw new IllegalArgumentException("Database not set.");
         }
     }
 
@@ -149,10 +149,21 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
      */
     public static void reindexEverything()
     {
+        reindex(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true", // Ensure path reindexing is enabled.
+                "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
+    }
+
+    /**
+     * Run the alfresco-elasticsearch-reindexing container.
+     *
+     * @param envParam
+     *         Any environment variables to override from the defaults.
+     */
+    public static void reindex(Map<String, String> envParam)
+    {
         // Run the reindexing container.
         Map<String, String> env = AlfrescoStackInitializer.getReindexEnvBasic();
-        env.putAll(Map.of("ALFRESCO_REINDEX_PATHINDEXINGENABLED", "true", // Ensure path reindexing is enabled.
-                        "ALFRESCO_REINDEX_JOB_NAME", "reindexByDate"));
+        env.putAll(envParam);
 
         try (GenericContainer reindexingComponent = new GenericContainer(getImagesConfig().getReIndexingImage())
                 .withEnv(env)
@@ -185,7 +196,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         try
         {
             Startables.deepStart(startables).get();
-        } catch (Exception e)
+        }
+        catch (Exception e)
         {
             Assert.fail("Unable to start containers", e);
         }
@@ -195,15 +207,15 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     protected GenericContainer<?> createLiveIndexingContainer()
     {
         return new GenericContainer<>(getImagesConfig().getLiveIndexingImage())
-            .withNetwork(network)
-            .withNetworkAliases("live-indexing")
-            .withEnv("ELASTICSEARCH_INDEXNAME", CUSTOM_ALFRESCO_INDEX)
-            .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200")
-            .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
-            .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
-            .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config")
-            .withEnv("JAVA_TOOL_OPTIONS", "-Xmx2g -agentlib:jdwp=transport=dt_socket,address=*:5005,server=y,suspend=n")
-            .withExposedPorts(5005);
+                .withNetwork(network)
+                .withNetworkAliases("live-indexing")
+                .withEnv("ELASTICSEARCH_INDEXNAME", CUSTOM_ALFRESCO_INDEX)
+                .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200")
+                .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
+                .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
+                .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config")
+                .withEnv("JAVA_TOOL_OPTIONS", "-Xmx2g -agentlib:jdwp=transport=dt_socket,address=*:5005,server=y,suspend=n")
+                .withExposedPorts(5005);
     }
 
     protected GenericContainer createSearchEngineContainer()
@@ -261,35 +273,34 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     private GenericContainer createAMQContainer()
     {
         return new GenericContainer(getImagesConfig().getActiveMqImage())
-                       .withNetwork(network)
-                       .withNetworkAliases("activemq")
-                       .withEnv("JAVA_OPTS", "-Xms512m -Xmx1g")
-                       .waitingFor(Wait.forListeningPort())
-                       .withStartupTimeout(Duration.ofMinutes(2))
-                       .withExposedPorts(61616, 8161, 5672, 61613);
+                .withNetwork(network)
+                .withNetworkAliases("activemq")
+                .withEnv("JAVA_OPTS", "-Xms512m -Xmx1g")
+                .waitingFor(Wait.forListeningPort())
+                .withStartupTimeout(Duration.ofMinutes(2))
+                .withExposedPorts(61616, 8161, 5672, 61613);
     }
 
     private PostgreSQLContainer createPosgresContainer()
     {
         return (PostgreSQLContainer) new PostgreSQLContainer(getImagesConfig().getPostgreSQLImage())
-                                             .withPassword(DatabaseType.POSTGRESQL_DB.getPassword())
-                                             .withUsername(DatabaseType.POSTGRESQL_DB.getUsername())
-                                             .withDatabaseName("alfresco")
-                                             .withNetwork(network)
-                                             .withNetworkAliases("postgres")
-                                             .withStartupTimeout(Duration.ofMinutes(2));
+                .withPassword(DatabaseType.POSTGRESQL_DB.getPassword())
+                .withUsername(DatabaseType.POSTGRESQL_DB.getUsername())
+                .withDatabaseName("alfresco")
+                .withNetwork(network)
+                .withNetworkAliases("postgres")
+                .withStartupTimeout(Duration.ofMinutes(2));
     }
-
 
     private MySQLContainer createMySqlContainer()
     {
         return (MySQLContainer) new MySQLContainer(getImagesConfig().getMySQLImage())
-                                            .withPassword(DatabaseType.MYSQL_DB.getPassword())
-                                            .withUsername(DatabaseType.MYSQL_DB.getUsername())
-                                            .withDatabaseName("alfresco")
-                                            .withNetwork(network)
-                                            .withNetworkAliases("mysql")
-                                            .withStartupTimeout(Duration.ofMinutes(2));
+                .withPassword(DatabaseType.MYSQL_DB.getPassword())
+                .withUsername(DatabaseType.MYSQL_DB.getUsername())
+                .withDatabaseName("alfresco")
+                .withNetwork(network)
+                .withNetworkAliases("mysql")
+                .withStartupTimeout(Duration.ofMinutes(2));
 
     }
 
@@ -327,57 +338,57 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
     private GenericContainer createSfsContainer()
     {
         return new GenericContainer(getImagesConfig().getSharedFileStoreImage())
-                       .withNetwork(network)
-                       .withNetworkAliases("shared-file-store")
-                       .withEnv("JAVA_OPTS", "-Xms256m -Xmx512m")
-                       .withEnv("scheduler.content.age.millis", "86400000")
-                       .withEnv("scheduler.cleanup.interval", "86400000")
-                       .withExposedPorts(8099)
-                       .waitingFor(Wait.forListeningPort())
-                       .withStartupTimeout(Duration.ofMinutes(2));
+                .withNetwork(network)
+                .withNetworkAliases("shared-file-store")
+                .withEnv("JAVA_OPTS", "-Xms256m -Xmx512m")
+                .withEnv("scheduler.content.age.millis", "86400000")
+                .withEnv("scheduler.cleanup.interval", "86400000")
+                .withExposedPorts(8099)
+                .waitingFor(Wait.forListeningPort())
+                .withStartupTimeout(Duration.ofMinutes(2));
     }
 
     private GenericContainer createTransformCoreContainer()
     {
         return new GenericContainer(getImagesConfig().getTransformCoreAIOImage())
-                       .withNetwork(network)
-                       .withNetworkAliases("transform-core-aio")
-                       .withEnv("JAVA_OPTS", "-Xms512m -Xmx1024m")
-                       .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
-                       .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
-                       .withExposedPorts(8090)
-                       .waitingFor(Wait.forListeningPort())
-                       .withStartupTimeout(Duration.ofMinutes(2));
+                .withNetwork(network)
+                .withNetworkAliases("transform-core-aio")
+                .withEnv("JAVA_OPTS", "-Xms512m -Xmx1024m")
+                .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
+                .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
+                .withExposedPorts(8090)
+                .waitingFor(Wait.forListeningPort())
+                .withStartupTimeout(Duration.ofMinutes(2));
     }
 
     private GenericContainer createTransformRouterContainer()
     {
         return new GenericContainer(getImagesConfig().getTransformRouterImage())
-                       .withNetwork(network)
-                       .withNetworkAliases("transform-router")
-                       .withEnv("JAVA_OPTS", "-Xms256m -Xmx512m")
-                       .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
-                       .withEnv("CORE_AIO_URL", "http://transform-core-aio:8090")
-                       .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
-                       .withExposedPorts(8095)
-                       .waitingFor(Wait.forListeningPort())
-                       .withStartupTimeout(Duration.ofMinutes(2));
+                .withNetwork(network)
+                .withNetworkAliases("transform-router")
+                .withEnv("JAVA_OPTS", "-Xms256m -Xmx512m")
+                .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
+                .withEnv("CORE_AIO_URL", "http://transform-core-aio:8090")
+                .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
+                .withExposedPorts(8095)
+                .waitingFor(Wait.forListeningPort())
+                .withStartupTimeout(Duration.ofMinutes(2));
     }
 
     protected GenericContainer createAlfrescoContainer()
     {
         DatabaseType databaseType = getImagesConfig().getDatabaseType();
         return new GenericContainer(getImagesConfig().getRepositoryImage())
-                       .withEnv("CATALINA_OPTS", "\"-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n\"")
-                       .withEnv("JAVA_TOOL_OPTIONS",
-                                "-Dencryption.keystore.type=JCEKS " +
+                .withEnv("CATALINA_OPTS", "\"-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n\"")
+                .withEnv("JAVA_TOOL_OPTIONS",
+                        "-Dencryption.keystore.type=JCEKS " +
                                 "-Dencryption.cipherAlgorithm=DESede/CBC/PKCS5Padding " +
                                 "-Dencryption.keyAlgorithm=DESede " +
                                 "-Dencryption.keystore.location=/usr/local/tomcat/shared/classes/alfresco/extension/keystore/keystore " +
                                 "-Dmetadata-keystore.password=mp6yc0UD9e -Dmetadata-keystore.aliases=metadata " +
                                 "-Dmetadata-keystore.metadata.password=oKIWzVdEdA -Dmetadata-keystore.metadata.algorithm=DESede")
-                       .withEnv("JAVA_OPTS",
-                                "-Delasticsearch.createIndexIfNotExists=true " +
+                .withEnv("JAVA_OPTS",
+                        "-Delasticsearch.createIndexIfNotExists=true " +
                                 "-Dindex.subsystem.name=elasticsearch " +
                                 "-Delasticsearch.host=elasticsearch " +
                                 "-Delasticsearch.indexName=" + CUSTOM_ALFRESCO_INDEX + " " +
@@ -385,7 +396,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 "-Ddb.url=" + escapeSemicolonInUrlForJavaOptsUsage(databaseType.getUrl()) + " " +
                                 "-Ddb.username=" + databaseType.getUsername() + " " +
                                 "-Ddb.password=" + databaseType.getPassword() + " " +
-                                  indentDbSettings(databaseType.getAdditionalDbSettings()) +
+                                indentDbSettings(databaseType.getAdditionalDbSettings()) +
                                 "-Dshare.host=127.0.0.1 " +
                                 "-Dshare.port=8080 " +
                                 "-Dalfresco.host=localhost " +
@@ -402,23 +413,25 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 "-Dquery.cmis.queryConsistency=EVENTUAL " +
                                 "-Dquery.fts.queryConsistency=EVENTUAL " +
                                 "-Xms1g -Xmx2g ")
-                       .withNetwork(network)
-                       .withNetworkAliases("alfresco")
-                       .waitingFor(new LogMessageWaitStrategy().withRegEx(".*Server startup in.*\\n"))
-                       .withStartupTimeout(Duration.ofMinutes(7))
-                       .withExposedPorts(8080, 8000)
-                       .withClasspathResourceMapping("exactTermSearch.properties",
-                    "/usr/local/tomcat/webapps/alfresco/WEB-INF/classes/alfresco/search/elasticsearch/config/exactTermSearch.properties",
-                                BindMode.READ_ONLY);
+                .withNetwork(network)
+                .withNetworkAliases("alfresco")
+                .waitingFor(new LogMessageWaitStrategy().withRegEx(".*Server startup in.*\\n"))
+                .withStartupTimeout(Duration.ofMinutes(7))
+                .withExposedPorts(8080, 8000)
+                .withClasspathResourceMapping("exactTermSearch.properties",
+                        "/usr/local/tomcat/webapps/alfresco/WEB-INF/classes/alfresco/search/elasticsearch/config/exactTermSearch.properties",
+                        BindMode.READ_ONLY);
     }
 
-    private String escapeSemicolonInUrlForJavaOptsUsage(String url) {
+    private String escapeSemicolonInUrlForJavaOptsUsage(String url)
+    {
         return url.replace(";", "\\;");
     }
 
-    private String indentDbSettings(Map<String, String> additionalDbSettings) {
+    private String indentDbSettings(Map<String, String> additionalDbSettings)
+    {
         StringBuilder sb = new StringBuilder();
-        for(Map.Entry<String, String> setting : additionalDbSettings.entrySet())
+        for (Map.Entry<String, String> setting : additionalDbSettings.entrySet())
         {
             sb.append("-Ddb.").append(setting.getKey()).append("=").append(setting.getValue()).append(" ");
         }
@@ -578,9 +591,10 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         }
 
         @Override
-        public SearchEngineType getSearchEngineType() {
+        public SearchEngineType getSearchEngineType()
+        {
             String searchEngineTypeProperty = mavenProperties.apply("search.engine.type");
-            if(Strings.isNullOrEmpty(searchEngineTypeProperty))
+            if (Strings.isNullOrEmpty(searchEngineTypeProperty))
             {
                 Step.STEP("Defaulting search engine to Elasticsearch.");
                 return SearchEngineType.ELASTICSEARCH_ENGINE;
@@ -589,9 +603,10 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         }
 
         @Override
-        public DatabaseType getDatabaseType() {
+        public DatabaseType getDatabaseType()
+        {
             String databaseTypeProperty = mavenProperties.apply("database.type");
-            if(Strings.isNullOrEmpty(databaseTypeProperty))
+            if (Strings.isNullOrEmpty(databaseTypeProperty))
             {
                 Step.STEP("Defaulting database to postgresql.");
                 return DatabaseType.POSTGRESQL_DB;
@@ -600,7 +615,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         }
     }
 
-    private static class OracleContainer<SELF extends OracleContainer<SELF>> extends JdbcDatabaseContainer<SELF> {
+    private static class OracleContainer<SELF extends OracleContainer<SELF>> extends JdbcDatabaseContainer<SELF>
+    {
 
         OracleContainer(DockerImageName dockerImageName)
         {
@@ -620,17 +636,20 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         }
 
         @Override
-        public SELF withNetwork(Network network) {
+        public SELF withNetwork(Network network)
+        {
             return super.withNetwork(network);
         }
 
         @Override
-        public SELF withNetworkAliases(String... aliases) {
+        public SELF withNetworkAliases(String... aliases)
+        {
             return super.withNetworkAliases(aliases);
         }
 
         @Override
-        public SELF withCreateContainerCmdModifier(Consumer<CreateContainerCmd> modifier) {
+        public SELF withCreateContainerCmdModifier(Consumer<CreateContainerCmd> modifier)
+        {
             return super.withCreateContainerCmdModifier(modifier);
         }
 
