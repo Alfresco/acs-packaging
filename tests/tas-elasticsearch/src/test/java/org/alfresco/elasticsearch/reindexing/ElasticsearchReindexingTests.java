@@ -1,14 +1,11 @@
 package org.alfresco.elasticsearch.reindexing;
 
-import static org.junit.Assert.fail;
-
 import static org.alfresco.elasticsearch.SearchQueryService.req;
-import static org.alfresco.tas.AlfrescoStackInitializer.CUSTOM_ALFRESCO_INDEX;
 import static org.alfresco.tas.AlfrescoStackInitializer.liveIndexer;
 import static org.alfresco.tas.AlfrescoStackInitializer.reindex;
-import static org.alfresco.tas.AlfrescoStackInitializer.searchEngineContainer;
-import static org.alfresco.utility.model.FileType.TEXT_PLAIN;
 import static org.alfresco.utility.report.log.Step.STEP;
+import static org.alfresco.utility.model.FileType.TEXT_PLAIN;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.time.Clock;
@@ -17,22 +14,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.http.HttpHost;
-import org.opensearch.client.RestClient;
-import org.opensearch.client.json.jackson.JacksonJsonpMapper;
-import org.opensearch.client.opensearch.OpenSearchClient;
-import org.opensearch.client.opensearch._types.query_dsl.QueryBuilders;
-import org.opensearch.client.opensearch.core.DeleteByQueryRequest;
-import org.opensearch.client.opensearch.core.DeleteByQueryResponse;
-import org.opensearch.client.opensearch.indices.RefreshRequest;
-import org.opensearch.client.transport.OpenSearchTransport;
-import org.opensearch.client.transport.rest_client.RestClientTransport;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
 import org.alfresco.elasticsearch.SearchQueryService;
 import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.tas.AlfrescoStackInitializer;
@@ -40,19 +21,33 @@ import org.alfresco.utility.data.DataContent;
 import org.alfresco.utility.data.DataSite;
 import org.alfresco.utility.data.DataUser;
 import org.alfresco.utility.model.FileModel;
-import org.alfresco.utility.model.SiteModel;
 import org.alfresco.utility.model.TestGroup;
-import org.alfresco.utility.model.UserModel;
 import org.alfresco.utility.network.ServerHealth;
+import org.apache.http.HttpHost;
+import org.opensearch.client.RequestOptions;
+import org.opensearch.client.RestClient;
+import org.opensearch.client.RestHighLevelClient;
+import org.opensearch.index.query.QueryBuilders;
+import org.opensearch.index.reindex.BulkByScrollResponse;
+import org.opensearch.index.reindex.DeleteByQueryRequest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.startupcheck.IndefiniteWaitOneShotStartupCheckStrategy;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 /**
  * In this test we are verifying end-to-end the reindexer component on Elasticsearch.
  */
 @ContextConfiguration(locations = "classpath:alfresco-elasticsearch-context.xml",
         initializers = AlfrescoStackInitializer.class)
-@SuppressWarnings({"PMD.JUnit4TestShouldUseTestAnnotation", "PMD.JUnitTestsShouldIncludeAssert"}) // these are testng tests
+@SuppressWarnings("PMD.JUnit4TestShouldUseTestAnnotation") // these are testng tests
 public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTests
 {
+    public static final String CUSTOM_ALFRESCO_INDEX = "custom-alfresco-index";
+
     @Autowired
     private ServerHealth serverHealth;
     @Autowired
@@ -64,10 +59,15 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     @Autowired
     protected SearchQueryService searchQueryService;
 
-    private UserModel testUser;
-    private SiteModel testSite;
-    private OpenSearchClient elasticClient;
+    private org.alfresco.utility.model.UserModel testUser;
 
+    private org.alfresco.utility.model.SiteModel testSite;
+
+    private RestHighLevelClient elasticClient;
+
+    /**
+     * Create a user and a private site and wait for these to be indexed.
+     */
     @BeforeClass(alwaysRun = true)
     public void dataPreparation()
     {
@@ -81,13 +81,11 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         createDocumentWithRandomName();
 
         STEP("create ES client");
+        elasticClient = new RestHighLevelClient(
+                RestClient.builder(new HttpHost(AlfrescoStackInitializer.searchEngineContainer.getContainerIpAddress(),
+                        AlfrescoStackInitializer.searchEngineContainer.getFirstMappedPort(),
+                        "http")));
 
-        RestClient httpClient = RestClient.builder(new HttpHost(searchEngineContainer.getContainerIpAddress(),
-                        searchEngineContainer.getFirstMappedPort(), "http"))
-                .build();
-
-        OpenSearchTransport transport = new RestClientTransport(httpClient, new JacksonJsonpMapper());
-        elasticClient = new OpenSearchClient(transport);
     }
 
     @Test(groups = TestGroup.SEARCH)
@@ -355,6 +353,11 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
         return DateTimeFormatter.ofPattern("yyyyMMddHHmm").format(zonedDateTime);
     }
 
+    /**
+     * Create a document using in the test site using the test user.
+     *
+     * @return The randomly generated name of the new document.
+     */
     private String createDocumentWithRandomName()
     {
         String documentName = "TestFile" + UUID.randomUUID() + ".txt";
@@ -368,21 +371,15 @@ public class ElasticsearchReindexingTests extends AbstractTestNGSpringContextTes
     {
         try
         {
-            RefreshRequest refreshRequest = new RefreshRequest.Builder().index(CUSTOM_ALFRESCO_INDEX).build();
-            elasticClient.indices().refresh(refreshRequest);
-
-            DeleteByQueryRequest request = new DeleteByQueryRequest.Builder().index(CUSTOM_ALFRESCO_INDEX)
-                    .query(QueryBuilders.matchAll()
-                            .build()
-                            .toQuery())
-                    .build();
-
-            DeleteByQueryResponse response = elasticClient.deleteByQuery(request);
-            STEP("Deleted " + response.deleted() + " documents from index");
+            DeleteByQueryRequest request = new DeleteByQueryRequest(CUSTOM_ALFRESCO_INDEX);
+            request.setQuery(QueryBuilders.matchAllQuery());
+            BulkByScrollResponse response = elasticClient.deleteByQuery(request, RequestOptions.DEFAULT);
+            STEP("Deleted " + response.getDeleted() + " documents from index");
         }
         catch (IOException e)
         {
             fail("Failed to tidy index. " + e);
         }
     }
+
 }
