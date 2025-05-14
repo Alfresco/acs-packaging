@@ -53,7 +53,7 @@ Use the https://github.com/Alfresco/acs-deployment project as the basis for your
 
 
 ## Distribution zip
-The distribution zip contains the war files, libraries, certificates and settings files you need, to deploy
+The distribution zip contains the war files, libraries, certificates and settings files you need to deploy
 Alfresco Content Services on the supported application servers.
 
 
