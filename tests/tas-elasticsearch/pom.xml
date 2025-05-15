@@ -99,6 +99,7 @@
       <groupId>org.opensearch.client</groupId>
       <artifactId>opensearch-java</artifactId>
       <version>${dependency.opensearch.version}</version>
+      <scope>test</scope>
       <exclusions>
         <exclusion>
           <groupId>org.eclipse</groupId>
