@@ -97,8 +97,8 @@
     </dependency>
     <dependency>
       <groupId>org.alfresco</groupId>
-      <artifactId>alfresco-elasticsearch-shared</artifactId>
-      <version>${dependency.elasticsearch-shared.version}</version>
+      <artifactId>opensearch-rest-high-level-client</artifactId>
+      <version>${dependency.opensearch.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
