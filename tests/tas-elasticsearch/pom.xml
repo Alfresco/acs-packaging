@@ -96,14 +96,14 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.alfresco</groupId>
-      <artifactId>alfresco-elasticsearch-shared</artifactId>
-      <version>${dependency.elasticsearch-shared.version}</version>
+      <groupId>org.opensearch.client</groupId>
+      <artifactId>opensearch-java</artifactId>
+      <version>${dependency.opensearch.version}</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
-            <groupId>org.eclipse</groupId>
-            <artifactId>yasson</artifactId>
+          <groupId>org.eclipse</groupId>
+          <artifactId>yasson</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
