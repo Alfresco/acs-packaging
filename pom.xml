@@ -10,11 +10,11 @@
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-enterprise-repo</artifactId>
         <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
-        <version>23.5.0.19</version>
+        <version>23.5.1.1-SNAPSHOT</version>
     </parent>
 
     <properties>
-        <dependency.alfresco-enterprise-repo.version>23.5.0.19</dependency.alfresco-enterprise-repo.version>
+        <dependency.alfresco-enterprise-repo.version>23.5.1.1-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
         <dependency.alfresco-enterprise-share.version>23.5.0.11</dependency.alfresco-enterprise-share.version>
 
         <alfresco.rm-enterprise-rest-api-explorer.version>3.0.2</alfresco.rm-enterprise-rest-api-explorer.version>
@@ -24,7 +24,7 @@
         <alfresco.salesforce-connector.version>3.2.0</alfresco.salesforce-connector.version>
         <alfresco.outlook.version>2.9.0</alfresco.outlook.version>
         <alfresco.desktop-sync.version>5.1.0</alfresco.desktop-sync.version>
-        <alfresco.ais.version>3.1.7</alfresco.ais.version>
+        <alfresco.ais.version>3.1.10-A.2</alfresco.ais.version>
         <alfresco.hxinsight-connector.version>1.0.1</alfresco.hxinsight-connector.version>
 
 
