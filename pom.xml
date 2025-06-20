@@ -14,7 +14,7 @@
     </parent>
 
     <properties>
-        <dependency.alfresco-enterprise-repo.version>25.1.1.4-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
+        <dependency.alfresco-enterprise-repo.version>25.1.2.4-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
         <dependency.alfresco-enterprise-share.version>25.1.1.4-SNAPSHOT</dependency.alfresco-enterprise-share.version>
 
         <alfresco.rm-enterprise-rest-api-explorer.version>3.0.2</alfresco.rm-enterprise-rest-api-explorer.version>
