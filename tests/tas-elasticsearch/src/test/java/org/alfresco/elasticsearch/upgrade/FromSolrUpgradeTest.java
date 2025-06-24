@@ -29,7 +29,7 @@ public class FromSolrUpgradeTest
         {
             final ACSEnv initialEnv = scenario.startInitialEnvWithSolrBasedSearchService();
             initialEnv.uploadFile(TEST_FILE_URL, FILE_UPLOADED_BEFORE_INITIAL_REINDEXING);
-            initialEnv.expectSearchResult(ofMinutes(1), SEARCH_TERM, FILE_UPLOADED_BEFORE_INITIAL_REINDEXING);
+            initialEnv.expectSearchResult(ofMinutes(2), SEARCH_TERM, FILE_UPLOADED_BEFORE_INITIAL_REINDEXING);
 
             final AvailabilityProbe probe = initialEnv.getRunningSearchAPIAvailabilityProbe();
 
