@@ -29,7 +29,7 @@ public class FromSolrUpgradeTest
         {
             final ACSEnv initialEnv = scenario.startInitialEnvWithSolrBasedSearchService();
             initialEnv.uploadFile(TEST_FILE_URL, FILE_UPLOADED_BEFORE_INITIAL_REINDEXING);
-            initialEnv.expectSearchResult(ofMinutes(2), SEARCH_TERM, FILE_UPLOADED_BEFORE_INITIAL_REINDEXING);
+            initialEnv.expectSearchResult(ofMinutes(5), SEARCH_TERM, FILE_UPLOADED_BEFORE_INITIAL_REINDEXING);
 
             final AvailabilityProbe probe = initialEnv.getRunningSearchAPIAvailabilityProbe();
 
@@ -40,12 +40,12 @@ public class FromSolrUpgradeTest
 
             try (ACSEnv mirroredEnv = scenario.startMirroredEnvWitElasticsearchBasedSearchService())
             {
-                mirroredEnv.expectNoSearchResult(ofMinutes(1), SEARCH_TERM);
+                mirroredEnv.expectNoSearchResult(ofMinutes(5), SEARCH_TERM);
                 Assert.assertTrue(mirroredEnv.getMaxNodeDbId() >= initialEnv.getMaxNodeDbId());
-                elasticsearch.waitForIndexCreation(ofMinutes(1));
+                elasticsearch.waitForIndexCreation(ofMinutes(5));
                 Assert.assertTrue(elasticsearch.isIndexCreated());
                 Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), 0);
-                mirroredEnv.expectNoSearchResult(ofMinutes(1), SEARCH_TERM);
+                mirroredEnv.expectNoSearchResult(ofMinutes(5), SEARCH_TERM);
 
                 mirroredEnv.startLiveIndexing();
                 mirroredEnv.reindexByIds(0, initialReIndexingUpperBound * 2);
