@@ -45,8 +45,17 @@ class UpgradeScenario implements AutoCloseable
 
     public ACSEnv startInitialEnvWithSolrBasedSearchService()
     {
-        solr6.start();
         initialEnv.start();
+        try
+        {
+            Thread.sleep(5000);
+        }
+        catch (InterruptedException e)
+        {
+            throw new RuntimeException(e);
+        }
+        solr6.start();
+
         return initialEnv;
     }
 
