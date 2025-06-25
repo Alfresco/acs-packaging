@@ -386,7 +386,7 @@ jobs:
     name: ${{ matrix.testSuite }} | TAS tests (Search API)
     runs-on: ubuntu-24.04
     if: >
-      (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request') &&
+      (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') ||startsWith(github.ref_name, 'fix/') || github.event_name == 'pull_request') &&
       !contains(github.event.head_commit.message, '[skip search]') &&
       !contains(github.event.head_commit.message, '[skip tests]')
     strategy:
@@ -458,7 +458,7 @@ jobs:
     name: ${{ matrix.testSuite }} Upgrade TAS tests
     runs-on: alfrescoPub-ubuntu2204-16G-4CPU
     if: >
-      (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request') &&
+      (github.ref_name == 'master' || startsWith(github.ref_name, 'release/')||startsWith(github.ref_name, 'fix/') || github.event_name == 'pull_request') &&
       !contains(github.event.head_commit.message, '[skip search]') &&
       !contains(github.event.head_commit.message, '[skip tests]')
     strategy:
