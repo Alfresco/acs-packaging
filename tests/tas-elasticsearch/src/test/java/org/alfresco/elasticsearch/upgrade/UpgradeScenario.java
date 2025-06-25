@@ -71,9 +71,9 @@ class UpgradeScenario implements AutoCloseable
     @Override
     public void close()
     {
-        //initialEnv.close();
-        //solr6.close();
-        //elasticsearch.close();
-        //mirroredEnv.close();
+        // initialEnv.close();
+        // solr6.close();
+        // elasticsearch.close();
+        // mirroredEnv.close();
     }
 }
