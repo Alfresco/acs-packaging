@@ -40,18 +40,18 @@ env:
 jobs:
   precommit:
     name: Pre-Commit checks
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-24.04
     if: >
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: actions/checkout@v4
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.13.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.16.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.16.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.13.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.16.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@v8.16.0
   veracode_sca:
     name: "Source Clear Scan (SCA)"
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-24.04
     if: >
       (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request') &&
       !contains(github.event.head_commit.message, '[skip tests]')
@@ -60,8 +60,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.13.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.13.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.16.0
       - name: "Init"
         run: bash ./scripts/ci/init.sh
       - uses: Alfresco/alfresco-build-tools/.github/actions/veracode@v8.16.0
@@ -73,7 +73,7 @@ jobs:
 
   veracode_sast_acs:
     name: "Pipeline SAST Scan - ACS"
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-24.04
     if: >
       (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request') &&
       github.actor != 'dependabot[bot]' &&
@@ -83,8 +83,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.13.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.13.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.16.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/github-download-file@v8.16.0
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
@@ -132,7 +132,7 @@ jobs:
 
   pmd_scan:
     name: "PMD Scan"
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-24.04
     if: >
       github.event_name == 'pull_request' &&
       github.actor != 'dependabot[bot]' &&
@@ -140,15 +140,15 @@ jobs:
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.16.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.13.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.13.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.16.0
       - uses: Alfresco/ya-pmd-scan@v4.1.0
         with:
           classpath-build-command: "bash ./scripts/ci/init.sh && bash ./scripts/ci/build.sh"
 
   tas_tests:
     name: ${{ matrix.testSuite }} TAS tests
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-24.04
     if: >
       contains(github.event.head_commit.message, '[tas]') &&
       !contains(github.event.head_commit.message, '[skip tests]')
@@ -211,8 +211,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.13.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.13.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.16.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -234,7 +234,7 @@ jobs:
 
   tas_tests_with_aims:
     name: ${{ matrix.testSuite }} TAS tests with AIMS
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-24.04
     if: >
       !contains(github.event.head_commit.message, '[skip tas]') &&
       !contains(github.event.head_commit.message, '[skip tests]')
@@ -262,8 +262,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.13.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.13.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.16.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -291,7 +291,7 @@ jobs:
 
   cmis_tas_tests_elasticsearch:
     name: CMIS TAS tests - Elastic Search | ${{ matrix.testSuite }} (CMIS API)
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-24.04
     if: >
       !contains(github.event.head_commit.message, '[skip search]') &&
       !contains(github.event.head_commit.message, '[skip tests]')
@@ -321,8 +321,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.13.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.13.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.16.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -352,7 +352,7 @@ jobs:
 
   cmis_tas_tests_opensearch:
     name: "CMIS TAS tests - Open Search (CMIS API)"
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-24.04
     if: >
       !contains(github.event.head_commit.message, '[skip search]') &&
       !contains(github.event.head_commit.message, '[skip tests]')
@@ -361,8 +361,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.13.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.13.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.16.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -384,9 +384,9 @@ jobs:
 
   tas_tests_search_api:
     name: ${{ matrix.testSuite }} | TAS tests (Search API)
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-24.04
     if: >
-      (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') ||startsWith(github.ref_name, 'fix/') || github.event_name == 'pull_request') &&
+      (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request') &&
       !contains(github.event.head_commit.message, '[skip search]') &&
       !contains(github.event.head_commit.message, '[skip tests]')
     strategy:
@@ -437,8 +437,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.13.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.13.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.16.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -458,7 +458,7 @@ jobs:
     name: ${{ matrix.testSuite }} Upgrade TAS tests
     runs-on: alfrescoPub-ubuntu2204-16G-4CPU
     if: >
-      (github.ref_name == 'master' || startsWith(github.ref_name, 'release/')||startsWith(github.ref_name, 'fix/') || github.event_name == 'pull_request') &&
+      (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request') &&
       !contains(github.event.head_commit.message, '[skip search]') &&
       !contains(github.event.head_commit.message, '[skip tests]')
     strategy:
@@ -473,8 +473,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.13.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.13.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.16.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -500,7 +500,7 @@ jobs:
 
   all_amps_tests:
     name: "All AMPs tests"
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-24.04
     if: >
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
@@ -508,8 +508,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.13.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.13.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.16.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -542,7 +542,7 @@ jobs:
 
   tas_test_with_mtls:
     name: ${{ matrix.testSuite }} TAS tests with mutal TLS
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-24.04
     if: >
       !contains(github.event.head_commit.message, '[skip mtls]') &&
       !contains(github.event.head_commit.message, '[skip tests]')
@@ -569,8 +569,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.13.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.13.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.16.0
       - name: "Generate Keystores and Truststores for Mutual TLS configuration"
         if: ${{ matrix.mtls }}
         run: |
@@ -604,7 +604,7 @@ jobs:
 
   distribution_zip_content_tests:
     name: "Distribution Zip content tests (Java ${{ matrix.java-version }})"
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-24.04
     if: >
       !contains(github.event.head_commit.message, '[skip tests]')
     strategy:
@@ -616,8 +616,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.13.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.13.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.16.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -625,7 +625,7 @@ jobs:
           bash ./scripts/ci/build.sh
       - name: "Set up the environment"
         run: mvn -B -V clean install -ntp -Pags -DskipTests -Dmaven.javadoc.skip=true
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.13.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.16.0
         with:
           java-version: ${{ matrix.java-version }}
       - name: "Run tests"
@@ -640,7 +640,7 @@ jobs:
 
   single_pipeline_image_tests:
     name: "Single Pipeline image tests (Java ${{ matrix.java-version }})"
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-24.04
     if: >
       github.event_name != 'pull_request' &&
       !contains(github.event.head_commit.message, '[skip tests]')
@@ -653,8 +653,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.13.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.13.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.16.0
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -689,7 +689,7 @@ jobs:
 
   test_tomcat_deployment:
     name: "Test Tomcat deployment"
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-24.04
     if: >
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
@@ -697,8 +697,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.13.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.13.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.16.0
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
@@ -720,7 +720,7 @@ jobs:
 
   pipeline_test_docker_release:
     name: "Upload docker images needed for pipeline tests: <acs.version>-<PIPELINE_TAG_TEXT_INSERT>-<build>"
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-24.04
     if: >
       contains(github.event.head_commit.message, '[pipeline_docker]')
     services:
@@ -733,8 +733,8 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.13.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.13.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.16.0
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
