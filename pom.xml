@@ -6,6 +6,7 @@
     <name>Alfresco Content Services Packaging</name>
     <version>23.6.0-A1-SNAPSHOT</version>
 
+    
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-enterprise-repo</artifactId>
