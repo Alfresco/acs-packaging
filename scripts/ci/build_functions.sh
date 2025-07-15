@@ -226,7 +226,7 @@ function buildOtherDependentRepo() {
   pushd "$(dirname "${BASH_SOURCE[0]}")/../../../"
   cd "$(basename "${GIT_REPO%.git}")"
 #  mvn -B -V -q clean install -DskipTests -Dmaven.javadoc.skip=true -Plocal
-  mvn -B -ntp -V clean package -DskipTests -Dmaven.javadoc.skip=true "-Dimage.tag=latest"
+  mvn -B -ntp -V clean package -DskipTests -Dmaven.javadoc.skip=true "-Dmaven.javadoc.skip=true" -Pbuild-docker-images "-Dimage.tag=latest"
   popd
 }
 
