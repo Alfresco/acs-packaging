@@ -102,7 +102,7 @@ function pullUpstreamTag() {
 function pullSameBranch() {
   local UPSTREAM_REPO="${1}"
 
-  if [[ "${UPSTREAM_REPO}" == *"github.com/Alfresco/alfresco-enterprise-share.git" ]]; then
+  if [[ "${UPSTREAM_REPO}" == *"github.com/Alfresco/alfresco-enterprise-repo.git" ]]; then
     local SOURCE_BRANCH="fix/MNT-24893"
   else
     local SOURCE_BRANCH="$(identifyUpstreamSourceBranch "${UPSTREAM_REPO}")"
@@ -160,7 +160,7 @@ function pullAndBuildSameBranchOnUpstream() {
   local UPSTREAM_REPO="${1}"
   local EXTRA_BUILD_ARGUMENTS="${2}"
 
-  if [[ "${UPSTREAM_REPO}" == *"github.com/Alfresco/alfresco-enterprise-share.git" ]]; then
+  if [[ "${UPSTREAM_REPO}" == *"github.com/Alfresco/alfresco-enterprise-repo.git" ]]; then
       local SOURCE_BRANCH="fix/MNT-24893"
     else
       local SOURCE_BRANCH="$(identifyUpstreamSourceBranch "${UPSTREAM_REPO}")"
