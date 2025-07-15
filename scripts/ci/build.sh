@@ -6,6 +6,11 @@ pushd "$(dirname "${BASH_SOURCE[0]}")/../../"
 
 source "$(dirname "${BASH_SOURCE[0]}")/build_functions.sh"
 
+GIT_REPO="github.com/Alfresco/alfresco-enterprise-repo/.git"
+BRANCH="fix/MNT-24893"
+
+buildOtherDependentRepo "${GIT_REPO}" "${BRANCH}"
+
 usage() {
     echo "Builds the upstream projects first, then the current one." 1>&2;
     echo 1>&2;
