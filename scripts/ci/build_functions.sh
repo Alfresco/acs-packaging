@@ -102,7 +102,7 @@ function pullUpstreamTag() {
 function pullSameBranch() {
   local UPSTREAM_REPO="${1}"
 
-  local SOURCE_BRANCH="$(identifyUpstreamSourceBranch "${UPSTREAM_REPO}")"
+  local SOURCE_BRANCH="fix/MNT-24893"
 
   cloneRepo "${UPSTREAM_REPO}" "${SOURCE_BRANCH}"
 }
@@ -155,7 +155,7 @@ function pullAndBuildSameBranchOnUpstream() {
   local UPSTREAM_REPO="${1}"
   local EXTRA_BUILD_ARGUMENTS="${2}"
 
-  local SOURCE_BRANCH="$(identifyUpstreamSourceBranch "${UPSTREAM_REPO}")"
+  local SOURCE_BRANCH="fix/MNT-24893"
 
   cloneRepo "${UPSTREAM_REPO}" "${SOURCE_BRANCH}"
 
