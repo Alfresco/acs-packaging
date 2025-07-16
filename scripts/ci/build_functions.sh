@@ -155,7 +155,7 @@ function pullAndBuildSameBranchOnUpstream() {
   local UPSTREAM_REPO="${1}"
   local EXTRA_BUILD_ARGUMENTS="${2}"
 
-  local SOURCE_BRANCH="fix/MNT-24893"
+  local SOURCE_BRANCH="$(identifyUpstreamSourceBranch "${UPSTREAM_REPO}")"
 
   cloneRepo "${UPSTREAM_REPO}" "${SOURCE_BRANCH}"
 
@@ -218,16 +218,5 @@ function copyArtifactToAnotherRepo() {
     -Dpackaging=${PACKAGING}
 }
 
-function buildOtherDependentRepo() {
-  local GIT_REPO="${1}"
-  local BRANCH="${2}"
-  cloneRepo "${GIT_REPO}" "${BRANCH}"
-
-  pushd "$(dirname "${BASH_SOURCE[0]}")/../../../"
-  cd "$(basename "${GIT_REPO%.git}")"
-#  mvn -B -V -q clean install -DskipTests -Dmaven.javadoc.skip=true -Plocal
-  mvn -B -ntp -V clean package -DskipTests -Dmaven.javadoc.skip=true "-Dmaven.javadoc.skip=true" -Pbuild-docker-images "-Dimage.tag=latest"
-  popd
-}
 
 set -vx
