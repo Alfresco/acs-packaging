@@ -4,7 +4,7 @@
     <artifactId>acs-packaging</artifactId>
     <packaging>pom</packaging>
     <name>Alfresco Content Services Packaging</name>
-    <version>25.2.0-A.18-SNAPSHOT</version>
+    <version>25.2.0-A.19-SNAPSHOT</version>
 
     <parent>
         <groupId>org.alfresco</groupId>
@@ -24,8 +24,8 @@
         <alfresco.salesforce-connector.version>3.3.0</alfresco.salesforce-connector.version>
         <alfresco.outlook.version>3.0.2</alfresco.outlook.version>
         <alfresco.desktop-sync.version>5.2.0</alfresco.desktop-sync.version>
-        <alfresco.ais.version>3.2.0-A.2</alfresco.ais.version>
-        <alfresco.hxinsight-connector.version>2.0.2-A.2</alfresco.hxinsight-connector.version>
+        <alfresco.ais.version>3.2.0</alfresco.ais.version>
+        <alfresco.hxinsight-connector.version>2.0.2</alfresco.hxinsight-connector.version>
 
 
         <acs.version>${acs.version.major}.${acs.version.minor}.${acs.version.revision}${acs.version.label}</acs.version>
