@@ -1,0 +1,159 @@
+version: "3"
+
+# The acs-deployment project contains the product version of docker-compose.
+#
+# This version is for testing and development use. For testing and debug we need to have a more open version.
+# For remote debug we need the CATALINA_OPTS and to expose port 8000.
+
+# Add the following environment variable to CATALINA_OPTS to activate YourKit profiling agent on tomcat
+#-agentpath:/usr/local/YourKit-JavaProfiler-2018.04/bin/linux-x86-64/libyjpagent.so=delay=200000,listen=all,sessionname=$$HOSTNAME,dir=/tmp/Alfresco/yourkit,onexit=snapshot,periodicperf=600,periodicmem=600,probe_off=*
+
+services:
+  alfresco1:
+    build:
+      context: ./alfresco-with-jolokia
+    environment:
+      CATALINA_OPTS : "-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n"
+      # Some properties are built in Dockerfile because of cron expressions
+      JAVA_TOOL_OPTIONS: "
+        -Dencryption.keystore.type=JCEKS
+        -Dencryption.cipherAlgorithm=DESede/CBC/PKCS5Padding
+        -Dencryption.keyAlgorithm=DESede
+        -Dencryption.keystore.location=/usr/local/tomcat/shared/classes/alfresco/extension/keystore/keystore
+        -Dmetadata-keystore.password=mp6yc0UD9e
+        -Dmetadata-keystore.aliases=metadata
+        -Dmetadata-keystore.metadata.password=oKIWzVdEdA
+        -Dmetadata-keystore.metadata.algorithm=DESede
+      "
+      JAVA_OPTS: "
+        -DrootLogger.level=debug
+        -Dorg.alfresco.repo.security.authority.AuthorityDAOImpl.level=debug
+        -Dlogger.alfresco-repo-security-authority-AuthorityDAOImpl.level=debug
+        -Dalfresco.port=8081
+        -Daos.baseUrlOverwrite=http://localhost:8081/alfresco/aos
+        -Ddb.driver=org.postgresql.Driver
+        -Ddb.username=alfresco
+        -Ddb.password=alfresco
+        -Ddb.url=jdbc:postgresql://postgres:5432/alfresco
+        -Dalfresco.restApi.basicAuthScheme=true
+        -Dmessaging.broker.url=\"failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true\"
+        -Dindex.subsystem.name=noindex
+        -DlocalTransform.core-aio.url=http://transform-core-aio:8090/
+        -Dcors.enabled=true
+        -Dcors.allowed.origins=http://localhost:4200,http://localhost:8080
+        -Dauthentication.chain=alfrescoNtlm1:alfrescoNtlm,scim1:scim
+        -Dscim.synchronization.active=true
+        -Dscim.server.url=http://i2scim-server-auth:8080/v2
+        -Dscim.auth.type=BASIC_AUTH
+        -Dscim.auth.basic.user=admin
+        -Dscim.auth.basic.password=admin
+        -Dscim.auth.bearer.token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJ0ZXN0Lmkyc2NpbS5pbyIsImF1ZCI6ImF1ZC50ZXN0Lmkyc2NpbS5pbyIsInN1YiI6ImFkbWluIiwidXNlcm5hbWUiOiJhZG1pbiIsImNsaWVudGlkIjoidGVzdC5jbGllbnQuaTJzY2ltLmlvIiwic2NvcGUiOiJmdWxsIG1hbmFnZXIiLCJpYXQiOjE3NDI5MTU5NzYsImV4cCI6MjM1ODA4Mzk3NiwianRpIjoiYWUyNTM5MTktODFhMi00MWJkLWI4ZmItYWFlMjY0ZjkxZmNhIn0.dDDtHJROt-WYBERxW4qQyNdmJAwE2iv2WIAG7Ax4e3VYMTchE9ZottbNc8wYcadxqUmUuc8p17JLUMys9Mnf2LdHQF_iG6JEhyOFy1sFfqmEXznTaJowN6sAs7NPoO2hTXww8gw9K6dKk5tI8LJrWstfNWxjLud8CWduAP14G43gq9YTl7n4-vQbRCJX4-T8_y4zC8VM0Uk-oLKRZUwe5ZCQnZr9305q3qvSkbWpjOxLG1aZHYRiiGsHOcgAKKRnE2B_f8DORDhM13wbeyYPJVSyOsQuVocbILMcUlIUHTCoMumEs5J9OD4kivFKE4-1FdALtHfKX_Fitrjfbs2kVdB9SveJ7aLdLS6LF2qQvoOv2BvJiSqnDtKST_zgzOjREi2CUsVtlJb2Nv3An_IZjKh5sLfBLOaExXJfrIUuYqmGFSNwkpsbuQlcuTG2VEjF0um9HVwMUa2NYoZA1T-X-KhvJfxVmB_tDKbHK4yaafALBOtC_VWTtfSBtVcG0baV
+    "
+    ports:
+      - 8081:8080
+      - 8001:8000
+    volumes:
+      - alf_data:/usr/local/tomcat/alf_data
+
+  alfresco2:
+    build:
+      context: ./alfresco-with-jolokia
+    environment:
+      CATALINA_OPTS: "-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n"
+      # Some properties are built in Dockerfile because of cron expressions
+      JAVA_TOOL_OPTIONS: "
+        -Dencryption.keystore.type=JCEKS
+        -Dencryption.cipherAlgorithm=DESede/CBC/PKCS5Padding
+        -Dencryption.keyAlgorithm=DESede
+        -Dencryption.keystore.location=/usr/local/tomcat/shared/classes/alfresco/extension/keystore/keystore
+        -Dmetadata-keystore.password=mp6yc0UD9e
+        -Dmetadata-keystore.aliases=metadata
+        -Dmetadata-keystore.metadata.password=oKIWzVdEdA
+        -Dmetadata-keystore.metadata.algorithm=DESede
+      "
+      JAVA_OPTS: "
+              -DrootLogger.level=debug
+        -Dorg.alfresco.repo.security.authority.AuthorityDAOImpl.level=debug
+        -Dlogger.alfresco-repo-security-authority-AuthorityDAOImpl.level=debug
+        -Dalfresco.port=8082
+        -Daos.baseUrlOverwrite=http://localhost:8082/alfresco/aos
+        -Ddb.driver=org.postgresql.Driver
+        -Ddb.username=alfresco
+        -Ddb.password=alfresco
+        -Ddb.url=jdbc:postgresql://postgres:5432/alfresco
+        -Dalfresco.restApi.basicAuthScheme=true
+        -Dmessaging.broker.url=\"failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true\"
+        -Dindex.subsystem.name=noindex
+        -DlocalTransform.core-aio.url=http://transform-core-aio:8090/
+        -Dcors.enabled=true
+        -Dcors.allowed.origins=http://localhost:4200,http://localhost:8080
+        -Dauthentication.chain=alfrescoNtlm1:alfrescoNtlm,scim1:scim
+        -Dscim.synchronization.active=true
+        -Dscim.server.url=http://i2scim-server-auth:8080/v2
+        -Dscim.auth.type=BASIC_AUTH
+        -Dscim.auth.basic.user=admin
+        -Dscim.auth.basic.password=admin
+        -Dscim.auth.bearer.token=eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJ0ZXN0Lmkyc2NpbS5pbyIsImF1ZCI6ImF1ZC50ZXN0Lmkyc2NpbS5pbyIsInN1YiI6ImFkbWluIiwidXNlcm5hbWUiOiJhZG1pbiIsImNsaWVudGlkIjoidGVzdC5jbGllbnQuaTJzY2ltLmlvIiwic2NvcGUiOiJmdWxsIG1hbmFnZXIiLCJpYXQiOjE3NDI5MTU5NzYsImV4cCI6MjM1ODA4Mzk3NiwianRpIjoiYWUyNTM5MTktODFhMi00MWJkLWI4ZmItYWFlMjY0ZjkxZmNhIn0.dDDtHJROt-WYBERxW4qQyNdmJAwE2iv2WIAG7Ax4e3VYMTchE9ZottbNc8wYcadxqUmUuc8p17JLUMys9Mnf2LdHQF_iG6JEhyOFy1sFfqmEXznTaJowN6sAs7NPoO2hTXww8gw9K6dKk5tI8LJrWstfNWxjLud8CWduAP14G43gq9YTl7n4-vQbRCJX4-T8_y4zC8VM0Uk-oLKRZUwe5ZCQnZr9305q3qvSkbWpjOxLG1aZHYRiiGsHOcgAKKRnE2B_f8DORDhM13wbeyYPJVSyOsQuVocbILMcUlIUHTCoMumEs5J9OD4kivFKE4-1FdALtHfKX_Fitrjfbs2kVdB9SveJ7aLdLS6LF2qQvoOv2BvJiSqnDtKST_zgzOjREi2CUsVtlJb2Nv3An_IZjKh5sLfBLOaExXJfrIUuYqmGFSNwkpsbuQlcuTG2VEjF0um9HVwMUa2NYoZA1T-X-KhvJfxVmB_tDKbHK4yaafALBOtC_VWTtfSBtVcG0baV
+    "
+    ports:
+      - 8082:8080
+      - 8002:8000
+    volumes:
+      - alf_data:/usr/local/tomcat/alf_data
+
+  postgres:
+    image: library/postgres:${POSTGRES_TAG}
+    environment:
+      - POSTGRES_PASSWORD=alfresco
+      - POSTGRES_USER=alfresco
+      - POSTGRES_DB=alfresco
+    ports:
+      - 5432:5432
+
+  i2scim-server-auth:
+    image: independentid/i2scim-universal:0.7.0
+    ports:
+      - "9082:8080"
+    environment:
+      quarkus.log.level: DEBUG
+      scim.security.enable: true
+      scim.security.authen.jwt: true
+      # by default when it is set to 1000 it will not allow to get paginated results
+      # and would falsely claim that there are only 1000 results available
+      scim.query.max.resultsize: 100000
+      smallrye.jwt.always-check-authorization: true
+      mp.jwt.verify.issuer: test.i2scim.io
+      mp.jwt.verify.publickey: >-
+        {
+          "keys": [
+            {
+              "kty": "RSA",
+              "kid": "i2scim",
+              "use": "Key used for i2scim testing purposes ONLY!",
+              "n": "vFxYP5d9GVcda2zm8e1nz9gVQksYlLirQiFS4MtxVDCGO8SuVCb0lZpvakVh2ISlOGYmiqV3YpTs1R3L2n6744ml56pdjb3FjtjdwOZNuHQEykvZcThxcuuRWs-FG6sBnP6ioe2wrjg1ZG68FYKCf5cU_xQdh3W_Ql0-PK9ElKzMpyT7x5uYgQ2lbr-Gy9MfWC6bqZV5_MFSqVbOGDHabe3R_gycAiI_hsEyzY2QP3_WZhcafIgIwu92bJ6qjjFHSIT3g2LhLGuPq_9rBcc5AYxAJp7r1cBokkAeE-Ci8wgSpdkO4Hea3rSA5T4kHCMcQfgohFvKtWrT8-eehUB1vE_EFCKbA7EgXpn5dlKUV5kWUk6AE16YukbrzUBgqIXE8bPyZjEZPVMvC6GoYngkhrypU4A0NjGncZjholb8_9EdqKTKrzqdkXxdWqBoyitGCSeKzQFeBVz452-3eozcI6aaoi5ZWJ8ZkZKRBL8uxMGGkeuD5BzJ0895EPCZd5S7",
+              "e": "AQAB"
+            }
+          ]
+        }
+
+  activemq:
+    image: alfresco/alfresco-activemq:5.18.3-jre17-rockylinux8
+    ports:
+      - 8161:8161 # Web Console
+      - 5672:5672 # AMQP
+      - 61616:61616 # OpenWire
+      - 61613:61613 # STOMP
+
+  transform-core-aio:
+    image: alfresco/alfresco-transform-core-aio:5.1.7
+    environment:
+      JAVA_OPTS: " -Xms256m -Xmx512m"
+      ACTIVEMQ_URL: "nio://activemq:61616"
+      ACTIVEMQ_USER: "admin"
+      ACTIVEMQ_PASSWORD: "admin"
+      FILE_STORE_URL: "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file"
+    ports:
+      - 8090:8090
+
+volumes:
+  alf_data:
