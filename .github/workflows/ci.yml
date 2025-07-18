@@ -209,7 +209,7 @@ jobs:
           - testSuite: SCIM
             pom-dir: tests/tas-integration
             profiles: run-scim
-            compose-file: docker-compose-scim-tests
+            compose-file: docker-compose-scim-tests.yml
             deploy-timeout: 10            
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.16.0
