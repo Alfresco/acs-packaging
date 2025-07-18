@@ -222,12 +222,6 @@ jobs:
         run: |
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/${{ matrix.compose-file }}
           ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8082/alfresco"
-      - name: Wait for service to be ready
-        run: |
-          until curl -s http://localhost:8081/jolokia; do
-            echo "Waiting for Jolokia endpoint..."
-            sleep 5
-          done
       - name: "Run tests"
         id: tests
         timeout-minutes: ${{ matrix.deploy-timeout }}

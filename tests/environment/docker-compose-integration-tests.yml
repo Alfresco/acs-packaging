@@ -56,6 +56,7 @@ services:
       - 143:1143
       - 21:1221
       - 30000-30099:30000-30099
+      - 8081:8081 # Jolokia JMX Console
 
   postgres:
     image: library/postgres:${POSTGRES_TAG}
