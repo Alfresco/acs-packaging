@@ -11,6 +11,7 @@
         <packages>
             <package name="org.alfresco.tas.integration.*">
                 <exclude name="org.alfresco.tas.integration.subsystems.ldap"/>
+                <exclude name="org.alfresco.tas.integration.subsystems.scim"/>
             </package>
         </packages>
     </test>
