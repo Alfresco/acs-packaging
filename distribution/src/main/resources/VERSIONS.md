@@ -1,6 +1,6 @@
 # Component Versions
 
-This file lists the recommended components for this Service Pack. Use it along with the [Supported Platforms Matrix](http://docs.alfresco.com/7.0/concepts/supported-platforms-ACS.html) and the [Alfresco Documentation](https://docs.alfresco.com/7.0/concepts/ch-upgrade.html) to apply selective component upgrades.
+This file lists the recommended components for this Service Pack. Use it along with the [Supported Platforms Matrix](https://support.hyland.com/access?dita:id=baq1719482911154&vrm_version=25.2) and the [Alfresco Documentation](https://support.hyland.com/access?dita:id=kho1719590768396&vrm_version=25.2) to apply selective component upgrades.
 
 #### Alfresco Content Services @project.version@
 
@@ -10,8 +10,8 @@ This file lists the recommended components for this Service Pack. Use it along w
 | Alfresco Content Services | @project.version@ |
 | Alfresco Enterprise Repository ± | @dependency.alfresco-enterprise-repo.version@ |
 | Alfresco Share | @dependency.alfresco-enterprise-share.version@ |
-| Alfresco Search Services | 2.0.15 |
-| Alfresco Insight Engine | 2.0.15 |
+| Alfresco Search Services | 2.0.16 |
+| Alfresco Insight Engine | 2.0.16 |
 | Alfresco Desktop Sync Service | @alfresco.desktop-sync.version@ |
 | Alfresco Transform Service | @dependency.alfresco-transform-service.version@ |
 | Alfresco Transform Core | @dependency.alfresco-transform-core.version@ |
