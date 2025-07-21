@@ -32,6 +32,12 @@
                 <suiteXmlFile>${project.basedir}/src/test/resources/ldap-suite.xml</suiteXmlFile>
             </properties>
         </profile>
+        <profile>
+            <id>run-scim</id>
+            <properties>
+                <suiteXmlFile>${project.basedir}/src/test/resources/scim-suite.xml</suiteXmlFile>
+            </properties>
+        </profile>
     </profiles>
 
     <dependencies>
