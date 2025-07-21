@@ -97,6 +97,11 @@
             <version>${dependency.awaitility.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.alfresco</groupId>
+            <artifactId>alfresco-reauthorization-tool</artifactId>
+            <scope>test</scope>
+        </dependency>
 
     </dependencies>
 
