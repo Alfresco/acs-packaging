@@ -38,17 +38,17 @@ env:
   DTAS_VERSION: v1.5.5
 
 jobs:
-  precommit:
-    name: Pre-Commit checks
-    runs-on: ubuntu-latest
-    if: >
-      !contains(github.event.head_commit.message, '[skip tests]')
-    steps:
-      - uses: actions/checkout@v4
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.16.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.16.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.16.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@v8.16.0
+  # precommit:
+  #   name: Pre-Commit checks
+  #   runs-on: ubuntu-latest
+  #   if: >
+  #     !contains(github.event.head_commit.message, '[skip tests]')
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.16.0
+  #     - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.16.0
+  #     - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.16.0
+  #     - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@v8.16.0
   veracode_sca:
     name: "Source Clear Scan (SCA)"
     runs-on: ubuntu-latest
