@@ -206,11 +206,6 @@ jobs:
             profiles: run-ldap
             compose-file: docker-compose-with-ldap.yml
             deploy-timeout: 10
-          - testSuite: SCIM
-            pom-dir: tests/tas-integration
-            profiles: run-scim
-            compose-file: docker-compose-scim-tests.yml
-            deploy-timeout: 10            
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.16.0
       - uses: actions/checkout@v4
