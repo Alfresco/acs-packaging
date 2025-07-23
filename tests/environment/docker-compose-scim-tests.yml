@@ -11,7 +11,7 @@ version: "3"
 services:
   alfresco1:
     build:
-      context: ./alfresco-with-jolokia
+      context: ./alfresco-with-jolokia-entr
     environment:
       CATALINA_OPTS : "-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n"
       # Some properties are built in Dockerfile because of cron expressions
@@ -57,7 +57,7 @@ services:
 
   alfresco2:
     build:
-      context: ./alfresco-with-jolokia
+      context: ./alfresco-with-jolokia-entr
     environment:
       CATALINA_OPTS: "-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n"
       # Some properties are built in Dockerfile because of cron expressions
