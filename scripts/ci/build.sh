@@ -136,7 +136,7 @@ mvn dependency:copy -Dartifact=com.microsoft.sqlserver:mssql-jdbc:${MSSQL_JDBC_T
 ORACLE_JDBC_TAG=$(mvn help:evaluate -Dexpression=dependency.ojdbc.version -q -DforceStdout)
 mvn dependency:copy -Dartifact=com.oracle.database.jdbc:ojdbc11:${ORACLE_JDBC_TAG}:jar -DoutputDirectory=tests/environment/alfresco-with-jdbc-drivers
 
-docker build -t alfresco-repository-databases:latest -f tests/environment/alfresco-with-jdbc-drivers/alfresco.Dockerfile .
+#docker build -t alfresco-repository-databases:latest -f tests/environment/alfresco-with-jdbc-drivers/alfresco.Dockerfile .
 
 source tests/environment/.env
 
