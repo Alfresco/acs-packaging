@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>pipeline-all-amps</artifactId>
-        <version>23.3.12</version>
+        <version>23.3.13-SNAPSHOT</version>
     </parent>
 
     <artifactId>alfresco-pipeline-all-amps-share</artifactId>
