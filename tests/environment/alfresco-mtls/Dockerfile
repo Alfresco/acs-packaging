@@ -1,4 +1,4 @@
-FROM quay.io/alfresco/alfresco-content-repository:latest
+FROM alfresco/alfresco-content-repository:latest
 
 ENV TOMCAT_DIR=/usr/local/tomcat
 ENV ALF_DATA_DIR=${TOMCAT_DIR}/alf_data
