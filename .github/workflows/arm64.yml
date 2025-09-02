@@ -21,7 +21,7 @@ jobs:
     outputs:
       test_failure: ${{ steps.persist_test_failure_flag.outputs.test_failure }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           persist-credentials: false
           fetch-depth: 0
@@ -98,7 +98,7 @@ jobs:
       - arm64_health_check
     if: always()
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: actions/setup-python@v5
       - name: "Run the JIRA Integration script"
         run: |
