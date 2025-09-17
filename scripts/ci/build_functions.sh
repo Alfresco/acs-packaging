@@ -227,8 +227,8 @@ function buildElasticsearchConnector() {
   cd "$(basename "${GIT_REPO%.git}")"
   mvn -B -V -q clean install -DskipTests -Dmaven.javadoc.skip=true
   chmod +x ./scripts/ci/buildDockerImagesWithJavaTagCi.sh
-  JAVA_VERSION_TAG="21"
-  ./scripts/ci/buildDockerImagesWithJavaTagCi.sh "$JAVA_VERSION_TAG"
+  export JAVA_VERSION_TAG="21"
+  ./scripts/ci/buildDockerImagesWithJavaTagCi.sh
   popd
 }
 
