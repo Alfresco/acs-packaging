@@ -707,7 +707,7 @@ jobs:
       - name: "Set up the environment"
         run: |
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ./dev/docker-compose.yml
-          ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "http://localhost:8983/solr"
+          sleep 60s
       - name: "Run tomcat, verify it starts"
         id: tests
         run: |
