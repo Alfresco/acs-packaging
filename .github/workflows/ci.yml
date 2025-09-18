@@ -706,8 +706,7 @@ jobs:
           bash ./scripts/ci/build.sh
       - name: "Set up the environment"
         run: |
-          ${{ env.TAS_SCRIPTS }}/start-compose.sh ./dev/docker-compose.yml
-          sleep 60s
+          ${{ env.TAS_SCRIPTS }}/start-compose.sh ./ci/docker-compose-tomcat.yml
       - name: "Run tomcat, verify it starts"
         id: tests
         run: |
