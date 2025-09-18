@@ -707,6 +707,7 @@ jobs:
       - name: "Set up the environment"
         run: |
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ./ci/docker-compose-tomcat.yml
+          docker compose --file ./ci/docker-compose-tomcat.yml logs --no-color -t solr6 -f
       - name: "Run tomcat, verify it starts"
         id: tests
         run: |
