@@ -707,10 +707,12 @@ jobs:
       - name: "Set up the environment"
         run: |
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ./ci/docker-compose-tomcat.yml
-          docker compose --file ./ci/docker-compose-tomcat.yml logs --no-color -t solr6 -f &
           sleep 15s
+      - name: "Run tomcat, verify it starts"
+        id: tests
+        run: |
           (mvn -B clean install -Prun -rf dev &)
-          curl --retry 60 --retry-max-time 300 --retry-delay 5 --retry-all-errors --fail "http://localhost:8080/alfresco/api/-default-/public/alfresco/versions/1/probes/-ready-"
+          curl --retry 50 --retry-max-time 500 --retry-delay 10 --retry-all-errors --fail "http://localhost:8080/alfresco/api/-default-/public/alfresco/versions/1/probes/-ready-"
           echo "Test Alfresco Repository availability"
           curl -Ls -o /dev/null --fail "http://localhost:8080/alfresco"
           echo "Test Share availability"
