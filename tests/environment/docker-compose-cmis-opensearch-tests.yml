@@ -2,7 +2,7 @@ version: "2"
 
 services:
   alfresco:
-    image: quay.io/alfresco/alfresco-content-repository:${ALFRESCO_TAG}
+    image: alfresco/alfresco-content-repository:${ALFRESCO_TAG}
     mem_limit: 3400m
     environment:
       CATALINA_OPTS: "-agentlib:jdwp=transport=dt_socket,address=*:8000,server=y,suspend=n"
