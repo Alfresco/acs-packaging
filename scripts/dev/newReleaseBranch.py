@@ -99,7 +99,7 @@ import subprocess
 import sys
 from xml.etree import ElementTree as et
 
-MASTER = 'master'
+MASTER = 'release/23.N'
 HOTFIX = 'hotfix'
 SERVICE_PACK = 'service_pack'
 RELEASE = 'release'
@@ -110,7 +110,7 @@ COMMUNITY_REPO = 'alfresco-community-repo'
 ENTERPRISE_REPO = 'alfresco-enterprise-repo'
 ENTERPRISE_SHARE = 'alfresco-enterprise-share'
 ACS_PACKAGING = 'acs-packaging'
-PROJECTS = [ACS_PACKAGING, ENTERPRISE_SHARE, ENTERPRISE_REPO, COMMUNITY_REPO, COMMUNITY_PACKAGING]
+PROJECTS = [ACS_PACKAGING, ENTERPRISE_SHARE, ENTERPRISE_REPO, COMMUNITY_REPO]
 
 # read command line arguments
 parser = argparse.ArgumentParser(description="Create git branches after ACS release.")
@@ -490,7 +490,7 @@ def update_ent_repo_acs_label(project, version, branch_type):
 def exec_cmd(cmd_args):
     logger.debug("Executing command line of " + " ".join(cmd_args))
     try:
-        ret = subprocess.run(cmd_args, shell=True) if args.trace else subprocess.run(cmd_args, shell=True, stdout=subprocess.DEVNULL)
+        ret = subprocess.run(cmd_args, shell=False) if args.trace else subprocess.run(cmd_args, shell=False, stdout=subprocess.DEVNULL)
         ret.check_returncode()
     except subprocess.CalledProcessError as e:
         logger.error(f"Error:\nreturn code: {e.returncode}\nOutput: " + e.stderr.decode("utf-8"))
@@ -679,7 +679,7 @@ def modify_master_branches():
         next_dev_ver = get_next_dev_version(MASTER)
         checkout_branch(project, MASTER)
         update_project(project, next_dev_ver, MASTER)
-        commit_all_and_push(project, f"Updating master branch to {next_dev_ver} after {release_version} ACS release [skip ci]")
+        commit_all_and_push(project, f"Updating release/23.N branch to {next_dev_ver} after {release_version} ACS release [skip ci]")
         checkout_branch(project, MASTER)
 
 
