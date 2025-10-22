@@ -635,7 +635,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java-version: [21] ### TODO : Java 25 support to be added in future updates
+        java-version: [21, 25]
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.16.0
       - uses: actions/checkout@v4
@@ -674,7 +674,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java-version: [DEFAULT] ### TODO : Java 25 support to be added in future updates
+        java-version: [DEFAULT, 25]
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.16.0
       - uses: actions/checkout@v4
@@ -697,7 +697,9 @@ jobs:
         env:
           AWS_ACCESS_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_ACCESS_KEY_ID }}
           AWS_SECRET_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_SECRET_ACCESS_KEY }}
+          JAVA_RUNTIME_VERSION: ${{ matrix.java-version }}
         run: |
+          source ./scripts/ci/java_base_image_map.sh
           mvn -B clean install -ntp -Ppipeline,build-docker-images \
             $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-repo.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Drepo.image.tag=latest') $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-share.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Dshare.image.tag=latest') \
             -Dimage.java.version=${{ matrix.java-version }}
