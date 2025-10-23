@@ -669,7 +669,7 @@ jobs:
     name: "Single Pipeline image tests (Java ${{ matrix.java-version }})"
     runs-on: ubuntu-latest
     if: >
-#      github.event_name != 'pull_request' && (To be reverted)
+      github.event_name != 'pull_request' &&
       !contains(github.event.head_commit.message, '[skip tests]')
     strategy:
       fail-fast: false
