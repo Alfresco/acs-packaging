@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=alfresco/alfresco-base-java:jre21-rockylinux9@sha256:a5bc7626cc86656f88b7f9a84926a407a6bdb34ffef4c26d323f6b047b85258a
+ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
 # Set default docker_context.
@@ -11,7 +11,7 @@ ARG IMAGEUSERNAME=alfresco
 # Set default environment args
 ARG TOMCAT_DIR=/usr/local/tomcat
 
-LABEL quay.expires-after=${docker.quay-expires.value}
+LABEL quay.expires-after=10000
 
 USER root
 
