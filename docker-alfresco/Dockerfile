@@ -35,3 +35,4 @@ RUN chgrp -R ${GROUPNAME} ${TOMCAT_DIR}/webapps ${TOMCAT_DIR}/amps ${TOMCAT_DIR}
     chmod 664 ${TOMCAT_DIR}/amps/*
 
 USER ${IMAGEUSERNAME}
+
