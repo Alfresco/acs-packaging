@@ -654,7 +654,7 @@ jobs:
         run: mvn -B -V clean install -ntp -Pags -DskipTests -Dmaven.javadoc.skip=true
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.16.0
         with:
-          java-version: ${{ matrix.java-version }}
+          java-version: ${{ env.JAVA_VERSION }}
       - name: "Run tests"
         id: tests
         timeout-minutes: 20
