@@ -2,8 +2,8 @@
 
 if [ -n "$JAVA_RUNTIME_VERSION" ]; then
   declare -A JAVA_IMAGE_MAP=(
-    [21]="alfresco/alfresco-base-java:jre21-rockylinux9@sha256:792079aa36a7a1076e7d48dd800b5de5ffc1cd48e8460fd7e56f7107d375c0cc"
-    [25]="alfresco/alfresco-base-java:jre25-rockylinux9@sha256:2e8664a6148157e0fd8c7861120c31768f510b5baaac86fd90c8b58aef5941eb"
+    [21]="alfresco/alfresco-base-java:jre21-rockylinux9@sha256:a5bc7626cc86656f88b7f9a84926a407a6bdb34ffef4c26d323f6b047b85258a"
+    [25]="alfresco/alfresco-base-java:jre25-rockylinux9@sha256:819765a4b9512a37ce9e1a3d356ed55e260eb308592c48a5894118ed2ed46375"
   )
   BASE_IMAGE="${JAVA_IMAGE_MAP[$JAVA_RUNTIME_VERSION]}"
   export BASE_IMAGE
