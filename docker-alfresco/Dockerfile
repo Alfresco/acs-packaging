@@ -11,7 +11,7 @@ ARG IMAGEUSERNAME=alfresco
 # Set default environment args
 ARG TOMCAT_DIR=/usr/local/tomcat
 
-LABEL quay.expires-after=${docker.quay-expires.value}
+LABEL quay.expires-after=500000
 
 USER root
 
@@ -35,4 +35,3 @@ RUN chgrp -R ${GROUPNAME} ${TOMCAT_DIR}/webapps ${TOMCAT_DIR}/amps ${TOMCAT_DIR}
     chmod 664 ${TOMCAT_DIR}/amps/*
 
 USER ${IMAGEUSERNAME}
-
