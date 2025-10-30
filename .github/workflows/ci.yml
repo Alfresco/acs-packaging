@@ -692,7 +692,6 @@ jobs:
         env:
           JAVA_RUNTIME_VERSION: ${{ matrix.java-version }}
         run: |
-#          source ./scripts/ci/java_base_image_map.sh
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
       - name: "Set up the environment"
