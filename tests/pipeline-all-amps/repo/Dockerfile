@@ -1,4 +1,4 @@
-ARG BASE_IMAGE
+ARG BASE_IMAGE=alfresco/alfresco-base-tomcat:tomcat10-jre21-rockylinux9@sha256:c239b9b707b4ed63d7be8103b5157506dc16e2fb907d7052438e240f8b2525c7
 # BUILD STAGE SWAGGERBUILDER
 FROM ${BASE_IMAGE} AS SWAGGERBUILDER
 
@@ -50,7 +50,7 @@ ARG JAVA_VERSION
 RUN if [[ "$JAVA_VERSION" == "25" ]]; then \
       ARCH=$(uname -m | sed s/86_//); \
       JAVA_RELEASE=25.0.1_8; \
-      curl -fsLo java.tar.gz https://github.com/adoptium/temurin${JAVA_VERSION}-binaries/releases/download/jdk-${JAVA_RELEASE/_/+}/OpenJDK${JAVA_VERSION}U-jre_${ARCH}_linux_hotspot_${JAVA_RELEASE}.tar.gz && \
+      curl -fsLo java.tar.gz https://github.com/adoptium/temurin${JAVA_VERSION}-binaries/releases/download/jdk-${JAVA_RELEASE/_/+}/OpenJDK${JAVA_VERSION}U-debugimage_${ARCH}_alpine-linux_hotspot_${JAVA_RELEASE}.tar.gz && \
       tar xvfz java.tar.gz && \
       mv jdk-* /usr/lib/jvm/temurin-25-jdk && \
       update-alternatives --install /usr/bin/java java /usr/lib/jvm/temurin-25-jdk/bin/java 1 && \
@@ -70,4 +70,4 @@ COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["catalina.sh", "run", "-security"]
 
-LABEL quay.expires-after=${docker.quay-expires.value}
+LABEL quay.expires-after=500000000
