@@ -47,13 +47,19 @@ RUN sed -i -e "\$a\grant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/jolokia
 
 # Switch between currently installed JRE version and 21
 ARG JAVA_VERSION
+RUN ARCH=$(uname -m) && \
+    echo "Detected architecture: $ARCH"
+
 RUN if [[ "$JAVA_VERSION" == "25" ]]; then \
       ARCH=$(uname -m); \
       JAVA_RELEASE=25.0.1_8; \
-      curl -fsLo java.tar.gz https://github.com/adoptium/temurin${JAVA_VERSION}-binaries/releases/download/jdk-${JAVA_RELEASE/_/+}/OpenJDK${JAVA_VERSION}U-jdk_${ARCH}_linux_hotspot_${JAVA_RELEASE}.tar.gz && \
+      echo "Downloading Java from:  https://github.com/adoptium/temurin${JAVA_VERSION}-binaries/releases/download/jdk-${JAVA_RELEASE/_/+}/OpenJDK${JAVA_VERSION}U-debugimage_aarch64_alpine-linux_hotspot_${JAVA_RELEASE}.tar.gz"; \
+      curl -fsLo java.tar.gz https://github.com/adoptium/temurin${JAVA_VERSION}-binaries/releases/download/jdk-${JAVA_RELEASE/_/+}/OpenJDK${JAVA_VERSION}U-debugimage_aarch64_alpine-linux_hotspot_${JAVA_RELEASE}.tar.gz && \
       tar xvfz java.tar.gz && \
       mv jdk-* /usr/lib/jvm/temurin-25-jdk && \
       update-alternatives --install /usr/bin/java java /usr/lib/jvm/temurin-25-jdk/bin/java 1 && \
+      echo "All Java alternatives:" && \
+      update-alternatives --display java && \
       update-alternatives --remove java $(update-alternatives --display java | head -2 | tail -1 | cut -d " " -f6); \
     fi
 
