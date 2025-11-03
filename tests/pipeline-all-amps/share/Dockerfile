@@ -14,10 +14,11 @@ ENV ALFRESCO_AMPS_DIR=$TOMCAT_DIR/amps_share
 ARG JAVA_VERSION
 RUN set -x; echo "JAVA_VERSION architecture: ${JAVA_VERSION:-NOT_SET}";
 
-RUN if [[ "25" == "25" ]]; then \
+RUN set -x && \
+     if [[ "${JAVA_VERSION:-}" == "25" ]]; then \
       ARCH=$(uname -m); \
       JAVA_RELEASE=25.0.1_8; \
-      curl -fsLo java.tar.gz https://github.com/adoptium/temurin${JAVA_VERSION}-binaries/releases/download/jdk-${JAVA_RELEASE/_/+}/OpenJDK${JAVA_VERSION}U-debugimage_aarch64_alpine-linux_hotspot_${JAVA_RELEASE}.tar.gz && \
+      curl -fsLo java.tar.gz https://github.com/adoptium/temurin${JAVA_VERSION}-binaries/releases/download/jdk-${JAVA_RELEASE/_/+}/OpenJDK${JAVA_VERSION}U-debugimage_{ARCH}_alpine-linux_hotspot_${JAVA_RELEASE}.tar.gz && \
       tar xvfz java.tar.gz && \
       mv jdk-* /usr/lib/jvm/temurin-25-jdk && \
       echo "All Java alternatives before:" && \
