@@ -10,20 +10,22 @@ ENV ALFRESCO_AMPS=ALL
 ENV ALFRESCO_WEBAPP=share
 ENV ALFRESCO_AMPS_DIR=$TOMCAT_DIR/amps_share
 
-# Switch between currently installed JRE version and 21
+# Switch between currently installed JRE version and 25
 ARG JAVA_VERSION
 RUN ARCH=$(uname -m) && \
     echo "Detected architecture: $ARCH"
 
-RUN if [[ "$JAVA_VERSION" == "25" ]]; then \
+RUN set -x; if [[ "$JAVA_VERSION" == "25" ]]; then \
       ARCH=$(uname -m); \
       JAVA_RELEASE=25.0.1_8; \
       echo "Downloading Java from:  https://github.com/adoptium/temurin${JAVA_VERSION}-binaries/releases/download/jdk-${JAVA_RELEASE/_/+}/OpenJDK${JAVA_VERSION}U-debugimage_aarch64_alpine-linux_hotspot_${JAVA_RELEASE}.tar.gz"; \
       curl -fsLo java.tar.gz https://github.com/adoptium/temurin${JAVA_VERSION}-binaries/releases/download/jdk-${JAVA_RELEASE/_/+}/OpenJDK${JAVA_VERSION}U-debugimage_aarch64_alpine-linux_hotspot_${JAVA_RELEASE}.tar.gz && \
       tar xvfz java.tar.gz && \
       mv jdk-* /usr/lib/jvm/temurin-25-jdk && \
+      echo "All Java alternatives before:" && \
+      update-alternatives --display java && \
       update-alternatives --install /usr/bin/java java /usr/lib/jvm/temurin-25-jdk/bin/java 1 && \
-      echo "All Java alternatives:" && \
+      echo "All Java alternatives after :" && \
       update-alternatives --display java && \
       update-alternatives --remove java $(update-alternatives --display java | head -2 | tail -1 | cut -d " " -f6); \
     fi
