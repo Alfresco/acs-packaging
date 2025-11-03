@@ -23,10 +23,12 @@ RUN if [[ "${JAVA_VERSION}" == "25" ]]; then \
       mv jdk-* /usr/lib/jvm/temurin-25-jdk && \
       echo "All Java alternatives before:" && \
       update-alternatives --display java && \
-      update-alternatives --install /usr/bin/java java /usr/lib/jvm/temurin-25-jdk/bin/java 1 && \
+      update-alternatives --install /usr/bin/java java /usr/lib/jvm/temurin-25-jdk/bin/java 20000000 && \
       echo "All Java alternatives after :" && \
       update-alternatives --display java && \
       update-alternatives --remove java $(update-alternatives --display java | head -2 | tail -1 | cut -d " " -f6); \
+      echo "All Java alternatives deletion :" && \
+      update-alternatives --display java ; \
     fi
 
 COPY docker-entrypoint.sh /
