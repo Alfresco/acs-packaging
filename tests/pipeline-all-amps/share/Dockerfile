@@ -12,6 +12,8 @@ ENV ALFRESCO_AMPS_DIR=$TOMCAT_DIR/amps_share
 
 # Switch between currently installed JRE version and 25
 ARG JAVA_VERSION
+RUN echo "JAVA_VERSION architecture 1: ${JAVA_VERSION}";
+RUN echo "JAVA_VERSION architecture 2: $JAVA_VERSION";
 RUN ARCH=$(uname -m) && \
     echo "Detected architecture: $ARCH"
 
@@ -29,6 +31,8 @@ RUN set -x; if [[ "$JAVA_VERSION" == "25" ]]; then \
       update-alternatives --display java && \
       update-alternatives --remove java $(update-alternatives --display java | head -2 | tail -1 | cut -d " " -f6); \
     fi
+RUN echo "All Java alternatives : 1212 ";
+RUN update-alternatives --display java;
 
 COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
