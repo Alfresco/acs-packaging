@@ -56,14 +56,16 @@ RUN if [[ "${JAVA_VERSION}" == "25" ]]; then \
       curl -fsLo java.tar.gz https://github.com/adoptium/temurin${JAVA_VERSION}-binaries/releases/download/jdk-${JAVA_RELEASE/_/+}/OpenJDK${JAVA_VERSION}U-debugimage_${ARCH}_alpine-linux_hotspot_${JAVA_RELEASE}.tar.gz && \
       tar xvfz java.tar.gz && \
       mv jdk-* /usr/lib/jvm/temurin-25-jdk && \
+      update-alternatives --install /usr/bin/java java /usr/lib/jvm/temurin-25-jdk/bin/java 20000000 && \
       echo "All Java alternatives before:" && \
       update-alternatives --display java && \
-      update-alternatives --install /usr/bin/java java /usr/lib/jvm/temurin-25-jdk/bin/java 20000000 && \
-      echo "All Java alternatives after :" && \
-      update-alternatives --display java && \
-      update-alternatives --remove java $(update-alternatives --display java | head -2 | tail -1 | cut -d " " -f6); \
-      echo "All Java alternatives deletion :" && \
-      update-alternatives --display java ;\
+      echo "Removing all non-Java-25 alternatives..." && \
+      update-alternatives --display java | grep "bin/java" | grep -v "temurin-25" | awk '{print $1}' | while read -r path; do \
+        echo "Removing: ${path}" && \
+        update-alternatives --remove java "${path}"; \
+      done && \
+      echo "All Java alternatives after cleanup:" && \
+      update-alternatives --display java; \
     fi
 
 #Use the alfresco user
