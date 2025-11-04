@@ -68,6 +68,14 @@ RUN if [[ "${JAVA_VERSION}" == "25" ]]; then \
       update-alternatives --display java; \
     fi
 
+RUN if [ -d "/usr/lib/jvm/" ]; then \
+      echo " Path exists: /usr/lib/jvm/"; \
+      echo "Contents:"; \
+      find /usr/lib/jvm/ -maxdepth 2 -ls; \
+    else \
+      echo " Path does NOT exist: /usr/lib/jvm/"; \
+    fi
+
 #Use the alfresco user
 #USER alfresco
 

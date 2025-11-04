@@ -32,6 +32,14 @@ RUN if [[ "${JAVA_VERSION}" == "25" ]]; then \
       update-alternatives --display java; \
     fi
 
+RUN if [ -d "/usr/lib/jvm/" ]; then \
+      echo " Path exists: /usr/lib/jvm/"; \
+      echo "Contents:"; \
+      find /usr/lib/jvm/ -maxdepth 2 -ls; \
+    else \
+      echo " Path does NOT exist: /usr/lib/jvm/"; \
+    fi
+
 COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["/usr/local/tomcat/shared/classes/alfresco/substituter.sh", "catalina.sh run"]
