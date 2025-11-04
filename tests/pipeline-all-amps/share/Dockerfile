@@ -21,8 +21,6 @@ RUN if [[ "${JAVA_VERSION}" == "25" ]]; then \
       tar xvfz java.tar.gz && \
       mv jdk-* /usr/lib/jvm/temurin-25-jdk && \
       update-alternatives --install /usr/bin/java java /usr/lib/jvm/temurin-25-jdk/bin/java 20000000 && \
-      echo "All Java alternatives before:" && \
-      update-alternatives --display java && \
       echo "Removing all non-Java-25 alternatives..." && \
       update-alternatives --display java | grep "bin/java" | grep -v "temurin-25" | awk '{print $1}' | while read -r path; do \
         echo "Removing: ${path}" && \
@@ -30,14 +28,6 @@ RUN if [[ "${JAVA_VERSION}" == "25" ]]; then \
       done && \
       echo "All Java alternatives after cleanup:" && \
       update-alternatives --display java; \
-    fi
-
-RUN if [ -d "/usr/lib/jvm/" ]; then \
-      echo " Path exists: /usr/lib/jvm/"; \
-      echo "Contents:"; \
-      find /usr/lib/jvm/ -maxdepth 2 -ls; \
-    else \
-      echo " Path does NOT exist: /usr/lib/jvm/"; \
     fi
 
 COPY docker-entrypoint.sh /
