@@ -714,6 +714,8 @@ jobs:
           docker ps
           curl -v --user admin.pipeline@alfresco.com:admin http://localhost:8080/alfresco/api/discovery
       - name: "Run tests"
+        env:
+          JAVA_VERSION: ${{ matrix.java-version }}
         run: |
           cd dtas
           pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s

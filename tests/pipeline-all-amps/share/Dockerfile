@@ -12,10 +12,8 @@ ENV ALFRESCO_AMPS_DIR=$TOMCAT_DIR/amps_share
 
 # Switch between currently installed JRE version and 25
 ARG JAVA_VERSION
-
 RUN if [[ "${JAVA_VERSION}" == "25" ]]; then \
       ARCH=$(uname -m | sed s/86_//); \
-      echo "Detected architecture: ${ARCH}"; \
       JAVA_RELEASE=25.0.1_8; \
       curl -fsLo java.tar.gz https://github.com/adoptium/temurin${JAVA_VERSION}-binaries/releases/download/jdk-${JAVA_RELEASE/_/+}/OpenJDK${JAVA_VERSION}U-jre_${ARCH}_linux_hotspot_${JAVA_RELEASE}.tar.gz && \
       tar xvfz java.tar.gz && \
@@ -26,8 +24,6 @@ RUN if [[ "${JAVA_VERSION}" == "25" ]]; then \
         echo "Removing: ${path}" && \
         update-alternatives --remove java "${path}"; \
       done && \
-      echo "All Java alternatives after cleanup:" && \
-      update-alternatives --display java; \
     fi
 
 COPY docker-entrypoint.sh /

@@ -47,11 +47,8 @@ RUN sed -i -e "\$a\grant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/jolokia
 
 # Switch between currently installed JRE version and 25
 ARG JAVA_VERSION
-RUN echo "JAVA_VERSION architecture: ${JAVA_VERSION}";
-
 RUN if [[ "${JAVA_VERSION}" == "25" ]]; then \
       ARCH=$(uname -m | sed s/86_//); \
-      echo "Detected architecture: ${ARCH}"; \
       JAVA_RELEASE=25.0.1_8; \
       curl -fsLo java.tar.gz https://github.com/adoptium/temurin${JAVA_VERSION}-binaries/releases/download/jdk-${JAVA_RELEASE/_/+}/OpenJDK${JAVA_VERSION}U-jre_${ARCH}_linux_hotspot_${JAVA_RELEASE}.tar.gz && \
       tar xvfz java.tar.gz && \
@@ -62,8 +59,6 @@ RUN if [[ "${JAVA_VERSION}" == "25" ]]; then \
         echo "Removing: ${path}" && \
         update-alternatives --remove java "${path}"; \
       done && \
-      echo "All Java alternatives after cleanup:" && \
-      update-alternatives --display java; \
     fi
 
 #Use the alfresco user
@@ -80,9 +75,7 @@ RUN if grep -q 'deployXML="false"' ${TOMCAT_DIR}/conf/server.xml; then \
       sed -i 's/deployXML="false"/deployXML="true"/' ${TOMCAT_DIR}/conf/server.xml; \
     elif ! grep -q 'deployXML' ${TOMCAT_DIR}/conf/server.xml; then \
       sed -i '/<Host name="localhost"/s/autoDeploy="false"/autoDeploy="false" deployXML="true"/' ${TOMCAT_DIR}/conf/server.xml; \
-    fi && \
-    echo "Verifying deployXML setting:" && \
-    grep '<Host name="localhost"' ${TOMCAT_DIR}/conf/server.xml
+    fi
 
 COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
