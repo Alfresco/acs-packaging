@@ -23,7 +23,7 @@ RUN if [[ "${JAVA_VERSION}" == "25" ]]; then \
       update-alternatives --display java | grep "bin/java" | grep -v "temurin-25" | awk '{print $1}' | while read -r path; do \
         echo "Removing: ${path}" && \
         update-alternatives --remove java "${path}"; \
-      done && \
+      done; \
     fi
 
 COPY docker-entrypoint.sh /
