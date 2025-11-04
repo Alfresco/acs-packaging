@@ -12,7 +12,6 @@ ENV ALFRESCO_AMPS_DIR=$TOMCAT_DIR/amps_share
 
 # Switch between currently installed JRE version and 25
 ARG JAVA_VERSION
-RUN echo "JAVA_VERSION architecture: ${JAVA_VERSION}";
 RUN if [[ "${JAVA_VERSION}" == "25" ]]; then \
       ARCH=$(uname -m | sed s/86_//); \
       JAVA_RELEASE=25.0.1_8; \
@@ -20,9 +19,7 @@ RUN if [[ "${JAVA_VERSION}" == "25" ]]; then \
       tar xvfz java.tar.gz && \
       mv jdk-* /usr/lib/jvm/temurin-25-jdk && \
       update-alternatives --install /usr/bin/java java /usr/lib/jvm/temurin-25-jdk/bin/java 20000000 && \
-      echo "Removing all non-Java-25 alternatives..." && \
       update-alternatives --display java | grep "bin/java" | grep -v "temurin-25" | awk '{print $1}' | while read -r path; do \
-        echo "Removing: ${path}" && \
         update-alternatives --remove java "${path}"; \
       done; \
     fi
