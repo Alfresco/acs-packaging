@@ -75,6 +75,12 @@ ENV ALFRESCO_AMPS=ALL
 ENV ALFRESCO_WEBAPP=alfresco
 ENV ALFRESCO_AMPS_DIR=$TOMCAT_DIR/amps
 
+# Enable deployXML to allow Alfresco's context.xml processing
+# Enable deployXML to allow Alfresco's context.xml processing
+RUN sed -i '/<Host name="localhost"/s/>/deployXML="true" >/' ${TOMCAT_DIR}/conf/server.xml && \
+    echo "Modified server.xml Host configuration:" && \
+    grep -A 2 '<Host name="localhost"' ${TOMCAT_DIR}/conf/server.xml \
+
 COPY docker-entrypoint.sh /
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["catalina.sh", "run"]
