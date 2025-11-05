@@ -239,11 +239,6 @@
                 <version>${alfresco.desktop-sync.version}</version>
                 <type>amp</type>
             </dependency>
-            <dependency>
-                <groupId>com.unboundid.product.scim2</groupId>
-                <artifactId>scim2-sdk-common</artifactId>
-                <scope>test</scope>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
