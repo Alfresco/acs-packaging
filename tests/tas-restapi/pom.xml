@@ -97,7 +97,11 @@
             <version>${dependency.awaitility.version}</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>com.unboundid.product.scim2</groupId>
+            <artifactId>scim2-sdk-common</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
