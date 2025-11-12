@@ -13,6 +13,7 @@ The SNAPSHOT version of artifacts are **never** published.
 ### Contributing guide
 Please use [this guide](CONTRIBUTING.md) to make a contribution to the project.
 
+
 # General
 
 This project is the Enterprise equivalent of the [Community Packaging Project](https://github.com/Alfresco/acs-community-packaging).
