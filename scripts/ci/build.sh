@@ -121,7 +121,7 @@ fi
 if [[ -n "$IMAGE_TAG" ]]; then
   ACS_IMAGE="-Dimage.tag=$IMAGE_TAG"
 fi
-mvn -B -ntp -V -q -e -X install -DskipTests -Dmaven.javadoc.skip=true -P${BUILD_PROFILE} -Pags ${REPO_IMAGE} ${SHARE_IMAGE} ${ACS_IMAGE}
+mvn -B -ntp -V -q install -DskipTests -Dmaven.javadoc.skip=true -P${BUILD_PROFILE} -Pags ${REPO_IMAGE} ${SHARE_IMAGE} ${ACS_IMAGE}
 
 #Build alfresco image with jdbc drivers
 MYSQL_JDBC_TAG=$(mvn help:evaluate -Dexpression=dependency.mysql.version -q -DforceStdout)
