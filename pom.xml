@@ -19,7 +19,7 @@
 
         <alfresco.rm-enterprise-rest-api-explorer.version>3.0.2</alfresco.rm-enterprise-rest-api-explorer.version>
 
-        <alfresco.s3connector.version>6.1.1</alfresco.s3connector.version>
+        <alfresco.s3connector.version>7.0.0-A.3</alfresco.s3connector.version>
         <alfresco.azure-connector.version>5.0.4-A.6</alfresco.azure-connector.version>
         <alfresco.salesforce-connector.version>3.3.0</alfresco.salesforce-connector.version>
         <alfresco.outlook.version>3.0.2</alfresco.outlook.version>
