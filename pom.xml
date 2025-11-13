@@ -21,7 +21,7 @@
 
         <alfresco.s3connector.version>7.0.0-A.3</alfresco.s3connector.version>
         <alfresco.azure-connector.version>5.0.4</alfresco.azure-connector.version>
-        <alfresco.salesforce-connector.version>3.3.0</alfresco.salesforce-connector.version>
+        <alfresco.salesforce-connector.version>3.3.0.1</alfresco.salesforce-connector.version>
         <alfresco.outlook.version>3.0.2</alfresco.outlook.version>
         <alfresco.desktop-sync.version>5.3.0</alfresco.desktop-sync.version>
         <alfresco.ais.version>3.2.3-A.2</alfresco.ais.version>
