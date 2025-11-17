@@ -2,8 +2,8 @@
 
 set -e
 
-# Switch to Java 21 if it has been installed
-[ -d "/usr/lib/jvm/temurin-21-jdk" ] && export JAVA_HOME=/usr/lib/jvm/temurin-21-jdk
+# Switch to Java 25 if it has been installed
+[ -d "/usr/lib/jvm/temurin-25-jdk" ] && export JAVA_HOME=/usr/lib/jvm/temurin-25-jdk
 
 ALFRESCO_WEBAPP_DIR=$TOMCAT_DIR/webapps/$ALFRESCO_WEBAPP
 ALFRESCO_MMT_JAR=$TOMCAT_DIR/alfresco-mmt/alfresco-mmt*.jar
