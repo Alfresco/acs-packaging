@@ -405,10 +405,10 @@ jobs:
             profiles: all-tas-tests,elastic
             search-engine-type: elasticsearch
             db-type: mariadb
-#          - testSuite: Elasticsearch MS SQL
-#            profiles: all-tas-tests,elastic
-#            search-engine-type: elasticsearch
-#            db-type: mssql
+          - testSuite: Elasticsearch MS SQL
+            profiles: all-tas-tests,elastic
+            search-engine-type: elasticsearch
+            db-type: mssql
           - testSuite: Opensearch
             profiles: all-tas-tests,elastic
             search-engine-type: opensearch
@@ -425,10 +425,10 @@ jobs:
             profiles: all-tas-tests,elastic-basic-auth
             search-engine-type: elasticsearch
             db-type: mariadb
-#          - testSuite: Elasticsearch Basic Auth MS SQL
-#            profiles: all-tas-tests,elastic-basic-auth
-#            search-engine-type: elasticsearch
-#            db-type: mssql
+          - testSuite: Elasticsearch Basic Auth MS SQL
+            profiles: all-tas-tests,elastic-basic-auth
+            search-engine-type: elasticsearch
+            db-type: mssql
           - testSuite: Opensearch Basic Auth
             profiles: all-tas-tests,elastic-basic-auth
             search-engine-type: opensearch
