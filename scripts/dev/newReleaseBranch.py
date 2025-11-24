@@ -517,7 +517,7 @@ def set_versions(project, version, branch_type):
             ver.pop()
         snapshot_ver = ".".join(ver) + ".1-SNAPSHOT"
 
-    arguments = ["mvn", "versions:set", "-DgenerateBackupPoms=false", f"-DnewVersion={snapshot_ver}", "-P" + ",".join(profiles)]
+    arguments = ["mvn versions:set -DgenerateBackupPoms=false -DnewVersion=" + snapshot_ver + " -P" + ",".join(profiles)]
     logger.debug(f"Updating versions to {snapshot_ver} in pom of {project}")
     exec_cmd(arguments)
     switch_dir('root')
@@ -526,8 +526,8 @@ def set_versions(project, version, branch_type):
 def checkout_branch(project, branch):
     switch_dir(project)
     logger.debug(f"Checking out {branch} branch in {project}")
-    exec_cmd(["git", "fetch"])
-    exec_cmd(["git", "checkout", branch])
+    exec_cmd(["git fetch"])
+    exec_cmd(["git checkout " + branch])
     switch_dir('root')
 
 
@@ -536,17 +536,17 @@ def create_branch(project, branch, tag):
     checkout_branch(project, tag)
     switch_dir(project)
     logger.debug(f"Creating {branch} branch in {project} from {tag} tag")
-    exec_cmd(["git", "switch", "-c", branch])
+    exec_cmd(["git switch -c " + branch])
     switch_dir('root')
 
 
 def commit_and_push(project, option, message):
     logger.debug(f"Committing changes in {project}. Commit message: {message}")
     switch_dir(project)
-    exec_cmd(["git", "commit", option, "-m", message])
+    exec_cmd(["git commit " + option + " -m \"" + message + "\""])
     if not args.skip_push:
         logger.debug(f"Pushing changes in {project} to remote.")
-        exec_cmd(["git", "push"])
+        exec_cmd(["git push"])
     switch_dir('root')
 
 
@@ -698,7 +698,7 @@ def cleanup_branches():
         log_progress(project, "Deleting test/release branches and resetting master to origin")
         checkout_branch(project, MASTER)
         switch_dir(project)
-        exec_cmd(["git", "reset", "--hard", "origin/master"])
+        exec_cmd(["git reset --hard origin/master"])
         stdout = get_cmd_exec_result(["git", "branch", "--list"])
         out = stdout.decode()
         branches = [b.strip('* ') for b in out.splitlines()]
@@ -706,7 +706,7 @@ def cleanup_branches():
             branch = str(b)
             if "test/release/" in branch:
                 logger.debug(f"Deleting  {branch} branch")
-                exec_cmd(["git", "branch", "-D", branch])
+                exec_cmd(["git branch -D " + branch])
 
 if args.unit_test:
     import doctest
