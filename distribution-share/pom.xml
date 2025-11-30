@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>acs-packaging</artifactId>
-        <version>26.1.0-A.2</version>
+        <version>26.1.0-A.3-SNAPSHOT</version>
     </parent>
 
     <!-- To replace in share-config-custom.xml -->
