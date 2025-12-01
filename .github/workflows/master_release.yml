@@ -88,7 +88,7 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.16.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.16.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.16.0
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
