@@ -24,8 +24,6 @@ RUN if [[ "${JAVA_VERSION}" == "25" ]]; then \
       update-alternatives --display java | grep "bin/java" | grep -v "temurin-25" | awk '{print $1}' | while read -r path; do \
         update-alternatives --remove java "${path}"; \
       done; \
-      echo "All Java alternatives after:" && \
-      update-alternatives --display java && \
     fi
 
 COPY docker-entrypoint.sh /
