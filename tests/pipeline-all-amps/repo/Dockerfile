@@ -60,7 +60,7 @@ RUN if [[ "${JAVA_VERSION}" == "25" ]]; then \
       done; \
       echo "All Java alternatives after:" && \
       update-alternatives --display java && \
-      update-alternatives --install /usr/bin/java java /usr/lib/jvm/temurin-25-jdk/bin/java 1 && \
+      update-alternatives --install /usr/bin/java java /usr/lib/jvm/temurin-25-jdk/bin/java 1; \
     fi
 
 #Use the alfresco user
