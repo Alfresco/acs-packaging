@@ -55,10 +55,12 @@ RUN if [[ "${JAVA_VERSION}" == "25" ]]; then \
       mv jdk-* /usr/lib/jvm/temurin-25-jdk && \
       echo "All Java alternatives before:" && \
       update-alternatives --display java && \
-      update-alternatives --install /usr/bin/java java /usr/lib/jvm/temurin-25-jdk/bin/java 1 && \
       update-alternatives --display java | grep "bin/java" | grep -v "temurin-25" | awk '{print $1}' | while read -r path; do \
         update-alternatives --remove java "${path}"; \
       done; \
+      echo "All Java alternatives after:" && \
+      update-alternatives --display java && \
+      update-alternatives --install /usr/bin/java java /usr/lib/jvm/temurin-25-jdk/bin/java 1 && \
     fi
 
 #Use the alfresco user
