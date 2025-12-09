@@ -8,12 +8,12 @@
    <parent>
       <groupId>org.alfresco</groupId>
       <artifactId>content-repository-tests</artifactId>
-      <version>26.1.0-A.2-SNAPSHOT</version>
+      <version>26.1.0-A.4-SNAPSHOT</version>
    </parent>
 
    <properties>
-      <maven.compiler.source>17</maven.compiler.source>
-      <maven.compiler.target>17</maven.compiler.target>
+      <maven.compiler.source>${java.version}</maven.compiler.source>
+      <maven.compiler.target>${java.version}</maven.compiler.target>
    </properties>
 
    <profiles>
