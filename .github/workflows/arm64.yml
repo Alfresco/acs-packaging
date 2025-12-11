@@ -25,9 +25,9 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v7.0.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v7.0.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v7.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v9.3.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v9.3.2
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v9.3.2
       - name: "Login to Docker Hub"
         uses: docker/login-action@v3
         with:
