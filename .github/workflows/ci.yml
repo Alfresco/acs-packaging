@@ -305,9 +305,9 @@ jobs:
   cmis_tas_tests_elasticsearch:
     name: CMIS TAS tests - Elastic Search | ${{ matrix.testSuite }} (CMIS API)
     runs-on: ubuntu-latest
-    if: >
-      !contains(github.event.head_commit.message, '[skip search]') &&
-      !contains(github.event.head_commit.message, '[skip tests]')
+#    if: >
+#      !contains(github.event.head_commit.message, '[skip search]') &&
+#      !contains(github.event.head_commit.message, '[skip tests]')
     strategy:
       fail-fast: false
       matrix:
@@ -368,9 +368,9 @@ jobs:
   cmis_tas_tests_opensearch:
     name: "CMIS TAS tests - Open Search (CMIS API)"
     runs-on: ubuntu-latest
-    if: >
-      !contains(github.event.head_commit.message, '[skip search]') &&
-      !contains(github.event.head_commit.message, '[skip tests]')
+#    if: >
+#      !contains(github.event.head_commit.message, '[skip search]') &&
+#      !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v9.3.2
       - uses: actions/checkout@v4
