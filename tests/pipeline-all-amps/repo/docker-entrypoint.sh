@@ -8,8 +8,6 @@ set -e
 ALFRESCO_WEBAPP_DIR=$TOMCAT_DIR/webapps/$ALFRESCO_WEBAPP
 ALFRESCO_MMT_JAR=$TOMCAT_DIR/alfresco-mmt/alfresco-mmt*.jar
 ROOT_WEBAPP_DIR=$TOMCAT_DIR/webapps/ROOT
-ROOT_WAR="$TOMCAT_DIR/webapps/ROOT.war"
-AOS_AMP=$(ls $ALFRESCO_AMPS_DIR/alfresco-aos-module-*.amp 2>/dev/null | head -n 1)
 
 echo Available AMPs in $ALFRESCO_AMPS_DIR
 ls -l $ALFRESCO_AMPS_DIR
@@ -55,14 +53,11 @@ echo "Copying context.xml for ALFRESCO webapp"
 [ -f "$ALFRESCO_CTX_SRC" ] && cp "$ALFRESCO_CTX_SRC" "$TOMCAT_DIR/conf/Catalina/localhost/$ALFRESCO_WEBAPP.xml" \
     || { echo "No context.xml found at $ALFRESCO_CTX_SRC!"; exit 1; }
 
-# Explode ROOT.war
-[ -f "$ROOT_WAR" ] && unzip -q "$ROOT_WAR" -d "$ROOT_WEBAPP_DIR"
-
-# Copy context.xml for ROOT webapp
+# Explode ROOT.war and copy context.xml for ROOT webapp
+[ -f "$TOMCAT_DIR/webapps/ROOT.war" ] && unzip -q "$TOMCAT_DIR/webapps/ROOT.war" -d "$ROOT_WEBAPP_DIR"
 echo "Copying context.xml for ROOT webapp"
 mkdir -p "$TOMCAT_DIR/conf/Catalina/localhost"
-ROOT_CTX_SRC="$ROOT_WEBAPP_DIR/META-INF/context.xml"
-[ -f "$ROOT_CTX_SRC" ] && cp "$ROOT_CTX_SRC" "$TOMCAT_DIR/conf/Catalina/localhost/ROOT.xml" \
-    || echo "No ROOT context.xml found at $ROOT_CTX_SRC!"
+[ -f "$ROOT_WEBAPP_DIR/META-INF/context.xml" ] && cp "$ROOT_WEBAPP_DIR/META-INF/context.xml" "$TOMCAT_DIR/conf/Catalina/localhost/ROOT.xml" \
+    || echo "No ROOT context.xml found"
 
 exec "$@"
