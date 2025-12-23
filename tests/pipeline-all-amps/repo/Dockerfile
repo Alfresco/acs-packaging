@@ -59,24 +59,6 @@ RUN if [[ "${JAVA_VERSION}" == "25" ]]; then \
       done; \
     fi
 
-# ---------------------------------------------------
-# BAKERY APPROACH: Handle context.xml for correct deployment without changing deployXML in server.xml
-# ---------------------------------------------------
-# For any app (like ROOT) that needs its context.xml to be parsed,
-# copy it to conf/Catalina/localhost/<APPNAME>.xml, which is always loaded regardless of deployXML.
-
-RUN set -e; \
-    ctxPath="${TOMCAT_DIR}/webapps/alfresco/META-INF/context.xml"; \
-    mkdir -p ${TOMCAT_DIR}/conf/Catalina/localhost; \
-    if [ -f "$ctxPath" ]; then \
-        cp "$ctxPath" ${TOMCAT_DIR}/conf/Catalina/localhost/alfresco.xml; \
-    elif [ -f ${TOMCAT_DIR}/webapps/alfresco.war ] && unzip -l ${TOMCAT_DIR}/webapps/alfresco.war | grep "META-INF/context.xml" > /dev/null; then \
-        unzip -p ${TOMCAT_DIR}/webapps/alfresco.war META-INF/context.xml > ${TOMCAT_DIR}/conf/Catalina/localhost/alfresco.xml; \
-    fi; \
-    if [ -f ${TOMCAT_DIR}/webapps/ROOT.war ] && unzip -l ${TOMCAT_DIR}/webapps/ROOT.war | grep "META-INF/context.xml" > /dev/null; then \
-        unzip -p ${TOMCAT_DIR}/webapps/ROOT.war META-INF/context.xml > ${TOMCAT_DIR}/conf/Catalina/localhost/ROOT.xml; \
-    fi
-
 #Use the alfresco user
 #USER alfresco
 
