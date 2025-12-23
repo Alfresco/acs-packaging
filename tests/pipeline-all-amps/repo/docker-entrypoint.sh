@@ -46,4 +46,20 @@ unset TMP_ALFRESCO_AMPS_DIR
 echo Verify requested AMPs $ALFRESCO_AMPS have been installed
 java -jar $ALFRESCO_MMT_JAR list $ALFRESCO_WEBAPP_DIR
 
+# ------------------ BAKERY APPROACH: Provide explicit Tomcat context file ------------------
+echo "Copy context.xml to conf/Catalina/localhost for Bakery pattern safety"
+mkdir -p $TOMCAT_DIR/conf/Catalina/localhost
+CTX_SRC="$ALFRESCO_WEBAPP_DIR/META-INF/context.xml"
+if [ -f "$CTX_SRC" ]; then
+    cp "$CTX_SRC" "$TOMCAT_DIR/conf/Catalina/localhost/${ALFRESCO_WEBAPP}.xml"
+elif [ -f "$TOMCAT_DIR/webapps/${ALFRESCO_WEBAPP}.war" ] && unzip -l "$TOMCAT_DIR/webapps/${ALFRESCO_WEBAPP}.war" | grep "META-INF/context.xml" > /dev/null; then
+    unzip -p "$TOMCAT_DIR/webapps/${ALFRESCO_WEBAPP}.war" META-INF/context.xml > "$TOMCAT_DIR/conf/Catalina/localhost/${ALFRESCO_WEBAPP}.xml"
+fi
+
+# For ROOT:
+if [ -f "$TOMCAT_DIR/webapps/ROOT.war" ] && unzip -l "$TOMCAT_DIR/webapps/ROOT.war" | grep "META-INF/context.xml" > /dev/null; then
+    unzip -p "$TOMCAT_DIR/webapps/ROOT.war" META-INF/context.xml > "$TOMCAT_DIR/conf/Catalina/localhost/ROOT.xml"
+fi
+# ------------------ END CONTEXT COPY ------------------
+
 exec "$@"
