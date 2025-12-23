@@ -7,6 +7,7 @@ set -e
 
 ALFRESCO_WEBAPP_DIR=$TOMCAT_DIR/webapps/$ALFRESCO_WEBAPP
 ALFRESCO_MMT_JAR=$TOMCAT_DIR/alfresco-mmt/alfresco-mmt*.jar
+ROOT_WEBAPP_DIR=$TOMCAT_DIR/webapps/ROOT
 
 echo Available AMPs in $ALFRESCO_AMPS_DIR
 ls -l $ALFRESCO_AMPS_DIR
