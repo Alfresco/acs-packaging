@@ -9,6 +9,7 @@ ALFRESCO_WEBAPP_DIR=$TOMCAT_DIR/webapps/$ALFRESCO_WEBAPP
 ALFRESCO_MMT_JAR=$TOMCAT_DIR/alfresco-mmt/alfresco-mmt*.jar
 ROOT_WEBAPP_DIR=$TOMCAT_DIR/webapps/ROOT
 ROOT_WAR="$TOMCAT_DIR/webapps/ROOT.war"
+AOS_AMP=$(ls $ALFRESCO_AMPS_DIR/alfresco-aos-module-*.amp 2>/dev/null | head -n 1)
 
 echo Available AMPs in $ALFRESCO_AMPS_DIR
 ls -l $ALFRESCO_AMPS_DIR
