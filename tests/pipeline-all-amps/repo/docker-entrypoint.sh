@@ -49,21 +49,24 @@ unset TMP_ALFRESCO_AMPS_DIR
 echo Verify requested AMPs $ALFRESCO_AMPS have been installed
 java -jar $ALFRESCO_MMT_JAR list $ALFRESCO_WEBAPP_DIR
 
-# 1. Unzip ROOT.war
+# Copy Bakery context.xml for ALFRESCO webapp
+ALFRESCO_CTX_SRC="$ALFRESCO_WEBAPP_DIR/META-INF/context.xml"
+echo "Copying context.xml for ALFRESCO webapp"
+[ -f "$ALFRESCO_CTX_SRC" ] && cp "$ALFRESCO_CTX_SRC" "$TOMCAT_DIR/conf/Catalina/localhost/$ALFRESCO_WEBAPP.xml" \
+    || { echo "No context.xml found at $ALFRESCO_CTX_SRC!"; exit 1; }
+
+# Explode ROOT.war so we can AMP it and extract an updated context.xml
 [ -f "$ROOT_WAR" ] && unzip -q "$ROOT_WAR" -d "$ROOT_WEBAPP_DIR"
 
-# 2. Install AOS AMP to ROOT
-if [ -f "$AOS_AMP" ]; then
-    echo "Installing AOS AMP into ROOT webapp..."
-    java -jar $ALFRESCO_MMT_JAR install "$AOS_AMP" "$ROOT_WEBAPP_DIR" -directory -nobackup -force -verbose
-else
-    echo "No AOS AMP found; skipping AOS AMP installation"
-fi
+# Install AOS AMP to ROOT
+[ -f "$AOS_AMP" ] && { echo "Installing AOS AMP into ROOT webapp..."; java -jar $ALFRESCO_MMT_JAR install "$AOS_AMP" "$ROOT_WEBAPP_DIR" -directory -nobackup -force -verbose; } \
+    || echo "No AOS AMP found; skipping AOS AMP installation"
 
-# 3. Copy Bakery context.xml AFTER AMP install
+# Copy Bakery context.xml for ROOT webapp
 echo "Copying context.xml for ROOT webapp (Bakery/secure pattern)"
 mkdir -p "$TOMCAT_DIR/conf/Catalina/localhost"
 ROOT_CTX_SRC="$ROOT_WEBAPP_DIR/META-INF/context.xml"
-[ -f "$ROOT_CTX_SRC" ] && cp "$ROOT_CTX_SRC" "$TOMCAT_DIR/conf/Catalina/localhost/ROOT.xml" || echo "No ROOT context.xml found at $ROOT_CTX_SRC!"
+[ -f "$ROOT_CTX_SRC" ] && cp "$ROOT_CTX_SRC" "$TOMCAT_DIR/conf/Catalina/localhost/ROOT.xml" \
+    || echo "No ROOT context.xml found at $ROOT_CTX_SRC!"
 
 exec "$@"
