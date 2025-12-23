@@ -55,13 +55,11 @@ echo "Copying context.xml for ALFRESCO webapp"
 [ -f "$ALFRESCO_CTX_SRC" ] && cp "$ALFRESCO_CTX_SRC" "$TOMCAT_DIR/conf/Catalina/localhost/$ALFRESCO_WEBAPP.xml" \
     || { echo "No context.xml found at $ALFRESCO_CTX_SRC!"; exit 1; }
 
-# Explode ROOT.war so we can AMP it and extract an updated context.xml
+# Explode ROOT.war
 [ -f "$ROOT_WAR" ] && unzip -q "$ROOT_WAR" -d "$ROOT_WEBAPP_DIR"
 
-[ -f "$TOMCAT_DIR/webapps/_vti_bin.war" ] && unzip -q "$TOMCAT_DIR/webapps/_vti_bin.war" -d "$TOMCAT_DIR/webapps/_vti_bin"
-
-# Copy Bakery context.xml for ROOT webapp
-echo "Copying context.xml for ROOT webapp (Bakery/secure pattern)"
+# Copy context.xml for ROOT webapp
+echo "Copying context.xml for ROOT webapp"
 mkdir -p "$TOMCAT_DIR/conf/Catalina/localhost"
 ROOT_CTX_SRC="$ROOT_WEBAPP_DIR/META-INF/context.xml"
 [ -f "$ROOT_CTX_SRC" ] && cp "$ROOT_CTX_SRC" "$TOMCAT_DIR/conf/Catalina/localhost/ROOT.xml" \
