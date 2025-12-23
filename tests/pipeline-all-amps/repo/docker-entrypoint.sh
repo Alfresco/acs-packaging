@@ -58,9 +58,7 @@ echo "Copying context.xml for ALFRESCO webapp"
 # Explode ROOT.war so we can AMP it and extract an updated context.xml
 [ -f "$ROOT_WAR" ] && unzip -q "$ROOT_WAR" -d "$ROOT_WEBAPP_DIR"
 
-# Install AOS AMP to ROOT
-[ -f "$AOS_AMP" ] && { echo "Installing AOS AMP into ROOT webapp..."; java -jar $ALFRESCO_MMT_JAR install "$AOS_AMP" "$ROOT_WEBAPP_DIR" -directory -nobackup -force -verbose; } \
-    || echo "No AOS AMP found; skipping AOS AMP installation"
+[ -f "$TOMCAT_DIR/webapps/_vti_bin.war" ] && unzip -q "$TOMCAT_DIR/webapps/_vti_bin.war" -d "$TOMCAT_DIR/webapps/_vti_bin"
 
 # Copy Bakery context.xml for ROOT webapp
 echo "Copying context.xml for ROOT webapp (Bakery/secure pattern)"
