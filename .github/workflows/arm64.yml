@@ -102,7 +102,7 @@ jobs:
     if: always()
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
       - name: "Run the JIRA Integration script"
         run: |
           pip install -r ./scripts/ci/jira/requirements.txt
