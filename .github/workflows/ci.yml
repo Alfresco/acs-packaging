@@ -45,7 +45,7 @@ jobs:
       (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request') &&
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.1.0
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -68,7 +68,7 @@ jobs:
       github.actor != 'dependabot[bot]' &&
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.1.0
       - uses: actions/checkout@v4
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.16.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.16.0
@@ -119,7 +119,7 @@ jobs:
       !contains(github.event.head_commit.message, '[skip pmd]') &&
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.1.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.16.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.16.0
       - uses: Alfresco/ya-pmd-scan@v4.1.0
@@ -187,7 +187,7 @@ jobs:
             compose-file: docker-compose-with-ldap.yml
             deploy-timeout: 10
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.1.0
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -238,7 +238,7 @@ jobs:
             log-folder: tests/tas-cmis
             deploy-timeout: 40
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.1.0
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -295,7 +295,7 @@ jobs:
             db-properties: -Ddb.driver=oracle.jdbc.OracleDriver -Ddb.name=alfresco -Ddb.url=jdbc:oracle:thin:@database:1521/PDB1 -Ddb.username=alfresco -Ddb.password=alfresco
             compose-file: docker-compose-oracle.yml
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.1.0
         with:
           merge-disk-volumes: true
           root-reserve-mb: 16384
@@ -340,7 +340,7 @@ jobs:
       !contains(github.event.head_commit.message, '[skip search]') &&
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.1.0
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -495,7 +495,7 @@ jobs:
     if: >
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.1.0
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -556,7 +556,7 @@ jobs:
             disabledHostnameVerification: true
             deploy-timeout: 10
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.1.0
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -599,7 +599,7 @@ jobs:
     if: >
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.1.0
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -629,7 +629,7 @@ jobs:
       github.event_name != 'pull_request' &&
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.1.0
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -671,7 +671,7 @@ jobs:
     if: >
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.1.0
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -707,7 +707,7 @@ jobs:
         ports:
           - 5000:5000
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.1.0
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
