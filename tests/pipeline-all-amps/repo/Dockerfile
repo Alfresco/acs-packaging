@@ -42,20 +42,6 @@ logger.alfresco-repo-content-transform-TransformerDebug.name=org.alfresco.repo.c
 logger.alfresco-repo-content-transform-TransformerDebug.level=debug\n\
 ' >> ${TOMCAT_DIR}/shared/classes/alfresco/extension/custom-log4j2.properties
 
-# Grant all security permissions to jolokia and share in order to work properly.
-RUN if [ -f "${TOMCAT_DIR}/conf/catalina.policy" ]; then \
-      sed -i -e "\$a\
-        grant codeBase \"file:${catalina.base}/webapps/jolokia/-\" {\n\
-        permission java.security.AllPermission;\n\
-        };\n\
-        grant codeBase \"file:${catalina.base}/webapps/share/-\" {\n\
-          permission java.security.AllPermission;\n\
-          };" \
-          ${TOMCAT_DIR}/conf/catalina.policy ; \
-    else \
-      echo "Skipping catalina.policy modification (Tomcat 11)"; \
-    fi
-
 # Switch between currently installed JRE version and 25
 ARG JAVA_VERSION
 RUN if [[ "${JAVA_VERSION}" == "25" ]]; then \
