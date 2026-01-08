@@ -58,7 +58,6 @@ echo "Copying context.xml for ALFRESCO webapp"
 if [ -f "$TOMCAT_DIR/webapps/ROOT.war" ]; then
   echo "Exploding ROOT.war for ROOT webapp"
   unzip -q "$TOMCAT_DIR/webapps/ROOT.war" -d "$ROOT_WEBAPP_DIR"
-
   echo "Copying context.xml for ROOT webapp"
   if [ -f "$ROOT_WEBAPP_DIR/META-INF/context.xml" ]; then
     cp "$ROOT_WEBAPP_DIR/META-INF/context.xml" "$TOMCAT_DIR/conf/Catalina/localhost/ROOT.xml"
@@ -68,5 +67,8 @@ if [ -f "$TOMCAT_DIR/webapps/ROOT.war" ]; then
 else
   echo "ROOT.war not found at $TOMCAT_DIR/webapps/ROOT.war"
 fi
+
+# Explode _vti_bin.war for AOS VTI endpoints
+[ -f "$TOMCAT_DIR/webapps/_vti_bin.war" ] && unzip -q "$TOMCAT_DIR/webapps/_vti_bin.war" -d "$TOMCAT_DIR/webapps/_vti_bin"
 
 exec "$@"
