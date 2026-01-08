@@ -33,7 +33,18 @@ COPY --chown=root:${GROUPNAME} --from=AGSBUILDER /build/gs-api-explorer /usr/loc
 RUN java -jar /usr/local/tomcat/alfresco-mmt/alfresco-mmt*.jar install \
               /usr/local/tomcat/amps \
               /usr/local/tomcat/webapps/alfresco -directory -nobackup && \
-    sed -i -e "\$a\grant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/jolokia\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};\ngrant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/share\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};" /usr/local/tomcat/conf/catalina.policy && \
+    # Grant all security permissions (Tomcat <= 10 only; SecurityManager removed in Tomcat 11)
+    if [ -f "/usr/local/tomcat/conf/catalina.policy" ]; then \
+      sed -i -e "\$a\
+      grant codeBase \"file:${catalina.base}/webapps/jolokia/-\" {\n\
+      permission java.security.AllPermission;\n\
+      };\n\
+      grant codeBase \"file:${catalina.base}/webapps/share/-\" {\n\
+      permission java.security.AllPermission;\n\
+      };" /usr/local/tomcat/conf/catalina.policy ; \
+    else \
+        echo \"Skipping catalina.policy modification (Tomcat 11+)\" ; \
+    fi && \
     chgrp -R Alfresco /usr/local/tomcat && \
     find /usr/local/tomcat/webapps -type d -exec chmod 0750 {} \; && \
     find /usr/local/tomcat/webapps -type f -exec chmod 0640 {} \; && \

@@ -17,8 +17,21 @@ RUN sed -i -e "s_appender.rolling.fileName\=alfresco.log_appender.rolling.fileNa
         ${TOMCAT_DIR}/webapps/alfresco/WEB-INF/classes/log4j2.properties && \
     sed -i -e "s_appender.rolling.filePattern=alfresco.log.%d{yyyy-MM-dd}_appender.rolling.filePattern\=${TOMCAT_DIR}/logs\/alfresco.log.%d{yyyy-MM-dd}_" \
         ${TOMCAT_DIR}/webapps/alfresco/WEB-INF/classes/log4j2.properties && \
-    # Grant all security permissions to jolokia and share in order to work properly.
-    sed -i -e "\$a\grant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/jolokia\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};\ngrant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/_vti_bin\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};\ngrant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/share\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};" ${TOMCAT_DIR}/conf/catalina.policy && \
+    # Grant all security permissions (Tomcat <= 10 only; SecurityManager removed in Tomcat 11)
+    if [ -f "${TOMCAT_DIR}/conf/catalina.policy" ]; then \
+        sed -i -e "\$a\
+        grant codeBase \"file:${catalina.base}/webapps/jolokia/-\" {\n\
+            permission java.security.AllPermission;\n\
+        };\n\
+        grant codeBase \"file:${catalina.base}/webapps/_vti_bin/-\" {\n\
+            permission java.security.AllPermission;\n\
+        };\n\
+        grant codeBase \"file:${catalina.base}/webapps/share/-\" {\n\
+            permission java.security.AllPermission;\n\
+        };" ${TOMCAT_DIR}/conf/catalina.policy ; \
+    else \
+       echo \"Skipping catalina.policy modification (Tomcat 11+)\" ; \
+    fi && \
     # Restore permissions
     chgrp -R ${ALF_GROUP} ${TOMCAT_DIR}/webapps && \
     find ${TOMCAT_DIR}/webapps -type d -exec chmod 0750 {} \; && \

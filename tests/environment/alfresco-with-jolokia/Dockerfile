@@ -23,7 +23,14 @@ USER root
 
 COPY --chown=root:${GROUPNAME} --from=JOLOKIABUILDER /build/jolokia ${TOMCAT_DIR}/webapps/jolokia
 
-# Grant all security permissions to jolokia in order to work properly.
-RUN sed -i -e "\$a\grant\ codeBase\ \"file:\$\{catalina.base\}\/webapps\/jolokia\/-\" \{\n\    permission\ java.security.AllPermission\;\n\};" ${TOMCAT_DIR}/conf/catalina.policy
+# Grant all security permissions to jolokia (Tomcat <= 10 only)
+RUN if [ -f "${TOMCAT_DIR}/conf/catalina.policy" ]; then \
+        sed -i -e "\$a\
+        grant codeBase \"file:${catalina.base}/webapps/jolokia/-\" {\n\
+        permission java.security.AllPermission;\n\
+        };" ${TOMCAT_DIR}/conf/catalina.policy ; \
+    else \
+        echo \"Skipping catalina.policy modification (Tomcat 11+)\" ; \
+    fi
 
 USER ${USERID}
