@@ -65,11 +65,4 @@ else
   echo "No ROOT context.xml found in $ROOT_WEBAPP_DIR/META-INF/context.xml"
 fi
 
-#echo "Explode _vti_bin.war for AOS VTI endpoints"
-#if [ -f "$TOMCAT_DIR/webapps/$ALFRESCO_WEBAPP/_vti_bin.war" ]; then
-#  unzip -q "$TOMCAT_DIR/webapps/$ALFRESCO_WEBAPP/_vti_bin.war" -d "$TOMCAT_DIR/webapps/_vti_bin"
-#else
-#  echo "No _vti_bin.war found in expected locations."
-#fi
-
 exec "$@"
