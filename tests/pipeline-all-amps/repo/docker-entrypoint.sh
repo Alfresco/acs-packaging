@@ -49,15 +49,14 @@ java -jar $ALFRESCO_MMT_JAR list $ALFRESCO_WEBAPP_DIR
 
 # Copy context.xml for ALFRESCO webapp
 ALFRESCO_CTX_SRC="$ALFRESCO_WEBAPP_DIR/META-INF/context.xml"
-echo "Copying context.xml for ALFRESCO webapp"
 mkdir -p "$TOMCAT_DIR/conf/Catalina/localhost"
+echo "Copying context.xml for ALFRESCO webapp"
 [ -f "$ALFRESCO_CTX_SRC" ] && cp "$ALFRESCO_CTX_SRC" "$TOMCAT_DIR/conf/Catalina/localhost/$ALFRESCO_WEBAPP.xml" \
     || { echo "No context.xml found at $ALFRESCO_CTX_SRC!"; exit 1; }
 
 # Explode ROOT.war and copy context.xml for ROOT webapp
 if [ -f "$TOMCAT_DIR/webapps/ROOT.war" ]; then
   echo "Exploding ROOT.war for ROOT webapp"
-  mkdir -p "$ROOT_WEBAPP_DIR"
   unzip -q "$TOMCAT_DIR/webapps/ROOT.war" -d "$ROOT_WEBAPP_DIR"
 
   echo "Copying context.xml for ROOT webapp"
