@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+set -x
 
 # Switch to Java 25 if it has been installed
 [ -d "/usr/lib/jvm/temurin-25-jdk" ] && export JAVA_HOME=/usr/lib/jvm/temurin-25-jdk
@@ -68,10 +69,8 @@ else
 fi
 
 # Explode _vti_bin.war for AOS VTI endpoints (check both locations)
-if [ -f "$TOMCAT_DIR/webapps/_vti_bin.war" ]; then
-  unzip -q "$TOMCAT_DIR/webapps/_vti_bin.war" -d "$TOMCAT_DIR/webapps/_vti_bin"
-elif [ -f "$TOMCAT_DIR/webapps/alfresco/_vti_bin.war" ]; then
-  unzip -q "$TOMCAT_DIR/webapps/alfresco/_vti_bin.war" -d "$TOMCAT_DIR/webapps/_vti_bin"
+if [ -f "$TOMCAT_DIR/webapps/$ALFRESCO_WEBAPP/_vti_bin.war" ]; then
+  unzip -q "$TOMCAT_DIR/webapps/$ALFRESCO_WEBAPP/_vti_bin.war" -d "$TOMCAT_DIR/webapps/_vti_bin"
 else
   echo "No _vti_bin.war found in expected locations."
 fi
