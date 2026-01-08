@@ -59,16 +59,21 @@ if [ -f "$TOMCAT_DIR/webapps/ROOT.war" ]; then
   echo "Exploding ROOT.war for ROOT webapp"
   unzip -q "$TOMCAT_DIR/webapps/ROOT.war" -d "$ROOT_WEBAPP_DIR"
   echo "Copying context.xml for ROOT webapp"
-  if [ -f "$ROOT_WEBAPP_DIR/META-INF/context.xml" ]; then
-    cp "$ROOT_WEBAPP_DIR/META-INF/context.xml" "$TOMCAT_DIR/conf/Catalina/localhost/ROOT.xml"
-  else
-    echo "No ROOT context.xml found in $ROOT_WEBAPP_DIR/META-INF/context.xml"
-  fi
-else
-  echo "ROOT.war not found at $TOMCAT_DIR/webapps/ROOT.war"
 fi
 
-# Explode _vti_bin.war for AOS VTI endpoints
-[ -f "$TOMCAT_DIR/webapps/_vti_bin.war" ] && unzip -q "$TOMCAT_DIR/webapps/_vti_bin.war" -d "$TOMCAT_DIR/webapps/_vti_bin"
+if [ -f "$ROOT_WEBAPP_DIR/META-INF/context.xml" ]; then
+  cp "$ROOT_WEBAPP_DIR/META-INF/context.xml" "$TOMCAT_DIR/conf/Catalina/localhost/ROOT.xml"
+else
+  echo "No ROOT context.xml found in $ROOT_WEBAPP_DIR/META-INF/context.xml"
+fi
+
+# Explode _vti_bin.war for AOS VTI endpoints (check both locations)
+if [ -f "$TOMCAT_DIR/webapps/_vti_bin.war" ]; then
+  unzip -q "$TOMCAT_DIR/webapps/_vti_bin.war" -d "$TOMCAT_DIR/webapps/_vti_bin"
+elif [ -f "$TOMCAT_DIR/webapps/alfresco/_vti_bin.war" ]; then
+  unzip -q "$TOMCAT_DIR/webapps/alfresco/_vti_bin.war" -d "$TOMCAT_DIR/webapps/_vti_bin"
+else
+  echo "No _vti_bin.war found in expected locations."
+fi
 
 exec "$@"
