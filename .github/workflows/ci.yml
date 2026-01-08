@@ -699,12 +699,10 @@ jobs:
           AWS_SECRET_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_SECRET_ACCESS_KEY }}
           JAVA_VERSION: ${{ matrix.java-version }}
         run: |
-          mvn -B clean install -X -Ppipeline,build-docker-images \
+          mvn -B clean install -ntp -Ppipeline,build-docker-images \
             $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-repo.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Drepo.image.tag=latest') \
             $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-share.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Dshare.image.tag=latest') \
-            -Dimage.java.version=${{ matrix.java-version }} \
-            -Ddocker.verbose=true \
-            -Ddocker.showLogs=true
+            -Dimage.java.version=${{ matrix.java-version }}
           cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
           pip install requests pytest==6.2.4 pytest-testinfra==6.3.0 jmespath==0.10.0
           git clone --depth 1 --branch $DTAS_VERSION https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas

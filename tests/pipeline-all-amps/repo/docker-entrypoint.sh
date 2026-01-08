@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 set -e
-set -x
 
 # Switch to Java 25 if it has been installed
 [ -d "/usr/lib/jvm/temurin-25-jdk" ] && export JAVA_HOME=/usr/lib/jvm/temurin-25-jdk
@@ -9,6 +8,7 @@ set -x
 ALFRESCO_WEBAPP_DIR=$TOMCAT_DIR/webapps/$ALFRESCO_WEBAPP
 ALFRESCO_MMT_JAR=$TOMCAT_DIR/alfresco-mmt/alfresco-mmt*.jar
 ROOT_WEBAPP_DIR=$TOMCAT_DIR/webapps/ROOT
+ALFRESCO_CTX_SRC="$ALFRESCO_WEBAPP_DIR/META-INF/context.xml"
 
 echo Available AMPs in $ALFRESCO_AMPS_DIR
 ls -l $ALFRESCO_AMPS_DIR
@@ -48,31 +48,28 @@ unset TMP_ALFRESCO_AMPS_DIR
 echo Verify requested AMPs $ALFRESCO_AMPS have been installed
 java -jar $ALFRESCO_MMT_JAR list $ALFRESCO_WEBAPP_DIR
 
-# Copy context.xml for ALFRESCO webapp
-ALFRESCO_CTX_SRC="$ALFRESCO_WEBAPP_DIR/META-INF/context.xml"
-mkdir -p "$TOMCAT_DIR/conf/Catalina/localhost"
 echo "Copying context.xml for ALFRESCO webapp"
+mkdir -p "$TOMCAT_DIR/conf/Catalina/localhost"
 [ -f "$ALFRESCO_CTX_SRC" ] && cp "$ALFRESCO_CTX_SRC" "$TOMCAT_DIR/conf/Catalina/localhost/$ALFRESCO_WEBAPP.xml" \
     || { echo "No context.xml found at $ALFRESCO_CTX_SRC!"; exit 1; }
 
-# Explode ROOT.war and copy context.xml for ROOT webapp
+echo "Exploding ROOT.war for ROOT webapp"
 if [ -f "$TOMCAT_DIR/webapps/ROOT.war" ]; then
-  echo "Exploding ROOT.war for ROOT webapp"
   unzip -q "$TOMCAT_DIR/webapps/ROOT.war" -d "$ROOT_WEBAPP_DIR"
-  echo "Copying context.xml for ROOT webapp"
 fi
 
+echo "Copying context.xml for ROOT webapp"
 if [ -f "$ROOT_WEBAPP_DIR/META-INF/context.xml" ]; then
   cp "$ROOT_WEBAPP_DIR/META-INF/context.xml" "$TOMCAT_DIR/conf/Catalina/localhost/ROOT.xml"
 else
   echo "No ROOT context.xml found in $ROOT_WEBAPP_DIR/META-INF/context.xml"
 fi
 
-# Explode _vti_bin.war for AOS VTI endpoints (check both locations)
-if [ -f "$TOMCAT_DIR/webapps/$ALFRESCO_WEBAPP/_vti_bin.war" ]; then
-  unzip -q "$TOMCAT_DIR/webapps/$ALFRESCO_WEBAPP/_vti_bin.war" -d "$TOMCAT_DIR/webapps/_vti_bin"
-else
-  echo "No _vti_bin.war found in expected locations."
-fi
+#echo "Explode _vti_bin.war for AOS VTI endpoints"
+#if [ -f "$TOMCAT_DIR/webapps/$ALFRESCO_WEBAPP/_vti_bin.war" ]; then
+#  unzip -q "$TOMCAT_DIR/webapps/$ALFRESCO_WEBAPP/_vti_bin.war" -d "$TOMCAT_DIR/webapps/_vti_bin"
+#else
+#  echo "No _vti_bin.war found in expected locations."
+#fi
 
 exec "$@"
