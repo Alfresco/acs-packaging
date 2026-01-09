@@ -28,6 +28,24 @@
         <dependency.org-json.version>20170516</dependency.org-json.version>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+
+            <dependency>
+                <groupId>org.alfresco.officeservices</groupId>
+                <artifactId>aoservices</artifactId>
+                <version>4.0.9-A2</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.alfresco.officeservices</groupId>
+                <artifactId>docproc</artifactId>
+                <version>4.0.9-A2</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
     <build>
         <plugins>
             <plugin>
