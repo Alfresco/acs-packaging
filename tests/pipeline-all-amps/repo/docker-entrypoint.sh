@@ -7,6 +7,8 @@ set -e
 
 ALFRESCO_WEBAPP_DIR=$TOMCAT_DIR/webapps/$ALFRESCO_WEBAPP
 ALFRESCO_MMT_JAR=$TOMCAT_DIR/alfresco-mmt/alfresco-mmt*.jar
+ROOT_WEBAPP_DIR=$TOMCAT_DIR/webapps/ROOT
+ALFRESCO_CTX_SRC="$ALFRESCO_WEBAPP_DIR/META-INF/context.xml"
 
 echo Available AMPs in $ALFRESCO_AMPS_DIR
 ls -l $ALFRESCO_AMPS_DIR
@@ -45,5 +47,22 @@ unset TMP_ALFRESCO_AMPS_DIR
 
 echo Verify requested AMPs $ALFRESCO_AMPS have been installed
 java -jar $ALFRESCO_MMT_JAR list $ALFRESCO_WEBAPP_DIR
+
+echo "Copying context.xml for ALFRESCO webapp"
+mkdir -p "$TOMCAT_DIR/conf/Catalina/localhost"
+[ -f "$ALFRESCO_CTX_SRC" ] && cp "$ALFRESCO_CTX_SRC" "$TOMCAT_DIR/conf/Catalina/localhost/$ALFRESCO_WEBAPP.xml" \
+    || { echo "No context.xml found at $ALFRESCO_CTX_SRC!"; exit 1; }
+
+echo "Exploding ROOT.war for ROOT webapp"
+if [ -f "$TOMCAT_DIR/webapps/ROOT.war" ]; then
+  unzip -q "$TOMCAT_DIR/webapps/ROOT.war" -d "$ROOT_WEBAPP_DIR"
+fi
+
+echo "Copying context.xml for ROOT webapp"
+if [ -f "$ROOT_WEBAPP_DIR/META-INF/context.xml" ]; then
+  cp "$ROOT_WEBAPP_DIR/META-INF/context.xml" "$TOMCAT_DIR/conf/Catalina/localhost/ROOT.xml"
+else
+  echo "No ROOT context.xml found in $ROOT_WEBAPP_DIR/META-INF/context.xml"
+fi
 
 exec "$@"
