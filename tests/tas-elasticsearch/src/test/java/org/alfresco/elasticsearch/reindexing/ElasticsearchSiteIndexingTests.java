@@ -379,7 +379,7 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
         {
             String queryString = "SITE:" + site1Name + " " + operator + condition;
             Step.STEP("Searching for SITE `" + site1Name + "` " + operator + " `" + condition + "` using `" + language + "` language.");
-            logger.info("Executing query: [{}] with language: [{}]", queryString, language);
+            logger.info("Executing query: [{}] with language: [{}] ", queryString, language);
             final SearchRequest query = req(language, queryString);
             if (contentNames.isEmpty())
             {
