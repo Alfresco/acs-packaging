@@ -186,7 +186,9 @@ public class ElasticsearchLiveIndexingTests extends AbstractTestNGSpringContextT
     @Test(groups = TestGroup.SEARCH)
     public void wildcardWorksInsideQuotes()
     {
-        searchQueryService.expectResultsFromQuery(req("cm:name:\"" + PREFIX + "user1*\""), userMultiSite, FILE_2_NAME, FILE_3_NAME);
+        String query = "cm:name:\"" + PREFIX + "user1*\"";
+        logger.info("wildcardWorksInsideQuotes executing query: " + query);
+        searchQueryService.expectResultsFromQuery(req(query), userMultiSite, FILE_2_NAME, FILE_3_NAME);
     }
 
     @TestRail(section = TestGroup.SEARCH,

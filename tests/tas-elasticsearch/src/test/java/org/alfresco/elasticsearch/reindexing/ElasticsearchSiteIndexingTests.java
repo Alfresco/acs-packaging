@@ -14,6 +14,8 @@ import org.apache.chemistry.opencmis.client.api.CmisObject;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.apache.chemistry.opencmis.client.api.Session;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -87,6 +89,8 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
     private FileModel file2;
     private FileModel file3;
     private FileModel file4;
+
+    private static final Logger logger = LogManager.getLogger(ElasticsearchSiteIndexingTests.class);
 
     @BeforeClass(alwaysRun = true)
     public void dataPreparation()
@@ -373,8 +377,10 @@ public class ElasticsearchSiteIndexingTests extends AbstractTestNGSpringContextT
 
         for (final String language : LANGUAGES_TO_CHECK)
         {
+            String queryString = "SITE:" + site1Name + " " + operator + condition;
             Step.STEP("Searching for SITE `" + site1Name + "` " + operator + " `" + condition + "` using `" + language + "` language.");
-            final SearchRequest query = req(language, "SITE:" + site1Name + " " + operator + condition);
+            logger.info("Executing query: [{}] with language: [{}]", queryString, language);
+            final SearchRequest query = req(language, queryString);
             if (contentNames.isEmpty())
             {
                 searchQueryService.expectNoResultsFromQuery(query, user);
