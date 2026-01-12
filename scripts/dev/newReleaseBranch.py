@@ -31,8 +31,8 @@
 #######################################
 # Create ServicePack branches for the released version (for X.Y.Z release it will be release/X.N eg., create release/23.N for 23.3.0 release)
 # 1. acs-packaging:
-# - set RELEASE_VERSION to X.Y+1.0-A1, DEVELOPMENT_VERSION to X.Y+1.0-A2-SNAPSHOT in master_release.yml
-# - set POM versions to X.Y+1.0-A1-SNAPSHOT
+# - set RELEASE_VERSION to X.Y+1.0-A.1, DEVELOPMENT_VERSION to X.Y+1.0-A.2-SNAPSHOT in master_release.yml
+# - set POM versions to X.Y+1.0-A.1-SNAPSHOT
 # - set scm-tag in main POM to HEAD
 # 2. enterprise-share
 # - set scm-tag in main POM to HEAD
@@ -49,17 +49,17 @@
 # - increment schema by 100 in repository.properties
 # - set version.revision to Z+1 in version.properties (test resources)
 # 5. acs-community-packaging
-# - set RELEASE_VERSION to X.Y+1.0-A1, DEVELOPMENT_VERSION to X.Y+1.0-A2-SNAPSHOT in ci.yml
-# - set POM versions to X.Y+1.0-A1-SNAPSHOT
+# - set RELEASE_VERSION to X.Y+1.0-A.1, DEVELOPMENT_VERSION to X.Y+1.0-A.2-SNAPSHOT in ci.yml
+# - set POM versions to X.Y+1.0-A.1-SNAPSHOT
 # - set scm-tag in main POM to HEAD
 # - set comm-repo dependency in main POM to X.Y+1.0.1
 # - set comm-share dependency in main POM to X.Y+1.0.1
 #######################################
 # Update master branch for the next SP/major release
 # 1. acs-packaging:
-# - set RELEASE_VERSION to <next_development_version>-A1 passed as script argument or X.Y+1.0-A1 (if <next_development_version> not passed),
-#   DEVELOPMENT_VERSION to <next_development_version>-A2-SNAPSHOT or X.Y+1.0-A2-SNAPSHOT (if <next_development_version> not passed) in master_release.yml
-# - set POM versions to <next_development_version>-A1-SNAPSHOT or X.Y+1.0-A1-SNAPSHOT (if <next_development_version> not passed)
+# - set RELEASE_VERSION to <next_development_version>-A.1 passed as script argument or X.Y+1.0-A.1 (if <next_development_version> not passed),
+#   DEVELOPMENT_VERSION to <next_development_version>-A.2-SNAPSHOT or X.Y+1.0-A.2-SNAPSHOT (if <next_development_version> not passed) in master_release.yml
+# - set POM versions to <next_development_version>-A.1-SNAPSHOT or X.Y+1.0-A.1-SNAPSHOT (if <next_development_version> not passed)
 # - set scm-tag in main POM to HEAD
 # 2. enterprise-share
 # - set scm-tag in main POM to HEAD
@@ -76,9 +76,9 @@
 # - increment schema by 100 (when next development minor version bumped) or 1000 (when next development version major bumped) in repository.properties
 # - set version.major/version.minor/version.revision to <next_development_version> or X.Y+1.0 (if <next_development_version> not passed) in version.properties (test resources)
 # 5. acs-community-packaging
-# - set RELEASE_VERSION to <next_development_version>-A1 passed as script argument or X.Y+1.0-A1 (if <next_development_version> not passed),
-#   DEVELOPMENT_VERSION to <next_development_version>-A2-SNAPSHOT or X.Y+1.0-A2-SNAPSHOT (if <next_development_version> not passed) in master_release.yml
-# - set POM versions to <next_development_version>-A1-SNAPSHOT or X.Y+1.0-A1-SNAPSHOT (if <next_development_version> not passed)
+# - set RELEASE_VERSION to <next_development_version>-A.1 passed as script argument or X.Y+1.0-A.1 (if <next_development_version> not passed),
+#   DEVELOPMENT_VERSION to <next_development_version>-A.2-SNAPSHOT or X.Y+1.0-A.2-SNAPSHOT (if <next_development_version> not passed) in master_release.yml
+# - set POM versions to <next_development_version>-A.1-SNAPSHOT or X.Y+1.0-A.1-SNAPSHOT (if <next_development_version> not passed)
 # - set scm-tag in main POM to HEAD
 # - set comm-repo dependency in main POM to <next_development_version>.1 or X.Y+1.0.1 (if <next_development_version> not passed)
 # - set comm-share dependency in main POM to <next_development_version>.1 or X.Y+1.0.1 (if <next_development_version> not passed)
@@ -510,7 +510,7 @@ def set_versions(project, version, branch_type):
     profiles = ["dev"] if "packaging" in project else ["ags"]
     switch_dir(project)
     if "packaging" in project:
-        snapshot_ver = version + "-SNAPSHOT" if branch_type == HOTFIX else version + "-A1-SNAPSHOT"
+        snapshot_ver = version + "-SNAPSHOT" if branch_type == HOTFIX else version + "-A.1-SNAPSHOT"
     else:
         ver = version.split(".")
         if len(ver) == 4:
@@ -619,7 +619,7 @@ def update_project(project, version, branch_type):
     next_dev_ver = get_next_dev_version(branch_type)
     if project == ACS_PACKAGING:
         if branch_type is not HOTFIX:
-            update_ci_yaml('master_release.yml', project, version + "-A1", next_dev_ver + "-A2-SNAPSHOT")
+            update_ci_yaml('master_release.yml', project, version + "-A.1", next_dev_ver + "-A.2-SNAPSHOT")
         else:
             update_ci_yaml('master_release.yml', project, version, increment_version(next_dev_ver, HOTFIX) + "-SNAPSHOT")
     elif project == ENTERPRISE_SHARE:
@@ -632,7 +632,7 @@ def update_project(project, version, branch_type):
         set_ags_test_versions(project, version)
     elif project == COMMUNITY_PACKAGING:
         if branch_type is not HOTFIX:
-            update_ci_yaml('ci.yml', project, version + "-A1", next_dev_ver + "-A2-SNAPSHOT")
+            update_ci_yaml('ci.yml', project, version + "-A.1", next_dev_ver + "-A.2-SNAPSHOT")
         else:
             update_ci_yaml('ci.yml', project, version, increment_version(next_dev_ver, HOTFIX) + "-SNAPSHOT")
         update_acs_comm_pck_dependencies(branch_type, project)
