@@ -320,10 +320,10 @@ def update_scm_tag(tag, project):
 
 def update_line(text: list[str], text_to_match, replacement_value, match_after_regex=None):
     """Update part of line after matching text with given value
-    >>> update_line(["BASE_BUILD_NUMBER: 10000", "RELEASE_VERSION: 23.1.0", "DEVELOPMENT_VERSION: 23.2.0-A1-SNAPSHOT"], "RELEASE_VERSION: ", "23.2.0")
-    ['BASE_BUILD_NUMBER: 10000', 'RELEASE_VERSION: 23.2.0', 'DEVELOPMENT_VERSION: 23.2.0-A1-SNAPSHOT']
-    >>> update_line(["BASE_BUILD_NUMBER: 10000", "RELEASE_VERSION: 23.1.0", "DEVELOPMENT_VERSION: 23.1.0-SNAPSHOT"], "DEVELOPMENT_VERSION: ", "23.2.0-A1-SNAPSHOT")
-    ['BASE_BUILD_NUMBER: 10000', 'RELEASE_VERSION: 23.1.0', 'DEVELOPMENT_VERSION: 23.2.0-A1-SNAPSHOT']
+    >>> update_line(["BASE_BUILD_NUMBER: 10000", "RELEASE_VERSION: 23.1.0", "DEVELOPMENT_VERSION: 23.2.0-A.1-SNAPSHOT"], "RELEASE_VERSION: ", "23.2.0")
+    ['BASE_BUILD_NUMBER: 10000', 'RELEASE_VERSION: 23.2.0', 'DEVELOPMENT_VERSION: 23.2.0-A.1-SNAPSHOT']
+    >>> update_line(["BASE_BUILD_NUMBER: 10000", "RELEASE_VERSION: 23.1.0", "DEVELOPMENT_VERSION: 23.1.0-SNAPSHOT"], "DEVELOPMENT_VERSION: ", "23.2.0-A.1-SNAPSHOT")
+    ['BASE_BUILD_NUMBER: 10000', 'RELEASE_VERSION: 23.1.0', 'DEVELOPMENT_VERSION: 23.2.0-A.1-SNAPSHOT']
     >>> update_line(["repository.name=Main Repository", "version.schema=19000", "dir.root=./alf_data"], "version.schema=", "19100")
     ['repository.name=Main Repository', 'version.schema=19100', 'dir.root=./alf_data']
     >>> update_line(["<url>http://github.com/Alfresco</url>", "<tag>23.1.0</tag>", "</scm>"], "<tag>", "HEAD</tag>")
