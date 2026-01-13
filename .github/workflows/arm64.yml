@@ -26,9 +26,9 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.16.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.16.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v12.4.3
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: Set up QEMU
@@ -88,7 +88,7 @@ jobs:
           python3 -m pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
       - name: "Dump all Docker containers logs"
         if: failure() && (steps.setup-env.outcome == 'failure' || steps.run-tests.outcome == 'failure')
-        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v8.16.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v12.4.3
       - name: "Persist test failure flag"
         id: persist_test_failure_flag
         if: failure()
