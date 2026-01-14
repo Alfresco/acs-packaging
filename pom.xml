@@ -30,7 +30,7 @@
 
         <acs.version>${acs.version.major}.${acs.version.minor}.${acs.version.revision}${acs.version.label}</acs.version>
         <repo.image.tag>${dependency.alfresco-enterprise-repo.version}</repo.image.tag>
-        <share.image.tag>${dependency.alfresco-enterprise-share.version}</share.image.tag>
+        <share.image.tag>26.1.0.14</share.image.tag>
     </properties>
 
     <scm>
