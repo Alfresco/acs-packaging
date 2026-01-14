@@ -94,7 +94,7 @@ else
   buildUpstreamTag "${ENT_UPSTREAM_REPO}" "${ENT_DEPENDENCY_VERSION}" "-P$BUILD_PROFILE -Pags -Pall-tas-tests -Dlicense.failOnNotUptodateHeader=true"
 fi
 
-SHARE_DEPENDENCY_VERSION="$(retrievePomProperty "dependency.alfresco-enterprise-share.version")"
+SHARE_DEPENDENCY_VERSION="26.1.0.14"
 SHARE_IMAGE=$([[ "${SHARE_DEPENDENCY_VERSION}" =~ ^.+-SNAPSHOT$ ]] && echo "-Dshare.image.tag=26.1.0.14" || echo)
 
 # Prevent merging of any SNAPSHOT dependencies into the master or the release/* branches
