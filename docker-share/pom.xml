@@ -11,7 +11,7 @@
     </parent>
 
     <properties>
-        <share.skipDockerImage>false</share.skipDockerImage>
+        <share.skipDockerImage>true</share.skipDockerImage>
         <image.name>alfresco/alfresco-share</image.name>
         <docker.quay-expires.value>NEVER</docker.quay-expires.value>
         <base.image>alfresco/alfresco-share-base:${share.image.tag}</base.image>
