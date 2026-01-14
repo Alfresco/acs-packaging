@@ -8,7 +8,7 @@
 # If -m argument provided then master branch preparation is skipped (most likely to be used when preparing release branches ahead of release).
 # See below script behaviour explained.
 #######################################
-# Create HotFix branches for the released version (for X.Y.Z release it will be release/X.Y eg., create release/23.2 for 23.2.0 release)
+# Create HotFix branches for the released version (for X.Y.Z release it will be release/X.Y eg., create release/25.2 for 25.2.0 release)
 # 1. acs-packaging:
 # - set RELEASE_VERSION to X.Y.1, DEVELOPMENT_VERSION to X.Y.2-SNAPSHOT in master_release.yml
 # - set POM versions to X.Y.1-SNAPSHOT
@@ -29,7 +29,7 @@
 # 5. acs-community-packaging
 # - not created as we do not release hot fixes for community version
 #######################################
-# Create ServicePack branches for the released version (for X.Y.Z release it will be release/X.N eg., create release/23.N for 23.3.0 release)
+# Create ServicePack branches for the released version (for X.Y.Z release it will be release/X.N eg., create release/25.N for 25.3.0 release)
 # 1. acs-packaging:
 # - set RELEASE_VERSION to X.Y+1.0-A.1, DEVELOPMENT_VERSION to X.Y+1.0-A.2-SNAPSHOT in master_release.yml
 # - set POM versions to X.Y+1.0-A.1-SNAPSHOT
@@ -83,7 +83,7 @@
 # - set comm-repo dependency in main POM to <next_development_version>.1 or X.Y+1.0.1 (if <next_development_version> not passed)
 # - set comm-share dependency in main POM to <next_development_version>.1 or X.Y+1.0.1 (if <next_development_version> not passed)
 #######################################
-# In case when release branches are to be created ahead of release (for X.Y.Z release it will be release/stabilization/X.Y eg., create release/stabilization/23.2 for 23.2.0 release)
+# In case when release branches are to be created ahead of release (for X.Y.Z release it will be release/stabilization/X.Y eg., create release/stabilization/25.2 for 25.2.0 release)
 # In all 5 projects, branches are created from master branch without any additional changes.
 # Master branches are updated for the next SP/major release in a same way as in case of post release script execution (see above).
 #######################################
