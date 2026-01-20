@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-dev-tomcat-env</artifactId>
-        <version>26.1.0-A.8-SNAPSHOT</version>
+        <version>26.1.0-A.9-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -64,7 +64,7 @@
                 <artifactId>cargo-maven3-plugin</artifactId>
                 <configuration>
                     <container>
-                        <containerId>tomcat10x</containerId>
+                        <containerId>tomcat11x</containerId>
                         <type>embedded</type>
                         <log>target/cargo.log</log>
                         <systemProperties>

@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>content-repository-tests</artifactId>
-        <version>26.1.0-A.8-SNAPSHOT</version>
+        <version>26.1.0-A.9-SNAPSHOT</version>
     </parent>
 
     <developers>
@@ -30,6 +30,13 @@
             <id>run-ldap</id>
             <properties>
                 <suiteXmlFile>${project.basedir}/src/test/resources/ldap-suite.xml</suiteXmlFile>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>run-scim</id>
+            <properties>
+                <suiteXmlFile>${project.basedir}/src/test/resources/scim-suite.xml</suiteXmlFile>
             </properties>
         </profile>
     </profiles>
@@ -115,6 +122,12 @@
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
             <version>${dependency.jakarta-json-path.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
