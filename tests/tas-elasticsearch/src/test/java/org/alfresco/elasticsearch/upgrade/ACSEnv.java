@@ -98,6 +98,8 @@ class ACSEnv extends BaseACSEnv
                                 "-Dalfresco.host=localhost " +
                                 "-Dalfresco.port=8080 " +
                                 "-Dmessaging.broker.url=\"failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true\" " +
+                                "-Dmessaging.broker.username=admin" +
+                                "-Dmessaging.broker.password=admin" +
                                 "-Ddeployment.method=DOCKER_COMPOSE " +
                                 "-Dtransform.service.enabled=true " +
                                 "-Dtransform.service.url=http://transform-router:8095 " +
@@ -114,6 +116,8 @@ class ACSEnv extends BaseACSEnv
         newContainer(GenericContainer.class, cfg.getTransformRouterImage())
                 .withEnv("JAVA_OPTS", " -Xmx512m -XshowSettings:vm")
                 .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
+                .withEnv("SPRING_ACTIVEMQ_USER", "admin")
+                .withEnv("SPRING_ACTIVEMQ_PASSWORD", "admin")
                 .withEnv("CORE_AIO_URL", "http://transform-core-aio:8090")
                 .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
                 .withNetwork(network)
@@ -126,6 +130,8 @@ class ACSEnv extends BaseACSEnv
         newContainer(GenericContainer.class, cfg.getTransformCoreAIOImage())
                 .withEnv("JAVA_OPTS", " -Xmx1g -XshowSettings:vm")
                 .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
+                .withEnv("SPRING_ACTIVEMQ_USER", "admin")
+                .withEnv("SPRING_ACTIVEMQ_PASSWORD", "admin")
                 .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
                 .withNetwork(network)
                 .withNetworkAliases("transform-core-aio")
@@ -166,6 +172,8 @@ class ACSEnv extends BaseACSEnv
                 .withEnv("ELASTICSEARCH_INDEXNAME", cfg.getIndexName())
                 .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://" + cfg.getElasticsearchHostname() + ":9200")
                 .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
+                .withEnv("SPRING_ACTIVEMQ_USER", "admin")
+                .withEnv("SPRING_ACTIVEMQ_PASSWORD", "admin")
                 .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
                 .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config")
                 .withEnv("SPRING_DATASOURCE_URL", "jdbc:postgresql://postgres:5432/alfresco")
@@ -182,6 +190,8 @@ class ACSEnv extends BaseACSEnv
                 .withEnv("ELASTICSEARCH_INDEXNAME", cfg.getIndexName())
                 .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://" + cfg.getElasticsearchHostname() + ":9200")
                 .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
+                .withEnv("SPRING_ACTIVEMQ_USER", "admin")
+                .withEnv("SPRING_ACTIVEMQ_PASSWORD", "admin")
                 .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
                 .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config")
                 .withEnv("_JAVA_OPTIONS", "-Dlogging.level.org.alfresco=DEBUG")
