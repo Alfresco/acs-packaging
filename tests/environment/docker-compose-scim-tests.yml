@@ -37,6 +37,8 @@ services:
         -Ddb.url=jdbc:postgresql://postgres:5432/alfresco
         -Dalfresco.restApi.basicAuthScheme=true
         -Dmessaging.broker.url=\"failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true\"
+        -Dmessaging.broker.username=admin
+        -Dmessaging.broker.password=admin
         -Dindex.subsystem.name=noindex
         -DlocalTransform.core-aio.url=http://transform-core-aio:8090/
         -Dcors.enabled=true
@@ -83,6 +85,8 @@ services:
         -Ddb.url=jdbc:postgresql://postgres:5432/alfresco
         -Dalfresco.restApi.basicAuthScheme=true
         -Dmessaging.broker.url=\"failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true\"
+        -Dmessaging.broker.username=admin
+        -Dmessaging.broker.password=admin
         -Dindex.subsystem.name=noindex
         -DlocalTransform.core-aio.url=http://transform-core-aio:8090/
         -Dcors.enabled=true
@@ -137,7 +141,7 @@ services:
         }
 
   activemq:
-    image: alfresco/alfresco-activemq:5.18.3-jre17-rockylinux8
+    image: alfresco/alfresco-activemq:6.2.0-jre17-rockylinux8
     ports:
       - 8161:8161 # Web Console
       - 5672:5672 # AMQP
