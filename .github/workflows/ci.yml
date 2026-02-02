@@ -332,7 +332,6 @@ jobs:
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
         with:
-          merge-disk-volumes: true
           root-reserve-mb: 16384
           remove-android: 'true'
           remove-codeql: 'true'
