@@ -241,10 +241,6 @@ jobs:
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
-      - name: "Clean up disk space after build"
-        run: |
-          rm -rf ../alfresco-community-repo || true
-          rm -rf ../alfresco-enterprise-repo || true
       - name: "Set up the environment"
         run: |
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/${{ matrix.compose-file }}
@@ -305,10 +301,6 @@ jobs:
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
-      - name: "Clean up disk space after build"
-        run: |
-          rm -rf ../alfresco-community-repo || true
-          rm -rf ../alfresco-enterprise-repo || true
       - name: "Set up the environment"
         id: env
         run: |
@@ -355,13 +347,16 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
         with:
           merge-disk-volumes: true
-          root-reserve-mb: 12288
+          root-reserve-mb: 4096
           remove-android: 'true'
           remove-dotnet: 'true'
           remove-haskell: 'true'
           remove-codeql: 'true'
           remove-swift: 'true'
           remove-docker-images: 'true'
+          remove-powershell: 'true'
+      - name: "Show disk space before build"
+        run: df -h
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -374,10 +369,6 @@ jobs:
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
-      - name: "Clean up disk space after build"
-        run: |
-          rm -rf ../alfresco-community-repo || true
-          rm -rf ../alfresco-enterprise-repo || true
       - name: "Set up the environment configuration"
         run: |
           echo "CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest" >> $GITHUB_ENV
@@ -427,10 +418,6 @@ jobs:
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
-      - name: "Clean up disk space after build"
-        run: |
-          rm -rf ../alfresco-community-repo || true
-          rm -rf ../alfresco-enterprise-repo || true
       - name: "Set up the environment"
         run: |
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-cmis-opensearch-tests.yml
@@ -591,10 +578,6 @@ jobs:
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
-      - name: "Clean up disk space after build"
-        run: |
-          rm -rf ../alfresco-community-repo || true
-          rm -rf ../alfresco-enterprise-repo || true
       - name: "Set up the environment"
         run: mvn -B -q install -ntp -f tests/tas-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
       - name: "Check duplicate libraries"
