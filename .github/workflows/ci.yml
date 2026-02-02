@@ -373,9 +373,13 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
         with:
           merge-disk-volumes: true
-          root-reserve-mb: 16384
+          root-reserve-mb: 12288
           remove-android: 'true'
+          remove-dotnet: 'true'
+          remove-haskell: 'true'
           remove-codeql: 'true'
+          remove-swift: 'true'
+          remove-docker-images: 'true'
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -388,6 +392,19 @@ jobs:
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
+      - name: "Clean up disk space after build"
+        run: |
+          echo "Disk space before cleanup:"
+          df -h
+          # Clean cloned upstream repositories that are no longer needed
+          rm -rf ../alfresco-community-repo || true
+          rm -rf ../alfresco-enterprise-repo || true
+          # Clean Maven build artifacts that are no longer needed (keep only essential jars)
+          find ~/.m2/repository -name "*.tar.gz" -delete 2>/dev/null || true
+          find ~/.m2/repository -name "*-sources.jar" -delete 2>/dev/null || true
+          find ~/.m2/repository -name "*-javadoc.jar" -delete 2>/dev/null || true
+          echo "Disk space after cleanup:"
+          df -h
       - name: "Set up the environment configuration"
         run: |
           echo "CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest" >> $GITHUB_ENV
