@@ -360,7 +360,7 @@ jobs:
       - name: "Run tests"
         id: tests
         timeout-minutes: 40
-        run: mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false
+        run: mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false -Dmessaging.broker.username=admin -Dmessaging.broker.password=admin # pragma: allowlist secret
       - name: "Print output after failure"
         if: failure() && (steps.tests.outcome == 'failure' || steps.env.outcome == 'failure')
         run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
