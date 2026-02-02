@@ -98,8 +98,8 @@ class ACSEnv extends BaseACSEnv
                                 "-Dalfresco.host=localhost " +
                                 "-Dalfresco.port=8080 " +
                                 "-Dmessaging.broker.url=\"failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true\" " +
-                                "-Dmessaging.broker.username=admin" +
-                                "-Dmessaging.broker.password=admin" +
+                                "-Dmessaging.broker.username=admin " +
+                                "-Dmessaging.broker.password=admin " +
                                 "-Ddeployment.method=DOCKER_COMPOSE " +
                                 "-Dtransform.service.enabled=true " +
                                 "-Dtransform.service.url=http://transform-router:8095 " +

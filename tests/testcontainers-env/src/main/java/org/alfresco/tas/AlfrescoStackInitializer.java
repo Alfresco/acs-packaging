@@ -36,8 +36,8 @@ import org.alfresco.utility.report.log.Step;
 
 public class AlfrescoStackInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext>
 {
-    private static Logger LOGGER = LoggerFactory.getLogger(AlfrescoStackInitializer.class);
-    private static Slf4jLogConsumer LOG_CONSUMER = new Slf4jLogConsumer(LOGGER);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AlfrescoStackInitializer.class);
+    private static final Slf4jLogConsumer LOG_CONSUMER = new Slf4jLogConsumer(LOGGER);
 
     public static final String CUSTOM_ALFRESCO_INDEX = "custom-alfresco-index";
 
@@ -409,8 +409,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 "-Dalfresco.port=8080 " +
                                 "-Daos.baseUrlOverwrite=http://localhost:8080/alfresco/aos " +
                                 "-Dmessaging.broker.url=\"failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true\" " +
-                                "-Dmessaging.broker.username=admin" +
-                                "-Dmessaging.broker.password=admin" +
+                                "-Dmessaging.broker.username=admin " +
+                                "-Dmessaging.broker.password=admin " +
                                 "-Ddeployment.method=DOCKER_COMPOSE " +
                                 "-Dtransform.service.enabled=true " +
                                 "-Dtransform.service.url=http://transform-router:8095 " +
@@ -490,138 +490,130 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         SearchEngineType getSearchEngineType();
     }
 
-    private static final class DefaultImagesConfig implements ImagesConfig
-    {
-        private static final DefaultImagesConfig INSTANCE = new DefaultImagesConfig(EnvHelper::getEnvProperty, MavenPropertyHelper::getMavenProperty);
-        private final Function<String, String> envProperties;
-        private final Function<String, String> mavenProperties;
-
-        DefaultImagesConfig(Function<String, String> envProperties, Function<String, String> mavenProperties)
+    private record DefaultImagesConfig(Function<String, String> envProperties, Function<String, String> mavenProperties) implements ImagesConfig
         {
-            this.envProperties = envProperties;
-            this.mavenProperties = mavenProperties;
-        }
+            private static final DefaultImagesConfig INSTANCE = new DefaultImagesConfig(EnvHelper::getEnvProperty, MavenPropertyHelper::getMavenProperty);
 
-        @Override
-        public String getReIndexingImage()
-        {
-            return getSystemProperty("reindeximage", "quay.io/alfresco/alfresco-elasticsearch-reindexing:latest");
-        }
-
-        @Override
-        public String getLiveIndexingImage()
-        {
-            return getSystemProperty("indeximage", "quay.io/alfresco/alfresco-elasticsearch-live-indexing:latest");
-        }
-
-        @Override
-        public String getElasticsearchImage()
-        {
-            return "docker.elastic.co/elasticsearch/elasticsearch:" + envProperties.apply("ELASTICSEARCH_TAG");
-        }
-
-        @Override
-        public String getOpensearchImage()
-        {
-            return "opensearchproject/opensearch:" + envProperties.apply("OPENSEARCH_TAG");
-        }
-
-        @Override
-        public String getOpensearchDashboardsImage()
-        {
-            return "opensearchproject/opensearch-dashboards:" + envProperties.apply("OPENSEARCH_DASHBOARDS_TAG");
-        }
-
-        @Override
-        public String getActiveMqImage()
-        {
-            return "alfresco/alfresco-activemq:" + envProperties.apply("ACTIVEMQ_TAG");
-        }
-
-        @Override
-        public String getTransformRouterImage()
-        {
-            return "quay.io/alfresco/alfresco-transform-router:" + mavenProperties.apply("dependency.alfresco-transform-service.version");
-        }
-
-        @Override
-        public String getTransformCoreAIOImage()
-        {
-            return "alfresco/alfresco-transform-core-aio:" + mavenProperties.apply("dependency.alfresco-transform-core.version");
-        }
-
-        @Override
-        public String getSharedFileStoreImage()
-        {
-            return "quay.io/alfresco/alfresco-shared-file-store:" + mavenProperties.apply("dependency.alfresco-transform-service.version");
-        }
-
-        @Override
-        public String getPostgreSQLImage()
-        {
-            return "postgres:" + envProperties.apply("POSTGRES_TAG");
-        }
-
-        @Override
-        public String getMySQLImage()
-        {
-            return "mysql:" + envProperties.apply("MYSQL_TAG");
-        }
-
-        @Override
-        public String getMariaDBImage()
-        {
-            return "mariadb:" + envProperties.apply("MARIADB_TAG");
-        }
-
-        @Override
-        public String getMsSqlImage()
-        {
-            return "mcr.microsoft.com/mssql/server:" + envProperties.apply("MSSQL_TAG");
-        }
-
-        @Override
-        public String getOracleImage()
-        {
-            return "quay.io/alfresco/oracle-database:" + envProperties.apply("ORACLE_TAG");
-        }
-
-        @Override
-        public String getRepositoryImage()
-        {
-            return getSystemProperty("repoimage", "alfresco/alfresco-content-repository:latest");
-        }
-
-        @Override
-        public String getKibanaImage()
-        {
-            return "kibana:" + envProperties.apply("KIBANA_TAG");
-        }
-
-        @Override
-        public SearchEngineType getSearchEngineType()
-        {
-            String searchEngineTypeProperty = mavenProperties.apply("search.engine.type");
-            if (Strings.isNullOrEmpty(searchEngineTypeProperty))
+            @Override
+            public String getReIndexingImage()
             {
-                Step.STEP("Defaulting search engine to Elasticsearch.");
-                return SearchEngineType.ELASTICSEARCH_ENGINE;
+                return getSystemProperty("reindeximage", "quay.io/alfresco/alfresco-elasticsearch-reindexing:latest");
             }
-            return SearchEngineType.from(searchEngineTypeProperty);
-        }
 
-        @Override
-        public DatabaseType getDatabaseType()
-        {
-            String databaseTypeProperty = mavenProperties.apply("database.type");
-            if (Strings.isNullOrEmpty(databaseTypeProperty))
+            @Override
+            public String getLiveIndexingImage()
             {
-                Step.STEP("Defaulting database to postgresql.");
-                return DatabaseType.POSTGRESQL_DB;
+                return getSystemProperty("indeximage", "quay.io/alfresco/alfresco-elasticsearch-live-indexing:latest");
             }
-            return DatabaseType.from(databaseTypeProperty);
+
+            @Override
+            public String getElasticsearchImage()
+            {
+                return "docker.elastic.co/elasticsearch/elasticsearch:" + envProperties.apply("ELASTICSEARCH_TAG");
+            }
+
+            @Override
+            public String getOpensearchImage()
+            {
+                return "opensearchproject/opensearch:" + envProperties.apply("OPENSEARCH_TAG");
+            }
+
+            @Override
+            public String getOpensearchDashboardsImage()
+            {
+                return "opensearchproject/opensearch-dashboards:" + envProperties.apply("OPENSEARCH_DASHBOARDS_TAG");
+            }
+
+            @Override
+            public String getActiveMqImage()
+            {
+                return "alfresco/alfresco-activemq:" + envProperties.apply("ACTIVEMQ_TAG");
+            }
+
+            @Override
+            public String getTransformRouterImage()
+            {
+                return "quay.io/alfresco/alfresco-transform-router:" + mavenProperties.apply("dependency.alfresco-transform-service.version");
+            }
+
+            @Override
+            public String getTransformCoreAIOImage()
+            {
+                return "alfresco/alfresco-transform-core-aio:" + mavenProperties.apply("dependency.alfresco-transform-core.version");
+            }
+
+            @Override
+            public String getSharedFileStoreImage()
+            {
+                return "quay.io/alfresco/alfresco-shared-file-store:" + mavenProperties.apply("dependency.alfresco-transform-service.version");
+            }
+
+            @Override
+            public String getPostgreSQLImage()
+            {
+                return "postgres:" + envProperties.apply("POSTGRES_TAG");
+            }
+
+            @Override
+            public String getMySQLImage()
+            {
+                return "mysql:" + envProperties.apply("MYSQL_TAG");
+            }
+
+            @Override
+            public String getMariaDBImage()
+            {
+                return "mariadb:" + envProperties.apply("MARIADB_TAG");
+            }
+
+            @Override
+            public String getMsSqlImage()
+            {
+                return "mcr.microsoft.com/mssql/server:" + envProperties.apply("MSSQL_TAG");
+            }
+
+            @Override
+            public String getOracleImage()
+            {
+                return "quay.io/alfresco/oracle-database:" + envProperties.apply("ORACLE_TAG");
+            }
+
+            @Override
+            public String getRepositoryImage()
+            {
+                return getSystemProperty("repoimage", "alfresco/alfresco-content-repository:latest");
+            }
+
+            @Override
+            public String getKibanaImage()
+            {
+                return "kibana:" + envProperties.apply("KIBANA_TAG");
+            }
+
+            @Override
+            public SearchEngineType getSearchEngineType()
+            {
+                String searchEngineTypeProperty = mavenProperties.apply("search.engine.type");
+                if (Strings.isNullOrEmpty(searchEngineTypeProperty))
+                {
+                    Step.STEP("Defaulting search engine to Elasticsearch.");
+                    return SearchEngineType.ELASTICSEARCH_ENGINE;
+                }
+                return SearchEngineType.from(searchEngineTypeProperty);
+            }
+
+            @Override
+            public DatabaseType getDatabaseType()
+            {
+                String databaseTypeProperty = mavenProperties.apply("database.type");
+                if (Strings.isNullOrEmpty(databaseTypeProperty))
+                {
+                    Step.STEP("Defaulting database to postgresql.");
+                    return DatabaseType.POSTGRESQL_DB;
+                }
+                return DatabaseType.from(databaseTypeProperty);
+            }
         }
-    }
 
     private static class OracleContainer<SELF extends OracleContainer<SELF>> extends JdbcDatabaseContainer<SELF>
     {
