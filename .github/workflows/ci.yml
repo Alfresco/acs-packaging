@@ -41,7 +41,7 @@ env:
 jobs:
   precommit:
     name: Pre-Commit checks
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-latest
     if: >
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
@@ -54,7 +54,7 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@v12.4.3
   veracode_sca:
     name: "Source Clear Scan (SCA)"
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-latest
     if: >
       (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request') &&
       !contains(github.event.head_commit.message, '[skip tests]')
@@ -78,7 +78,7 @@ jobs:
 
   veracode_sast_acs:
     name: "Pipeline SAST Scan - ACS"
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-latest
     if: >
       (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request') &&
       github.actor != 'dependabot[bot]' &&
@@ -139,7 +139,7 @@ jobs:
 
   pmd_scan:
     name: "PMD Scan"
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-latest
     if: >
       github.event_name == 'pull_request' &&
       github.actor != 'dependabot[bot]' &&
@@ -157,7 +157,7 @@ jobs:
 
   tas_tests:
     name: ${{ matrix.testSuite }} TAS tests
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-latest
     if: >
       contains(github.event.head_commit.message, '[tas]') &&
       !contains(github.event.head_commit.message, '[skip tests]')
@@ -250,7 +250,7 @@ jobs:
 
   tas_tests_with_aims:
     name: ${{ matrix.testSuite }} TAS tests with AIMS
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-latest
     if: >
       !contains(github.event.head_commit.message, '[skip tas]') &&
       !contains(github.event.head_commit.message, '[skip tests]')
@@ -406,7 +406,7 @@ jobs:
 
   tas_tests_search_api:
     name: ${{ matrix.testSuite }} | TAS tests (Search API)
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-latest
 #    if: >
 #      (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request') &&
 #      !contains(github.event.head_commit.message, '[skip search]') &&
@@ -480,7 +480,7 @@ jobs:
 
   upgrade_tas_tests:
     name: ${{ matrix.testSuite }} Upgrade TAS tests
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-latest
     if: >
       (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request') &&
       !contains(github.event.head_commit.message, '[skip search]') &&
@@ -526,7 +526,7 @@ jobs:
 
   all_amps_tests:
     name: "All AMPs tests"
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-latest
     if: >
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
@@ -570,7 +570,7 @@ jobs:
 
   tas_test_with_mtls:
     name: ${{ matrix.testSuite }} TAS tests with mutal TLS
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-latest
     if: >
       !contains(github.event.head_commit.message, '[skip mtls]') &&
       !contains(github.event.head_commit.message, '[skip tests]')
@@ -634,7 +634,7 @@ jobs:
 
   distribution_zip_content_tests:
     name: "Distribution Zip content tests (Java ${{ matrix.java-version }})"
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-latest
     if: >
       !contains(github.event.head_commit.message, '[skip tests]')
     strategy:
@@ -672,7 +672,7 @@ jobs:
 
   single_pipeline_image_tests:
     name: "Single Pipeline image tests (Java ${{ matrix.java-version }})"
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-latest
     if: >
       github.event_name != 'pull_request' &&
       !contains(github.event.head_commit.message, '[skip tests]')
@@ -725,7 +725,7 @@ jobs:
 
   test_tomcat_deployment:
     name: "Test Tomcat deployment"
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-latest
     if: >
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
@@ -758,7 +758,7 @@ jobs:
 
   pipeline_test_docker_release:
     name: "Upload docker images needed for pipeline tests: <acs.version>-<PIPELINE_TAG_TEXT_INSERT>-<build>"
-    runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    runs-on: ubuntu-latest
     if: >
       contains(github.event.head_commit.message, '[pipeline_docker]')
     services:
