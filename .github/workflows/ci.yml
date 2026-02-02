@@ -48,14 +48,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
-        with:
-          remove-android: false
-          remove-dotnet: false
-          remove-haskell: false
-          remove-codeql: false
-          remove-swift: false
-          remove-powershell: false
-          remove-tools-cache: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v12.4.3
         with:
           java-version: ${{ env.JAVA_VERSION }}
@@ -68,14 +60,6 @@ jobs:
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
-        with:
-          remove-android: false
-          remove-dotnet: false
-          remove-haskell: false
-          remove-codeql: false
-          remove-swift: false
-          remove-powershell: false
-          remove-tools-cache: false
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -163,14 +147,6 @@ jobs:
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
-        with:
-          remove-android: false
-          remove-dotnet: false
-          remove-haskell: false
-          remove-codeql: false
-          remove-swift: false
-          remove-powershell: false
-          remove-tools-cache: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v12.4.3
         with:
@@ -247,13 +223,12 @@ jobs:
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
         with:
-          remove-android: false
-          remove-dotnet: false
-          remove-haskell: false
-          remove-codeql: false
-          remove-swift: false
-          remove-powershell: false
-          remove-tools-cache: false
+          remove-android: 'true'
+          remove-dotnet: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+          remove-swift: 'true'
+          remove-docker-images: 'true'
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -266,6 +241,10 @@ jobs:
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
+      - name: "Clean up disk space after build"
+        run: |
+          rm -rf ../alfresco-community-repo || true
+          rm -rf ../alfresco-enterprise-repo || true
       - name: "Set up the environment"
         run: |
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/${{ matrix.compose-file }}
@@ -308,13 +287,12 @@ jobs:
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
         with:
-          remove-android: false
-          remove-dotnet: false
-          remove-haskell: false
-          remove-codeql: false
-          remove-swift: false
-          remove-powershell: false
-          remove-tools-cache: false
+          remove-android: 'true'
+          remove-dotnet: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+          remove-swift: 'true'
+          remove-docker-images: 'true'
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -327,6 +305,10 @@ jobs:
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
+      - name: "Clean up disk space after build"
+        run: |
+          rm -rf ../alfresco-community-repo || true
+          rm -rf ../alfresco-enterprise-repo || true
       - name: "Set up the environment"
         id: env
         run: |
@@ -394,17 +376,8 @@ jobs:
           bash ./scripts/ci/build.sh
       - name: "Clean up disk space after build"
         run: |
-          echo "Disk space before cleanup:"
-          df -h
-          # Clean cloned upstream repositories that are no longer needed
           rm -rf ../alfresco-community-repo || true
           rm -rf ../alfresco-enterprise-repo || true
-          # Clean Maven build artifacts that are no longer needed (keep only essential jars)
-          find ~/.m2/repository -name "*.tar.gz" -delete 2>/dev/null || true
-          find ~/.m2/repository -name "*-sources.jar" -delete 2>/dev/null || true
-          find ~/.m2/repository -name "*-javadoc.jar" -delete 2>/dev/null || true
-          echo "Disk space after cleanup:"
-          df -h
       - name: "Set up the environment configuration"
         run: |
           echo "CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest" >> $GITHUB_ENV
@@ -436,13 +409,12 @@ jobs:
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
         with:
-          remove-android: false
-          remove-dotnet: false
-          remove-haskell: false
-          remove-codeql: false
-          remove-swift: false
-          remove-powershell: false
-          remove-tools-cache: false
+          remove-android: 'true'
+          remove-dotnet: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+          remove-swift: 'true'
+          remove-docker-images: 'true'
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -455,6 +427,10 @@ jobs:
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
+      - name: "Clean up disk space after build"
+        run: |
+          rm -rf ../alfresco-community-repo || true
+          rm -rf ../alfresco-enterprise-repo || true
       - name: "Set up the environment"
         run: |
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-cmis-opensearch-tests.yml
@@ -472,10 +448,10 @@ jobs:
   tas_tests_search_api:
     name: ${{ matrix.testSuite }} | TAS tests (Search API)
     runs-on: alfrescoPub-ubuntu2204-16G-4CPU
-    #if: >
-    #  (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request') &&
-    #  !contains(github.event.head_commit.message, '[skip search]') &&
-    #  !contains(github.event.head_commit.message, '[skip tests]')
+#    if: >
+#      (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request') &&
+#      !contains(github.event.head_commit.message, '[skip search]') &&
+#      !contains(github.event.head_commit.message, '[skip tests]')
     strategy:
       fail-fast: false
       matrix:
@@ -597,13 +573,12 @@ jobs:
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
         with:
-          remove-android: false
-          remove-dotnet: false
-          remove-haskell: false
-          remove-codeql: false
-          remove-swift: false
-          remove-powershell: false
-          remove-tools-cache: false
+          remove-android: 'true'
+          remove-dotnet: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+          remove-swift: 'true'
+          remove-docker-images: 'true'
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -616,6 +591,10 @@ jobs:
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
+      - name: "Clean up disk space after build"
+        run: |
+          rm -rf ../alfresco-community-repo || true
+          rm -rf ../alfresco-enterprise-repo || true
       - name: "Set up the environment"
         run: mvn -B -q install -ntp -f tests/tas-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
       - name: "Check duplicate libraries"
@@ -667,6 +646,13 @@ jobs:
             deploy-timeout: 10
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
+        with:
+          remove-android: 'true'
+          remove-dotnet: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+          remove-swift: 'true'
+          remove-docker-images: 'true'
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -716,6 +702,13 @@ jobs:
         java-version: [21, 25]
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
+        with:
+          remove-android: 'true'
+          remove-dotnet: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+          remove-swift: 'true'
+          remove-docker-images: 'true'
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -755,6 +748,13 @@ jobs:
         java-version: [DEFAULT, 25]
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
+        with:
+          remove-android: 'true'
+          remove-dotnet: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+          remove-swift: 'true'
+          remove-docker-images: 'true'
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -803,6 +803,13 @@ jobs:
       !contains(github.event.head_commit.message, '[skip tests]')
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
+        with:
+          remove-android: 'true'
+          remove-dotnet: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+          remove-swift: 'true'
+          remove-docker-images: 'true'
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -841,6 +848,13 @@ jobs:
           - 5000:5000
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
+        with:
+          remove-android: 'true'
+          remove-dotnet: 'true'
+          remove-haskell: 'true'
+          remove-codeql: 'true'
+          remove-swift: 'true'
+          remove-docker-images: 'true'
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
