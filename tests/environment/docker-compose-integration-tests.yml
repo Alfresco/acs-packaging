@@ -43,6 +43,8 @@ services:
         -Dftp.dataPortFrom=30000
         -Dftp.dataPortTo=30099
         -Dmessaging.broker.url=\"failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true\"
+        -Dmessaging.broker.username=admin
+        -Dmessaging.broker.password=admin
         -Dlocal.transform.service.enabled=false
         -Dlegacy.transform.service.enabled=false
         -Dimap.server.port=1143
@@ -52,13 +54,14 @@ services:
         "
     ports:
       - 8082:8080
+      - 8081:8080
       - 8000:8000
       - 143:1143
       - 21:1221
       - 30000-30099:30000-30099
 
   postgres:
-    image: library/postgres:${POSTGRES_TAG}
+    image: library/postgres:16.6
     environment:
       - POSTGRES_PASSWORD=alfresco
       - POSTGRES_USER=alfresco
@@ -67,7 +70,7 @@ services:
       - 5432:5432
 
   solr6:
-    image: quay.io/alfresco/insight-engine:${SOLR6_TAG}
+    image: quay.io/alfresco/insight-engine:2.0.16
     environment:
       #Solr needs to know how to register itself with Alfresco
       SOLR_ALFRESCO_HOST: "alfresco"
@@ -87,7 +90,7 @@ services:
       - 8083:8983 #Browser port
 
   activemq:
-    image: alfresco/alfresco-activemq:${ACTIVEMQ_TAG}
+    image: alfresco/alfresco-activemq:6.2-jre17-rockylinux8
     ports:
       - 8161:8161 # Web Console
       - 5672:5672 # AMQP

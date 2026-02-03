@@ -36,8 +36,8 @@ import org.alfresco.utility.report.log.Step;
 
 public class AlfrescoStackInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext>
 {
-    private static Logger LOGGER = LoggerFactory.getLogger(AlfrescoStackInitializer.class);
-    private static Slf4jLogConsumer LOG_CONSUMER = new Slf4jLogConsumer(LOGGER);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AlfrescoStackInitializer.class);
+    private static final Slf4jLogConsumer LOG_CONSUMER = new Slf4jLogConsumer(LOGGER);
 
     public static final String CUSTOM_ALFRESCO_INDEX = "custom-alfresco-index";
 
@@ -186,6 +186,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                         "SPRING_DATASOURCE_PASSWORD", databaseType.getPassword(),
                         "ELASTICSEARCH_INDEX_NAME", CUSTOM_ALFRESCO_INDEX,
                         "SPRING_ACTIVEMQ_BROKER-URL", "nio://activemq:61616",
+                        "SPRING_ACTIVEMQ_USER", "admin",
+                        "SPRING_ACTIVEMQ_PASSWORD", "admin",
                         "JAVA_TOOL_OPTIONS", "-Xmx1g",
                         "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config"));
         return env;
@@ -212,6 +214,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                 .withEnv("ELASTICSEARCH_INDEXNAME", CUSTOM_ALFRESCO_INDEX)
                 .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://elasticsearch:9200")
                 .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
+                .withEnv("SPRING_ACTIVEMQ_USER", "admin")
+                .withEnv("SPRING_ACTIVEMQ_PASSWORD", "admin")
                 .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
                 .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config")
                 .withEnv("JAVA_TOOL_OPTIONS", "-Xms2g -Xmx2g -agentlib:jdwp=transport=dt_socket,address=*:5005,server=y,suspend=n")
@@ -353,6 +357,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                 .withNetworkAliases("transform-core-aio")
                 .withEnv("JAVA_OPTS", "-Xms512m -Xmx1024m")
                 .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
+                .withEnv("ACTIVEMQ_USER", "admin")
+                .withEnv("ACTIVEMQ_PASSWORD", "admin")
                 .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
                 .withExposedPorts(8090)
                 .waitingFor(Wait.forListeningPort())
@@ -366,6 +372,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                 .withNetworkAliases("transform-router")
                 .withEnv("JAVA_OPTS", "-Xms256m -Xmx512m")
                 .withEnv("ACTIVEMQ_URL", "nio://activemq:61616")
+                .withEnv("ACTIVEMQ_USER", "admin")
+                .withEnv("ACTIVEMQ_PASSWORD", "admin")
                 .withEnv("CORE_AIO_URL", "http://transform-core-aio:8090")
                 .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
                 .withExposedPorts(8095)
@@ -401,6 +409,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 "-Dalfresco.port=8080 " +
                                 "-Daos.baseUrlOverwrite=http://localhost:8080/alfresco/aos " +
                                 "-Dmessaging.broker.url=\"failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true\" " +
+                                "-Dmessaging.broker.username=admin " +
+                                "-Dmessaging.broker.password=admin " +
                                 "-Ddeployment.method=DOCKER_COMPOSE " +
                                 "-Dtransform.service.enabled=true " +
                                 "-Dtransform.service.url=http://transform-router:8095 " +
@@ -480,17 +490,9 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
         SearchEngineType getSearchEngineType();
     }
 
-    private static final class DefaultImagesConfig implements ImagesConfig
+    private record DefaultImagesConfig(Function<String, String> envProperties, Function<String, String> mavenProperties) implements ImagesConfig
     {
         private static final DefaultImagesConfig INSTANCE = new DefaultImagesConfig(EnvHelper::getEnvProperty, MavenPropertyHelper::getMavenProperty);
-        private final Function<String, String> envProperties;
-        private final Function<String, String> mavenProperties;
-
-        DefaultImagesConfig(Function<String, String> envProperties, Function<String, String> mavenProperties)
-        {
-            this.envProperties = envProperties;
-            this.mavenProperties = mavenProperties;
-        }
 
         @Override
         public String getReIndexingImage()
