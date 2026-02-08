@@ -126,7 +126,7 @@ jobs:
         run: zip readable_output.zip results.json
       - name: Upload Artifact
         if: success() || failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: Veracode Pipeline-Scan Results - ACS (Human Readable)
           path: readable_output.zip
