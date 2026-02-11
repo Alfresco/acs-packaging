@@ -20,6 +20,7 @@ Several types of metrics are exposed by the repository:
 * DB (mybatis) metrics
 * REST API metrics
 * Authentication metrics (tickets/sessions and users)
+* ElasticSearch metrics
 
 All of these and specific details about each gathered metric can be controlled
 with system properties:
@@ -34,6 +35,9 @@ metrics.jvmMetricsReporter.enabled=false
 metrics.restMetricsReporter.enabled=false
 metrics.restMetricsReporter.path.enabled=false
 metrics.authenticationMetricsReporter.enabled=false
+metrics.elasticSearchMetricsReporter.enabled=false
+metrics.elasticSearchMetricsReporter.cache.expireAfterWrite.seconds=120
+metrics.elasticSearchMetricsReporter.cache.refreshAfterWrite.seconds=60
 ```
 
 > This feature is enterprise only!
