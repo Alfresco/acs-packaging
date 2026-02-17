@@ -99,7 +99,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "afdfsqye8syyod"
+        "uid": "dfdjl9zew1jb4b"
       },
       "description": "Total number of indexable repository nodes.",
       "fieldConfig": {
@@ -162,7 +162,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "afdfsqye8syyod"
+        "uid": "dfdjl9zew1jb4b"
       },
       "description": "Total successful content indexing operations.",
       "fieldConfig": {
@@ -224,7 +224,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "afdfsqye8syyod"
+        "uid": "dfdjl9zew1jb4b"
       },
       "description": "Total failed content indexing operations.",
       "fieldConfig": {
@@ -286,7 +286,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "afdfsqye8syyod"
+        "uid": "dfdjl9zew1jb4b"
       },
       "description": "Number of new documents currently being indexed.",
       "fieldConfig": {
@@ -348,7 +348,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "afdfsqye8syyod"
+        "uid": "dfdjl9zew1jb4b"
       },
       "description": "Number of outdated documents currently being reindexed.",
       "fieldConfig": {
@@ -410,7 +410,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "afdfsqye8syyod"
+        "uid": "dfdjl9zew1jb4b"
       },
       "description": "Trend of successful and failed content indexing operations over time.",
       "fieldConfig": {
@@ -508,82 +508,6 @@
       ],
       "title": "Content Indexing Success vs Failures (Trend)",
       "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "afdfsqye8syyod"
-      },
-      "description": "Current indexing workload split between new and outdated content. This metric applies only to content indexing operations.",
-      "fieldConfig": {
-        "defaults": {
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": 0
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 6,
-        "w": 24,
-        "x": 0,
-        "y": 21
-      },
-      "id": 10,
-      "options": {
-        "displayMode": "gradient",
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": false
-        },
-        "maxVizHeight": 300,
-        "minVizHeight": 16,
-        "minVizWidth": 8,
-        "namePlacement": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showUnfilled": true,
-        "sizing": "auto",
-        "valueMode": "color"
-      },
-      "pluginVersion": "12.3.1",
-      "targets": [
-        {
-          "editorMode": "code",
-          "expr": "elasticsearch_content_indexing_new_documents_progress_count",
-          "legendFormat": "New Content",
-          "range": true,
-          "refId": "A"
-        },
-        {
-          "editorMode": "code",
-          "expr": "elasticsearch_content_indexing_outdated_documents_progress_count",
-          "legendFormat": "Outdated Content",
-          "range": true,
-          "refId": "B"
-        }
-      ],
-      "title": "Current Content Indexing Load",
-      "type": "bargauge"
     }
   ],
   "preload": false,
@@ -601,5 +525,5 @@
   "timezone": "browser",
   "title": "Alfresco Elasticsearch Metrics (Context-Aware)",
   "uid": "97076aad-bbe5-4074-ad45-e615021ff7d1",
-  "version": 4
+  "version": 2
 }
