@@ -38,7 +38,7 @@
       "datasource": {
         "type": "prometheus"
       },
-      "description": "Total number of documents currently indexed in Elasticsearch (all types).",
+      "description": "Document indexed in Elasticsearch instances. This number will not include any default documents created during bootstrap unless these have been explicitly re-indexed. Therefore there may be a discrepancy with the number above.",
       "fieldConfig": {
         "defaults": {
           "mappings": [],
@@ -99,9 +99,9 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "dfdjl9zew1jb4b"
+        "uid": "ffdp68onn7pj4b"
       },
-      "description": "Total number of indexable repository nodes.",
+      "description": "Documents that can be indexed using Elasticsearch.",
       "fieldConfig": {
         "defaults": {
           "mappings": [],
@@ -162,9 +162,9 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "dfdjl9zew1jb4b"
+        "uid": "ffdp68onn7pj4b"
       },
-      "description": "Total successful content indexing operations.",
+      "description": "This metric indicates the number of documents whose content has been successfully indexed in Elasticsearch instances. It is a subset of the total count of indexed documents.",
       "fieldConfig": {
         "defaults": {
           "mappings": [],
@@ -224,9 +224,9 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "dfdjl9zew1jb4b"
+        "uid": "ffdp68onn7pj4b"
       },
-      "description": "Total failed content indexing operations.",
+      "description": "This metric indicates the number of documents whose content has not been successfully indexed in Elasticsearch instances.  Reindexing may be necessary for these documents.",
       "fieldConfig": {
         "defaults": {
           "mappings": [],
@@ -286,9 +286,9 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "dfdjl9zew1jb4b"
+        "uid": "ffdp68onn7pj4b"
       },
-      "description": "Number of new documents currently being indexed.",
+      "description": "This metric indicates the number of newly added documents whose content indexing is in progress.",
       "fieldConfig": {
         "defaults": {
           "mappings": [],
@@ -348,9 +348,9 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "dfdjl9zew1jb4b"
+        "uid": "ffdp68onn7pj4b"
       },
-      "description": "Number of outdated documents currently being reindexed.",
+      "description": "This metric indicates the number of modified documents whose content indexing is in progress.",
       "fieldConfig": {
         "defaults": {
           "mappings": [],
@@ -410,7 +410,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "dfdjl9zew1jb4b"
+        "uid": "ffdp68onn7pj4b"
       },
       "description": "Trend of successful and failed content indexing operations over time.",
       "fieldConfig": {
@@ -525,5 +525,5 @@
   "timezone": "browser",
   "title": "Alfresco Elasticsearch Metrics (Context-Aware)",
   "uid": "97076aad-bbe5-4074-ad45-e615021ff7d1",
-  "version": 2
+  "version": 3
 }
