@@ -43,7 +43,7 @@ services:
         -Dcsrf.filter.enabled=false
         -Dalfresco.restApi.basicAuthScheme=true
         -Xms1500m -Xmx1500m
-        '
+        ' #pragma: allowlist secret
     ports:
       - 8082:8080
       - 8000:8000
