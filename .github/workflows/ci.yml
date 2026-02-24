@@ -396,7 +396,7 @@ jobs:
       - name: "Run tests"
         id: tests
         timeout-minutes: 40
-        run: mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false -Dmessaging.broker.username=admin -Dmessaging.broker.password=admin # pragma: allowlist secre
+        run: mvn -B install -ntp -f tests/tas-cmis/pom.xml -Pall-tas-tests,run-cmis-with-elastic -Denvironment=default -DrunBugs=false -Dmessaging.broker.username=admin -Dmessaging.broker.password=admin # pragma: allowlist secret
       - name: "Print output after failure"
         if: ${{ always() && steps.tests.outcome == 'failure' }}
         run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
@@ -624,7 +624,7 @@ jobs:
       - name: "Run tests"
         id: tests
         timeout-minutes: ${{ matrix.deploy-timeout }}
-        run: mvn -B install -ntp -f ${{ matrix.pom-dir }}/pom.xml -P${{ matrix.profiles }} -Denvironment=default -DrunBugs=false -Dmessaging.broker.username=admin -Dmessaging.broker.password=admin # pragma: allowlist secre
+        run: mvn -B install -ntp -f ${{ matrix.pom-dir }}/pom.xml -P${{ matrix.profiles }} -Denvironment=default -DrunBugs=false -Dmessaging.broker.username=admin -Dmessaging.broker.password=admin # pragma: allowlist secret
       - name: "Print output after failure"
         if: ${{ always() && steps.tests.outcome == 'failure' }}
         run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "${{ matrix.pom-dir }}"
