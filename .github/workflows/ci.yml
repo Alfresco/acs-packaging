@@ -36,7 +36,7 @@ env:
   ALF_LICENCE_S3_PATH: s3://acs-license/acs/alf26-allenabled.lic
   ALF_LICENCE_LOCAL_PATH: /tmp/licence.lic
   PYTHON_VERSION: 3.8.12
-  DTAS_VERSION: v1.7.2
+  DTAS_VERSION: v1.7.3
 
 jobs:
   precommit:
