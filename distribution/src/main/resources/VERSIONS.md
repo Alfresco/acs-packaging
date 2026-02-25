@@ -1,6 +1,6 @@
 # Component Versions
 
-This file lists the recommended components for this Service Pack. Use it along with the [Supported Platforms Matrix](https://support.hyland.com/access?dita:id=baq1719482911154&vrm_version=25.2) and the [Alfresco Documentation](https://support.hyland.com/access?dita:id=kho1719590768396&vrm_version=25.2) to apply selective component upgrades.
+This file lists the recommended components for this Service Pack. Use it along with the [Supported Platforms Matrix](https://support.hyland.com/access?dita:id=baq1719482911154&vrm_version=26.1) and the [Alfresco Documentation](https://support.hyland.com/access?dita:id=kho1719590768396&vrm_version=26.1) to apply selective component upgrades.
 
 #### Alfresco Content Services @project.version@
 
