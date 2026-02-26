@@ -199,6 +199,8 @@ services:
             -Dmessaging.broker.host=activemq
             -Dmessaging.broker.username=admin
             -Dmessaging.broker.password=admin
+            -Dmessaging.username=admin
+            -Dmessaging.password=admin
             -Drepo.hostname=alfresco
             -Drepo.port=8080
             -Ddw.server.applicationConnectors[0].type=http
