@@ -59,7 +59,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | MS SQL Server | 2022 | 2019 |
 | Oracle | 23c | |
 | PostgreSQL | 16.6 | 15.10, 14.15 |
-| MariaDB | 10.11 | 10.6, 10.5 |
+| MariaDB | 11.8 | 10.11 |
 | Amazon Aurora PostgreSQL | 15.5 | |
 
 ##### Database Connectors
