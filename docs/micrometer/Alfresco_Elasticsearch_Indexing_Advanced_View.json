@@ -600,7 +600,7 @@
   "timezone": "browser",
   "title": "Alfresco Elasticsearch Metrics (Context-Aware)",
   "uid": "97076aad-bbe5-4074-ad45-e615021ff7d1",
-  "version": 2,
+  "version": 4,
   "weekStart": "",
   "id": null
 }
