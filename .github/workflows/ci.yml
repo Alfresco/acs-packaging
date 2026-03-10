@@ -422,7 +422,7 @@ jobs:
             profiles: all-tas-tests,elastic
             search-engine-type: elasticsearch
             db-type: mysql
-          - testSuite: Elasticsearch Maria DB 10.11
+          - testSuite: Elasticsearch Maria DB 11.8
             profiles: all-tas-tests,elastic
             search-engine-type: elasticsearch
             db-type: mariadb
@@ -442,7 +442,7 @@ jobs:
             profiles: all-tas-tests,elastic-basic-auth
             search-engine-type: elasticsearch
             db-type: mysql
-          - testSuite: Elasticsearch Basic Auth MariaDB 10.11
+          - testSuite: Elasticsearch Basic Auth MariaDB 11.8
             profiles: all-tas-tests,elastic-basic-auth
             search-engine-type: elasticsearch
             db-type: mariadb
