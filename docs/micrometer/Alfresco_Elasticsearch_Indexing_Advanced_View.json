@@ -1,4 +1,47 @@
 {
+  "__inputs": [
+    {
+      "name": "DS_PROMETHEUS",
+      "label": "prometheus",
+      "description": "",
+      "type": "datasource",
+      "pluginId": "prometheus",
+      "pluginName": "Prometheus"
+    }
+  ],
+  "__elements": {},
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "gauge",
+      "name": "Gauge",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "12.3.1"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -18,7 +61,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 0,
   "links": [],
   "panels": [
     {
@@ -36,7 +78,8 @@
     },
     {
       "datasource": {
-        "type": "prometheus"
+        "type": "prometheus",
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Document indexed in Elasticsearch instances. This number will not include any default documents created during bootstrap unless these have been explicitly re-indexed. Therefore there may be a discrepancy with the number above.",
       "fieldConfig": {
@@ -90,7 +133,11 @@
           "expr": "elasticsearch_document_count",
           "legendFormat": "Total Indexed Documents",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          }
         }
       ],
       "title": "Elasticsearch Total Indexed Documents",
@@ -99,7 +146,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ffdp68onn7pj4b"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Documents that can be indexed using Elasticsearch.",
       "fieldConfig": {
@@ -153,7 +200,11 @@
           "expr": "repository_nodesCount",
           "legendFormat": "Repository Nodes",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          }
         }
       ],
       "title": "Repository Node Count",
@@ -162,7 +213,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ffdp68onn7pj4b"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "This metric indicates the number of documents whose content has been successfully indexed in Elasticsearch instances. It is a subset of the total count of indexed documents.",
       "fieldConfig": {
@@ -215,7 +266,11 @@
           "expr": "elasticsearch_content_indexing_success_count",
           "legendFormat": "Success",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          }
         }
       ],
       "title": "Content Indexing Success Count",
@@ -224,7 +279,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ffdp68onn7pj4b"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "This metric indicates the number of documents whose content has not been successfully indexed in Elasticsearch instances.  Reindexing may be necessary for these documents.",
       "fieldConfig": {
@@ -277,7 +332,11 @@
           "expr": "elasticsearch_content_indexing_failures_count",
           "legendFormat": "Failures",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          }
         }
       ],
       "title": "Content Indexing Failures Count",
@@ -286,7 +345,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ffdp68onn7pj4b"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "This metric indicates the number of newly added documents whose content indexing is in progress.",
       "fieldConfig": {
@@ -339,7 +398,11 @@
           "expr": "elasticsearch_content_indexing_new_documents_progress_count",
           "legendFormat": "New Content Progress",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          }
         }
       ],
       "title": "New Content Indexing In Progress",
@@ -348,7 +411,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ffdp68onn7pj4b"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "This metric indicates the number of modified documents whose content indexing is in progress.",
       "fieldConfig": {
@@ -401,7 +464,11 @@
           "expr": "elasticsearch_content_indexing_outdated_documents_progress_count",
           "legendFormat": "Reindex Progress",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          }
         }
       ],
       "title": "Outdated Content Reindexing In Progress",
@@ -410,7 +477,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "ffdp68onn7pj4b"
+        "uid": "${DS_PROMETHEUS}"
       },
       "description": "Trend of successful and failed content indexing operations over time.",
       "fieldConfig": {
@@ -496,14 +563,22 @@
           "expr": "rate(elasticsearch_content_indexing_success_count[5m])",
           "legendFormat": "Success Rate",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          }
         },
         {
           "editorMode": "code",
           "expr": "rate(elasticsearch_content_indexing_failures_count[5m])",
           "legendFormat": "Failure Rate",
           "range": true,
-          "refId": "B"
+          "refId": "B",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${DS_PROMETHEUS}"
+          }
         }
       ],
       "title": "Content Indexing Success vs Failures (Trend)",
@@ -525,5 +600,7 @@
   "timezone": "browser",
   "title": "Alfresco Elasticsearch Metrics (Context-Aware)",
   "uid": "97076aad-bbe5-4074-ad45-e615021ff7d1",
-  "version": 3
+  "version": 4,
+  "weekStart": "",
+  "id": null
 }
