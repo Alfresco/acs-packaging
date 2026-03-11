@@ -723,7 +723,7 @@ if release_version:
     if args.ahead:
         create_release_branches()
     else:
-        create_hotfix_branches()
+        #create_hotfix_branches()
         if is_version_bumped(release_version, next_dev_version, 0):
             create_service_pack_branches()
     if not args.master_skip:
