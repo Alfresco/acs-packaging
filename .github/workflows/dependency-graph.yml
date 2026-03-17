@@ -22,7 +22,7 @@ jobs:
         with:
           java-version: '21'
           maven-version: '3.9.9'
-          maven-args: -Dscopes=compile,runtime
+          maven-args: -Dscopes=compile,runtime -Pags
           maven-username: ${{ secrets.NEXUS_USERNAME }}
           maven-password: ${{ secrets.NEXUS_PASSWORD }}
           maven-settings-path: ".ci.settings.xml"
