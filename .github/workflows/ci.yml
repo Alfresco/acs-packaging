@@ -37,6 +37,7 @@ env:
   ALF_LICENCE_LOCAL_PATH: /tmp/licence.lic
   PYTHON_VERSION: 3.8.12
   DTAS_VERSION: v1.7.3
+  ES_COMMUNITY_IMAGE: quay.io/alfresco/dev:es-community
 
 jobs:
   precommit:

@@ -148,7 +148,11 @@ then
   echo "$ES_CONNECTOR_TAG"
 fi
 
-docker build -t alfresco-es-indexing-jdbc:latest -f tests/environment/alfresco-with-jdbc-drivers/es-connector.Dockerfile . --build-arg IMAGE_NAME="quay.io/alfresco/alfresco-elasticsearch-live-indexing:${ES_CONNECTOR_TAG%%[[:cntrl:]]}"
+# Use es-community image for live-indexing (ES_COMMUNITY_IMAGE can be overridden via environment)
+ES_COMMUNITY_IMAGE=${ES_COMMUNITY_IMAGE:-quay.io/alfresco/dev:es-community}
+echo "Using live-indexing image: $ES_COMMUNITY_IMAGE"
+
+docker build -t alfresco-es-indexing-jdbc:latest -f tests/environment/alfresco-with-jdbc-drivers/es-connector.Dockerfile . --build-arg IMAGE_NAME="$ES_COMMUNITY_IMAGE"
 docker build -t alfresco-es-reindexing-jdbc:latest -f tests/environment/alfresco-with-jdbc-drivers/es-connector.Dockerfile . --build-arg IMAGE_NAME="quay.io/alfresco/alfresco-elasticsearch-reindexing:${ES_CONNECTOR_TAG%%[[:cntrl:]]}"
 
 
