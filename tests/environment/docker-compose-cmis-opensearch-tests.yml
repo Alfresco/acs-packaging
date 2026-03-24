@@ -29,6 +29,8 @@ services:
         -Dshare.port=8082
         -Dalfresco.host=localhost
         -Dalfresco.port=8082
+        -Dsolr.secureComms=secret
+        -Dsolr.sharedSecret=i7wdvtrsfts
         -Daos.baseUrlOverwrite=http://localhost:8080/alfresco/aos
         -Dmessaging.broker.url="failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true"
         -Dmessaging.broker.username=admin
@@ -189,13 +191,28 @@ services:
       - alfresco
     environment:
       ELASTICSEARCH_INDEXNAME: alfresco
+      ALFRESCO_ACCEPTED_CONTENT_MEDIA_TYPES_CACHE_BASE_URL: >-
+        http://transform-core-aio:8090/transform/config
       SPRING_ELASTICSEARCH_REST_URIS: http://elasticsearch:9200
       SPRING_ACTIVEMQ_BROKERURL: nio://activemq:61616
+      SPRING_DATASOURCE_URL: jdbc:postgresql://database:5432/alfresco
+      SPRING_DATASOURCE_USERNAME: alfresco
+      SPRING_DATASOURCE_PASSWORD: alfresco
       SPRING_ACTIVEMQ_USER: admin
       SPRING_ACTIVEMQ_PASSWORD: admin #pragma: allowlist secret
-      ALFRESCO_SHAREDFILESTORE_BASEURL: http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/
-      ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL: http://transform-core-aio:8090/transform/config
-      ALFRESCO_EVENT_RETRY_UNEXPECTEDFAILURE_MAXATTEMPTS: 0
+      ALFRESCO_TRANSFORM_CORE_AIO_URL: http://transform-core-aio:8090
+      ALFRESCO_TRANSFORM_CORE_AIO_ACSURL: http://alfresco:8082
+      ALFRESCO_CONTENT_TRANFORM_URLPATH: /alfresco/service/api/solr/textContent
+      ALFRESCO_CONTENT_TRANSFORM_SHAREDSECRET: i7wdvtrsfts
+      ALFRESCO_REINDEX_POLLINGINTERVALMS: 30000
+      ALFRESCO_REINDEX_MAXPOLLINGINTERVALMS: 300000
+      ALFRESCO_REINDEX_OVERLAPSECONDS: 600
+      ALFRESCO_REINDEX_WATERMARKINDEXNAME: alfresco-reindex-state
+      ALFRESCO_REINDEX_SKIPENABLED: TRUE
+      ALFRESCO_REINDEX_SKIPLIMIT: 100
+      ALFRESCO_REINDEX_SUCCESSRATIO: 0.5
+      ALFRESCO_REINDEX_MAXWINDOWMINUTES: 30
+      ALFRESCO_REINDEX_MAXGAPAGEHOURS: 1
 
 volumes:
   shared-file-store-volume:
