@@ -25,6 +25,8 @@ services:
         -Dshare.port=8082
         -Dalfresco.host=localhost
         -Dalfresco.port=8082
+        -Dsolr.secureComms=secret
+        -Dsolr.sharedSecret=i7wdvtrsfts
         -Daos.baseUrlOverwrite=http://localhost:8080/alfresco/aos
         -Dmessaging.broker.url="failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true"
         -Dmessaging.broker.username=admin
