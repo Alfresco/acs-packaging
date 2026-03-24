@@ -150,6 +150,8 @@ fi
 
 # Use es-community image for live-indexing (ES_COMMUNITY_IMAGE can be overridden via environment)
 ES_COMMUNITY_IMAGE=${ES_COMMUNITY_IMAGE:-quay.io/alfresco/dev:es-community}
+# Strip any carriage returns from the variable (Windows line endings in .env file)
+ES_COMMUNITY_IMAGE=${ES_COMMUNITY_IMAGE%%[[:cntrl:]]}
 echo "Using live-indexing image: $ES_COMMUNITY_IMAGE"
 
 docker build -t alfresco-es-indexing-jdbc:latest -f tests/environment/alfresco-with-jdbc-drivers/es-connector.Dockerfile . --build-arg IMAGE_NAME="$ES_COMMUNITY_IMAGE"
