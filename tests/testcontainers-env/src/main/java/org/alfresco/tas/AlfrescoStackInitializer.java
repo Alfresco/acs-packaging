@@ -190,6 +190,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                         "SPRING_ACTIVEMQ_PASSWORD", "admin",
                         "JAVA_TOOL_OPTIONS", "-Xmx1g",
                         "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config"));
+        env.put("ALFRESCO_REINDEX_CONTINUOUSMODE", "false");
+        env.put("ALFRESCO_REINDEX_SKIPENABLED", "false");
         return env;
     }
 
@@ -208,6 +210,7 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
 
     protected GenericContainer<?> createLiveIndexingContainer()
     {
+        DatabaseType databaseType = getImagesConfig().getDatabaseType();
         return new GenericContainer<>(getImagesConfig().getLiveIndexingImage())
                 .withNetwork(network)
                 .withNetworkAliases("live-indexing")
@@ -216,6 +219,10 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                 .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
                 .withEnv("SPRING_ACTIVEMQ_USER", "admin")
                 .withEnv("SPRING_ACTIVEMQ_PASSWORD", "admin")
+                .withEnv("SPRING_DATASOURCE_URL", databaseType.getUrl())           // add this
+                .withEnv("SPRING_DATASOURCE_USERNAME", databaseType.getUsername()) // add this
+                .withEnv("SPRING_DATASOURCE_PASSWORD", databaseType.getPassword())
+                .withEnv("ALFRESCO_CONTENT_TRANSFORM_ACSURL", "http://alfresco:8080")
                 .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
                 .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config")
                 .withEnv("JAVA_TOOL_OPTIONS", "-Xms2g -Xmx2g -agentlib:jdwp=transport=dt_socket,address=*:5005,server=y,suspend=n")
@@ -420,6 +427,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                                 "-Dalfresco.restApi.basicAuthScheme=true " +
                                 "-Dquery.cmis.queryConsistency=EVENTUAL " +
                                 "-Dquery.fts.queryConsistency=EVENTUAL " +
+                                "-Dsolr.secureComms=secret " +
+                                "-Dsolr.sharedSecret=i7wdvtrsfts " +
                                 "-Xms1g -Xmx2g ")
                 .withNetwork(network)
                 .withNetworkAliases("alfresco")
