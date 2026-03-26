@@ -223,6 +223,9 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                 .withEnv("ALFRESCO_CONTENT_TRANSFORM_ACSURL", "http://alfresco:8080")
                 .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
                 .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config")
+                .withEnv("ALFRESCO_REINDEX_CONTINUOUS_ENABLED", "true")
+                .withEnv("ALFRESCO_REINDEX_CONTINUOUS_SKIPENABLED", "true")
+                .withEnv("ALFRESCO_CONTENT_TRANSFORM_ENABLED", "true")
                 .withEnv("JAVA_TOOL_OPTIONS", "-Xms2g -Xmx2g -agentlib:jdwp=transport=dt_socket,address=*:5005,server=y,suspend=n")
                 .withExposedPorts(5005);
     }
