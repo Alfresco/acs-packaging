@@ -11,7 +11,7 @@ function isBranchBuild() {
 
 function cloneRepo() {
   local REPO="${1}"
-  local TAG_OR_BRANCH="${2}"
+  local TAG_OR_BRANCH="feature/ACS-10898_remove_reactor_dependency_cross_testing"
 
   printf "Cloning \"%s\" on %s\n" "${TAG_OR_BRANCH}" "${REPO}"
 
