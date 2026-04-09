@@ -23,6 +23,12 @@
          <suiteXmlFile>${project.basedir}/src/test/resources/mtls-suite.xml</suiteXmlFile>
       </properties>
    </profile>
+   <profile>
+      <id>run-mtls-elasticsearch</id>
+      <properties>
+         <suiteXmlFile>${project.basedir}/src/test/resources/mtls-elasticsearch-suite.xml</suiteXmlFile>
+      </properties>
+   </profile>
    </profiles>
 
    <dependencies>

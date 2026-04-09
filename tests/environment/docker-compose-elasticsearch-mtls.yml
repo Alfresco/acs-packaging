@@ -1,0 +1,295 @@
+# This docker-compose file will spin up an ACS cluster with Elasticsearch/OpenSearch
+# using mutual TLS (mTLS) between the Repository and Elasticsearch.
+# It requires a minimum of 13GB Memory to distribute among containers.
+#
+# Using version 2 as 3 does not support resource constraint options
+# (cpu_*, mem_* limits) for non swarm mode in Compose
+---
+version: "2"
+services:
+  alfresco:
+    build:
+      context: ./alfresco-mtls
+      args:
+        ALIAS: alfresco
+        TRUSTSTORE_NAME: alfresco.truststore
+        TRUSTSTORE_TYPE: JCEKS
+        TRUSTSTORE_PASS: password
+        KEYSTORE_NAME: alfresco.keystore
+        KEYSTORE_TYPE: JCEKS
+        KEYSTORE_PASS: password
+    mem_limit: 1900m
+    environment:
+      JAVA_TOOL_OPTIONS: >-
+        -Dencryption.keystore.type=JCEKS
+        -Dencryption.cipherAlgorithm=DESede/CBC/PKCS5Padding
+        -Dencryption.keyAlgorithm=DESede
+        -Dencryption.keystore.location=/usr/local/tomcat/shared/classes/alfresco/extension/keystore/keystore
+        -Dmetadata-keystore.password=mp6yc0UD9e
+        -Dmetadata-keystore.aliases=metadata
+        -Dmetadata-keystore.metadata.password=oKIWzVdEdA
+        -Dmetadata-keystore.metadata.algorithm=DESede
+      JAVA_OPTS: >-
+        -Ddb.driver=org.postgresql.Driver
+        -Ddb.username=alfresco
+        -Ddb.password=alfresco
+        -Ddb.url=jdbc:postgresql://postgres:5432/alfresco
+        -Dindex.subsystem.name=elasticsearch
+        -Delasticsearch.host=elasticsearch
+        -Delasticsearch.port=9200
+        -Delasticsearch.createIndexIfNotExists=true
+        -Delasticsearch.secureComms=mtls
+        -Delasticsearch.ssl.host.name.verification=${HOSTNAME_VERIFICATION_DISABLED_NEGATED:-true}
+        -Dencryption.ssl.keystore.location=/usr/local/tomcat/alf_data/keystore/alfresco.keystore
+        -Dencryption.ssl.keystore.type=JCEKS
+        -Dencryption.ssl.truststore.location=/usr/local/tomcat/alf_data/keystore/alfresco.truststore
+        -Dencryption.ssl.truststore.type=JCEKS
+        -Dssl-keystore.password=password
+        -Dssl-truststore.password=password
+        -Dalfresco.host=localhost
+        -Dalfresco.port=8443
+        -Dalfresco.restApi.basicAuthScheme=true
+        -Daos.baseUrlOverwrite=https://localhost:8443/alfresco/aos
+        -Dmessaging.broker.url="failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true"
+        -Dmessaging.broker.username=admin
+        -Dmessaging.broker.password=admin
+        -Ddeployment.method=DOCKER_COMPOSE
+        -Dtransform.service.enabled=true
+        -Dtransformer.strict.mimetype.check=true
+        -Dcontent.transformer.retryOn.different.mimetype=true
+        -Dtransform.service.url=https://transform-router:8095
+        -Dsfs.url=https://shared-file-store:8099/
+        -DlocalTransform.core-aio.url=https://transform-core-aio:8090/
+        -Dcsrf.filter.enabled=false
+        -Dhttpclient.config.sharedfilestore.mTLSEnabled=true
+        -Dhttpclient.config.sharedfilestore.hostnameVerificationDisabled=${HOSTNAME_VERIFICATION_DISABLED}
+        -Dhttpclient.config.transform.mTLSEnabled=true
+        -Dhttpclient.config.transform.hostnameVerificationDisabled=${HOSTNAME_VERIFICATION_DISABLED}
+        -XX:MinRAMPercentage=50
+        -XX:MaxRAMPercentage=80
+    volumes:
+      - ${CI_WORKSPACE}/keystores/alfresco:/usr/local/tomcat/alf_data/keystore
+    ports:
+      - "8443:8443"
+
+  transform-router:
+    mem_limit: 512m
+    image: quay.io/alfresco/alfresco-transform-router:${TRANSFORM_ROUTER_TAG}
+    environment:
+      JAVA_OPTS: >-
+        -XX:MinRAMPercentage=50
+        -XX:MaxRAMPercentage=80
+      ACTIVEMQ_URL: nio://activemq:61616
+      ACTIVEMQ_USER: admin
+      ACTIVEMQ_PASSWORD: admin #pragma: allowlist secret
+      CORE_AIO_URL: https://transform-core-aio:8090
+      FILE_STORE_URL: >-
+        https://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file
+
+      SERVER_SSL_ENABLED: "true"
+      SERVER_SSL_KEY_PASSWORD: "password"
+      SERVER_SSL_KEY_STORE: "file:/transformRouter.keystore"
+      SERVER_SSL_KEY_STORE_PASSWORD: "password"
+      SERVER_SSL_KEY_STORE_TYPE: "JCEKS"
+
+      SERVER_SSL_CLIENT_AUTH: "need"
+      SERVER_SSL_TRUST_STORE: "file:/transformRouter.truststore"
+      SERVER_SSL_TRUST_STORE_PASSWORD: "password"
+      SERVER_SSL_TRUST_STORE_TYPE: "JCEKS"
+
+      CLIENT_SSL_KEY_STORE: "file:/transformRouter.keystore"
+      CLIENT_SSL_KEY_STORE_PASSWORD: "password"
+      CLIENT_SSL_KEY_STORE_TYPE: "JCEKS"
+
+      CLIENT_SSL_TRUST_STORE: "file:/transformRouter.truststore"
+      CLIENT_SSL_TRUST_STORE_PASSWORD: "password"
+      CLIENT_SSL_TRUST_STORE_TYPE: "JCEKS"
+
+      CLIENT_SSL_HOSTNAME_VERIFICATION_DISABLED: ${HOSTNAME_VERIFICATION_DISABLED}
+
+    ports:
+      - "8095:8095"
+    links:
+      - activemq
+    volumes:
+      - ${CI_WORKSPACE}/keystores/transformRouter/transformRouter.truststore:/transformRouter.truststore
+      - ${CI_WORKSPACE}/keystores/transformRouter/transformRouter.keystore:/transformRouter.keystore
+
+  transform-core-aio:
+    image: quay.io/alfresco/alfresco-transform-core-aio:${TRANSFORMERS_TAG}
+    mem_limit: 1536m
+    environment:
+      JAVA_OPTS: >-
+        -XX:MinRAMPercentage=50
+        -XX:MaxRAMPercentage=80
+      ACTIVEMQ_URL: nio://activemq:61616
+      ACTIVEMQ_USER: admin
+      ACTIVEMQ_PASSWORD: admin #pragma: allowlist secret
+      FILE_STORE_URL: >-
+        https://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file
+
+      SERVER_SSL_ENABLED: "true"
+      SERVER_SSL_KEY_PASSWORD: "password"
+      SERVER_SSL_KEY_STORE: "file:/tengineAIO.keystore"
+      SERVER_SSL_KEY_STORE_PASSWORD: "password"
+      SERVER_SSL_KEY_STORE_TYPE: "JCEKS"
+
+      SERVER_SSL_CLIENT_AUTH: "need"
+      SERVER_SSL_TRUST_STORE: "file:/tengineAIO.truststore"
+      SERVER_SSL_TRUST_STORE_PASSWORD: "password"
+      SERVER_SSL_TRUST_STORE_TYPE: "JCEKS"
+
+      CLIENT_SSL_KEY_STORE: "file:/tengineAIO.keystore"
+      CLIENT_SSL_KEY_STORE_PASSWORD: "password"
+      CLIENT_SSL_KEY_STORE_TYPE: "JCEKS"
+
+      CLIENT_SSL_TRUST_STORE: "file:/tengineAIO.truststore"
+      CLIENT_SSL_TRUST_STORE_PASSWORD: "password"
+      CLIENT_SSL_TRUST_STORE_TYPE: "JCEKS"
+
+      CLIENT_SSL_HOSTNAME_VERIFICATION_DISABLED: ${HOSTNAME_VERIFICATION_DISABLED}
+
+    ports:
+      - "8090:8090"
+    links:
+      - activemq
+    volumes:
+      - ${CI_WORKSPACE}/keystores/tengineAIO/tengineAIO.truststore:/tengineAIO.truststore
+      - ${CI_WORKSPACE}/keystores/tengineAIO/tengineAIO.keystore:/tengineAIO.keystore
+
+  shared-file-store:
+    image: quay.io/alfresco/alfresco-shared-file-store:${TRANSFORM_ROUTER_TAG}
+    mem_limit: 512m
+    environment:
+      JAVA_OPTS: >-
+        -XX:MinRAMPercentage=50
+        -XX:MaxRAMPercentage=80
+      scheduler.content.age.millis: 86400000
+      scheduler.cleanup.interval: 86400000
+
+      SERVER_SSL_ENABLED: "true"
+      SERVER_SSL_KEY_PASSWORD: "password"
+      SERVER_SSL_KEY_STORE: "file:/sharedFileStore.keystore"
+      SERVER_SSL_KEY_STORE_PASSWORD: "password"
+      SERVER_SSL_KEY_STORE_TYPE: "JCEKS"
+
+      SERVER_SSL_CLIENT_AUTH: "need"
+      SERVER_SSL_TRUST_STORE: "file:/sharedFileStore.truststore"
+      SERVER_SSL_TRUST_STORE_PASSWORD: "password"
+      SERVER_SSL_TRUST_STORE_TYPE: "JCEKS"
+
+      CLIENT_SSL_KEY_STORE: "file:/sharedFileStore.keystore"
+      CLIENT_SSL_KEY_STORE_PASSWORD: "password"
+      CLIENT_SSL_KEY_STORE_TYPE: "JCEKS"
+
+      CLIENT_SSL_TRUST_STORE: "file:/sharedFileStore.truststore"
+      CLIENT_SSL_TRUST_STORE_PASSWORD: "password"
+      CLIENT_SSL_TRUST_STORE_TYPE: "JCEKS"
+
+      CLIENT_SSL_HOSTNAME_VERIFICATION_DISABLED: ${HOSTNAME_VERIFICATION_DISABLED}
+
+    ports:
+      - "8099:8099"
+    volumes:
+      - shared-file-store-volume:/tmp/Alfresco/sfs
+      - ${CI_WORKSPACE}/keystores/sharedFileStore/sharedFileStore.truststore:/sharedFileStore.truststore
+      - ${CI_WORKSPACE}/keystores/sharedFileStore/sharedFileStore.keystore:/sharedFileStore.keystore
+
+  postgres:
+    image: postgres:${POSTGRES_TAG}
+    mem_limit: 512m
+    environment:
+      - POSTGRES_PASSWORD=alfresco
+      - POSTGRES_USER=alfresco
+      - POSTGRES_DB=alfresco
+    command: postgres -c max_connections=300 -c log_min_messages=LOG
+    ports:
+      - "5432:5432"
+
+  elasticsearch:
+    image: elasticsearch:${ELASTICSEARCH_TAG}
+    mem_limit: 2g
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=true
+      - xpack.security.http.ssl.keystore.path=/usr/share/elasticsearch/config/certs/elasticsearch.keystore
+      - xpack.security.http.ssl.keystore.type=JCEKS
+      - xpack.security.http.ssl.keystore.password=password
+      - xpack.security.http.ssl.truststore.path=/usr/share/elasticsearch/config/certs/elasticsearch.truststore
+      - xpack.security.http.ssl.truststore.type=JCEKS
+      - xpack.security.http.ssl.truststore.password=password
+      - xpack.security.http.ssl.client_authentication=required
+      - xpack.security.transport.ssl.enabled=false
+      - ELASTIC_PASSWORD=admin
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    cap_add:
+      - IPC_LOCK
+    ports:
+      - "9200:9200"
+    volumes:
+      - ${CI_WORKSPACE}/keystores/elasticsearch:/usr/share/elasticsearch/config/certs
+
+  live-indexing:
+    image: quay.io/alfresco/alfresco-elasticsearch-live-indexing:${LIVE_INDEXING_TAG}
+    mem_limit: 512m
+    depends_on:
+      - elasticsearch
+      - alfresco
+    environment:
+      ELASTICSEARCH_INDEXNAME: alfresco
+      SPRING_ELASTICSEARCH_REST_URIS: https://elasticsearch:9200
+      SPRING_ACTIVEMQ_BROKERURL: nio://activemq:61616
+      SPRING_ACTIVEMQ_USER: admin
+      SPRING_ACTIVEMQ_PASSWORD: admin #pragma: allowlist secret
+      ALFRESCO_SHAREDFILESTORE_BASEURL: >-
+        https://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/
+      ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL: >-
+        https://transform-core-aio:8090/transform/config
+
+      SERVER_SSL_ENABLED: "true"
+      SERVER_SSL_KEY_STORE: "file:/liveIndexing.keystore"
+      SERVER_SSL_KEY_STORE_PASSWORD: "password"
+      SERVER_SSL_KEY_STORE_TYPE: "JCEKS"
+
+      SERVER_SSL_TRUST_STORE: "file:/liveIndexing.truststore"
+      SERVER_SSL_TRUST_STORE_PASSWORD: "password"
+      SERVER_SSL_TRUST_STORE_TYPE: "JCEKS"
+
+      CLIENT_SSL_KEY_STORE: "file:/liveIndexing.keystore"
+      CLIENT_SSL_KEY_STORE_PASSWORD: "password"
+      CLIENT_SSL_KEY_STORE_TYPE: "JCEKS"
+
+      CLIENT_SSL_TRUST_STORE: "file:/liveIndexing.truststore"
+      CLIENT_SSL_TRUST_STORE_PASSWORD: "password"
+      CLIENT_SSL_TRUST_STORE_TYPE: "JCEKS"
+
+      CLIENT_SSL_HOSTNAME_VERIFICATION_DISABLED: ${HOSTNAME_VERIFICATION_DISABLED}
+
+    volumes:
+      - ${CI_WORKSPACE}/keystores/liveIndexing/liveIndexing.truststore:/liveIndexing.truststore
+      - ${CI_WORKSPACE}/keystores/liveIndexing/liveIndexing.keystore:/liveIndexing.keystore
+
+  activemq:
+    image: quay.io/alfresco/alfresco-activemq:${ACTIVEMQ_TAG}
+    mem_limit: 1g
+    ports:
+      - "8161:8161" # Web Console
+      - "5672:5672" # AMQP
+      - "61616:61616" # OpenWire
+      - "61613:61613" # STOMP
+
+volumes:
+  shared-file-store-volume:
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
+
+
+

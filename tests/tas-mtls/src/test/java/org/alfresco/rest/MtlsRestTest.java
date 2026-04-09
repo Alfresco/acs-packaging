@@ -107,7 +107,7 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
     @Test
     public void checkIfMtlsIsEnabledForSearchEngine()
     {
-        Assert.assertThrows(SSLHandshakeException.class, () -> client.execute(new HttpGet("https://localhost:8083/solr")));
+        Assert.assertThrows(SSLHandshakeException.class, () -> client.execute(new HttpGet(mtlsTestProperties.getSearchEngineMtlsUrl())));
     }
 
     protected FolderModel selectSharedFolder(UserModel user)
