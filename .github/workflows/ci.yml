@@ -597,14 +597,14 @@ jobs:
             compose-file: docker-compose-elasticsearch-mtls.yml
             mtls: true
             disabledHostnameVerification: false
-            deploy-timeout: 15
+            deploy-timeout: 10
           - testSuite: Elasticsearch Mutual TLS Disabled Hostname Verification
             pom-dir: tests/tas-mtls
             profiles: run-mtls-elasticsearch
             compose-file: docker-compose-elasticsearch-mtls.yml
             mtls: true
             disabledHostnameVerification: true
-            deploy-timeout: 15
+            deploy-timeout: 10
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
       - uses: actions/checkout@v4
@@ -618,6 +618,7 @@ jobs:
         if: ${{ matrix.mtls }}
         run: |
           git clone -b "master" --depth=1 "https://${{ secrets.BOT_GITHUB_USERNAME }}:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/Alfresco/alfresco-ssl-generator.git"
+          git checkout "feature/ACS-7965-elasticsearch-mtls"
           if ${{ matrix.disabledHostnameVerification }} ; then
             bash ${{ env.CI_WORKSPACE }}/alfresco-ssl-generator/scripts/ci/generate_keystores_wrong_hostnames.sh
             echo "HOSTNAME_VERIFICATION_DISABLED=true" >> "$GITHUB_ENV"

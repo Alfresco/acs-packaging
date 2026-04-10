@@ -39,6 +39,8 @@ services:
         -Delasticsearch.port=9200
         -Delasticsearch.createIndexIfNotExists=true
         -Delasticsearch.secureComms=mtls
+        -Delasticsearch.user=elastic
+        -Delasticsearch.password=admin
         -Delasticsearch.ssl.host.name.verification=${HOSTNAME_VERIFICATION_DISABLED_NEGATED:-true}
         -Dencryption.ssl.keystore.location=/usr/local/tomcat/alf_data/keystore/alfresco.keystore
         -Dencryption.ssl.keystore.type=JCEKS
@@ -245,6 +247,8 @@ services:
     environment:
       ELASTICSEARCH_INDEXNAME: alfresco
       SPRING_ELASTICSEARCH_REST_URIS: https://elasticsearch:9200
+      SPRING_ELASTICSEARCH_REST_USERNAME: elastic
+      SPRING_ELASTICSEARCH_REST_PASSWORD: admin
       SPRING_ACTIVEMQ_BROKERURL: nio://activemq:61616
       SPRING_ACTIVEMQ_USER: admin
       SPRING_ACTIVEMQ_PASSWORD: admin #pragma: allowlist secret
@@ -254,10 +258,12 @@ services:
         https://transform-core-aio:8090/transform/config
 
       SERVER_SSL_ENABLED: "true"
+      SERVER_SSL_KEY_PASSWORD: "password"
       SERVER_SSL_KEY_STORE: "file:/liveIndexing.keystore"
       SERVER_SSL_KEY_STORE_PASSWORD: "password"
       SERVER_SSL_KEY_STORE_TYPE: "JCEKS"
 
+      SERVER_SSL_CLIENT_AUTH: "need"
       SERVER_SSL_TRUST_STORE: "file:/liveIndexing.truststore"
       SERVER_SSL_TRUST_STORE_PASSWORD: "password"
       SERVER_SSL_TRUST_STORE_TYPE: "JCEKS"
