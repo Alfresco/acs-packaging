@@ -239,7 +239,7 @@ services:
       - ${CI_WORKSPACE}/keystores/elasticsearch:/usr/share/elasticsearch/config/certs
 
   live-indexing:
-    image: quay.io/alfresco/alfresco-elasticsearch-live-indexing:local
+    image: quay.io/alfresco/alfresco-elasticsearch-live-indexing:${LIVE_INDEXING_TAG}
     mem_limit: 512m
     depends_on:
       - elasticsearch
