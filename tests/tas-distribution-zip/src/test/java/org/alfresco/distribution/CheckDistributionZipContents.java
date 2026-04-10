@@ -2,7 +2,7 @@
  * #%L
  * Alfresco Remote API
  * %%
- * Copyright (C) 2005 - 2021 Alfresco Software Limited
+ * Copyright (C) 2005 - 2026 Alfresco Software Limited
  * %%
  * This file is part of the Alfresco software.
  * If the software was purchased under a paid Alfresco license, the terms of
@@ -29,17 +29,22 @@ import org.testng.annotations.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.FilenameFilter;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
 public class CheckDistributionZipContents
 {
@@ -81,8 +86,8 @@ public class CheckDistributionZipContents
     @Test
     public void testAgsDistributionZipContents() throws Exception
     {
-        String repoVersion = getPomValues().getProperties().getProperty("dependency.alfresco-enterprise-repo.version");
-        String shareVersion = getPomValues().getProperties().getProperty("dependency.alfresco-enterprise-share.version");
+        String repoVersion = getPomValues().getProperty("dependency.alfresco-enterprise-repo.version");
+        String shareVersion = getPomValues().getProperty("dependency.alfresco-enterprise-share.version");
         File filesList[] = getDistributionZip(AGS_DIR_NAME, AGS_PREFIX);
         for (File file : filesList)
         {
@@ -146,11 +151,52 @@ public class CheckDistributionZipContents
         return zipEntries;
     }
 
-    private Model getPomValues() throws Exception
+    private PomModel getPomValues() throws Exception
     {
-        String parentPom = Paths.get("").toAbsolutePath().getParent().getParent().toString() + "/pom.xml";
-        MavenXpp3Reader reader = new MavenXpp3Reader();
-        Model model = reader.read(new FileReader(parentPom));
-        return model;
+        String parentPomPath = Paths.get("").toAbsolutePath().getParent().getParent().toString() + "/pom.xml";
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        factory.setNamespaceAware(false);
+        factory.setFeature(javax.xml.XMLConstants.FEATURE_SECURE_PROCESSING, true);
+        factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
+        factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+        factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+        factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        factory.setXIncludeAware(false);
+        factory.setExpandEntityReferences(false);
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document doc = builder.parse(new File(parentPomPath));
+        XPath xpath = XPathFactory.newInstance().newXPath();
+
+        String version = (String) xpath.evaluate("/project/version", doc, XPathConstants.STRING);
+        NodeList propertyNodes = (NodeList) xpath.evaluate("/project/properties/*", doc, XPathConstants.NODESET);
+        Properties props = new Properties();
+        for (int i = 0; i < propertyNodes.getLength(); i++)
+        {
+            org.w3c.dom.Node node = propertyNodes.item(i);
+            props.setProperty(node.getNodeName(), node.getTextContent());
+        }
+        return new PomModel(version, props);
+    }
+
+    private static class PomModel
+    {
+        private final String version;
+        private final Properties properties;
+
+        PomModel(String version, Properties properties)
+        {
+            this.version = version;
+            this.properties = properties;
+        }
+
+        public String getVersion()
+        {
+            return version;
+        }
+
+        public String getProperty(String key)
+        {
+            return properties.getProperty(key);
+        }
     }
 }
