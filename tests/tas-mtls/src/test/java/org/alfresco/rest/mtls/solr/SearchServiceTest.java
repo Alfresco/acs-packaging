@@ -1,8 +1,12 @@
-package org.alfresco.rest.mtls;
+package org.alfresco.rest.mtls.solr;
 
 import java.io.File;
 import java.io.IOException;
+import javax.net.ssl.SSLHandshakeException;
 
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
@@ -19,7 +23,7 @@ import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.UserModel;
 
-@ContextConfiguration("classpath:alfresco-mtls-context.xml")
+@ContextConfiguration("classpath:alfresco-mtls-solr-context.xml")
 public class SearchServiceTest extends MtlsRestTest
 {
     private static final String TEST_FILE_NAME = "testing-search-mtls.txt";
@@ -47,6 +51,14 @@ public class SearchServiceTest extends MtlsRestTest
         {
             testFile.delete();
         }
+    }
+
+    @Test
+    public void checkIfMtlsIsEnabledForSearchEngine()
+    {
+        CloseableHttpClient client = HttpClients.createMinimal();
+        Assert.assertThrows(SSLHandshakeException.class,
+                () -> client.execute(new HttpGet(mtlsTestProperties.getSearchEngineMtlsUrl())));
     }
 
     @Test
@@ -101,3 +113,4 @@ public class SearchServiceTest extends MtlsRestTest
         Assert.fail("Number of search results didn't increase after uploading a file with keyword");
     }
 }
+

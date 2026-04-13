@@ -18,9 +18,9 @@
 
    <profiles>
    <profile>
-      <id>run-mtls</id>
+      <id>run-mtls-solr</id>
       <properties>
-         <suiteXmlFile>${project.basedir}/src/test/resources/mtls-suite.xml</suiteXmlFile>
+         <suiteXmlFile>${project.basedir}/src/test/resources/mtls-solr-suite.xml</suiteXmlFile>
       </properties>
    </profile>
    <profile>

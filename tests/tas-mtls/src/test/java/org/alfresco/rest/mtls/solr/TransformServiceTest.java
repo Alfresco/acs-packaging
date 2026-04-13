@@ -1,4 +1,4 @@
-package org.alfresco.rest.mtls.elasticsearch;
+package org.alfresco.rest.mtls.solr;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,11 +16,11 @@ import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.UserModel;
 
-@ContextConfiguration("classpath:alfresco-mtls-elasticsearch-context.xml")
-public class ElasticsearchTransformServiceTest extends MtlsRestTest
+@ContextConfiguration("classpath:alfresco-mtls-solr-context.xml")
+public class TransformServiceTest extends MtlsRestTest
 {
-    private static final String TEST_FILE_NAME = "testing-transform-elasticsearch-mtls.txt";
-    private static final String TEST_FILE_CONTENT = "Random text for transform tests with Elasticsearch mTLS";
+    private static final String TEST_FILE_NAME = "testing-transform-mtls.txt";
+    private static final String TEST_FILE_CONTENT = "Random text for transform tests";
 
     private UserModel adminUser;
     private File testFile;
@@ -67,6 +67,7 @@ public class ElasticsearchTransformServiceTest extends MtlsRestTest
         }
         finally
         {
+            // Clean up file for easier local retries of test
             if (testFileModel.getNodeRef() != null)
             {
                 restClient.authenticateUser(adminUser).withCoreAPI().usingNode(testFolder).deleteNode(testFileModel.getNodeRef());
@@ -74,5 +75,4 @@ public class ElasticsearchTransformServiceTest extends MtlsRestTest
         }
     }
 }
-
 

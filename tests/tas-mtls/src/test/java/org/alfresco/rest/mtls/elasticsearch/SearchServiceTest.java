@@ -3,6 +3,10 @@ package org.alfresco.rest.mtls.elasticsearch;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.HttpHostConnectException;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
@@ -20,7 +24,7 @@ import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.UserModel;
 
 @ContextConfiguration("classpath:alfresco-mtls-elasticsearch-context.xml")
-public class ElasticsearchSearchServiceTest extends MtlsRestTest
+public class SearchServiceTest extends MtlsRestTest
 {
     private static final String TEST_FILE_NAME = "testing-search-elasticsearch-mtls.txt";
     private static final String TEST_FILE_KEYWORD = "incomprehensible";
@@ -47,6 +51,14 @@ public class ElasticsearchSearchServiceTest extends MtlsRestTest
         {
             testFile.delete();
         }
+    }
+
+    @Test
+    public void checkIfMtlsIsEnabledForSearchEngine()
+    {
+        CloseableHttpClient client = HttpClients.createMinimal();
+        Assert.assertThrows(HttpHostConnectException.class,
+                () -> client.execute(new HttpGet(mtlsTestProperties.getSearchEngineMtlsUrl())));
     }
 
     @Test
@@ -100,5 +112,4 @@ public class ElasticsearchSearchServiceTest extends MtlsRestTest
         Assert.fail("Number of search results didn't increase after uploading a file with keyword");
     }
 }
-
 

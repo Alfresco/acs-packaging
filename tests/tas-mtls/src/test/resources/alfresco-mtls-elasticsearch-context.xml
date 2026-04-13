@@ -10,10 +10,11 @@
    <context:component-scan base-package="org.alfresco" />
    <import resource="classpath:dataprep-context.xml" />
 
-   <!-- Override properties with Elasticsearch-specific values -->
+   <!-- Load shared and Elasticsearch-specific properties -->
    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
       <property name="locations">
          <list>
+            <value>classpath:default.properties</value>
             <value>classpath:default-elasticsearch.properties</value>
          </list>
       </property>

@@ -577,17 +577,17 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - testSuite: Transform Service Mutal TLS
+          - testSuite: Solr Mutual TLS
             pom-dir: tests/tas-mtls
-            profiles: run-mtls
-            compose-file: docker-compose-mtls.yml
+            profiles: run-mtls-solr
+            compose-file: docker-compose-solr-mtls.yml
             mtls: true
             disabledHostnameVerification: false
             deploy-timeout: 10
-          - testSuite: Transform Service Mutal TLS Disabled Hostname Verification
+          - testSuite: Solr Mutual TLS Disabled Hostname Verification
             pom-dir: tests/tas-mtls
-            profiles: run-mtls
-            compose-file: docker-compose-mtls.yml
+            profiles: run-mtls-solr
+            compose-file: docker-compose-solr-mtls.yml
             mtls: true
             disabledHostnameVerification: true
             deploy-timeout: 10

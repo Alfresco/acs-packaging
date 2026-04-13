@@ -16,7 +16,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
@@ -34,7 +33,6 @@ import org.alfresco.utility.data.DataUserAIS;
 import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.UserModel;
 
-@ContextConfiguration("classpath:alfresco-mtls-context.xml")
 public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
 {
     private static final Logger LOGGER = LogFactory.getLogger();
@@ -104,11 +102,6 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
         Assert.assertThrows(SSLHandshakeException.class, () -> client.execute(new HttpGet("https://localhost:8099")));
     }
 
-    @Test
-    public void checkIfMtlsIsEnabledForSearchEngine()
-    {
-        Assert.assertThrows(SSLHandshakeException.class, () -> client.execute(new HttpGet(mtlsTestProperties.getSearchEngineMtlsUrl())));
-    }
 
     protected FolderModel selectSharedFolder(UserModel user)
     {
