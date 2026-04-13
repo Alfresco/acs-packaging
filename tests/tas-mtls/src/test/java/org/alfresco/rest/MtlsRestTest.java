@@ -1,5 +1,7 @@
 package org.alfresco.rest;
 
+import static org.awaitility.Awaitility.await;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
@@ -7,6 +9,7 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import javax.net.ssl.SSLHandshakeException;
 
 import io.restassured.RestAssured;
@@ -51,8 +54,8 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
     private static final String TRANSFORM_TEST_FILE_NAME = "testing-transform-mtls.txt";
     private static final String TRANSFORM_TEST_FILE_CONTENT = "Random text for transform tests";
 
-    private static final int INDEXING_RETRY_DELAY_MS = 5000;
-    private static final int INDEXING_RETRY_LIMIT = 24;
+    private static final Duration INDEXING_POLL_INTERVAL = Duration.ofSeconds(5);
+    private static final Duration INDEXING_TIMEOUT = Duration.ofMinutes(1);
 
     @Autowired
     protected MtlsTestProperties mtlsTestProperties;
@@ -61,7 +64,7 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
     @Autowired
     protected RestWrapper restClient;
 
-    private CloseableHttpClient client = HttpClients.createMinimal();
+    private final CloseableHttpClient client = HttpClients.createMinimal();
     private UserModel adminUser;
     private File searchTestFile;
     private File transformTestFile;
@@ -138,7 +141,13 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
     }
 
     @Test
-    public void testIndexingWithMTLSEnabled() throws InterruptedException
+    public void checkIfMtlsIsEnabledForSearchEngine()
+    {
+        Assert.assertThrows(SSLHandshakeException.class, () -> client.execute(new HttpGet(mtlsTestProperties.getSearchEngineMtlsUrl())));
+    }
+
+    @Test
+    public void testIndexingWithMTLSEnabled()
     {
         FolderModel folderModel = selectSharedFolder(adminUser);
         RestNodeModel fileNode = null;
@@ -220,18 +229,13 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
         return searchResponse.getEntries() != null ? searchResponse.getEntries().size() : 0;
     }
 
-    private void verifyResultsIncreaseWithRetry(String keyword, int initialSearchWordCount) throws InterruptedException
+    private void verifyResultsIncreaseWithRetry(String keyword, int initialSearchWordCount)
     {
-        for (int i = 0; i < INDEXING_RETRY_LIMIT; i++)
-        {
-            LOGGER.info("Attempt: " + (i + 1));
-            if (countSearchResults(keyword) > initialSearchWordCount)
-            {
-                return;
-            }
-            Thread.sleep(INDEXING_RETRY_DELAY_MS);
-        }
-        Assert.fail("Number of search results didn't increase after uploading a file with keyword");
+        await().atMost(INDEXING_TIMEOUT)
+                .pollInterval(INDEXING_POLL_INTERVAL)
+                .conditionEvaluationListener(condition -> LOGGER.info("Elapsed: {} ms, remaining: {} ms", condition.getElapsedTimeInMS(), condition.getRemainingTimeInMS()))
+                .untilAsserted(() -> Assert.assertTrue(countSearchResults(keyword) > initialSearchWordCount,
+                        "Number of search results didn't increase after uploading a file with keyword"));
     }
 
     private File createTestFile(String fileName, String fileContent) throws IOException
