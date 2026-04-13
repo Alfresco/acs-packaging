@@ -142,7 +142,7 @@ services:
       SERVER_SSL_TRUST_STORE_TYPE: "JCEKS"
 
       CLIENT_SSL_KEY_STORE: "file:/tengineAIO.keystore"
-      CLIENT_SSL_KEY_cd STORE_PASSWORD: "password"
+      CLIENT_SSL_KEY_STORE_PASSWORD: "password"
       CLIENT_SSL_KEY_STORE_TYPE: "JCEKS"
 
       CLIENT_SSL_TRUST_STORE: "file:/tengineAIO.truststore"

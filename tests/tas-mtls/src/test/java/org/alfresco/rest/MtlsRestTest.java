@@ -217,7 +217,7 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
         SearchRequest searchRequest = new SearchRequest(queryModel);
         SearchResponse searchResponse = restClient.authenticateUser(adminUser).withSearchAPI().search(searchRequest);
 
-        return searchResponse.getEntries().size();
+        return searchResponse.getEntries() != null ? searchResponse.getEntries().size() : 0;
     }
 
     private void verifyResultsIncreaseWithRetry(String keyword, int initialSearchWordCount) throws InterruptedException
