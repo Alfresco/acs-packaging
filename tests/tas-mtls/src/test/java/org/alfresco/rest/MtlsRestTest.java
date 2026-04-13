@@ -16,26 +16,43 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 import org.alfresco.rest.core.RestWrapper;
+import org.alfresco.rest.model.RestNodeModel;
 import org.alfresco.rest.search.RestRequestQueryModel;
 import org.alfresco.rest.search.SearchNodeModel;
 import org.alfresco.rest.search.SearchRequest;
 import org.alfresco.rest.search.SearchResponse;
 import org.alfresco.utility.LogFactory;
 import org.alfresco.utility.data.DataUserAIS;
+import org.alfresco.utility.model.FileModel;
 import org.alfresco.utility.model.FolderModel;
 import org.alfresco.utility.model.UserModel;
 
 public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
 {
     private static final Logger LOGGER = LogFactory.getLogger();
+
+    private static final String SEARCH_TEST_FILE_NAME = "testing-search-mtls.txt";
+    private static final String SEARCH_TEST_FILE_KEYWORD = "incomprehensible";
+    private static final String SEARCH_TEST_FILE_CONTENT = "We need to verify indexing working to do that we need to upload this \n"
+            + "text file and search with a word inside it,\n"
+            + "like \"" + SEARCH_TEST_FILE_KEYWORD + "\" to verify it has been indexed properly.";
+
+    private static final String TRANSFORM_TEST_FILE_NAME = "testing-transform-mtls.txt";
+    private static final String TRANSFORM_TEST_FILE_CONTENT = "Random text for transform tests";
+
+    private static final int INDEXING_RETRY_DELAY_MS = 5000;
+    private static final int INDEXING_RETRY_LIMIT = 24;
 
     @Autowired
     protected MtlsTestProperties mtlsTestProperties;
@@ -45,6 +62,9 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
     protected RestWrapper restClient;
 
     private CloseableHttpClient client = HttpClients.createMinimal();
+    private UserModel adminUser;
+    private File searchTestFile;
+    private File transformTestFile;
 
     @BeforeSuite(alwaysRun = true)
     public void setupSSLConfig() throws Exception
@@ -64,6 +84,21 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
         }
 
         RestAssured.config = RestAssured.config().sslConfig(sslConfig);
+    }
+
+    @BeforeClass(alwaysRun = true)
+    public void dataPreparation() throws IOException
+    {
+        adminUser = dataUser.getAdminUser();
+        searchTestFile = createTestFile(SEARCH_TEST_FILE_NAME, SEARCH_TEST_FILE_CONTENT);
+        transformTestFile = createTestFile(TRANSFORM_TEST_FILE_NAME, TRANSFORM_TEST_FILE_CONTENT);
+    }
+
+    @AfterClass(alwaysRun = true)
+    public void dataCleanup()
+    {
+        deleteIfExists(searchTestFile);
+        deleteIfExists(transformTestFile);
     }
 
     @BeforeMethod(alwaysRun = true)
@@ -102,8 +137,63 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
         Assert.assertThrows(SSLHandshakeException.class, () -> client.execute(new HttpGet("https://localhost:8099")));
     }
 
+    @Test
+    public void testIndexingWithMTLSEnabled() throws InterruptedException
+    {
+        FolderModel folderModel = selectSharedFolder(adminUser);
+        RestNodeModel fileNode = null;
+        try
+        {
+            int initialSearchResultsCount = countSearchResults(SEARCH_TEST_FILE_KEYWORD);
 
-    protected FolderModel selectSharedFolder(UserModel user)
+            restClient.authenticateUser(adminUser).configureRequestSpec().addMultiPart("filedata", searchTestFile);
+            fileNode = restClient.authenticateUser(adminUser).withCoreAPI().usingNode(folderModel).createNode();
+
+            verifyResultsIncreaseWithRetry(SEARCH_TEST_FILE_KEYWORD, initialSearchResultsCount);
+        }
+        finally
+        {
+            if (fileNode != null)
+            {
+                restClient.authenticateUser(adminUser).withCoreAPI().usingNode(folderModel).deleteNode(fileNode.getId());
+            }
+        }
+    }
+    
+    @Test
+    public void testRenditionWithMTLSEnabled()
+    {
+        FolderModel testFolder = selectSharedFolder(adminUser);
+        FileModel testFileModel = new FileModel(transformTestFile.getName());
+
+        try
+        {
+            restClient.authenticateUser(adminUser).configureRequestSpec().addMultiPart("filedata", transformTestFile);
+            RestNodeModel rnm = restClient.authenticateUser(adminUser).withCoreAPI().usingNode(testFolder).createNode();
+            testFileModel.setNodeRef(rnm.getId());
+
+            restClient.authenticateUser(adminUser).withCoreAPI().usingNode(testFileModel).createNodeRendition("pdf");
+            restClient.assertStatusCodeIs(HttpStatus.ACCEPTED);
+
+            String status = restClient.withCoreAPI().usingNode(testFileModel).getNodeRenditionUntilIsCreated("pdf").getStatus();
+            Assert.assertEquals(status, "CREATED");
+
+            restClient.authenticateUser(adminUser).withCoreAPI().usingNode(testFileModel).createNodeRendition("doclib");
+            restClient.assertStatusCodeIs(HttpStatus.ACCEPTED);
+
+            status = restClient.withCoreAPI().usingNode(testFileModel).getNodeRenditionUntilIsCreated("doclib").getStatus();
+            Assert.assertEquals(status, "CREATED");
+        }
+        finally
+        {
+            if (testFileModel.getNodeRef() != null)
+            {
+                restClient.authenticateUser(adminUser).withCoreAPI().usingNode(testFolder).deleteNode(testFileModel.getNodeRef());
+            }
+        }
+    }
+
+    private FolderModel selectSharedFolder(UserModel user)
     {
         FolderModel folderModel = new FolderModel("Shared");
 
@@ -118,14 +208,48 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
         return folderModel;
     }
 
-    protected File createTestFile(String fileName, String fileContent) throws IOException
+    private int countSearchResults(String keyword)
+    {
+        RestRequestQueryModel queryModel = new RestRequestQueryModel();
+        queryModel.setLanguage("afts");
+        queryModel.setQuery(keyword);
+
+        SearchRequest searchRequest = new SearchRequest(queryModel);
+        SearchResponse searchResponse = restClient.authenticateUser(adminUser).withSearchAPI().search(searchRequest);
+
+        return searchResponse.getEntries().size();
+    }
+
+    private void verifyResultsIncreaseWithRetry(String keyword, int initialSearchWordCount) throws InterruptedException
+    {
+        for (int i = 0; i < INDEXING_RETRY_LIMIT; i++)
+        {
+            LOGGER.info("Attempt: " + (i + 1));
+            if (countSearchResults(keyword) > initialSearchWordCount)
+            {
+                return;
+            }
+            Thread.sleep(INDEXING_RETRY_DELAY_MS);
+        }
+        Assert.fail("Number of search results didn't increase after uploading a file with keyword");
+    }
+
+    private File createTestFile(String fileName, String fileContent) throws IOException
     {
         Path filePath = Paths.get(fileName);
-        try (BufferedWriter fileWriter = Files.newBufferedWriter(Paths.get(fileName)))
+        try (BufferedWriter fileWriter = Files.newBufferedWriter(filePath))
         {
             fileWriter.write(fileContent);
         }
 
         return filePath.toFile();
+    }
+
+    private void deleteIfExists(File file)
+    {
+        if (file != null && file.exists())
+        {
+            file.delete();
+        }
     }
 }
