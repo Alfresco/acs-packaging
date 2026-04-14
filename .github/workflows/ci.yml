@@ -89,8 +89,7 @@ jobs:
       - name: "Generate Keystores and Truststores for Mutual TLS configuration"
         if: ${{ matrix.mtls }}
         run: |
-          git clone -b "master" --depth=1 "https://${{ secrets.BOT_GITHUB_USERNAME }}:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/Alfresco/alfresco-ssl-generator.git"
-          git checkout "feature/ACS-7965-elasticsearch-mtls"
+          git clone -b "feature/ACS-7965-elasticsearch-mtls" --depth=1 "https://${{ secrets.BOT_GITHUB_USERNAME }}:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/Alfresco/alfresco-ssl-generator.git"
           if ${{ matrix.disabledHostnameVerification }} ; then
             bash ${{ env.CI_WORKSPACE }}/alfresco-ssl-generator/scripts/ci/generate_keystores_wrong_hostnames.sh
             echo "HOSTNAME_VERIFICATION_DISABLED=true" >> "$GITHUB_ENV"
@@ -99,6 +98,9 @@ jobs:
             echo "HOSTNAME_VERIFICATION_DISABLED=false" >> "$GITHUB_ENV"
           fi
           bash ${{ env.CI_WORKSPACE }}/alfresco-ssl-generator/scripts/ci/convert_testclient_keystore_to_pem.sh "${{ env.CI_WORKSPACE }}"
+      - name: "List generated keystores"
+        if: ${{ matrix.mtls }}
+        run: find ${{ env.CI_WORKSPACE }}/keystores -type f -exec ls -la {} + || echo "No keystores directory found"
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
