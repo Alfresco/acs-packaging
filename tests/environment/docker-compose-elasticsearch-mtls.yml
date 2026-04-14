@@ -79,7 +79,7 @@ services:
         else
         export JAVA_OPTS="$$JAVA_OPTS -Delasticsearch.ssl.host.name.verification=true";
         fi;
-        exec catalina.sh run
+        exec catalina.sh run -security
     volumes:
       - ${CI_WORKSPACE}/keystores/alfresco:/usr/local/tomcat/alf_data/keystore
     ports:
