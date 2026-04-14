@@ -210,8 +210,7 @@ services:
 
   elasticsearch:
     image: elasticsearch:${ELASTICSEARCH_TAG}
-    container_name: elasticsearch
-    mem_limit: 2g
+    mem_limit: 1g
     environment:
       - discovery.type=single-node
       - xpack.security.enabled=true
@@ -241,7 +240,6 @@ services:
 
   live-indexing:
     image: quay.io/alfresco/alfresco-elasticsearch-live-indexing:${LIVE_INDEXING_TAG}
-    container_name: live-indexing
     mem_limit: 512m
     depends_on:
       - elasticsearch
