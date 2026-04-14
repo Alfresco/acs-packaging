@@ -41,7 +41,6 @@ services:
         -Delasticsearch.secureComms=mtls
         -Delasticsearch.user=elastic
         -Delasticsearch.password=admin
-        -Delasticsearch.ssl.host.name.verification=${HOSTNAME_VERIFICATION_DISABLED_NEGATED:-true}
         -Dencryption.ssl.keystore.location=/usr/local/tomcat/alf_data/keystore/alfresco.keystore
         -Dencryption.ssl.keystore.type=JCEKS
         -Dencryption.ssl.truststore.location=/usr/local/tomcat/alf_data/keystore/alfresco.truststore
@@ -69,6 +68,18 @@ services:
         -Dhttpclient.config.transform.hostnameVerificationDisabled=${HOSTNAME_VERIFICATION_DISABLED}
         -XX:MinRAMPercentage=50
         -XX:MaxRAMPercentage=80
+    # Derive -Delasticsearch.ssl.host.name.verification (true = verify) from
+    # HOSTNAME_VERIFICATION_DISABLED (true = skip verification) – they have inverted semantics.
+    command:
+      - bash
+      - -c
+      - >-
+        if [ "${HOSTNAME_VERIFICATION_DISABLED}" = "true" ]; then
+        export JAVA_OPTS="$$JAVA_OPTS -Delasticsearch.ssl.host.name.verification=false";
+        else
+        export JAVA_OPTS="$$JAVA_OPTS -Delasticsearch.ssl.host.name.verification=true";
+        fi;
+        exec catalina.sh run
     volumes:
       - ${CI_WORKSPACE}/keystores/alfresco:/usr/local/tomcat/alf_data/keystore
     ports:

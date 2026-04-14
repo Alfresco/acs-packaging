@@ -24,6 +24,7 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeSuite;
@@ -64,7 +65,7 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
     @Autowired
     protected RestWrapper restClient;
 
-    private final CloseableHttpClient client = HttpClients.createMinimal();
+    private static final CloseableHttpClient client = HttpClients.createMinimal();
     private UserModel adminUser;
     private File searchTestFile;
     private File transformTestFile;
@@ -87,6 +88,12 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
         }
 
         RestAssured.config = RestAssured.config().sslConfig(sslConfig);
+    }
+
+    @AfterSuite(alwaysRun = true)
+    public void closeHttpClient() throws Exception
+    {
+        client.close();
     }
 
     @BeforeClass(alwaysRun = true)
