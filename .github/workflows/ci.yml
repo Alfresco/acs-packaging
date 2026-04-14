@@ -568,7 +568,7 @@ jobs:
         run: bash ./scripts/ci/cleanup_cache.sh
 
   tas_test_with_mtls:
-    name: ${{ matrix.testSuite }} TAS tests with mutal TLS
+    name: ${{ matrix.testSuite }} TAS tests
     runs-on: ubuntu-latest
     if: >
       !contains(github.event.head_commit.message, '[skip mtls]') &&
