@@ -1,0 +1,160 @@
+version: "2"
+include:
+  - docker-compose-mtls-common.yml
+services:
+  alfresco:
+    build:
+      context: ./alfresco-mtls
+      args:
+        ALIAS: alfresco
+        TRUSTSTORE_NAME: alfresco.truststore
+        TRUSTSTORE_TYPE: JCEKS
+        TRUSTSTORE_PASS: password
+        KEYSTORE_NAME: alfresco.keystore
+        KEYSTORE_TYPE: JCEKS
+        KEYSTORE_PASS: password
+    mem_limit: 1900m
+    environment:
+      JAVA_TOOL_OPTIONS: >-
+        -Dencryption.keystore.type=JCEKS
+        -Dencryption.cipherAlgorithm=DESede/CBC/PKCS5Padding
+        -Dencryption.keyAlgorithm=DESede
+        -Dencryption.keystore.location=/usr/local/tomcat/shared/classes/alfresco/extension/keystore/keystore
+        -Dmetadata-keystore.password=mp6yc0UD9e
+        -Dmetadata-keystore.aliases=metadata
+        -Dmetadata-keystore.metadata.password=oKIWzVdEdA
+        -Dmetadata-keystore.metadata.algorithm=DESede
+      JAVA_OPTS: >-
+        -Ddb.driver=org.postgresql.Driver
+        -Ddb.username=alfresco
+        -Ddb.password=alfresco
+        -Ddb.url=jdbc:postgresql://postgres:5432/alfresco
+        -Dindex.subsystem.name=elasticsearch
+        -Delasticsearch.host=elasticsearch
+        -Delasticsearch.port=9200
+        -Delasticsearch.createIndexIfNotExists=true
+        -Delasticsearch.secureComms=mtls
+        -Delasticsearch.user=admin
+        -Delasticsearch.password=admin
+        -Dencryption.ssl.keystore.location=/usr/local/tomcat/alf_data/keystore/alfresco.keystore
+        -Dencryption.ssl.keystore.type=JCEKS
+        -Dencryption.ssl.truststore.location=/usr/local/tomcat/alf_data/keystore/alfresco.truststore
+        -Dencryption.ssl.truststore.type=JCEKS
+        -Dssl-keystore.password=password
+        -Dssl-truststore.password=password
+        -Dalfresco.host=localhost
+        -Dalfresco.port=8443
+        -Dalfresco.restApi.basicAuthScheme=true
+        -Daos.baseUrlOverwrite=https://localhost:8443/alfresco/aos
+        -Dmessaging.broker.url="failover:(nio://activemq:61616)?timeout=3000&jms.useCompression=true"
+        -Dmessaging.broker.username=admin
+        -Dmessaging.broker.password=admin
+        -Ddeployment.method=DOCKER_COMPOSE
+        -Dtransform.service.enabled=true
+        -Dtransformer.strict.mimetype.check=true
+        -Dcontent.transformer.retryOn.different.mimetype=true
+        -Dtransform.service.url=https://transform-router:8095
+        -Dsfs.url=https://shared-file-store:8099/
+        -DlocalTransform.core-aio.url=https://transform-core-aio:8090/
+        -Dcsrf.filter.enabled=false
+        -Dhttpclient.config.sharedfilestore.mTLSEnabled=true
+        -Dhttpclient.config.sharedfilestore.hostnameVerificationDisabled=${HOSTNAME_VERIFICATION_DISABLED}
+        -Dhttpclient.config.transform.mTLSEnabled=true
+        -Dhttpclient.config.transform.hostnameVerificationDisabled=${HOSTNAME_VERIFICATION_DISABLED}
+        -XX:MinRAMPercentage=50
+        -XX:MaxRAMPercentage=80
+    # Derive -Delasticsearch.ssl.host.name.verification (true = verify) from
+    # HOSTNAME_VERIFICATION_DISABLED (true = skip verification) – they have inverted semantics.
+    command:
+      - bash
+      - -c
+      - >-
+        if [ "${HOSTNAME_VERIFICATION_DISABLED}" = "true" ]; then
+        export JAVA_OPTS="$$JAVA_OPTS -Delasticsearch.ssl.host.name.verification=false";
+        else
+        export JAVA_OPTS="$$JAVA_OPTS -Delasticsearch.ssl.host.name.verification=true";
+        fi;
+        exec catalina.sh run -security
+    volumes:
+      - ${CI_WORKSPACE}/keystores/alfresco:/usr/local/tomcat/alf_data/keystore
+    ports:
+      - "8443:8443"
+
+  elasticsearch:
+    image: opensearchproject/opensearch:${OPENSEARCH_TAG}
+    mem_limit: 1g
+    environment:
+      - discovery.type=single-node
+      - plugins.security.ssl.http.enabled=true
+      - plugins.security.ssl.http.keystore_filepath=/usr/share/opensearch/config/certs/elasticsearch.keystore
+      - plugins.security.ssl.http.keystore_type=JKS
+      - plugins.security.ssl.http.keystore_password=password
+      - plugins.security.ssl.http.truststore_filepath=/usr/share/opensearch/config/certs/elasticsearch.truststore
+      - plugins.security.ssl.http.truststore_type=JKS
+      - plugins.security.ssl.http.truststore_password=password
+      - plugins.security.ssl.http.clientauth_mode=REQUIRE
+      - plugins.security.ssl.transport.enabled=true
+      - plugins.security.ssl.transport.keystore_filepath=/usr/share/opensearch/config/certs/elasticsearch.keystore    
+      - plugins.security.ssl.transport.keystore_type=JKS    
+      - plugins.security.ssl.transport.keystore_password=password    
+      - plugins.security.ssl.transport.truststore_filepath=/usr/share/opensearch/config/certs/elasticsearch.truststore    
+      - plugins.security.ssl.transport.truststore_type=JKS    
+      - plugins.security.ssl.transport.truststore_password=password
+      - OPENSEARCH_PASSWORD=admin
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    cap_add:
+      - IPC_LOCK
+    ports:
+      - "9200:9200"
+    volumes:
+      - ${CI_WORKSPACE}/keystores/elasticsearch:/usr/share/opensearch/config/certs
+
+  live-indexing:
+    image: quay.io/alfresco/alfresco-elasticsearch-live-indexing:${LIVE_INDEXING_TAG}
+    mem_limit: 512m
+    depends_on:
+      - elasticsearch
+      - alfresco
+    environment:
+      ELASTICSEARCH_INDEXNAME: alfresco
+      SPRING_ELASTICSEARCH_REST_URIS: https://elasticsearch:9200
+      SPRING_ELASTICSEARCH_REST_USERNAME: admin
+      SPRING_ELASTICSEARCH_REST_PASSWORD: admin
+      SPRING_ACTIVEMQ_BROKERURL: nio://activemq:61616
+      SPRING_ACTIVEMQ_USER: admin
+      SPRING_ACTIVEMQ_PASSWORD: admin
+      ALFRESCO_SHAREDFILESTORE_BASEURL: >-
+        https://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/
+      ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL: >-
+        https://transform-core-aio:8090/transform/config
+
+      SERVER_SSL_ENABLED: "true"
+      SERVER_SSL_KEY_PASSWORD: "password"
+      SERVER_SSL_KEY_STORE: "file:/liveIndexing.keystore"
+      SERVER_SSL_KEY_STORE_PASSWORD: "password"
+      SERVER_SSL_KEY_STORE_TYPE: "JCEKS"
+
+      SERVER_SSL_CLIENT_AUTH: "need"
+      SERVER_SSL_TRUST_STORE: "file:/liveIndexing.truststore"
+      SERVER_SSL_TRUST_STORE_PASSWORD: "password"
+      SERVER_SSL_TRUST_STORE_TYPE: "JCEKS"
+
+      CLIENT_SSL_KEY_STORE: "file:/liveIndexing.keystore"
+      CLIENT_SSL_KEY_STORE_PASSWORD: "password"
+      CLIENT_SSL_KEY_STORE_TYPE: "JCEKS"
+
+      CLIENT_SSL_TRUST_STORE: "file:/liveIndexing.truststore"
+      CLIENT_SSL_TRUST_STORE_PASSWORD: "password"
+      CLIENT_SSL_TRUST_STORE_TYPE: "JCEKS"
+
+      CLIENT_SSL_HOSTNAME_VERIFICATION_DISABLED: ${HOSTNAME_VERIFICATION_DISABLED}
+
+    volumes:
+      - ${CI_WORKSPACE}/keystores/liveIndexing/liveIndexing.truststore:/liveIndexing.truststore
+      - ${CI_WORKSPACE}/keystores/liveIndexing/liveIndexing.keystore:/liveIndexing.keystore

@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.UUID;
 import javax.net.ssl.SSLHandshakeException;
 
 import io.restassured.RestAssured;
@@ -100,7 +101,7 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
     public void dataPreparation() throws IOException
     {
         adminUser = dataUser.getAdminUser();
-        searchTestFile = createTestFile(SEARCH_TEST_FILE_NAME, SEARCH_TEST_FILE_CONTENT);
+        searchTestFile = createTestFile(UUID.randomUUID()+SEARCH_TEST_FILE_NAME, SEARCH_TEST_FILE_CONTENT);
         transformTestFile = createTestFile(TRANSFORM_TEST_FILE_NAME, TRANSFORM_TEST_FILE_CONTENT);
     }
 
@@ -169,7 +170,7 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
         }
         finally
         {
-            if (fileNode != null)
+            if (fileNode != null && fileNode.getId() != null)
             {
                 restClient.authenticateUser(adminUser).withCoreAPI().usingNode(folderModel).deleteNode(fileNode.getId());
             }

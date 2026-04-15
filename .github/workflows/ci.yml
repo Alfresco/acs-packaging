@@ -605,6 +605,20 @@ jobs:
             mtls: true
             disabledHostnameVerification: true
             deploy-timeout: 10
+          - testSuite: Opensearch Mutual TLS
+            pom-dir: tests/tas-mtls
+            profiles: run-mtls-elasticsearch
+            compose-file: docker-compose-opensearch-mtls.yml
+            mtls: true
+            disabledHostnameVerification: false
+            deploy-timeout: 10
+          - testSuite: Opensearch Mutual TLS Disabled Hostname Verification
+            pom-dir: tests/tas-mtls
+            profiles: run-mtls-elasticsearch
+            compose-file: docker-compose-opensearch-mtls.yml
+            mtls: true
+            disabledHostnameVerification: true
+            deploy-timeout: 10
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
       - uses: actions/checkout@v4
