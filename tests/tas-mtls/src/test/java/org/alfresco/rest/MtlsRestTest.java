@@ -101,7 +101,7 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
     public void dataPreparation() throws IOException
     {
         adminUser = dataUser.getAdminUser();
-        searchTestFile = createTestFile(UUID.randomUUID()+SEARCH_TEST_FILE_NAME, SEARCH_TEST_FILE_CONTENT);
+        searchTestFile = createTestFile(UUID.randomUUID() + SEARCH_TEST_FILE_NAME, SEARCH_TEST_FILE_CONTENT);
         transformTestFile = createTestFile(TRANSFORM_TEST_FILE_NAME, TRANSFORM_TEST_FILE_CONTENT);
     }
 
