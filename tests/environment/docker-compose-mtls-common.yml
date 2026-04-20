@@ -1,4 +1,4 @@
-# Common services for mTLS-enabled ACS clusters (used by both Elasticsearch and Solr setups)
+# Common services for mTLS-enabled ACS clusters
 version: "2"
 services:
   transform-router:
