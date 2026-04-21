@@ -5,19 +5,19 @@ This file lists the recommended components for this Service Pack. Use it along w
 #### Alfresco Content Services @project.version@
 
 ##### Alfresco Applications
-| Component | Recommended | Also Available |
-|---|---|---|
-| Alfresco Content Services | @project.version@ |
+| Component | Recommended                             | Also Available |
+|---|-----------------------------------------|---|
+| Alfresco Content Services | @project.version@                       |
 | Alfresco Enterprise Repository ± | @dependency.alfresco-enterprise-repo.version@ |
 | Alfresco Share | @dependency.alfresco-enterprise-share.version@ |
-| Alfresco Search Services | 2.0.18 |
-| Alfresco Insight Engine | 2.0.18 |
-| Alfresco Desktop Sync Service | @alfresco.desktop-sync.version@ |
+| Alfresco Search Services | 2.0.19                                  |
+| Alfresco Insight Engine | 2.0.19                                  |
+| Alfresco Desktop Sync Service | @alfresco.desktop-sync.version@         |
 | Alfresco Transform Service | @dependency.alfresco-transform-service.version@ |
 | Alfresco Transform Core | @dependency.alfresco-transform-core.version@ |
 | Alfresco Shared File Store | @dependency.alfresco-transform-service.version@ |
 | Document Transformation Engine | @dependency.alfresco-transform-core.version@ |
-| Alfresco File Transfer Receiver | 7.0.0 |
+| Alfresco File Transfer Receiver | 7.0.0                                   |
 | Alfresco Module Management Tool | @dependency.alfresco-community-repo.version@ |
 | Alfresco Spring Encryptor | @dependency.alfresco-spring-encryptor.version@ |
 ± Based on Alfresco Community Repository @dependency.alfresco-community-repo.version@
@@ -59,7 +59,7 @@ This file lists the recommended components for this Service Pack. Use it along w
 | MS SQL Server | 2022 | 2019 |
 | Oracle | 23c | |
 | PostgreSQL | 16.6 | 15.10, 14.15 |
-| MariaDB | 10.11 | 10.6, 10.5 |
+| MariaDB | 11.8 | 10.11 |
 | Amazon Aurora PostgreSQL | 15.5 | |
 
 ##### Database Connectors
