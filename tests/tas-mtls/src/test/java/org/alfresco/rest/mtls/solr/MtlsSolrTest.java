@@ -6,6 +6,4 @@ import org.alfresco.rest.MtlsRestTest;
 
 @ContextConfiguration("classpath:alfresco-mtls-solr-context.xml")
 public class MtlsSolrTest extends MtlsRestTest
-{
-}
-
+{}

@@ -176,7 +176,7 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
             }
         }
     }
-    
+
     @Test
     public void testRenditionWithMTLSEnabled()
     {
