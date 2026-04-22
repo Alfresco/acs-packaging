@@ -18,4 +18,5 @@ git config --global core.safecrlf false
 popd
 set +vex
 echo "=========================== Finishing Init Script =========================="
+bash "$(dirname "${BASH_SOURCE[0]}")/build_acs_event_model.sh"
 
