@@ -787,7 +787,7 @@ jobs:
       - name: Determine ACS Image Tag
         run: |
           ACS_VERSION=26.2.0
-          echo "IMAGE_TAG=${ACS_VERSION}-${PIPELINE_TAG_TEXT_INSERT}-${COMPUTED_BUILD_NUMBER}" >> $GITHUB_ENV
+          echo "IMAGE_TAG=appliedacltestimage" >> $GITHUB_ENV
       - name: "Build: uses IMAGE_TAG variable, requires Repo and Share snapshot versions in main pom.xml"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
