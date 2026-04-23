@@ -130,10 +130,17 @@ services:
       ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL: >-
         https://transform-core-aio:8090/transform/config
 
+      JAVA_TOOL_OPTIONS: >
+        -Djavax.net.ssl.keyStore=/liveIndexing.keystore
+        -Djavax.net.ssl.keyStorePassword=password
+        -Djavax.net.ssl.keyStoreType=JCEKS
+        -Djavax.net.ssl.trustStore=/liveIndexing.truststore
+        -Djavax.net.ssl.trustStoreType=JCEKS
+        -Djavax.net.ssl.trustStorePassword=password
+      
       CLIENT_SSL_KEY_STORE: "file:/liveIndexing.keystore"
       CLIENT_SSL_KEY_STORE_PASSWORD: "password"
       CLIENT_SSL_KEY_STORE_TYPE: "JCEKS"
-
       CLIENT_SSL_TRUST_STORE: "file:/liveIndexing.truststore"
       CLIENT_SSL_TRUST_STORE_PASSWORD: "password"
       CLIENT_SSL_TRUST_STORE_TYPE: "JCEKS"
