@@ -58,24 +58,10 @@ services:
         -DlocalTransform.core-aio.url=https://transform-core-aio:8090/
         -Dcsrf.filter.enabled=false
         -Dhttpclient.config.sharedfilestore.mTLSEnabled=true
-        -Dhttpclient.config.sharedfilestore.hostnameVerificationDisabled=${HOSTNAME_VERIFICATION_DISABLED}
         -Dhttpclient.config.transform.mTLSEnabled=true
-        -Dhttpclient.config.transform.hostnameVerificationDisabled=${HOSTNAME_VERIFICATION_DISABLED}
         -XX:MinRAMPercentage=50
         -XX:MaxRAMPercentage=80
         -Drepo.event2.filter.nodeTypes=sys:*,fm:*,cm:thumbnail,cm:failedThumbnail,cm:rating,usr:user,act:*
-    # Derive -Delasticsearch.ssl.host.name.verification (true = verify) from
-    # HOSTNAME_VERIFICATION_DISABLED (true = skip verification) – they have inverted semantics.
-    command:
-      - bash
-      - -c
-      - >-
-        if [ "${HOSTNAME_VERIFICATION_DISABLED}" = "true" ]; then
-        export JAVA_OPTS="$$JAVA_OPTS -Delasticsearch.ssl.host.name.verification=false";
-        else
-        export JAVA_OPTS="$$JAVA_OPTS -Delasticsearch.ssl.host.name.verification=true";
-        fi;
-        exec catalina.sh run -security
     volumes:
       - ${CI_WORKSPACE}/keystores/alfresco:/usr/local/tomcat/alf_data/keystore
     ports:
@@ -147,8 +133,6 @@ services:
       CLIENT_SSL_TRUST_STORE: "file:/liveIndexing.truststore"
       CLIENT_SSL_TRUST_STORE_PASSWORD: "password"
       CLIENT_SSL_TRUST_STORE_TYPE: "JCEKS"
-
-      CLIENT_SSL_HOSTNAME_VERIFICATION_DISABLED: ${HOSTNAME_VERIFICATION_DISABLED}
 
     volumes:
       - ${CI_WORKSPACE}/keystores/liveIndexing/liveIndexing.truststore:/liveIndexing.truststore
