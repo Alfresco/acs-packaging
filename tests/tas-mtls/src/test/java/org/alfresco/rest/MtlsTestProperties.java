@@ -2,24 +2,29 @@ package org.alfresco.rest;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.annotation.PropertySources;
 
 @Configuration
-@PropertySources({@PropertySource({"classpath:default.properties"})})
 public class MtlsTestProperties
 {
-    @Value("${testClient.keystore.location}") private String keystoreLocation;
-    @Value("${testClient.keystore.password}") private String keystorePassword;
-    @Value("${testClient.keystore.type}") private String keystoreType;
-    @Value("${testClient.truststore.location}") private String truststoreLocation;
-    @Value("${testClient.truststore.password}") private String truststorePassword;
-    @Value("${testClient.truststore.type}") private String truststoreType;
-    @Value("${testClient.disableHostnameVerification}") private boolean disableHostnameVerification;
+    @Value("${testClient.keystore.location}")
+    private String keystoreLocation;
+    @Value("${testClient.keystore.password}")
+    private String keystorePassword;
+    @Value("${testClient.keystore.type}")
+    private String keystoreType;
+    @Value("${testClient.truststore.location}")
+    private String truststoreLocation;
+    @Value("${testClient.truststore.password}")
+    private String truststorePassword;
+    @Value("${testClient.truststore.type}")
+    private String truststoreType;
+    @Value("${testClient.disableHostnameVerification}")
+    private boolean disableHostnameVerification;
+    @Value("${searchEngine.mtls.url}")
+    private String searchEngineMtlsUrl;
 
     public MtlsTestProperties()
-    {
-    }
+    {}
 
     public String getKeystoreLocation()
     {
@@ -89,5 +94,15 @@ public class MtlsTestProperties
     public void setDisableHostnameVerification(boolean disableHostnameVerification)
     {
         this.disableHostnameVerification = disableHostnameVerification;
+    }
+
+    public String getSearchEngineMtlsUrl()
+    {
+        return searchEngineMtlsUrl;
+    }
+
+    public void setSearchEngineMtlsUrl(String searchEngineMtlsUrl)
+    {
+        this.searchEngineMtlsUrl = searchEngineMtlsUrl;
     }
 }
