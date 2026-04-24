@@ -66,7 +66,7 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
     @Autowired
     protected RestWrapper restClient;
 
-    private static final CloseableHttpClient client = HttpClients.createMinimal();
+    private static final CloseableHttpClient CLIENT = HttpClients.createMinimal();
     private UserModel adminUser;
     private File searchTestFile;
     private File transformTestFile;
@@ -94,7 +94,7 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
     @AfterSuite(alwaysRun = true)
     public void closeHttpClient() throws Exception
     {
-        client.close();
+        CLIENT.close();
     }
 
     @BeforeClass(alwaysRun = true)
@@ -127,31 +127,31 @@ public abstract class MtlsRestTest extends AbstractTestNGSpringContextTests
     @Test
     public void checkIfMtlsIsEnabledForRepository()
     {
-        Assert.assertThrows(SSLHandshakeException.class, () -> client.execute(new HttpGet("https://localhost:8443")));
+        Assert.assertThrows(SSLHandshakeException.class, () -> CLIENT.execute(new HttpGet("https://localhost:8443")));
     }
 
     @Test
     public void checkIfMtlsIsEnabledForTransformService()
     {
-        Assert.assertThrows(SSLHandshakeException.class, () -> client.execute(new HttpGet("https://localhost:8090")));
+        Assert.assertThrows(SSLHandshakeException.class, () -> CLIENT.execute(new HttpGet("https://localhost:8090")));
     }
 
     @Test
     public void checkIfMtlsIsEnabledForTransformRouter()
     {
-        Assert.assertThrows(SSLHandshakeException.class, () -> client.execute(new HttpGet("https://localhost:8095")));
+        Assert.assertThrows(SSLHandshakeException.class, () -> CLIENT.execute(new HttpGet("https://localhost:8095")));
     }
 
     @Test
     public void checkIfMtlsIsEnabledForSharedFileStorage()
     {
-        Assert.assertThrows(SSLHandshakeException.class, () -> client.execute(new HttpGet("https://localhost:8099")));
+        Assert.assertThrows(SSLHandshakeException.class, () -> CLIENT.execute(new HttpGet("https://localhost:8099")));
     }
 
     @Test
     public void checkIfMtlsIsEnabledForSearchEngine()
     {
-        Assert.assertThrows(SSLHandshakeException.class, () -> client.execute(new HttpGet(mtlsTestProperties.getSearchEngineMtlsUrl())));
+        Assert.assertThrows(SSLHandshakeException.class, () -> CLIENT.execute(new HttpGet(mtlsTestProperties.getSearchEngineMtlsUrl())));
     }
 
     @Test

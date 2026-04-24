@@ -63,6 +63,7 @@ services:
         -Dhttpclient.config.transform.hostnameVerificationDisabled=${HOSTNAME_VERIFICATION_DISABLED}
         -XX:MinRAMPercentage=50
         -XX:MaxRAMPercentage=80
+        -Drepo.event2.filter.nodeTypes=sys:*,fm:*,cm:thumbnail,cm:failedThumbnail,cm:rating,usr:user,act:*
     # Derive -Delasticsearch.ssl.host.name.verification (true = verify) from
     # HOSTNAME_VERIFICATION_DISABLED (true = skip verification) – they have inverted semantics.
     command:
@@ -129,6 +130,8 @@ services:
         https://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/
       ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL: >-
         https://transform-core-aio:8090/transform/config
+      ALFRESCO_EVENT_RETRY_INFRASTRUCTUREFAILURE_MAXATTEMPTS: 1
+      ALFRESCO_EVENT_RETRY_UNEXPECTEDFAILURE_MAXATTEMPTS: 1
 
       JAVA_TOOL_OPTIONS: >
         -Djavax.net.ssl.keyStore=/liveIndexing.keystore
