@@ -18,9 +18,15 @@
 
    <profiles>
    <profile>
-      <id>run-mtls</id>
+      <id>run-mtls-solr</id>
       <properties>
-         <suiteXmlFile>${project.basedir}/src/test/resources/mtls-suite.xml</suiteXmlFile>
+         <suiteXmlFile>${project.basedir}/src/test/resources/mtls-solr-suite.xml</suiteXmlFile>
+      </properties>
+   </profile>
+   <profile>
+      <id>run-mtls-elasticsearch</id>
+      <properties>
+         <suiteXmlFile>${project.basedir}/src/test/resources/mtls-elasticsearch-suite.xml</suiteXmlFile>
       </properties>
    </profile>
    </profiles>
@@ -31,6 +37,12 @@
          <artifactId>restapi</artifactId>
          <scope>test</scope>
       </dependency>
+       <dependency>
+           <groupId>org.awaitility</groupId>
+           <artifactId>awaitility</artifactId>
+           <version>${dependency.awaitility.version}</version>
+           <scope>test</scope>
+       </dependency>
    </dependencies>
    <packaging>jar</packaging>
 

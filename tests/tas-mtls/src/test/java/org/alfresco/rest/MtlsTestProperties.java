@@ -2,11 +2,8 @@ package org.alfresco.rest;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.annotation.PropertySources;
 
 @Configuration
-@PropertySources({@PropertySource({"classpath:default.properties"})})
 public class MtlsTestProperties
 {
     @Value("${testClient.keystore.location}")
@@ -23,6 +20,8 @@ public class MtlsTestProperties
     private String truststoreType;
     @Value("${testClient.disableHostnameVerification}")
     private boolean disableHostnameVerification;
+    @Value("${searchEngine.mtls.url}")
+    private String searchEngineMtlsUrl;
 
     public MtlsTestProperties()
     {}
@@ -95,5 +94,15 @@ public class MtlsTestProperties
     public void setDisableHostnameVerification(boolean disableHostnameVerification)
     {
         this.disableHostnameVerification = disableHostnameVerification;
+    }
+
+    public String getSearchEngineMtlsUrl()
+    {
+        return searchEngineMtlsUrl;
+    }
+
+    public void setSearchEngineMtlsUrl(String searchEngineMtlsUrl)
+    {
+        this.searchEngineMtlsUrl = searchEngineMtlsUrl;
     }
 }
