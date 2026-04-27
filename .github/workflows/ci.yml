@@ -541,7 +541,7 @@ jobs:
         run: bash ./scripts/ci/cleanup_cache.sh
 
   tas_test_with_mtls:
-    name: ${{ matrix.testSuite }} TAS tests with mutal TLS
+    name: ${{ matrix.testSuite }} TAS tests
     runs-on: ubuntu-latest
     if: >
       !contains(github.event.head_commit.message, '[skip mtls]') &&
@@ -550,19 +550,29 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - testSuite: Transform Service Mutal TLS
+          - testSuite: Solr Mutual TLS
             pom-dir: tests/tas-mtls
-            profiles: run-mtls
-            compose-file: docker-compose-mtls.yml
-            mtls: true
+            profiles: run-mtls-solr
+            compose-file: docker-compose-solr-mtls.yml
             disabledHostnameVerification: false
             deploy-timeout: 10
-          - testSuite: Transform Service Mutal TLS Disabled Hostname Verification
+          - testSuite: Solr Mutual TLS Disabled Hostname Verification
             pom-dir: tests/tas-mtls
-            profiles: run-mtls
-            compose-file: docker-compose-mtls.yml
-            mtls: true
+            profiles: run-mtls-solr
+            compose-file: docker-compose-solr-mtls.yml
             disabledHostnameVerification: true
+            deploy-timeout: 10
+          - testSuite: Elasticsearch Mutual TLS
+            pom-dir: tests/tas-mtls
+            profiles: run-mtls-elasticsearch
+            compose-file: docker-compose-elasticsearch-mtls.yml
+            disabledHostnameVerification: false
+            deploy-timeout: 10
+          - testSuite: Opensearch Mutual TLS
+            pom-dir: tests/tas-mtls
+            profiles: run-mtls-elasticsearch
+            compose-file: docker-compose-opensearch-mtls.yml
+            disabledHostnameVerification: false
             deploy-timeout: 10
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v8.16.0
@@ -572,7 +582,6 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.16.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.16.0
       - name: "Generate Keystores and Truststores for Mutual TLS configuration"
-        if: ${{ matrix.mtls }}
         run: |
           git clone -b "master" --depth=1 "https://${{ secrets.BOT_GITHUB_USERNAME }}:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/Alfresco/alfresco-ssl-generator.git"
           if ${{ matrix.disabledHostnameVerification }} ; then
@@ -592,6 +601,8 @@ jobs:
         run: |
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/${{ matrix.compose-file }}
           ${{ env.TAS_SCRIPTS }}/wait-for-alfresco-start.sh "https://localhost:8443/alfresco"
+      - name: "Show all container statuses"
+        run: docker ps -a
       - name: "Run tests"
         id: tests
         timeout-minutes: ${{ matrix.deploy-timeout }}
