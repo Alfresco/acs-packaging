@@ -538,7 +538,11 @@
   "preload": false,
   "refresh": "10s",
   "schemaVersion": 42,
-  "tags": [],
+  "tags": [
+    "alfresco",
+    "content-repository",
+    "elasticsearch"
+  ],
   "templating": {
     "list": []
   },
