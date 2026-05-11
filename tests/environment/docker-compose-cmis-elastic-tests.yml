@@ -142,7 +142,7 @@ services:
       - share
 
   elasticsearch:
-    image: elasticsearch:${ELASTICSEARCH_TAG}
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELASTICSEARCH_TAG}
     mem_limit: 1700m
     environment:
       - xpack.security.enabled=false
@@ -163,7 +163,7 @@ services:
       - 9300:9300
 
   kibana:
-    image: kibana:${KIBANA_TAG}
+    image: docker.elastic.co/kibana/kibana:${KIBANA_TAG}
     mem_limit: 1024m
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
