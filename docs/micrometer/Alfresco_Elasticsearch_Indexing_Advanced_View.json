@@ -1,16 +1,54 @@
 {
+  "__requires": [
+    {
+      "type": "panel",
+      "id": "gauge",
+      "name": "Gauge",
+      "version": ""
+    },
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "12.3.1"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
+      "id": "timeseries",
+      "name": "Time series",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
         "builtIn": 1,
         "datasource": {
-          "type": "grafana",
-          "uid": "-- Grafana --"
+          "type": "datasource",
+          "uid": "grafana"
         },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
         "type": "dashboard"
       }
     ]
@@ -18,7 +56,6 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 0,
   "links": [],
   "panels": [
     {
@@ -35,9 +72,7 @@
       "type": "row"
     },
     {
-      "datasource": {
-        "type": "prometheus"
-      },
+      "datasource": {},
       "description": "Document indexed in Elasticsearch instances. This number will not include any default documents created during bootstrap unless these have been explicitly re-indexed. Therefore there may be a discrepancy with the number above.",
       "fieldConfig": {
         "defaults": {
@@ -90,17 +125,15 @@
           "expr": "elasticsearch_document_count",
           "legendFormat": "Total Indexed Documents",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "datasource": {}
         }
       ],
       "title": "Elasticsearch Total Indexed Documents",
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "ffdp68onn7pj4b"
-      },
+      "datasource": {},
       "description": "Documents that can be indexed using Elasticsearch.",
       "fieldConfig": {
         "defaults": {
@@ -153,17 +186,15 @@
           "expr": "repository_nodesCount",
           "legendFormat": "Repository Nodes",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "datasource": {}
         }
       ],
       "title": "Repository Node Count",
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "ffdp68onn7pj4b"
-      },
+      "datasource": {},
       "description": "This metric indicates the number of documents whose content has been successfully indexed in Elasticsearch instances. It is a subset of the total count of indexed documents.",
       "fieldConfig": {
         "defaults": {
@@ -215,17 +246,15 @@
           "expr": "elasticsearch_content_indexing_success_count",
           "legendFormat": "Success",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "datasource": {}
         }
       ],
       "title": "Content Indexing Success Count",
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "ffdp68onn7pj4b"
-      },
+      "datasource": {},
       "description": "This metric indicates the number of documents whose content has not been successfully indexed in Elasticsearch instances.  Reindexing may be necessary for these documents.",
       "fieldConfig": {
         "defaults": {
@@ -277,17 +306,15 @@
           "expr": "elasticsearch_content_indexing_failures_count",
           "legendFormat": "Failures",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "datasource": {}
         }
       ],
       "title": "Content Indexing Failures Count",
       "type": "stat"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "ffdp68onn7pj4b"
-      },
+      "datasource": {},
       "description": "This metric indicates the number of newly added documents whose content indexing is in progress.",
       "fieldConfig": {
         "defaults": {
@@ -339,17 +366,15 @@
           "expr": "elasticsearch_content_indexing_new_documents_progress_count",
           "legendFormat": "New Content Progress",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "datasource": {}
         }
       ],
       "title": "New Content Indexing In Progress",
       "type": "gauge"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "ffdp68onn7pj4b"
-      },
+      "datasource": {},
       "description": "This metric indicates the number of modified documents whose content indexing is in progress.",
       "fieldConfig": {
         "defaults": {
@@ -401,17 +426,15 @@
           "expr": "elasticsearch_content_indexing_outdated_documents_progress_count",
           "legendFormat": "Reindex Progress",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "datasource": {}
         }
       ],
       "title": "Outdated Content Reindexing In Progress",
       "type": "gauge"
     },
     {
-      "datasource": {
-        "type": "prometheus",
-        "uid": "ffdp68onn7pj4b"
-      },
+      "datasource": {},
       "description": "Trend of successful and failed content indexing operations over time.",
       "fieldConfig": {
         "defaults": {
@@ -496,14 +519,16 @@
           "expr": "rate(elasticsearch_content_indexing_success_count[5m])",
           "legendFormat": "Success Rate",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "datasource": {}
         },
         {
           "editorMode": "code",
           "expr": "rate(elasticsearch_content_indexing_failures_count[5m])",
           "legendFormat": "Failure Rate",
           "range": true,
-          "refId": "B"
+          "refId": "B",
+          "datasource": {}
         }
       ],
       "title": "Content Indexing Success vs Failures (Trend)",
@@ -513,7 +538,11 @@
   "preload": false,
   "refresh": "10s",
   "schemaVersion": 42,
-  "tags": [],
+  "tags": [
+    "alfresco",
+    "content-repository",
+    "elasticsearch"
+  ],
   "templating": {
     "list": []
   },
@@ -524,6 +553,8 @@
   "timepicker": {},
   "timezone": "browser",
   "title": "Alfresco Elasticsearch Metrics (Context-Aware)",
-  "uid": "97076aad-bbe5-4074-ad45-e615021ff7d1",
-  "version": 3
+  "uid": "alypz_fSk_es",
+  "version": 2,
+  "weekStart": "",
+  "id": null
 }

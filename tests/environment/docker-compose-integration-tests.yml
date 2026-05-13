@@ -61,7 +61,7 @@ services:
       - 30000-30099:30000-30099
 
   postgres:
-    image: library/postgres:16.6
+    image: library/postgres:17.9
     environment:
       - POSTGRES_PASSWORD=alfresco
       - POSTGRES_USER=alfresco
@@ -70,7 +70,7 @@ services:
       - 5432:5432
 
   solr6:
-    image: quay.io/alfresco/insight-engine:2.0.18-A.4
+    image: quay.io/alfresco/insight-engine:2.0.20-A.1
     environment:
       #Solr needs to know how to register itself with Alfresco
       SOLR_ALFRESCO_HOST: "alfresco"
