@@ -24,6 +24,7 @@
         <packages>
             <package name="org.alfresco.rest.*">
                 <exclude name="org.alfresco.rest.people.deauthorization.community.*"/>
+                <exclude name="org.alfresco.rest.cascadingdictionary.*"/>
             </package>
         </packages>
 	</test>
