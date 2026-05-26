@@ -188,7 +188,7 @@ services:
             - share
 
     sync-service:
-        image: quay.io/alfresco/service-sync:5.3.2
+        image: quay.io/alfresco/service-sync:5.3.3-A.4
         mem_limit: 1g
         environment:
             JAVA_OPTS : >- #pragma: allowlist secret
