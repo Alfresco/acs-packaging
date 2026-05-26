@@ -682,7 +682,7 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v12.4.3
         with:
-          java-version: ${{ matrix.java-version == 'DEFAULT' && env.JAVA_VERSION || matrix.java-version }}
+          java-version: ${{ env.JAVA_VERSION }}
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
@@ -696,6 +696,7 @@ jobs:
         env:
           AWS_ACCESS_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_ACCESS_KEY_ID }}
           AWS_SECRET_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_SECRET_ACCESS_KEY }}
+          JAVA_VERSION: ${{ matrix.java-version }}
         run: |
           mvn -B clean install -ntp -Ppipeline,build-docker-images \
             $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-repo.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Drepo.image.tag=latest') \
