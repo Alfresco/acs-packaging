@@ -158,11 +158,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: 
       - test_run_check
-    if: >
-      github.event_name == 'pull_request' &&
-      github.actor != 'dependabot[bot]' &&
-      !contains(github.event.head_commit.message, '[skip pmd]') &&
-      !contains(github.event.head_commit.message, '[skip tests]')
+    if: needs.test_run_check.outputs.tests == 'true' && github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
