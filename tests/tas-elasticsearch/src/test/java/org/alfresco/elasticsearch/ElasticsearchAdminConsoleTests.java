@@ -109,7 +109,7 @@ public class ElasticsearchAdminConsoleTests extends AbstractTestNGSpringContextT
         assertFalse(document.select("#elasticsearchSearch").hasClass("hidden"), "Expected elasticsearch section to be displayed.");
 
         Step.STEP("Verify that repository nodes count is 'Unavailable' or numeric on first load.");
-        String initialRepoNodesText = document.select("#repositoryNodesCount span.value").text().replace("\u00A0", "").trim();
+        String initialRepoNodesText = document.select("#repositoryNodesCount span.value").text();
         assertTrue(UNAVAILABLE.equals(initialRepoNodesText) || isNumeric(initialRepoNodesText),
                 "Expected repository nodes count to be '" + UNAVAILABLE + "' or a number, but got: '" + initialRepoNodesText + "'");
 
@@ -187,7 +187,7 @@ public class ElasticsearchAdminConsoleTests extends AbstractTestNGSpringContextT
     private boolean isNumeric(String text)
     {
         String normalized = text.replace("\u00A0", "").replaceAll("[,\\s]", "").trim();
-        return !normalized.isEmpty() && normalized.chars().allMatch(Character::isDigit);
+        return !normalized.isEmpty() && normalized.chars().allMatch(ch -> ch >= '0' && ch <= '9');
     }
 
     private int parseCount(String text)
