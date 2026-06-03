@@ -49,7 +49,7 @@ public class ElasticsearchAdminConsoleTests extends AbstractTestNGSpringContextT
     private static final String ADMIN_CONSOLE_URL = "/alfresco/s/enterprise/admin/admin-searchservice";
     private static final String FILE_NAME = "ElasticsearchAdminConsoleTests_" + UUID.randomUUID() + ".txt";
     private static final String UNAVAILABLE = "Unavailable";
-    private static final long CACHE_EXPIRY_MS = 65000;
+    private static final long CACHE_EXPIRY_MS = 60000;
 
     @Autowired
     public DataUser dataUser;
@@ -109,7 +109,7 @@ public class ElasticsearchAdminConsoleTests extends AbstractTestNGSpringContextT
         assertFalse(document.select("#elasticsearchSearch").hasClass("hidden"), "Expected elasticsearch section to be displayed.");
 
         Step.STEP("Verify that repository nodes count is 'Unavailable' or numeric on first load.");
-        String initialRepoNodesText = document.select("#repositoryNodesCount span.value").text();
+        String initialRepoNodesText = document.select("#repositoryNodesCount span.value").text().replace("\u00A0", "").trim();
         assertTrue(UNAVAILABLE.equals(initialRepoNodesText) || isNumeric(initialRepoNodesText),
                 "Expected repository nodes count to be '" + UNAVAILABLE + "' or a number, but got: '" + initialRepoNodesText + "'");
 
