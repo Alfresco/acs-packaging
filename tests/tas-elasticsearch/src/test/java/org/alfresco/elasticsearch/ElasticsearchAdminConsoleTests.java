@@ -144,6 +144,7 @@ public class ElasticsearchAdminConsoleTests extends AbstractTestNGSpringContextT
     /**
      * Poll the admin console until the repository nodes count becomes a numeric value.
      */
+    @SuppressWarnings("PMD.SignatureDeclareThrowsException")
     private int waitForNumericRepositoryNodesCount() throws Exception
     {
         final int[] result = new int[1];
@@ -162,6 +163,7 @@ public class ElasticsearchAdminConsoleTests extends AbstractTestNGSpringContextT
     /**
      * Poll the admin console until the repository nodes count is greater than the given baseline.
      */
+    @SuppressWarnings("PMD.SignatureDeclareThrowsException")
     private int waitForRepositoryNodesCountGreaterThan(int baseline) throws Exception
     {
         final int[] result = new int[1];
@@ -185,11 +187,7 @@ public class ElasticsearchAdminConsoleTests extends AbstractTestNGSpringContextT
     private boolean isNumeric(String text)
     {
         String normalized = text.replace("\u00A0", "").replaceAll("[,\\s]", "").trim();
-        if (normalized.isEmpty())
-        {
-            return false;
-        }
-        return normalized.chars().allMatch(Character::isDigit);
+        return !normalized.isEmpty() && normalized.chars().allMatch(Character::isDigit);
     }
 
     private int parseCount(String text)
@@ -212,6 +210,7 @@ public class ElasticsearchAdminConsoleTests extends AbstractTestNGSpringContextT
     /**
      * Create a text document with the given file name and wait until we can query for it.
      */
+    @SuppressWarnings("PMD.SignatureDeclareThrowsException")
     private void createDocumentAndEnsureIndexed(String fileName) throws Exception
     {
         dataContent.usingUser(user).usingSite(siteModel)
