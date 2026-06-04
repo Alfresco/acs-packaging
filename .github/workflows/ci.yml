@@ -68,6 +68,9 @@ jobs:
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
       - uses: actions/checkout@v4
@@ -96,6 +99,8 @@ jobs:
       GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
       GIT_EMAIL: ${{ secrets.BOT_GITHUB_EMAIL }}
       GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
       - uses: actions/checkout@v4
