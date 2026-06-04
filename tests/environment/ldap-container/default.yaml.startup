@@ -19,7 +19,7 @@ LDAP_READONLY_USER_USERNAME: readonly
 LDAP_READONLY_USER_PASSWORD: readonly
 
 # Backend
-LDAP_BACKEND: hdb
+LDAP_BACKEND: mdb
 
 # Tls
 LDAP_TLS: true
