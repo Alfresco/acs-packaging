@@ -8,8 +8,6 @@ on:
 env:
   JAVA_VERSION: "21"
   GITHUB_ACTIONS_DEPLOY_TIMEOUT: 60
-  MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-  MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
   TAS_ENVIRONMENT: ./tests/environment
   TAS_SCRIPTS: ../alfresco-community-repo/packaging/tests/scripts
   AWS_REGION: eu-west-1
@@ -19,6 +17,9 @@ jobs:
   arm64_health_check:
     name: "ARM64 Health Check"
     runs-on: ubuntu-24.04-arm
+    env:
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     outputs:
       test_failure: ${{ steps.persist_test_failure_flag.outputs.test_failure }}
     steps:

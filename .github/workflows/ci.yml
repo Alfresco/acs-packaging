@@ -18,17 +18,7 @@ env:
   JAVA_VERSION: "21"
   AZURE_AUTHENTICATION_MODE: sharedKey
   AZURE_STORAGE_ACCOUNT_NAME: acspackagingci
-  AZURE_STORAGE_ACCOUNT_KEY: ${{ secrets.AZURE_PACKAGING_STORAGE_ACCOUNT_KEY }}
-  DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   GITHUB_ACTIONS_DEPLOY_TIMEOUT: 60
-  GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
-  GIT_EMAIL: ${{ secrets.BOT_GITHUB_EMAIL }}
-  GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
-  MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-  MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-  QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-  QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
   CI_WORKSPACE: ${{ github.workspace }}
   AWS_REGION: eu-west-1
   TAS_ENVIRONMENT: ./tests/environment
@@ -83,6 +73,10 @@ jobs:
       (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request') &&
       github.actor != 'dependabot[bot]' &&
       !contains(github.event.head_commit.message, '[skip tests]')
+    env:
+      GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
+      GIT_EMAIL: ${{ secrets.BOT_GITHUB_EMAIL }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
       - uses: actions/checkout@v4
@@ -686,6 +680,9 @@ jobs:
     if: >
       github.event_name != 'pull_request' &&
       !contains(github.event.head_commit.message, '[skip tests]')
+    env:
+      GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
     strategy:
       fail-fast: false
       matrix:
