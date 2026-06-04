@@ -105,6 +105,8 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
       - uses: actions/checkout@v4
@@ -608,6 +610,8 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
       AZURE_STORAGE_ACCOUNT_KEY: ${{ secrets.AZURE_PACKAGING_STORAGE_ACCOUNT_KEY }}
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
@@ -745,6 +749,8 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
     strategy:
       fail-fast: false
       matrix:
@@ -845,6 +851,8 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
       - uses: actions/checkout@v4
