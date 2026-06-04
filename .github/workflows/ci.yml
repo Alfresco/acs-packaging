@@ -153,6 +153,15 @@ jobs:
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true' && github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
@@ -169,6 +178,15 @@ jobs:
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -262,6 +280,15 @@ jobs:
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -321,6 +348,15 @@ jobs:
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -383,6 +419,15 @@ jobs:
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
       - uses: actions/checkout@v4
@@ -417,6 +462,15 @@ jobs:
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -535,6 +589,10 @@ jobs:
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
+    env:
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+      AZURE_STORAGE_ACCOUNT_KEY: ${{ secrets.AZURE_PACKAGING_STORAGE_ACCOUNT_KEY }}
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
       - uses: actions/checkout@v4
@@ -579,7 +637,18 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - test_run_check
-    if: needs.test_run_check.outputs.tests == 'true'
+    if: needs.test_run_check.outputs.tests == 'true' &&
+      !contains(github.event.head_commit.message, '[skip mtls]') &&
+      !contains(github.event.head_commit.message, '[skip tests]')
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -783,6 +852,15 @@ jobs:
     runs-on: ubuntu-latest
     if: >
       contains(github.event.head_commit.message, '[pipeline_docker]')
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     services:
       registry:
         image: registry:2
