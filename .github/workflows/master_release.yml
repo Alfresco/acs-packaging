@@ -8,6 +8,9 @@ on:
   schedule:
     - cron:  '0 5 * * 3'
 
+permissions:
+  contents: read
+
 env:
   JAVA_VERSION: "21"
   AWS_REGION: eu-west-1
@@ -209,6 +212,8 @@ jobs:
       GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
       MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
       MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:

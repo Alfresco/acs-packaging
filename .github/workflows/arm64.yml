@@ -5,6 +5,9 @@ on:
     - cron: "0 3 * * 1-5"
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 env:
   JAVA_VERSION: "21"
   GITHUB_ACTIONS_DEPLOY_TIMEOUT: 60

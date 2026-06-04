@@ -5,6 +5,9 @@ on:
     branches:
       - precommit/**
 
+permissions:
+  contents: read
+
 env:
   JAVA_VERSION: "21"
 
@@ -13,6 +16,8 @@ jobs:
     name: "Reformat code"
     runs-on: ubuntu-latest
     if: contains(github.event.head_commit.message, '[reformat code]')
+    permissions:
+      contents: write
     env:
       MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
