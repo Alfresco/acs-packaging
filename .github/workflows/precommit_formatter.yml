@@ -18,9 +18,9 @@ jobs:
     if: contains(github.event.head_commit.message, '[reformat code]')
     permissions:
       contents: write
-    env:
-      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+#    env:
+#      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+#      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
     steps:
       - uses: actions/checkout@v4
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
