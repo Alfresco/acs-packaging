@@ -121,7 +121,7 @@ fi
 if [[ -n "$IMAGE_TAG" ]]; then
   ACS_IMAGE="-Dimage.tag=$IMAGE_TAG"
 fi
-mvn -B -ntp -V -q install -DskipTests -Dmaven.javadoc.skip=true -P${BUILD_PROFILE} -Pags ${REPO_IMAGE} ${SHARE_IMAGE} ${ACS_IMAGE}
+mvn -B -ntp -V install -DskipTests -Dmaven.javadoc.skip=true -P${BUILD_PROFILE} -Pags ${REPO_IMAGE} ${SHARE_IMAGE} ${ACS_IMAGE}
 
 #Build alfresco image with jdbc drivers
 MYSQL_JDBC_TAG=$(mvn help:evaluate -Dexpression=dependency.mysql.version -q -DforceStdout)
@@ -136,7 +136,11 @@ mvn dependency:copy -Dartifact=com.microsoft.sqlserver:mssql-jdbc:${MSSQL_JDBC_T
 ORACLE_JDBC_TAG=$(mvn help:evaluate -Dexpression=dependency.ojdbc.version -q -DforceStdout)
 mvn dependency:copy -Dartifact=com.oracle.database.jdbc:ojdbc11:${ORACLE_JDBC_TAG}:jar -DoutputDirectory=tests/environment/alfresco-with-jdbc-drivers
 
-REPO_LATEST_IMAGE=$(docker images --format='{{.Repository}}:{{.Tag}}' | grep "alfresco-content-repository:latest")
+if [[ "${BUILD_PROFILE}" = "build-multiarch-docker-images" ]]; then
+  REPO_LATEST_IMAGE="127.0.0.1:5000/alfresco/alfresco-content-repository:${IMAGE_TAG}"
+else
+  REPO_LATEST_IMAGE=$(docker images --format='{{.Repository}}:{{.Tag}}' | grep "alfresco-content-repository:latest")
+fi
 docker build -t alfresco-repository-databases:latest -f tests/environment/alfresco-with-jdbc-drivers/alfresco.Dockerfile . --build-arg BASE_IMAGE=${REPO_LATEST_IMAGE}
 
 source tests/environment/.env
