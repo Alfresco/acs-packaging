@@ -43,6 +43,7 @@ updates:
     - 4.1.0
   registries:
   - maven-repository-artifacts-alfresco-com-nexus-content-groups-int
+
 - package-ecosystem: "github-actions"
   directory: "/"
   schedule:
@@ -51,3 +52,40 @@ updates:
     github-actions:
       patterns:
         - "*"
+  labels:
+    - "Master"
+    - "github_actions"
+  commit-message:
+    prefix: "[GHA - Master]"
+
+  #For 25.N
+- package-ecosystem: "github-actions"
+  directory: "/"
+  target-branch: "release/25.N"
+  schedule:
+    interval: "weekly"
+  groups:
+    github-actions:
+      patterns:
+        - "*"
+  labels:
+    - "25.N"
+    - "github_actions"
+  commit-message:
+    prefix: "[GHA - 25.N]"
+
+  #For 23.N
+- package-ecosystem: "github-actions"
+  directory: "/"
+  target-branch: "release/23.N"
+  schedule:
+    interval: "weekly"
+  groups:
+    github-actions:
+      patterns:
+        - "*"
+  labels:
+    - "23.N"
+    - "github_actions"
+  commit-message:
+    prefix: "[GHA - 23.N]"
