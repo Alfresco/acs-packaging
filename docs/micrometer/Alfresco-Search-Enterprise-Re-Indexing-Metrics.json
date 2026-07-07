@@ -3,8 +3,8 @@
   "kind": "Dashboard",
   "metadata": {
     "name": "alfresco-reindex-final",
-    "generation": 8,
-    "creationTimestamp": "2026-07-01T13:39:28Z",
+    "generation": 3,
+    "creationTimestamp": "2026-07-07T11:18:32Z",
     "labels": {},
     "annotations": {}
   },
@@ -97,25 +97,23 @@
                       "options": {
                         "1": {
                           "text": "RUNNING",
-                          "color": "blue"
-                        }
-                      }
-                    },
-                    {
-                      "type": "value",
-                      "options": {
+                          "color": "blue",
+                          "index": 2
+                        },
                         "2": {
                           "text": "COMPLETED",
-                          "color": "green"
-                        }
-                      }
-                    },
-                    {
-                      "type": "value",
-                      "options": {
+                          "color": "green",
+                          "index": 1
+                        },
                         "3": {
                           "text": "FAILED",
-                          "color": "red"
+                          "color": "red",
+                          "index": 0
+                        },
+                        "4": {
+                          "text": "STOPPED",
+                          "color": "orange",
+                          "index": 3
                         }
                       }
                     }
@@ -138,6 +136,10 @@
                       {
                         "value": 3,
                         "color": "red"
+                      },
+                      {
+                        "value": 4,
+                        "color": "orange"
                       }
                     ]
                   },
