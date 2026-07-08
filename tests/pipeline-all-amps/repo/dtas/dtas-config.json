@@ -48,8 +48,9 @@
                 },
                 {
                     "id": "org_alfresco_integrations_S3Connector",
-                    "version": "alfresco.s3connector.version",
+                    "version": "${alfresco.s3connector.version}",
                     "installed": true
+                }
                 },
                 {
                     "id": "alfresco-ai-repo",
