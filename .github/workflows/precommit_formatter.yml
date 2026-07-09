@@ -18,9 +18,6 @@ jobs:
     if: contains(github.event.head_commit.message, '[reformat code]')
     permissions:
       contents: write
-    env:
-      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
     steps:
       - uses: actions/checkout@v4
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
@@ -40,7 +37,7 @@ jobs:
         run: pip install detect-secrets && detect-secrets scan --baseline .secrets.baseline
       - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v12.4.3
         with:
-          username: ${{ secrets.BOT_GITHUB_USERNAME }}
+          username: ${{ vars.BOT_GITHUB_USERNAME }}
           add-options: -u
           commit-message: "Apply Pre-Commit code formatting"
           skip-if-no-changes: true
