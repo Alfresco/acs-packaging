@@ -74,7 +74,7 @@ jobs:
           AWS_SECRET_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_SECRET_ACCESS_KEY }}
         run: |
           # Make necessary env files available
-          git clone --depth=1 --branch master https://${{ secrets.BOT_GITHUB_USERNAME }}:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/Alfresco/alfresco-community-repo.git ../alfresco-community-repo
+          git clone --depth=1 --branch master https://${{ vars.BOT_GITHUB_USERNAME }}:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/Alfresco/alfresco-community-repo.git ../alfresco-community-repo
           # Start the environment
           export PIPELINE_ALL_AMPS_REGISTRY=quay.io/
           export PIPELINE_ALL_AMPS_TAG=$TEST_GIT_TAG
@@ -87,7 +87,7 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
           # Make necessary test files available
-          git clone --depth 1 --branch $DTAS_VERSION https://${{ secrets.BOT_GITHUB_USERNAME }}:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
+          git clone --depth 1 --branch $DTAS_VERSION https://${{ vars.BOT_GITHUB_USERNAME }}:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
           cd dtas
           python3 -m venv .venv
           source .venv/bin/activate
