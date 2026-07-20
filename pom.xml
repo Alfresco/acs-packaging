@@ -4,27 +4,28 @@
     <artifactId>acs-packaging</artifactId>
     <packaging>pom</packaging>
     <name>Alfresco Content Services Packaging</name>
-    <version>26.2.0-A.29-SNAPSHOT</version>
+    <version>26.2.0-A.31-SNAPSHOT</version>
 
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>alfresco-enterprise-repo</artifactId>
         <relativePath>../alfresco-enterprise-repo/pom.xml</relativePath>
-        <version>26.2.0.83-SNAPSHOT</version>
+
+        <version>26.2.0.85</version>
     </parent>
 
     <properties>
-        <dependency.alfresco-enterprise-repo.version>26.2.0.83-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
-        <dependency.alfresco-enterprise-share.version>26.2.0.65-SNAPSHOT</dependency.alfresco-enterprise-share.version>
+        <dependency.alfresco-enterprise-repo.version>26.2.0.85</dependency.alfresco-enterprise-repo.version>
+        <dependency.alfresco-enterprise-share.version>26.2.0.67</dependency.alfresco-enterprise-share.version>
 
         <alfresco.rm-enterprise-rest-api-explorer.version>3.0.2</alfresco.rm-enterprise-rest-api-explorer.version>
 
-        <alfresco.s3connector.version>7.1.0-A.1</alfresco.s3connector.version>
+        <alfresco.s3connector.version>8.0.0</alfresco.s3connector.version>
         <alfresco.azure-connector.version>5.0.7-A.1</alfresco.azure-connector.version>
-        <alfresco.salesforce-connector.version>4.1.0-A.3</alfresco.salesforce-connector.version>
+        <alfresco.salesforce-connector.version>4.1.0</alfresco.salesforce-connector.version>
         <alfresco.outlook.version>3.1.0</alfresco.outlook.version>
-        <alfresco.desktop-sync.version>5.3.5-A.1</alfresco.desktop-sync.version>
-        <alfresco.ais.version>3.4.4-A.3</alfresco.ais.version>
+        <alfresco.desktop-sync.version>5.3.5</alfresco.desktop-sync.version>
+        <alfresco.ais.version>3.4.4</alfresco.ais.version>
         <alfresco.hxinsight-connector.version>2.0.2</alfresco.hxinsight-connector.version>
 
 
