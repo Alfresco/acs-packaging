@@ -84,6 +84,15 @@ jobs:
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true' && github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
@@ -91,15 +100,6 @@ jobs:
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/ya-pmd-scan@v4.1.0
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
-          QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-          GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-          GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
-          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
         with:
           classpath-build-command: "bash ./scripts/ci/init.sh && bash ./scripts/ci/build.sh"
 
@@ -109,6 +109,15 @@ jobs:
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -178,15 +187,6 @@ jobs:
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: "Build"
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
-          QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-          GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-          GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
-          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
           bash ./scripts/ci/init.sh
@@ -211,6 +211,15 @@ jobs:
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -240,15 +249,6 @@ jobs:
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: "Build"
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
-          QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-          GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-          GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
-          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
           bash ./scripts/ci/init.sh
@@ -279,6 +279,15 @@ jobs:
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -309,15 +318,6 @@ jobs:
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: "Build"
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
-          QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-          GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-          GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
-          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
           bash ./scripts/ci/init.sh
@@ -350,6 +350,15 @@ jobs:
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
       - uses: actions/checkout@v4
@@ -360,15 +369,6 @@ jobs:
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: "Build"
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
-          QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-          GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-          GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
-          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
           bash ./scripts/ci/init.sh
@@ -393,6 +393,15 @@ jobs:
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -446,15 +455,6 @@ jobs:
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: "Build"
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
-          QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-          GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-          GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
-          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
           bash ./scripts/ci/init.sh
@@ -520,6 +520,16 @@ jobs:
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
+    env:
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      AZURE_STORAGE_ACCOUNT_KEY: ${{ secrets.AZURE_PACKAGING_STORAGE_ACCOUNT_KEY }}
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
       - uses: actions/checkout@v4
@@ -530,16 +540,6 @@ jobs:
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: "Build"
-        env:
-          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
-          QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-          GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-          GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
-          AZURE_STORAGE_ACCOUNT_KEY: ${{ secrets.AZURE_PACKAGING_STORAGE_ACCOUNT_KEY }}
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
           bash ./scripts/ci/init.sh
@@ -575,6 +575,15 @@ jobs:
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -624,15 +633,6 @@ jobs:
           fi
           bash ${{ env.CI_WORKSPACE }}/alfresco-ssl-generator/scripts/ci/convert_testclient_keystore_to_pem.sh "${{ env.CI_WORKSPACE }}"
       - name: "Build"
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
-          QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-          GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-          GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
-          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
           bash ./scripts/ci/init.sh
@@ -659,6 +659,13 @@ jobs:
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
     strategy:
       fail-fast: false
       matrix:
@@ -673,13 +680,6 @@ jobs:
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: "Build"
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
-          QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-          GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-          GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
           bash ./scripts/ci/init.sh
@@ -705,6 +705,9 @@ jobs:
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true' && github.event_name != 'pull_request'
+    env:
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
     strategy:
       fail-fast: false
       matrix:
@@ -722,21 +725,16 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: "Build"
-        env:
-          GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-          GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
       - name: "Set up the environment"
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         env:
-          GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-          GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
           AWS_ACCESS_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_ACCESS_KEY_ID }}
           AWS_SECRET_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_SECRET_ACCESS_KEY }}
           JAVA_VERSION: ${{ matrix.java-version }}
-        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
           mvn -B clean install -ntp -Ppipeline,build-docker-images \
             $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-repo.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Drepo.image.tag=latest') \
@@ -763,6 +761,13 @@ jobs:
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
       - uses: actions/checkout@v4
@@ -773,13 +778,6 @@ jobs:
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: "Build"
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
-          QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-          GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-          GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
           bash ./scripts/ci/init.sh
@@ -804,6 +802,15 @@ jobs:
     needs: [commit_parser]
     if: >
       contains(needs.commit_parser.outputs.title, '[pipeline_docker]')
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     services:
       registry:
         image: registry:2
@@ -833,27 +840,11 @@ jobs:
           ACS_VERSION=23.1.0
           echo "IMAGE_TAG=${ACS_VERSION}-${PIPELINE_TAG_TEXT_INSERT}-${COMPUTED_BUILD_NUMBER}" >> $GITHUB_ENV
       - name: "Build: uses IMAGE_TAG variable, requires Repo and Share snapshot versions in main pom.xml"
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
-          QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-          GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-          GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
-          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh -m
       - name: "Update images"
-        env:
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
-          QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: mvn -B -V clean install -ntp -DskipTests -Dmaven.javadoc.skip=true -Ppush-docker-images,pipeline,release-branch -Drepo.image.tag=latest -Dshare.image.tag=latest -Dimage.tag=${IMAGE_TAG} -Ddocker.quay-expires.value=1w -Drepo.skipDockerImage=false -Dshare.skipDockerImage=false
       - name: "Clean Maven cache"
