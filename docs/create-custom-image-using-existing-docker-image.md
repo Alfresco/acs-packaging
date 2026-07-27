@@ -126,7 +126,7 @@ alfresco-custom-image                            (Dir)
     │
     └───Dockerfile                              (File)
 ```
-* Generate keystore and truststore required for ssl and SAML. Additional information can be found under [alfresco documentation](https://docs.hyland.com/p/alfresco).
+* Generate keystore and truststore required for SSL and SAML. Additional information can be found under [Alfresco documentation](https://docs.hyland.com/p/alfresco).
 
 * Append the content of "share-config-custom.xml" from saml-distribution to the one used in the alfresco-share docker image (We append content manually because it is to big for a SED command).
 
