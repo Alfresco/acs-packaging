@@ -472,6 +472,9 @@ jobs:
   upgrade_tas_tests:
     name: ${{ matrix.testSuite }} Upgrade TAS tests
     runs-on: alfrescoPub-ubuntu2204-16G-4CPU
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
@@ -666,6 +669,8 @@ jobs:
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
       GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
       GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:

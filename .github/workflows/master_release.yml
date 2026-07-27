@@ -168,8 +168,8 @@ jobs:
       contains(needs.commit_parser.outputs.title, '[publish]') &&
       github.event_name != 'pull_request'
     env:
-      GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
-      GIT_EMAIL: ${{ secrets.BOT_GITHUB_EMAIL }}
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_EMAIL: ${{ vars.BOT_GITHUB_EMAIL }}
       GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -224,8 +224,8 @@ jobs:
       !contains(needs.commit_parser.outputs.title, '[no downstream]'))) &&
       github.event_name != 'pull_request'
     env:
-      GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
-      GIT_EMAIL: ${{ secrets.BOT_GITHUB_EMAIL }}
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_EMAIL: ${{ vars.BOT_GITHUB_EMAIL }}
       GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
