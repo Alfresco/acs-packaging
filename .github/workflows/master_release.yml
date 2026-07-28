@@ -94,7 +94,6 @@ jobs:
           - 5000:5000
     env:
       GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_EMAIL: ${{ vars.BOT_GITHUB_EMAIL }}
       GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -124,7 +123,7 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@v12.4.3
         with:
           username: ${{ env.GIT_USERNAME }}
-          email: ${{ env.GIT_EMAIL }}
+          email: ${{ vars.BOT_GITHUB_EMAIL }}
           global: true
       - name: Compute final build number
         run: |
@@ -162,8 +161,6 @@ jobs:
       contains(needs.commit_parser.outputs.title, '[publish]') &&
       github.event_name != 'pull_request'
     env:
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_EMAIL: ${{ vars.BOT_GITHUB_EMAIL }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
@@ -184,8 +181,8 @@ jobs:
         run: bash ./scripts/ci/init.sh
       - uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@v12.4.3
         with:
-          username: ${{ env.GIT_USERNAME }}
-          email: ${{ env.GIT_EMAIL }}
+          username: ${{ vars.BOT_GITHUB_USERNAME }}
+          email: ${{ vars.BOT_GITHUB_EMAIL }}
           global: true
       - name: "Rebuild the artifacts and publish them to enterprise-releases"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
@@ -213,7 +210,6 @@ jobs:
     needs: [publish, commit_parser]
     env:
       GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_EMAIL: ${{ vars.BOT_GITHUB_EMAIL }}
     permissions:
       contents: write
     steps:
@@ -235,7 +231,7 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@v12.4.3
         with:
           username: ${{ env.GIT_USERNAME }}
-          email: ${{ env.GIT_EMAIL }}
+          email: ${{ vars.BOT_GITHUB_EMAIL }}
           global: true
       - name: "Update downstream"
         run: bash ./scripts/ci/update_downstream.sh
