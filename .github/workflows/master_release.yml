@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - release/**
+      - refactor/review-and-restrict-global-secrets # TEMP: remove before merge
 
 permissions:
   contents: read
