@@ -477,6 +477,10 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       Quay_USERNAME: ${{ secrets.QUAY_USERNAME }}
       Quay_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
