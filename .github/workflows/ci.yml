@@ -475,8 +475,8 @@ jobs:
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      Quay_USERNAME: ${{ secrets.QUAY_USERNAME }}
-      Quay_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
