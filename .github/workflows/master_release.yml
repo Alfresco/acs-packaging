@@ -93,8 +93,6 @@ jobs:
         ports:
           - 5000:5000
     env:
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
@@ -117,12 +115,15 @@ jobs:
           platforms: linux/amd64,linux/arm64
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        env:
+          GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+          GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh -m
       - uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@v12.4.3
         with:
-          username: ${{ env.GIT_USERNAME }}
+          username: ${{ vars.BOT_GITHUB_USERNAME }}
           email: ${{ vars.BOT_GITHUB_EMAIL }}
           global: true
       - name: Compute final build number
@@ -130,6 +131,9 @@ jobs:
           echo "COMPUTED_BUILD_NUMBER=$(( $BASE_BUILD_NUMBER + $BUILD_NUMBER ))" >> $GITHUB_ENV
       - name: "Release"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        env:
+          GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+          GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
         run: |
           bash scripts/ci/verify_release_tag.sh
           bash scripts/ci/maven_release.sh $COMPUTED_BUILD_NUMBER
@@ -208,8 +212,6 @@ jobs:
     name: "Update acs-community-packaging (after release)"
     runs-on: ubuntu-latest
     needs: [publish, commit_parser]
-    env:
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
     permissions:
       contents: write
     steps:
@@ -230,7 +232,7 @@ jobs:
           QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@v12.4.3
         with:
-          username: ${{ env.GIT_USERNAME }}
+          username: ${{ vars.BOT_GITHUB_USERNAME }}
           email: ${{ vars.BOT_GITHUB_EMAIL }}
           global: true
       - name: "Update downstream"
@@ -239,6 +241,7 @@ jobs:
           COMMIT_MESSAGE: ${{ needs.commit_parser.outputs.title }}
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+          GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
           GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
