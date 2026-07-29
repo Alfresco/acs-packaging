@@ -47,12 +47,8 @@ jobs:
       !contains(needs.commit_parser.outputs.title, '[skip docker_latest]') &&
       github.ref_name == 'master' && github.event_name != 'pull_request'
     env:
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
       MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
-      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
     services:
       registry:
         image: registry:2
@@ -76,6 +72,10 @@ jobs:
         env:
           GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
           GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+          QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh -m
