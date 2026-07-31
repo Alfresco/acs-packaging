@@ -1,4 +1,27 @@
 repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+      - id: check-json
+      - id: check-xml
+      - id: check-merge-conflict
+      - id: fix-byte-order-marker
+
+  - repo: https://github.com/sirosen/check-jsonschema
+    rev: 0.37.4
+    hooks:
+      - id: check-dependabot
+      - id: check-github-actions
+      - id: check-github-workflows
+
+  - repo: https://github.com/hyland/github-actions-ensure-sha-pinned-actions
+    rev: v2.0.1
+    hooks:
+      - id: gha-sha-convert
+        args: [--allowlist, 'Alfresco/alfresco-build-tools/*']
+
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.5.0
     hooks:
