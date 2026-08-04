@@ -715,7 +715,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - test_run_check
-#    if: needs.test_run_check.outputs.tests == 'true' && github.event_name != 'pull_request'
+    if: needs.test_run_check.outputs.tests == 'true' && github.event_name != 'pull_request'
     env:
       GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
       GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
