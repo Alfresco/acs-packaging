@@ -39,3 +39,6 @@ helm/alfresco-content-services/requirements.lock
 deploy_dir
 deploy_dir_share
 deploy_dir_ags
+
+# Claude Code local artifacts
+.claude
