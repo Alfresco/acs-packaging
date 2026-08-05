@@ -1,0 +1,4 @@
+env:
+  global:
+    - RELEASE_VERSION=26.3.0-A.3
+    - DEVELOPMENT_VERSION=26.3.0-A.4-SNAPSHOT
