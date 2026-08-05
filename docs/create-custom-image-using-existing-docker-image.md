@@ -88,7 +88,7 @@ docker push customrepository/alfresco-custom-image:customTag
 ### Applying AMPs that require additional configuration (advanced)
 
 **Note:** We are going to use the alfresco-saml-distribution in order to install Alfresco-SAML-Module. This example is for testing purposes only! we are going to configure ssl using Tomcat on Linux. The recommended ways for a production environment are:
-- Use a proxy. See [Official Alfresco documentation](https://docs.hyland.com/r/Alfresco/Alfresco-Content-Services/26.1/Alfresco-Content-Services/Configure/Repository/Secure-Sockets-Layer-SSL-and-the-Repository/Configure-SSL-for-a-Production-Environment).
+- Use a proxy. See [Official Alfresco documentation](https://docs.hyland.com/r/Alfresco/Alfresco-Content-Services/26.2/Alfresco-Content-Services/Configure/Repository/Secure-Sockets-Layer-SSL-and-the-Repository/Configure-SSL-for-a-Production-Environment).
 - Use SSL termination at the K8s Ingress.
 
 ### Steps:
