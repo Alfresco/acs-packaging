@@ -6,6 +6,15 @@ pushd "$(dirname "${BASH_SOURCE[0]}")/../../"
 
 source "$(dirname "${BASH_SOURCE[0]}")/build_functions.sh"
 
+if [ -z "${RELEASE_VERSION}" ]; then
+  echo "ERROR: RELEASE_VERSION environment variable is not set."
+  exit 1
+fi
+if [ -z "${DEVELOPMENT_VERSION}" ]; then
+  echo "ERROR: DEVELOPMENT_VERSION environment variable is not set."
+  exit 1
+fi
+
 #Fetch the latest changes, as GHA will only checkout the PR commit
 git fetch origin "${BRANCH_NAME}"
 git checkout "${BRANCH_NAME}"
@@ -19,10 +28,6 @@ COM_VERSION="$(evaluatePomProperty "dependency.alfresco-community-repo.version")
 
 # Retrieve the Enterprise Share version
 SHA_VERSION="$(evaluatePomProperty "dependency.alfresco-enterprise-share.version")"
-
-# Retrieve the release and development versions as they are normally the same in community packaging
-RELEASE_VERSION=$(yq '.env.global[] | select(test("^RELEASE_VERSION=")) | ltrimstr("RELEASE_VERSION=")' .github/ci/release-versions.yml)
-DEVELOPMENT_VERSION=$(yq '.env.global[] | select(test("^DEVELOPMENT_VERSION=")) | ltrimstr("DEVELOPMENT_VERSION=")' .github/ci/release-versions.yml)
 
 DOWNSTREAM_REPO="github.com/Alfresco/acs-community-packaging.git"
 

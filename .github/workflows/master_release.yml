@@ -20,6 +20,7 @@ env:
   QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
   GITHUB_ACTIONS_DEPLOY_TIMEOUT: 60
   BASE_BUILD_NUMBER: 10000
+  # Note: RELEASE_VERSION and DEVELOPMENT_VERSION are now loaded from .github/release-versions.yml
 
 jobs:
   commit_parser:
@@ -99,7 +100,7 @@ jobs:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/env-load-from-yaml@v12.4.3
         with:
-          yml_path: .github/ci/release-versions.yml
+          yml_path: .github/release-versions.yml
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v12.4.3
@@ -162,7 +163,7 @@ jobs:
           fetch-depth: 0
       - uses: Alfresco/alfresco-build-tools/.github/actions/env-load-from-yaml@v12.4.3
         with:
-          yml_path: .github/ci/release-versions.yml
+          yml_path: .github/release-versions.yml
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v12.4.3
@@ -210,7 +211,7 @@ jobs:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/env-load-from-yaml@v12.4.3
         with:
-          yml_path: .github/ci/release-versions.yml
+          yml_path: .github/release-versions.yml
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v12.4.3
