@@ -21,8 +21,8 @@ COM_VERSION="$(evaluatePomProperty "dependency.alfresco-community-repo.version")
 SHA_VERSION="$(evaluatePomProperty "dependency.alfresco-enterprise-share.version")"
 
 # Retrieve the release and development versions as they are normally the same in community packaging
-RELEASE_VERSION=$(yq '.env.global[] | select(test("^RELEASE_VERSION=")) | split("=") | .[1]' .github/ci/release-versions.yml)
-DEVELOPMENT_VERSION=$(yq '.env.global[] | select(test("^DEVELOPMENT_VERSION=")) | split("=") | .[1]' .github/ci/release-versions.yml)
+RELEASE_VERSION=$(yq '.env.global[] | select(test("^RELEASE_VERSION=")) | ltrimstr("RELEASE_VERSION=")' .github/ci/release-versions.yml)
+DEVELOPMENT_VERSION=$(yq '.env.global[] | select(test("^DEVELOPMENT_VERSION=")) | ltrimstr("DEVELOPMENT_VERSION=")' .github/ci/release-versions.yml)
 
 DOWNSTREAM_REPO="github.com/Alfresco/acs-community-packaging.git"
 
