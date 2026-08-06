@@ -21,8 +21,8 @@ COM_VERSION="$(evaluatePomProperty "dependency.alfresco-community-repo.version")
 SHA_VERSION="$(evaluatePomProperty "dependency.alfresco-enterprise-share.version")"
 
 # Retrieve the release and development versions as they are normally the same in community packaging
-RELEASE_VERSION=$(grep RELEASE_VERSION: .github/workflows/master_release.yml | sed 's/.*RELEASE_VERSION: \(.*\)/\1/')
-DEVELOPMENT_VERSION=$(grep DEVELOPMENT_VERSION: .github/workflows/master_release.yml | sed 's/.*DEVELOPMENT_VERSION: \(.*\)/\1/')
+RELEASE_VERSION=$(grep RELEASE_VERSION= .github/ci/release-versions.yml | sed 's/.*RELEASE_VERSION=\(.*\)/\1/')
+DEVELOPMENT_VERSION=$(grep DEVELOPMENT_VERSION= .github/ci/release-versions.yml | sed 's/.*DEVELOPMENT_VERSION=\(.*\)/\1/')
 
 DOWNSTREAM_REPO="github.com/Alfresco/acs-community-packaging.git"
 
@@ -84,4 +84,3 @@ fi
 popd
 set +vex
 echo "=========================== Finishing Update Downstream Script =========================="
-
