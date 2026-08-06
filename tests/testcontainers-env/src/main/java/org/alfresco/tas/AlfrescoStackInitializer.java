@@ -190,6 +190,8 @@ public class AlfrescoStackInitializer implements ApplicationContextInitializer<C
                         "SPRING_ACTIVEMQ_PASSWORD", "admin",
                         "JAVA_TOOL_OPTIONS", "-Xmx1g",
                         "ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config"));
+        env.put("MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE", "health");
+        env.put("ALFRESCO_REINDEX_PROMETHEUS_SCRAPE_INTERVAL_SECONDS", "0");
         return env;
     }
 
