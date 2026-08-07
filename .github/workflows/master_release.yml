@@ -20,9 +20,7 @@ env:
   QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
   GITHUB_ACTIONS_DEPLOY_TIMEOUT: 60
   BASE_BUILD_NUMBER: 10000
-    # Release version has to start with real version (23.2.0-....) for the docker image to build successfully.
-  RELEASE_VERSION: 26.3.0-A.4
-  DEVELOPMENT_VERSION: 26.3.0-A.5-SNAPSHOT
+  # Note: RELEASE_VERSION and DEVELOPMENT_VERSION are now loaded from .github/release-versions.yml
 
 jobs:
   commit_parser:
@@ -100,6 +98,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+      - uses: Alfresco/alfresco-build-tools/.github/actions/env-load-from-yaml@v12.4.3
+        with:
+          yml_path: .github/release-versions.yml
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v12.4.3
@@ -160,6 +161,9 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/env-load-from-yaml@v12.4.3
+        with:
+          yml_path: .github/release-versions.yml
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v12.4.3
@@ -205,6 +209,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+      - uses: Alfresco/alfresco-build-tools/.github/actions/env-load-from-yaml@v12.4.3
+        with:
+          yml_path: .github/release-versions.yml
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v12.4.3
