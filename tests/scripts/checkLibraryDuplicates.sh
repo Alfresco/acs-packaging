@@ -6,7 +6,10 @@
 # usually libraries with versions that don't follow naming/versioning standards.
 # e.g. geronimo-jms_2.0_spec-1.0-alpha-2.jar
 #      geronimo-jms_1.1_spec-1.1.1.jar
-WHITELIST="geronimo-jta netty-tcnative-boringssl-static"
+# 'annotations' is a false positive: this check compares file names only, so distinct artifacts that share the
+# same artifactId collide. software.amazon.awssdk:annotations (AWS SDK) and com.google.android:annotations
+# (transitive of google-cloud-storage) are different libraries, not two versions of the same one.
+WHITELIST="geronimo-jta netty-tcnative-boringssl-static annotations"
 
 lib_dir=$1
 multiple_version_lib_list=""
