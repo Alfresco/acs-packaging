@@ -20,7 +20,9 @@ function cloneRepo() {
 
   rm -rf "$(basename "${REPO%.git}")"
 
-  git clone -b "${TAG_OR_BRANCH}" --depth=1 "https://${GIT_USERNAME}:${GIT_PASSWORD}@${REPO}"
+  local AUTH="${APP_TOKEN:+x-access-token:${APP_TOKEN}@}"
+  AUTH="${AUTH:-${GIT_USERNAME}:${GIT_PASSWORD}@}"
+  git clone -b "${TAG_OR_BRANCH}" --depth=1 "https://${AUTH}${REPO}"
 
   popd >/dev/null
 }
@@ -76,7 +78,9 @@ function remoteBranchExists() {
   local REMOTE_REPO="${1}"
   local BRANCH="${2}"
 
-  git ls-remote --exit-code --heads "https://${GIT_USERNAME}:${GIT_PASSWORD}@${REMOTE_REPO}" "${BRANCH_NAME}" &>/dev/null
+  local AUTH="${APP_TOKEN:+x-access-token:${APP_TOKEN}@}"
+  AUTH="${AUTH:-${GIT_USERNAME}:${GIT_PASSWORD}@}"
+  git ls-remote --exit-code --heads "https://${AUTH}${REMOTE_REPO}" "${BRANCH_NAME}" &>/dev/null
 }
 
 function identifyUpstreamSourceBranch() {
