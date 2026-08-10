@@ -22,10 +22,13 @@ fi
 for current_lib in $(ls "$lib_dir"); do
    if [[ "$current_lib" =~ [0-9]+.[0-9] ]]; then
        noversion_lib="${current_lib%%"$BASH_REMATCH"*}"
+       # Exact de-versioned library name (drop the trailing '-'/'_' separator before the version),
+       # so the whitelist matches a whole artifactId and not any name that merely contains it
+       lib_name="${noversion_lib%[-_]}"
 
        skip=false
        for exclude_lib in $WHITELIST; do
-           if [[ "$noversion_lib" =~ "$exclude_lib" ]]; then
+           if [[ "$lib_name" == "$exclude_lib" ]]; then
                skip=true
                break
            fi
