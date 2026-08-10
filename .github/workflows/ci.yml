@@ -14,21 +14,14 @@ on:
   workflow_call:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 env:
   JAVA_VERSION: "21"
   AZURE_AUTHENTICATION_MODE: sharedKey
   AZURE_STORAGE_ACCOUNT_NAME: acspackagingci
-  AZURE_STORAGE_ACCOUNT_KEY: ${{ secrets.AZURE_PACKAGING_STORAGE_ACCOUNT_KEY }}
-  DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   GITHUB_ACTIONS_DEPLOY_TIMEOUT: 60
-  GIT_USERNAME: ${{ secrets.BOT_GITHUB_USERNAME }}
-  GIT_EMAIL: ${{ secrets.BOT_GITHUB_EMAIL }}
-  GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
-  MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-  MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-  QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-  QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
   CI_WORKSPACE: ${{ github.workspace }}
   AWS_REGION: eu-west-1
   TAS_ENVIRONMENT: ./tests/environment
@@ -45,7 +38,7 @@ jobs:
     outputs:
       title: ${{ steps.get-commit.outputs.COMMIT_MESSAGE }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           fetch-depth: 2
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-commit-message@v17.2.0
@@ -60,14 +53,14 @@ jobs:
     if: >
       !contains(needs.commit_parser.outputs.title, '[skip tests]')
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v12.4.3
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@v12.4.3
-        
+
   test_run_check:
     name: "Test run check"
     runs-on: ubuntu-latest
@@ -88,9 +81,18 @@ jobs:
   pmd_scan:
     name: "PMD Scan"
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true' && github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
@@ -104,9 +106,18 @@ jobs:
   tas_tests:
     name: ${{ matrix.testSuite }} TAS tests
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -168,7 +179,7 @@ jobs:
             deploy-timeout: 10
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
@@ -197,9 +208,18 @@ jobs:
   tas_tests_with_aims:
     name: ${{ matrix.testSuite }} TAS tests with AIMS
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -221,7 +241,7 @@ jobs:
             deploy-timeout: 40
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
@@ -256,9 +276,18 @@ jobs:
   cmis_tas_tests_elasticsearch:
     name: CMIS TAS tests - Elastic Search | ${{ matrix.testSuite }} (CMIS API)
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -281,7 +310,7 @@ jobs:
           root-reserve-mb: 16384
           remove-android: 'true'
           remove-codeql: 'true'
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
@@ -318,12 +347,21 @@ jobs:
   cmis_tas_tests_opensearch:
     name: "CMIS TAS tests - Open Search (CMIS API)"
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
@@ -355,6 +393,15 @@ jobs:
     needs: 
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -400,7 +447,7 @@ jobs:
             search-engine-type: opensearch
             db-type: postgresql
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
@@ -425,7 +472,16 @@ jobs:
   upgrade_tas_tests:
     name: ${{ matrix.testSuite }} Upgrade TAS tests
     runs-on: ubuntu-latest
-    needs: 
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+    needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
     strategy:
@@ -437,7 +493,7 @@ jobs:
           - testSuite: Opensearch
             search-engine-type: opensearch
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
@@ -450,7 +506,7 @@ jobs:
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
       - name: "Configure AWS credentials"
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
         with:
           aws-access-key-id: ${{ secrets.AWS_S3_ACSLICENSE_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_S3_ACSLICENSE_SECRET_ACCESS_KEY }}
@@ -470,12 +526,22 @@ jobs:
   all_amps_tests:
     name: "All AMPs tests"
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
+    env:
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      AZURE_STORAGE_ACCOUNT_KEY: ${{ secrets.AZURE_PACKAGING_STORAGE_ACCOUNT_KEY }}
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
@@ -515,9 +581,18 @@ jobs:
   tas_test_with_mtls:
     name: ${{ matrix.testSuite }} TAS tests
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -548,7 +623,7 @@ jobs:
             deploy-timeout: 10
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
@@ -557,7 +632,7 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
       - name: "Generate Keystores and Truststores for Mutual TLS configuration"
         run: |
-          git clone -b "master" --depth=1 "https://${{ secrets.BOT_GITHUB_USERNAME }}:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/Alfresco/alfresco-ssl-generator.git"
+          git clone -b "master" --depth=1 "https://${{ vars.BOT_GITHUB_USERNAME }}:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/Alfresco/alfresco-ssl-generator.git"
           if ${{ matrix.disabledHostnameVerification }} ; then
             bash ${{ env.CI_WORKSPACE }}/alfresco-ssl-generator/scripts/ci/generate_keystores_wrong_hostnames.sh
             echo "HOSTNAME_VERIFICATION_DISABLED=true" >> "$GITHUB_ENV"
@@ -590,16 +665,25 @@ jobs:
   distribution_zip_content_tests:
     name: "Distribution Zip content tests (Java ${{ matrix.java-version }})"
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
         java-version: [21, 25]
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
@@ -629,27 +713,37 @@ jobs:
   single_pipeline_image_tests:
     name: "Single Pipeline image tests (Java ${{ matrix.java-version }})"
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true' && github.event_name != 'pull_request'
+    env:
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
         java-version: [DEFAULT, 25]
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v12.4.3
         with:
           java-version: ${{ env.JAVA_VERSION }}
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+          QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
@@ -682,12 +776,21 @@ jobs:
   test_tomcat_deployment:
     name: "Test Tomcat deployment"
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
@@ -719,6 +822,15 @@ jobs:
     needs: [commit_parser]
     if: >
       contains(needs.commit_parser.outputs.title, '[pipeline_docker]')
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
+      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     services:
       registry:
         image: registry:2
@@ -726,7 +838,7 @@ jobs:
           - 5000:5000
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
         with:
           persist-credentials: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
@@ -734,7 +846,7 @@ jobs:
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+        uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0
         with:
           platforms: linux/amd64,linux/arm64
       - name: Pipeline Tag text insert (modify for your needs)
