@@ -54,6 +54,14 @@ mvn -B versions:set-property versions:commit \
 sed -i "s|- RELEASE_VERSION=.*|- RELEASE_VERSION=${RELEASE_VERSION}|g" .github/release-versions.yml
 sed -i "s|- DEVELOPMENT_VERSION=.*|- DEVELOPMENT_VERSION=${DEVELOPMENT_VERSION}|g" .github/release-versions.yml
 
+# Commit changes
+git status
+git --no-pager diff pom.xml
+sed -i 's/\r$//' pom.xml
+git add pom.xml
+git --no-pager diff pom.xml
+git add .github/release-versions.yml
+
 echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
 
 
