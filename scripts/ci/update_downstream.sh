@@ -31,9 +31,7 @@ SHA_VERSION="$(evaluatePomProperty "dependency.alfresco-enterprise-share.version
 
 DOWNSTREAM_REPO="github.com/Alfresco/acs-community-packaging.git"
 
-git clone -b "${BRANCH_NAME}" --depth=1 \
-  "https://x-access-token:${APP_TOKEN}@${DOWNSTREAM_REPO}" \
-  "$(basename "${DOWNSTREAM_REPO%.git}")"
+cloneRepo "${DOWNSTREAM_REPO}" "${BRANCH_NAME}"
 
 cd "$(dirname "${BASH_SOURCE[0]}")/../../../$(basename "${DOWNSTREAM_REPO%.git}")"
 
