@@ -85,10 +85,18 @@ jobs:
   pmd_scan:
     name: "PMD Scan"
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true' && github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
     steps:
+      - name: "Generate GitHub App token"
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
+          owner: Alfresco
+          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
@@ -97,6 +105,8 @@ jobs:
       - uses: Alfresco/ya-pmd-scan@1f36f8e45695ce60362010345a99a0c8f7310264 # v4.4.1
         with:
           classpath-build-command: "bash ./scripts/ci/init.sh && bash ./scripts/ci/build.sh"
+        env:
+          APP_TOKEN: ${{ steps.app-token.outputs.token }}
 
   tas_tests:
     name: ${{ matrix.testSuite }} TAS tests
@@ -164,10 +174,18 @@ jobs:
             compose-file: docker-compose-scim-tests.yml
             deploy-timeout: 10
     steps:
+      - name: "Generate GitHub App token"
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
+          owner: Alfresco
+          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
-          persist-credentials: false
+          token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
@@ -194,7 +212,7 @@ jobs:
   tas_tests_with_aims:
     name: ${{ matrix.testSuite }} TAS tests with AIMS
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
     strategy:
@@ -217,16 +235,26 @@ jobs:
             log-folder: tests/tas-cmis
             deploy-timeout: 40
     steps:
+      - name: "Generate GitHub App token"
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
+          owner: Alfresco
+          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
-          persist-credentials: false
+          token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        env:
+          APP_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
@@ -253,7 +281,7 @@ jobs:
   cmis_tas_tests_elasticsearch:
     name: CMIS TAS tests - Elastic Search | ${{ matrix.testSuite }} (CMIS API)
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
     strategy:
@@ -273,6 +301,14 @@ jobs:
             db-properties: -Ddb.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver -Ddb.username=sa -Ddb.password=Alfresco1 -Ddb.url=jdbc:sqlserver://database:1433 -Ddb.txn.isolation=4096 -Ddb.pool.max=275
             compose-file: docker-compose-mssql.yml
     steps:
+      - name: "Generate GitHub App token"
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
+          owner: Alfresco
+          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           root-reserve-mb: 16384
@@ -280,13 +316,15 @@ jobs:
           remove-codeql: 'true'
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
-          persist-credentials: false
+          token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        env:
+          APP_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
@@ -315,20 +353,30 @@ jobs:
   cmis_tas_tests_opensearch:
     name: "CMIS TAS tests - Open Search (CMIS API)"
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
     steps:
+      - name: "Generate GitHub App token"
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
+          owner: Alfresco
+          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
-          persist-credentials: false
+          token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        env:
+          APP_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
@@ -349,7 +397,7 @@ jobs:
   tas_tests_search_api:
     name: ${{ matrix.testSuite }} | TAS tests (Search API)
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
     strategy:
@@ -397,15 +445,25 @@ jobs:
             search-engine-type: opensearch
             db-type: postgresql
     steps:
+      - name: "Generate GitHub App token"
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
+          owner: Alfresco
+          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
-          persist-credentials: false
+          token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        env:
+          APP_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
@@ -422,7 +480,7 @@ jobs:
   upgrade_tas_tests:
     name: ${{ matrix.testSuite }} Upgrade TAS tests
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
     strategy:
@@ -434,15 +492,25 @@ jobs:
           - testSuite: Opensearch
             search-engine-type: opensearch
     steps:
+      - name: "Generate GitHub App token"
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
+          owner: Alfresco
+          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
-          persist-credentials: false
+          token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        env:
+          APP_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
@@ -467,20 +535,30 @@ jobs:
   all_amps_tests:
     name: "All AMPs tests"
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
     steps:
+      - name: "Generate GitHub App token"
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
+          owner: Alfresco
+          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
-          persist-credentials: false
+          token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        env:
+          APP_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
@@ -512,7 +590,7 @@ jobs:
   tas_test_with_mtls:
     name: ${{ matrix.testSuite }} TAS tests
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
     strategy:
@@ -544,17 +622,29 @@ jobs:
             disabledHostnameVerification: false
             deploy-timeout: 10
     steps:
+      - name: "Generate GitHub App token"
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
+          owner: Alfresco
+          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
-          persist-credentials: false
+          token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: "Generate Keystores and Truststores for Mutual TLS configuration"
+        env:
+          APP_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          git clone -b "master" --depth=1 "https://${{ secrets.BOT_GITHUB_USERNAME }}:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/Alfresco/alfresco-ssl-generator.git"
+          { set +x; } 2>/dev/null
+          git clone -b "master" --depth=1 "https://x-access-token:${APP_TOKEN}@github.com/Alfresco/alfresco-ssl-generator.git"
+          { set -x; } 2>/dev/null
           if ${{ matrix.disabledHostnameVerification }} ; then
             bash ${{ env.CI_WORKSPACE }}/alfresco-ssl-generator/scripts/ci/generate_keystores_wrong_hostnames.sh
             echo "HOSTNAME_VERIFICATION_DISABLED=true" >> "$GITHUB_ENV"
@@ -565,6 +655,8 @@ jobs:
           bash ${{ env.CI_WORKSPACE }}/alfresco-ssl-generator/scripts/ci/convert_testclient_keystore_to_pem.sh "${{ env.CI_WORKSPACE }}"
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        env:
+          APP_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
@@ -587,7 +679,7 @@ jobs:
   distribution_zip_content_tests:
     name: "Distribution Zip content tests (Java ${{ matrix.java-version }})"
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
     strategy:
@@ -595,16 +687,26 @@ jobs:
       matrix:
         java-version: [21, 25]
     steps:
+      - name: "Generate GitHub App token"
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
+          owner: Alfresco
+          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
-          persist-credentials: false
+          token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        env:
+          APP_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
@@ -693,20 +795,30 @@ jobs:
   test_tomcat_deployment:
     name: "Test Tomcat deployment"
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
     steps:
+      - name: "Generate GitHub App token"
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
+          owner: Alfresco
+          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
-          persist-credentials: false
+          token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        env:
+          APP_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
@@ -736,10 +848,18 @@ jobs:
         ports:
           - 5000:5000
     steps:
+      - name: "Generate GitHub App token"
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
+          owner: Alfresco
+          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
-          persist-credentials: false
+          token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
@@ -760,6 +880,8 @@ jobs:
           echo "IMAGE_TAG=${ACS_VERSION}-${PIPELINE_TAG_TEXT_INSERT}-${COMPUTED_BUILD_NUMBER}" >> $GITHUB_ENV
       - name: "Build: uses IMAGE_TAG variable, requires Repo and Share snapshot versions in main pom.xml"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        env:
+          APP_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh -m
