@@ -21,17 +21,17 @@ git checkout "${BRANCH_NAME}"
 git pull
 
 # Retrieve the latest (just released) latest tag on the current branch
-VERSION="26.3.0-A.6"
+VERSION="$(git describe --abbrev=0 --tags)"
 
 # Retrieve the Community Repo version
-COM_VERSION="26.3.0.20"
+COM_VERSION="$(evaluatePomProperty "dependency.alfresco-community-repo.version")"
 
 # Retrieve the Enterprise Share version
-SHA_VERSION="26.3.0.16"
+SHA_VERSION="$(evaluatePomProperty "dependency.alfresco-enterprise-share.version")"
 
 DOWNSTREAM_REPO="github.com/Alfresco/acs-community-packaging.git"
 
-cloneRepo "${DOWNSTREAM_REPO}" "test_update_downstream"
+cloneRepo "${DOWNSTREAM_REPO}" "${BRANCH_NAME}"
 
 cd "$(dirname "${BASH_SOURCE[0]}")/../../../$(basename "${DOWNSTREAM_REPO%.git}")"
 
@@ -53,14 +53,6 @@ mvn -B versions:set-property versions:commit \
 
 sed -i "s|- RELEASE_VERSION=.*|- RELEASE_VERSION=${RELEASE_VERSION}|g" .github/release-versions.yml
 sed -i "s|- DEVELOPMENT_VERSION=.*|- DEVELOPMENT_VERSION=${DEVELOPMENT_VERSION}|g" .github/release-versions.yml
-
-# Commit changes
-git status
-git --no-pager diff pom.xml
-sed -i 's/\r$//' pom.xml
-git add pom.xml
-git --no-pager diff pom.xml
-git add .github/release-versions.yml
 
 echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
 
