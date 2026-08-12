@@ -24,6 +24,13 @@
         <packages>
             <package name="org.alfresco.rest.*">
                 <exclude name="org.alfresco.rest.people.deauthorization.community.*"/>
+                <!-- ACS-11962: search tests migrated from Search Services require dedicated
+                     search backend env (Solr/ES) and are not tagged as sanity, so they are
+                     out of scope for the AIMS smoke suite -->
+                <exclude name="org.alfresco.rest.search"/>
+                <exclude name="org.alfresco.rest.search.crosslocale"/>
+                <exclude name="org.alfresco.rest.search.fingerprint"/>
+                <exclude name="org.alfresco.rest.search.tracker"/>
             </package>
         </packages>
 	</test>
