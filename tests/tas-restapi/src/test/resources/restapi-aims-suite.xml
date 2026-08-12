@@ -24,6 +24,10 @@
         <packages>
             <package name="org.alfresco.rest.*">
                 <exclude name="org.alfresco.rest.people.deauthorization.community.*"/>
+                <!-- ACS-11962: search tests migrated from Search Services require a dedicated
+                     search backend env (Solr/ES) and are not tagged as sanity, so they are
+                     out of scope for the AIMS sanity suite -->
+                <exclude name="org.alfresco.rest.search.*"/>
             </package>
         </packages>
 	</test>
