@@ -57,7 +57,6 @@
                 },
                 {
                     "id": "org_alfresco_integrations_AzureConnector",
-                    "version": "${alfresco.azure-connector.version}",
                     "installed": true
                 },
                 {
