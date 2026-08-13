@@ -20,10 +20,7 @@ function cloneRepo() {
 
   rm -rf "$(basename "${REPO%.git}")"
 
-  { set +x; } 2>/dev/null
-  local AUTH="x-access-token:${APP_TOKEN}@"
-  git clone -b "${TAG_OR_BRANCH}" --depth=1 "https://${AUTH}${REPO}"
-  { set -x; } 2>/dev/null
+  git clone -b "${TAG_OR_BRANCH}" --depth=1 "https://${GIT_USERNAME}:${GIT_PASSWORD}@${REPO}"
 
   popd >/dev/null
 }
@@ -79,10 +76,7 @@ function remoteBranchExists() {
   local REMOTE_REPO="${1}"
   local BRANCH="${2}"
 
-  { set +x; } 2>/dev/null
-  local AUTH="x-access-token:${APP_TOKEN}@"
-  git ls-remote --exit-code --heads "https://${AUTH}${REMOTE_REPO}" "${BRANCH_NAME}" &>/dev/null
-  { set -x; } 2>/dev/null
+  git ls-remote --exit-code --heads "https://${GIT_USERNAME}:${GIT_PASSWORD}@${REMOTE_REPO}" "${BRANCH_NAME}" &>/dev/null
 }
 
 function identifyUpstreamSourceBranch() {
@@ -181,9 +175,7 @@ function retieveLatestTag() {
 
   local LOCAL_PATH="/tmp/$(basename "${REPO%.git}")"
 
-  { set +x; } 2>/dev/null
-  git clone -q -b "${BRANCH_NAME}" "https://x-access-token:${APP_TOKEN}@${REPO}" "${LOCAL_PATH}"
-  { set -x; } 2>/dev/null
+  git clone -q -b "${BRANCH_NAME}" "https://${GIT_USERNAME}:${GIT_PASSWORD}@${REPO}" "${LOCAL_PATH}"
 
   pushd "${LOCAL_PATH}" >/dev/null
   git describe --abbrev=0 --tags
