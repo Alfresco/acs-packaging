@@ -51,18 +51,39 @@ mvn -B versions:set-property versions:commit \
   -Dproperty=dependency.acs-packaging.version \
   "-DnewVersion=${VERSION}"
 
-sed -i "s|- RELEASE_VERSION=.*|- RELEASE_VERSION=${RELEASE_VERSION}|g" .github/release-versions.yml
-sed -i "s|- DEVELOPMENT_VERSION=.*|- DEVELOPMENT_VERSION=${DEVELOPMENT_VERSION}|g" .github/release-versions.yml
+sed -i "s/.*RELEASE_VERSION: .*/  RELEASE_VERSION: $RELEASE_VERSION/" .github/workflows/ci.yml
+sed -i "s/.*DEVELOPMENT_VERSION: .*/  DEVELOPMENT_VERSION: $DEVELOPMENT_VERSION/" .github/workflows/ci.yml
 
+set +e
+echo "${COMMIT_MESSAGE}" | grep '\[publish\]'
+if [ "$?" -eq 0 ]
+then
+  COMMIT_DIRECTIVES="[release][publish]"
+else
+  COMMIT_DIRECTIVES="[release]"
+fi
+set -e
 # Commit changes
 git status
 git --no-pager diff pom.xml
-sed -i 's/\r$//' pom.xml
 git add pom.xml
 git --no-pager diff pom.xml
-git add .github/release-versions.yml
+git add .github/workflows/ci.yml
 
-echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+if git status --untracked-files=no --porcelain | grep -q '^' ; then
+  git commit -m "${COMMIT_DIRECTIVES} ${VERSION}
+
+  Update upstream versions
+    - alfresco-community-repo:   ${COM_VERSION}
+    - alfresco-enterprise-share: ${SHA_VERSION}
+    - acs-packaging:             ${VERSION}
+    - RELEASE_VERSION:           ${RELEASE_VERSION}
+    - DEVELOPMENT_VERSION:       ${DEVELOPMENT_VERSION}"
+  git push
+else
+  echo "Dependencies are already up to date."
+  git status
+fi
 
 
 popd
