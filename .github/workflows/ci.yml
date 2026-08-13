@@ -762,6 +762,8 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        env:
+          APP_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
