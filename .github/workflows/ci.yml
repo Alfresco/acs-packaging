@@ -88,13 +88,13 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v18.20.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v18.20.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v18.20.0
-      - name: "Set next development version to 26.3.0-A.10-SNAPSHOT"
-        run: mvn -B -ntp versions:set -DnewVersion="26.3.0-A.10-SNAPSHOT" -DgenerateBackupPoms=false
+      - name: "Set next development version to 26.3.0-A.12-SNAPSHOT"
+        run: mvn -B -ntp versions:set -DnewVersion="26.3.0-A.12-SNAPSHOT" -DgenerateBackupPoms=false
         shell: bash
       - name: "Force LF line endings on pom.xml files"
         run: git ls-files -z -- pom.xml '**/pom.xml' | xargs -0 -r sed -i 's/\r$//'
         shell: bash
-      - name: "Test bumping version 26.3.0-A.10-SNAPSHOT"
+      - name: "Test bumping version 26.3.0-A.12-SNAPSHOT"
         uses: iarekylew00t/verified-bot-commit@1ccc6afd0f789e8442cff7deec3e9856a693cc7e # v2.3.4
         with:
           token: ${{ steps.app-token.outputs.token }}
@@ -103,14 +103,14 @@ jobs:
           files: |
             pom.xml
             **/pom.xml
-          message: "[skip ci] Test version 26.3.0-A.10-SNAPSHOT"
-      - name: "Set next development version to 26.3.0-A.11-SNAPSHOT"
-        run: mvn -B -ntp versions:set -DnewVersion="26.3.0-A.11-SNAPSHOT" -DgenerateBackupPoms=false
+          message: "[skip ci] Test version 26.3.0-A.12-SNAPSHOT"
+      - name: "Set next development version to 26.3.0-A.13-SNAPSHOT"
+        run: mvn -B -ntp versions:set -DnewVersion="26.3.0-A.13-SNAPSHOT" -DgenerateBackupPoms=false
         shell: bash
       - name: "Force LF line endings on pom.xml files"
         run: git ls-files -z -- pom.xml '**/pom.xml' | xargs -0 -r sed -i 's/\r$//'
         shell: bash
-      - name: "Test bumping version 26.3.0-A.11-SNAPSHOT"
+      - name: "Test bumping version 26.3.0-A.13-SNAPSHOT"
         uses: iarekylew00t/verified-bot-commit@1ccc6afd0f789e8442cff7deec3e9856a693cc7e # v2.3.4
         with:
           token: ${{ steps.app-token.outputs.token }}
@@ -119,7 +119,7 @@ jobs:
           files: |
             pom.xml
             **/pom.xml
-          message: "[skip ci] Test version 26.3.0-A.11-SNAPSHOT"
+          message: "[skip ci] Test version 26.3.0-A.13-SNAPSHOT"
 
   test_run_check:
     name: "Test run check"
