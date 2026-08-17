@@ -82,6 +82,9 @@ jobs:
           owner: Alfresco
           repositories: acs-packaging
           permission-contents: write
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          token: ${{ steps.app-token.outputs.token }}
       - name: "Set next development version to 26.3.0-A.10-SNAPSHOT"
         run: mvn -B -ntp versions:set -DnewVersion="26.3.0-A.10-SNAPSHOT" -DgenerateBackupPoms=false
         shell: bash
