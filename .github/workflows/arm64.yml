@@ -11,7 +11,7 @@ env:
   MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
   MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
   TAS_ENVIRONMENT: ./tests/environment
-  TAS_SCRIPTS: ../alfresco-community-repo/packaging/tests/scripts
+  TAS_SCRIPTS: alfresco-community-repo/packaging/tests/scripts
   AWS_REGION: eu-west-1
   DTAS_VERSION: v1.5.5
 
@@ -67,18 +67,22 @@ jobs:
           git checkout $TEST_GIT_TAG
           mvn clean install -B -ntp -DskipTests -f tests/pipeline-all-amps/repo/pom.xml
           cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
+      - name: "Checkout alfresco-community-repo"
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          repository: Alfresco/alfresco-community-repo
+          ref: master
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
+          fetch-depth: 1
+          path: alfresco-community-repo
       - name: "Set up the environment"
         id: setup-env
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         env:
-          APP_TOKEN: ${{ steps.app-token.outputs.token }}
           AWS_ACCESS_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_ACCESS_KEY_ID }}
           AWS_SECRET_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_SECRET_ACCESS_KEY }}
         run: |
-          # Make necessary env files available
-          { set +x; } 2>/dev/null
-          git clone --depth=1 --branch master https://x-access-token:${APP_TOKEN}@github.com/Alfresco/alfresco-community-repo.git ../alfresco-community-repo
-          { set -x; } 2>/dev/null
           # Start the environment
           export PIPELINE_ALL_AMPS_REGISTRY=quay.io/
           export PIPELINE_ALL_AMPS_TAG=$TEST_GIT_TAG
@@ -86,16 +90,19 @@ jobs:
           ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/" 180
           docker ps
           curl -v --user admin.pipeline@alfresco.com:admin http://localhost:8080/alfresco/api/discovery
+      - name: "Checkout alfresco-deployment-test-automation-scripts"
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          repository: Alfresco/alfresco-deployment-test-automation-scripts
+          ref: ${{ env.DTAS_VERSION }}
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
+          fetch-depth: 1
+          path: dtas
       - name: "Run tests"
         id: run-tests
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        env:
-          APP_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          # Make necessary test files available
-          { set +x; } 2>/dev/null
-          git clone --depth 1 --branch $DTAS_VERSION https://x-access-token:${APP_TOKEN}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
-          { set -x; } 2>/dev/null
           cd dtas
           python3 -m venv .venv
           source .venv/bin/activate

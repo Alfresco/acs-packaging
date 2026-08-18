@@ -106,7 +106,7 @@ jobs:
         with:
           classpath-build-command: "bash ./scripts/ci/init.sh && bash ./scripts/ci/build.sh"
         env:
-          APP_TOKEN: ${{ steps.app-token.outputs.token }}
+          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
 
   tas_tests:
     name: ${{ matrix.testSuite }} TAS tests
@@ -193,7 +193,7 @@ jobs:
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         env:
-          APP_TOKEN: ${{ steps.app-token.outputs.token }}
+          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
@@ -256,7 +256,7 @@ jobs:
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         env:
-          APP_TOKEN: ${{ steps.app-token.outputs.token }}
+          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
@@ -326,7 +326,7 @@ jobs:
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         env:
-          APP_TOKEN: ${{ steps.app-token.outputs.token }}
+          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
@@ -378,7 +378,7 @@ jobs:
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         env:
-          APP_TOKEN: ${{ steps.app-token.outputs.token }}
+          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
@@ -465,7 +465,7 @@ jobs:
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         env:
-          APP_TOKEN: ${{ steps.app-token.outputs.token }}
+          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
@@ -512,7 +512,7 @@ jobs:
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         env:
-          APP_TOKEN: ${{ steps.app-token.outputs.token }}
+          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
@@ -560,7 +560,7 @@ jobs:
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         env:
-          APP_TOKEN: ${{ steps.app-token.outputs.token }}
+          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
@@ -631,7 +631,7 @@ jobs:
           client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
           owner: Alfresco
-          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
+          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging,alfresco-ssl-generator
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
@@ -640,13 +640,17 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
+      - name: "Checkout alfresco-ssl-generator"
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          repository: Alfresco/alfresco-ssl-generator
+          ref: master
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
+          fetch-depth: 1
+          path: alfresco-ssl-generator
       - name: "Generate Keystores and Truststores for Mutual TLS configuration"
-        env:
-          APP_TOKEN: ${{ steps.app-token.outputs.token }}
         run: |
-          { set +x; } 2>/dev/null
-          git clone -b "master" --depth=1 "https://x-access-token:${APP_TOKEN}@github.com/Alfresco/alfresco-ssl-generator.git"
-          { set -x; } 2>/dev/null
           if ${{ matrix.disabledHostnameVerification }} ; then
             bash ${{ env.CI_WORKSPACE }}/alfresco-ssl-generator/scripts/ci/generate_keystores_wrong_hostnames.sh
             echo "HOSTNAME_VERIFICATION_DISABLED=true" >> "$GITHUB_ENV"
@@ -658,7 +662,7 @@ jobs:
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         env:
-          APP_TOKEN: ${{ steps.app-token.outputs.token }}
+          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
@@ -708,7 +712,7 @@ jobs:
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         env:
-          APP_TOKEN: ${{ steps.app-token.outputs.token }}
+          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
@@ -765,14 +769,22 @@ jobs:
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         env:
-          APP_TOKEN: ${{ steps.app-token.outputs.token }}
+          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
+      - name: "Checkout alfresco-deployment-test-automation-scripts"
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          repository: Alfresco/alfresco-deployment-test-automation-scripts
+          ref: ${{ env.DTAS_VERSION }}
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
+          fetch-depth: 1
+          path: dtas
       - name: "Set up the environment"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         env:
-          APP_TOKEN: ${{ steps.app-token.outputs.token }}
           AWS_ACCESS_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_ACCESS_KEY_ID }}
           AWS_SECRET_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_SECRET_ACCESS_KEY }}
           JAVA_VERSION: ${{ matrix.java-version }}
@@ -783,9 +795,6 @@ jobs:
             -Dimage.java.version=${{ matrix.java-version }}
           cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
           pip install requests pytest==6.2.4 pytest-testinfra==6.3.0 jmespath==0.10.0
-          { set +x; } 2>/dev/null
-          git clone --depth 1 --branch $DTAS_VERSION https://x-access-token:${APP_TOKEN}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
-          { set -x; } 2>/dev/null
           docker images | grep pipeline
           ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
           ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/" 180
@@ -824,7 +833,7 @@ jobs:
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         env:
-          APP_TOKEN: ${{ steps.app-token.outputs.token }}
+          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
@@ -887,7 +896,7 @@ jobs:
       - name: "Build: uses IMAGE_TAG variable, requires Repo and Share snapshot versions in main pom.xml"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         env:
-          APP_TOKEN: ${{ steps.app-token.outputs.token }}
+          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh -m

@@ -75,7 +75,7 @@ jobs:
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         env:
-          APP_TOKEN: ${{ steps.app-token.outputs.token }}
+          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh -m
@@ -132,7 +132,7 @@ jobs:
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         env:
-          APP_TOKEN: ${{ steps.app-token.outputs.token }}
+          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh -m
@@ -258,7 +258,7 @@ jobs:
         id: update-downstream
         run: bash ./scripts/ci/update_downstream.sh
         env:
-          APP_TOKEN: ${{ steps.app-token.outputs.token }}
+          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
       - name: "Compute downstream commit message"
         id: commit-meta
         uses: Alfresco/alfresco-community-repo/.github/actions/get-downstream-commit-message@f854c1658a59ef8ca6a0f128def983b0ae7dffbe # v26.3.0.22
