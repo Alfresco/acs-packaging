@@ -74,6 +74,7 @@ public class DiscoveryTests extends RestTest
                 "alfresco-trashcan-cleaner",
                 "org_alfresco_integrations_S3Connector",
                 "org_alfresco_integrations_AzureConnector",
+                "org_alfresco_integrations_GCSConnector",
                 "alfresco-content-connector-for-salesforce-repo",
                 "alfresco-share-services",
                 "org_alfresco_device_sync_repo",
