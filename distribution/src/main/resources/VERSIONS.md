@@ -1,25 +1,25 @@
 # Component Versions
 
-This file lists the recommended components for this Service Pack. Use it along with the [Supported Platforms Matrix](https://support.hyland.com/access?dita:id=baq1719482911154&vrm_version=25.2) and the [Alfresco Documentation](https://support.hyland.com/access?dita:id=kho1719590768396&vrm_version=25.2) to apply selective component upgrades.
+This file lists the recommended components for this Service Pack. Use it along with the [Supported Platforms Matrix](https://docs.hyland.com/access?dita:id=baq1719482911154&vrm_version=25.5) and the [Alfresco Documentation](https://docs.hyland.com/access?dita:id=kho1719590768396&vrm_version=25.5) to apply selective component upgrades.
 
 #### Alfresco Content Services @project.version@
 
 ##### Alfresco Applications
-| Component | Recommended | Also Available |
-|---|---|---|
-| Alfresco Content Services | @project.version@ |
-| Alfresco Enterprise Repository ± | @dependency.alfresco-enterprise-repo.version@ |
-| Alfresco Share | @dependency.alfresco-enterprise-share.version@ |
-| Alfresco Search Services | 2.0.22-A.1 |
-| Alfresco Insight Engine | 2.0.22-A.1 |
-| Alfresco Desktop Sync Service | @alfresco.desktop-sync.version@ |
+| Component | Recommended                                     | Also Available |
+|---|-------------------------------------------------|---|
+| Alfresco Content Services | @project.version@                               |
+| Alfresco Enterprise Repository ± | @dependency.alfresco-enterprise-repo.version@   |
+| Alfresco Share | @dependency.alfresco-enterprise-share.version@  |
+| Alfresco Search Services | 2.0.22-A.2                                      |
+| Alfresco Insight Engine | 2.0.22-A.2                                      |
+| Alfresco Desktop Sync Service | @alfresco.desktop-sync.version@                 |
 | Alfresco Transform Service | @dependency.alfresco-transform-service.version@ |
-| Alfresco Transform Core | @dependency.alfresco-transform-core.version@ |
+| Alfresco Transform Core | @dependency.alfresco-transform-core.version@    |
 | Alfresco Shared File Store | @dependency.alfresco-transform-service.version@ |
-| Document Transformation Engine | @dependency.alfresco-transform-core.version@ |
-| Alfresco File Transfer Receiver | 7.0.0 |
-| Alfresco Module Management Tool | @dependency.alfresco-community-repo.version@ |
-| Alfresco Spring Encryptor | @dependency.alfresco-spring-encryptor.version@ |
+| Document Transformation Engine | @dependency.alfresco-transform-core.version@    |
+| Alfresco File Transfer Receiver | 7.0.0                                           |
+| Alfresco Module Management Tool | @dependency.alfresco-community-repo.version@    |
+| Alfresco Spring Encryptor | @dependency.alfresco-spring-encryptor.version@  |
 ± Based on Alfresco Community Repository @dependency.alfresco-community-repo.version@
 
 ##### Alfresco Modules and Integrations
