@@ -51,6 +51,11 @@
                     "installed": true
                 },
                 {
+                    "id": "org_alfresco_integrations_GCSConnector",
+                    "version": "${alfresco.gcsconnector.version}",
+                    "installed": true
+                },
+                {
                     "id": "alfresco-ai-repo",
                     "version": "${alfresco.ais.version}",
                     "installed": true
