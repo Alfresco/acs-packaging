@@ -11,6 +11,7 @@ on:
     branches:
       - feature/**
       - fix/**
+      - test/review-and-restrict-global-secrets
   workflow_call:
   workflow_dispatch:
 
