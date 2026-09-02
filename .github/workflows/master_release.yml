@@ -26,10 +26,10 @@ jobs:
     outputs:
       title: ${{ steps.get-commit.outputs.COMMIT_MESSAGE }}
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 2
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-commit-message@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-commit-message@d2981070adf1a68c3ddcbf0ebba193467261c9b3 # v18.26.0
         id: get-commit
         with:
           header-only: "true"
@@ -60,12 +60,12 @@ jobs:
           private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
           owner: Alfresco
           repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app-token.outputs.token }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@d2981070adf1a68c3ddcbf0ebba193467261c9b3 # v18.26.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@d2981070adf1a68c3ddcbf0ebba193467261c9b3 # v18.26.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@d2981070adf1a68c3ddcbf0ebba193467261c9b3 # v18.26.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: Set up QEMU
@@ -111,17 +111,17 @@ jobs:
           permission-contents: write
           owner: Alfresco
           repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app-token.outputs.token }}
       - name: "Create local release branch"
         run: git checkout -B "${{ github.ref_name }}"
-      - uses: Alfresco/alfresco-build-tools/.github/actions/env-load-from-yaml@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/env-load-from-yaml@d2981070adf1a68c3ddcbf0ebba193467261c9b3 # v18.26.0
         with:
           yml_path: .github/release-versions.yml
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@d2981070adf1a68c3ddcbf0ebba193467261c9b3 # v18.26.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@d2981070adf1a68c3ddcbf0ebba193467261c9b3 # v18.26.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@d2981070adf1a68c3ddcbf0ebba193467261c9b3 # v18.26.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
@@ -143,7 +143,7 @@ jobs:
         run: bash scripts/ci/verify_release_tag.sh
       - name: "Release"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-release-slim@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-release-slim@d2981070adf1a68c3ddcbf0ebba193467261c9b3 # v18.26.0
         with:
           token: ${{ steps.app-token.outputs.token }}
           release-version: ${{ env.RELEASE_VERSION }}
@@ -186,16 +186,16 @@ jobs:
       contains(needs.commit_parser.outputs.title, '[publish]') &&
       github.event_name != 'pull_request'
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           fetch-depth: 0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/env-load-from-yaml@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/env-load-from-yaml@d2981070adf1a68c3ddcbf0ebba193467261c9b3 # v18.26.0
         with:
           yml_path: .github/release-versions.yml
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@d2981070adf1a68c3ddcbf0ebba193467261c9b3 # v18.26.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@d2981070adf1a68c3ddcbf0ebba193467261c9b3 # v18.26.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@d2981070adf1a68c3ddcbf0ebba193467261c9b3 # v18.26.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: "Init"
@@ -241,15 +241,15 @@ jobs:
           repositories: |
             acs-packaging
             acs-community-packaging
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app-token.outputs.token }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/env-load-from-yaml@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/env-load-from-yaml@d2981070adf1a68c3ddcbf0ebba193467261c9b3 # v18.26.0
         with:
           yml_path: .github/release-versions.yml
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@d2981070adf1a68c3ddcbf0ebba193467261c9b3 # v18.26.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@d2981070adf1a68c3ddcbf0ebba193467261c9b3 # v18.26.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@d2981070adf1a68c3ddcbf0ebba193467261c9b3 # v18.26.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: "Init"
@@ -261,13 +261,13 @@ jobs:
           AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
       - name: "Compute downstream commit message"
         id: commit-meta
-        uses: Alfresco/alfresco-community-repo/.github/actions/get-downstream-commit-message@f854c1658a59ef8ca6a0f128def983b0ae7dffbe # v26.3.0.22
+        uses: Alfresco/alfresco-community-repo/.github/actions/get-downstream-commit-message@daad4572e0f35f7959179d0951dadeff4f8708e4 # v26.3.0.38
         with:
           commit-title: ${{ needs.commit_parser.outputs.title }}
           version: ${{ steps.update-downstream.outputs.version }}
           directives: "[release]"
       - name: "Commit downstream version update"
-        uses: iarekylew00t/verified-bot-commit@33985d44b7719dcaf0b854a0f4b0caad9bdc5b86 # v2.3.3
+        uses: iarekylew00t/verified-bot-commit@42a042b0407248f3c0acac00c389e729e3476e86 # v2.3.5
         with:
           token: ${{ steps.app-token.outputs.token }}
           repository: Alfresco/acs-community-packaging

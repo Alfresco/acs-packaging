@@ -30,13 +30,13 @@ jobs:
           private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
           owner: Alfresco
           repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging,alfresco-community-repo,alfresco-deployment-test-automation-scripts
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           fetch-depth: 0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@d2981070adf1a68c3ddcbf0ebba193467261c9b3 # v18.26.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@d2981070adf1a68c3ddcbf0ebba193467261c9b3 # v18.26.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@d2981070adf1a68c3ddcbf0ebba193467261c9b3 # v18.26.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: Set up QEMU
@@ -68,7 +68,7 @@ jobs:
           mvn clean install -B -ntp -DskipTests -f tests/pipeline-all-amps/repo/pom.xml
           cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
       - name: "Checkout alfresco-community-repo"
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: Alfresco/alfresco-community-repo
           ref: master
@@ -91,7 +91,7 @@ jobs:
           docker ps
           curl -v --user admin.pipeline@alfresco.com:admin http://localhost:8080/alfresco/api/discovery
       - name: "Checkout alfresco-deployment-test-automation-scripts"
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: Alfresco/alfresco-deployment-test-automation-scripts
           ref: ${{ env.DTAS_VERSION }}
@@ -110,7 +110,7 @@ jobs:
           python3 -m pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
       - name: "Dump all Docker containers logs"
         if: failure() && (steps.setup-env.outcome == 'failure' || steps.run-tests.outcome == 'failure')
-        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@d2981070adf1a68c3ddcbf0ebba193467261c9b3 # v18.26.0
       - name: "Persist test failure flag"
         id: persist_test_failure_flag
         if: failure()
@@ -123,7 +123,7 @@ jobs:
       - arm64_health_check
     if: always()
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
       - name: "Run the JIRA Integration script"
         run: |
