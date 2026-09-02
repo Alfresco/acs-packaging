@@ -99,7 +99,7 @@ import subprocess
 import sys
 from xml.etree import ElementTree as et
 
-MASTER = 'master'
+MASTER = 'release/25.N'
 HOTFIX = 'hotfix'
 SERVICE_PACK = 'service_pack'
 RELEASE = 'release'
@@ -110,7 +110,7 @@ COMMUNITY_REPO = 'alfresco-community-repo'
 ENTERPRISE_REPO = 'alfresco-enterprise-repo'
 ENTERPRISE_SHARE = 'alfresco-enterprise-share'
 ACS_PACKAGING = 'acs-packaging'
-PROJECTS = [ACS_PACKAGING, ENTERPRISE_SHARE, ENTERPRISE_REPO, COMMUNITY_REPO, COMMUNITY_PACKAGING]
+PROJECTS = [ACS_PACKAGING, ENTERPRISE_SHARE, ENTERPRISE_REPO, COMMUNITY_REPO]
 
 # read command line arguments
 parser = argparse.ArgumentParser(description="Create git branches after ACS release.")
@@ -731,7 +731,7 @@ if release_version:
     if args.ahead:
         create_release_branches()
     else:
-        #create_hotfix_branches()
+        create_hotfix_branches()
         if is_version_bumped(release_version, next_dev_version, 0):
             create_service_pack_branches()
     if not args.master_skip:
