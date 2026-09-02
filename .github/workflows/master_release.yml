@@ -5,7 +5,7 @@ on:
     branches:
       - master
       - release/**
-      - test/review-and-restrict-global-secrets-test
+      - test/restrict-global-secrets-test
 
 permissions:
   contents: read
