@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - precommit/**
-      - test/restrict-global-secrets-test
+      - test-restrict-global-secrets-test
 
 permissions:
   contents: read

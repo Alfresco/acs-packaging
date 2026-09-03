@@ -7,7 +7,7 @@ on:
       - "release/25.N"
       - "release/23.N"
       - "release/7.4.N"
-      - "test/restrict-global-secrets-test"
+      - "test-restrict-global-secrets-test"
   schedule:
     - cron: '0 6 * * *'
   workflow_call:
