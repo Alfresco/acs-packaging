@@ -5,16 +5,22 @@ on:
     branches:
       - precommit/**
 
+permissions:
+  contents: read
+
 env:
   JAVA_VERSION: "21"
-  MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-  MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
 
 jobs:
   format-code:
     name: "Reformat code"
     runs-on: ubuntu-latest
     if: contains(github.event.head_commit.message, '[reformat code]')
+    permissions:
+      contents: write
+    env:
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
@@ -34,7 +40,7 @@ jobs:
         run: pip install detect-secrets && detect-secrets scan --baseline .secrets.baseline
       - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
-          username: ${{ secrets.BOT_GITHUB_USERNAME }}
+          username: ${{ vars.BOT_GITHUB_USERNAME }}
           add-options: -u
           commit-message: "Apply Pre-Commit code formatting"
           skip-if-no-changes: true
