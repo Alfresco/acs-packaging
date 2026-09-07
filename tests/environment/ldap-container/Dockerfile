@@ -1,4 +1,4 @@
-FROM osixia/openldap:1.1.5
+FROM osixia/openldap:1.5.0
 
 ADD importData.ldif /importData.ldif
 ADD startup.sh /container/service/slapd/startup.sh

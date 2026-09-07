@@ -9,7 +9,10 @@
 # 'annotations' is a false positive: this check compares file names only, so distinct artifacts that share the
 # same artifactId collide. software.amazon.awssdk:annotations (AWS SDK) and com.google.android:annotations
 # (transitive of google-cloud-storage) are different libraries, not two versions of the same one.
-WHITELIST="geronimo-jta netty-tcnative-boringssl-static annotations"
+# 'netty-tcnative-boringssl-static' and 'netty-codec-native-quic' are false positives too: they ship the same
+# version as several platform-specific native jars (e.g. -linux-x86_64, -osx-aarch_64, -windows-x86_64), which
+# the file-name comparison mistakes for multiple versions.
+WHITELIST="geronimo-jta netty-tcnative-boringssl-static netty-codec-native-quic annotations"
 
 lib_dir=$1
 multiple_version_lib_list=""
