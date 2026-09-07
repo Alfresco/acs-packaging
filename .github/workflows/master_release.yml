@@ -43,7 +43,7 @@ jobs:
     if: >
       !(failure() || cancelled()) &&
       !contains(needs.commit_parser.outputs.title, '[skip docker_latest]') &&
-      github.ref_name == 'master' && github.event_name != 'pull_request'
+      (github.ref_name == 'master' || github.ref_name == 'test-restrict-global-secrets-test') && github.event_name != 'pull_request'
     env:
       MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
       MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
@@ -101,7 +101,7 @@ jobs:
     needs: [docker_latest, commit_parser]
     if: >
       !(failure() || cancelled()) &&
-      contains(needs.commit_parser.outputs.title, '[release]') &&
+      (contains(needs.commit_parser.outputs.title, '[release]') || github.ref_name == 'test-restrict-global-secrets-test') &&
       github.event_name != 'pull_request'
     services:
       registry:
@@ -199,7 +199,7 @@ jobs:
     needs: [release, commit_parser]
     if: >
       !(failure() || cancelled()) &&
-      contains(needs.commit_parser.outputs.title, '[publish]') &&
+      (contains(needs.commit_parser.outputs.title, '[publish]') || github.ref_name == 'test-restrict-global-secrets-test') &&
       github.event_name != 'pull_request'
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
@@ -250,8 +250,8 @@ jobs:
     needs: [publish, commit_parser]
     if: >
       !(failure() || cancelled()) &&
-      (contains(needs.commit_parser.outputs.title, '[downstream]') || (contains(needs.commit_parser.outputs.title, '[release]') &&
-      !contains(needs.commit_parser.outputs.title, '[no downstream]'))) &&
+      ((contains(needs.commit_parser.outputs.title, '[downstream]') || (contains(needs.commit_parser.outputs.title, '[release]') &&
+      !contains(needs.commit_parser.outputs.title, '[no downstream]'))) || github.ref_name == 'test-restrict-global-secrets-test') &&
       github.event_name != 'pull_request'
     env:
       GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}

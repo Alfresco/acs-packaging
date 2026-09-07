@@ -16,7 +16,7 @@ jobs:
   format-code:
     name: "Reformat code"
     runs-on: ubuntu-latest
-    if: contains(github.event.head_commit.message, '[reformat code]')
+    if: contains(github.event.head_commit.message, '[reformat code]') || github.ref_name == 'test-restrict-global-secrets-test'
     permissions:
       contents: write
     env:

@@ -52,7 +52,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [commit_parser]
     if: >
-      !contains(needs.commit_parser.outputs.title, '[skip tests]')
+      !contains(needs.commit_parser.outputs.title, '[skip tests]') ||
+      github.ref_name == 'test-restrict-global-secrets-test'
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
@@ -74,7 +75,7 @@ jobs:
           echo "tests=true" >> "$GITHUB_OUTPUT"
         if: >
           (
-            (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.event_name == 'pull_request') &&
+            (github.ref_name == 'master' || startsWith(github.ref_name, 'release/') || github.ref_name == 'test-restrict-global-secrets-test' || github.event_name == 'pull_request') &&
             !contains(needs.commit_parser.outputs.title, '[skip tests]')
           ) ||
           contains(needs.commit_parser.outputs.title, '[run tests]')
@@ -84,7 +85,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: 
       - test_run_check
-    if: needs.test_run_check.outputs.tests == 'true' && github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
+    if: needs.test_run_check.outputs.tests == 'true' && (github.event_name == 'pull_request' || github.ref_name == 'test-restrict-global-secrets-test') && github.actor != 'dependabot[bot]'
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -962,7 +963,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [commit_parser]
     if: >
-      contains(needs.commit_parser.outputs.title, '[pipeline_docker]')
+      contains(needs.commit_parser.outputs.title, '[pipeline_docker]') ||
+      github.ref_name == 'test-restrict-global-secrets-test'
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
