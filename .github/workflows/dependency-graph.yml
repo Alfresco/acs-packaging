@@ -14,10 +14,12 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   scan-dependencies:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
