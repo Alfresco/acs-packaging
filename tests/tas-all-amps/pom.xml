@@ -9,7 +9,7 @@
     <parent>
         <groupId>org.alfresco</groupId>
         <artifactId>content-repository-tests</artifactId>
-        <version>26.3.0-A.14-SNAPSHOT</version>
+        <version>26.3.0-A.15-SNAPSHOT</version>
     </parent>
 
     <developers>
@@ -193,6 +193,14 @@
                                             <groupId>org.alfresco.integrations</groupId>
                                             <artifactId>alfresco-s3-connector</artifactId>
                                             <version>${alfresco.s3connector.version}</version>
+                                            <type>amp</type>
+                                            <overWrite>false</overWrite>
+                                            <outputDirectory>${project.build.directory}/amps</outputDirectory>
+                                        </artifactItem>
+                                        <artifactItem>
+                                            <groupId>org.alfresco.integrations</groupId>
+                                            <artifactId>alfresco-gcs-connector</artifactId>
+                                            <version>${alfresco.gcsconnector.version}</version>
                                             <type>amp</type>
                                             <overWrite>false</overWrite>
                                             <outputDirectory>${project.build.directory}/amps</outputDirectory>
