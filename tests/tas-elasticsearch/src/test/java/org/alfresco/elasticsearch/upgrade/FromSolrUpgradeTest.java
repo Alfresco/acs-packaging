@@ -240,7 +240,7 @@ public class FromSolrUpgradeTest
         env.updateTextFileContent(updatedDoc, CURRENT_TERM + " content");
 
         // Scenario 10 - two siblings share a term and one is deleted, so a single exact-set
-        // assertion proves the survivor is indexed and the deleted node was not resurrected.
+        // assertion proves the survivor is indexed and the deleted node was not resurrected
         env.uploadTextFile("-my-", SURVIVING_DOC, DELETE_PAIR_TERM + " content");
         final UUID deletedDoc = env.uploadTextFile("-my-", DELETED_DOC, DELETE_PAIR_TERM + " content");
         env.deleteNode(deletedDoc);
@@ -260,7 +260,7 @@ public class FromSolrUpgradeTest
         env.expectQueryResult(MAX_TIMEOUT, "afts",
                 "PATH:'//cm:" + SECONDARY_FOLDER + "//*' AND TYPE:'cm:content'", SHARED_DOC);
 
-        // 3) Multi-language content - a non-English term inside the content is searchable.
+        // 3) Multi-language content - a non-English term inside the content is searchable
         env.expectQueryResult(MAX_TIMEOUT, "afts", "cm:content:'croissants'", MULTILANG_DOC);
 
         // 4) Categories and tags - both associations survived the re-index
@@ -270,12 +270,12 @@ public class FromSolrUpgradeTest
                 CATEGORISED_DOC);
 
         // 5) Complex ACLs and permission-based filtering.
-        //    5a - direct grant on the node; positive check first so the ACL is indexed.
+        //    5a - direct grant on the node; positive check first so the ACL is indexed
         env.expectQueryResultAs(MAX_TIMEOUT, ADVANCED_USER, USER_PASSWORD, "afts",
                 "cm:name:'" + RESTRICTED_DOC + "'", RESTRICTED_DOC);
         env.expectQueryResultAs(MAX_TIMEOUT, OUTSIDER_USER, USER_PASSWORD, "afts",
                 "cm:name:'" + RESTRICTED_DOC + "'");
-        //    5b - group-based grant on the parent folder, inherited by the child document.
+        //    5b - group-based grant on the parent folder, inherited by the child document
         env.expectQueryResultAs(MAX_TIMEOUT, GROUP_USER, USER_PASSWORD, "afts",
                 "cm:name:'" + GROUP_PROTECTED_DOC + "'", GROUP_PROTECTED_DOC);
         env.expectQueryResultAs(MAX_TIMEOUT, OUTSIDER_USER, USER_PASSWORD, "afts",
@@ -285,21 +285,21 @@ public class FromSolrUpgradeTest
         env.expectQueryResult(MAX_TIMEOUT, "cmis",
                 "SELECT * FROM cmis:document WHERE cmis:name = '" + DEEP_DOC + "'", DEEP_DOC);
 
-        // 7) Path query variants - '//' matches the whole subtree, '/' only direct children.
+        // 7) Path query variants - '//' matches the whole subtree, '/' only direct children
         //    TYPE:'cm:content' keeps the intermediate folders out of the result set.
         env.expectQueryResult(MAX_TIMEOUT, "afts",
                 "PATH:'//cm:" + DEEP_FOLDER_L1 + "//*' AND TYPE:'cm:content'", DEEP_DOC, L1_CHILD_DOC);
         env.expectQueryResult(MAX_TIMEOUT, "afts",
                 "PATH:'//cm:" + DEEP_FOLDER_L1 + "/*' AND TYPE:'cm:content'", L1_CHILD_DOC);
 
-        // 8) Move - found under the new parent, and no longer under the old one.
+        // 8) Move - found under the new parent, and no longer under the old one
         //    The positive check runs first, so the negative cannot pass on a stale index.
         env.expectQueryResult(MAX_TIMEOUT, "afts",
                 "PATH:'//cm:" + MOVE_TARGET_FOLDER + "//*' AND TYPE:'cm:content'", MOVED_DOC);
         env.expectQueryResult(MAX_TIMEOUT, "afts",
                 "PATH:'//cm:" + MOVE_SOURCE_FOLDER + "//*' AND TYPE:'cm:content'");
 
-        // 9) Content update - the current content matches, the replaced content does not.
+        // 9) Content update - the current content matches, the replaced content does not
         env.expectQueryResult(MAX_TIMEOUT, "afts", "cm:content:'" + CURRENT_TERM + "'", UPDATED_DOC);
         env.expectQueryResult(MAX_TIMEOUT, "afts", "cm:content:'" + STALE_TERM + "'");
 
@@ -307,7 +307,7 @@ public class FromSolrUpgradeTest
         env.expectQueryResult(MAX_TIMEOUT, "afts",
                 "cm:content:'" + DELETE_PAIR_TERM + "'", SURVIVING_DOC);
 
-        // 11) Typed field mapping - a date range on cm:created still resolves after the migration.
+        // 11) Typed field mapping - a date range on cm:created still resolves after the migration
         env.expectQueryResult(MAX_TIMEOUT, "afts",
                 "cm:created:['" + QUERY_FROM_DATE + "' TO '" + QUERY_TO_DATE + "']"
                         + " AND cm:name:'" + DEEP_DOC + "'", DEEP_DOC);
