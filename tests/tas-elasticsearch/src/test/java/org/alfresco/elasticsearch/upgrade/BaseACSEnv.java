@@ -138,6 +138,89 @@ abstract class BaseACSEnv implements AutoCloseable
         return repoHttpClient.uploadFile(contentUrl, fileName);
     }
 
+    // ------------------------------------------------------------------
+    // ACS-12862: pass-throughs for the advanced migration scenarios.
+    // repoHttpClient is private, so each new client method needs one here.
+    // ------------------------------------------------------------------
+
+    /** ACS-12862: creates a folder under the given parent (a node id, or an alias such as "-my-"). */
+    public UUID createFolder(String parentId, String name) throws IOException
+    {
+        return repoHttpClient.createFolder(parentId, name);
+    }
+
+    /** ACS-12862: uploads a plain-text file with the given content under the given parent. */
+    public UUID uploadTextFile(String parentId, String fileName, String content) throws IOException
+    {
+        return repoHttpClient.uploadTextFile(parentId, fileName, content);
+    }
+
+    /** ACS-12862: adds an existing node as a secondary child of the given folder. */
+    public void addSecondaryChildAssociation(String parentFolderId, UUID childId) throws IOException
+    {
+        repoHttpClient.addSecondaryChildAssociation(parentFolderId, childId);
+    }
+
+    /** ACS-12862: tags a node. */
+    public void addTag(UUID nodeId, String tag) throws IOException
+    {
+        repoHttpClient.addTag(nodeId, tag);
+    }
+
+    /** ACS-12862: creates a category under the root category and returns its node id. */
+    public String createCategory(String name) throws IOException
+    {
+        return repoHttpClient.createCategory(name);
+    }
+
+    /** ACS-12862: classifies the node into the given category nodeRef. */
+    public void setCategory(UUID nodeId, String categoryNodeRef) throws IOException
+    {
+        repoHttpClient.setCategory(nodeId, categoryNodeRef);
+    }
+
+    /** ACS-12862: creates a non-admin user, used by the permission-filtering scenario. */
+    public void createUser(String username, String password) throws IOException
+    {
+        repoHttpClient.createUser(username, password);
+    }
+
+    /** ACS-12862: creates a group and returns its full authority id (GROUP_&lt;id&gt;). */
+    public String createGroup(String groupId, String displayName) throws IOException
+    {
+        return repoHttpClient.createGroup(groupId, displayName);
+    }
+
+    /** ACS-12862: adds a user to an existing group. */
+    public void addUserToGroup(String groupAuthorityId, String username) throws IOException
+    {
+        repoHttpClient.addUserToGroup(groupAuthorityId, username);
+    }
+
+    /** ACS-12862: breaks inheritance on the node and grants exactly the given authority the given role. */
+    public void setExclusivePermission(UUID nodeId, String authorityId, String role) throws IOException
+    {
+        repoHttpClient.setExclusivePermission(nodeId, authorityId, role);
+    }
+
+    /** ACS-12862: moves a node to a new primary parent. */
+    public void moveNode(UUID nodeId, String targetParentId) throws IOException
+    {
+        repoHttpClient.moveNode(nodeId, targetParentId);
+    }
+
+    /** ACS-12862: replaces the content of an existing text node. */
+    public void updateTextFileContent(UUID nodeId, String content) throws IOException
+    {
+        repoHttpClient.updateTextFileContent(nodeId, content);
+    }
+
+    /** ACS-12862: deletes a node. */
+    public void deleteNode(UUID nodeId) throws IOException
+    {
+        repoHttpClient.deleteNode(nodeId);
+    }
+
     public void setElasticsearchSearchService() throws IOException
     {
         repoHttpClient.setSearchService("elasticsearch");
@@ -177,6 +260,53 @@ abstract class BaseACSEnv implements AutoCloseable
             {
                 Optional<Set<String>> actual = repoHttpClient.searchForFiles(term);
                 return actual.map(expected::equals).orElse(false);
+            }
+            catch (IOException e)
+            {
+                return false;
+            }
+        });
+    }
+
+    /**
+     * ACS-12862: same contract as {@link #expectSearchResult}, but the query language is explicit
+     * so the advanced scenarios can use AFTS PATH/TAG queries and CMIS.
+     */
+    public void expectQueryResult(Duration timeout, String language, String query, String... expectedFiles)
+    {
+        final Set<String> expected = Stream
+                .of(expectedFiles)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toUnmodifiableSet());
+
+        waitFor("Reaching the point where `" + query + "` returns `" + expected + "`.", timeout, () -> {
+            try
+            {
+                return repoHttpClient.search(language, query).map(expected::equals).orElse(false);
+            }
+            catch (IOException e)
+            {
+                return false;
+            }
+        });
+    }
+
+    /**
+     * ACS-12862: runs the query as the given user rather than admin, so permission-based
+     * result filtering can be asserted after the migration.
+     */
+    public void expectQueryResultAs(Duration timeout, String user, String password,
+                                    String language, String query, String... expectedFiles)
+    {
+        final Set<String> expected = Stream
+                .of(expectedFiles)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toUnmodifiableSet());
+
+        waitFor("Reaching the point where `" + query + "` as `" + user + "` returns `" + expected + "`.", timeout, () -> {
+            try
+            {
+                return repoHttpClient.searchAs(user, password, language, query).map(expected::equals).orElse(false);
             }
             catch (IOException e)
             {
