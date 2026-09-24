@@ -2,6 +2,6 @@
 
 set +x
 
-mvn spotless:apply validate -DlicenseUpdateHeaders=true -Pags,all-tas-tests > /dev/null || true
+mvn spotless:apply validate -DlicenseUpdateHeaders=true -Pags,all-tas-tests || true
 
 set -x
