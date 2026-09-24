@@ -63,3 +63,4 @@ CI (`.github/workflows/ci.yml`) runs these as a matrix (`tas_tests`, `tas_tests_
 - `.github/release-versions.yml` holds the current `RELEASE_VERSION`/`DEVELOPMENT_VERSION` used by `master_release.yml` for cutting releases — release version must start with the real product version for docker image builds to succeed.
 - Cross-repo scripts live in `scripts/dev/` (`linkPoms.sh`/`unlinkPoms.sh` for local multi-repo linking, `checkout.sh`, `newReleaseBranch.sh`/`.py`) and `scripts/ci/` (staging deploy, cache cleanup, downstream update, Jira integration under `scripts/ci/jira/`).
 - Further guides live under `docs/`: custom Docker images, custom transforms/renditions, T-Engine creation, metadata extract/embed, direct access URLs, query accelerator, transform services, legacy transformer migration.
+- The currently active/supported release branches are `release/23.N`, `release/25.N`, and `release/26.N`. Any other `release/*` branch is an unsupported ACS version.
