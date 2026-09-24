@@ -181,8 +181,7 @@ public class FromSolrUpgradeTest
     }
 
     /**
-     * ACS-12862: creates the content used by the advanced migration scenarios.
-     * Called against the Solr-based environment before any re-indexing happens.
+     * ACS-12862: creates the content used by the advanced migration scenarios. Called against the Solr-based environment before any re-indexing happens.
      */
     private void seedAdvancedTestData(ACSEnv env) throws IOException
     {
@@ -247,8 +246,7 @@ public class FromSolrUpgradeTest
     }
 
     /**
-     * ACS-12862: one query per advanced scenario, executed after the repository has
-     * switched to Elasticsearch.
+     * ACS-12862: one query per advanced scenario, executed after the repository has switched to Elasticsearch.
      */
     private void verifyAdvancedScenarios(ACSEnv env)
     {
@@ -270,12 +268,12 @@ public class FromSolrUpgradeTest
                 CATEGORISED_DOC);
 
         // 5) Complex ACLs and permission-based filtering.
-        //    5a - direct grant on the node; positive check first so the ACL is indexed.
+        // 5a - direct grant on the node; positive check first so the ACL is indexed.
         env.expectQueryResultAs(MAX_TIMEOUT, ADVANCED_USER, USER_PASSWORD, "afts",
                 "cm:name:'" + RESTRICTED_DOC + "'", RESTRICTED_DOC);
         env.expectQueryResultAs(MAX_TIMEOUT, OUTSIDER_USER, USER_PASSWORD, "afts",
                 "cm:name:'" + RESTRICTED_DOC + "'");
-        //    5b - group-based grant on the parent folder, inherited by the child document.
+        // 5b - group-based grant on the parent folder, inherited by the child document.
         env.expectQueryResultAs(MAX_TIMEOUT, GROUP_USER, USER_PASSWORD, "afts",
                 "cm:name:'" + GROUP_PROTECTED_DOC + "'", GROUP_PROTECTED_DOC);
         env.expectQueryResultAs(MAX_TIMEOUT, OUTSIDER_USER, USER_PASSWORD, "afts",
@@ -286,14 +284,14 @@ public class FromSolrUpgradeTest
                 "SELECT * FROM cmis:document WHERE cmis:name = '" + DEEP_DOC + "'", DEEP_DOC);
 
         // 7) Path query variants - '//' matches the whole subtree, '/' only direct children.
-        //    TYPE:'cm:content' keeps the intermediate folders out of the result set.
+        // TYPE:'cm:content' keeps the intermediate folders out of the result set.
         env.expectQueryResult(MAX_TIMEOUT, "afts",
                 "PATH:'//cm:" + DEEP_FOLDER_L1 + "//*' AND TYPE:'cm:content'", DEEP_DOC, L1_CHILD_DOC);
         env.expectQueryResult(MAX_TIMEOUT, "afts",
                 "PATH:'//cm:" + DEEP_FOLDER_L1 + "/*' AND TYPE:'cm:content'", L1_CHILD_DOC);
 
         // 8) Move - found under the new parent, and no longer under the old one.
-        //    The positive check runs first, so the negative cannot pass on a stale index.
+        // The positive check runs first, so the negative cannot pass on a stale index.
         env.expectQueryResult(MAX_TIMEOUT, "afts",
                 "PATH:'//cm:" + MOVE_TARGET_FOLDER + "//*' AND TYPE:'cm:content'", MOVED_DOC);
         env.expectQueryResult(MAX_TIMEOUT, "afts",
@@ -310,6 +308,7 @@ public class FromSolrUpgradeTest
         // 11) Typed field mapping - a date range on cm:created still resolves after the migration.
         env.expectQueryResult(MAX_TIMEOUT, "afts",
                 "cm:created:['" + QUERY_FROM_DATE + "' TO '" + QUERY_TO_DATE + "']"
-                        + " AND cm:name:'" + DEEP_DOC + "'", DEEP_DOC);
+                        + " AND cm:name:'" + DEEP_DOC + "'",
+                DEEP_DOC);
     }
 }

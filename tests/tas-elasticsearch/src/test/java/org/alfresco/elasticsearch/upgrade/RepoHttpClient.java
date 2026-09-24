@@ -196,8 +196,7 @@ class RepoHttpClient
     }
 
     /**
-     * ACS-12862: body extracted into {@link #doSearch}, which is now shared with
-     * {@link #search} and {@link #searchAs}. Signature and behaviour are unchanged.
+     * ACS-12862: body extracted into {@link #doSearch}, which is now shared with {@link #search} and {@link #searchAs}. Signature and behaviour are unchanged.
      */
     public Optional<Set<String>> searchForFiles(String term) throws IOException
     {
@@ -267,10 +266,7 @@ class RepoHttpClient
     }
 
     /**
-     * ACS-12862: creates a category under the root category and returns its node id.
-     * Creating one keeps the fixture deterministic. Looking up an arbitrary existing
-     * cm:category node is not: TYPE queries have no defined result order, and
-     * cm:category has subtypes such as tags.
+     * ACS-12862: creates a category under the root category and returns its node id. Creating one keeps the fixture deterministic. Looking up an arbitrary existing cm:category node is not: TYPE queries have no defined result order, and cm:category has subtypes such as tags.
      */
     public String createCategory(String name) throws IOException
     {
@@ -287,8 +283,7 @@ class RepoHttpClient
     }
 
     /**
-     * ACS-12862: adds the cm:generalclassifiable aspect and classifies the node into the
-     * given category nodeRef (format: workspace://SpacesStore/&lt;id&gt;).
+     * ACS-12862: adds the cm:generalclassifiable aspect and classifies the node into the given category nodeRef (format: workspace://SpacesStore/&lt;id&gt;).
      */
     public void setCategory(UUID nodeId, String categoryNodeRef) throws IOException
     {
@@ -337,8 +332,7 @@ class RepoHttpClient
     }
 
     /**
-     * ACS-12862: adds a user to an existing group. The literal "groups/" is required because
-     * groupsApiUri has no trailing slash, so URI.resolve replaces its last segment.
+     * ACS-12862: adds a user to an existing group. The literal "groups/" is required because groupsApiUri has no trailing slash, so URI.resolve replaces its last segment.
      */
     public void addUserToGroup(String groupAuthorityId, String username) throws IOException
     {
@@ -397,8 +391,7 @@ class RepoHttpClient
     }
 
     /**
-     * ACS-12862: deletes a node, moving it to the archive store. The v1 API answers 204 with no
-     * body, so this cannot go through {@link #getJsonResponse}.
+     * ACS-12862: deletes a node, moving it to the archive store. The v1 API answers 204 with no body, so this cannot go through {@link #getJsonResponse}.
      */
     public void deleteNode(UUID nodeId) throws IOException
     {

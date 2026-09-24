@@ -269,8 +269,7 @@ abstract class BaseACSEnv implements AutoCloseable
     }
 
     /**
-     * ACS-12862: same contract as {@link #expectSearchResult}, but the query language is explicit
-     * so the advanced scenarios can use AFTS PATH/TAG queries and CMIS.
+     * ACS-12862: same contract as {@link #expectSearchResult}, but the query language is explicit so the advanced scenarios can use AFTS PATH/TAG queries and CMIS.
      */
     public void expectQueryResult(Duration timeout, String language, String query, String... expectedFiles)
     {
@@ -292,11 +291,10 @@ abstract class BaseACSEnv implements AutoCloseable
     }
 
     /**
-     * ACS-12862: runs the query as the given user rather than admin, so permission-based
-     * result filtering can be asserted after the migration.
+     * ACS-12862: runs the query as the given user rather than admin, so permission-based result filtering can be asserted after the migration.
      */
     public void expectQueryResultAs(Duration timeout, String user, String password,
-                                    String language, String query, String... expectedFiles)
+            String language, String query, String... expectedFiles)
     {
         final Set<String> expected = Stream
                 .of(expectedFiles)
