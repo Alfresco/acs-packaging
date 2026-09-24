@@ -60,6 +60,9 @@ jobs:
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+        env:
+          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
         
   test_run_check:
     name: "Test run check"
