@@ -11,6 +11,7 @@ on:
     branches:
       - feature/**
       - fix/**
+      - debug/**
   workflow_call:
   workflow_dispatch:
 
@@ -59,12 +60,22 @@ jobs:
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       # TODO remove: debugging slow/dropped connections to artifacts.alfresco.com
-      - name: "Debug: mtr to artifacts.alfresco.com (TCP/443)"
+      - name: "Debug: HTTP connection timing to artifacts.alfresco.com"
         continue-on-error: true
         run: |
-          sudo apt-get update -y
-          sudo apt-get install -y mtr-tiny
-          mtr -T -P 443 --report --report-cycles 30 --show-ips artifacts.alfresco.com
+          echo "=== artifacts.alfresco.com, fresh TCP connection per request (20x) ==="
+          for i in $(seq 1 20); do
+            curl -o /dev/null -s --max-time 120 \
+              -w "attempt=$i dns=%{time_namelookup}s connect=%{time_connect}s tls=%{time_appconnect}s ttfb=%{time_starttransfer}s total=%{time_total}s http=%{http_code}\n" \
+              "https://artifacts.alfresco.com/nexus/content/groups/internal/"
+          done
+
+          echo "=== control: repo.maven.apache.org, fresh TCP connection per request (5x) ==="
+          for i in $(seq 1 5); do
+            curl -o /dev/null -s --max-time 30 \
+              -w "attempt=$i dns=%{time_namelookup}s connect=%{time_connect}s tls=%{time_appconnect}s ttfb=%{time_starttransfer}s total=%{time_total}s http=%{http_code}\n" \
+              "https://repo.maven.apache.org/maven2/"
+          done
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
