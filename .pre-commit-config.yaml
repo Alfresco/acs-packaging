@@ -8,7 +8,7 @@ repos:
     hooks:
       - id: check-format-and-headers
         name: Check format and headers and fix if necessary
-        entry: ./scripts/hooks/check-format-and-headers.sh
-        language: script
+        entry: mvn spotless:apply validate -DlicenseUpdateHeaders=true -Pags,all-tas-tests
+        language: system
         files: ".*.java"
         pass_filenames: false
