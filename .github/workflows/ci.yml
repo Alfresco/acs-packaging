@@ -14,10 +14,6 @@ on:
   workflow_call:
   workflow_dispatch:
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 permissions:
   contents: read
 
@@ -58,26 +54,15 @@ jobs:
       !contains(needs.commit_parser.outputs.title, '[skip tests]')
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-      # TODO remove: debugging slow/dropped connections to artifacts.alfresco.com
-      - name: "Debug: mtr to artifacts.alfresco.com (TCP/443)"
-        continue-on-error: true
-        run: |
-          sudo apt-get update -y
-          sudo apt-get install -y mtr-tiny
-          mtr -T -P 443 --report --report-cycles 30 --show-ips artifacts.alfresco.com
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
-      # TODO remove: debugging check-format-and-headers hook hanging silently under pre-commit
-      - name: "Debug: run check-format-and-headers command directly"
-        timeout-minutes: 20
-        run: mvn -X spotless:apply validate -DlicenseUpdateHeaders=true -Pags,all-tas-tests
       - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@2d1b3e9a46ab983580442a50f864e3ba82e5c24a #v19.0.1
         with:
           pre-commit-args: --verbose
-
+        
   test_run_check:
     name: "Test run check"
     runs-on: ubuntu-latest
