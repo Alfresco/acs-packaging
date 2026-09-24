@@ -59,10 +59,14 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
+      # TODO remove: debugging check-format-and-headers hook hanging silently under pre-commit
+      - name: "Debug: run check-format-and-headers command directly"
+        timeout-minutes: 20
+        run: mvn spotless:apply validate -DlicenseUpdateHeaders=true -Pags,all-tas-tests
       - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@2d1b3e9a46ab983580442a50f864e3ba82e5c24a #v19.0.1
         with:
           pre-commit-args: --verbose
-        
+
   test_run_check:
     name: "Test run check"
     runs-on: ubuntu-latest
