@@ -23,10 +23,10 @@ jobs:
     outputs:
       title: ${{ steps.get-commit.outputs.COMMIT_MESSAGE }}
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 2
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-commit-message@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-commit-message@1e3c532db0dac7229f51e6296ac5414260ed2357 # v19.0.0
         id: get-commit
         with:
           header-only: "true"
@@ -60,16 +60,16 @@ jobs:
           private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
           owner: Alfresco
           repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app-token.outputs.token }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@1e3c532db0dac7229f51e6296ac5414260ed2357 # v19.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@1e3c532db0dac7229f51e6296ac5414260ed2357 # v19.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@1e3c532db0dac7229f51e6296ac5414260ed2357 # v19.0.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0
+        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
         with:
           platforms: linux/amd64,linux/arm64
       - name: "Build"
@@ -134,22 +134,22 @@ jobs:
           permission-contents: write
           owner: Alfresco
           repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app-token.outputs.token }}
       - name: "Create local release branch"
         run: git checkout -B "${{ github.ref_name }}"
-      - uses: Alfresco/alfresco-build-tools/.github/actions/env-load-from-yaml@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/env-load-from-yaml@1e3c532db0dac7229f51e6296ac5414260ed2357 # v19.0.0
         with:
           yml_path: .github/release-versions.yml
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@1e3c532db0dac7229f51e6296ac5414260ed2357 # v19.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@1e3c532db0dac7229f51e6296ac5414260ed2357 # v19.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@1e3c532db0dac7229f51e6296ac5414260ed2357 # v19.0.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0
+        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
         with:
           platforms: linux/amd64,linux/arm64
       - name: "Build"
@@ -166,7 +166,7 @@ jobs:
         run: bash scripts/ci/verify_release_tag.sh
       - name: "Release"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        uses: Alfresco/alfresco-build-tools/.github/actions/maven-release-slim@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/maven-release-slim@1e3c532db0dac7229f51e6296ac5414260ed2357 # v19.0.0
         with:
           token: ${{ steps.app-token.outputs.token }}
           release-version: ${{ env.RELEASE_VERSION }}
@@ -185,21 +185,21 @@ jobs:
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
       - name: "Deploy core distribution to S3 Staging Bucket"
-        uses: Alfresco/alfresco-build-tools/.github/actions/s3-upload@a297ff6c5bf20c667047db658dd23f60241b270a # v18.28.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/s3-upload@1e3c532db0dac7229f51e6296ac5414260ed2357 # v19.0.0
         with:
           aws-region: ${{ vars.AWS_STAGING_ARTIFACT_UPLOAD_REGION }}
           aws-role-arn: ${{ vars.AWS_STAGING_ARTIFACT_UPLOAD_ROLE_ARN }}
           source: ./deploy_dir
           destination: s3://${{ vars.AWS_STAGING_ARTIFACT_UPLOAD_BUCKET }}/alfresco-content-services/release/${{ env.BRANCH_NAME }}/${{ env.COMPUTED_BUILD_NUMBER }}
       - name: "Deploy Share distribution to S3 Staging Bucket"
-        uses: Alfresco/alfresco-build-tools/.github/actions/s3-upload@a297ff6c5bf20c667047db658dd23f60241b270a # v18.28.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/s3-upload@1e3c532db0dac7229f51e6296ac5414260ed2357 # v19.0.0
         with:
           aws-region: ${{ vars.AWS_STAGING_ARTIFACT_UPLOAD_REGION }}
           aws-role-arn: ${{ vars.AWS_STAGING_ARTIFACT_UPLOAD_ROLE_ARN }}
           source: ./deploy_dir_share
           destination: s3://${{ vars.AWS_STAGING_ARTIFACT_UPLOAD_BUCKET }}/share/${{ env.RELEASE_VERSION }}
       - name: "Deploy AGS distribution to S3 Staging Bucket"
-        uses: Alfresco/alfresco-build-tools/.github/actions/s3-upload@a297ff6c5bf20c667047db658dd23f60241b270a # v18.28.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/s3-upload@1e3c532db0dac7229f51e6296ac5414260ed2357 # v19.0.0
         with:
           aws-region: ${{ vars.AWS_STAGING_ARTIFACT_UPLOAD_REGION }}
           aws-role-arn: ${{ vars.AWS_STAGING_ARTIFACT_UPLOAD_ROLE_ARN }}
@@ -222,16 +222,16 @@ jobs:
       contains(needs.commit_parser.outputs.title, '[publish]') &&
       github.event_name != 'pull_request'
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           fetch-depth: 0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/env-load-from-yaml@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/env-load-from-yaml@1e3c532db0dac7229f51e6296ac5414260ed2357 # v19.0.0
         with:
           yml_path: .github/release-versions.yml
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@1e3c532db0dac7229f51e6296ac5414260ed2357 # v19.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@1e3c532db0dac7229f51e6296ac5414260ed2357 # v19.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@1e3c532db0dac7229f51e6296ac5414260ed2357 # v19.0.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: "Init"
@@ -253,7 +253,7 @@ jobs:
       - name: "Compute ACS major version"
         run: echo "ACS_MAJOR_VERSION=${RELEASE_VERSION:0:3}" >> "$GITHUB_ENV"
       - name: "Copy core distribution to S3 Release Bucket"
-        uses: Alfresco/alfresco-build-tools/.github/actions/s3-upload@a297ff6c5bf20c667047db658dd23f60241b270a # v18.28.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/s3-upload@1e3c532db0dac7229f51e6296ac5414260ed2357 # v19.0.0
         with:
           aws-region: ${{ vars.AWS_RELEASE_ARTIFACT_UPLOAD_REGION }}
           aws-role-arn: ${{ vars.AWS_RELEASE_ARTIFACT_UPLOAD_ROLE_ARN }}
@@ -261,7 +261,7 @@ jobs:
           destination: s3://${{ vars.AWS_RELEASE_ARTIFACT_UPLOAD_BUCKET }}/release/enterprise/ACS/${{ env.ACS_MAJOR_VERSION }}/${{ env.RELEASE_VERSION }}/${{ env.COMPUTED_BUILD_NUMBER }}
           copy-props: none
       - name: "Copy Share distribution to S3 Release Bucket"
-        uses: Alfresco/alfresco-build-tools/.github/actions/s3-upload@a297ff6c5bf20c667047db658dd23f60241b270a # v18.28.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/s3-upload@1e3c532db0dac7229f51e6296ac5414260ed2357 # v19.0.0
         with:
           aws-region: ${{ vars.AWS_RELEASE_ARTIFACT_UPLOAD_REGION }}
           aws-role-arn: ${{ vars.AWS_RELEASE_ARTIFACT_UPLOAD_ROLE_ARN }}
@@ -269,7 +269,7 @@ jobs:
           destination: s3://${{ vars.AWS_RELEASE_ARTIFACT_UPLOAD_BUCKET }}/release/share/${{ env.RELEASE_VERSION }}
           copy-props: none
       - name: "Copy AGS distribution to S3 Release Bucket"
-        uses: Alfresco/alfresco-build-tools/.github/actions/s3-upload@a297ff6c5bf20c667047db658dd23f60241b270a # v18.28.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/s3-upload@1e3c532db0dac7229f51e6296ac5414260ed2357 # v19.0.0
         with:
           aws-region: ${{ vars.AWS_RELEASE_ARTIFACT_UPLOAD_REGION }}
           aws-role-arn: ${{ vars.AWS_RELEASE_ARTIFACT_UPLOAD_ROLE_ARN }}
@@ -304,15 +304,15 @@ jobs:
           repositories: |
             acs-packaging
             acs-community-packaging
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app-token.outputs.token }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/env-load-from-yaml@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/env-load-from-yaml@1e3c532db0dac7229f51e6296ac5414260ed2357 # v19.0.0
         with:
           yml_path: .github/release-versions.yml
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@1e3c532db0dac7229f51e6296ac5414260ed2357 # v19.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@1e3c532db0dac7229f51e6296ac5414260ed2357 # v19.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@1e3c532db0dac7229f51e6296ac5414260ed2357 # v19.0.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - name: "Init"
@@ -333,13 +333,13 @@ jobs:
           AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
       - name: "Compute downstream commit message"
         id: commit-meta
-        uses: Alfresco/alfresco-community-repo/.github/actions/get-downstream-commit-message@f854c1658a59ef8ca6a0f128def983b0ae7dffbe # v26.3.0.22
+        uses: Alfresco/alfresco-community-repo/.github/actions/get-downstream-commit-message@7d64a6592a59f1f1bfab67e5cad6c53ca2732127 # v26.3.0.53
         with:
           commit-title: ${{ needs.commit_parser.outputs.title }}
           version: ${{ steps.update-downstream.outputs.version }}
           directives: "[release]"
       - name: "Commit downstream version update"
-        uses: iarekylew00t/verified-bot-commit@33985d44b7719dcaf0b854a0f4b0caad9bdc5b86 # v2.3.3
+        uses: iarekylew00t/verified-bot-commit@42a042b0407248f3c0acac00c389e729e3476e86 # v2.3.5
         with:
           token: ${{ steps.app-token.outputs.token }}
           repository: Alfresco/acs-community-packaging
