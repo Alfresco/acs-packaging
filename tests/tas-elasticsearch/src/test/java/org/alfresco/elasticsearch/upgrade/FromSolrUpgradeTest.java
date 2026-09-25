@@ -26,10 +26,6 @@ public class FromSolrUpgradeTest
     private static final String FILE_UPLOADED_BEFORE_SWITCHING_TO_ELASTICSEARCH = "before-switch.pdf";
     private static final String FILE_UPLOADED_AFTER_SWITCHING_TO_ELASTICSEARCH = "after-switch.pdf";
 
-    // ACS-12862: fixtures for the advanced migration scenarios.
-    // Each scenario uses a distinct search term, because expectQueryResult
-    // compares the returned file-name set exactly.
-    // ------------------------------------------------------------------
     private static final SearchUser ADVANCED_USER = new SearchUser("migrationuser", "password"); // pragma: allowlist secret
     private static final SearchUser OUTSIDER_USER = new SearchUser("migrationoutsider", "password"); // pragma: allowlist secret
     private static final SearchUser GROUP_USER = new SearchUser("migrationgroupuser", "password"); // pragma: allowlist secret
@@ -53,8 +49,6 @@ public class FromSolrUpgradeTest
     private static final String MIGRATION_CATEGORY = "migrationcategory";
     private static final String ACL_FOLDER = "advAclFolder";
 
-    // ACS-12862: scenarios 8-11 - content mutated before the migration, so the re-index has to
-    // reflect each node's current state rather than the state it was first created in.
     private static final String MOVE_SOURCE_FOLDER = "advMoveSource";
     private static final String MOVE_TARGET_FOLDER = "advMoveTarget";
     private static final String MOVED_DOC = "moved-doc.txt";
@@ -65,7 +59,6 @@ public class FromSolrUpgradeTest
     private static final String SURVIVING_DOC = "surviving-doc.txt";
     private static final String DELETE_PAIR_TERM = "deletepairterm";
 
-    // ACS-12862: LocalDate.toString() is ISO yyyy-MM-dd, the format AbstractSearchExactTermTest uses.
     private static final String QUERY_FROM_DATE = LocalDate.now().minusDays(1).toString();
     private static final String QUERY_TO_DATE = LocalDate.now().plusDays(1).toString();
 

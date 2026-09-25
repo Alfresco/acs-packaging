@@ -40,6 +40,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 class RepoHttpClient
 {
     private static final int HTTP_TIMEOUT_MS = 5_000;
@@ -60,7 +61,6 @@ class RepoHttpClient
     private final URI searchServiceAdminAppUri;
     private final URI uploadLicenseAdminApiUri;
     private final URI serverApiUri;
-    // ACS-12862: endpoints used to seed the advanced migration scenarios.
     private final URI nodesApiUri;
     private final URI peopleApiUri;
     private final URI groupsApiUri;
@@ -73,8 +73,6 @@ class RepoHttpClient
         searchServiceAdminAppUri = repoBaseUri.resolve("/alfresco/s/enterprise/admin/admin-searchservice");
         uploadLicenseAdminApiUri = repoBaseUri.resolve("/alfresco/s/enterprise/admin/admin-license-upload");
         serverApiUri = repoBaseUri.resolve("/alfresco/service/api/server");
-        // ACS-12862: nodesApiUri and categoriesApiUri keep a trailing slash so URI.resolve appends
-        // to them; peopleApiUri and groupsApiUri are complete endpoints and must not have one.
         nodesApiUri = repoBaseUri.resolve("/alfresco/api/-default-/public/alfresco/versions/1/nodes/");
         peopleApiUri = repoBaseUri.resolve("/alfresco/api/-default-/public/alfresco/versions/1/people");
         groupsApiUri = repoBaseUri.resolve("/alfresco/api/-default-/public/alfresco/versions/1/groups");

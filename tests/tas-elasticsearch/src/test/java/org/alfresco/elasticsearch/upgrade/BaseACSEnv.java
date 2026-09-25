@@ -29,6 +29,7 @@ import org.testcontainers.images.builder.Transferable;
 
 import org.alfresco.elasticsearch.upgrade.AvailabilityProbe.ProbeResult;
 
+@SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 abstract class BaseACSEnv implements AutoCloseable
 {
     protected final Config cfg;
