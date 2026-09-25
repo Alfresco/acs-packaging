@@ -293,8 +293,7 @@ abstract class BaseACSEnv implements AutoCloseable
     /**
      * ACS-12862: runs the query as the given user rather than admin, so permission-based result filtering can be asserted after the migration.
      */
-    public void expectQueryResultAs(Duration timeout, SearchUser user,
-                                    String language, String query, String... expectedFiles)
+    public void expectQueryResultAs(Duration timeout, SearchUser user, String language, String query, String... expectedFiles)
     {
         final Set<String> expected = Stream
                 .of(expectedFiles)
