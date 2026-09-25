@@ -293,18 +293,18 @@ abstract class BaseACSEnv implements AutoCloseable
     /**
      * ACS-12862: runs the query as the given user rather than admin, so permission-based result filtering can be asserted after the migration.
      */
-    public void expectQueryResultAs(Duration timeout, String user, String password,
-            String language, String query, String... expectedFiles)
+    public void expectQueryResultAs(Duration timeout, SearchUser user,
+                                    String language, String query, String... expectedFiles)
     {
         final Set<String> expected = Stream
                 .of(expectedFiles)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toUnmodifiableSet());
 
-        waitFor("Reaching the point where `" + query + "` as `" + user + "` returns `" + expected + "`.", timeout, () -> {
+        waitFor("Reaching the point where `" + query + "` as `" + user.username() + "` returns `" + expected + "`.", timeout, () -> {
             try
             {
-                return repoHttpClient.searchAs(user, password, language, query).map(expected::equals).orElse(false);
+                return repoHttpClient.searchAs(user, language, query).map(expected::equals).orElse(false);
             }
             catch (IOException e)
             {

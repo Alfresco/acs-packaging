@@ -30,11 +30,10 @@ public class FromSolrUpgradeTest
     // Each scenario uses a distinct search term, because expectQueryResult
     // compares the returned file-name set exactly.
     // ------------------------------------------------------------------
-    private static final String ADVANCED_USER = "migrationuser";
-    private static final String OUTSIDER_USER = "migrationoutsider";
-    private static final String GROUP_USER = "migrationgroupuser";
+    private static final SearchUser ADVANCED_USER = new SearchUser("migrationuser", "password"); // pragma: allowlist secret
+    private static final SearchUser OUTSIDER_USER = new SearchUser("migrationoutsider", "password"); // pragma: allowlist secret
+    private static final SearchUser GROUP_USER = new SearchUser("migrationgroupuser", "password"); // pragma: allowlist secret
     private static final String MIGRATION_GROUP = "migrationgroup";
-    private static final String USER_PASSWORD = "password"; // pragma: allowlist secret
 
     private static final String DEEP_DOC = "deep-doc.txt";
     private static final String L1_CHILD_DOC = "level-one-doc.txt";
@@ -215,15 +214,15 @@ public class FromSolrUpgradeTest
         env.setCategory(categorisedDoc, migrationCategoryRef);
 
         // Scenario 5a - direct ACL: inheritance broken, readable only by ADVANCED_USER
-        env.createUser(ADVANCED_USER, USER_PASSWORD);
-        env.createUser(OUTSIDER_USER, USER_PASSWORD);
+        env.createUser(ADVANCED_USER.username(), ADVANCED_USER.password());
+        env.createUser(OUTSIDER_USER.username(), OUTSIDER_USER.password());
         final UUID restrictedDoc = env.uploadTextFile("-my-", RESTRICTED_DOC, "restricted content");
-        env.setExclusivePermission(restrictedDoc, ADVANCED_USER, "Consumer");
+        env.setExclusivePermission(restrictedDoc, ADVANCED_USER.username(), "Consumer");
 
         // Scenario 5b - complex ACL: group-based permission on a folder, inherited by its child.
-        env.createUser(GROUP_USER, USER_PASSWORD);
+        env.createUser(GROUP_USER.username(), GROUP_USER.password());
         final String group = env.createGroup(MIGRATION_GROUP, "Migration Test Group");
-        env.addUserToGroup(group, GROUP_USER);
+        env.addUserToGroup(group, GROUP_USER.username());
         final UUID aclFolder = env.createFolder("-my-", ACL_FOLDER);
         env.setExclusivePermission(aclFolder, group, "Consumer");
         env.uploadTextFile(aclFolder.toString(), GROUP_PROTECTED_DOC, "group protected content");
@@ -269,14 +268,14 @@ public class FromSolrUpgradeTest
 
         // 5) Complex ACLs and permission-based filtering.
         // 5a - direct grant on the node; positive check first so the ACL is indexed.
-        env.expectQueryResultAs(MAX_TIMEOUT, ADVANCED_USER, USER_PASSWORD, "afts",
+        env.expectQueryResultAs(MAX_TIMEOUT, ADVANCED_USER, "afts",
                 "cm:name:'" + RESTRICTED_DOC + "'", RESTRICTED_DOC);
-        env.expectQueryResultAs(MAX_TIMEOUT, OUTSIDER_USER, USER_PASSWORD, "afts",
+        env.expectQueryResultAs(MAX_TIMEOUT, OUTSIDER_USER, "afts",
                 "cm:name:'" + RESTRICTED_DOC + "'");
         // 5b - group-based grant on the parent folder, inherited by the child document.
-        env.expectQueryResultAs(MAX_TIMEOUT, GROUP_USER, USER_PASSWORD, "afts",
+        env.expectQueryResultAs(MAX_TIMEOUT, GROUP_USER, "afts",
                 "cm:name:'" + GROUP_PROTECTED_DOC + "'", GROUP_PROTECTED_DOC);
-        env.expectQueryResultAs(MAX_TIMEOUT, OUTSIDER_USER, USER_PASSWORD, "afts",
+        env.expectQueryResultAs(MAX_TIMEOUT, OUTSIDER_USER, "afts",
                 "cm:name:'" + GROUP_PROTECTED_DOC + "'");
 
         // 6) CMIS query language

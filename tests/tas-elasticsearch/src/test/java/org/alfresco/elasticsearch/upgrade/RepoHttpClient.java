@@ -210,9 +210,9 @@ class RepoHttpClient
     }
 
     /** ACS-12862: runs a query as the given user, for permission-filtering checks. */
-    public Optional<Set<String>> searchAs(String user, String password, String language, String query) throws IOException
+    public Optional<Set<String>> searchAs(SearchUser user, String language, String query) throws IOException
     {
-        return doSearch(authenticateAs(new HttpPost(searchApiUri), user, password), language, query);
+        return doSearch(authenticateAs(new HttpPost(searchApiUri), user), language, query);
     }
 
     /** ACS-12862: creates a folder under the given parent (a node id, or an alias such as "-my-"). */
@@ -304,6 +304,7 @@ class RepoHttpClient
     {
         final String body = "{\"id\":\"" + username + "\","
                 + "\"firstName\":\"" + username + "\","
+                + "\"lastName\":\"" + username + "\","
                 + "\"email\":\"" + username + "@test.com\","
                 + "\"password\":\"" + password + "\"}";
 
@@ -472,10 +473,10 @@ class RepoHttpClient
     }
 
     /** ACS-12862: basic auth as an arbitrary user, so searches can be run with their permissions. */
-    private <T extends HttpMessage> T authenticateAs(T msg, String user, String password)
+    private <T extends HttpMessage> T authenticateAs(T msg, SearchUser user)
     {
         final String token = Base64.getEncoder()
-                .encodeToString((user + ":" + password).getBytes(StandardCharsets.UTF_8));
+                .encodeToString((user.username() + ":" + user.password()).getBytes(StandardCharsets.UTF_8));
         msg.setHeader("Authorization", "Basic " + token);
         return msg;
     }
