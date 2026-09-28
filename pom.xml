@@ -17,6 +17,7 @@
         <dependency.alfresco-enterprise-repo.version>26.3.0.44-SNAPSHOT</dependency.alfresco-enterprise-repo.version>
         <dependency.alfresco-enterprise-share.version>26.3.0.51-SNAPSHOT</dependency.alfresco-enterprise-share.version>
 
+
         <alfresco.rm-enterprise-rest-api-explorer.version>3.0.2</alfresco.rm-enterprise-rest-api-explorer.version>
 
         <alfresco.s3connector.version>8.0.1-A.7</alfresco.s3connector.version>
