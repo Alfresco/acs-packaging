@@ -440,11 +440,7 @@ class RepoHttpClient
         return msg;
     }
 
-    /**
-     * ACS-12862: executes the request and returns the parsed JSON body, failing with the response
-     * status, content type and body when the status is unexpected or the response is not JSON, so a
-     * failed step says what actually went wrong.
-     */
+     /** ACS-12862: executes the request and returns the parsed JSON body, failing with the response status, content type and body when the status is unexpected or the response is not JSON, so a failed step says what actually went wrong. */
     private Map<?, ?> requireJsonResponse(HttpUriRequest request, int expectedStatus, String description) throws IOException
     {
         try (CloseableHttpResponse response = client.execute(request))
