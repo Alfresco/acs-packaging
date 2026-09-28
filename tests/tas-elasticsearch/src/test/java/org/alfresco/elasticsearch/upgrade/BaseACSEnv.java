@@ -251,22 +251,7 @@ abstract class BaseACSEnv implements AutoCloseable
 
     public void expectSearchResult(Duration timeout, String term, String... expectedFiles)
     {
-        final Set<String> expected = Stream
-                .of(expectedFiles)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toUnmodifiableSet());
-
-        waitFor("Reaching the point where `" + expected + "` is returned.", timeout, () -> {
-            try
-            {
-                Optional<Set<String>> actual = repoHttpClient.searchForFiles(term);
-                return actual.map(expected::equals).orElse(false);
-            }
-            catch (IOException e)
-            {
-                return false;
-            }
-        });
+        expectQueryResult(timeout, "afts", term, expectedFiles);
     }
 
     /**

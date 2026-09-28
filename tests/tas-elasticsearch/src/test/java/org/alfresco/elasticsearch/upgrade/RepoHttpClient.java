@@ -9,7 +9,9 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -181,15 +183,8 @@ class RepoHttpClient
             final HttpPost uploadRequest = authenticate(new HttpPost(fileUploadApiUri));
             uploadRequest.setEntity(uploadEntity);
 
-            final Optional<Map<?, ?>> uploadResult = getJsonResponse(uploadRequest, HttpStatus.SC_CREATED);
-
-            return uploadResult
-                    .map(r -> r.get("entry"))
-                    .filter(Map.class::isInstance).map(Map.class::cast)
-                    .map(e -> e.get("id"))
-                    .filter(String.class::isInstance).map(String.class::cast)
-                    .map(UUID::fromString)
-                    .orElseThrow();
+            return extractNodeId(requireJsonResponse(uploadRequest, HttpStatus.SC_CREATED,
+                    "uploadFile(fileName=" + fileName + ")"));
         }
     }
 
@@ -216,10 +211,10 @@ class RepoHttpClient
     /** ACS-12862: creates a folder under the given parent (a node id, or an alias such as "-my-"). */
     public UUID createFolder(String parentId, String name) throws IOException
     {
-        final String body = "{\"name\":\"" + name + "\",\"nodeType\":\"cm:folder\"}";
+        final String body = gson.toJson(Map.of("name", name, "nodeType", "cm:folder"));
         final HttpPost request = authenticate(new HttpPost(childrenUriFor(parentId)));
         request.setEntity(new StringEntity(body, ContentType.APPLICATION_JSON));
-        return extractNodeId(getJsonResponse(request, HttpStatus.SC_CREATED));
+        return extractNodeId(requireJsonResponse(request, HttpStatus.SC_CREATED, "createFolder(parentId=" + parentId + ", name=" + name + ")"));
     }
 
     /** ACS-12862: uploads a plain-text file with the given content under the given parent. */
@@ -234,33 +229,27 @@ class RepoHttpClient
 
         final HttpPost request = authenticate(new HttpPost(childrenUriFor(parentId)));
         request.setEntity(uploadEntity);
-        return extractNodeId(getJsonResponse(request, HttpStatus.SC_CREATED));
+        return extractNodeId(requireJsonResponse(request, HttpStatus.SC_CREATED, "uploadTextFile(parentId=" + parentId + ", fileName=" + fileName + ")"));
     }
 
     /** ACS-12862: adds an existing node as a secondary child of the given folder. */
     public void addSecondaryChildAssociation(String parentFolderId, UUID childId) throws IOException
     {
-        final String body = "{\"childId\":\"" + childId + "\",\"assocType\":\"cm:contains\"}";
+        final String body = gson.toJson(Map.of("childId", childId.toString(), "assocType", "cm:contains"));
         final HttpPost request = authenticate(new HttpPost(nodesApiUri.resolve(parentFolderId + "/secondary-children")));
         request.setEntity(new StringEntity(body, ContentType.APPLICATION_JSON));
 
-        if (getJsonResponse(request, HttpStatus.SC_CREATED).isEmpty())
-        {
-            throw new IOException("Failed to add secondary child association for " + childId);
-        }
+        requireJsonResponse(request, HttpStatus.SC_CREATED, "addSecondaryChildAssociation(parentFolderId=" + parentFolderId + ", childId=" + childId + ")");
     }
 
     /** ACS-12862: tags a node. */
     public void addTag(UUID nodeId, String tag) throws IOException
     {
-        final String body = "{\"tag\":\"" + tag + "\"}";
+        final String body = gson.toJson(Map.of("tag", tag));
         final HttpPost request = authenticate(new HttpPost(nodesApiUri.resolve(nodeId + "/tags")));
         request.setEntity(new StringEntity(body, ContentType.APPLICATION_JSON));
 
-        if (getJsonResponse(request, HttpStatus.SC_CREATED).isEmpty())
-        {
-            throw new IOException("Failed to add tag `" + tag + "` to " + nodeId);
-        }
+        requireJsonResponse(request, HttpStatus.SC_CREATED, "addTag(nodeId=" + nodeId + ", tag=" + tag + ")");
     }
 
     /**
@@ -268,16 +257,11 @@ class RepoHttpClient
      */
     public String createCategory(String name) throws IOException
     {
-        final String body = "{\"name\":\"" + name + "\"}";
+        final String body = gson.toJson(Map.of("name", name));
         final HttpPost request = authenticate(new HttpPost(categoriesApiUri.resolve("-root-/subcategories")));
         request.setEntity(new StringEntity(body, ContentType.APPLICATION_JSON));
 
-        return getJsonResponse(request, HttpStatus.SC_CREATED)
-                .map(r -> r.get("entry"))
-                .filter(Map.class::isInstance).map(Map.class::cast)
-                .map(e -> e.get("id"))
-                .filter(String.class::isInstance).map(String.class::cast)
-                .orElseThrow(() -> new IOException("Failed to create category `" + name + "`"));
+        return extractEntryId(requireJsonResponse(request, HttpStatus.SC_CREATED, "createCategory(name=" + name + ")"));
     }
 
     /**
@@ -285,49 +269,33 @@ class RepoHttpClient
      */
     public void setCategory(UUID nodeId, String categoryNodeRef) throws IOException
     {
-        final String body = "{\"aspectNames\":[\"cm:generalclassifiable\"],"
-                + "\"properties\":{\"cm:categories\":[\"" + categoryNodeRef + "\"]}}";
+        final String body = gson.toJson(Map.of("aspectNames", List.of("cm:generalclassifiable"), "properties", Map.of("cm:categories", List.of(categoryNodeRef))));
 
         final HttpPut request = authenticate(new HttpPut(nodesApiUri.resolve(nodeId.toString())));
         request.setEntity(new StringEntity(body, ContentType.APPLICATION_JSON));
 
-        if (getJsonResponse(request, HttpStatus.SC_OK).isEmpty())
-        {
-            throw new IOException("Failed to set category on " + nodeId);
-        }
+        requireJsonResponse(request, HttpStatus.SC_OK, "setCategory(nodeId=" + nodeId + ", categoryNodeRef=" + categoryNodeRef + ")");
     }
 
     /** ACS-12862: creates a non-admin user, used by the permission-filtering scenario. */
     public void createUser(String username, String password) throws IOException
     {
-        final String body = "{\"id\":\"" + username + "\","
-                + "\"firstName\":\"" + username + "\","
-                + "\"lastName\":\"" + username + "\","
-                + "\"email\":\"" + username + "@test.com\","
-                + "\"password\":\"" + password + "\"}";
+        final String body = gson.toJson(Map.of("id", username, "firstName", username, "lastName", username, "email", username + "@test.com", "password", password));
 
         final HttpPost request = authenticate(new HttpPost(peopleApiUri));
         request.setEntity(new StringEntity(body, ContentType.APPLICATION_JSON));
 
-        if (getJsonResponse(request, HttpStatus.SC_CREATED).isEmpty())
-        {
-            throw new IOException("Failed to create user `" + username + "`");
-        }
+        requireJsonResponse(request, HttpStatus.SC_CREATED, "createUser(username=" + username + ")");
     }
 
     /** ACS-12862: creates a group and returns its full authority id (GROUP_&lt;id&gt;). */
     public String createGroup(String groupId, String displayName) throws IOException
     {
-        final String body = "{\"id\":\"" + groupId + "\",\"displayName\":\"" + displayName + "\"}";
+        final String body = gson.toJson(Map.of("id", groupId, "displayName", displayName));
         final HttpPost request = authenticate(new HttpPost(groupsApiUri));
         request.setEntity(new StringEntity(body, ContentType.APPLICATION_JSON));
 
-        return getJsonResponse(request, HttpStatus.SC_CREATED)
-                .map(r -> r.get("entry"))
-                .filter(Map.class::isInstance).map(Map.class::cast)
-                .map(e -> e.get("id"))
-                .filter(String.class::isInstance).map(String.class::cast)
-                .orElseThrow(() -> new IOException("Failed to create group `" + groupId + "`"));
+        return extractEntryId(requireJsonResponse(request, HttpStatus.SC_CREATED, "createGroup(groupId=" + groupId + ", displayName=" + displayName + ")"));
     }
 
     /**
@@ -335,46 +303,33 @@ class RepoHttpClient
      */
     public void addUserToGroup(String groupAuthorityId, String username) throws IOException
     {
-        final String body = "{\"id\":\"" + username + "\",\"memberType\":\"PERSON\"}";
+        final String body = gson.toJson(Map.of("id", username, "memberType", "PERSON"));
         final HttpPost request = authenticate(new HttpPost(
                 groupsApiUri.resolve("groups/" + groupAuthorityId + "/members")));
         request.setEntity(new StringEntity(body, ContentType.APPLICATION_JSON));
 
-        if (getJsonResponse(request, HttpStatus.SC_CREATED).isEmpty())
-        {
-            throw new IOException("Failed to add `" + username + "` to group `" + groupAuthorityId + "`");
-        }
+        requireJsonResponse(request, HttpStatus.SC_CREATED, "addUserToGroup(groupAuthorityId=" + groupAuthorityId + ", username=" + username + ")");
     }
 
     /** ACS-12862: breaks inheritance on the node and grants exactly the given authority the given role. */
     public void setExclusivePermission(UUID nodeId, String authorityId, String role) throws IOException
     {
-        final String body = "{\"permissions\":{"
-                + "\"isInheritanceEnabled\":false,"
-                + "\"locallySet\":[{\"authorityId\":\"" + authorityId + "\","
-                + "\"name\":\"" + role + "\","
-                + "\"accessStatus\":\"ALLOWED\"}]}}";
+        final String body = gson.toJson(Map.of("permissions", Map.<String, Object> of("isInheritanceEnabled", false, "locallySet", List.of(Map.of("authorityId", authorityId, "name", role, "accessStatus", "ALLOWED")))));
 
         final HttpPut request = authenticate(new HttpPut(nodesApiUri.resolve(nodeId.toString())));
         request.setEntity(new StringEntity(body, ContentType.APPLICATION_JSON));
 
-        if (getJsonResponse(request, HttpStatus.SC_OK).isEmpty())
-        {
-            throw new IOException("Failed to set permissions on " + nodeId);
-        }
+        requireJsonResponse(request, HttpStatus.SC_OK, "setExclusivePermission(nodeId=" + nodeId + ", authorityId=" + authorityId + ", role=" + role + ")");
     }
 
     /** ACS-12862: moves a node to a new primary parent, so its indexed path has to be rebuilt. */
     public void moveNode(UUID nodeId, String targetParentId) throws IOException
     {
-        final String body = "{\"targetParentId\":\"" + targetParentId + "\"}";
+        final String body = gson.toJson(Map.of("targetParentId", targetParentId));
         final HttpPost request = authenticate(new HttpPost(nodesApiUri.resolve(nodeId + "/move")));
         request.setEntity(new StringEntity(body, ContentType.APPLICATION_JSON));
 
-        if (getJsonResponse(request, HttpStatus.SC_OK).isEmpty())
-        {
-            throw new IOException("Failed to move " + nodeId + " under " + targetParentId);
-        }
+        requireJsonResponse(request, HttpStatus.SC_OK, "moveNode(nodeId=" + nodeId + ", targetParentId=" + targetParentId + ")");
     }
 
     /** ACS-12862: replaces a node's content, so the re-index has to pick up the current version. */
@@ -383,14 +338,11 @@ class RepoHttpClient
         final HttpPut request = authenticate(new HttpPut(nodesApiUri.resolve(nodeId + "/content")));
         request.setEntity(new StringEntity(content, ContentType.create("text/plain", StandardCharsets.UTF_8)));
 
-        if (getJsonResponse(request, HttpStatus.SC_OK).isEmpty())
-        {
-            throw new IOException("Failed to update content of " + nodeId);
-        }
+        requireJsonResponse(request, HttpStatus.SC_OK, "updateTextFileContent(nodeId=" + nodeId + ")");
     }
 
     /**
-     * ACS-12862: deletes a node, moving it to the archive store. The v1 API answers 204 with no body, so this cannot go through {@link #getJsonResponse}.
+     * ACS-12862: deletes a node, moving it to the archive store. The v1 API answers 204 with no body, so this cannot go through {@link #requireJsonResponse}.
      */
     public void deleteNode(UUID nodeId) throws IOException
     {
@@ -401,7 +353,10 @@ class RepoHttpClient
             final int status = response.getStatusLine().getStatusCode();
             if (status != HttpStatus.SC_NO_CONTENT)
             {
-                throw new IOException("Failed to delete " + nodeId + ", status " + status);
+                final HttpEntity entity = response.getEntity();
+                final String body = entity != null ? EntityUtils.toString(entity) : "";
+                throw new IOException("deleteNode(nodeId=" + nodeId + "): expected HTTP "
+                        + HttpStatus.SC_NO_CONTENT + ", got " + status + " (body `" + body + "`)");
             }
         }
     }
@@ -411,9 +366,10 @@ class RepoHttpClient
     {
         searchRequest.setEntity(new StringEntity(searchQuery(language, query), ContentType.APPLICATION_JSON));
 
-        final Optional<Map<?, ?>> searchResult = getJsonResponse(searchRequest, HttpStatus.SC_OK);
+        final Map<?, ?> searchResult = requireJsonResponse(searchRequest, HttpStatus.SC_OK,
+                "search(language=" + language + ", query=" + query + ")");
 
-        final Optional<Collection<?>> possibleEntries = searchResult
+        final Optional<Collection<?>> possibleEntries = Optional.of(searchResult)
                 .map(r -> r.get("list"))
                 .filter(Map.class::isInstance).map(Map.class::cast)
                 .map(m -> m.get("entries"))
@@ -444,15 +400,20 @@ class RepoHttpClient
     }
 
     /** ACS-12862: pulls the node id out of a v1 nodes API response. */
-    private UUID extractNodeId(Optional<Map<?, ?>> response)
+    private UUID extractNodeId(Map<?, ?> response)
     {
-        return response
+        return UUID.fromString(extractEntryId(response));
+    }
+
+    /** ACS-12862: pulls entry.id out of a v1 API response. */
+    private String extractEntryId(Map<?, ?> response)
+    {
+        return Optional.of(response)
                 .map(r -> r.get("entry"))
                 .filter(Map.class::isInstance).map(Map.class::cast)
                 .map(e -> e.get("id"))
                 .filter(String.class::isInstance).map(String.class::cast)
-                .map(UUID::fromString)
-                .orElseThrow();
+                .orElseThrow(() -> new NoSuchElementException("Failed to extract entry id from response: " + response));
     }
 
     private Map<?, ?> executeAndGetResponseMap(HttpPost httpPost, HttpClientContext httpCtx) throws IOException
@@ -479,28 +440,42 @@ class RepoHttpClient
         return msg;
     }
 
-    private Optional<Map<?, ?>> getJsonResponse(HttpUriRequest request, int requiredStatusCode) throws IOException
+    /**
+     * ACS-12862: executes the request and returns the parsed JSON body, failing with the response
+     * status, content type and body when the status is unexpected or the response is not JSON, so a
+     * failed step says what actually went wrong.
+     */
+    private Map<?, ?> requireJsonResponse(HttpUriRequest request, int expectedStatus, String description) throws IOException
     {
         try (CloseableHttpResponse response = client.execute(request))
         {
-            if (response.getStatusLine().getStatusCode() != requiredStatusCode)
+            final int status = response.getStatusLine().getStatusCode();
+            final HttpEntity entity = response.getEntity();
+            final String contentType = entity != null && entity.getContentType() != null
+                    ? entity.getContentType().getValue()
+                    : "";
+            final String body = entity != null ? EntityUtils.toString(entity) : "";
+
+            if (status != expectedStatus)
             {
-                return Optional.empty();
+                throw new IOException(description + ": expected HTTP " + expectedStatus + ", got " + status
+                        + " (content type `" + contentType + "`, body `" + body + "`)");
             }
 
-            final ContentType contentType = ContentType.parse(response.getEntity().getContentType().getValue());
-            if (!ContentType.APPLICATION_JSON.getMimeType().equals(contentType.getMimeType()))
+            if (contentType.isEmpty()
+                    || !ContentType.APPLICATION_JSON.getMimeType().equals(ContentType.parse(contentType).getMimeType()))
             {
-                return Optional.empty();
+                throw new IOException(description + ": expected a JSON response, got content type `"
+                        + contentType + "` (body `" + body + "`)");
             }
 
-            return Optional.of(gson.fromJson(EntityUtils.toString(response.getEntity()), Map.class));
+            return gson.fromJson(body, Map.class);
         }
     }
 
-    /** ACS-12862: language is now a parameter, and quotes are escaped for the category query. */
+    /** ACS-12862: language is now a parameter; gson handles escaping. */
     private String searchQuery(String language, String query)
     {
-        return "{\"query\":{\"language\":\"" + language + "\",\"query\":\"" + query.replace("\"", "\\\"") + "\"}}";
+        return gson.toJson(Map.of("query", Map.of("language", language, "query", query)));
     }
 }

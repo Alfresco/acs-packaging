@@ -144,11 +144,11 @@ public class FromSolrUpgradeTest
                     FILE_UPLOADED_AFTER_STARTING_LIVE_INDEXING,
                     FILE_UPLOADED_BEFORE_SWITCHING_TO_ELASTICSEARCH);
 
-            // ACS-12862: the repository is now served by Elasticsearch - run one query per
-            // advanced scenario to confirm the seeded content survived the migration intact.
-            verifyAdvancedScenarios(initialEnv);
-
             scenario.shutdownSolr();
+
+            // ACS-12862: Solr is stopped, so these results can only come from Elasticsearch - run
+            // one query per advanced scenario to confirm the seeded content survived the migration.
+            verifyAdvancedScenarios(initialEnv);
 
             // Solr has been stopped. Check if we still have valid result.
             initialEnv.expectSearchResult(MAX_TIMEOUT, SEARCH_TERM,
