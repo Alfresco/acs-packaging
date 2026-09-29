@@ -32,6 +32,7 @@ import org.alfresco.utility.model.UserModel;
 /** A class providing methods for testing search queries. */
 public class SearchQueryService
 {
+
     /** Maximum time to allow for search query to return correct results. */
     private static final int MAX_TIME = 30000;
     @Autowired
