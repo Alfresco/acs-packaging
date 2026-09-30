@@ -65,6 +65,9 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@v19.1.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
@@ -144,6 +147,9 @@ jobs:
           yml_path: .github/release-versions.yml
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@v19.1.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
@@ -231,6 +237,9 @@ jobs:
           yml_path: .github/release-versions.yml
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@v19.1.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
@@ -312,6 +321,9 @@ jobs:
           yml_path: .github/release-versions.yml
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@v19.1.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}

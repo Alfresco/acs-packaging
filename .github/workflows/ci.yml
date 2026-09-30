@@ -56,6 +56,9 @@ jobs:
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@v19.1.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
@@ -107,6 +110,9 @@ jobs:
           repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@v19.1.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
@@ -204,6 +210,9 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@v19.1.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
@@ -276,6 +285,9 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@v19.1.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
@@ -355,6 +367,9 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@v19.1.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
@@ -416,6 +431,9 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@v19.1.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
@@ -512,6 +530,9 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@v19.1.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
@@ -568,6 +589,9 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@v19.1.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
@@ -626,6 +650,9 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@v19.1.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
@@ -718,6 +745,9 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@v19.1.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
@@ -796,6 +826,9 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@v19.1.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
@@ -808,6 +841,9 @@ jobs:
           bash ./scripts/ci/build.sh
       - name: "Set up the environment"
         run: mvn -B -V clean install -ntp -Pags -DskipTests -Dmaven.javadoc.skip=true
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@v19.1.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ matrix.java-version }}
@@ -855,6 +891,9 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@v19.1.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
@@ -935,6 +974,9 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@v19.1.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
@@ -993,6 +1035,9 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@v19.1.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
