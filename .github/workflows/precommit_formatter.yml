@@ -6,6 +6,7 @@ on:
       - precommit/**
 
 permissions:
+  id-token: write
   contents: read
 
 env:
