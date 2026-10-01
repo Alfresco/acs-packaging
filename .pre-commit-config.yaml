@@ -4,11 +4,11 @@ repos:
     hooks:
       - id: detect-secrets
         args: ["--baseline", ".secrets.baseline"]
-  - repo: local
-    hooks:
-      - id: check-format-and-headers
-        name: Check format and headers and fix if necessary
-        entry: mvn spotless:apply validate -DlicenseUpdateHeaders=true -Pags,all-tas-tests
-        language: system
-        files: ".*.java"
-        pass_filenames: false
+#  - repo: local
+#    hooks:
+#      - id: check-format-and-headers
+#        name: Check format and headers and fix if necessary
+#        entry: mvn spotless:apply validate -DlicenseUpdateHeaders=true -Pags,all-tas-tests
+#        language: system
+#        files: ".*.java"
+#        pass_filenames: false

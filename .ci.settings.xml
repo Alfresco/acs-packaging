@@ -1,41 +1,20 @@
 <settings>
-    <profiles>
-        <profile>
+    <mirrors>
+        <mirror>
             <id>alfresco-internal</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <repositories>
-                <repository>
-                    <id>alfresco-internal</id>
-                    <releases>
-                        <enabled>true</enabled>
-                    </releases>
-                    <snapshots>
-                        <enabled>true</enabled>
-                    </snapshots>
-                    <name>Alfresco Internal Repository</name>
-                    <url>https://artifacts.alfresco.com/nexus/content/groups/internal</url>
-                </repository>
-            </repositories>
-            <pluginRepositories>
-                <pluginRepository>
-                    <id>alfresco-internal</id>
-                    <name>Alfresco Internal Repository</name>
-                    <url>https://artifacts.alfresco.com/nexus/content/groups/public</url>
-                </pluginRepository>
-            </pluginRepositories>
-        </profile>
-    </profiles>
+            <mirrorOf>*</mirrorOf>
+            <url>https://artifacts.hyland.dev/basic/alfresco-internal/maven/</url>
+        </mirror>
+    </mirrors>
 
     <servers>
         <server>
-            <id>alfresco-public</id>
-            <username>${env.MAVEN_USERNAME}</username>
-            <password>${env.MAVEN_PASSWORD}</password>
+            <id>alfresco-internal</id>
+            <username>${env.CLOUDSMITH_USERNAME}</username>
+            <password>${env.CLOUDSMITH_API_KEY}</password>
         </server>
         <server>
-            <id>alfresco-internal</id>
+            <id>alfresco-internal-releases</id>
             <username>${env.MAVEN_USERNAME}</username>
             <password>${env.MAVEN_PASSWORD}</password>
         </server>
@@ -53,11 +32,6 @@
             <id>docker.io</id>
             <username>${env.DOCKERHUB_USERNAME}</username>
             <password>${env.DOCKERHUB_PASSWORD}</password>
-        </server>
-        <server>
-            <id>alfresco-internal-snapshot</id>
-            <username>${env.MAVEN_USERNAME}</username>
-            <password>${env.MAVEN_PASSWORD}</password>
         </server>
     </servers>
 </settings>
