@@ -141,6 +141,28 @@ docker build -t alfresco-repository-databases:latest -f tests/environment/alfres
 
 source tests/environment/.env
 
+# ===== TEMPORARY (cross-testing, do not merge): build ES connector from a branch =====
+# When CROSSTEST_CONNECTOR_REF is set, build the connector images locally from that
+# branch and point the tags at the freshly-built version so the local images are used
+# instead of any published tag.
+CROSSTEST_CONNECTOR_VERSION="$(bash "$(dirname "${BASH_SOURCE[0]}")/build-connector-crosstest.sh" || true)"
+if [[ -n "${CROSSTEST_CONNECTOR_REF:-}" ]]; then
+  if [[ -z "${CROSSTEST_CONNECTOR_VERSION}" ]]; then
+    echo "[crosstest] ERROR: CROSSTEST_CONNECTOR_REF='${CROSSTEST_CONNECTOR_REF}' was requested but the connector branch build produced no image. Failing the build so we do NOT silently fall back to a published image." >&2
+    exit 1
+  fi
+  export ES_CONNECTOR_TAG="${CROSSTEST_CONNECTOR_VERSION}"
+  export LIVE_INDEXING_TAG="${CROSSTEST_CONNECTOR_VERSION}"
+  export REINDEXING_TAG="${CROSSTEST_CONNECTOR_VERSION}"
+  echo "=================== CROSSTEST CONNECTOR IN USE ==================="
+  echo "[crosstest] acs-packaging CI is using the ES connector built from branch: ${CROSSTEST_CONNECTOR_REF}"
+  echo "[crosstest] connector image tag in use (NOT a published tag): ${ES_CONNECTOR_TAG}"
+  docker image inspect "quay.io/alfresco/alfresco-elasticsearch-live-indexing:${ES_CONNECTOR_TAG}" \
+    --format '[crosstest] live-indexing image -> Created={{.Created}} GIT_BRANCH={{index .Config.Labels "GIT_BRANCH"}} GIT_COMMIT={{index .Config.Labels "GIT_COMMIT"}}' || true
+  echo "================================================================="
+fi
+# ===== END TEMPORARY =====
+
 if [[ "${ES_CONNECTOR_TAG}" = [[:cntrl:]] ]]
 then
   ES_CONNECTOR_TAG=$(mvn help:evaluate -Dexpression=dependency.elasticsearch-shared.version -q -DforceStdout)
