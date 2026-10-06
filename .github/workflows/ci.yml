@@ -455,6 +455,11 @@ jobs:
       GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
       MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
       MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+      # TEMPORARY (cross-testing, do not merge): build+use the connector from this branch.
+      CROSSTEST_CONNECTOR_REF: "fix/connector-nodetype-drop-sys-wildcard"
+      ES_CONNECTOR_TAG: "5.9.0-A.14-SNAPSHOT"
+      LIVE_INDEXING_TAG: "5.9.0-A.14-SNAPSHOT"
+      REINDEXING_TAG: "5.9.0-A.14-SNAPSHOT"
     strategy:
       fail-fast: false
       matrix:
