@@ -92,8 +92,6 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
       MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
       MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     steps:
@@ -127,8 +125,6 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
       MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
       MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
@@ -239,8 +235,6 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
       MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
       MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
@@ -317,8 +311,6 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
       MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
       MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
@@ -398,8 +390,6 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
       MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
       MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     steps:
@@ -451,8 +441,6 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
       MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
       MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
@@ -540,8 +528,6 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
       MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
       MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     needs:
@@ -609,8 +595,6 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
       AZURE_STORAGE_ACCOUNT_KEY: ${{ secrets.AZURE_PACKAGING_STORAGE_ACCOUNT_KEY }}
     steps:
       - name: "Generate GitHub App token"
@@ -672,8 +656,6 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
       MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
       MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
@@ -774,8 +756,6 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
       MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
       MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
@@ -828,8 +808,6 @@ jobs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true' && github.event_name != 'pull_request'
     env:
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
       MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
       MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
@@ -917,8 +895,6 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
       MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
       MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     steps:
@@ -970,8 +946,6 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
       MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
       MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     services:
