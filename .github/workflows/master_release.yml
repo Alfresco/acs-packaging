@@ -75,8 +75,6 @@ jobs:
       - name: "Build"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         env:
-          GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-          GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
           DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
@@ -116,8 +114,6 @@ jobs:
         ports:
           - 5000:5000
     env:
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
@@ -288,8 +284,6 @@ jobs:
       (contains(needs.commit_parser.outputs.title, '[downstream]') || (contains(needs.commit_parser.outputs.title, '[release]') &&
       !contains(needs.commit_parser.outputs.title, '[no downstream]'))) &&
       github.event_name != 'pull_request'
-    env:
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
     permissions:
       contents: write
     steps:
@@ -329,7 +323,6 @@ jobs:
           COMMIT_MESSAGE: ${{ needs.commit_parser.outputs.title }}
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-          GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
           AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
       - name: "Compute downstream commit message"
         id: commit-meta
