@@ -1,8 +1,6 @@
 package org.alfresco.elasticsearch.upgrade;
 
-import static java.time.Duration.ofMinutes;
-
-import static org.alfresco.elasticsearch.upgrade.Utils.waitFor;
+import static org.awaitility.Awaitility.await;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -16,6 +14,7 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -23,6 +22,11 @@ import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.command.ConnectToNetworkCmd;
 import com.github.dockerjava.api.model.ContainerNetwork;
 import com.google.gson.Gson;
+import org.awaitility.core.ConditionEvaluationListener;
+import org.awaitility.core.EvaluatedCondition;
+import org.awaitility.core.TimeoutEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 
@@ -30,6 +34,9 @@ import org.alfresco.tas.SearchEngineType;
 
 class Elasticsearch implements AutoCloseable
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Elasticsearch.class);
+
+    private static final Duration INDEX_CREATION_TIMEOUT = Duration.ofMinutes(5);
     private static final int ES_API_TIMEOUT_MS = 5_000;
 
     private final Config cfg;
@@ -46,6 +53,7 @@ class Elasticsearch implements AutoCloseable
         searchContainer = new GenericContainer<>(cfg.getSearchEngineImage())
                 .withEnv("discovery.type", "single-node")
                 .withEnv("network.publish_host", cfg.getElasticsearchHostname())
+                .withEnv("cluster.routing.allocation.disk.threshold_enabled", "false")
                 .withNetworkAliases(cfg.getElasticsearchHostname())
                 .withNetwork(network)
                 .withExposedPorts(9200).withCreateContainerCmdModifier(cmd -> {
@@ -79,18 +87,15 @@ class Elasticsearch implements AutoCloseable
                 .orElseThrow();
     }
 
-    public void waitForIndexCreation(Duration timeout)
+    public void waitForIndexCreation()
     {
-        waitFor("Elasticsearch Index created", timeout, () -> {
-            try
-            {
-                return isIndexCreated();
-            }
-            catch (IOException e)
-            {
-                return false;
-            }
-        });
+        await("the " + cfg.getIndexName() + " index to be created")
+                .atMost(INDEX_CREATION_TIMEOUT)
+                .pollDelay(Duration.ZERO)
+                .pollInterval(Duration.ofSeconds(2))
+                .conditionEvaluationListener(logIndicesOnTimeout())
+                .ignoreExceptionsInstanceOf(IOException.class)
+                .until(this::isIndexCreated);
     }
 
     public boolean isIndexCreated() throws IOException
@@ -152,16 +157,71 @@ class Elasticsearch implements AutoCloseable
 
     private void waitForAvailability()
     {
-        waitFor("Elasticsearch Startup", ofMinutes(1), () -> {
-            try
+        await("the search engine cluster to report green or yellow")
+                .atMost(Duration.ofMinutes(2))
+                .pollDelay(Duration.ZERO)
+                .pollInterval(Duration.ofSeconds(1))
+                .conditionEvaluationListener(logClusterHealthOnTimeout())
+                .ignoreExceptionsInstanceOf(IOException.class)
+                .until(this::clusterIsUsable);
+    }
+
+    private ConditionEvaluationListener<Object> logClusterHealthOnTimeout()
+    {
+        return onTimeout(event -> LOGGER.error("Timed out waiting for {}. Last health response: {}",
+                event.getAlias(), describeClusterHealth()));
+    }
+
+    private ConditionEvaluationListener<Object> logIndicesOnTimeout()
+    {
+        return onTimeout(event -> LOGGER.error("Timed out waiting for {}. Indices present: {}",
+                event.getAlias(), describeIndices()));
+    }
+
+    private static ConditionEvaluationListener<Object> onTimeout(Consumer<TimeoutEvent> onTimeout)
+    {
+        return new ConditionEvaluationListener<>() {
+            @Override
+            public void conditionEvaluated(EvaluatedCondition<Object> condition)
+            {}
+
+            @Override
+            public void onTimeout(TimeoutEvent timeoutEvent)
             {
-                return !isIndexCreated();
+                onTimeout.accept(timeoutEvent);
             }
-            catch (IOException e)
-            {
-                return false;
-            }
-        });
+        };
+    }
+
+    private boolean clusterIsUsable() throws IOException
+    {
+        final Map<?, ?> health = gson.fromJson(getString("/_cluster/health"), Map.class);
+        final Object status = health.get("status");
+        return "green".equals(status) || "yellow".equals(status);
+    }
+
+    private String describeClusterHealth()
+    {
+        try
+        {
+            return getString("/_cluster/health");
+        }
+        catch (IOException e)
+        {
+            return "unavailable: " + e;
+        }
+    }
+
+    private String describeIndices()
+    {
+        try
+        {
+            return getString("/_cat/indices");
+        }
+        catch (IOException e)
+        {
+            return "unavailable: " + e;
+        }
     }
 
     private void connectElasticSearchToAdditionalNetworks()
