@@ -14,7 +14,6 @@ import java.time.Duration;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -23,8 +22,6 @@ import com.github.dockerjava.api.command.ConnectToNetworkCmd;
 import com.github.dockerjava.api.model.ContainerNetwork;
 import com.google.gson.Gson;
 import org.awaitility.core.ConditionEvaluationListener;
-import org.awaitility.core.EvaluatedCondition;
-import org.awaitility.core.TimeoutEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
@@ -168,29 +165,14 @@ class Elasticsearch implements AutoCloseable
 
     private ConditionEvaluationListener<Object> logClusterHealthOnTimeout()
     {
-        return onTimeout(event -> LOGGER.error("Timed out waiting for {}. Last health response: {}",
+        return Utils.onTimeout(event -> LOGGER.error("Timed out waiting for {}. Last health response: {}",
                 event.getAlias(), describeClusterHealth()));
     }
 
     private ConditionEvaluationListener<Object> logIndicesOnTimeout()
     {
-        return onTimeout(event -> LOGGER.error("Timed out waiting for {}. Indices present: {}",
+        return Utils.onTimeout(event -> LOGGER.error("Timed out waiting for {}. Indices present: {}",
                 event.getAlias(), describeIndices()));
-    }
-
-    private static ConditionEvaluationListener<Object> onTimeout(Consumer<TimeoutEvent> onTimeout)
-    {
-        return new ConditionEvaluationListener<>() {
-            @Override
-            public void conditionEvaluated(EvaluatedCondition<Object> condition)
-            {}
-
-            @Override
-            public void onTimeout(TimeoutEvent timeoutEvent)
-            {
-                onTimeout.accept(timeoutEvent);
-            }
-        };
     }
 
     private boolean clusterIsUsable() throws IOException

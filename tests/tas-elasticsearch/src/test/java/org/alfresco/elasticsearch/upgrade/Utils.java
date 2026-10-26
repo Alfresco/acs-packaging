@@ -6,7 +6,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.UUID;
+import java.util.function.Consumer;
 
+import org.awaitility.core.ConditionEvaluationListener;
+import org.awaitility.core.EvaluatedCondition;
+import org.awaitility.core.TimeoutEvent;
 import org.testcontainers.containers.Network;
 
 class Utils
@@ -34,5 +38,22 @@ class Utils
                 .builder()
                 .createNetworkCmdModifier(cmd -> cmd.withAttachable(true).withName(prefix + UUID.randomUUID()))
                 .build();
+    }
+
+    public static ConditionEvaluationListener<Object> onTimeout(Consumer<TimeoutEvent> action)
+    {
+        return new ConditionEvaluationListener<>() {
+            @Override
+            public void conditionEvaluated(EvaluatedCondition<Object> condition)
+            {
+                // Only the timeout is of interest.
+            }
+
+            @Override
+            public void onTimeout(TimeoutEvent timeoutEvent)
+            {
+                action.accept(timeoutEvent);
+            }
+        };
     }
 }

@@ -6,8 +6,6 @@ import java.util.stream.Stream;
 
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import org.awaitility.core.ConditionEvaluationListener;
-import org.awaitility.core.EvaluatedCondition;
-import org.awaitility.core.TimeoutEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
@@ -27,20 +25,12 @@ final class ContainerDiagnostics
     public static ConditionEvaluationListener<Object> dumpOnTimeout(
             Collection<? extends GenericContainer<?>> containers)
     {
-        return new ConditionEvaluationListener<>() {
-            @Override
-            public void conditionEvaluated(EvaluatedCondition<Object> condition)
-            {}
-
-            @Override
-            public void onTimeout(TimeoutEvent timeoutEvent)
-            {
-                LOGGER.error("Timed out waiting for {} after {}ms. Container diagnostics follow.",
-                        timeoutEvent.getAlias(), timeoutEvent.getElapsedTimeInMS());
-                // One record per line - see %replace in log4j2.properties.
-                of(containers).lines().forEach(LOGGER::error);
-            }
-        };
+        return Utils.onTimeout(timeoutEvent -> {
+            LOGGER.error("Timed out waiting for {} after {}ms. Container diagnostics follow.",
+                    timeoutEvent.getAlias(), timeoutEvent.getElapsedTimeInMS());
+            // One record per line - see %replace in log4j2.properties.
+            of(containers).lines().forEach(LOGGER::error);
+        });
     }
 
     public static String of(Collection<? extends GenericContainer<?>> containers)
