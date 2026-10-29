@@ -2,7 +2,8 @@ package org.alfresco.elasticsearch.upgrade;
 
 import static java.time.Duration.ofMinutes;
 
-import static org.alfresco.elasticsearch.upgrade.Utils.waitFor;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +32,10 @@ import org.alfresco.elasticsearch.upgrade.AvailabilityProbe.ProbeResult;
 
 abstract class BaseACSEnv implements AutoCloseable
 {
+
+    private static final Duration SEARCH_TIMEOUT = ofMinutes(10);
+    private static final Duration SERVER_STARTUP_TIMEOUT = ofMinutes(5);
+
     protected final Config cfg;
     private final List<GenericContainer<?>> createdContainers = new ArrayList<>();
 
@@ -97,7 +102,7 @@ abstract class BaseACSEnv implements AutoCloseable
         createdContainers.forEach(GenericContainer::start);
         repoHttpClient = new RepoHttpClient(URI.create("http://" + getAlfresco().getHost() + ":" + getAlfresco().getMappedPort(8080)));
 
-        waitUntilServerIsUp(ofMinutes(5));
+        waitUntilServerIsUp(SERVER_STARTUP_TIMEOUT);
     }
 
     public AvailabilityProbe getRunningSearchAPIAvailabilityProbe()
@@ -160,29 +165,27 @@ abstract class BaseACSEnv implements AutoCloseable
         }
     }
 
-    public void expectNoSearchResult(Duration timeout, String term)
+    public void expectNoSearchResult(String term)
     {
-        expectSearchResult(timeout, term);
+        expectSearchResult(term);
     }
 
-    public void expectSearchResult(Duration timeout, String term, String... expectedFiles)
+    public void expectSearchResult(String term, String... expectedFiles)
     {
         final Set<String> expected = Stream
                 .of(expectedFiles)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toUnmodifiableSet());
 
-        waitFor("Reaching the point where `" + expected + "` is returned.", timeout, () -> {
-            try
-            {
-                Optional<Set<String>> actual = repoHttpClient.searchForFiles(term);
-                return actual.map(expected::equals).orElse(false);
-            }
-            catch (IOException e)
-            {
-                return false;
-            }
-        });
+        await("`" + term + "` to return " + expected)
+                .atMost(SEARCH_TIMEOUT)
+                .pollDelay(Duration.ZERO)
+                .pollInterval(Duration.ofSeconds(1))
+                .conditionEvaluationListener(ContainerDiagnostics.dumpOnTimeout(createdContainers))
+                .ignoreExceptionsInstanceOf(IOException.class)
+                .untilAsserted(() -> assertThat(repoHttpClient.searchForFiles(term))
+                        .as("documents matching `%s`", term)
+                        .contains(expected));
     }
 
     protected String getContainerAlfDataPath()
@@ -230,16 +233,13 @@ abstract class BaseACSEnv implements AutoCloseable
 
     private void waitUntilServerIsUp(Duration timeout)
     {
-        waitFor("Reaching the point where server is up and running.", timeout, () -> {
-            try
-            {
-                return repoHttpClient.isServerUp();
-            }
-            catch (IOException e)
-            {
-                return false;
-            }
-        });
+        await("the repository to answer its server API")
+                .atMost(timeout)
+                .pollDelay(Duration.ZERO)
+                .pollInterval(Duration.ofSeconds(5))
+                .conditionEvaluationListener(ContainerDiagnostics.dumpOnTimeout(createdContainers))
+                .ignoreExceptionsInstanceOf(IOException.class)
+                .until(repoHttpClient::isServerUp);
     }
 
     private ExecResult execInPostgres(String command)
