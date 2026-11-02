@@ -868,7 +868,7 @@ jobs:
             $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-share.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Dshare.image.tag=latest') \
             -Dimage.java.version=${{ matrix.java-version }}
           cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
-          pip install requests pytest==6.2.4 pytest-testinfra==6.3.0 jmespath==0.10.0
+          pip install requests pytest==8.3.5 pytest-testinfra==10.1.1 jmespath==0.10.0
           docker images | grep pipeline
           ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
           ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/" 180
@@ -877,7 +877,7 @@ jobs:
       - name: "Run tests"
         run: |
           cd dtas
-          pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
+          pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s -rs
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
