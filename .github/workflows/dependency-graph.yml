@@ -23,7 +23,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-dependency-scan@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/maven-dependency-scan@482401ef42e6503cfa54d5873f1a768a0ecb3e0e # v19.11.0
         with:
           java-version: '21'
           maven-version: '3.9.9'
