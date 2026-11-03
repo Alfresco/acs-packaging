@@ -143,7 +143,7 @@ source tests/environment/.env
 
 if [[ "${ES_CONNECTOR_TAG}" = [[:cntrl:]] ]]
 then
-  ES_CONNECTOR_TAG=$(mvn help:evaluate -Dexpression=dependency.elasticsearch-shared.version -q -DforceStdout)
+  ES_CONNECTOR_TAG=$(mvn help:evaluate -Dexpression=dependency.alfresco-search-index-model.version -q -DforceStdout)
   export ES_CONNECTOR_TAG
   echo "$ES_CONNECTOR_TAG"
 fi
