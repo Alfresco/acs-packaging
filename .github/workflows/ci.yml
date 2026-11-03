@@ -28,7 +28,7 @@ env:
   TAS_SCRIPTS: ../alfresco-community-repo/packaging/tests/scripts
   ALF_LICENCE_S3_PATH: s3://acs-license/acs/alf26-allenabled.lic
   ALF_LICENCE_LOCAL_PATH: /tmp/licence.lic
-  PYTHON_VERSION: 3.8.12
+  PYTHON_VERSION: 3.12.16
   DTAS_VERSION: v1.7.5
 
 jobs:
@@ -868,7 +868,7 @@ jobs:
             $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-share.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Dshare.image.tag=latest') \
             -Dimage.java.version=${{ matrix.java-version }}
           cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
-          pip install requests pytest==6.2.4 pytest-testinfra==6.3.0 jmespath==0.10.0
+          pip install requests pytest==8.3.5 pytest-testinfra==10.1.1 jmespath==0.10.0
           docker images | grep pipeline
           ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
           ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/" 180
@@ -877,7 +877,7 @@ jobs:
       - name: "Run tests"
         run: |
           cd dtas
-          pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
+          pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s -rs
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
