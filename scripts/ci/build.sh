@@ -145,7 +145,7 @@ ES_CONNECTOR_TAG="${ES_CONNECTOR_TAG//[[:cntrl:]]/}"
 
 if [[ -z "${ES_CONNECTOR_TAG}" ]]
 then
-  ES_CONNECTOR_TAG=$(mvn help:evaluate -Dexpression=dependency.elasticsearch-shared.version -q -DforceStdout)
+  ES_CONNECTOR_TAG=$(mvn help:evaluate -Dexpression=dependency.alfresco-search-index-model.version -q -DforceStdout)
   export ES_CONNECTOR_TAG
   echo "$ES_CONNECTOR_TAG"
 fi
