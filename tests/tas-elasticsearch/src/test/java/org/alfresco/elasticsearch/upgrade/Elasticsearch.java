@@ -170,6 +170,8 @@ class Elasticsearch implements AutoCloseable
                 event.getAlias(), describeIndices()));
     }
 
+    // PMD 7.5.0 misses method reference usages.
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private boolean clusterIsUsable() throws IOException
     {
         final Map<?, ?> health = gson.fromJson(getString("/_cluster/health"), Map.class);

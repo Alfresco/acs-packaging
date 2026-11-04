@@ -194,6 +194,8 @@ class ACSEnv extends BaseACSEnv
         return element != null && element.isJsonPrimitive() && element.getAsBoolean();
     }
 
+    // PMD 7.5.0 misses method reference usages.
+    @SuppressWarnings("PMD.UnusedPrivateMethod")
     private static boolean readyForTransformRequests(String body)
     {
         try
