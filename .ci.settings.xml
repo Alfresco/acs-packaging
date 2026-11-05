@@ -2,17 +2,20 @@
     <mirrors>
         <mirror>
             <id>alfresco-internal</id>
+            <name>Alfresco Internal</name>
             <mirrorOf>*</mirrorOf>
             <url>https://artifacts.hyland.dev/basic/alfresco-internal/maven/</url>
         </mirror>
     </mirrors>
 
     <servers>
+        <!-- Exported by the cloudsmith-auth action -->
         <server>
             <id>alfresco-internal</id>
             <username>${env.CLOUDSMITH_USERNAME}</username>
             <password>${env.CLOUDSMITH_API_KEY}</password>
         </server>
+        <!-- Deploy servers: replaced in Phase 2 (push) -->
         <server>
             <id>alfresco-internal-releases</id>
             <username>${env.MAVEN_USERNAME}</username>
