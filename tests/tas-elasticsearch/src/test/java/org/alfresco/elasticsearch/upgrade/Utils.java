@@ -5,11 +5,12 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
-import java.time.Duration;
 import java.util.UUID;
-import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
 
-import com.google.common.util.concurrent.RateLimiter;
+import org.awaitility.core.ConditionEvaluationListener;
+import org.awaitility.core.EvaluatedCondition;
+import org.awaitility.core.TimeoutEvent;
 import org.testcontainers.containers.Network;
 
 class Utils
@@ -39,18 +40,20 @@ class Utils
                 .build();
     }
 
-    public static void waitFor(String description, final Duration timeout, final BooleanSupplier condition)
+    public static ConditionEvaluationListener<Object> onTimeout(Consumer<TimeoutEvent> action)
     {
-        final RateLimiter rateLimiter = RateLimiter.create(5);
-        final long numberOfIterations = Math.max(1L, timeout.getSeconds() * (long) rateLimiter.getRate());
-        for (long i = 0; i < numberOfIterations; i++)
-        {
-            rateLimiter.acquire();
-            if (condition.getAsBoolean())
+        return new ConditionEvaluationListener<>() {
+            @Override
+            public void conditionEvaluated(EvaluatedCondition<Object> condition)
             {
-                return;
+                // Only the timeout is of interest.
             }
-        }
-        throw new RuntimeException("Failed to wait for " + description + ".");
+
+            @Override
+            public void onTimeout(TimeoutEvent timeoutEvent)
+            {
+                action.accept(timeoutEvent);
+            }
+        };
     }
 }

@@ -123,6 +123,7 @@ services:
         https://transform-core-aio:8090/transform/config
       ALFRESCO_EVENT_RETRY_INFRASTRUCTUREFAILURE_MAXATTEMPTS: 1
       ALFRESCO_EVENT_RETRY_UNEXPECTEDFAILURE_MAXATTEMPTS: 1
+      ALFRESCO_TRANSFORM_REFRESH_RETRY_STATUSES: 404,429,500,503
 
       JAVA_TOOL_OPTIONS: >
         -Djavax.net.ssl.keyStore=/liveIndexing.keystore

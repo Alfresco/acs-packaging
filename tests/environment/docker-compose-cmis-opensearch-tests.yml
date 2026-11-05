@@ -63,6 +63,12 @@ services:
       FILE_STORE_URL: "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file"
     ports:
       - 8095:8095
+    healthcheck:
+      test: ["CMD-SHELL", "s=$$(curl -sf http://localhost:8095/actuator/transforms) && echo \"$$s\" | grep -q '\"ready\":true' && echo \"$$s\" | grep -q '\"recoveryMode\":false'"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 30s
     links:
       - activemq
 
@@ -77,6 +83,12 @@ services:
       FILE_STORE_URL: "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file"
     ports:
       - 8090:8090
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8090/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 30s
     links:
       - activemq
 
@@ -196,6 +208,7 @@ services:
       ALFRESCO_SHAREDFILESTORE_BASEURL: http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/
       ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL: http://transform-core-aio:8090/transform/config
       ALFRESCO_EVENT_RETRY_UNEXPECTEDFAILURE_MAXATTEMPTS: 0
+      ALFRESCO_TRANSFORM_REFRESH_RETRY_STATUSES: 404,429,500,503
 
 volumes:
   shared-file-store-volume:

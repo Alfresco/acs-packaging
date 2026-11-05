@@ -29,7 +29,7 @@ env:
   TAS_SCRIPTS: ../alfresco-community-repo/packaging/tests/scripts
   ALF_LICENCE_S3_PATH: s3://acs-license/acs/alf26-allenabled.lic
   ALF_LICENCE_LOCAL_PATH: /tmp/licence.lic
-  PYTHON_VERSION: 3.8.12
+  PYTHON_VERSION: 3.12.16
   DTAS_VERSION: v1.7.5
 
 jobs:
@@ -39,10 +39,10 @@ jobs:
     outputs:
       title: ${{ steps.get-commit.outputs.COMMIT_MESSAGE }}
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 2
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-commit-message@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-commit-message@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
         id: get-commit
         with:
           header-only: "true"
@@ -55,16 +55,19 @@ jobs:
     if: >
       !contains(needs.commit_parser.outputs.title, '[skip tests]')
     steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-        
+      - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+        env:
+          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
+
   test_run_check:
     name: "Test run check"
     runs-on: ubuntu-latest
@@ -85,7 +88,7 @@ jobs:
   pmd_scan:
     name: "PMD Scan"
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true' && github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
     env:
@@ -93,20 +96,20 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     steps:
       - name: "Generate GitHub App token"
         id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
-          client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
-          private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
+          client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
           owner: Alfresco
           repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
@@ -129,8 +132,8 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -193,18 +196,18 @@ jobs:
     steps:
       - name: "Generate GitHub App token"
         id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
-          client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
-          private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
+          client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
           owner: Alfresco
           repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app-token.outputs.token }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
@@ -242,8 +245,8 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -266,18 +269,18 @@ jobs:
     steps:
       - name: "Generate GitHub App token"
         id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
-          client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
-          private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
+          client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
           owner: Alfresco
           repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app-token.outputs.token }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
@@ -305,7 +308,7 @@ jobs:
         if: ${{ always() && steps.tests.outcome == 'failure' }}
         run: ${TAS_SCRIPTS}/output_logs_for_failures.sh ${{ matrix.log-folder }}
       - name: "Dump all Docker containers logs"
-        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
         if: failure() && (steps.tests.outcome == 'failure' || steps.env.outcome == 'failure')
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
@@ -321,8 +324,8 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -342,22 +345,22 @@ jobs:
     steps:
       - name: "Generate GitHub App token"
         id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
-          client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
-          private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
+          client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
           owner: Alfresco
           repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
         with:
           root-reserve-mb: 16384
           remove-android: 'true'
           remove-codeql: 'true'
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app-token.outputs.token }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
@@ -387,7 +390,7 @@ jobs:
         if: failure() && (steps.tests.outcome == 'failure' || steps.env.outcome == 'failure')
         run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
       - name: "Dump all Docker containers logs"
-        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
         if: failure() && (steps.tests.outcome == 'failure' || steps.env.outcome == 'failure')
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
@@ -403,23 +406,23 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     steps:
       - name: "Generate GitHub App token"
         id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
-          client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
-          private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
+          client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
           owner: Alfresco
           repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app-token.outputs.token }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
@@ -457,8 +460,8 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -506,17 +509,17 @@ jobs:
     steps:
       - name: "Generate GitHub App token"
         id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
-          client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
-          private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
+          client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
           owner: Alfresco
           repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app-token.outputs.token }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
@@ -534,7 +537,7 @@ jobs:
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -P${{ matrix.profiles }} -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}" "-Ddatabase.type=${{ matrix.db-type }}" -Dindeximage="alfresco-es-indexing-jdbc:latest" -Dreindeximage="alfresco-es-reindexing-jdbc:latest" -Drepoimage="alfresco-repository-databases:latest" "-Dmessaging.broker.username=admin" "-Dmessaging.broker.password=admin" # pragma: allowlist secret
       - name: "Dump all Docker containers logs"
-        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
         if: failure() && steps.tests.outcome == 'failure'
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
@@ -547,8 +550,8 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
@@ -563,17 +566,17 @@ jobs:
     steps:
       - name: "Generate GitHub App token"
         id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
-          client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
-          private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
+          client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
           owner: Alfresco
           repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app-token.outputs.token }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
@@ -587,7 +590,7 @@ jobs:
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
       - name: "Configure AWS credentials"
-        uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
+        uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
         with:
           aws-access-key-id: ${{ secrets.AWS_S3_ACSLICENSE_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_S3_ACSLICENSE_SECRET_ACCESS_KEY }}
@@ -598,9 +601,6 @@ jobs:
         id: tests
         timeout-minutes: 30
         run: mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}" "-Ddatabase.type=postgresql" "-Dindeximage=alfresco-es-indexing-jdbc:latest" "-Dreindeximage=alfresco-es-reindexing-jdbc:latest" "-Drepoimage=alfresco-repository-databases:latest" "-Dmessaging.broker.username=admin" "-Dmessaging.broker.password=admin" # pragma: allowlist secret
-      - name: "Dump all Docker containers logs"
-        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-        if: failure() && steps.tests.outcome == 'failure'
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
@@ -615,24 +615,22 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
       AZURE_STORAGE_ACCOUNT_KEY: ${{ secrets.AZURE_PACKAGING_STORAGE_ACCOUNT_KEY }}
     steps:
       - name: "Generate GitHub App token"
         id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
-          client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
-          private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
+          client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
           owner: Alfresco
           repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app-token.outputs.token }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
@@ -665,7 +663,7 @@ jobs:
         if: failure() && steps.tests.outcome == 'failure'
         run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-all-amps"
       - name: "Dump all Docker containers logs"
-        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
         if: failure() && (steps.tests.outcome == 'failure' || steps.env.outcome == 'failure')
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
@@ -681,8 +679,8 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -714,25 +712,25 @@ jobs:
     steps:
       - name: "Generate GitHub App token"
         id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
-          client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
-          private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
+          client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
           owner: Alfresco
           repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging,alfresco-ssl-generator
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app-token.outputs.token }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - name: "Checkout alfresco-ssl-generator"
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: Alfresco/alfresco-ssl-generator
           ref: master
@@ -784,8 +782,8 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -793,18 +791,18 @@ jobs:
     steps:
       - name: "Generate GitHub App token"
         id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
-          client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
-          private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
+          client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
           owner: Alfresco
           repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app-token.outputs.token }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
@@ -819,7 +817,7 @@ jobs:
           bash ./scripts/ci/build.sh
       - name: "Set up the environment"
         run: mvn -B -V clean install -ntp -Pags -DskipTests -Dmaven.javadoc.skip=true
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
         with:
           java-version: ${{ matrix.java-version }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
@@ -842,38 +840,38 @@ jobs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true' && github.event_name != 'pull_request'
     env:
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
         java-version: [DEFAULT, 25]
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
       - name: "Generate GitHub App token"
         id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
           owner: Alfresco
-          client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
-          private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
+          client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
           permission-contents: read
           repositories: |
             acs-packaging
             alfresco-deployment-test-automation-scripts
             alfresco-enterprise-share
             alfresco-enterprise-repo
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app-token.outputs.token }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: "Build"
@@ -888,7 +886,7 @@ jobs:
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
       - name: "Checkout alfresco-deployment-test-automation-scripts"
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: Alfresco/alfresco-deployment-test-automation-scripts
           ref: ${{ env.DTAS_VERSION }}
@@ -908,7 +906,7 @@ jobs:
             $(mvn -B -q help:evaluate "-Dexpression=dependency.alfresco-enterprise-share.version" -DforceStdout | grep -q '\-SNAPSHOT$' && echo '-Dshare.image.tag=latest') \
             -Dimage.java.version=${{ matrix.java-version }}
           cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
-          pip install requests pytest==6.2.4 pytest-testinfra==6.3.0 jmespath==0.10.0
+          pip install requests pytest==8.3.5 pytest-testinfra==10.1.1 jmespath==0.10.0
           docker images | grep pipeline
           ${TAS_SCRIPTS}/start-compose.sh ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml
           ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/" 180
@@ -917,7 +915,7 @@ jobs:
       - name: "Run tests"
         run: |
           cd dtas
-          pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
+          pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s -rs
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
@@ -932,23 +930,23 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     steps:
       - name: "Generate GitHub App token"
         id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
-          client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
-          private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
+          client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
           owner: Alfresco
           repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app-token.outputs.token }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
@@ -986,8 +984,8 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      GIT_USERNAME: ${{ vars.BOT_GITHUB_USERNAME }}
-      GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
+      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     services:
       registry:
         image: registry:2
@@ -996,25 +994,25 @@ jobs:
     steps:
       - name: "Generate GitHub App token"
         id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
-          client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
-          private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
+          client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
           owner: Alfresco
           repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app-token.outputs.token }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@30c1953fd4ad6e52062d7eba444298fe1701d1df # v18.22.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@96fe6ef7f33517b61c61be40b68a1882f3264fb8 # v4.2.0
+        uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
         with:
           platforms: linux/amd64,linux/arm64
       - name: Pipeline Tag text insert (modify for your needs)

@@ -2,7 +2,8 @@ package org.alfresco.elasticsearch.upgrade;
 
 import static java.time.Duration.ofMinutes;
 
-import static org.alfresco.elasticsearch.upgrade.Utils.waitFor;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +33,10 @@ import org.alfresco.elasticsearch.upgrade.AvailabilityProbe.ProbeResult;
 @SuppressWarnings({"PMD.TooManyMethods", "PMD.GodClass"})
 abstract class BaseACSEnv implements AutoCloseable
 {
+
+    private static final Duration SEARCH_TIMEOUT = ofMinutes(10);
+    private static final Duration SERVER_STARTUP_TIMEOUT = ofMinutes(5);
+
     protected final Config cfg;
     private final List<GenericContainer<?>> createdContainers = new ArrayList<>();
 
@@ -98,7 +103,7 @@ abstract class BaseACSEnv implements AutoCloseable
         createdContainers.forEach(GenericContainer::start);
         repoHttpClient = new RepoHttpClient(URI.create("http://" + getAlfresco().getHost() + ":" + getAlfresco().getMappedPort(8080)));
 
-        waitUntilServerIsUp(ofMinutes(5));
+        waitUntilServerIsUp(SERVER_STARTUP_TIMEOUT);
     }
 
     public AvailabilityProbe getRunningSearchAPIAvailabilityProbe()
@@ -244,58 +249,58 @@ abstract class BaseACSEnv implements AutoCloseable
         }
     }
 
-    public void expectNoSearchResult(Duration timeout, String term)
+    public void expectNoSearchResult(String term)
     {
-        expectSearchResult(timeout, term);
+        expectSearchResult(term);
     }
 
-    public void expectSearchResult(Duration timeout, String term, String... expectedFiles)
+    public void expectSearchResult(String term, String... expectedFiles)
     {
-        expectQueryResult(timeout, "afts", term, expectedFiles);
+        expectQueryResult("afts", term, expectedFiles);
     }
 
     /**
      * ACS-12862: same contract as {@link #expectSearchResult}, but the query language is explicit so the advanced scenarios can use AFTS PATH/TAG queries and CMIS.
      */
-    public void expectQueryResult(Duration timeout, String language, String query, String... expectedFiles)
+    public void expectQueryResult(String language, String query, String... expectedFiles)
     {
-        final Set<String> expected = Stream
-                .of(expectedFiles)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toUnmodifiableSet());
+        final Set<String> expected = toExpectedSet(expectedFiles);
 
-        waitFor("Reaching the point where `" + query + "` returns `" + expected + "`.", timeout, () -> {
-            try
-            {
-                return repoHttpClient.search(language, query).map(expected::equals).orElse(false);
-            }
-            catch (IOException e)
-            {
-                return false;
-            }
-        });
+        await("`" + query + "` to return " + expected)
+                .atMost(SEARCH_TIMEOUT)
+                .pollDelay(Duration.ZERO)
+                .pollInterval(Duration.ofSeconds(1))
+                .conditionEvaluationListener(ContainerDiagnostics.dumpOnTimeout(createdContainers))
+                .ignoreExceptionsInstanceOf(IOException.class)
+                .untilAsserted(() -> assertThat(repoHttpClient.search(language, query))
+                        .as("documents matching `%s`", query)
+                        .contains(expected));
     }
 
     /**
      * ACS-12862: runs the query as the given user rather than admin, so permission-based result filtering can be asserted after the migration.
      */
-    public void expectQueryResultAs(Duration timeout, SearchUser user, String language, String query, String... expectedFiles)
+    public void expectQueryResultAs(SearchUser user, String language, String query, String... expectedFiles)
     {
-        final Set<String> expected = Stream
+        final Set<String> expected = toExpectedSet(expectedFiles);
+
+        await("`" + query + "` as " + user.username() + " to return " + expected)
+                .atMost(SEARCH_TIMEOUT)
+                .pollDelay(Duration.ZERO)
+                .pollInterval(Duration.ofSeconds(1))
+                .conditionEvaluationListener(ContainerDiagnostics.dumpOnTimeout(createdContainers))
+                .ignoreExceptionsInstanceOf(IOException.class)
+                .untilAsserted(() -> assertThat(repoHttpClient.searchAs(user, language, query))
+                        .as("documents matching `%s` as %s", query, user.username())
+                        .contains(expected));
+    }
+
+    private static Set<String> toExpectedSet(String... expectedFiles)
+    {
+        return Stream
                 .of(expectedFiles)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toUnmodifiableSet());
-
-        waitFor("Reaching the point where `" + query + "` as `" + user.username() + "` returns `" + expected + "`.", timeout, () -> {
-            try
-            {
-                return repoHttpClient.searchAs(user, language, query).map(expected::equals).orElse(false);
-            }
-            catch (IOException e)
-            {
-                return false;
-            }
-        });
     }
 
     protected String getContainerAlfDataPath()
@@ -343,16 +348,13 @@ abstract class BaseACSEnv implements AutoCloseable
 
     private void waitUntilServerIsUp(Duration timeout)
     {
-        waitFor("Reaching the point where server is up and running.", timeout, () -> {
-            try
-            {
-                return repoHttpClient.isServerUp();
-            }
-            catch (IOException e)
-            {
-                return false;
-            }
-        });
+        await("the repository to answer its server API")
+                .atMost(timeout)
+                .pollDelay(Duration.ZERO)
+                .pollInterval(Duration.ofSeconds(5))
+                .conditionEvaluationListener(ContainerDiagnostics.dumpOnTimeout(createdContainers))
+                .ignoreExceptionsInstanceOf(IOException.class)
+                .until(repoHttpClient::isServerUp);
     }
 
     private ExecResult execInPostgres(String command)

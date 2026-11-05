@@ -2,15 +2,31 @@ package org.alfresco.elasticsearch.upgrade;
 
 import static java.time.Duration.ofMinutes;
 
-import static org.alfresco.elasticsearch.upgrade.Utils.waitFor;
+import static org.awaitility.Awaitility.await;
 
+import java.time.Duration;
+import java.util.List;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.wait.strategy.HttpWaitStrategy;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
+import org.testcontainers.containers.wait.strategy.WaitStrategy;
 
 class ACSEnv extends BaseACSEnv
 {
+    private static final long ONE_GIGABYTE = 1024L * 1024 * 1024;
+    // Without this the capped containers would get the JVM default of 25% of 1GB.
+    private static final String HEAP_SIZING = "-XX:MaxRAMPercentage=75";
+
+    private static final int TRANSFORM_CORE_AIO_PORT = 8090;
+    private static final int TRANSFORM_ROUTER_PORT = 8095;
+    private static final Duration TRANSFORM_READINESS_TIMEOUT = ofMinutes(5);
+
     private final GenericContainer<?> postgres;
     private final GenericContainer<?> alfresco;
 
@@ -59,10 +75,29 @@ class ACSEnv extends BaseACSEnv
     public void reindexByIds(long fromId, long toId)
     {
         final GenericContainer<?> reIndexing = createReIndexingContainer(fromId, toId);
+        final String description = "Re-indexing (ids " + fromId + " to " + toId + ")";
 
         reIndexing.start();
-        waitFor("Re-indexing Startup", ofMinutes(1), reIndexing::isRunning);
-        waitFor("Re-indexing Exit", ofMinutes(5), () -> !reIndexing.isRunning());
+
+        await("the re-indexing job to be running")
+                .atMost(ofMinutes(1))
+                .pollDelay(Duration.ZERO)
+                .pollInterval(Duration.ofSeconds(1))
+                .conditionEvaluationListener(ContainerDiagnostics.dumpOnTimeout(List.of(reIndexing)))
+                .until(reIndexing::isRunning);
+
+        await("the re-indexing job to finish")
+                .atMost(ofMinutes(5))
+                .pollDelay(Duration.ZERO)
+                .pollInterval(Duration.ofSeconds(5))
+                .conditionEvaluationListener(ContainerDiagnostics.dumpOnTimeout(List.of(reIndexing)))
+                .until(() -> !reIndexing.isRunning());
+
+        if (!ContainerDiagnostics.exitedSuccessfully(reIndexing))
+        {
+            throw new IllegalStateException(description + " failed. "
+                    + ContainerDiagnostics.exitDescription(reIndexing));
+        }
     }
 
     public void startLiveIndexing()
@@ -122,7 +157,8 @@ class ACSEnv extends BaseACSEnv
                 .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
                 .withNetwork(network)
                 .withNetworkAliases("transform-router")
-                .waitingFor(new LogMessageWaitStrategy().withRegEx(".+Starting application components.+Done.*").withStartupTimeout(ofMinutes(2)));
+                .withExposedPorts(TRANSFORM_ROUTER_PORT)
+                .waitingFor(transformRouterReady(TRANSFORM_ROUTER_PORT));
     }
 
     private void createTransformCoreAIOContainer(Network network)
@@ -135,7 +171,46 @@ class ACSEnv extends BaseACSEnv
                 .withEnv("FILE_STORE_URL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file")
                 .withNetwork(network)
                 .withNetworkAliases("transform-core-aio")
-                .waitingFor(new LogMessageWaitStrategy().withRegEx(".+Starting application components.+Done.*").withStartupTimeout(ofMinutes(2)));
+                .withExposedPorts(TRANSFORM_CORE_AIO_PORT)
+                .waitingFor(transformEngineReady(TRANSFORM_CORE_AIO_PORT));
+    }
+
+    private static WaitStrategy transformEngineReady(int port)
+    {
+        return new HttpWaitStrategy()
+                .forPort(port)
+                .forPath("/ready")
+                .forStatusCode(200)
+                .withStartupTimeout(TRANSFORM_READINESS_TIMEOUT);
+    }
+
+    // The router has no usable /ready - see ACS-13158.
+    private static WaitStrategy transformRouterReady(int port)
+    {
+        return new HttpWaitStrategy()
+                .forPort(port)
+                .forPath("/actuator/transforms")
+                .forStatusCode(200)
+                .forResponsePredicate(ACSEnv::readyForTransformRequests)
+                .withStartupTimeout(TRANSFORM_READINESS_TIMEOUT);
+    }
+
+    private static boolean isTrue(JsonElement element)
+    {
+        return element != null && element.isJsonPrimitive() && element.getAsBoolean();
+    }
+
+    private static boolean readyForTransformRequests(String body)
+    {
+        try
+        {
+            JsonObject state = JsonParser.parseString(body).getAsJsonObject();
+            return isTrue(state.get("ready")) && !isTrue(state.get("recoveryMode"));
+        }
+        catch (RuntimeException e)
+        {
+            return false;
+        }
     }
 
     private void createSharedFileStoreContainer(Network network)
@@ -151,9 +226,12 @@ class ACSEnv extends BaseACSEnv
 
     private void createActiveMqContainer(Network network)
     {
-        newContainer(GenericContainer.class, cfg.getActiveMqImage())
+        GenericContainer<?> activemq = newContainer(GenericContainer.class, cfg.getActiveMqImage())
+                .withEnv("_JAVA_OPTIONS", HEAP_SIZING)
                 .withNetwork(network)
                 .withNetworkAliases("activemq");
+
+        limitMemoryToOneGigabyte(activemq);
     }
 
     private GenericContainer<?> createPostgresContainer(Network network)
@@ -168,7 +246,7 @@ class ACSEnv extends BaseACSEnv
 
     private GenericContainer<?> createReIndexingContainer(long fromId, long toId)
     {
-        return newContainer(GenericContainer.class, cfg.getReIndexingImage())
+        GenericContainer<?> reIndexing = newContainer(GenericContainer.class, cfg.getReIndexingImage())
                 .withEnv("ELASTICSEARCH_INDEXNAME", cfg.getIndexName())
                 .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://" + cfg.getElasticsearchHostname() + ":9200")
                 .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
@@ -181,12 +259,16 @@ class ACSEnv extends BaseACSEnv
                 .withEnv("ALFRESCO_REINDEX_FROM_ID", Long.toString(fromId))
                 .withEnv("ALFRESCO_REINDEX_TO_ID", Long.toString(toId))
                 .withEnv("ALFRESCO_REINDEX_JOB_NAME", "reindexByIds")
+                .withEnv("_JAVA_OPTIONS", HEAP_SIZING)
                 .withNetwork(alfresco.getNetwork());
+
+        limitMemoryToOneGigabyte(reIndexing);
+        return reIndexing;
     }
 
     private GenericContainer<?> createLiveIndexingContainer()
     {
-        return newContainer(GenericContainer.class, cfg.getLiveIndexingImage())
+        GenericContainer<?> liveIndexing = newContainer(GenericContainer.class, cfg.getLiveIndexingImage())
                 .withEnv("ELASTICSEARCH_INDEXNAME", cfg.getIndexName())
                 .withEnv("SPRING_ELASTICSEARCH_REST_URIS", "http://" + cfg.getElasticsearchHostname() + ":9200")
                 .withEnv("SPRING_ACTIVEMQ_BROKERURL", "nio://activemq:61616")
@@ -194,8 +276,19 @@ class ACSEnv extends BaseACSEnv
                 .withEnv("SPRING_ACTIVEMQ_PASSWORD", "admin")
                 .withEnv("ALFRESCO_SHAREDFILESTORE_BASEURL", "http://shared-file-store:8099/alfresco/api/-default-/private/sfs/versions/1/file/")
                 .withEnv("ALFRESCO_ACCEPTEDCONTENTMEDIATYPESCACHE_BASEURL", "http://transform-core-aio:8090/transform/config")
-                .withEnv("_JAVA_OPTIONS", "-Dlogging.level.org.alfresco=DEBUG")
+                .withEnv("ALFRESCO_TRANSFORM_REFRESH_RETRY_STATUSES", "404,429,500,503")
+                .withEnv("_JAVA_OPTIONS", "-Dlogging.level.org.alfresco=DEBUG " + HEAP_SIZING)
                 .withNetwork(alfresco.getNetwork())
                 .waitingFor(new LogMessageWaitStrategy().withRegEx(".+Started LiveIndexingApp.+").withStartupTimeout(ofMinutes(1)));
+
+        limitMemoryToOneGigabyte(liveIndexing);
+        return liveIndexing;
+    }
+
+    private static void limitMemoryToOneGigabyte(GenericContainer<?> container)
+    {
+        container.withCreateContainerCmdModifier(cmd -> cmd.getHostConfig()
+                .withMemory(ONE_GIGABYTE)
+                .withMemorySwap(ONE_GIGABYTE));
     }
 }

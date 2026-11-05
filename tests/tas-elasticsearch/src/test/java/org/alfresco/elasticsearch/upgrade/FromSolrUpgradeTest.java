@@ -1,12 +1,9 @@
 package org.alfresco.elasticsearch.upgrade;
 
-import static java.time.Duration.ofMinutes;
-
 import static org.alfresco.elasticsearch.upgrade.Config.getUpgradeScenarioConfig;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.Duration;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -17,7 +14,6 @@ import org.alfresco.elasticsearch.upgrade.AvailabilityProbe.Stats;
 
 public class FromSolrUpgradeTest
 {
-    private static final Duration MAX_TIMEOUT = ofMinutes(5);
     private static final URL TEST_FILE_URL = FromSolrUpgradeTest.class.getResource("babekyrtso.pdf");
     private static final String SEARCH_TERM = "babekyrtso";
     private static final String FILE_UPLOADED_BEFORE_INITIAL_REINDEXING = "before-initial-re-indexing.pdf";
@@ -72,7 +68,7 @@ public class FromSolrUpgradeTest
         {
             final ACSEnv initialEnv = scenario.startInitialEnvWithSolrBasedSearchService();
             initialEnv.uploadFile(TEST_FILE_URL, FILE_UPLOADED_BEFORE_INITIAL_REINDEXING);
-            initialEnv.expectSearchResult(MAX_TIMEOUT, SEARCH_TERM, FILE_UPLOADED_BEFORE_INITIAL_REINDEXING);
+            initialEnv.expectSearchResult(SEARCH_TERM, FILE_UPLOADED_BEFORE_INITIAL_REINDEXING);
 
             // ACS-12862: seed the advanced content while the repository is still on Solr,
             // so all of it has to survive the migration to Elasticsearch.
@@ -87,18 +83,18 @@ public class FromSolrUpgradeTest
 
             try (ACSEnv mirroredEnv = scenario.startMirroredEnvWitElasticsearchBasedSearchService())
             {
-                mirroredEnv.expectNoSearchResult(MAX_TIMEOUT, SEARCH_TERM);
+                mirroredEnv.expectNoSearchResult(SEARCH_TERM);
                 Assert.assertTrue(mirroredEnv.getMaxNodeDbId() >= initialEnv.getMaxNodeDbId());
-                elasticsearch.waitForIndexCreation(MAX_TIMEOUT);
+                elasticsearch.waitForIndexCreation();
                 Assert.assertTrue(elasticsearch.isIndexCreated());
                 Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), 0);
-                mirroredEnv.expectNoSearchResult(MAX_TIMEOUT, SEARCH_TERM);
+                mirroredEnv.expectNoSearchResult(SEARCH_TERM);
 
                 mirroredEnv.startLiveIndexing();
                 mirroredEnv.reindexByIds(0, initialReIndexingUpperBound * 2);
 
                 Assert.assertTrue(elasticsearch.getIndexedDocumentCount() > 0);
-                mirroredEnv.expectSearchResult(MAX_TIMEOUT, SEARCH_TERM, FILE_UPLOADED_BEFORE_INITIAL_REINDEXING);
+                mirroredEnv.expectSearchResult(SEARCH_TERM, FILE_UPLOADED_BEFORE_INITIAL_REINDEXING);
             }
 
             final long documentsCount = elasticsearch.getIndexedDocumentCount();
@@ -106,14 +102,14 @@ public class FromSolrUpgradeTest
 
             initialEnv.startLiveIndexing();
 
-            initialEnv.expectSearchResult(MAX_TIMEOUT, SEARCH_TERM,
+            initialEnv.expectSearchResult(SEARCH_TERM,
                     FILE_UPLOADED_BEFORE_INITIAL_REINDEXING,
                     FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING);
             // Live indexing was not running so FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING hasn't been indexed
             Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), documentsCount);
 
             initialEnv.uploadFile(TEST_FILE_URL, FILE_UPLOADED_AFTER_STARTING_LIVE_INDEXING);
-            initialEnv.expectSearchResult(MAX_TIMEOUT, SEARCH_TERM,
+            initialEnv.expectSearchResult(SEARCH_TERM,
                     FILE_UPLOADED_BEFORE_INITIAL_REINDEXING,
                     FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING,
                     FILE_UPLOADED_AFTER_STARTING_LIVE_INDEXING);
@@ -127,7 +123,7 @@ public class FromSolrUpgradeTest
             Assert.assertEquals(elasticsearch.getIndexedDocumentCount(), documentsCount + 2);
 
             initialEnv.uploadFile(TEST_FILE_URL, FILE_UPLOADED_BEFORE_SWITCHING_TO_ELASTICSEARCH);
-            initialEnv.expectSearchResult(MAX_TIMEOUT, SEARCH_TERM,
+            initialEnv.expectSearchResult(SEARCH_TERM,
                     FILE_UPLOADED_BEFORE_INITIAL_REINDEXING,
                     FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING,
                     FILE_UPLOADED_AFTER_STARTING_LIVE_INDEXING,
@@ -138,7 +134,7 @@ public class FromSolrUpgradeTest
             initialEnv.setElasticsearchSearchService();
 
             // Now we use ES. Check if we still have valid result.
-            initialEnv.expectSearchResult(MAX_TIMEOUT, SEARCH_TERM,
+            initialEnv.expectSearchResult(SEARCH_TERM,
                     FILE_UPLOADED_BEFORE_INITIAL_REINDEXING,
                     FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING,
                     FILE_UPLOADED_AFTER_STARTING_LIVE_INDEXING,
@@ -151,7 +147,7 @@ public class FromSolrUpgradeTest
             verifyAdvancedScenarios(initialEnv);
 
             // Solr has been stopped. Check if we still have valid result.
-            initialEnv.expectSearchResult(MAX_TIMEOUT, SEARCH_TERM,
+            initialEnv.expectSearchResult(SEARCH_TERM,
                     FILE_UPLOADED_BEFORE_INITIAL_REINDEXING,
                     FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING,
                     FILE_UPLOADED_AFTER_STARTING_LIVE_INDEXING,
@@ -160,7 +156,7 @@ public class FromSolrUpgradeTest
             initialEnv.uploadFile(TEST_FILE_URL, FILE_UPLOADED_AFTER_SWITCHING_TO_ELASTICSEARCH);
 
             // Check if FILE_UPLOADED_AFTER_SWITCHING_TO_ELASTICSEARCH is part of the search result.
-            initialEnv.expectSearchResult(MAX_TIMEOUT, SEARCH_TERM,
+            initialEnv.expectSearchResult(SEARCH_TERM,
                     FILE_UPLOADED_BEFORE_INITIAL_REINDEXING,
                     FILE_UPLOADED_BEFORE_STARTING_LIVE_INDEXING,
                     FILE_UPLOADED_AFTER_STARTING_LIVE_INDEXING,
@@ -243,62 +239,62 @@ public class FromSolrUpgradeTest
     private void verifyAdvancedScenarios(ACSEnv env)
     {
         // 1) Deep folder hierarchy - a node buried five levels down is indexed with its path
-        env.expectQueryResult(MAX_TIMEOUT, "afts",
+        env.expectQueryResult("afts",
                 "PATH:'//cm:" + DEEP_FOLDER_L5 + "//*' AND TYPE:'cm:content'", DEEP_DOC);
 
         // 2) Secondary parent-child association - the doc is reachable under its secondary parent
-        env.expectQueryResult(MAX_TIMEOUT, "afts",
+        env.expectQueryResult("afts",
                 "PATH:'//cm:" + SECONDARY_FOLDER + "//*' AND TYPE:'cm:content'", SHARED_DOC);
 
         // 3) Multi-language content - a non-English term inside the content is searchable.
-        env.expectQueryResult(MAX_TIMEOUT, "afts", "cm:content:'croissants'", MULTILANG_DOC);
+        env.expectQueryResult("afts", "cm:content:'croissants'", MULTILANG_DOC);
 
         // 4) Categories and tags - both associations survived the re-index
-        env.expectQueryResult(MAX_TIMEOUT, "afts", "TAG:'" + MIGRATION_TAG + "'", TAGGED_DOC);
-        env.expectQueryResult(MAX_TIMEOUT, "afts",
+        env.expectQueryResult("afts", "TAG:'" + MIGRATION_TAG + "'", TAGGED_DOC);
+        env.expectQueryResult("afts",
                 "cm:categories:\"" + migrationCategoryRef + "\" AND cm:name:'" + CATEGORISED_DOC + "'",
                 CATEGORISED_DOC);
 
         // 5) Complex ACLs and permission-based filtering.
         // 5a - direct grant on the node; positive check first so the ACL is indexed.
-        env.expectQueryResultAs(MAX_TIMEOUT, ADVANCED_USER, "afts",
+        env.expectQueryResultAs(ADVANCED_USER, "afts",
                 "cm:name:'" + RESTRICTED_DOC + "'", RESTRICTED_DOC);
-        env.expectQueryResultAs(MAX_TIMEOUT, OUTSIDER_USER, "afts",
+        env.expectQueryResultAs(OUTSIDER_USER, "afts",
                 "cm:name:'" + RESTRICTED_DOC + "'");
         // 5b - group-based grant on the parent folder, inherited by the child document.
-        env.expectQueryResultAs(MAX_TIMEOUT, GROUP_USER, "afts",
+        env.expectQueryResultAs(GROUP_USER, "afts",
                 "cm:name:'" + GROUP_PROTECTED_DOC + "'", GROUP_PROTECTED_DOC);
-        env.expectQueryResultAs(MAX_TIMEOUT, OUTSIDER_USER, "afts",
+        env.expectQueryResultAs(OUTSIDER_USER, "afts",
                 "cm:name:'" + GROUP_PROTECTED_DOC + "'");
 
         // 6) CMIS query language
-        env.expectQueryResult(MAX_TIMEOUT, "cmis",
+        env.expectQueryResult("cmis",
                 "SELECT * FROM cmis:document WHERE cmis:name = '" + DEEP_DOC + "'", DEEP_DOC);
 
         // 7) Path query variants - '//' matches the whole subtree, '/' only direct children.
         // TYPE:'cm:content' keeps the intermediate folders out of the result set.
-        env.expectQueryResult(MAX_TIMEOUT, "afts",
+        env.expectQueryResult("afts",
                 "PATH:'//cm:" + DEEP_FOLDER_L1 + "//*' AND TYPE:'cm:content'", DEEP_DOC, L1_CHILD_DOC);
-        env.expectQueryResult(MAX_TIMEOUT, "afts",
+        env.expectQueryResult("afts",
                 "PATH:'//cm:" + DEEP_FOLDER_L1 + "/*' AND TYPE:'cm:content'", L1_CHILD_DOC);
 
         // 8) Move - found under the new parent, and no longer under the old one.
         // The positive check runs first, so the negative cannot pass on a stale index.
-        env.expectQueryResult(MAX_TIMEOUT, "afts",
+        env.expectQueryResult("afts",
                 "PATH:'//cm:" + MOVE_TARGET_FOLDER + "//*' AND TYPE:'cm:content'", MOVED_DOC);
-        env.expectQueryResult(MAX_TIMEOUT, "afts",
+        env.expectQueryResult("afts",
                 "PATH:'//cm:" + MOVE_SOURCE_FOLDER + "//*' AND TYPE:'cm:content'");
 
         // 9) Content update - the current content matches, the replaced content does not.
-        env.expectQueryResult(MAX_TIMEOUT, "afts", "cm:content:'" + CURRENT_TERM + "'", UPDATED_DOC);
-        env.expectQueryResult(MAX_TIMEOUT, "afts", "cm:content:'" + STALE_TERM + "'");
+        env.expectQueryResult("afts", "cm:content:'" + CURRENT_TERM + "'", UPDATED_DOC);
+        env.expectQueryResult("afts", "cm:content:'" + STALE_TERM + "'");
 
         // 10) Delete - exactly the surviving sibling comes back.
-        env.expectQueryResult(MAX_TIMEOUT, "afts",
+        env.expectQueryResult("afts",
                 "cm:content:'" + DELETE_PAIR_TERM + "'", SURVIVING_DOC);
 
         // 11) Typed field mapping - a date range on cm:created still resolves after the migration.
-        env.expectQueryResult(MAX_TIMEOUT, "afts",
+        env.expectQueryResult("afts",
                 "cm:created:['" + QUERY_FROM_DATE + "' TO '" + QUERY_TO_DATE + "']"
                         + " AND cm:name:'" + DEEP_DOC + "'",
                 DEEP_DOC);

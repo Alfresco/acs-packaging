@@ -9,7 +9,7 @@
   <parent>
     <groupId>org.alfresco</groupId>
     <artifactId>content-repository-tests</artifactId>
-    <version>26.3.0-A.19-SNAPSHOT</version>
+    <version>26.3.0-A.29-SNAPSHOT</version>
   </parent>
 
   <profiles>
@@ -112,6 +112,12 @@
           <artifactId>assertj-core</artifactId>
           <scope>test</scope>
       </dependency>
+    <dependency>
+      <groupId>org.awaitility</groupId>
+      <artifactId>awaitility</artifactId>
+      <version>${dependency.awaitility.version}</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
