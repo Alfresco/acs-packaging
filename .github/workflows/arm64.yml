@@ -6,7 +6,6 @@ on:
   workflow_dispatch:
 
 permissions:
-  id-token: write
   contents: read
 
 env:
@@ -21,6 +20,9 @@ jobs:
   arm64_health_check:
     name: "ARM64 Health Check"
     runs-on: ubuntu-24.04-arm
+    permissions:
+      id-token: write
+      contents: read
     outputs:
       test_failure: ${{ steps.persist_test_failure_flag.outputs.test_failure }}
     steps:
@@ -41,7 +43,7 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - name: Set up QEMU

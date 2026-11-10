@@ -15,7 +15,6 @@ on:
   workflow_dispatch:
 
 permissions:
-  id-token: write
   contents: read
 
 env:
@@ -50,6 +49,9 @@ jobs:
   precommit:
     name: Pre-Commit checks
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     needs: [commit_parser]
     timeout-minutes: 15
     if: >
@@ -60,13 +62,11 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         env:
-          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
 
   test_run_check:
     name: "Test run check"
@@ -88,6 +88,9 @@ jobs:
   pmd_scan:
     name: "PMD Scan"
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true' && github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
@@ -96,8 +99,6 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     steps:
       - name: "Generate GitHub App token"
         id: app-token
@@ -112,7 +113,7 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - uses: Alfresco/ya-pmd-scan@1f36f8e45695ce60362010345a99a0c8f7310264 # v4.4.1
@@ -124,6 +125,9 @@ jobs:
   tas_tests:
     name: ${{ matrix.testSuite }} TAS tests
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
@@ -132,8 +136,6 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -210,7 +212,7 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - name: "Build"
@@ -237,6 +239,9 @@ jobs:
   tas_tests_with_aims:
     name: ${{ matrix.testSuite }} TAS tests with AIMS
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
@@ -245,8 +250,6 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -283,7 +286,7 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - name: "Build"
@@ -316,6 +319,9 @@ jobs:
   cmis_tas_tests_elasticsearch:
     name: CMIS TAS tests - Elastic Search | ${{ matrix.testSuite }} (CMIS API)
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
@@ -324,8 +330,6 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -363,7 +367,7 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - name: "Build"
@@ -398,6 +402,9 @@ jobs:
   cmis_tas_tests_opensearch:
     name: "CMIS TAS tests - Open Search (CMIS API)"
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
@@ -406,8 +413,6 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     steps:
       - name: "Generate GitHub App token"
         id: app-token
@@ -425,7 +430,7 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - name: "Build"
@@ -452,6 +457,9 @@ jobs:
   tas_tests_search_api:
     name: ${{ matrix.testSuite }} | TAS tests (Search API)
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
@@ -460,8 +468,6 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -522,7 +528,7 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - name: "Build"
@@ -545,13 +551,14 @@ jobs:
   upgrade_tas_tests:
     name: ${{ matrix.testSuite }} Upgrade TAS tests
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
@@ -579,7 +586,7 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - name: "Build"
@@ -607,6 +614,9 @@ jobs:
   all_amps_tests:
     name: "All AMPs tests"
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
@@ -633,7 +643,7 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - name: "Build"
@@ -671,6 +681,9 @@ jobs:
   tas_test_with_mtls:
     name: ${{ matrix.testSuite }} TAS tests
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
@@ -679,8 +692,6 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -726,7 +737,7 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - name: "Checkout alfresco-ssl-generator"
@@ -774,6 +785,9 @@ jobs:
   distribution_zip_content_tests:
     name: "Distribution Zip content tests (Java ${{ matrix.java-version }})"
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
@@ -782,8 +796,6 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -805,7 +817,7 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - name: "Build"
@@ -820,7 +832,7 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           java-version: ${{ matrix.java-version }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - name: "Run tests"
@@ -836,12 +848,12 @@ jobs:
   single_pipeline_image_tests:
     name: "Single Pipeline image tests (Java ${{ matrix.java-version }})"
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true' && github.event_name != 'pull_request'
-    env:
-      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     strategy:
       fail-fast: false
       matrix:
@@ -868,7 +880,7 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
@@ -922,6 +934,9 @@ jobs:
   test_tomcat_deployment:
     name: "Test Tomcat deployment"
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     needs:
       - test_run_check
     if: needs.test_run_check.outputs.tests == 'true'
@@ -930,8 +945,6 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     steps:
       - name: "Generate GitHub App token"
         id: app-token
@@ -949,7 +962,7 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - name: "Build"
@@ -976,6 +989,9 @@ jobs:
   pipeline_test_docker_release:
     name: "Upload docker images needed for pipeline tests: <acs.version>-<PIPELINE_TAG_TEXT_INSERT>-<build>"
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     needs: [commit_parser]
     if: >
       contains(needs.commit_parser.outputs.title, '[pipeline_docker]')
@@ -984,8 +1000,6 @@ jobs:
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
     services:
       registry:
         image: registry:2
@@ -1008,7 +1022,7 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
-      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@080221fd2e8016826418a3d6c350ac6571681912 # v19.8.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - name: Set up QEMU
