@@ -66,7 +66,6 @@ jobs:
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/pre-commit@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-        env:
 
   test_run_check:
     name: "Test run check"
