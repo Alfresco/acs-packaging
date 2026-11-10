@@ -159,19 +159,34 @@ jobs:
             profiles: all-tas-tests,run-restapi-part3
             compose-file: docker-compose-rest-api-tests.yml
             deploy-timeout: 60
-          - testSuite: CMIS (BROWSER binding)
+          - testSuite: CMIS (BROWSER binding) part1
             pom-dir: tests/tas-cmis
-            profiles: all-tas-tests,run-cmis-browser
+            profiles: all-tas-tests,run-cmis-browser,cmis-part1
             compose-file: docker-compose-cmis-tests.yml
             deploy-timeout: 60
-          - testSuite: CMIS (ATOM binding)
+          - testSuite: CMIS (BROWSER binding) part2
             pom-dir: tests/tas-cmis
-            profiles: all-tas-tests,run-cmis-atom
+            profiles: all-tas-tests,run-cmis-browser,cmis-part2
             compose-file: docker-compose-cmis-tests.yml
             deploy-timeout: 60
-          - testSuite: CMIS (WEBSERVICES binding)
+          - testSuite: CMIS (ATOM binding) part1
             pom-dir: tests/tas-cmis
-            profiles: all-tas-tests,run-cmis-webservices
+            profiles: all-tas-tests,run-cmis-atom,cmis-part1
+            compose-file: docker-compose-cmis-tests.yml
+            deploy-timeout: 60
+          - testSuite: CMIS (ATOM binding) part2
+            pom-dir: tests/tas-cmis
+            profiles: all-tas-tests,run-cmis-atom,cmis-part2
+            compose-file: docker-compose-cmis-tests.yml
+            deploy-timeout: 60
+          - testSuite: CMIS (WEBSERVICES binding) part1
+            pom-dir: tests/tas-cmis
+            profiles: all-tas-tests,run-cmis-webservices,cmis-part1
+            compose-file: docker-compose-cmis-tests.yml
+            deploy-timeout: 60
+          - testSuite: CMIS (WEBSERVICES binding) part2
+            pom-dir: tests/tas-cmis
+            profiles: all-tas-tests,run-cmis-webservices,cmis-part2
             compose-file: docker-compose-cmis-tests.yml
             deploy-timeout: 60
           - testSuite: Email
