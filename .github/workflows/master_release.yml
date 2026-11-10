@@ -308,6 +308,7 @@ jobs:
     permissions:
       contents: write
       id-token: write
+      pull-requests: read   # github-list-pr-authors matches commits to their pull requests
     steps:
       - name: "Generate GitHub App token"
         id: app-token
@@ -352,12 +353,56 @@ jobs:
           MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
           MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
           AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
+      # Authors are everyone merged since the previous release, not just since the last
+      # push, because the people behind a release run that failed would go unnamed.
+      - name: "Find the previous release"
+        id: baseline
+        # Names are a nicety; losing them must not stop the release propagating.
+        continue-on-error: true
+        env:
+          VERSION: ${{ steps.update-downstream.outputs.version }}
+        run: |
+          set -euo pipefail
+          # The checkout is shallow, so reach back far enough to see the tag before this one.
+          git fetch --deepen=200 --quiet origin
+          echo "previous-release=$(git describe --abbrev=0 --tags "$VERSION^")" >> "$GITHUB_OUTPUT"
+      # This release reaches acs-community-packaging as one bot commit, so the names travel with it.
+      - name: "List who is in this release"
+        id: authors
+        if: steps.baseline.outputs.previous-release != ''
+        continue-on-error: true
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-list-pr-authors@837a4dfd80d15ec3bc05b9168b97e0864aa3066c # v19.14.0
+        with:
+          from-ref: ${{ steps.baseline.outputs.previous-release }}
+          to-ref: ${{ github.sha }}
+      # A bump arriving here carries its own authors, and attribution stops if they are dropped.
+      - name: "Add the authors this release inherited"
+        id: all-authors
+        if: steps.baseline.outputs.previous-release != ''
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          FROM_REF: ${{ steps.baseline.outputs.previous-release }}
+          TO_REF: ${{ github.sha }}
+          OWN: ${{ steps.authors.outputs.cc }}
+        run: |
+          set -euo pipefail
+          INHERITED=$(gh api "repos/$REPOSITORY/compare/$FROM_REF...$TO_REF" \
+            --jq '.commits[].commit.message' \
+            | sed -n 's/^Authors:[[:space:]]*//p') || INHERITED=""
+          ALL=$(printf '%s\n%s\n' "$OWN" "$INHERITED" | tr ',' '\n' \
+            | sed 's/^[[:space:]]*//; s/[[:space:]]*$//' | sed '/^$/d' \
+            | awk '!seen[$0]++' | paste -sd, -)
+          echo "cc=$ALL" >> "$GITHUB_OUTPUT"
       - name: "Compute downstream commit message"
         id: commit-meta
         uses: Alfresco/alfresco-community-repo/.github/actions/get-downstream-commit-message@4fd43af77343e9fe38bda565a068d548b1f8cef7 # v26.3.0.92
         with:
           commit-title: ${{ needs.commit_parser.outputs.title }}
           version: ${{ steps.update-downstream.outputs.version }}
+          # Handles only - this message lands in a repository with a different audience.
+          authors: ${{ steps.all-authors.outputs.cc }}
           directives: "[release]"
       - name: "Commit downstream version update"
         uses: iarekylew00t/verified-bot-commit@1ee4374942e5c5f814e9b3121d766cbe45cea360 # v2.3.6
