@@ -13,7 +13,7 @@
   </parent>
 
   <properties>
-    <dependency.assertj-core.version>3.13.2</dependency.assertj-core.version>
+    <dependency.assertj-core.version>3.27.7</dependency.assertj-core.version>
     <suiteXmlFile>${project.basedir}/src/test/resources/distribution-suite.xml</suiteXmlFile>
   </properties>
 
