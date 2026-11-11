@@ -292,13 +292,13 @@ jobs:
           AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
       - name: "Compute downstream commit message"
         id: commit-meta
-        uses: Alfresco/alfresco-community-repo/.github/actions/get-downstream-commit-message@4e0b18407bcf39b453fc03485b402722eba0c151 # v26.3.0.98
+        uses: Alfresco/alfresco-community-repo/.github/actions/get-downstream-commit-message@bf6499c28e45b2336c0edf67f874f816d32cbc60 # v26.3.0.99
         with:
           commit-title: ${{ needs.commit_parser.outputs.title }}
           version: ${{ steps.update-downstream.outputs.version }}
           directives: "[release]"
       - name: "Commit downstream version update"
-        uses: iarekylew00t/verified-bot-commit@1ee4374942e5c5f814e9b3121d766cbe45cea360 # v2.3.6
+        uses: iarekylew00t/verified-bot-commit@3a1e72c2443cce5574f76a9b2bb36e355d667743 # v2.3.7
         with:
           token: ${{ steps.app-token.outputs.token }}
           repository: Alfresco/acs-community-packaging
