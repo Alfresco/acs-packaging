@@ -851,8 +851,9 @@ jobs:
       id-token: write
       contents: read
     needs:
+      - commit_parser
       - test_run_check
-    if: needs.test_run_check.outputs.tests == 'true' && github.event_name != 'pull_request'
+    if: (needs.test_run_check.outputs.tests == 'true' && github.event_name != 'pull_request') || contains(needs.commit_parser.outputs.title, '[run_single_pipeline_tests]')
     strategy:
       fail-fast: false
       matrix:
