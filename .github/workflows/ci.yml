@@ -928,6 +928,13 @@ jobs:
         run: |
           cd dtas
           pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s -rs
+      - name: "Dump container logs"
+        if: failure()
+        run: |
+          curl -s -o /dev/null -w "proxy /share/page/ -> %{http_code}\n" http://localhost:8080/share/page/ || true
+          docker compose --file ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml --project-directory ${TAS_ENVIRONMENT} exec -T share curl -s -o /dev/null -w "share:8080 /share/page/ -> %{http_code}\n" http://localhost:8080/share/page/ || true
+          docker compose --file ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml --project-directory ${TAS_ENVIRONMENT} exec -T share ls -la /usr/local/tomcat/webapps || true
+          docker compose --file ${TAS_ENVIRONMENT}/docker-compose-pipeline-all-amps.yml --project-directory ${TAS_ENVIRONMENT} logs --no-color share proxy
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
