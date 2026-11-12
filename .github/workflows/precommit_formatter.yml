@@ -18,9 +18,7 @@ jobs:
     if: contains(github.event.head_commit.message, '[reformat code]')
     permissions:
       contents: write
-    env:
-      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
+      id-token: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
@@ -28,6 +26,9 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - name: Set up Python ${{ inputs.python-version }}
         uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
