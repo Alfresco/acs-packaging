@@ -125,8 +125,6 @@ jobs:
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-      MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
     steps:
@@ -184,13 +182,14 @@ jobs:
           development-version: ${{ env.DEVELOPMENT_VERSION }}
           release-profile: "release,all-tas-tests,pipeline,ags"
           maven-args: "-Darguments=-Prelease,all-tas-tests,pipeline -Pags -DskipTests -Dbuild-number=${{ env.COMPUTED_BUILD_NUMBER }}"
-      - name: "Copy share distribution to public Nexus"
+      - name: "Copy share distribution to public Maven repository"
         run: |
           source scripts/ci/build_functions.sh
+          # TODO: switch to maven.artifacts.hyland.dev once its DNS record exists
           copyArtifactToAnotherRepo org.alfresco alfresco-content-services-share-distribution \
             "${RELEASE_VERSION}" zip \
-            alfresco-enterprise-releases \
-            https://nexus.alfresco.com/nexus/content/repositories/releases/
+            alfresco-releases \
+            https://maven.cloudsmith.io/hyland/alfresco-community-releases/
       - name: "Prepare staging artifacts"
         run: bash scripts/ci/prepare_staging_deploy.sh
       - name: "Clean Maven cache"
@@ -260,9 +259,6 @@ jobs:
           QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
       - name: "Rebuild the artifacts and publish them to enterprise-releases"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        env:
-          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
         run: bash scripts/ci/maven_publish.sh
       - name: Compute final build number
         run: |
@@ -349,8 +345,6 @@ jobs:
         run: bash ./scripts/ci/update_downstream.sh
         env:
           COMMIT_MESSAGE: ${{ needs.commit_parser.outputs.title }}
-          MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-          MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
           AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
       - name: "Compute downstream commit message"
         id: commit-meta
