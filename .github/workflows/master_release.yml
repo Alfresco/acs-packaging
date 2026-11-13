@@ -371,7 +371,7 @@ jobs:
         id: authors
         if: steps.baseline.outputs.previous-release != ''
         continue-on-error: true
-        uses: Alfresco/alfresco-build-tools/.github/actions/github-list-pr-authors@837a4dfd80d15ec3bc05b9168b97e0864aa3066c # v19.14.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/github-list-pr-authors@74d5f71b8cac71b5c056c8e53d51ba660b0f59fd # v19.14.1
         with:
           from-ref: ${{ steps.baseline.outputs.previous-release }}
           to-ref: ${{ github.sha }}
@@ -397,7 +397,7 @@ jobs:
           echo "cc=$ALL" >> "$GITHUB_OUTPUT"
       - name: "Compute downstream commit message"
         id: commit-meta
-        uses: Alfresco/alfresco-community-repo/.github/actions/get-downstream-commit-message@4fd43af77343e9fe38bda565a068d548b1f8cef7 # v26.3.0.92
+        uses: Alfresco/alfresco-community-repo/.github/actions/get-downstream-commit-message@a78ccb823cee9d0d64f2d76d36fe86d97c9d1b04 # v26.3.0.107
         with:
           commit-title: ${{ needs.commit_parser.outputs.title }}
           version: ${{ steps.update-downstream.outputs.version }}
