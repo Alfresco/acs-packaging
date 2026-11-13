@@ -17,6 +17,15 @@ on:
 permissions:
   contents: read
 
+# Cancel a still running CI run when a newer commit is pushed to the same PR or feature/fix branch.
+# Runs on master and release branches (including those started from master_release.yml) are never cancelled.
+concurrency:
+  group: >-
+    ${{ (github.event_name == 'pull_request' || startsWith(github.ref, 'refs/heads/feature/') || startsWith(github.ref, 'refs/heads/fix/'))
+    && format('{0}-{1}-{2}', github.workflow, github.event_name, github.ref)
+    || format('{0}-{1}', github.workflow, github.run_id) }}
+  cancel-in-progress: true
+
 env:
   JAVA_VERSION: "21"
   AZURE_AUTHENTICATION_MODE: sharedKey
@@ -107,7 +116,11 @@ jobs:
           private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
           owner: Alfresco
           repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+        with:
+          remove-android: 'false'
+          remove-tools-cache: 'false'
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
@@ -154,19 +167,34 @@ jobs:
             profiles: all-tas-tests,run-restapi-part3
             compose-file: docker-compose-rest-api-tests.yml
             deploy-timeout: 60
-          - testSuite: CMIS (BROWSER binding)
+          - testSuite: CMIS (BROWSER binding) part1
             pom-dir: tests/tas-cmis
-            profiles: all-tas-tests,run-cmis-browser
+            profiles: all-tas-tests,run-cmis-browser,cmis-part1
             compose-file: docker-compose-cmis-tests.yml
             deploy-timeout: 60
-          - testSuite: CMIS (ATOM binding)
+          - testSuite: CMIS (BROWSER binding) part2
             pom-dir: tests/tas-cmis
-            profiles: all-tas-tests,run-cmis-atom
+            profiles: all-tas-tests,run-cmis-browser,cmis-part2
             compose-file: docker-compose-cmis-tests.yml
             deploy-timeout: 60
-          - testSuite: CMIS (WEBSERVICES binding)
+          - testSuite: CMIS (ATOM binding) part1
             pom-dir: tests/tas-cmis
-            profiles: all-tas-tests,run-cmis-webservices
+            profiles: all-tas-tests,run-cmis-atom,cmis-part1
+            compose-file: docker-compose-cmis-tests.yml
+            deploy-timeout: 60
+          - testSuite: CMIS (ATOM binding) part2
+            pom-dir: tests/tas-cmis
+            profiles: all-tas-tests,run-cmis-atom,cmis-part2
+            compose-file: docker-compose-cmis-tests.yml
+            deploy-timeout: 60
+          - testSuite: CMIS (WEBSERVICES binding) part1
+            pom-dir: tests/tas-cmis
+            profiles: all-tas-tests,run-cmis-webservices,cmis-part1
+            compose-file: docker-compose-cmis-tests.yml
+            deploy-timeout: 60
+          - testSuite: CMIS (WEBSERVICES binding) part2
+            pom-dir: tests/tas-cmis
+            profiles: all-tas-tests,run-cmis-webservices,cmis-part2
             compose-file: docker-compose-cmis-tests.yml
             deploy-timeout: 60
           - testSuite: Email
@@ -204,6 +232,9 @@ jobs:
           owner: Alfresco
           repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+        with:
+          remove-android: 'false'
+          remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app-token.outputs.token }}
@@ -278,6 +309,9 @@ jobs:
           owner: Alfresco
           repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+        with:
+          remove-android: 'false'
+          remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app-token.outputs.token }}
@@ -422,6 +456,9 @@ jobs:
           owner: Alfresco
           repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+        with:
+          remove-android: 'false'
+          remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app-token.outputs.token }}
@@ -635,6 +672,9 @@ jobs:
           owner: Alfresco
           repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+        with:
+          remove-android: 'false'
+          remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app-token.outputs.token }}
@@ -729,6 +769,9 @@ jobs:
           owner: Alfresco
           repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging,alfresco-ssl-generator
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+        with:
+          remove-android: 'false'
+          remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app-token.outputs.token }}
@@ -809,6 +852,9 @@ jobs:
           owner: Alfresco
           repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+        with:
+          remove-android: 'false'
+          remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app-token.outputs.token }}
@@ -859,6 +905,9 @@ jobs:
         java-version: [DEFAULT, 25]
     steps:
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+        with:
+          remove-android: 'false'
+          remove-tools-cache: 'false'
       - name: "Generate GitHub App token"
         id: app-token
         uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
@@ -954,6 +1003,9 @@ jobs:
           owner: Alfresco
           repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+        with:
+          remove-android: 'false'
+          remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app-token.outputs.token }}
@@ -1014,6 +1066,9 @@ jobs:
           owner: Alfresco
           repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+        with:
+          remove-android: 'false'
+          remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           token: ${{ steps.app-token.outputs.token }}
