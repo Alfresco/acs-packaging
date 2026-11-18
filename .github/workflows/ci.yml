@@ -976,6 +976,14 @@ jobs:
         run: |
           cd dtas
           pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s -rs
+      - name: "Show container states"
+        if: failure()
+        run: |
+          docker ps -a --format 'table {{.Names}}\t{{.Status}}'
+          docker inspect --format '{{.Name}} exit={{.State.ExitCode}} oom={{.State.OOMKilled}} finished={{.State.FinishedAt}}' $(docker ps -aq)
+      - name: "Dump all Docker containers logs"
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+        if: failure()
       - name: "Clean Maven cache"
         run: bash ./scripts/ci/cleanup_cache.sh
 
