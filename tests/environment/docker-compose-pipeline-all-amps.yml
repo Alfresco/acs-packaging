@@ -135,7 +135,7 @@ services:
             - 5432:5432
 
     solr6:
-        image: alfresco/alfresco-search-services:2.0.23
+        image: alfresco/alfresco-search-services:2.0.24-A.2
         mem_limit: 3g
         environment:
             #Solr needs to know how to register itself with Alfresco
@@ -192,6 +192,7 @@ services:
         mem_limit: 1g
         environment:
             JAVA_OPTS : >- #pragma: allowlist secret
+                -Dsync.cluster.enabled=false
                 -Dsql.db.driver=org.postgresql.Driver
                 -Dsql.db.url=jdbc:postgresql://postgres:5432/alfresco
                 -Dsql.db.username=alfresco
