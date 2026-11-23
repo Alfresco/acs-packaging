@@ -6,11 +6,12 @@ on:
   workflow_dispatch:
 
 env:
+  JAVA_VERSION: "17"
   GITHUB_ACTIONS_DEPLOY_TIMEOUT: 60
   MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
   MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
   TAS_ENVIRONMENT: ./tests/environment
-  TAS_SCRIPTS: ../alfresco-community-repo/packaging/tests/scripts
+  TAS_SCRIPTS: alfresco-community-repo/packaging/tests/scripts
   AWS_REGION: eu-west-1
   DTAS_VERSION: v1.5.5
 
@@ -21,13 +22,23 @@ jobs:
     outputs:
       test_failure: ${{ steps.persist_test_failure_flag.outputs.test_failure }}
     steps:
-      - uses: actions/checkout@v4
+      - name: "Generate GitHub App token"
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.GH_APP_ENGINEERING_CONTRIB_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_CONTRIB_PRIVATE_KEY }}
+          owner: Alfresco
+          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging,alfresco-community-repo,alfresco-deployment-test-automation-scripts
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
           persist-credentials: false
           fetch-depth: 0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v8.16.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.1.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v8.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
@@ -56,6 +67,15 @@ jobs:
           git checkout $TEST_GIT_TAG
           mvn clean install -B -ntp -DskipTests -f tests/pipeline-all-amps/repo/pom.xml
           cat tests/pipeline-all-amps/repo/target/dtas/dtas-config.json
+      - name: "Checkout alfresco-community-repo"
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          repository: Alfresco/alfresco-community-repo
+          ref: master
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
+          fetch-depth: 1
+          path: alfresco-community-repo
       - name: "Set up the environment"
         id: setup-env
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
@@ -63,8 +83,6 @@ jobs:
           AWS_ACCESS_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_ACCESS_KEY_ID }}
           AWS_SECRET_KEY: ${{ secrets.AWS_S3_PIPELINE_AMPS_SECRET_ACCESS_KEY }}
         run: |
-          # Make necessary env files available
-          git clone --depth=1 --branch master https://${{ secrets.BOT_GITHUB_USERNAME }}:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/Alfresco/alfresco-community-repo.git ../alfresco-community-repo
           # Start the environment
           export PIPELINE_ALL_AMPS_REGISTRY=quay.io/
           export PIPELINE_ALL_AMPS_TAG=$TEST_GIT_TAG
@@ -72,12 +90,19 @@ jobs:
           ${TAS_SCRIPTS}/wait-for-alfresco-start.sh "http://localhost:8080/alfresco/" 180
           docker ps
           curl -v --user admin.pipeline@alfresco.com:admin http://localhost:8080/alfresco/api/discovery
+      - name: "Checkout alfresco-deployment-test-automation-scripts"
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          repository: Alfresco/alfresco-deployment-test-automation-scripts
+          ref: ${{ env.DTAS_VERSION }}
+          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
+          fetch-depth: 1
+          path: dtas
       - name: "Run tests"
         id: run-tests
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: |
-          # Make necessary test files available
-          git clone --depth 1 --branch $DTAS_VERSION https://${{ secrets.BOT_GITHUB_USERNAME }}:${{ secrets.BOT_GITHUB_TOKEN }}@github.com/Alfresco/alfresco-deployment-test-automation-scripts.git dtas
           cd dtas
           python3 -m venv .venv
           source .venv/bin/activate
@@ -85,7 +110,7 @@ jobs:
           python3 -m pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
       - name: "Dump all Docker containers logs"
         if: failure() && (steps.setup-env.outcome == 'failure' || steps.run-tests.outcome == 'failure')
-        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v8.16.0
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - name: "Persist test failure flag"
         id: persist_test_failure_flag
         if: failure()
