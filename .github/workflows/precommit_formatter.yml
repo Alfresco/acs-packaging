@@ -16,9 +16,9 @@ jobs:
     if: contains(github.event.head_commit.message, '[reformat code]')
     steps:
       - uses: actions/checkout@v7
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v19.12.1
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v19.12.1
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v19.12.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v19.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v19.16.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v19.16.0
       - name: Set up Python ${{ inputs.python-version }}
         uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
@@ -29,7 +29,7 @@ jobs:
           extra_args: --all-files
       - name: Update secrets baseline
         run: pip install detect-secrets && detect-secrets scan --baseline .secrets.baseline
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v19.12.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v19.16.0
         with:
           username: ${{ secrets.BOT_GITHUB_USERNAME }}
           add-options: -u
