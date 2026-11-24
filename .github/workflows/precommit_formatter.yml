@@ -5,23 +5,30 @@ on:
     branches:
       - precommit/**
 
+permissions:
+  contents: read
+
 env:
   JAVA_VERSION: "21"
-  MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-  MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
 
 jobs:
   format-code:
     name: "Reformat code"
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
     if: contains(github.event.head_commit.message, '[reformat code]')
     steps:
-      - uses: actions/checkout@v4
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v12.4.3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - name: Set up Python ${{ inputs.python-version }}
         uses: actions/setup-python@42375524e23c412d93fb67b49958b491fce71c38 # v5.4.0
         with:
@@ -32,7 +39,7 @@ jobs:
           extra_args: --all-files
       - name: Update secrets baseline
         run: pip install detect-secrets && detect-secrets scan --baseline .secrets.baseline
-      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@v12.4.3
+      - uses: Alfresco/alfresco-build-tools/.github/actions/git-commit-changes@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           username: ${{ secrets.BOT_GITHUB_USERNAME }}
           add-options: -u

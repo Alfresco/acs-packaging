@@ -6,6 +6,9 @@ on:
       - master
       - release/**
 
+permissions:
+  contents: read
+
 env:
   JAVA_VERSION: "21"
   AWS_REGION: eu-west-1
@@ -14,8 +17,6 @@ env:
   GIT_PASSWORD: ${{ secrets.BOT_GITHUB_TOKEN }}
   DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-  MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-  MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
   QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
   QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
   GITHUB_ACTIONS_DEPLOY_TIMEOUT: 60
@@ -31,21 +32,27 @@ jobs:
     outputs:
       title: ${{ steps.get-commit.outputs.COMMIT_MESSAGE }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 2
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-commit-message@v17.2.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-commit-message@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         id: get-commit
         with:
           header-only: "true"
 
   run_ci:
     uses: ./.github/workflows/ci.yml
+    permissions:
+      id-token: write
+      contents: read
     secrets: inherit
 
   docker_latest:
     name: "Update latest and Single Pipeline <acs>-<build> images"
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     needs: [run_ci, commit_parser]
     if: >
       !(failure() || cancelled()) &&
@@ -57,14 +64,17 @@ jobs:
         ports:
           - 5000:5000
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v12.4.3
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
@@ -86,6 +96,9 @@ jobs:
   release:
     name: "Release and Copy to S3 Staging Bucket"
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     needs: [docker_latest, commit_parser]
     if: >
       !(failure() || cancelled()) &&
@@ -97,14 +110,17 @@ jobs:
         ports:
           - 5000:5000
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v12.4.3
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - uses: actions/setup-python@v5
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -115,7 +131,7 @@ jobs:
         run: |
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh -m
-      - uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@v12.4.3
+      - uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           username: ${{ env.GIT_USERNAME }}
           email: ${{ env.GIT_EMAIL }}
@@ -150,24 +166,30 @@ jobs:
   publish:
     name: "Copy to S3 Release Bucket"
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     needs: [release, commit_parser]
     if: >
       !(failure() || cancelled()) &&
       contains(needs.commit_parser.outputs.title, '[publish]') &&
       github.event_name != 'pull_request'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           fetch-depth: 0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v12.4.3
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - name: "Init"
         run: bash ./scripts/ci/init.sh
-      - uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@v12.4.3
+      - uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           username: ${{ env.GIT_USERNAME }}
           email: ${{ env.GIT_EMAIL }}
@@ -195,6 +217,9 @@ jobs:
   update_downstream:
     name: "Update acs-community-packaging (after release)"
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
     needs: [publish, commit_parser]
     if: >
       !(failure() || cancelled()) &&
@@ -202,17 +227,20 @@ jobs:
       !contains(needs.commit_parser.outputs.title, '[no downstream]'))) &&
       github.event_name != 'pull_request'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v12.4.3
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - name: "Init"
         run: bash ./scripts/ci/init.sh
-      - uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@v12.4.3
+      - uses: Alfresco/alfresco-build-tools/.github/actions/configure-git-author@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           username: ${{ env.GIT_USERNAME }}
           email: ${{ env.GIT_EMAIL }}

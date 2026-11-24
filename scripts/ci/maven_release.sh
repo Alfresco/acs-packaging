@@ -31,8 +31,9 @@ mvn -B \
 
 
 # The alfresco-content-services-share-distribution was in the Nexus 'Releases' repository prior to 7.1.0, which was visible to Community.
+# TODO: switch to maven.artifacts.hyland.dev once its DNS record exists
 copyArtifactToAnotherRepo org.alfresco alfresco-content-services-share-distribution ${RELEASE_VERSION} zip \
- alfresco-enterprise-releases https://nexus.alfresco.com/nexus/content/repositories/releases/
+ alfresco-releases https://maven.cloudsmith.io/hyland/alfresco-community-releases/
 
 popd
 set +vex
