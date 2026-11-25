@@ -95,7 +95,8 @@ jobs:
           contains(needs.commit_parser.outputs.title, '[run tests]')
 
   # The only job that saves the Maven cache, so the entry holds everything a full build and the TAS modules need.
-  # PR and feature branch runs restore the master entry instead of writing their own.
+  # Test jobs wait for it, so a master run restores the entry for its own poms; they still run if it fails or is
+  # skipped. PR and feature branch runs restore the master entry instead of writing their own.
   maven_cache:
     name: "Save Maven cache"
     runs-on: ubuntu-latest
@@ -200,7 +201,8 @@ jobs:
       contents: read
     needs:
       - test_run_check
-    if: needs.test_run_check.outputs.tests == 'true'
+      - maven_cache
+    if: ${{ !cancelled() && needs.test_run_check.outputs.tests == 'true' }}
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -330,7 +332,8 @@ jobs:
       contents: read
     needs:
       - test_run_check
-    if: needs.test_run_check.outputs.tests == 'true'
+      - maven_cache
+    if: ${{ !cancelled() && needs.test_run_check.outputs.tests == 'true' }}
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -411,7 +414,8 @@ jobs:
       contents: read
     needs:
       - test_run_check
-    if: needs.test_run_check.outputs.tests == 'true'
+      - maven_cache
+    if: ${{ !cancelled() && needs.test_run_check.outputs.tests == 'true' }}
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -492,7 +496,8 @@ jobs:
       contents: read
     needs:
       - test_run_check
-    if: needs.test_run_check.outputs.tests == 'true'
+      - maven_cache
+    if: ${{ !cancelled() && needs.test_run_check.outputs.tests == 'true' }}
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -548,7 +553,8 @@ jobs:
       contents: read
     needs:
       - test_run_check
-    if: needs.test_run_check.outputs.tests == 'true'
+      - maven_cache
+    if: ${{ !cancelled() && needs.test_run_check.outputs.tests == 'true' }}
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -645,7 +651,8 @@ jobs:
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
     needs:
       - test_run_check
-    if: needs.test_run_check.outputs.tests == 'true'
+      - maven_cache
+    if: ${{ !cancelled() && needs.test_run_check.outputs.tests == 'true' }}
     strategy:
       fail-fast: false
       matrix:
@@ -701,7 +708,8 @@ jobs:
       contents: read
     needs:
       - test_run_check
-    if: needs.test_run_check.outputs.tests == 'true'
+      - maven_cache
+    if: ${{ !cancelled() && needs.test_run_check.outputs.tests == 'true' }}
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -769,7 +777,8 @@ jobs:
       contents: read
     needs:
       - test_run_check
-    if: needs.test_run_check.outputs.tests == 'true'
+      - maven_cache
+    if: ${{ !cancelled() && needs.test_run_check.outputs.tests == 'true' }}
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -873,7 +882,8 @@ jobs:
       contents: read
     needs:
       - test_run_check
-    if: needs.test_run_check.outputs.tests == 'true'
+      - maven_cache
+    if: ${{ !cancelled() && needs.test_run_check.outputs.tests == 'true' }}
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -940,7 +950,8 @@ jobs:
       contents: read
     needs:
       - test_run_check
-    if: needs.test_run_check.outputs.tests == 'true' && github.event_name != 'pull_request'
+      - maven_cache
+    if: ${{ !cancelled() && needs.test_run_check.outputs.tests == 'true' && github.event_name != 'pull_request' }}
     strategy:
       fail-fast: false
       matrix:
@@ -1022,7 +1033,8 @@ jobs:
       contents: read
     needs:
       - test_run_check
-    if: needs.test_run_check.outputs.tests == 'true'
+      - maven_cache
+    if: ${{ !cancelled() && needs.test_run_check.outputs.tests == 'true' }}
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
