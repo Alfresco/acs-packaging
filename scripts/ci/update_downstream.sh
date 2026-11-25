@@ -6,6 +6,15 @@ pushd "$(dirname "${BASH_SOURCE[0]}")/../../"
 
 source "$(dirname "${BASH_SOURCE[0]}")/build_functions.sh"
 
+if [ -z "${RELEASE_VERSION}" ]; then
+  echo "ERROR: RELEASE_VERSION environment variable is not set."
+  exit 1
+fi
+if [ -z "${DEVELOPMENT_VERSION}" ]; then
+  echo "ERROR: DEVELOPMENT_VERSION environment variable is not set."
+  exit 1
+fi
+
 #Fetch the latest changes, as GHA will only checkout the PR commit
 git fetch origin "${BRANCH_NAME}"
 git checkout "${BRANCH_NAME}"
@@ -19,10 +28,6 @@ COM_VERSION="$(evaluatePomProperty "dependency.alfresco-community-repo.version")
 
 # Retrieve the Enterprise Share version
 SHA_VERSION="$(evaluatePomProperty "dependency.alfresco-enterprise-share.version")"
-
-# Retrieve the release and development versions as they are normally the same in community packaging
-RELEASE_VERSION=$(grep RELEASE_VERSION: .github/workflows/master_release.yml | sed 's/.*RELEASE_VERSION: \(.*\)/\1/')
-DEVELOPMENT_VERSION=$(grep DEVELOPMENT_VERSION: .github/workflows/master_release.yml | sed 's/.*DEVELOPMENT_VERSION: \(.*\)/\1/')
 
 DOWNSTREAM_REPO="github.com/Alfresco/acs-community-packaging.git"
 
@@ -46,42 +51,20 @@ mvn -B versions:set-property versions:commit \
   -Dproperty=dependency.acs-packaging.version \
   "-DnewVersion=${VERSION}"
 
-sed -i "s/.*RELEASE_VERSION: .*/  RELEASE_VERSION: $RELEASE_VERSION/" .github/workflows/ci.yml
-sed -i "s/.*DEVELOPMENT_VERSION: .*/  DEVELOPMENT_VERSION: $DEVELOPMENT_VERSION/" .github/workflows/ci.yml
+sed -i "s|- RELEASE_VERSION=.*|- RELEASE_VERSION=${RELEASE_VERSION}|g" .github/release-versions.yml
+sed -i "s|- DEVELOPMENT_VERSION=.*|- DEVELOPMENT_VERSION=${DEVELOPMENT_VERSION}|g" .github/release-versions.yml
 
-set +e
-echo "${COMMIT_MESSAGE}" | grep '\[publish\]'
-if [ "$?" -eq 0 ]
-then
-  COMMIT_DIRECTIVES="[release][publish]"
-else
-  COMMIT_DIRECTIVES="[release]"
-fi
-set -e
 # Commit changes
 git status
 git --no-pager diff pom.xml
+sed -i 's/\r$//' pom.xml
 git add pom.xml
 git --no-pager diff pom.xml
-git add .github/workflows/ci.yml
+git add .github/release-versions.yml
 
-if git status --untracked-files=no --porcelain | grep -q '^' ; then
-  git commit -m "${COMMIT_DIRECTIVES} ${VERSION}
-
-  Update upstream versions
-    - alfresco-community-repo:   ${COM_VERSION}
-    - alfresco-enterprise-share: ${SHA_VERSION}
-    - acs-packaging:             ${VERSION}
-    - RELEASE_VERSION:           ${RELEASE_VERSION}
-    - DEVELOPMENT_VERSION:       ${DEVELOPMENT_VERSION}"
-  git push
-else
-  echo "Dependencies are already up to date."
-  git status
-fi
+echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
 
 
 popd
 set +vex
 echo "=========================== Finishing Update Downstream Script =========================="
-
