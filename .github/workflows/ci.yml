@@ -93,16 +93,17 @@ jobs:
           ) ||
           contains(needs.commit_parser.outputs.title, '[run tests]')
 
-  # The only job that saves the Maven cache, so the entry holds everything a full build and the TAS modules need.
-  # PR and feature branch runs restore the master entry instead of writing their own.
-  maven_cache:
-    name: "Save Maven cache"
+  # Runs build.sh once for the whole run and hands the result to the test jobs. Also the only job that saves the Maven
+  # cache; PR and feature branch runs restore the master entry instead of writing their own.
+  build:
+    name: "Build"
     runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
-    needs: [commit_parser]
-    if: github.event_name == 'push' && (github.ref_name == 'master' || startsWith(github.ref_name, 'release/'))
+    needs:
+      - test_run_check
+    if: needs.test_run_check.outputs.tests == 'true'
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -130,25 +131,31 @@ jobs:
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-        if: steps.setup-java-maven.outputs.cache-hit != 'true'
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - name: "Build"
-        if: steps.setup-java-maven.outputs.cache-hit != 'true'
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         env:
           AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
         run: |
+          bash ./scripts/ci/build_outputs.sh mark
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
       - name: "Resolve the TAS modules dependencies"
-        if: steps.setup-java-maven.outputs.cache-hit != 'true'
         run: mvn -B -ntp -q install -f tests/pom.xml -DskipTests -Pall-tas-tests
+      - name: "Collect the build outputs"
+        run: bash ./scripts/ci/build_outputs.sh save "${RUNNER_TEMP}/build-outputs"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: build-outputs
+          path: ${{ runner.temp }}/build-outputs
+          retention-days: 1
+          compression-level: 0
       - name: "Prune the Maven repository"
-        if: steps.setup-java-maven.outputs.cache-hit != 'true'
+        if: github.event_name == 'push' && (github.ref_name == 'master' || startsWith(github.ref_name, 'release/')) && steps.setup-java-maven.outputs.cache-hit != 'true'
         run: bash ./scripts/ci/cleanup_cache.sh
       - name: "Save local Maven repository"
-        if: steps.setup-java-maven.outputs.cache-hit != 'true'
+        if: github.event_name == 'push' && (github.ref_name == 'master' || startsWith(github.ref_name, 'release/')) && steps.setup-java-maven.outputs.cache-hit != 'true'
         uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
           path: ~/.m2/repository
@@ -203,6 +210,7 @@ jobs:
       contents: read
     needs:
       - test_run_check
+      - build
     if: needs.test_run_check.outputs.tests == 'true'
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -306,13 +314,14 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
-      - name: "Build"
-        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        env:
-          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: build-outputs
+          path: ${{ runner.temp }}/build-outputs
+      - name: "Load the build outputs"
         run: |
           bash ./scripts/ci/init.sh
-          bash ./scripts/ci/build.sh
+          bash ./scripts/ci/build_outputs.sh restore "${RUNNER_TEMP}/build-outputs"
       - name: "Set up the environment"
         run: |
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/${{ matrix.compose-file }}
@@ -333,6 +342,7 @@ jobs:
       contents: read
     needs:
       - test_run_check
+      - build
     if: needs.test_run_check.outputs.tests == 'true'
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -381,13 +391,14 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
-      - name: "Build"
-        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        env:
-          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: build-outputs
+          path: ${{ runner.temp }}/build-outputs
+      - name: "Load the build outputs"
         run: |
           bash ./scripts/ci/init.sh
-          bash ./scripts/ci/build.sh
+          bash ./scripts/ci/build_outputs.sh restore "${RUNNER_TEMP}/build-outputs"
       - name: "Set up the environment"
         id: env
         run: |
@@ -414,6 +425,7 @@ jobs:
       contents: read
     needs:
       - test_run_check
+      - build
     if: needs.test_run_check.outputs.tests == 'true'
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -460,13 +472,14 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
-      - name: "Build"
-        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        env:
-          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: build-outputs
+          path: ${{ runner.temp }}/build-outputs
+      - name: "Load the build outputs"
         run: |
           bash ./scripts/ci/init.sh
-          bash ./scripts/ci/build.sh
+          bash ./scripts/ci/build_outputs.sh restore "${RUNNER_TEMP}/build-outputs"
       - name: "Set up the environment configuration"
         run: |
           echo "CMIS_ALFRESCO_IMAGE=alfresco-repository-databases:latest" >> $GITHUB_ENV
@@ -495,6 +508,7 @@ jobs:
       contents: read
     needs:
       - test_run_check
+      - build
     if: needs.test_run_check.outputs.tests == 'true'
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -524,13 +538,14 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
-      - name: "Build"
-        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        env:
-          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: build-outputs
+          path: ${{ runner.temp }}/build-outputs
+      - name: "Load the build outputs"
         run: |
           bash ./scripts/ci/init.sh
-          bash ./scripts/ci/build.sh
+          bash ./scripts/ci/build_outputs.sh restore "${RUNNER_TEMP}/build-outputs"
       - name: "Set up the environment"
         run: |
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/docker-compose-cmis-opensearch-tests.yml
@@ -551,6 +566,7 @@ jobs:
       contents: read
     needs:
       - test_run_check
+      - build
     if: needs.test_run_check.outputs.tests == 'true'
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -620,13 +636,14 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
-      - name: "Build"
-        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        env:
-          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: build-outputs
+          path: ${{ runner.temp }}/build-outputs
+      - name: "Load the build outputs"
         run: |
           bash ./scripts/ci/init.sh
-          bash ./scripts/ci/build.sh
+          bash ./scripts/ci/build_outputs.sh restore "${RUNNER_TEMP}/build-outputs"
       - name: "Run tests"
         id: tests
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
@@ -648,6 +665,7 @@ jobs:
       QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
     needs:
       - test_run_check
+      - build
     if: needs.test_run_check.outputs.tests == 'true'
     strategy:
       fail-fast: false
@@ -676,13 +694,14 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
-      - name: "Build"
-        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        env:
-          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: build-outputs
+          path: ${{ runner.temp }}/build-outputs
+      - name: "Load the build outputs"
         run: |
           bash ./scripts/ci/init.sh
-          bash ./scripts/ci/build.sh
+          bash ./scripts/ci/build_outputs.sh restore "${RUNNER_TEMP}/build-outputs"
       - name: "Configure AWS credentials"
         uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
         with:
@@ -704,6 +723,7 @@ jobs:
       contents: read
     needs:
       - test_run_check
+      - build
     if: needs.test_run_check.outputs.tests == 'true'
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -734,13 +754,14 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
-      - name: "Build"
-        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        env:
-          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: build-outputs
+          path: ${{ runner.temp }}/build-outputs
+      - name: "Load the build outputs"
         run: |
           bash ./scripts/ci/init.sh
-          bash ./scripts/ci/build.sh
+          bash ./scripts/ci/build_outputs.sh restore "${RUNNER_TEMP}/build-outputs"
       - name: "Set up the environment"
         run: mvn -B -q install -ntp -f tests/tas-all-amps/pom.xml -DskipTests -Pall-tas-tests,prepare-wars-with-amps
       - name: "Check duplicate libraries"
@@ -772,6 +793,7 @@ jobs:
       contents: read
     needs:
       - test_run_check
+      - build
     if: needs.test_run_check.outputs.tests == 'true'
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -848,13 +870,14 @@ jobs:
             echo "HOSTNAME_VERIFICATION_DISABLED=false" >> "$GITHUB_ENV"
           fi
           bash ${{ env.CI_WORKSPACE }}/alfresco-ssl-generator/scripts/ci/convert_testclient_keystore_to_pem.sh "${{ env.CI_WORKSPACE }}"
-      - name: "Build"
-        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        env:
-          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: build-outputs
+          path: ${{ runner.temp }}/build-outputs
+      - name: "Load the build outputs"
         run: |
           bash ./scripts/ci/init.sh
-          bash ./scripts/ci/build.sh
+          bash ./scripts/ci/build_outputs.sh restore "${RUNNER_TEMP}/build-outputs"
       - name: "Set up the environment"
         run: |
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ${{ env.TAS_ENVIRONMENT }}/${{ matrix.compose-file }}
@@ -877,6 +900,7 @@ jobs:
       contents: read
     needs:
       - test_run_check
+      - build
     if: needs.test_run_check.outputs.tests == 'true'
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -910,13 +934,14 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
-      - name: "Build"
-        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        env:
-          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: build-outputs
+          path: ${{ runner.temp }}/build-outputs
+      - name: "Load the build outputs"
         run: |
           bash ./scripts/ci/init.sh
-          bash ./scripts/ci/build.sh
+          bash ./scripts/ci/build_outputs.sh restore "${RUNNER_TEMP}/build-outputs"
       - name: "Set up the environment"
         run: mvn -B -V clean install -ntp -Pags -DskipTests -Dmaven.javadoc.skip=true
       - name: "Switch to Java ${{ matrix.java-version }}"
@@ -944,6 +969,7 @@ jobs:
       contents: read
     needs:
       - test_run_check
+      - build
     if: needs.test_run_check.outputs.tests == 'true' && github.event_name != 'pull_request'
     strategy:
       fail-fast: false
@@ -980,17 +1006,19 @@ jobs:
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      - name: "Build"
-        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: build-outputs
+          path: ${{ runner.temp }}/build-outputs
+      - name: "Load the build outputs"
         env:
           DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
           QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
-          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
         run: |
           bash ./scripts/ci/init.sh
-          bash ./scripts/ci/build.sh
+          bash ./scripts/ci/build_outputs.sh restore "${RUNNER_TEMP}/build-outputs"
       - name: "Checkout alfresco-deployment-test-automation-scripts"
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -1031,6 +1059,7 @@ jobs:
       contents: read
     needs:
       - test_run_check
+      - build
     if: needs.test_run_check.outputs.tests == 'true'
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -1060,13 +1089,14 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
-      - name: "Build"
-        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
-        env:
-          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: build-outputs
+          path: ${{ runner.temp }}/build-outputs
+      - name: "Load the build outputs"
         run: |
           bash ./scripts/ci/init.sh
-          bash ./scripts/ci/build.sh
+          bash ./scripts/ci/build_outputs.sh restore "${RUNNER_TEMP}/build-outputs"
       - name: "Set up the environment"
         run: |
           ${{ env.TAS_SCRIPTS }}/start-compose.sh ./dev/docker-compose.yml

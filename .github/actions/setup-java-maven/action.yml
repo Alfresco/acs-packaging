@@ -1,14 +1,14 @@
 name: "Set up Java and Maven"
 description: >
   Restores the local Maven repository from the cache without saving it, installs .ci.settings.xml and sets up the JDK.
-  The cache is saved by the maven_cache job in ci.yml only, after a full build.
+  The cache is saved by the build job in ci.yml only.
 inputs:
   java-version:
     description: the desired Java version
     required: true
 outputs:
   cache-primary-key:
-    description: the key the maven_cache job saves the repository under
+    description: the key the build job saves the repository under
     value: ${{ steps.restore.outputs.cache-primary-key }}
   cache-hit:
     description: whether an entry with the exact primary key was restored
