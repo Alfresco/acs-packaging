@@ -68,7 +68,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: ./.github/actions/setup-java-maven
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
@@ -92,6 +92,67 @@ jobs:
             !contains(needs.commit_parser.outputs.title, '[skip tests]')
           ) ||
           contains(needs.commit_parser.outputs.title, '[run tests]')
+
+  # The only job that saves the Maven cache, so the entry holds everything a full build and the TAS modules need.
+  # PR and feature branch runs restore the master entry instead of writing their own.
+  maven_cache:
+    name: "Save Maven cache"
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    needs: [commit_parser]
+    if: github.event_name == 'push' && (github.ref_name == 'master' || startsWith(github.ref_name, 'release/'))
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
+    steps:
+      - name: "Generate GitHub App token"
+        id: app-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
+          private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
+          owner: Alfresco
+          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+        with:
+          remove-android: 'false'
+          remove-tools-cache: 'false'
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: ./.github/actions/setup-java-maven
+        id: setup-java-maven
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+        if: steps.setup-java-maven.outputs.cache-hit != 'true'
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
+      - name: "Build"
+        if: steps.setup-java-maven.outputs.cache-hit != 'true'
+        timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
+        env:
+          AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
+        run: |
+          bash ./scripts/ci/init.sh
+          bash ./scripts/ci/build.sh
+      - name: "Resolve the TAS modules dependencies"
+        if: steps.setup-java-maven.outputs.cache-hit != 'true'
+        run: mvn -B -ntp -q install -f tests/pom.xml -DskipTests -Pall-tas-tests
+      - name: "Prune the Maven repository"
+        if: steps.setup-java-maven.outputs.cache-hit != 'true'
+        run: bash ./scripts/ci/cleanup_cache.sh
+      - name: "Save local Maven repository"
+        if: steps.setup-java-maven.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.m2/repository
+          key: ${{ steps.setup-java-maven.outputs.cache-primary-key }}
 
   pmd_scan:
     name: "PMD Scan"
@@ -122,7 +183,7 @@ jobs:
           remove-android: 'false'
           remove-tools-cache: 'false'
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: ./.github/actions/setup-java-maven
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
@@ -239,7 +300,7 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: ./.github/actions/setup-java-maven
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
@@ -263,8 +324,6 @@ jobs:
       - name: "Print output after failure"
         if: ${{ always() && steps.tests.outcome == 'failure' }}
         run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "${{ matrix.pom-dir }}"
-      - name: "Clean Maven cache"
-        run: bash ./scripts/ci/cleanup_cache.sh
 
   tas_tests_with_aims:
     name: ${{ matrix.testSuite }} TAS tests with AIMS
@@ -316,7 +375,7 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: ./.github/actions/setup-java-maven
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
@@ -346,8 +405,6 @@ jobs:
       - name: "Dump all Docker containers logs"
         uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         if: failure() && (steps.tests.outcome == 'failure' || steps.env.outcome == 'failure')
-      - name: "Clean Maven cache"
-        run: bash ./scripts/ci/cleanup_cache.sh
 
   cmis_tas_tests_elasticsearch:
     name: CMIS TAS tests - Elastic Search | ${{ matrix.testSuite }} (CMIS API)
@@ -397,7 +454,7 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: ./.github/actions/setup-java-maven
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
@@ -429,8 +486,6 @@ jobs:
       - name: "Dump all Docker containers logs"
         uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         if: failure() && (steps.tests.outcome == 'failure' || steps.env.outcome == 'failure')
-      - name: "Clean Maven cache"
-        run: bash ./scripts/ci/cleanup_cache.sh
 
   cmis_tas_tests_opensearch:
     name: "CMIS TAS tests - Open Search (CMIS API)"
@@ -463,7 +518,7 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: ./.github/actions/setup-java-maven
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
@@ -487,8 +542,6 @@ jobs:
       - name: "Print output after failure"
         if: ${{ always() && steps.tests.outcome == 'failure' }}
         run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-cmis"
-      - name: "Clean Maven cache"
-        run: bash ./scripts/ci/cleanup_cache.sh
 
   tas_tests_search_api:
     name: ${{ matrix.testSuite }} | TAS tests (Search API)
@@ -561,7 +614,7 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: ./.github/actions/setup-java-maven
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
@@ -581,8 +634,6 @@ jobs:
       - name: "Dump all Docker containers logs"
         uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         if: failure() && steps.tests.outcome == 'failure'
-      - name: "Clean Maven cache"
-        run: bash ./scripts/ci/cleanup_cache.sh
 
   upgrade_tas_tests:
     name: ${{ matrix.testSuite }} Upgrade TAS tests
@@ -619,7 +670,7 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: ./.github/actions/setup-java-maven
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
@@ -644,8 +695,6 @@ jobs:
         id: tests
         timeout-minutes: 30
         run: mvn -B install -ntp -pl ":content-repository-elasticsearch-test" -am -Pall-tas-tests,elastic-upgrade -Denvironment=default -DrunBugs=false "-Dsearch.engine.type=${{ matrix.search-engine-type }}" "-Ddatabase.type=postgresql" "-Dindeximage=alfresco-es-indexing-jdbc:latest" "-Dreindeximage=alfresco-es-reindexing-jdbc:latest" "-Drepoimage=alfresco-repository-databases:latest" "-Dmessaging.broker.username=admin" "-Dmessaging.broker.password=admin" # pragma: allowlist secret
-      - name: "Clean Maven cache"
-        run: bash ./scripts/ci/cleanup_cache.sh
 
   all_amps_tests:
     name: "All AMPs tests"
@@ -679,7 +728,7 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: ./.github/actions/setup-java-maven
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
@@ -714,8 +763,6 @@ jobs:
       - name: "Dump all Docker containers logs"
         uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         if: failure() && (steps.tests.outcome == 'failure' || steps.env.outcome == 'failure')
-      - name: "Clean Maven cache"
-        run: bash ./scripts/ci/cleanup_cache.sh
 
   tas_test_with_mtls:
     name: ${{ matrix.testSuite }} TAS tests
@@ -776,7 +823,7 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: ./.github/actions/setup-java-maven
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
@@ -821,8 +868,6 @@ jobs:
       - name: "Print output after failure"
         if: ${{ always() && steps.tests.outcome == 'failure' }}
         run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "${{ matrix.pom-dir }}"
-      - name: "Clean Maven cache"
-        run: bash ./scripts/ci/cleanup_cache.sh
 
   distribution_zip_content_tests:
     name: "Distribution Zip content tests (Java ${{ matrix.java-version }})"
@@ -859,7 +904,7 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: ./.github/actions/setup-java-maven
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
@@ -874,9 +919,12 @@ jobs:
           bash ./scripts/ci/build.sh
       - name: "Set up the environment"
         run: mvn -B -V clean install -ntp -Pags -DskipTests -Dmaven.javadoc.skip=true
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - name: "Switch to Java ${{ matrix.java-version }}"
+        uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6.3.0
         with:
           java-version: ${{ matrix.java-version }}
+          distribution: temurin
+          overwrite-settings: false
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
@@ -887,8 +935,6 @@ jobs:
       - name: "Print output after failure"
         if: ${{ always() && steps.tests.outcome == 'failure' }}
         run: ${TAS_SCRIPTS}/output_logs_for_failures.sh "tests/tas-distribution-zip"
-      - name: "Clean Maven cache"
-        run: bash ./scripts/ci/cleanup_cache.sh
 
   single_pipeline_image_tests:
     name: "Single Pipeline image tests (Java ${{ matrix.java-version }})"
@@ -925,7 +971,7 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: ./.github/actions/setup-java-maven
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
@@ -976,8 +1022,6 @@ jobs:
         run: |
           cd dtas
           pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s -rs
-      - name: "Clean Maven cache"
-        run: bash ./scripts/ci/cleanup_cache.sh
 
   test_tomcat_deployment:
     name: "Test Tomcat deployment"
@@ -1010,7 +1054,7 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: ./.github/actions/setup-java-maven
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
@@ -1073,7 +1117,7 @@ jobs:
         with:
           token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: ./.github/actions/setup-java-maven
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
@@ -1103,5 +1147,3 @@ jobs:
       - name: "Update images"
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         run: mvn -B -V clean install -ntp -DskipTests -Dmaven.javadoc.skip=true -Ppush-docker-images,pipeline,release-branch -Drepo.image.tag=latest -Dshare.image.tag=latest -Dimage.tag=${IMAGE_TAG} -Ddocker.quay-expires.value=1w -Drepo.skipDockerImage=false -Dshare.skipDockerImage=false
-      - name: "Clean Maven cache"
-        run: bash ./scripts/ci/cleanup_cache.sh
