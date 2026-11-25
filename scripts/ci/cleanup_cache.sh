@@ -29,14 +29,19 @@ ARTIFACT_PATTERNS=(
   "tas/alfresco-enterprise-repo-*-test"
 )
 
+is_kept() {
+  local kept
+  for kept in "${KEEP[@]}"; do
+    [[ "$1" == "${kept}" ]] && return 0
+  done
+  return 1
+}
+
 shopt -s nullglob
 for pattern in "${ARTIFACT_PATTERNS[@]}"; do
   for artifact_dir in "${M2_ALFRESCO}"/${pattern}/; do
     for version_dir in "${artifact_dir}"*/; do
-      version="$(basename "${version_dir}")"
-      if [[ ! " ${KEEP[*]} " =~ " ${version} " ]]; then
-        rm -rf "${version_dir}"
-      fi
+      is_kept "$(basename "${version_dir}")" || rm -rf "${version_dir}"
     done
   done
 done
