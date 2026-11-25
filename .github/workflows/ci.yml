@@ -68,9 +68,10 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: ./.github/actions/setup-java-maven
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@setup-java-build-cache-mode
         with:
           java-version: ${{ env.JAVA_VERSION }}
+          cache-mode: restore
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
@@ -124,16 +125,16 @@ jobs:
           remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: ./.github/actions/setup-java-maven
-        id: setup-java-maven
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@setup-java-build-cache-mode
+        id: setup-java-build
         with:
           java-version: ${{ env.JAVA_VERSION }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-        if: steps.setup-java-maven.outputs.cache-hit != 'true'
+        if: steps.setup-java-build.outputs.cache-hit != 'true'
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - name: "Build"
-        if: steps.setup-java-maven.outputs.cache-hit != 'true'
+        if: steps.setup-java-build.outputs.cache-hit != 'true'
         timeout-minutes: ${{ fromJSON(env.GITHUB_ACTIONS_DEPLOY_TIMEOUT) }}
         env:
           AUTH: x-access-token:${{ steps.app-token.outputs.token }}@
@@ -141,17 +142,12 @@ jobs:
           bash ./scripts/ci/init.sh
           bash ./scripts/ci/build.sh
       - name: "Resolve the TAS modules dependencies"
-        if: steps.setup-java-maven.outputs.cache-hit != 'true'
+        if: steps.setup-java-build.outputs.cache-hit != 'true'
         run: mvn -B -ntp -q install -f tests/pom.xml -DskipTests -Pall-tas-tests
+      # Keep this the last step: setup-java-build saves the repository right after it, at the end of the job.
       - name: "Prune the Maven repository"
-        if: steps.setup-java-maven.outputs.cache-hit != 'true'
+        if: steps.setup-java-build.outputs.cache-hit != 'true'
         run: bash ./scripts/ci/cleanup_cache.sh
-      - name: "Save local Maven repository"
-        if: steps.setup-java-maven.outputs.cache-hit != 'true'
-        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: ~/.m2/repository
-          key: ${{ steps.setup-java-maven.outputs.cache-primary-key }}
 
   pmd_scan:
     name: "PMD Scan"
@@ -183,9 +179,10 @@ jobs:
           remove-android: 'false'
           remove-tools-cache: 'false'
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: ./.github/actions/setup-java-maven
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@setup-java-build-cache-mode
         with:
           java-version: ${{ env.JAVA_VERSION }}
+          cache-mode: restore
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
@@ -299,9 +296,10 @@ jobs:
           remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: ./.github/actions/setup-java-maven
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@setup-java-build-cache-mode
         with:
           java-version: ${{ env.JAVA_VERSION }}
+          cache-mode: restore
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
@@ -373,9 +371,10 @@ jobs:
           remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: ./.github/actions/setup-java-maven
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@setup-java-build-cache-mode
         with:
           java-version: ${{ env.JAVA_VERSION }}
+          cache-mode: restore
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
@@ -451,9 +450,10 @@ jobs:
           remove-codeql: 'true'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: ./.github/actions/setup-java-maven
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@setup-java-build-cache-mode
         with:
           java-version: ${{ env.JAVA_VERSION }}
+          cache-mode: restore
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
@@ -514,9 +514,10 @@ jobs:
           remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: ./.github/actions/setup-java-maven
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@setup-java-build-cache-mode
         with:
           java-version: ${{ env.JAVA_VERSION }}
+          cache-mode: restore
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
@@ -609,9 +610,10 @@ jobs:
           permission-contents: read
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: ./.github/actions/setup-java-maven
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@setup-java-build-cache-mode
         with:
           java-version: ${{ env.JAVA_VERSION }}
+          cache-mode: restore
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
@@ -664,9 +666,10 @@ jobs:
           permission-contents: read
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: ./.github/actions/setup-java-maven
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@setup-java-build-cache-mode
         with:
           java-version: ${{ env.JAVA_VERSION }}
+          cache-mode: restore
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
@@ -721,9 +724,10 @@ jobs:
           remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: ./.github/actions/setup-java-maven
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@setup-java-build-cache-mode
         with:
           java-version: ${{ env.JAVA_VERSION }}
+          cache-mode: restore
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
@@ -815,9 +819,10 @@ jobs:
           remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: ./.github/actions/setup-java-maven
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@setup-java-build-cache-mode
         with:
           java-version: ${{ env.JAVA_VERSION }}
+          cache-mode: restore
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
@@ -894,9 +899,10 @@ jobs:
           remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: ./.github/actions/setup-java-maven
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@setup-java-build-cache-mode
         with:
           java-version: ${{ env.JAVA_VERSION }}
+          cache-mode: restore
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
@@ -955,9 +961,10 @@ jobs:
           permission-contents: read
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: ./.github/actions/setup-java-maven
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@setup-java-build-cache-mode
         with:
           java-version: ${{ env.JAVA_VERSION }}
+          cache-mode: restore
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
@@ -1037,9 +1044,10 @@ jobs:
           remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: ./.github/actions/setup-java-maven
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@setup-java-build-cache-mode
         with:
           java-version: ${{ env.JAVA_VERSION }}
+          cache-mode: restore
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
@@ -1099,9 +1107,10 @@ jobs:
           remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: ./.github/actions/setup-java-maven
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@setup-java-build-cache-mode
         with:
           java-version: ${{ env.JAVA_VERSION }}
+          cache-mode: restore
       - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
