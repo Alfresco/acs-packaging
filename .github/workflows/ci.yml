@@ -116,14 +116,13 @@ jobs:
           client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
           owner: Alfresco
-          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
+          repositories: alfresco-enterprise-repo,alfresco-enterprise-share
+          permission-contents: read
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           remove-android: 'false'
           remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - uses: ./.github/actions/setup-java-maven
         id: setup-java-maven
@@ -176,7 +175,8 @@ jobs:
           client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
           owner: Alfresco
-          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
+          repositories: alfresco-enterprise-repo,alfresco-enterprise-share
+          permission-contents: read
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
@@ -291,14 +291,13 @@ jobs:
           client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
           owner: Alfresco
-          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
+          repositories: alfresco-enterprise-repo,alfresco-enterprise-share
+          permission-contents: read
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           remove-android: 'false'
           remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - uses: ./.github/actions/setup-java-maven
         with:
@@ -366,14 +365,13 @@ jobs:
           client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
           owner: Alfresco
-          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
+          repositories: alfresco-enterprise-repo,alfresco-enterprise-share
+          permission-contents: read
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           remove-android: 'false'
           remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - uses: ./.github/actions/setup-java-maven
         with:
@@ -444,15 +442,14 @@ jobs:
           client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
           owner: Alfresco
-          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
+          repositories: alfresco-enterprise-repo,alfresco-enterprise-share
+          permission-contents: read
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           root-reserve-mb: 16384
           remove-android: 'true'
           remove-codeql: 'true'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - uses: ./.github/actions/setup-java-maven
         with:
@@ -509,14 +506,13 @@ jobs:
           client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
           owner: Alfresco
-          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
+          repositories: alfresco-enterprise-repo,alfresco-enterprise-share
+          permission-contents: read
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           remove-android: 'false'
           remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - uses: ./.github/actions/setup-java-maven
         with:
@@ -609,10 +605,9 @@ jobs:
           client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
           owner: Alfresco
-          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
+          repositories: alfresco-enterprise-repo,alfresco-enterprise-share
+          permission-contents: read
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - uses: ./.github/actions/setup-java-maven
         with:
@@ -665,10 +660,9 @@ jobs:
           client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
           owner: Alfresco
-          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
+          repositories: alfresco-enterprise-repo,alfresco-enterprise-share
+          permission-contents: read
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - uses: ./.github/actions/setup-java-maven
         with:
@@ -719,14 +713,13 @@ jobs:
           client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
           owner: Alfresco
-          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
+          repositories: alfresco-enterprise-repo,alfresco-enterprise-share
+          permission-contents: read
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           remove-android: 'false'
           remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - uses: ./.github/actions/setup-java-maven
         with:
@@ -814,14 +807,13 @@ jobs:
           client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
           owner: Alfresco
-          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging,alfresco-ssl-generator
+          repositories: alfresco-enterprise-repo,alfresco-enterprise-share
+          permission-contents: read
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           remove-android: 'false'
           remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - uses: ./.github/actions/setup-java-maven
         with:
@@ -834,7 +826,6 @@ jobs:
         with:
           repository: Alfresco/alfresco-ssl-generator
           ref: master
-          token: ${{ steps.app-token.outputs.token }}
           persist-credentials: false
           fetch-depth: 1
           path: alfresco-ssl-generator
@@ -895,14 +886,13 @@ jobs:
           client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
           owner: Alfresco
-          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
+          repositories: alfresco-enterprise-repo,alfresco-enterprise-share
+          permission-contents: read
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           remove-android: 'false'
           remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - uses: ./.github/actions/setup-java-maven
         with:
@@ -958,18 +948,12 @@ jobs:
         id: app-token
         uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
         with:
-          owner: Alfresco
           client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
+          owner: Alfresco
+          repositories: alfresco-enterprise-repo,alfresco-enterprise-share,alfresco-deployment-test-automation-scripts
           permission-contents: read
-          repositories: |
-            acs-packaging
-            alfresco-deployment-test-automation-scripts
-            alfresco-enterprise-share
-            alfresco-enterprise-repo
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - uses: ./.github/actions/setup-java-maven
         with:
@@ -1045,14 +1029,13 @@ jobs:
           client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
           owner: Alfresco
-          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
+          repositories: alfresco-enterprise-repo,alfresco-enterprise-share
+          permission-contents: read
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           remove-android: 'false'
           remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - uses: ./.github/actions/setup-java-maven
         with:
@@ -1108,14 +1091,13 @@ jobs:
           client-id: ${{ vars.GH_APP_ENGINEERING_RO_CLIENT_ID }}
           private-key: ${{ secrets.GH_APP_ENGINEERING_RO_PRIVATE_KEY }}
           owner: Alfresco
-          repositories: alfresco-enterprise-share,alfresco-enterprise-repo,acs-packaging
+          repositories: alfresco-enterprise-repo,alfresco-enterprise-share
+          permission-contents: read
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           remove-android: 'false'
           remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          token: ${{ steps.app-token.outputs.token }}
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - uses: ./.github/actions/setup-java-maven
         with:
