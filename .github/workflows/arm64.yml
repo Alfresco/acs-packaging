@@ -5,11 +5,12 @@ on:
     - cron: "0 3 * * 1-5"
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 env:
   JAVA_VERSION: "21"
   GITHUB_ACTIONS_DEPLOY_TIMEOUT: 60
-  MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-  MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
   TAS_ENVIRONMENT: ./tests/environment
   TAS_SCRIPTS: ../alfresco-community-repo/packaging/tests/scripts
   AWS_REGION: eu-west-1
@@ -19,18 +20,24 @@ jobs:
   arm64_health_check:
     name: "ARM64 Health Check"
     runs-on: ubuntu-24.04-arm
+    permissions:
+      id-token: write
+      contents: read
     outputs:
       test_failure: ${{ steps.persist_test_failure_flag.outputs.test_failure }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
           fetch-depth: 0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v12.4.3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v12.4.3
-      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v12.4.3
+      - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+      - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
         with:
           java-version: ${{ env.JAVA_VERSION }}
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
@@ -88,7 +95,7 @@ jobs:
           python3 -m pytest --configuration ../tests/pipeline-all-amps/repo/target/dtas/dtas-config.json tests/ -s
       - name: "Dump all Docker containers logs"
         if: failure() && (steps.setup-env.outcome == 'failure' || steps.run-tests.outcome == 'failure')
-        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@v12.4.3
+        uses: Alfresco/alfresco-build-tools/.github/actions/docker-dump-containers-logs@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - name: "Persist test failure flag"
         id: persist_test_failure_flag
         if: failure()
@@ -101,7 +108,7 @@ jobs:
       - arm64_health_check
     if: always()
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-python@v5
       - name: "Run the JIRA Integration script"
         run: |
