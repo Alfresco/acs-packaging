@@ -190,7 +190,7 @@ function copyArtifactToAnotherRepo() {
   local VERSION="${3}"
   local PACKAGING="${4}"
   local SETTINGS_SERVER_ID="${5}"
-  local NEXUS_REPO="${6}"
+  local TARGET_REPO="${6}"
 
   local ARTIFACT_PATH="$(echo ${GROUP_ID}/${ARTIFACT_ID} | sed 's/\./\//g')"
   local LOCAL_PATH="${HOME}/.m2/repository/${ARTIFACT_PATH}"
@@ -211,7 +211,7 @@ function copyArtifactToAnotherRepo() {
   mvn deploy:deploy-file \
     -Dfile="${TMP_PATH}/${ARTIFACT_ID}-${VERSION}.${PACKAGING}" \
     -DrepositoryId=${SETTINGS_SERVER_ID} \
-    -Durl="${NEXUS_REPO}" \
+    -Durl="${TARGET_REPO}" \
     -DgroupId="${GROUP_ID}" \
     -DartifactId="${ARTIFACT_ID}" \
     -Dversion="${VERSION}" \

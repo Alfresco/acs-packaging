@@ -17,10 +17,11 @@ fi
 git checkout "${RELEASE_VERSION}"
 
 # Rebuild the artifacts and publish them to enterprise-releases.
+# TODO: switch to maven.artifacts.hyland.dev once its DNS record exists
 mvn -B \
   -ntp \
   -Ppublish,all-tas-tests,pipeline,ags \
-  -DaltDeploymentRepository=alfresco-enterprise-releases::default::https://artifacts.alfresco.com/nexus/content/repositories/enterprise-releases \
+  -DaltDeploymentRepository=alfresco-releases::default::https://maven.cloudsmith.io/hyland/alfresco-enterprise-releases/ \
   -DskipTests \
   clean deploy
 

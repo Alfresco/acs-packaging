@@ -5,20 +5,22 @@ on:
     branches:
       - precommit/**
 
-env:
-  MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-  MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
-
 jobs:
   format-code:
     name: "Reformat code"
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
     if: contains(github.event.head_commit.message, '[reformat code]')
     steps:
       - uses: actions/checkout@v7
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@v19.12.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@v19.12.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@v19.12.1
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - name: Set up Python ${{ inputs.python-version }}
         uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
