@@ -43,13 +43,10 @@
 
     <distributionManagement>
         <repository>
-            <id>alfresco-internal</id>
-            <url>https://artifacts.alfresco.com/nexus/content/repositories/internal-releases</url>
+            <id>alfresco-releases</id>
+            <!-- TODO: switch to maven.artifacts.hyland.dev once its DNS record exists -->
+            <url>https://maven.cloudsmith.io/hyland/alfresco-internal-releases/</url>
         </repository>
-        <snapshotRepository>
-            <id>alfresco-internal-snapshots</id>
-            <url>https://artifacts.alfresco.com/nexus/content/repositories/enterprise-snapshots</url>
-        </snapshotRepository>
     </distributionManagement>
 
     <modules>

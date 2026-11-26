@@ -11,8 +11,6 @@ env:
   AWS_REGION: eu-west-1
   DOCKERHUB_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   DOCKERHUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-  MAVEN_PASSWORD: ${{ secrets.NEXUS_PASSWORD }}
-  MAVEN_USERNAME: ${{ secrets.NEXUS_USERNAME }}
   QUAY_PASSWORD: ${{ secrets.QUAY_PASSWORD }}
   QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
   GITHUB_ACTIONS_DEPLOY_TIMEOUT: 60
@@ -36,11 +34,17 @@ jobs:
 
   run_ci:
     uses: ./.github/workflows/ci.yml
+    permissions:
+      id-token: write
+      contents: read
     secrets: inherit
 
   docker_latest:
     name: "Update latest and Single Pipeline <acs>-<build> images"
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
     needs: [run_ci, commit_parser]
     if: >
       !(failure() || cancelled()) &&
@@ -68,6 +72,9 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
         with:
           java-version: ${{ env.JAVA_VERSION }}
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
         with:
@@ -127,6 +134,9 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
         with:
           java-version: ${{ env.JAVA_VERSION }}
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
       - name: Set up QEMU
         uses: docker/setup-qemu-action@99012661954931238ded8c8b007157a8430204e1 # v4.4.0
@@ -153,13 +163,14 @@ jobs:
           development-version: ${{ env.DEVELOPMENT_VERSION }}
           release-profile: "release,all-tas-tests,pipeline,ags"
           maven-args: "-Darguments=-Prelease,all-tas-tests,pipeline -Pags -DskipTests -Dbuild-number=${{ env.COMPUTED_BUILD_NUMBER }}"
-      - name: "Copy share distribution to public Nexus"
+      - name: "Copy share distribution to public Maven repository"
         run: |
           source scripts/ci/build_functions.sh
+          # TODO: switch to maven.artifacts.hyland.dev once its DNS record exists
           copyArtifactToAnotherRepo org.alfresco alfresco-content-services-share-distribution \
             "${RELEASE_VERSION}" zip \
-            alfresco-enterprise-releases \
-            https://nexus.alfresco.com/nexus/content/repositories/releases/
+            alfresco-releases \
+            https://maven.cloudsmith.io/hyland/alfresco-community-releases/
       - name: "Prepare staging artifacts"
         run: bash scripts/ci/prepare_staging_deploy.sh
       - name: "Clean Maven cache"
@@ -214,6 +225,9 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
         with:
           java-version: ${{ env.JAVA_VERSION }}
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - name: "Init"
         run: bash ./scripts/ci/init.sh
       - name: "Rebuild the artifacts and publish them to enterprise-releases"
@@ -254,6 +268,9 @@ jobs:
   update_downstream:
     name: "Update acs-community-packaging (after release)"
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
     needs: [publish, commit_parser]
     if: >
       !(failure() || cancelled()) &&
@@ -283,6 +300,9 @@ jobs:
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
         with:
           java-version: ${{ env.JAVA_VERSION }}
+      - uses: Alfresco/alfresco-build-tools/.github/actions/cloudsmith-auth@2cebc8f19812b2653361d82e86b25f29cfa4a144 # v19.12.1
+        with:
+          oidc-namespace: ${{ vars.CLOUDSMITH_NAMESPACE }}
       - name: "Init"
         run: bash ./scripts/ci/init.sh
       - name: "Update downstream"
