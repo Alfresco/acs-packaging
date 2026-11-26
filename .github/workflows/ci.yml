@@ -120,10 +120,6 @@ jobs:
           owner: Alfresco
           repositories: alfresco-enterprise-repo,alfresco-enterprise-share
           permission-contents: read
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-        with:
-          remove-android: 'false'
-          remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@setup-java-build-cache-mode
@@ -175,10 +171,6 @@ jobs:
           repositories: alfresco-enterprise-repo,alfresco-enterprise-share
           permission-contents: read
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-        with:
-          remove-android: 'false'
-          remove-tools-cache: 'false'
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@setup-java-build-cache-mode
         with:
@@ -292,10 +284,6 @@ jobs:
           owner: Alfresco
           repositories: alfresco-enterprise-repo,alfresco-enterprise-share
           permission-contents: read
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-        with:
-          remove-android: 'false'
-          remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@setup-java-build-cache-mode
@@ -368,10 +356,6 @@ jobs:
           owner: Alfresco
           repositories: alfresco-enterprise-repo,alfresco-enterprise-share
           permission-contents: read
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-        with:
-          remove-android: 'false'
-          remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@setup-java-build-cache-mode
@@ -447,11 +431,6 @@ jobs:
           owner: Alfresco
           repositories: alfresco-enterprise-repo,alfresco-enterprise-share
           permission-contents: read
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-        with:
-          root-reserve-mb: 16384
-          remove-android: 'true'
-          remove-codeql: 'true'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@setup-java-build-cache-mode
@@ -513,10 +492,6 @@ jobs:
           owner: Alfresco
           repositories: alfresco-enterprise-repo,alfresco-enterprise-share
           permission-contents: read
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-        with:
-          remove-android: 'false'
-          remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@setup-java-build-cache-mode
@@ -726,10 +701,6 @@ jobs:
           owner: Alfresco
           repositories: alfresco-enterprise-repo,alfresco-enterprise-share
           permission-contents: read
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-        with:
-          remove-android: 'false'
-          remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@setup-java-build-cache-mode
@@ -822,10 +793,6 @@ jobs:
           owner: Alfresco
           repositories: alfresco-enterprise-repo,alfresco-enterprise-share
           permission-contents: read
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-        with:
-          remove-android: 'false'
-          remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@setup-java-build-cache-mode
@@ -903,10 +870,6 @@ jobs:
           owner: Alfresco
           repositories: alfresco-enterprise-repo,alfresco-enterprise-share
           permission-contents: read
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-        with:
-          remove-android: 'false'
-          remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@setup-java-build-cache-mode
@@ -957,10 +920,6 @@ jobs:
       matrix:
         java-version: [DEFAULT, 25]
     steps:
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-        with:
-          remove-android: 'false'
-          remove-tools-cache: 'false'
       - name: "Generate GitHub App token"
         id: app-token
         uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
@@ -1050,10 +1009,6 @@ jobs:
           owner: Alfresco
           repositories: alfresco-enterprise-repo,alfresco-enterprise-share
           permission-contents: read
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-        with:
-          remove-android: 'false'
-          remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@setup-java-build-cache-mode
@@ -1113,10 +1068,6 @@ jobs:
           owner: Alfresco
           repositories: alfresco-enterprise-repo,alfresco-enterprise-share
           permission-contents: read
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-        with:
-          remove-android: 'false'
-          remove-tools-cache: 'false'
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@setup-java-build-cache-mode

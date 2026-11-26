@@ -39,7 +39,6 @@ jobs:
           persist-credentials: false
           fetch-depth: 0
       - uses: Alfresco/alfresco-build-tools/.github/actions/get-build-info@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
-      - uses: Alfresco/alfresco-build-tools/.github/actions/free-hosted-runner-disk-space@f3b931eb59ada4485cdf7440ae3c65ce34f0a749 # v19.12.0
       - uses: Alfresco/alfresco-build-tools/.github/actions/setup-java-build@setup-java-build-cache-mode
         with:
           java-version: ${{ env.JAVA_VERSION }}
